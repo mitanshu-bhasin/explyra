@@ -145,16 +145,17 @@ window.showToast = (message, type = 'info') => {
 };
 
 // Load company branding
-async function loadCompanyBranding() {
+async function loadCompanyBranding(companyId) {
+    if (!companyId) return;
     try {
-        const settingsRef = doc(db, "settings", "global");
+        const settingsRef = doc(db, "companies", companyId, "settings", "branding");
         const settingsSnap = await safeFirebaseFetch(getDoc(settingsRef));
         if (settingsSnap.exists()) {
             const data = settingsSnap.data();
 
-            if (data.name) {
-                document.getElementById('login-company-name').textContent = data.name;
-                document.getElementById('sidebar-company-name').innerHTML = data.name.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
+            if (data.companyName) {
+                document.getElementById('login-company-name').textContent = data.companyName;
+                document.getElementById('sidebar-company-name').innerHTML = data.companyName.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
             }
 
             if (data.logo) {
@@ -168,6 +169,28 @@ async function loadCompanyBranding() {
                 const sidebarLogo = document.querySelector('.fa-bolt').parentElement;
                 if (sidebarLogo) {
                     sidebarLogo.innerHTML = `<img src="${data.logo}" class="w-6 h-6 object-contain mr-2">`;
+                }
+            }
+        } else {
+            // Fallback to fetch company doc for basic info if branding doesn't exist yet
+            const cmpSnap = await safeFirebaseFetch(getDoc(doc(db, "companies", companyId)));
+            if (cmpSnap.exists()) {
+                const cmpData = cmpSnap.data();
+                if (cmpData.name) {
+                    document.getElementById('login-company-name').textContent = cmpData.name;
+                    document.getElementById('sidebar-company-name').innerHTML = cmpData.name.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
+                }
+                if (cmpData.logo) {
+                    const logoImg = document.getElementById('login-logo-img');
+                    const logoFallback = document.getElementById('login-logo-fallback');
+                    logoImg.src = cmpData.logo;
+                    logoImg.classList.remove('hidden');
+                    logoFallback.classList.add('hidden');
+
+                    const sidebarLogo = document.querySelector('.fa-bolt').parentElement;
+                    if (sidebarLogo) {
+                        sidebarLogo.innerHTML = `<img src="${cmpData.logo}" class="w-6 h-6 object-contain mr-2">`;
+                    }
                 }
             }
         }
@@ -226,11 +249,51 @@ onAuthStateChanged(auth, async (user) => {
                 }
                 // ------------------------------
 
+                if (userData.role === 'pending' || !userData.companyId) {
+                    window.location.href = 'company.html';
+                    return;
+                }
+
                 const allowed = ['ADMIN', 'MANAGER', 'SENIOR_MANAGER', 'TREASURY', 'AUDIT', 'HR', 'FINANCE_MANAGER', 'ACCOUNTS'];
                 if (!allowed.includes(userData.role)) {
                     showToast('Access Denied: You do not have management privileges.', 'error');
                     await signOut(auth);
                     return;
+                }
+
+                if (!userData.companyId) {
+                    showToast("No company assigned to this account", "error");
+                    await signOut(auth);
+                    return;
+                }
+                const companyId = userData.companyId;
+
+                // --- COMPANY SUSPENSION AND PLAN CHECK ---
+                try {
+                    const compDoc = await safeFirebaseFetch(getDoc(doc(db, "companies", companyId)));
+                    if (compDoc.exists()) {
+                        const cData = compDoc.data();
+                        if (cData.status === "suspended") {
+                            showToast("Your company account is suspended. Please contact Explyra Support.", "error");
+                            await signOut(auth);
+                            return;
+                        }
+                        window.companyPlan = (cData.plan || "starter").toLowerCase();
+                    }
+                } catch (e) { console.error("Plan check failed", e); }
+                // ------------------------------------------
+
+                await loadCompanyBranding(companyId);
+
+                // Update sidebar plan info if the element exists
+                const planSpan = document.getElementById('sidebar-plan-name');
+                if (planSpan && window.companyPlan) {
+                    planSpan.textContent = window.companyPlan.toUpperCase();
+                    // Optional: color code it
+                    planSpan.className = 'text-xs font-bold uppercase ' +
+                        (window.companyPlan === 'enterprise' ? 'text-amber-400' :
+                            window.companyPlan === 'business' ? 'text-purple-400' :
+                                window.companyPlan === 'growth' ? 'text-blue-400' : 'text-emerald-400');
                 }
 
                 // Ensure UID is linked (Safe update if mismatch)
@@ -293,7 +356,7 @@ onAuthStateChanged(auth, async (user) => {
                 // --- LIVE NOTIFICATIONS (Old In-App Browser Method) ---
                 if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
                 try {
-                    const notifQ = query(collection(db, "expenses"), orderBy("updatedAt", "desc"), limit(10));
+                    const notifQ = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), orderBy("updatedAt", "desc"), limit(10));
                     let isInitial = true;
                     onSnapshot(notifQ, (snapshot) => {
                         if (isInitial) { isInitial = false; return; }
@@ -364,7 +427,7 @@ onAuthStateChanged(auth, async (user) => {
 
                     // --- GLOBAL CHAT NOTIFICATIONS ---
                     let globalNotifInitial = true;
-                    onSnapshot(query(collection(db, "global_chat"), orderBy("createdAt", "desc"), limit(1)), (snapshot) => {
+                    onSnapshot(query(collection(db, "global_chat"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"), limit(1)), (snapshot) => {
                         if (globalNotifInitial) { globalNotifInitial = false; return; }
                         if (!snapshot.empty) {
                             const data = snapshot.docs[0].data();
@@ -494,11 +557,11 @@ async function updatePendingCount() {
     try {
         let q;
         if (userData.role === 'ADMIN') {
-            q = query(collection(db, "expenses"), where("status", "not-in", ["PAID", "REJECTED", "AUDITED"]));
+            q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("status", "not-in", ["PAID", "REJECTED", "AUDITED"]));
         } else {
             const allowedStatuses = await getAllowedStatusesForRole(userData.role);
             if (allowedStatuses && allowedStatuses.length > 0) {
-                q = query(collection(db, "expenses"), where("status", "in", allowedStatuses.slice(0, 10)));
+                q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("status", "in", allowedStatuses.slice(0, 10)));
             } else {
                 const pendingEl = document.getElementById('pending-count');
                 if (pendingEl) pendingEl.classList.add('hidden');
@@ -791,39 +854,59 @@ function showDashboard() {
     }
 
     // Reset visibility for optional tabs
-    const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit'];
+    const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit', 'roles', 'tasks', 'workflow'];
     optionalTabs.forEach(id => {
         const el = document.getElementById(`nav-${id}`);
         if (el) el.classList.add('hidden');
     });
 
-    // Hide Approvals by default (except for managers/admins)
-    const approvalsTab = document.querySelector('[data-tab="approvals"]');
-    if (approvalsTab) approvalsTab.classList.add('hidden');
+    checkAccess();
+}
+
+window.checkAccess = async () => {
+    const dashLink = document.getElementById('dash-link');
+    const approvalsTab = document.getElementById('nav-approvals');
+
+    if (dashLink) {
+        dashLink.href = 'admin.html';
+        dashLink.querySelector('span').textContent = 'Admin Dashboard';
+    }
+
+    // --- Dynamic Role Permissions Fetch ---
+    if (userData.role !== 'ADMIN') {
+        try {
+            const roleQ = query(collection(db, "roles"), where("companyId", "in", [userData.companyId, "GLOBAL"]));
+            const roleSnap = await getDocs(roleQ);
+            const roleDoc = roleSnap.docs.find(d => d.data().name === userData.role && (d.data().companyId === userData.companyId || d.data().companyId === 'GLOBAL'));
+            if (roleDoc) userData.permissions = roleDoc.data().permissions || {};
+        } catch (e) { console.warn("Failed to fetch role permissions", e); }
+    } else {
+        // Give admins all permissions locally to bypass checks
+        userData.permissions = { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true };
+    }
 
     // --- Role Based Access Control ---
 
-    // Approvals: Managers, Sr Managers, Treasury, Admin
-    // Approvals: Managers, Finance, Accounts, Admin
-    if (['ADMIN', 'MANAGER', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS', 'TREASURY'].includes(userData.role)) {
+    // Approvals
+    if (userData.permissions?.viewApprovals || ['ADMIN', 'MANAGER', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS', 'TREASURY'].includes(userData.role)) {
         if (approvalsTab) approvalsTab.classList.remove('hidden');
     }
 
-    // User Mgmt & Projects: Admin, HR
-    if (['ADMIN', 'HR'].includes(userData.role)) {
+    // User Mgmt & Projects
+    if (userData.permissions?.viewUsers || ['ADMIN', 'HR'].includes(userData.role)) {
         document.getElementById('nav-users').classList.remove('hidden');
-        document.getElementById('nav-projects').classList.remove('hidden');
+        document.getElementById('nav-projects').classList.remove('hidden'); // Assuming users implies project access for now
     }
 
-    // Reports: Admin, Treasury, Sr Manager
-    // Reports: Admin, Finance, Accounts
-    if (['ADMIN', 'TREASURY', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS'].includes(userData.role)) {
+    // Reports
+    if (userData.permissions?.viewReports || ['ADMIN', 'TREASURY', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS'].includes(userData.role)) {
         document.getElementById('nav-reports').classList.remove('hidden');
     }
 
-    // Settings: Admin only
-    if (userData.role === 'ADMIN') {
+    // Settings
+    if (userData.permissions?.viewSettings || userData.role === 'ADMIN') {
         document.getElementById('nav-settings').classList.remove('hidden');
+        document.getElementById('nav-roles').classList.remove('hidden');
     }
 
     // Audit Logs: Visible to all, but data is filtered by role inside the tab
@@ -865,9 +948,9 @@ window.switchTab = (tab) => {
     if (tab === 'tasks') renderTasks(); // Added tasks renderer
     if (tab === 'my-claims') renderMyClaims();
     if (tab === 'projects') renderProjects();
-    if (tab === 'projects') renderProjects();
     if (tab === 'chat') renderChat();
     if (tab === 'workflow') renderWorkflow();
+    if (tab === 'roles') renderRoles();
 };
 
 async function renderOverview() {
@@ -876,12 +959,20 @@ async function renderOverview() {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const [expensesSnap, usersSnap, projectsSnap] = await Promise.all([
-            getDocs(collection(db, "expenses")),
-            getDocs(collection(db, "users")),
-            getDocs(collection(db, "projects"))
+        const companyId = userData.companyId;
+
+        const expensesQuery = companyId ? query(collection(db, "expenses"), where("companyId", "==", companyId)) : collection(db, "expenses");
+        const usersQuery = companyId ? query(collection(db, "users"), where("companyId", "==", companyId)) : collection(db, "users");
+        const projectsQuery = companyId ? query(collection(db, "projects"), where("companyId", "==", companyId)) : collection(db, "projects");
+
+        const [expensesSnap, usersSnap, projectsSnap, companySnap] = await Promise.all([
+            getDocs(expensesQuery),
+            getDocs(usersQuery),
+            getDocs(projectsQuery),
+            companyId ? getDoc(doc(db, "companies", companyId)) : Promise.resolve({ exists: () => false })
         ]);
 
+        let companyData = companySnap.exists() ? companySnap.data() : null;
         let expenses = expensesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
         const users = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
         const projects = projectsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -934,7 +1025,33 @@ async function renderOverview() {
 
         if (aiAssistant) aiAssistant.updateContext({ dashboardData: lastDashboardContext });
 
+        let trialBannerHtml = '';
+        if (companyData && companyData.plan === 'trial') {
+            const trialEnd = companyData.trialEndsAt?.toDate() || new Date();
+            const today = new Date();
+            const diffTime = trialEnd - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const daysText = diffDays > 0 ? `Your trial ends in ${diffDays} days` : 'Your trial has ended';
+
+            trialBannerHtml = `
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg mb-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 fade-in">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full"></div>
+                    <div class="absolute right-20 -bottom-10 w-32 h-32 bg-white/10 rounded-full"></div>
+                    <div class="relative z-10 w-full md:w-auto">
+                        <h2 class="text-2xl font-bold font-serif mb-1 text-white">Welcome to Explyra, ${companyData.name}</h2>
+                        <p class="text-blue-100 text-sm flex items-center gap-2"><i class="fa-solid fa-clock text-amber-300"></i> ${daysText}</p>
+                    </div>
+                    <div class="relative z-10 flex flex-wrap gap-3 w-full md:w-auto">
+                        <button onclick="switchTab('users')" class="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg font-bold text-sm transition shadow flex items-center"><i class="fa-solid fa-user-plus mr-2"></i> Invite Team</button>
+                        <button class="bg-blue-700 hover:bg-blue-900 border border-blue-500 px-4 py-2 rounded-lg font-bold text-sm text-white transition shadow flex items-center"><i class="fa-solid fa-rocket mr-2"></i> Explore Tools</button>
+                        <button class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-bold text-sm text-white transition shadow flex items-center"><i class="fa-solid fa-crown mr-2"></i> Upgrade Plan</button>
+                    </div>
+                </div>
+            `;
+        }
+
         content.innerHTML = `
+                    ${trialBannerHtml}
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden group">
                             <div class="absolute -right-6 -top-6 w-24 h-24 bg-green-50 rounded-full transition-transform group-hover:scale-110"></div>
@@ -1128,7 +1245,7 @@ async function renderReports() {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const expensesSnap = await safeFirebaseFetch(getDocs(collection(db, "expenses")));
+        const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId))));
         const expenses = expensesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
         // Group by month
@@ -1211,7 +1328,7 @@ async function renderAuditLogs(forceRefresh = true) {
         content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
         try {
-            const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses")), orderBy("createdAt", "desc")));
+            const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"))));
             const auditLogs = [];
 
             expensesSnap.forEach(doc => {
@@ -1426,7 +1543,7 @@ async function renderTasks() {
     // Fetch users for assignment dropdown
     let usersOptions = '<option value="">Select Employee...</option>';
     try {
-        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users")), where("status", "==", "ACTIVE")));
+        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId), where("status", "==", "ACTIVE"))));
         usersSnap.forEach(d => {
             const u = d.data();
             usersOptions += `<option value="${u.email}">${u.name} (${u.role.replace('_', ' ')})</option>`;
@@ -1499,10 +1616,10 @@ async function renderTasks() {
     if (dueInput) dueInput.min = today;
 
     try {
-        // Fetch tasks (ADMIN sees all, others see only what they assigned)
-        let q = collection(db, "tasks");
+        // Fetch tasks (ADMIN sees all for their company, others see only what they assigned for their company)
+        let q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId));
         if (userData.role !== 'ADMIN') {
-            q = query(collection(db, "tasks"), where("assignedBy", "==", userData.email));
+            q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId), where("assignedBy", "==", userData.email));
         }
 
         // Remove server-side orderBy to avoid index issues. We sort in JS.
@@ -1590,6 +1707,7 @@ window.handleCreateTask = async (e) => {
             description: desc,
             assignedTo: assignee,
             assignedBy: userData.email,
+            companyId: userData.companyId,
             status: 'PENDING',
             dueDate: dueDate,
             createdAt: serverTimestamp()
@@ -1646,11 +1764,18 @@ async function renderSettings() {
     document.getElementById('page-title').textContent = "Company Settings";
     const content = document.getElementById('content-area');
 
-    let settings = { name: '', logo: '', email: '', phone: '', address: '', taxId: '' };
+    let settings = { companyName: '', logo: '', email: '', phone: '', address: '', taxId: '' };
     try {
-        const settingsRef = doc(db, "settings", "global");
+        const settingsRef = doc(db, "companies", userData.companyId, "settings", "branding");
         const settingsSnap = await safeFirebaseFetch(getDoc(settingsRef));
-        if (settingsSnap.exists()) settings = settingsSnap.data();
+        if (settingsSnap.exists()) {
+            settings = settingsSnap.data();
+            settings.name = settings.companyName || settings.name || '';
+        } else {
+            // Fallback to company doc
+            const cmpSnap = await safeFirebaseFetch(getDoc(doc(db, "companies", userData.companyId)));
+            if (cmpSnap.exists()) settings.name = cmpSnap.data().name || '';
+        }
     } catch (e) { }
 
     content.innerHTML = `
@@ -1814,9 +1939,12 @@ async function renderApprovals() {
     // Fetch Projects for Filter
     let projectOptions = '<option value="">All Projects</option>';
     try {
-        const pSnap = await safeFirebaseFetch(getDocs(query(collection(db, "projects")), orderBy("code")));
-        pSnap.forEach(d => {
-            projectOptions += `<option value="${d.data().code}">${d.data().code}</option>`;
+        const pSnap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", userData.companyId))));
+        const projectCodes = [];
+        pSnap.forEach(d => { if (d.data().code) projectCodes.push(d.data().code); });
+        projectCodes.sort((a, b) => a.localeCompare(b));
+        projectCodes.forEach(code => {
+            projectOptions += `<option value="${code}">${code}</option>`;
         });
     } catch (e) { console.error("Project load err", e); }
 
@@ -1866,11 +1994,11 @@ async function renderApprovals() {
     try {
         let q;
         if (userData.role === 'ADMIN') {
-            q = query(collection(db, "expenses"), where("status", "not-in", ["PAID", "REJECTED", "AUDITED"]));
+            q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("status", "not-in", ["PAID", "REJECTED", "AUDITED"]));
         } else {
             const allowedStatuses = await getAllowedStatusesForRole(userData.role);
             if (allowedStatuses && allowedStatuses.length > 0) {
-                q = query(collection(db, "expenses"), where("status", "in", allowedStatuses.slice(0, 10)));
+                q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("status", "in", allowedStatuses.slice(0, 10)));
             } else {
                 document.getElementById('approvals-list').innerHTML = emptyState("No workflow stages assigned to your role.");
                 return;
@@ -1880,34 +2008,46 @@ async function renderApprovals() {
         if (!q) return;
 
         const unsub = onSnapshot(q, async (snap) => {
-            if (snap.empty) {
-                document.getElementById('approvals-list').innerHTML = emptyState("All caught up! No pending items.");
-                approvalsData = [];
-                return;
-            }
-
-            // Get User Names Efficiently
-            const userIds = [...new Set(snap.docs.map(d => d.data().userId))];
-            const userMap = new Map();
-
-            if (userIds.length > 0) {
-                const chunks = [];
-                for (let i = 0; i < userIds.length; i += 10) {
-                    chunks.push(
-                        getDocs(query(collection(db, "users"), where("__name__", "in", userIds.slice(i, i + 10))))
-                    );
+            try {
+                if (snap.empty) {
+                    document.getElementById('approvals-list').innerHTML = emptyState("All caught up! No pending items.");
+                    approvalsData = [];
+                    return;
                 }
-                const results = await Promise.all(chunks);
-                results.forEach(s => s.forEach(d => userMap.set(d.id, d.data().name)));
+
+                // Get User Names Efficiently
+                const userIds = [...new Set(snap.docs.map(d => d.data().userId).filter(Boolean))];
+                const userMap = new Map();
+
+                if (userIds.length > 0) {
+                    try {
+                        const chunks = [];
+                        for (let i = 0; i < userIds.length; i += 10) {
+                            chunks.push(
+                                safeFirebaseFetch(getDocs(query(collection(db, "users"), where("__name__", "in", userIds.slice(i, i + 10)))))
+                            );
+                        }
+                        const results = await Promise.all(chunks);
+                        results.forEach(s => s.forEach(d => userMap.set(d.id, d.data().name)));
+                    } catch (userLookupErr) {
+                        console.warn("User lookup failed, showing expenses without names:", userLookupErr);
+                    }
+                }
+
+                approvalsData = snap.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    userName: userMap.get(doc.data().userId) || doc.data().employeeName || 'Unknown'
+                }));
+
+                window.applyApprovalFilters();
+            } catch (renderErr) {
+                console.error("Error rendering approvals:", renderErr);
+                document.getElementById('approvals-list').innerHTML = emptyState("Error rendering approvals. Please refresh.");
             }
-
-            approvalsData = snap.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                userName: userMap.get(doc.data().userId) || 'Unknown'
-            }));
-
-            window.applyApprovalFilters();
+        }, (error) => {
+            console.error("Approvals listener error:", error);
+            document.getElementById('approvals-list').innerHTML = emptyState("Error loading approvals. Please refresh.");
         });
 
         activeListeners.push(unsub);
@@ -2287,7 +2427,7 @@ window.confirmDeleteUser = async () => {
 
     try {
         // Delete all expenses by this user (Handle Batch Limit of 500)
-        const expensesQuery = query(collection(db, "expenses"), where("userId", "==", userToDelete));
+        const expensesQuery = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("userId", "==", userToDelete));
         const expensesSnap = await safeFirebaseFetch(getDocs(expensesQuery));
 
         // Chunk deletion
@@ -2350,6 +2490,23 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
             });
             showToast('User updated successfully!', 'success');
         } else {
+            // --- PLAN LIMITS CHECK ---
+            const plan = window.companyPlan || 'starter';
+            if (plan !== 'enterprise') {
+                const currentUsersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
+                const employeeCount = currentUsersSnap.size;
+
+                let limit = 50;
+                if (plan === 'growth') limit = 150;
+                if (plan === 'business') limit = 500;
+
+                if (employeeCount >= limit) {
+                    showToast(`Plan Limit Reached! Your ${plan.toUpperCase()} plan allows up to ${limit} employees.`, 'error');
+                    return;
+                }
+            }
+            // -------------------------
+
             // Check if user already exists
             const q = query(collection(db, "users"), where("email", "==", email));
             const snap = await safeFirebaseFetch(getDocs(q));
@@ -2364,6 +2521,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
                 name,
                 email,
                 role,
+                companyId: userData.companyId,
                 managerId: managerId || null,
                 department: department || null,
                 employeeId: employeeId || null,
@@ -2398,7 +2556,7 @@ window.toggleUserExpenses = async (userId, btn) => {
 
     try {
         // Remove orderBy to avoid composite index requirement issues
-        const q = query(collection(db, "expenses"), where("userId", "==", userId));
+        const q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("userId", "==", userId));
         const snap = await safeFirebaseFetch(getDocs(q));
 
         // Client-side sort and limit
@@ -2472,13 +2630,13 @@ async function renderUserManagement() {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const usersSnap = await safeFirebaseFetch(getDocs(collection(db, "users")));
+        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
         const users = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         globalUsersCache = users; // Update cache
 
         // Get expense counts for each user
         expenseCountsCache = {};
-        const expensesSnap = await safeFirebaseFetch(getDocs(collection(db, "expenses")));
+        const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId))));
         expensesSnap.forEach(doc => {
             const data = doc.data();
             expenseCountsCache[data.userId] = (expenseCountsCache[data.userId] || 0) + 1;
@@ -2716,8 +2874,8 @@ window.saveAllSettings = async () => {
     const emailNotifications = document.getElementById('email-notifications').checked;
 
     try {
-        await setDoc(doc(db, "settings", "global"), {
-            name,
+        await setDoc(doc(db, "companies", userData.companyId, "settings", "branding"), {
+            companyName: name,
             logo,
             email,
             phone,
@@ -2730,7 +2888,7 @@ window.saveAllSettings = async () => {
         }, { merge: true });
 
         showToast('All settings updated successfully!', 'success');
-        await loadCompanyBranding();
+        await loadCompanyBranding(userData.companyId);
     } catch (e) {
         showToast(e.message, 'error');
     }
@@ -2742,7 +2900,7 @@ window.exportReport = async (format) => {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
     try {
-        const expensesSnap = await safeFirebaseFetch(getDocs(collection(db, "expenses")));
+        const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId))));
         const expenses = expensesSnap.docs.map(d => {
             const data = d.data();
             return {
@@ -3399,7 +3557,7 @@ window.renderProjects = async () => {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const snap = await safeFirebaseFetch(getDocs(collection(db, "projects")));
+        const snap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", userData.companyId))));
         const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
         content.innerHTML = `
@@ -3480,7 +3638,7 @@ window.closeProjectModal = () => {
 // Export Function
 window.exportProjectsCSV = async () => {
     try {
-        const snap = await safeFirebaseFetch(getDocs(collection(db, "projects")));
+        const snap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", userData.companyId))));
         if (snap.empty) return showToast("No projects to export", "info");
 
         const headers = ["Project Code", "Project Name", "Details", "Status", "Created At"];
@@ -3519,7 +3677,7 @@ document.getElementById('project-form').addEventListener('submit', async (e) => 
 
     try {
         await addDoc(collection(db, "projects"), {
-            code, name, details, active: true, createdAt: serverTimestamp()
+            code, name, details, active: true, companyId: userData.companyId, createdAt: serverTimestamp()
         });
         showToast("Project added successfully!", "success");
         closeProjectModal();
@@ -3541,7 +3699,7 @@ window.loadProjects = async () => {
     if (!select) return; // Guard clause in case element missing
 
     try {
-        const q = query(collection(db, "projects"), where("active", "==", true));
+        const q = query(collection(db, "projects"), where("companyId", "==", userData.companyId), where("active", "==", true));
         const snap = await safeFirebaseFetch(getDocs(q));
 
         if (snap.empty) {
@@ -4032,7 +4190,7 @@ window.renderMyClaims = async () => {
         document.getElementById('my-claims-list').innerHTML = emptyState("Error: User profile not loaded.");
         return;
     }
-    const q = query(collection(db, "expenses"), where("userId", "==", userData.docId));
+    const q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("userId", "==", userData.docId));
 
     const unsub = onSnapshot(q, (snap) => {
         const list = document.getElementById('my-claims-list');
@@ -4352,6 +4510,7 @@ window.submitMyClaim = async () => {
             // Create Logic
             await addDoc(collection(db, "expenses"), {
                 ...expenseData,
+                companyId: userData.companyId,
                 createdAt: serverTimestamp(),
                 history: [{
                     action: 'SUBMITTED',
@@ -4474,7 +4633,7 @@ async function loadChatUsers() {
 
     try {
         // Fetch all users
-        const usersSnap = await safeFirebaseFetch(getDocs(collection(db, "users")));
+        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
         const users = usersSnap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
 
         // Fetch chats for sorting and last message
@@ -4487,7 +4646,7 @@ async function loadChatUsers() {
         });
 
         // Get Global Chat last message
-        const globalChatSnap = await safeFirebaseFetch(getDocs(query(collection(db, "global_chat")), orderBy("createdAt", "desc"), limit(1)));
+        const globalChatSnap = await safeFirebaseFetch(getDocs(query(collection(db, "global_chat"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"), limit(1))));
         const globalLast = globalChatSnap.empty ? "Company Wide Chat" : globalChatSnap.docs[0].data().text;
 
         // Sort users by activity
@@ -4617,7 +4776,7 @@ function loadMessages() {
     try {
         let q;
         if (currentChatId === 'global_chat') {
-            q = query(collection(db, "global_chat"), orderBy("createdAt", "asc"), limit(100));
+            q = query(collection(db, "global_chat"), where("companyId", "==", userData.companyId), orderBy("createdAt", "asc"), limit(100));
         } else {
             q = query(collection(db, "chats", currentChatId, "messages"), orderBy("createdAt", "asc"), limit(100));
         }
@@ -4709,6 +4868,7 @@ window.sendChatMessage = async (e) => {
         };
 
         if (currentChatId === 'global_chat') {
+            msgData.companyId = userData.companyId; // Scope to company
             await addDoc(collection(db, "global_chat"), msgData);
         } else {
             await addDoc(collection(db, "chats", currentChatId, "messages"), msgData);
@@ -4725,6 +4885,7 @@ window.sendChatMessage = async (e) => {
                 chatMetaUpdate.users = [userData.docId, currentChatUser.docId];
             }
 
+            chatMetaUpdate.companyId = userData.companyId; // Scope to company
             await setDoc(doc(db, "chats", currentChatId), chatMetaUpdate, { merge: true });
         }
 
@@ -4795,7 +4956,7 @@ window.openAccountCenter = async () => {
 
     try {
         // Fetch claims simple size dynamically without blocking UI
-        const claimsQ = query(collection(db, "expenses"), where("userId", "==", u.docId));
+        const claimsQ = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("userId", "==", u.docId));
         getDocs(claimsQ).then(snap => {
             document.getElementById('ac-stat-claims').textContent = snap.size;
         });
@@ -4850,7 +5011,7 @@ window.downloadMyData = async () => {
         // The MAIN script logic is likely in the middle chunk I skipped. 
         // Assuming `db` IS available because `renderChat` uses it.
 
-        const q = query(collection(db, "expenses"), where("userId", "==", userData.uid || userData.id));
+        const q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("userId", "==", userData.uid || userData.id));
         const snap = await safeFirebaseFetch(getDocs(q));
         const expenses = snap.docs.map(d => d.data());
 
@@ -4899,7 +5060,7 @@ window.openNotificationModal = async () => {
         populateOptions(window.globalUsersCache);
     } else {
         try {
-            const usersSnap = await safeFirebaseFetch(getDocs(collection(db, "users")));
+            const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
             const users = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             window.globalUsersCache = users;
             populateOptions(users);
@@ -4975,7 +5136,7 @@ const servers = {
 window.listenForCalls = () => {
     if (!userData || !userData.docId) return;
     if (incomingCallUnsub) { incomingCallUnsub(); incomingCallUnsub = null; }
-    const q = query(collection(db, "calls"), where("receiver", "==", userData.docId), where("status", "==", "calling"));
+    const q = query(collection(db, "calls"), where("companyId", "==", userData.companyId), where("receiver", "==", userData.docId), where("status", "==", "calling"));
     incomingCallUnsub = onSnapshot(q, (snapshot) => {
         snapshot.forEach(docSnap => {
             const data = docSnap.data();
@@ -5057,6 +5218,7 @@ window.initiateCall = async (type) => {
             callerPhotoUrl: userData.photoUrl || '',
             receiver: currentChatUser.docId,
             receiverName: currentChatUser.name || '',
+            companyId: userData.companyId, // Scope to company
             type: type,
             status: 'calling',
             createdAt: serverTimestamp()
@@ -5076,6 +5238,7 @@ window.initiateCall = async (type) => {
             await setDoc(doc(db, "chats", currentChatId), {
                 lastMessage: `📞 ${type === 'video' ? 'Video' : 'Voice'} Call`,
                 lastMessageAt: serverTimestamp(),
+                companyId: userData.companyId, // Scope to company
                 users: [userData.docId, currentChatUser.docId]
             }, { merge: true });
         } catch (ce) { console.error("Call log error", ce); }
@@ -5358,6 +5521,312 @@ window.toggleCallPip = () => {
     overlay.classList.toggle('overflow-hidden');
     overlay.classList.toggle('shadow-2xl');
     document.getElementById('call-header-overlay').classList.toggle('hidden');
+};
+
+// --- Role Management ---
+window.renderRoles = async () => {
+    document.getElementById('page-title').textContent = "Role Management";
+    const content = document.getElementById('content-area');
+    content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
+
+    try {
+        // Fetch custom roles for this company AND global system roles if applicable
+        // Since we are dealing with a dynamically built list, we check 'companyId' 
+        const q = query(collection(db, "roles"), where("companyId", "==", userData.companyId));
+        const snap = await safeFirebaseFetch(getDocs(q));
+
+        // Also fetch global roles that have companyId == 'GLOBAL' or similar, if they exist
+        const globalQ = query(collection(db, "roles"), where("companyId", "==", "GLOBAL"));
+        const globalSnap = await safeFirebaseFetch(getDocs(globalQ));
+
+        let roles = [];
+        globalSnap.forEach(d => roles.push({ id: d.id, ...d.data() }));
+        snap.forEach(d => roles.push({ id: d.id, ...d.data() }));
+
+        // Deduplicate in case of overrides (company specific overrides global)
+        const uniqueRolesMap = new Map();
+        roles.forEach(r => {
+            if (!uniqueRolesMap.has(r.name) || r.companyId !== 'GLOBAL') {
+                uniqueRolesMap.set(r.name, r);
+            }
+        });
+        roles = Array.from(uniqueRolesMap.values());
+
+        // If NO roles exist yet, display a message or provide default ones.
+        // We do NOT auto-create them in the DB to follow the hard rule, 
+        // but we can show the predefined ones.
+        if (roles.length === 0) {
+            roles = [
+                { id: 'def-emp', name: 'EMPLOYEE', systemRole: true, permissions: { viewApprovals: true, viewReports: false } },
+                { id: 'def-mgr', name: 'MANAGER', systemRole: true, permissions: { viewApprovals: true, viewReports: true } },
+                { id: 'def-smgr', name: 'SENIOR_MANAGER', systemRole: true, permissions: { viewApprovals: true, viewReports: true, viewUsers: true } },
+                { id: 'def-trsy', name: 'TREASURY', systemRole: true, permissions: { viewApprovals: true, viewReports: true } },
+                { id: 'def-admin', name: 'ADMIN', systemRole: true, permissions: { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true } }
+            ];
+            // Admin must save them manually or the system just uses them
+        }
+
+        window.currentCompanyRoles = roles; // Store globally for editing
+
+        content.innerHTML = `
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
+                <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Role & Permissions Management</h3>
+                        <p class="text-xs text-slate-400">Manage what tabs and features each role can access.</p>
+                    </div>
+                    <div>
+                        <button onclick="showRoleModal()" class="text-xs bg-slate-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-800 transition"><i class="fa-solid fa-plus mr-1"></i> New Custom Role</button>
+                    </div>
+                </div>
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="data-grid text-sm text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 text-xs uppercase">
+                                <tr>
+                                    <th class="px-6 py-3">Role Name</th>
+                                    <th class="px-6 py-3">Type</th>
+                                    <th class="px-6 py-3">Permissions Summary</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                ${roles.map((r, i) => `
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                                        <td class="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">
+                                            <i class="fa-solid ${r.systemRole ? 'fa-shield-halved text-green-500' : 'fa-user-tag text-blue-500'} mr-2"></i>
+                                            ${r.name}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.systemRole ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}">
+                                                ${r.systemRole ? 'SYSTEM DEFAULT' : 'CUSTOM ROLE'}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
+                                            ${Object.keys(r.permissions || {}).length} rules defined
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button onclick="editRole(${i})" class="text-xs font-bold text-blue-600 hover:underline"><i class="fa-solid fa-pen-to-square"></i> Edit Permissions</button>
+                                            ${!r.systemRole ? `<button onclick="deleteRole('${r.id}')" class="ml-3 text-xs font-bold text-red-600 hover:underline"><i class="fa-solid fa-trash"></i> Delete</button>` : `<span class="ml-3 text-xs font-bold text-slate-400 opacity-50 cursor-not-allowed"><i class="fa-solid fa-trash"></i> Delete</span>`}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add/Edit Role Modal Container injected here for simplicity -->
+            <div id="role-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[95] hidden flex items-center justify-center p-4">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-soft transition-enterprise scale-95 opacity-0 max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto" id="role-modal-content">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100" id="role-modal-title">Role Configuration</h3>
+                        <button onclick="closeRoleModal()" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                    <form id="role-form" class="space-y-4">
+                        <input type="hidden" id="role-id">
+                        <input type="hidden" id="role-is-system" value="false">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Role Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="role-name-input" class="input-primary uppercase font-mono" placeholder="e.g. DATA_ENTRY" required>
+                            <p class="text-[10px] text-slate-400 mt-1" id="role-name-lock-msg">System role names cannot be changed.</p>
+                        </div>
+                        
+                        <div class="mt-4 border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-900/50">
+                            <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3"><i class="fa-solid fa-key text-amber-500 mr-2"></i> Permissions Matrix</h4>
+                            
+                            <div class="space-y-3" id="role-permissions-list">
+                                <!-- Checkboxes will be rendered here dynamically -->
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-claims" class="rounded text-green-600 focus:ring-green-500"> Can View & Approve Claims
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-reports" class="rounded text-green-600 focus:ring-green-500"> Can Access Reports
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-users" class="rounded text-green-600 focus:ring-green-500"> Can Manage Users
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-settings" class="rounded text-green-600 focus:ring-green-500"> Can Access Company Settings
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-4">
+                            <button type="button" onclick="closeRoleModal()" class="flex-1 ghost-btn">Cancel</button>
+                            <button type="button" onclick="saveRole()" class="flex-1 bg-green-600 hover:bg-brand-700 text-white py-2 rounded-lg text-sm font-semibold transition shadow-md shadow-green-200">Save Role</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        content.innerHTML = `<div class="text-center py-20 text-red-500 truncate">Error loading roles: ${e.message}</div>`;
+    }
+};
+
+window.showRoleModal = (roleData = null) => {
+    const modal = document.getElementById('role-modal');
+    modal.classList.remove('hidden');
+
+    const nameInput = document.getElementById('role-name-input');
+    const isSystemInput = document.getElementById('role-is-system');
+    const idInput = document.getElementById('role-id');
+    const lockMsg = document.getElementById('role-name-lock-msg');
+
+    if (roleData) {
+        document.getElementById('role-modal-title').textContent = "Edit Permissions: " + roleData.name;
+        nameInput.value = roleData.name;
+        idInput.value = roleData.id;
+        isSystemInput.value = roleData.systemRole ? 'true' : 'false';
+
+        if (roleData.systemRole) {
+            nameInput.disabled = true;
+            lockMsg.classList.remove('hidden');
+        } else {
+            nameInput.disabled = false;
+            lockMsg.classList.add('hidden');
+        }
+
+        // Set checkboxes
+        document.getElementById('perm-view-claims').checked = roleData.permissions?.viewApprovals || false;
+        document.getElementById('perm-view-reports').checked = roleData.permissions?.viewReports || false;
+        document.getElementById('perm-view-users').checked = roleData.permissions?.viewUsers || false;
+        document.getElementById('perm-view-settings').checked = roleData.permissions?.viewSettings || false;
+    } else {
+        document.getElementById('role-modal-title').textContent = "Create Custom Role";
+        nameInput.value = '';
+        idInput.value = '';
+        isSystemInput.value = 'false';
+        nameInput.disabled = false;
+        lockMsg.classList.add('hidden');
+
+        document.getElementById('perm-view-claims').checked = false;
+        document.getElementById('perm-view-reports').checked = false;
+        document.getElementById('perm-view-users').checked = false;
+        document.getElementById('perm-view-settings').checked = false;
+    }
+
+    setTimeout(() => {
+        document.getElementById('role-modal-content').classList.remove('scale-95', 'opacity-0');
+        document.getElementById('role-modal-content').classList.add('scale-100', 'opacity-100');
+    }, 10);
+};
+
+window.closeRoleModal = () => {
+    const m = document.getElementById('role-modal');
+    const c = document.getElementById('role-modal-content');
+    c.classList.remove('scale-100', 'opacity-100');
+    c.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => m.classList.add('hidden'), 200);
+};
+
+window.editRole = (index) => {
+    const roleData = window.currentCompanyRoles[index];
+    showRoleModal(roleData);
+};
+
+window.saveRole = async () => {
+    const id = document.getElementById('role-id').value;
+    const name = document.getElementById('role-name-input').value.trim().toUpperCase();
+    const isSystem = document.getElementById('role-is-system').value === 'true';
+
+    if (!name) return showToast("Role Name is required", "error");
+
+    const permissions = {
+        viewApprovals: document.getElementById('perm-view-claims').checked,
+        viewReports: document.getElementById('perm-view-reports').checked,
+        viewUsers: document.getElementById('perm-view-users').checked,
+        viewSettings: document.getElementById('perm-view-settings').checked
+    };
+
+    try {
+        let docRef;
+        if (id && !id.startsWith('def-')) {
+            // Update existing custom or saved role
+            docRef = doc(db, "roles", id);
+            await setDoc(docRef, {
+                name,
+                systemRole: isSystem,
+                companyId: userData.companyId,
+                permissions,
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+        } else {
+            // Create New or Save a system default that wasn't previously in DB
+            docRef = doc(collection(db, "roles"));
+            await setDoc(docRef, {
+                name,
+                systemRole: isSystem,
+                companyId: userData.companyId,
+                permissions,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp()
+            });
+        }
+
+        showToast("Role saved successfully!", "success");
+        closeRoleModal();
+        renderRoles();
+    } catch (e) {
+        showToast("Error saving role: " + e.message, "error");
+    }
+};
+
+window.deleteRole = async (roleId) => {
+    if (!await confirm("Are you sure you want to delete this role? Users assigned to this role may lose access.")) return;
+
+    // Safety check again - system roles should not reach here due to UI hiding it, but enforce at logic layer:
+    const roleObj = window.currentCompanyRoles.find(r => r.id === roleId);
+    if (roleObj && roleObj.systemRole) {
+        return showToast("Crucial Error: Cannot delete a System Default Role.", "error");
+    }
+
+    try {
+        await deleteDoc(doc(db, "roles", roleId));
+        showToast("Role deleted successfully", "success");
+        renderRoles();
+    } catch (e) {
+        showToast("Error deleting role: " + e.message, "error");
+    }
+};
+
+// Override User Modal populator to load dynamic roles
+const originalOpenUserModal = window.openUserModal;
+window.openUserModal = async (uId = null) => {
+    // Attempt to load dynamic roles before showing modal
+    try {
+        const q = query(collection(db, "roles"), where("companyId", "==", userData.companyId));
+        const snap = await safeFirebaseFetch(getDocs(q));
+
+        const globalQ = query(collection(db, "roles"), where("companyId", "==", "GLOBAL"));
+        const globalSnap = await safeFirebaseFetch(getDocs(globalQ));
+
+        let rolesMap = new Map();
+        globalSnap.forEach(d => rolesMap.set(d.data().name, d.data()));
+        snap.forEach(d => rolesMap.set(d.data().name, d.data()));
+
+        const roles = Array.from(rolesMap.values());
+
+        const roleSelect = document.getElementById('user-role');
+        if (roleSelect && roles.length > 0) {
+            roleSelect.innerHTML = roles.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+        }
+    } catch (e) {
+        console.warn("Failed to load dynamic roles for dropdown. Using defaults.", e);
+    }
+
+    if (originalOpenUserModal) {
+        originalOpenUserModal(uId);
+    } else {
+        // Fallback UI logic to show modal if originalOpenUserModal isn't defined
+        document.getElementById('user-modal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('user-modal-content').classList.remove('scale-95', 'opacity-0');
+            document.getElementById('user-modal-content').classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
 };
 
 // Service Worker Registration

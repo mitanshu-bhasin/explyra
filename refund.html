@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Terms of Service — Explyra</title>
-    <meta name="description" content="Read Explyra's Terms of Service. By using our platform you agree to these terms.">
+    <title>Refund Policy — Explyra</title>
+    <meta name="description"
+        content="Explyra Refund Policy. Learn about our refund eligibility, process, and how to request a refund.">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -27,11 +28,10 @@
             --blue2: #5B8AF5;
             --blue-g: rgba(21, 70, 192, .08);
             --blue-b: rgba(21, 70, 192, .2);
-            --teal: #047857;
-            --teal2: #34D399;
-            --teal-g: rgba(4, 120, 87, .08);
-            --teal-b: rgba(4, 120, 87, .2);
-            --purp: #6D28D9;
+            --amber: #B45309;
+            --amb2: #FBBF24;
+            --amb-g: rgba(180, 83, 9, .08);
+            --amb-b: rgba(180, 83, 9, .2);
             --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
             --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
             --r: 8px;
@@ -54,11 +54,10 @@
             --blue2: #93B4FF;
             --blue-g: rgba(91, 138, 245, .12);
             --blue-b: rgba(91, 138, 245, .25);
-            --teal: #34D399;
-            --teal2: #6EE7B7;
-            --teal-g: rgba(52, 211, 153, .10);
-            --teal-b: rgba(52, 211, 153, .22);
-            --purp: #A78BFA;
+            --amber: #FBBF24;
+            --amb2: #FDE68A;
+            --amb-g: rgba(251, 191, 36, .10);
+            --amb-b: rgba(251, 191, 36, .22);
             --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
             --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3)
         }
@@ -355,7 +354,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--teal-g) 0%, transparent 60%);
+            background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--amb-g) 0%, transparent 60%);
             pointer-events: none
         }
 
@@ -380,9 +379,9 @@
             display: inline-flex;
             align-items: center;
             gap: .5rem;
-            background: var(--teal-g);
-            border: 1px solid var(--teal-b);
-            color: var(--teal);
+            background: var(--amb-g);
+            border: 1px solid var(--amb-b);
+            color: var(--amber);
             font-size: .7rem;
             font-weight: 700;
             letter-spacing: .15em;
@@ -403,14 +402,14 @@
         }
 
         .legal-hero h1 .grad {
-            background: linear-gradient(135deg, var(--teal), var(--blue));
+            background: linear-gradient(135deg, var(--amber), #E97316);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text
         }
 
         [data-theme="dark"] .legal-hero h1 .grad {
-            background: linear-gradient(135deg, #34D399, var(--blue2));
+            background: linear-gradient(135deg, var(--amb2), #FB923C);
             -webkit-background-clip: text;
             background-clip: text
         }
@@ -418,7 +417,7 @@
         .legal-date {
             font-size: .82rem;
             font-weight: 500;
-            color: var(--teal);
+            color: var(--amber);
             margin-bottom: 1.2rem;
             letter-spacing: .05em
         }
@@ -468,9 +467,9 @@
             justify-content: center;
             width: 28px;
             height: 28px;
-            background: var(--teal-g);
-            border: 1px solid var(--teal-b);
-            color: var(--teal);
+            background: var(--amb-g);
+            border: 1px solid var(--amb-b);
+            color: var(--amber);
             font-size: .72rem;
             font-weight: 700;
             border-radius: 6px;
@@ -526,7 +525,7 @@
             top: .65em;
             width: 6px;
             height: 6px;
-            background: var(--teal);
+            background: var(--amber);
             border-radius: 50%
         }
 
@@ -556,8 +555,23 @@
         }
 
         .contact-box a {
-            color: var(--teal);
+            color: var(--amber);
             font-weight: 600
+        }
+
+        .highlight-box {
+            background: var(--amb-g);
+            border: 1px solid var(--amb-b);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            margin: .8rem 0
+        }
+
+        .highlight-box p {
+            font-size: .9rem;
+            color: var(--ink2);
+            margin: 0;
+            font-weight: 500
         }
 
         @keyframes fadeUp {
@@ -685,11 +699,11 @@
     <section class="legal-hero">
         <div class="legal-hero-grid"></div>
         <div class="hero-inner">
-            <div class="legal-badge">📜 Legal</div>
-            <h1>Terms of <span class="grad">Service</span></h1>
+            <div class="legal-badge">💳 Legal</div>
+            <h1>Refund <span class="grad">Policy</span></h1>
             <div class="legal-date">Last Updated: March 8, 2026</div>
-            <p class="legal-desc">By using our platform you agree to these Terms of Service. Please read them carefully
-                before accessing or using Explyra.</p>
+            <p class="legal-desc">We want you to be satisfied with Explyra. This policy outlines our refund eligibility
+                criteria and the process for requesting a refund.</p>
         </div>
     </section>
 
@@ -697,83 +711,65 @@
         <div class="legal-card">
             <div class="legal-card-inner">
                 <div class="legal-section">
-                    <h2><span class="section-num">1</span>Acceptance of Terms</h2>
-                    <p>By accessing or using the Explyra platform ("Service"), you agree to be bound by these Terms of
-                        Service. If you do not agree, please do not use the platform. These terms apply to all users,
-                        including administrators, employees, and visitors.</p>
+                    <h2><span class="section-num">1</span>Refund Eligibility</h2>
+                    <p>Refund requests must be submitted within <strong>7 days of the original purchase date</strong>.
+                        Requests made after this period will not be eligible for a refund.</p>
+                    <div class="highlight-box">
+                        <p>⏰ Refund window: 7 days from the date of subscription purchase.</p>
+                    </div>
+                    <p>To be eligible, you must not have violated our Terms of Service and the refund must be for a
+                        valid reason relating to platform functionality or billing errors.</p>
                 </div>
                 <div class="legal-divider"></div>
                 <div class="legal-section">
-                    <h2><span class="section-num">2</span>Use of Platform</h2>
-                    <p>You agree to use Explyra only for lawful purposes consistent with all applicable laws and
-                        regulations. The platform is intended for legitimate business expense management and related
-                        services.</p>
+                    <h2><span class="section-num">2</span>Free Trial</h2>
+                    <p>We offer a free trial period so users can evaluate the Explyra platform before committing to a
+                        paid subscription. We strongly encourage all users to take advantage of the free trial before
+                        purchasing.</p>
+                    <p>Refunds will not be issued if a free trial was already used before the subscription purchase, as
+                        the platform's capabilities were available for evaluation.</p>
                 </div>
                 <div class="legal-divider"></div>
                 <div class="legal-section">
-                    <h2><span class="section-num">3</span>Account Responsibilities</h2>
-                    <p>Users are responsible for maintaining the security of their account credentials. You agree to:
-                    </p>
+                    <h2><span class="section-num">3</span>Subscription Refunds</h2>
+                    <p>If you are eligible for a refund, the amount refunded will be the subscription price paid, minus
+                        any applicable processing fees. Refunds are issued to the original payment method within 5–10
+                        business days.</p>
+                    <p>Only the most recent billing cycle is eligible for a refund. Previous billing period charges are
+                        non-refundable.</p>
+                </div>
+                <div class="legal-divider"></div>
+                <div class="legal-section">
+                    <h2><span class="section-num">4</span>Non-Refundable Cases</h2>
+                    <p>Refunds are not provided in the following cases:</p>
                     <ul>
-                        <li>Keep your login credentials confidential at all times</li>
-                        <li>Notify us immediately of any unauthorized access to your account</li>
-                        <li>Ensure all submitted information is accurate and truthful</li>
-                        <li>Accept responsibility for all activities under your account</li>
+                        <li>Partial subscription usage — no pro-rated refunds for mid-cycle cancellations</li>
+                        <li>Violations of our Terms of Service or Acceptable Use Policy</li>
+                        <li>Enterprise contracts or custom pricing agreements</li>
+                        <li>Requests submitted after the 7-day refund window</li>
+                        <li>Refund requests made after a prior refund has already been processed</li>
                     </ul>
                 </div>
                 <div class="legal-divider"></div>
                 <div class="legal-section">
-                    <h2><span class="section-num">4</span>Subscription &amp; Billing</h2>
-                    <p>Some features require a paid subscription. By subscribing, you agree to pay the applicable fees
-                        as described on our <a href="pricing.html" style="color:var(--teal);font-weight:600">pricing
-                            page</a>. Pricing may change with prior notice.</p>
-                </div>
-                <div class="legal-divider"></div>
-                <div class="legal-section">
-                    <h2><span class="section-num">5</span>Restrictions</h2>
-                    <p>Users may not, under any circumstances:</p>
+                    <h2><span class="section-num">5</span>How to Request a Refund</h2>
+                    <p>To request a refund, please contact our support team with the following details:</p>
                     <ul>
-                        <li>Reverse engineer, decompile, or disassemble any part of the platform</li>
-                        <li>Abuse or overload platform resources or infrastructure</li>
-                        <li>Use the service for any illegal or unauthorized purpose</li>
-                        <li>Attempt to gain unauthorized access to other accounts or systems</li>
+                        <li>Your registered email address</li>
+                        <li>Date of subscription purchase</li>
+                        <li>Reason for refund request</li>
+                        <li>Any relevant screenshots or transaction IDs</li>
                     </ul>
+                    <p>We will review your request and respond within 2–3 business days.</p>
                 </div>
                 <div class="legal-divider"></div>
                 <div class="legal-section">
-                    <h2><span class="section-num">6</span>Intellectual Property</h2>
-                    <p>The Explyra platform, including all original content, features, design, and functionality, is and
-                        will remain the exclusive property of Explyra and its founders. Protected by copyright,
-                        trademark, and other applicable laws.</p>
-                </div>
-                <div class="legal-divider"></div>
-                <div class="legal-section">
-                    <h2><span class="section-num">7</span>Termination</h2>
-                    <p>We may suspend or terminate accounts that violate our policies or engage in fraudulent activity.
-                        Upon termination, your right to access the Service will immediately cease. You may also
-                        terminate your account at any time by contacting support.</p>
-                </div>
-                <div class="legal-divider"></div>
-                <div class="legal-section">
-                    <h2><span class="section-num">8</span>Limitation of Liability</h2>
-                    <p>In no event shall Explyra, its founders, employees, or affiliates, be liable for any indirect,
-                        incidental, special, or consequential damages, including loss of profits, data, or goodwill,
-                        resulting from your use of or inability to use the Service.</p>
-                </div>
-                <div class="legal-divider"></div>
-                <div class="legal-section">
-                    <h2><span class="section-num">9</span>Changes to Terms</h2>
-                    <p>We reserve the right to modify these Terms at any time. Changes will be posted on this page with
-                        an updated date. Continued use of the platform after modifications constitutes acceptance of the
-                        revised terms.</p>
-                </div>
-                <div class="legal-divider"></div>
-                <div class="legal-section">
-                    <h2><span class="section-num">10</span>Contact</h2>
-                    <p>For questions about these Terms, please reach out:</p>
+                    <h2><span class="section-num">6</span>Contact</h2>
+                    <p>To request a refund or for any billing inquiries, please contact us directly:</p>
                     <div class="contact-box">
-                        <p>📧 Email: <a href="mailto:explyra@gmail.com">explyra@gmail.com</a><br>🏢 Explyra · Founded by
-                            Mitanshu Bhasin</p>
+                        <p>📧 Email: <a href="mailto:explyra@gmail.com">explyra@gmail.com</a><br>
+                            ⏱️ Response time: 2–3 business days<br>
+                            🏢 Explyra · Founded by Mitanshu Bhasin</p>
                     </div>
                 </div>
             </div>
