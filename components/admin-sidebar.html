@@ -47,6 +47,13 @@
             <span class="ml-3 font-medium text-sm">User Mgmt</span>
         </button>
 
+        <button onclick="switchTab('roles')" id="nav-roles"
+            class="nav-item hidden w-full flex items-center p-3 rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-enterprise"
+            data-tab="roles">
+            <i class="fa-solid fa-user-shield w-6 text-center group-hover:scale-110 transition"></i>
+            <span class="ml-3 font-medium text-sm">Role Mgmt</span>
+        </button>
+
         <button onclick="switchTab('projects')" id="nav-projects"
             class="nav-item hidden w-full flex items-center p-3 rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-enterprise"
             data-tab="projects">
@@ -115,6 +122,16 @@
                 <p class="text-[10px] text-green-400 uppercase font-bold tracking-wider" id="current-user-role">
                     ...</p>
             </div>
+        </div>
+
+        <div id="sidebar-plan-info"
+            class="w-full flex items-center justify-between px-3 py-2 text-slate-400 bg-slate-800/50 rounded-lg mb-2 border border-slate-700">
+            <div>
+                <p class="text-[9px] uppercase font-bold tracking-wider text-slate-500">Current Plan</p>
+                <p class="text-xs font-bold text-emerald-400 uppercase" id="sidebar-plan-name">STARTER</p>
+            </div>
+            <a href="pricing.html"
+                class="text-[10px] font-bold bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded transition shadow-sm">Upgrade</a>
         </div>
 
         <button onclick="openAccountCenter()"

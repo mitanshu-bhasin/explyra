@@ -129,11 +129,6 @@ let currentMode = 'company';
 let personalData = [];
 let personalUnsub = null;
 
-// Employee Tasks State
-window.empTasksData = [];
-window.empTasksUnsub = null;
-window.empTasksLoaded = false;
-
 window.toggleMode = (mode) => {
     currentMode = mode;
     console.log("Mode switch triggered. Target mode:", currentMode);
@@ -372,17 +367,16 @@ window.showToast = (message, type = 'info') => {
 };
 
 // Load company branding
-async function loadCompanyBranding(companyId) {
-    if (!companyId) return;
+async function loadCompanyBranding() {
     try {
-        const settingsRef = doc(db, "companies", companyId, "settings", "branding");
+        const settingsRef = doc(db, "settings", "global");
         const settingsSnap = await getDoc(settingsRef);
         if (settingsSnap.exists()) {
             const data = settingsSnap.data();
 
-            if (data.companyName) {
-                document.getElementById('login-company-name').textContent = data.companyName;
-                document.getElementById('header-company-name').innerHTML = data.companyName.replace(/(\S+)/, '$1<span class="text-green-600">Expense</span>');
+            if (data.name) {
+                document.getElementById('login-company-name').textContent = data.name;
+                document.getElementById('header-company-name').innerHTML = data.name.replace(/(\S+)/, '$1<span class="text-green-600">Expense</span>');
             }
 
             if (data.logo) {
@@ -397,29 +391,6 @@ async function loadCompanyBranding(companyId) {
                 headerImg.src = data.logo;
                 headerImg.classList.remove('hidden');
                 headerFallback.classList.add('hidden');
-            }
-        } else {
-            // Fallback to company doc
-            const cmpSnap = await getDoc(doc(db, "companies", companyId));
-            if (cmpSnap.exists()) {
-                const cmpData = cmpSnap.data();
-                if (cmpData.name) {
-                    document.getElementById('login-company-name').textContent = cmpData.name;
-                    document.getElementById('header-company-name').innerHTML = cmpData.name.replace(/(\S+)/, '$1<span class="text-green-600">Expense</span>');
-                }
-                if (cmpData.logo) {
-                    const loginImg = document.getElementById('login-logo-img');
-                    const loginFallback = document.getElementById('login-logo-fallback');
-                    loginImg.src = cmpData.logo;
-                    loginImg.classList.remove('hidden');
-                    loginFallback.classList.add('hidden');
-
-                    const headerImg = document.getElementById('header-logo-img');
-                    const headerFallback = document.getElementById('header-logo-fallback');
-                    headerImg.src = cmpData.logo;
-                    headerImg.classList.remove('hidden');
-                    headerFallback.classList.add('hidden');
-                }
             }
         }
     } catch (e) {
@@ -1375,7 +1346,7 @@ window.loadProjects = async () => {
     select.innerHTML = '<option value="" disabled selected>Loading projects...</option>';
 
     try {
-        const q = query(collection(db, "projects"), where("companyId", "==", userData.companyId), where("active", "==", true)); // Only active projects
+        const q = query(collection(db, "projects"), where("active", "==", true)); // Only active projects
         const snap = await getDocs(q);
 
         if (snap.empty) {
@@ -1709,7 +1680,6 @@ window.submitExpense = async () => {
             // Create new
             await addDoc(collection(db, "expenses"), {
                 ...expenseData,
-                companyId: userData.companyId,
                 createdAt: serverTimestamp(),
                 history: [{
                     action: 'SUBMITTED',
@@ -1921,8 +1891,8 @@ window.hideMobileChatArea = () => {
 
 async function fetchChatUsers() {
     try {
-        // Fetch all users from same company
-        const snap = await getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId)));
+        // Fetch all users
+        const snap = await getDocs(collection(db, "users"));
         const allUsers = snap.docs.map(d => ({ docId: d.id, ...d.data() })).filter(u => u.docId !== userData.docId);
 
         // Fetch chats for sorting and last message
@@ -1935,7 +1905,7 @@ async function fetchChatUsers() {
         });
 
         // Get Global Chat last message
-        const globalChatSnap = await getDocs(query(collection(db, "global_chat"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"), limit(1)));
+        const globalChatSnap = await getDocs(query(collection(db, "global_chat"), orderBy("createdAt", "desc"), limit(1)));
         const globalLast = globalChatSnap.empty ? "Company wide chat" : globalChatSnap.docs[0].data().text;
 
         // Sort users by activity
@@ -2043,7 +2013,7 @@ function runChatListener(collectionName, subCollectionId) {
         q = query(collection(db, "chats", subCollectionId, "messages"), orderBy("createdAt", "asc"), limit(100));
     } else {
         // Global Chat
-        q = query(collection(db, "global_chat"), where("companyId", "==", userData.companyId), orderBy("createdAt", "asc"), limit(100));
+        q = query(collection(db, "global_chat"), orderBy("createdAt", "asc"), limit(100));
     }
 
     activeChatUnsub = onSnapshot(q, (snapshot) => {
@@ -2127,7 +2097,6 @@ window.sendChatMessage = async (e) => {
         };
 
         if (currentChatContext === 'global') {
-            messageData.companyId = userData.companyId; // Scope to company
             await addDoc(collection(db, "global_chat"), messageData);
         } else {
             const combinedId = userData.docId < currentChatUser.docId ?
@@ -2146,7 +2115,6 @@ window.sendChatMessage = async (e) => {
                 chatMetaUpdate.users = [userData.docId, currentChatUser.docId];
             }
 
-            chatMetaUpdate.companyId = userData.companyId; // Scope to company
             // Update metadata first
             await setDoc(doc(db, "chats", combinedId), chatMetaUpdate, { merge: true });
             // Then add message
@@ -2177,7 +2145,7 @@ window.deleteChatMessage = async (msgId, subCollectionId) => {
 window.listenForCalls = () => {
     if (!userData || !userData.docId) return;
     if (incomingCallUnsub) { incomingCallUnsub(); incomingCallUnsub = null; }
-    const q = query(collection(db, "calls"), where("companyId", "==", userData.companyId), where("receiver", "==", userData.docId), where("status", "==", "calling"));
+    const q = query(collection(db, "calls"), where("receiver", "==", userData.docId), where("status", "==", "calling"));
     incomingCallUnsub = onSnapshot(q, (snapshot) => {
         snapshot.forEach(docSnap => {
             const data = docSnap.data();
@@ -2259,7 +2227,6 @@ window.initiateCall = async (type) => {
             callerPhotoUrl: userData.photoUrl || '',
             receiver: currentChatUser.docId,
             receiverName: currentChatUser.name || '',
-            companyId: userData.companyId, // Scope to company
             type: type,
             status: 'calling',
             createdAt: serverTimestamp()
@@ -2284,7 +2251,6 @@ window.initiateCall = async (type) => {
                 lastMessage: `📞 ${type === 'video' ? 'Video' : 'Voice'} Call`,
                 lastMessageAt: serverTimestamp(),
                 lastSender: userData.docId,
-                companyId: userData.companyId, // Scope to company
                 users: [userData.docId, currentChatUser.docId]
             }, { merge: true });
         } catch (ce) { console.error("Call log error", ce); }
@@ -2737,7 +2703,7 @@ onAuthStateChanged(auth, async (user) => {
                 if (typeof window.loadProjects === 'function') {
                     window.loadProjects();
                 }
-                if (typeof loadCompanyBranding === 'function') loadCompanyBranding(userData.companyId);
+                if (typeof loadCompanyBranding === 'function') loadCompanyBranding();
 
                 if (aiAssistant) aiAssistant.updateContext(userData);
 
@@ -2834,7 +2800,7 @@ onAuthStateChanged(auth, async (user) => {
 
                     // --- GLOBAL CHAT NOTIFICATIONS ---
                     let globalNotifInitial = true;
-                    onSnapshot(query(collection(db, "global_chat"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"), limit(1)), (snapshot) => {
+                    onSnapshot(query(collection(db, "global_chat"), orderBy("createdAt", "desc"), limit(1)), (snapshot) => {
                         if (globalNotifInitial) { globalNotifInitial = false; return; }
                         if (!snapshot.empty) {
                             const data = snapshot.docs[0].data();
@@ -2872,7 +2838,7 @@ onAuthStateChanged(auth, async (user) => {
         // Show Auth, Hide Dashboard
         document.getElementById('auth-screen').classList.remove('hidden');
         document.getElementById('dashboard-screen').classList.add('hidden');
-        if (typeof loadCompanyBranding === 'function') loadCompanyBranding(null);
+        if (typeof loadCompanyBranding === 'function') loadCompanyBranding();
     }
 });
 
@@ -2888,7 +2854,7 @@ window.fetchExpenses = () => {
     const list = document.getElementById('expenses-list');
     list.innerHTML = '<div class="text-center text-slate-400 mt-4"><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing...</div>';
 
-    const q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("userId", "==", userData.docId));
+    const q = query(collection(db, "expenses"), where("userId", "==", userData.docId));
 
     expensesUnsub = onSnapshot(q, (snapshot) => {
         // --- Notification Logic ---
@@ -2985,29 +2951,20 @@ window.fetchEmpTasks = () => {
     const list = document.getElementById('emp-tasks-list');
     list.innerHTML = '<div class="text-center text-slate-400 mt-4"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading tasks...</div>';
 
-    const q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId));
+    const q = query(collection(db, "tasks"), where("assignedTo", "==", userData.email));
 
     onSnapshot(q, (snapshot) => {
         let tasksData = [];
 
         if (snapshot.empty) {
             window.empTasksData = tasksData;
-            list.innerHTML = getEmptyStateTasks("No tasks found.");
+            list.innerHTML = getEmptyStateTasks("No tasks assigned to you.");
             return;
         }
 
         snapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.assignedTo === userData.email || data.assignedBy === userData.email) {
-                tasksData.push({ id: doc.id, ...data });
-            }
+            tasksData.push({ id: doc.id, ...doc.data() });
         });
-
-        if (tasksData.length === 0) {
-            window.empTasksData = tasksData;
-            list.innerHTML = getEmptyStateTasks("No tasks found.");
-            return;
-        }
 
         tasksData.sort((a, b) => {
             const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
@@ -3101,7 +3058,7 @@ async function loadEmpTaskUsers() {
 
     select.innerHTML = '<option value="">Loading...</option>';
     try {
-        const usersSnap = await getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId), where("status", "==", "ACTIVE")));
+        const usersSnap = await getDocs(query(collection(db, "users"), where("status", "==", "ACTIVE")));
         let options = '<option value="">Select Employee...</option>';
         usersSnap.forEach(d => {
             const u = d.data();
@@ -3142,7 +3099,6 @@ window.handleEmpCreateTask = async (e) => {
             description: desc,
             assignedTo: assignee,
             assignedBy: userData.email,
-            companyId: userData.companyId,
             status: 'PENDING',
             dueDate: dueDate,
             createdAt: serverTimestamp()

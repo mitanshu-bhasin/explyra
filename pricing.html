@@ -1262,7 +1262,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> 1000 AI requests / month</li>
                     <li class="p-feature"><span class="pf-check">✓</span> 10 GB storage</li>
                 </ul>
-                <a href="admin.html" class="btn-p btn-p-sec">Start Free Trial</a>
+                <button onclick="buyPlan('Starter')" class="btn-p btn-p-sec">Buy Plan</button>
             </div>
 
             <!-- GROWTH (MOST POPULAR) -->
@@ -1286,7 +1286,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> 5000 AI requests / month</li>
                     <li class="p-feature"><span class="pf-check">✓</span> 50 GB storage</li>
                 </ul>
-                <a href="admin.html" class="btn-p btn-p-primary">Start Free Trial</a>
+                <button onclick="buyPlan('Growth')" class="btn-p btn-p-primary">Buy Plan</button>
             </div>
 
             <!-- SCALE -->
@@ -1309,7 +1309,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> 20k AI requests / month</li>
                     <li class="p-feature"><span class="pf-check">✓</span> 200 GB storage</li>
                 </ul>
-                <a href="admin.html" class="btn-p btn-p-sec">Start Free Trial</a>
+                <button onclick="buyPlan('Scale')" class="btn-p btn-p-sec">Buy Plan</button>
             </div>
 
             <!-- ENTERPRISE -->
@@ -1330,7 +1330,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Advanced AI automation</li>
                     <li class="p-feature"><span class="pf-check">✓</span> Custom storage plans</li>
                 </ul>
-                <a href="mailto:mfskufgu@gmail.com" class="btn-p btn-p-sec">Contact Sales</a>
+                <button onclick="buyPlan('Enterprise')" class="btn-p btn-p-sec">Contact Sales</button>
             </div>
         </div>
     </section>
@@ -1527,6 +1527,10 @@
             <a href="team.html">Team</a>
             <a href="pricing.html">Pricing</a>
             <a href="mailto:mfskufgu@gmail.com">Contact</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms</a>
+            <a href="license.html">License</a>
+            <a href="refund.html">Refund Policy</a>
         </div>
     </footer>
 
@@ -1596,6 +1600,13 @@
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
         if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
         mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        /* WHATSAPP INTEGRATION */
+        function buyPlan(planName) {
+            const phoneNumber = "918076108584";
+            const message = encodeURIComponent(`Hello Explyra Team! I am interested in purchasing the ${planName} plan for my company. Please provide further details on the upgrade process.`);
+            window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+        }
     </script>
 </body>
 

@@ -2,33 +2,102 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Default rule: Allow read for authenticated users
-    match /{document=**} {
-      allow read: if request.auth != null;
-    }
-    
-    // Protect against bill-inflating by restricting size/structure on massive collections like expenses
-    match /expenses/{expenseId} {
-      allow read: if request.auth != null;
-      allow create, update: if request.auth != null 
-                            && request.resource.data.keys().hasAny(['totalAmount', 'createdAt'])
-                            && request.resource.data.totalAmount >= 0; // basic validation
-      allow delete: if request.auth != null;
+
+    // ─── Helper Functions ──────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
     }
 
+    // ─── Users Collection ──────────────────────────────────────────────────────
     match /users/{userId} {
-      allow read, write: if request.auth != null;
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
     }
 
-    // Personal Vault: Strict User Isolation
+    // ─── Companies Collection ──────────────────────────────────────────────────
+    match /companies/{companyId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // ─── Company Members Collection ────────────────────────────────────────────
+    match /companyMembers/{memberId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ─── Expenses Collection ───────────────────────────────────────────────────
+    match /expenses/{expenseId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+                    && request.resource.data.keys().hasAny(['totalAmount', 'createdAt'])
+                    && request.resource.data.totalAmount >= 0;
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    // ─── Projects Collection ───────────────────────────────────────────────────
+    match /projects/{projectId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ─── Tasks Collection ──────────────────────────────────────────────────────
+    match /tasks/{taskId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ─── Personal Vault: Strict User Isolation ─────────────────────────────────
     match /personal_vault/{itemId} {
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.uid == request.auth.uid;
     }
 
-    match /{collection}/{docId} {
-      allow write: if request.auth != null && collection != 'expenses' && collection != 'users' && collection != 'personal_vault';
+    // ─── Settings (Global/Branding) ────────────────────────────────────────────
+    match /settings/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // ─── Chats & Global Chat ───────────────────────────────────────────────────
+    match /chats/{chatId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+      
+      match /messages/{msgId} {
+         allow read, write: if isSignedIn();
+      }
+    }
+
+    match /global_chat/{messageId} {
+      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
+      allow create: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
+      allow update: if isSignedIn() && isCompanyAdmin(resource.data.companyId);
+    }
+
+    // ─── Calling Signaling ─────────────────────────────────────────────────────
+    match /calls/{callId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+      
+      match /{subCollection=**} {
+         allow read, write: if isSignedIn();
+      }
+    }
+
+    // ─── Workflow & Audit Collections ──────────────────────────────────────────
+    match /audit_logs/{logId} {
+      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
+      allow write: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
+    }
+
+    // ─── Fallback: Deny everything else ───────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

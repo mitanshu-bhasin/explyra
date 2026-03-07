@@ -1,0 +1,291 @@
+// emp-auth.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    authDomain: "explyras.firebaseapp.com",
+    projectId: "explyras",
+    storageBucket: "explyras.firebasestorage.app",
+    messagingSenderId: "411853553644",
+    appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Globals attached to window for other modules
+window.auth = auth;
+window.db = db;
+window.storage = storage;
+
+window.companyId = null;
+window.currentUser = null;
+window.userData = null;
+
+// The requested Employee Architecture logic
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const q = query(collection(db, "users"), where("email", "==", user.email));
+            const snap = await getDocs(q);
+
+            if (!snap.empty) {
+                window.userData = snap.docs[0].data();
+                window.userData.docId = snap.docs[0].id; // store docId for updates
+                window.companyId = window.userData.companyId;
+                window.currentUser = user;
+
+                try {
+                    const compSnap = await getDoc(doc(db, "companies", window.companyId));
+                    if (compSnap.exists() && compSnap.data().status === "suspended") {
+                        window.showToast("Your company account is suspended. Please contact Explyra Support.", "error");
+                        auth.signOut();
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Error checking company status:", e);
+                }
+
+                showEmployeeDashboard();
+            } else {
+                window.showToast("User record not found. Contact Admin.", "error");
+                auth.signOut();
+            }
+        } catch (error) {
+            console.error("Auth state error:", error);
+        }
+    } else {
+        // User is signed out, show auth screen
+        const authSc = document.getElementById('auth-screen');
+        const dashSc = document.getElementById('dashboard-screen');
+        if (authSc && dashSc) {
+            authSc.classList.remove('hidden');
+            dashSc.classList.add('hidden');
+        }
+    }
+});
+
+function showEmployeeDashboard() {
+    const authSc = document.getElementById('auth-screen');
+    const dashSc = document.getElementById('dashboard-screen');
+    if (authSc && dashSc) {
+        authSc.classList.add('hidden');
+        dashSc.classList.remove('hidden');
+    }
+
+    // Update Profile UI
+    const nameD = document.getElementById('user-name-display');
+    if (nameD) nameD.textContent = window.userData.name || '';
+
+    const roleD = document.getElementById('user-role-display');
+    if (roleD) roleD.textContent = window.userData.role || 'Employee';
+
+    const avContainer = document.getElementById('header-profile-avatar');
+    if (avContainer) {
+        if (window.userData.photoUrl) {
+            avContainer.innerHTML = `<img src="${window.userData.photoUrl}" class="w-full h-full object-cover">`;
+        } else {
+            avContainer.innerHTML = `<i class="fa-solid fa-user-gear text-xs"></i>`;
+        }
+    }
+
+    // Load Features
+    loadCompanyBranding();
+
+    if (window.toggleMode) {
+        window.toggleMode('company'); // will call fetchExpenses
+    } else if (window.fetchExpenses) {
+        window.fetchExpenses();
+    }
+
+    // Role handling for managers
+    if (window.userData.role === "MANAGER" || window.userData.role === "FINANCE_MANAGER") {
+        const btnTasks = document.getElementById('btn-view-tasks');
+        if (btnTasks) btnTasks.classList.remove('hidden');
+        if (window.initManagerTasksView) window.initManagerTasksView();
+    } else {
+        const btnTasks = document.getElementById('btn-view-tasks');
+        if (btnTasks) btnTasks.classList.add('hidden'); // Hide Tasks tab for normal employees
+    }
+}
+
+window.loadCompanyBranding = async () => {
+    if (!window.companyId) return;
+    try {
+        const db = window.db;
+        // 1. Try settings/branding first
+        const brandingRef = doc(db, "companies", window.companyId, "settings", "branding");
+        const brandingSnap = await getDoc(brandingRef);
+
+        if (brandingSnap.exists()) {
+            const data = brandingSnap.data();
+            applyBranding(data);
+        } else {
+            // 2. Fallback to company doc
+            const cmpRef = doc(db, "companies", window.companyId);
+            const cmpSnap = await getDoc(cmpRef);
+            if (cmpSnap.exists()) {
+                applyBranding(cmpSnap.data());
+            }
+        }
+    } catch (e) {
+        console.error("Error loading branding:", e);
+    }
+};
+
+function applyBranding(data) {
+    if (!data) return;
+
+    const loginName = document.getElementById("login-company-name");
+    if (loginName && data.companyName) loginName.innerText = data.companyName;
+    else if (loginName && data.name) loginName.innerText = data.name;
+
+    const headerName = document.getElementById("header-company-name");
+    if (headerName) {
+        const name = data.companyName || data.name || "Explyra";
+        headerName.innerHTML = name.replace(/(\S+)/, '$1 <span class="text-green-600">Expense</span>');
+    }
+
+    const logoUrl = data.logo;
+    if (logoUrl) {
+        const loginImg = document.getElementById("login-logo-img");
+        const loginFallback = document.getElementById("login-logo-fallback");
+        if (loginImg) {
+            loginImg.src = logoUrl;
+            loginImg.classList.remove("hidden");
+            if (loginFallback) loginFallback.classList.add("hidden");
+        }
+
+        const headerImg = document.getElementById("header-logo-img");
+        const headerFallback = document.getElementById("header-logo-fallback");
+        if (headerImg) {
+            headerImg.src = logoUrl;
+            headerImg.classList.remove("hidden");
+            if (headerFallback) headerFallback.classList.add("hidden");
+        }
+    }
+}
+
+
+// ---------------- Login / Signup Flows ---------------- 
+document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-btn');
+
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        window.showToast('Login successful!', 'success');
+    } catch (err) {
+        window.showToast("Login Failed: " + err.message, "error");
+        btn.innerHTML = 'Sign In';
+    }
+});
+
+window.handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        const q = query(collection(db, "users"), where("email", "==", user.email));
+        let snap = await getDocs(q);
+
+        if (snap.empty) {
+            try {
+                const allUsersSnap = await getDocs(collection(db, "users"));
+                const foundDoc = allUsersSnap.docs.find(doc => doc.data().email?.trim().toLowerCase() === user.email.trim().toLowerCase());
+                if (foundDoc) {
+                    snap = { empty: false, docs: [foundDoc] };
+                    await updateDoc(doc(db, "users", foundDoc.id), { email: user.email });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        if (snap.empty) {
+            await signOut(auth);
+            window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
+            return;
+        }
+
+        const docId = snap.docs[0].id;
+        await updateDoc(doc(db, "users", docId), {
+            uid: user.uid,
+            updatedAt: serverTimestamp(),
+            status: 'ACTIVE',
+            authProvider: 'google'
+        });
+
+        window.showToast("Login successful!", "success");
+    } catch (error) {
+        window.showToast("Google Sign-In Failed: " + error.message, "error");
+    }
+};
+
+window.handleAccountActivation = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('signup-email').value;
+    const pass = document.getElementById('signup-password').value;
+    const btn = document.getElementById('signup-btn');
+
+    if (!email || !pass) return window.showToast("Please fill in all fields", "error");
+    if (pass.length < 6) return window.showToast("Password must be at least 6 characters", "warning");
+
+    const originalBtnContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Activating...';
+    btn.disabled = true;
+
+    try {
+        const q = query(collection(db, "users"), where("email", "==", email));
+        const snap = await getDocs(q);
+
+        if (snap.empty) throw new Error("Email not found in employee database.");
+
+        const userDoc = snap.docs[0];
+        if (userDoc.data().uid) throw new Error("Account already activated. Please login.");
+
+        const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+
+        await updateDoc(doc(db, "users", userDoc.id), {
+            uid: userCred.user.uid,
+            updatedAt: serverTimestamp(),
+            status: 'ACTIVE'
+        });
+
+        window.showToast("Account activated successfully!", "success");
+    } catch (err) {
+        window.showToast(err.message, "error");
+        btn.innerHTML = originalBtnContent;
+        btn.disabled = false;
+    }
+};
+
+window.forgotPassword = async () => {
+    try {
+        const email = await window.showInputPromise("Reset Password", "Enter your corporate email:", "user@brandname.com", "email");
+        if (email) {
+            await sendPasswordResetEmail(auth, email);
+            window.showToast('Password reset email sent!', 'success');
+        }
+    } catch (e) {
+        window.showToast(e.message, "error");
+    }
+};
+
+window.handleLogout = async () => {
+    if (await window.showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
+        signOut(auth);
+        window.showToast('Logged out successfully', 'info');
+        window.location.reload();
+    }
+};

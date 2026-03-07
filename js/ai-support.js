@@ -1,5 +1,5 @@
 /**
- * IPEC AI Support Module using Groq API
+ * Explyra AI Support Module using Groq API
  * Provides a chat interface for users to get support and insights via Llama 3 models.
  */
 
@@ -220,7 +220,7 @@ export class AISupport {
             <div class="ai-header">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-sparkles"></i>
-                    <span class="font-bold">IPEC AI Assistant</span>
+                    <span class="font-bold">Explyra AI Assistant</span>
                 </div>
                 <button class="text-white hover:text-gray-200" id="ai-close-btn">
                     <i class="fa-solid fa-times"></i>
@@ -228,8 +228,9 @@ export class AISupport {
             </div>
             <div class="ai-messages" id="ai-messages">
                 <div class="ai-message ai">
-                    Hello <strong>${this.userContext.name || this.userContext.displayName || 'User'}</strong>! I'm your IPEC AI Assistant powered by Mitanshu. 
-                    I can help you with expense policies, company info, navigating the portal, or analyzing your data.
+                    Hello <strong>${this.userContext.name || this.userContext.displayName || 'User'}</strong>! I'm your Explyra AI Assistant. 
+                    I'm developed and trained by <strong>Mitanshu Bhasin</strong> and <strong>Raj Kalra</strong>.
+                    I can help you with expense policies, company info, health tracking, navigating the suite, or analyzing your data.
                 </div>
             </div>
             <div class="typing-indicator" id="ai-typing">
@@ -238,8 +239,8 @@ export class AISupport {
                 <div class="typing-dot"></div>
             </div>
             <div class="p-2 flex gap-2 overflow-x-auto bg-gray-50 border-t border-gray-100">
-                <button class="text-xs bg-white border border-green-200 text-green-600 px-3 py-1 rounded-full hover:bg-green-50 whitespace-nowrap transition" onclick="window.triggerAIAction('policy')">Expense Policy?</button>
-                <button class="text-xs bg-white border border-green-200 text-green-600 px-3 py-1 rounded-full hover:bg-green-50 whitespace-nowrap transition" onclick="window.triggerAIAction('about')">About IPEC?</button>
+                <button class="text-xs bg-white border border-blue-200 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 whitespace-nowrap transition" onclick="window.triggerAIAction('policy')">Expense Policy?</button>
+                <button class="text-xs bg-white border border-blue-200 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 whitespace-nowrap transition" onclick="window.triggerAIAction('about')">About Explyra?</button>
                 <button class="text-xs bg-white border border-green-200 text-green-600 px-3 py-1 rounded-full hover:bg-green-50 whitespace-nowrap transition" onclick="window.triggerAIAction('analyze')">Analyze Spending</button>
             </div>
             <div class="ai-input-area">
@@ -276,8 +277,8 @@ export class AISupport {
 
         // Global trigger handler
         window.triggerAIAction = (action) => {
-            if (action === 'policy') this.processQuery("What is the expense policy for IPEC?");
-            if (action === 'about') this.processQuery("Tell me about IPEC and its founders.");
+            if (action === 'policy') this.processQuery("What is the expense policy for Explyra?");
+            if (action === 'about') this.processQuery("Tell me about Explyra and its founders.");
             if (action === 'analyze') this.processQuery("Analyze my current dashboard data and give me insights.");
         };
     }
@@ -359,18 +360,27 @@ export class AISupport {
 
         try {
             const systemPrompt = `
-                Company: IPEC Consulting (International Process Excellence Council)
-                FOUNDER: Raj Kalra
-                COO: Sangeet Malhotra.
-                Mission: Educational excellence, CSR, and Process Excellence.
+                Company: Explyra (SaaS Suite — One Platform. Everything.)
+                Founders: Mitanshu Bhasin and Raj Kalra
+                Mission: Providing a complete digital suite for teams: Expense intelligence, Health tracking, AI-powered Learning, Developer tools, and P2P Collaboration.
+                
+                Product Details (Explyra Suite):
+                1. Explyra Expense: Enterprise-grade expense management with AI automation and multi-level approvals.
+                2. Explyra Health: Personal AI health companion with weather-aware recommendations for workouts, sleep, and mental wellness.
+                3. Explyra Learning: Expert-curated courses on Agentic AI, Prompt Engineering, and SEO.
+                4. Explyra Developers: Utility toolkit (minifiers, generators, IDE, link shortener).
+                5. Explyra Utility: AI chatbot + P2P suite (file transfer, video calls, remote access).
+                6. Support Centre: 24/7 documentation and assistance.
+
                 Current User Context:
                 - Name: ${this.userContext.name || 'Visitor'}
                 - Role: ${this.userContext.role || 'Guest'}
                 - Email: ${this.userContext.email || 'N/A'}
                 - Department: ${this.userContext.department || 'General'}
                 
-                You are developed and trained By Mitanshu Bhasin.
-                
+                You are developed and trained by Mitanshu Bhasin and Raj Kalra. 
+                (Note: Sangeet Malhotra is no longer associated with the leadership).
+
                 You have access to the user's dashboard data:
                 - Admin Dashboard Stats: ${JSON.stringify(this.userContext.dashboardData?.stats || 'No admin stats yet')}
                 - Admin Trend Info: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 'No trend data yet')}
@@ -379,7 +389,7 @@ export class AISupport {
                 
                 Dashboard Context Rule: If data is "No ... yet", explain that data is still loading or they need to visit the dashboard tab first.
                 
-                Be helpful, professional, and concise. Use **bold** for key terms.
+                Be helpful, professional, and concise. Use **bold** for key terms. Respond in the language user speaks to you (English, Hindi, or Hinglish).
 
                 
                 **EXPENSE CREATION CAPABILITY**:
