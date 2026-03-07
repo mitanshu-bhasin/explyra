@@ -519,3 +519,28 @@ window.viewReportHistory = (dataId) => {
     }
 };
 
+
+window.createExpenseFromAI = async (data) => {
+    console.log(\ Creating expense from AI:\, data);
+    window.openCreateModal(\EXPENSE\);
+    await new Promise(r => setTimeout(r, 200));
+
+    const projectSelect = document.getElementById(\project-code\);
+    if (projectSelect && data.projectCode) {
+        const options = Array.from(projectSelect.options);
+        const match = options.find(o => o.value.toLowerCase() === data.projectCode.toLowerCase() || o.text.toLowerCase().includes(data.projectCode.toLowerCase()));
+        if (match) projectSelect.value = match.value;
+        else window.showToast(\Project Code not found, please select manually.\, \warning\);
+    }
+
+    const firstItem = document.querySelector(\.line-item\);
+    if (firstItem) {
+        firstItem.querySelector(\.item-category\).value = data.category || \Other\;
+        firstItem.querySelector(\.item-amount\).value = data.amount || 0;
+        firstItem.querySelector(\.item-desc\).value = data.description || \\;
+        firstItem.querySelector(\.item-date\).value = new Date().toISOString().split(\T\)[0];
+    }
+
+    if (window.calculateTotal) window.calculateTotal();
+    window.showToast(\AI prepared your expense claim.\, \info\);
+};
