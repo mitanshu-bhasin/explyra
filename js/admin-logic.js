@@ -501,8 +501,14 @@ onAuthStateChanged(auth, async (user) => {
                 showDashboard();
                 updatePendingCount();
             } else {
-                showToast(`User record [${user.email}] not found in database.`, 'error');
-                await signOut(auth);
+                // Don't sign out Explyra internal admins — they have no entry in `users`
+                if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                    console.log('[Auth] Explyra admin detected, skipping admin portal auth.');
+                    showLogin(); // just show the login screen, don't kill session
+                } else {
+                    showToast(`User record [${user.email}] not found in database.`, 'error');
+                    await signOut(auth);
+                }
             }
         } catch (error) {
             console.error("Auth Error:", error);
@@ -700,6 +706,10 @@ window.handleGoogleLogin = async () => {
         }
 
         if (snap.empty) {
+            if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                console.log('[Auth] Explyra admin Google login — skipping admin portal.');
+                return;
+            }
             await signOut(auth);
             showToast(`Access Denied: Email [${user.email}] not registered in system.`, "error");
             return;

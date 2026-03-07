@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "expense-manager-ec149"
-  }
+    "default": "explyras",
+    "explyra": "explyras"
+  },
+  "targets": {},
+  "etags": {}
 }

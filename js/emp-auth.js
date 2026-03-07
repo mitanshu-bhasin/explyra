@@ -53,8 +53,13 @@ onAuthStateChanged(auth, async (user) => {
 
                 showEmployeeDashboard();
             } else {
-                window.showToast("User record not found. Contact Admin.", "error");
-                auth.signOut();
+                // Don't sign out Explyra internal admins — they have no entry in `users`
+                if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                    console.log('[Auth] Explyra admin detected on emp portal, skipping.');
+                } else {
+                    window.showToast("User record not found. Contact Admin.", "error");
+                    auth.signOut();
+                }
             }
         } catch (error) {
             console.error("Auth state error:", error);
@@ -99,9 +104,9 @@ function showEmployeeDashboard() {
 
     if (window.toggleMode) {
         window.toggleMode('company'); // will call fetchExpenses
-    } else if (window.fetchExpenses) {
-        window.fetchExpenses();
-    }
+    } else if (window.fetchEmpTasks) window.fetchEmpTasks();
+    if (window.initNotifications) window.initNotifications();
+    console.log("Employee Dashboard Loaded for:", window.userData.name);
 
     // Role handling for managers
     if (window.userData.role === "MANAGER" || window.userData.role === "FINANCE_MANAGER") {

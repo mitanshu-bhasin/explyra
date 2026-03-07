@@ -1,7 +1,6 @@
 {
   "hosting": {
-    "site": "explyra",
-    "public": "public",
+    "public": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
