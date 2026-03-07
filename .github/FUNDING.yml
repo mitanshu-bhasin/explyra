@@ -1,0 +1,5 @@
+# GitHub Funding Configuration
+
+# Choose which platforms you want to display for donations
+github: [mitanshu-bhasin] # Aapka GitHub username
+custom: ["https://ipecconsulting.netlify.app/"] # Direct donation link
