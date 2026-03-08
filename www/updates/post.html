@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update — Explyra</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/style.css">
+
+    <!-- SEO -->
+    <meta name="description" content="Read the latest update from Explyra.">
+</head>
+
+<body data-theme="light">
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor"></path>
+                </svg>
+            </div>
+            <a href="../index.html" class="nav-logo-text">Explyra</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../pricing.html">Pricing</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="index.html" style="color: var(--blue);">Updates</a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="index.html" class="btn-read" style="font-size: .82rem;">← Back to Updates</a>
+        </div>
+    </nav>
+
+    <!-- Post Content -->
+    <main>
+        <article class="post-container">
+            <div id="post-loader" class="text-center" style="padding: 80px;">
+                <p style="color: var(--ink3);">Loading update...</p>
+            </div>
+
+            <div id="post-content-container" style="display: none;">
+                <img id="post-thumbnail" src="" alt="" class="post-thumb">
+                <div class="post-header">
+                    <div class="card-meta">
+                        <span id="post-category" class="badge"></span>
+                        <span id="post-date" class="card-date"></span>
+                    </div>
+                    <h1 id="post-title"
+                        style="font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; color: var(--ink);">
+                    </h1>
+                </div>
+                <div id="post-body" class="post-content">
+                    <!-- Article content will be injected here -->
+                </div>
+
+                <div class="share-row">
+                    <button class="share-btn twitter" onclick="shareSocial('twitter')">Twitter</button>
+                    <button class="share-btn whatsapp" onclick="shareSocial('whatsapp')">WhatsApp</button>
+                    <button class="share-btn linkedin" onclick="shareSocial('linkedin')">LinkedIn</button>
+                    <button class="share-btn copy" onclick="copyLink()">Copy Link</button>
+                    <button id="web-share-btn" class="share-btn" style="display: none; background: var(--blue);"
+                        onclick="webShare()">Share</button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer style="padding: 60px 5vw; border-top: 1px solid var(--bdr); text-align: center; background: var(--bg2);">
+        <div class="nav-logo" style="justify-content: center; margin-bottom: 2rem;">
+            <span class="nav-logo-text">Explyra</span>
+        </div>
+        <p style="color: var(--ink4); font-size: 0.9rem;">&copy; 2026 Explyra. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="scripts/post.js"></script>
+</body>
+
+</html>

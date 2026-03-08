@@ -4,10 +4,92 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Explyra Suite — One Platform. Everything.</title>
-    <link
+
+    <!-- Primary Meta Tags -->
+    <title>Explyra — Modern SaaS Developer Platform & Utility Suite</title>
+    <meta name="title" content="Explyra — Modern SaaS Developer Platform & Utility Suite" />
+    <meta name="description"
+        content="Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools." />
+    <meta name="keywords"
+        content="Explyra, SaaS platform, developer tools, team productivity, expense tracker, utility suite, software application" />
+    <meta name="author" content="Mitanshu Bhasin" />
+    <link rel="canonical" href="https://explyra.pages.dev/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://explyra.pages.dev/" />
+    <meta property="og:title" content="Explyra — Modern SaaS Developer Platform & Utility Suite" />
+    <meta property="og:description"
+        content="Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools." />
+    <meta property="og:image" content="https://explyra.pages.dev/assets/images/explyra_screenshot_1.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://explyra.pages.dev/" />
+    <meta property="twitter:title" content="Explyra — Modern SaaS Developer Platform & Utility Suite" />
+    <meta property="twitter:description"
+        content="Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools." />
+    <meta property="twitter:image" content="https://explyra.pages.dev/assets/images/explyra_screenshot_1.png" />
+
+    <!-- Icons & App Config -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
+    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1546C0" />
+    <meta name="msapplication-config" content="browserconfig.xml" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://explyra.pages.dev/#organization",
+          "name": "Explyra",
+          "url": "https://explyra.pages.dev/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://explyra.pages.dev/assets/images/explyra_logo.png"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://explyra.pages.dev/#website",
+          "url": "https://explyra.pages.dev/",
+          "name": "Explyra",
+          "publisher": {
+            "@id": "https://explyra.pages.dev/#organization"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Explyra Suite",
+          "operatingSystem": "Any",
+          "applicationCategory": "BusinessApplication",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Preload Fonts & Base Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+        media="print" onload="this.media='all'" />
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
+    </noscript>
     <style>
         /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -943,8 +1025,6 @@
             letter-spacing: .06em;
             margin-top: 3px
         }
-
-        .exp-rows {}
 
         .er {
             display: flex;
@@ -2242,795 +2322,853 @@
 
 <body>
 
-    <!-- NAV -->
-    <nav>
-        <a href="#" class="nav-logo">
-            <div class="nav-logo-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                </svg>
+    <!-- HEADER & NAV -->
+    <header>
+        <nav aria-label="Main Navigation">
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <span class="nav-logo-text">Explyra</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#expense">Expense</a></li>
+                <li><a href="health-manager/index.html">Health</a></li>
+                <li><a href="explyra-learning/index.html">Learning</a></li>
+                <li><a href="#developers">Developers</a></li>
+                <li><a href="Utilites/index.html">Utility</a></li>
+                <li><a href="#support">Support</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="theme-pill" id="themePill" role="button" tabindex="0" aria-label="Toggle theme">
+                    <span class="theme-pill-label" id="themeLabel">Light</span>
+                    <div class="theme-pill-toggle"></div>
+                </div>
+                <a href="#contact" class="btn-try">Get Early Access</a>
+                <button class="menu-btn" id="menuBtn" aria-label="Open mobile menu">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
             </div>
-            <span class="nav-logo-text">Explyra</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="#expense">Expense</a></li>
-            <li><a href="health-manager/index.html">Health</a></li>
-            <li><a href="explyra-learning/index.html">Learning</a></li>
-            <li><a href="#developers">Developers</a></li>
-            <li><a href="Utilites/index.html">Utility</a></li>
-            <li><a href="#support">Support</a></li>
-            <li><a href="team.html">Team</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-        </ul>
-        <div class="nav-right">
-            <div class="theme-pill" id="themePill">
-                <span class="theme-pill-label" id="themeLabel">Light</span>
-                <div class="theme-pill-toggle"></div>
-            </div>
-            <a href="#contact" class="btn-try">Get Early Access</a>
-            <button class="menu-btn" id="menuBtn">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-header">
-            <span class="nav-logo-text">Explyra</span>
-            <button class="close-menu-btn" id="closeMenuBtn">&times;</button>
+        <!-- MOBILE MENU -->
+        <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile Navigation">
+            <div class="mobile-menu-header">
+                <span class="nav-logo-text">Explyra</span>
+                <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close mobile menu">&times;</button>
+            </div>
+            <ul class="mobile-nav-links">
+                <li><a href="#expense">Expense</a></li>
+                <li><a href="health-manager/index.html">Health</a></li>
+                <li><a href="explyra-learning/index.html">Learning</a></li>
+                <li><a href="#developers">Developers</a></li>
+                <li><a href="Utilites/index.html">Utility</a></li>
+                <li><a href="#support">Support</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
+            </ul>
         </div>
-        <ul class="mobile-nav-links">
-            <li><a href="#expense">Expense</a></li>
-            <li><a href="health-manager/index.html">Health</a></li>
-            <li><a href="explyra-learning/index.html">Learning</a></li>
-            <li><a href="#developers">Developers</a></li>
-            <li><a href="Utilites/index.html">Utility</a></li>
-            <li><a href="#support">Support</a></li>
-            <li><a href="team.html">Team</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
-        </ul>
-    </div>
-    <div class="menu-overlay" id="menuOverlay"></div>
+        <div class="menu-overlay" id="menuOverlay"></div>
+    </header>
 
-    <!-- ══ HERO ══ -->
-    <section class="hero">
-        <div class="hero-mesh"></div>
-        <div class="hero-grid"></div>
-        <div class="hero-inner">
-            <div class="hero-badge"><span class="badge-pulse"></span>Introducing the Explyra Suite</div>
-            <h1><em>One platform.</em><br><span class="grad">Everything</span><br>your team needs.</h1>
-            <p class="hero-desc">Explyra is not just an app — it's a complete digital suite. Expense intelligence,
-                health tracking, AI-powered learning, developer tools, and seamless P2P collaboration. All under one
-                roof, built by one visionary.</p>
-            <div class="hero-actions">
-                <a href="#overview" class="btn-hero">Explore the Suite <span>↓</span></a>
-                <a href="pricing.html" class="btn-hero-ghost">View Pricing</a>
-            </div>
-            <div class="suite-pills">
-                <div class="suite-pill sp-blue">💼 Explyra Expense</div>
-                <div class="suite-pill sp-teal">🏃 Explyra Health</div>
-                <div class="suite-pill sp-amber">📚 Explyra Learning</div>
-                <div class="suite-pill sp-purp">⚡ Explyra Developers</div>
-                <div class="suite-pill sp-rose">🔗 Explyra Utility</div>
-                <div class="suite-pill sp-slate">🛡️ Support Centre</div>
-            </div>
-        </div>
-    </section>
+    <!-- ══ MAIN CONTENT ══ -->
+    <main>
 
-    <!-- ══ SUITE OVERVIEW ══ -->
-    <section class="overview" id="overview">
-        <div class="overview-inner">
-            <div class="ov-header reveal">
-                <div class="eyebrow">The Explyra Suite</div>
-                <h2 class="sec-h">Six products. <em>One vision.</em></h2>
-                <p class="sec-p">Every tool your company and team needs — built with the same standard of intelligence,
-                    design, and reliability.</p>
-            </div>
-            <div class="ov-grid reveal d1">
-                <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
-                    <div class="ov-icon">💼</div>
-                    <div class="ov-badge">Expense</div>
-                    <div class="ov-title">Explyra Expense</div>
-                    <p class="ov-desc">End-to-end expense management with AI automation, multi-level approvals, and
-                        real-time reimbursement tracking for growing companies.</p>
-                    <a href="#expense" class="ov-link">Explore <span>→</span></a>
+        <!-- ══ HERO ══ -->
+        <section class="hero" aria-label="Hero">
+            <div class="hero-mesh"></div>
+            <div class="hero-grid"></div>
+            <div class="hero-inner">
+                <div class="hero-badge"><span class="badge-pulse"></span>Introducing the Explyra Suite</div>
+                <h1><em>One platform.</em><br><span class="grad">Everything</span><br>your team needs.</h1>
+                <p class="hero-desc">Explyra is not just an app — it's a complete digital suite. Expense intelligence,
+                    health tracking, AI-powered learning, developer tools, and seamless P2P collaboration. All under one
+                    roof, built by one visionary.</p>
+                <div class="hero-actions">
+                    <a href="#overview" class="btn-hero">Explore the Suite <span>↓</span></a>
+                    <a href="pricing.html" class="btn-hero-ghost">View Pricing</a>
                 </div>
-                <div class="ov-card" style="--card-clr:var(--teal);--card-g:var(--teal-g);--card-b:var(--teal-b)">
-                    <div class="ov-icon">🏃</div>
-                    <div class="ov-badge">Health</div>
-                    <div class="ov-title">Explyra Health</div>
-                    <p class="ov-desc">Your personal AI health companion. Track workouts, sleep, nutrition, and mental
-                        wellness — with live weather-aware AI recommendations.</p>
-                    <a href="health-manager/index.html" class="ov-link">Launch App <span>→</span></a>
-                </div>
-                <div class="ov-card" style="--card-clr:var(--amber);--card-g:var(--amb-g);--card-b:var(--amb-b)">
-                    <div class="ov-icon">📚</div>
-                    <div class="ov-badge">Learning</div>
-                    <div class="ov-title">Explyra Learning</div>
-                    <p class="ov-desc">Expert-curated courses on Agentic AI, Prompt Engineering, and SEO — built for the
-                        next generation of digital professionals.</p>
-                    <a href="explyra-learning/index.html" class="ov-link">Launch App <span>→</span></a>
-                </div>
-                <div class="ov-card" style="--card-clr:var(--purp);--card-g:var(--purp-g);--card-b:var(--purp-b)">
-                    <div class="ov-icon">⚡</div>
-                    <div class="ov-badge">Developers</div>
-                    <div class="ov-title">Explyra Developers</div>
-                    <p class="ov-desc">A power toolkit for developers — code minifier, hash generator, strong password
-                        generator, online IDE, link shortener, and more.</p>
-                    <a href="#developers" class="ov-link">Explore <span>→</span></a>
-                </div>
-                <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
-                    <div class="ov-icon">🔗</div>
-                    <div class="ov-badge">Utility</div>
-                    <div class="ov-title">Explyra Utility</div>
-                    <p class="ov-desc">AI chatbot + P2P superpowers: unlimited file transfer, video calls, screen share,
-                        live chat, gaming, remote device access — all encrypted, all P2P.</p>
-                    <a href="Utilites/index.html" class="ov-link">Explore <span>→</span></a>
-                </div>
-                <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
-                    <div class="ov-icon">🛡️</div>
-                    <div class="ov-badge">Support</div>
-                    <div class="ov-title">Support Centre</div>
-                    <p class="ov-desc">Dedicated support for every Explyra product — documentation, live chat,
-                        ticketing, and an AI assistant available 24/7 for your team.</p>
-                    <a href="#support" class="ov-link">Explore <span>→</span></a>
+                <div class="suite-pills">
+                    <div class="suite-pill sp-blue">💼 Explyra Expense</div>
+                    <div class="suite-pill sp-teal">🏃 Explyra Health</div>
+                    <div class="suite-pill sp-amber">📚 Explyra Learning</div>
+                    <div class="suite-pill sp-purp">⚡ Explyra Developers</div>
+                    <div class="suite-pill sp-rose">🔗 Explyra Utility</div>
+                    <div class="suite-pill sp-slate">🛡️ Support Centre</div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ══ EXPENSE ══ -->
-    <section class="prod-section expense-sec" id="expense">
-        <div class="blob"></div>
-        <div class="prod-inner">
+        <!-- ══ SUITE OVERVIEW ══ -->
+        <section class="overview" id="overview">
+            <div class="overview-inner">
+                <div class="ov-header reveal">
+                    <div class="eyebrow">The Explyra Suite</div>
+                    <h2 class="sec-h">Six products. <em>One vision.</em></h2>
+                    <p class="sec-p">Every tool your company and team needs — built with the same standard of
+                        intelligence,
+                        design, and reliability.</p>
+                </div>
+                <div class="ov-grid reveal d1">
+                    <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
+                        <div class="ov-icon">💼</div>
+                        <div class="ov-badge">Expense</div>
+                        <div class="ov-title">Explyra Expense</div>
+                        <p class="ov-desc">End-to-end expense management with AI automation, multi-level approvals, and
+                            real-time reimbursement tracking for growing companies.</p>
+                        <a href="#expense" class="ov-link">Explore <span>→</span></a>
+                    </div>
+                    <div class="ov-card" style="--card-clr:var(--teal);--card-g:var(--teal-g);--card-b:var(--teal-b)">
+                        <div class="ov-icon">🏃</div>
+                        <div class="ov-badge">Health</div>
+                        <div class="ov-title">Explyra Health</div>
+                        <p class="ov-desc">Your personal AI health companion. Track workouts, sleep, nutrition, and
+                            mental
+                            wellness — with live weather-aware AI recommendations.</p>
+                        <a href="health-manager/index.html" class="ov-link">Launch App <span>→</span></a>
+                    </div>
+                    <div class="ov-card" style="--card-clr:var(--amber);--card-g:var(--amb-g);--card-b:var(--amb-b)">
+                        <div class="ov-icon">📚</div>
+                        <div class="ov-badge">Learning</div>
+                        <div class="ov-title">Explyra Learning</div>
+                        <p class="ov-desc">Expert-curated courses on Agentic AI, Prompt Engineering, and SEO — built for
+                            the
+                            next generation of digital professionals.</p>
+                        <a href="explyra-learning/index.html" class="ov-link">Launch App <span>→</span></a>
+                    </div>
+                    <div class="ov-card" style="--card-clr:var(--purp);--card-g:var(--purp-g);--card-b:var(--purp-b)">
+                        <div class="ov-icon">⚡</div>
+                        <div class="ov-badge">Developers</div>
+                        <div class="ov-title">Explyra Developers</div>
+                        <p class="ov-desc">A power toolkit for developers — code minifier, hash generator, strong
+                            password
+                            generator, online IDE, link shortener, and more.</p>
+                        <a href="#developers" class="ov-link">Explore <span>→</span></a>
+                    </div>
+                    <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
+                        <div class="ov-icon">🔗</div>
+                        <div class="ov-badge">Utility</div>
+                        <div class="ov-title">Explyra Utility</div>
+                        <p class="ov-desc">AI chatbot + P2P superpowers: unlimited file transfer, video calls, screen
+                            share,
+                            live chat, gaming, remote device access — all encrypted, all P2P.</p>
+                        <a href="Utilites/index.html" class="ov-link">Explore <span>→</span></a>
+                    </div>
+                    <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
+                        <div class="ov-icon">🛡️</div>
+                        <div class="ov-badge">Support</div>
+                        <div class="ov-title">Support Centre</div>
+                        <p class="ov-desc">Dedicated support for every Explyra product — documentation, live chat,
+                            ticketing, and an AI assistant available 24/7 for your team.</p>
+                        <a href="#support" class="ov-link">Explore <span>→</span></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ EXPENSE ══ -->
+        <section class="prod-section expense-sec" id="expense">
+            <div class="blob"></div>
+            <div class="prod-inner">
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--blue)">💼 Explyra Expense</div>
+                    <h2 class="prod-h display">Control every rupee. <em>Effortlessly.</em></h2>
+                    <p class="prod-p">Enterprise-grade expense management for modern companies. From submission to
+                        reimbursement, Explyra Expense eliminates manual work and gives finance teams the clarity they
+                        need.
+                    </p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Multi-level approval workflows with instant notifications
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Real-time reimbursement tracking: Submitted → Approved → Paid
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Google Drive + ImgBB for receipts and large attachments
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Kimi AI: auto-categorization, anomaly detection, spend insights
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>Web
+                            + Android + iOS — submit from anywhere
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+                        <a href="#contact" class="btn-prod" style="background:var(--blue)">Request Access →</a>
+                        <a href="#contact" class="btn-prod-out" style="border-color:var(--blue-b);color:var(--blue)">See
+                            Demo</a>
+                    </div>
+                </div>
+                <div class="reveal d2">
+                    <div class="exp-dash">
+                        <div class="dash-bar">
+                            <div class="dash-dot" style="background:#FF5F57"></div>
+                            <div class="dash-dot" style="background:#FFBE2E"></div>
+                            <div class="dash-dot" style="background:#28C840"></div><span class="dash-title">Expense
+                                Dashboard — March 2026</span>
+                        </div>
+                        <div class="dash-body">
+                            <div class="dash-kpis">
+                                <div class="kpi">
+                                    <div class="kpi-v" style="color:var(--blue)">₹2.4L</div>
+                                    <div class="kpi-l">Total Claims</div>
+                                </div>
+                                <div class="kpi">
+                                    <div class="kpi-v" style="color:var(--teal)">₹1.8L</div>
+                                    <div class="kpi-l">Reimbursed</div>
+                                </div>
+                                <div class="kpi">
+                                    <div class="kpi-v" style="color:var(--amber)">₹60K</div>
+                                    <div class="kpi-l">Pending</div>
+                                </div>
+                            </div>
+                            <div class="er">
+                                <div class="er-ic" style="background:rgba(21,70,192,.1)">✈️</div>
+                                <div>
+                                    <div class="er-n">Mumbai — Business Trip</div>
+                                    <div class="er-c">Travel · Rahul S.</div>
+                                </div>
+                                <div class="er-r">
+                                    <div class="er-a">₹18,400</div>
+                                    <div class="er-st st-p">Paid</div>
+                                </div>
+                            </div>
+                            <div class="er">
+                                <div class="er-ic" style="background:rgba(249,115,22,.1)">🍽️</div>
+                                <div>
+                                    <div class="er-n">Client Dinner — ITC Maurya</div>
+                                    <div class="er-c">Meals · Priya M.</div>
+                                </div>
+                                <div class="er-r">
+                                    <div class="er-a">₹7,250</div>
+                                    <div class="er-st st-e">Pending</div>
+                                </div>
+                            </div>
+                            <div class="er">
+                                <div class="er-ic" style="background:rgba(139,92,246,.1)">🛠️</div>
+                                <div>
+                                    <div class="er-n">Figma Pro Annual</div>
+                                    <div class="er-c">Software · Arjun K.</div>
+                                </div>
+                                <div class="er-r">
+                                    <div class="er-a">₹12,800</div>
+                                    <div class="er-st st-r">Review</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dash-foot"><span class="df-l">Pending Reimbursements</span><span
+                                class="df-v">₹60,050</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ HEALTH ══ -->
+        <section class="prod-section health-sec" id="health">
+            <div class="blob"></div>
+            <div class="prod-inner rev">
+                <div class="reveal d2">
+                    <div class="health-card">
+                        <div class="hc-header">
+                            <div class="hc-weather">
+                                <div>
+                                    <div class="hc-city">📍 New Delhi, India</div>
+                                    <div class="hc-temp">29°C</div>
+                                    <div class="hc-cond">Partly Cloudy · Humidity 68%</div>
+                                </div>
+                                <div style="font-size:2.5rem">⛅</div>
+                            </div>
+                            <div class="hc-ai-tip">🤖 <span><strong>AI Tip:</strong> Weather is warm today — ideal for a
+                                    morning run before 8 AM. Stay hydrated: drink 3–4L water. Avoid heavy meals before
+                                    workout.</span></div>
+                        </div>
+                        <div class="hc-body">
+                            <div class="hc-metrics">
+                                <div class="hm">
+                                    <div class="hm-top"><span class="hm-icon">🏃</span><span class="hm-val">6,842</span>
+                                    </div>
+                                    <div class="hm-label">Steps Today</div>
+                                    <div class="hm-bar">
+                                        <div class="hm-fill" style="width:68%;background:var(--teal)"></div>
+                                    </div>
+                                </div>
+                                <div class="hm">
+                                    <div class="hm-top"><span class="hm-icon">😴</span><span class="hm-val">7.2h</span>
+                                    </div>
+                                    <div class="hm-label">Sleep Quality</div>
+                                    <div class="hm-bar">
+                                        <div class="hm-fill" style="width:82%;background:var(--blue)"></div>
+                                    </div>
+                                </div>
+                                <div class="hm">
+                                    <div class="hm-top"><span class="hm-icon">🔥</span><span class="hm-val">1,840</span>
+                                    </div>
+                                    <div class="hm-label">Calories In</div>
+                                    <div class="hm-bar">
+                                        <div class="hm-fill" style="width:74%;background:var(--amber)"></div>
+                                    </div>
+                                </div>
+                                <div class="hm">
+                                    <div class="hm-top"><span class="hm-icon">🧘</span><span class="hm-val">20
+                                            min</span>
+                                    </div>
+                                    <div class="hm-label">Meditation</div>
+                                    <div class="hm-bar">
+                                        <div class="hm-fill" style="width:100%;background:var(--purp)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hc-activity">
+                                <div class="ha-icon">🌟</div>
+                                <div>
+                                    <div class="ha-title">AI Workout Plan Active</div>
+                                    <div class="ha-desc">Day 4 of 30 · Upper body strength · 45 min · 6:30 PM
+                                        recommended
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--teal)">🏃 Explyra Health</div>
+                    <h2 class="prod-h display">Your AI health companion, <em>always on.</em></h2>
+                    <p class="prod-p">Track every dimension of your health — physical, mental, and nutritional. Explyra
+                        Health uses real-time weather data and AI to give you personalized, context-aware
+                        recommendations
+                        every single day.</p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
+                            </div>
+                            Workout tracking with AI-generated personalized plans
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
+                            </div>
+                            Mental health journaling, mood tracking, stress scores
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
+                            </div>
+                            Sleep quality analysis and bedtime recommendations
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
+                            </div>
+                            Calorie tracking with AI-curated diet plans
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
+                            </div>
+                            Live weather integration — smart suggestions based on conditions
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
+                            </div>
+                            Meditation timer, breathing exercises, mindfulness streaks
+                        </div>
+                    </div>
+                    <a href="health-manager/index.html" class="btn-prod" style="background:var(--teal)">Launch App →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ LEARNING ══ -->
+        <section class="prod-section learn-sec" id="learning">
+            <div class="blob"></div>
+            <div class="prod-inner">
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--amber)">📚 Explyra Learning</div>
+                    <h2 class="prod-h display">Master the skills that <em>define tomorrow.</em></h2>
+                    <p class="prod-p">Explyra Learning offers expert-crafted courses on the most in-demand digital
+                        skills —
+                        Agentic AI development, prompt engineering, and SEO mastery. AI-powered learning paths adapt to
+                        your
+                        pace and goals.</p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
+                            Agentic AI Development — build autonomous AI agents from scratch
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
+                            Prompt Engineering Mastery — get expert-level outputs every time
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
+                            SEO
+                            Expertise — rank anything, anywhere, on any platform
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
+                            AI-powered progress tracking and adaptive learning paths
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
+                            Community challenges, certificates, and real project work
+                        </div>
+                    </div>
+                    <a href="explyra-learning/index.html" class="btn-prod" style="background:var(--amber)">Start
+                        Learning
+                        →</a>
+                </div>
+                <div class="reveal d2">
+                    <div class="learn-card">
+                        <div class="lc-top">
+                            <div class="lc-top-label">Currently Learning</div>
+                            <div class="lc-top-title">Agentic AI Development</div>
+                            <div class="lc-top-sub">Module 4 of 8 · Build Multi-Agent Pipelines</div>
+                            <div class="lc-progress-bar">
+                                <div class="lc-progress-fill"></div>
+                            </div>
+                        </div>
+                        <div class="lc-body">
+                            <div class="course-item">
+                                <div class="course-ico">🤖</div>
+                                <div>
+                                    <div class="course-n">Agentic AI Development</div>
+                                    <div class="course-d">Build autonomous AI systems</div>
+                                </div>
+                                <div class="course-r">
+                                    <div class="course-dur">8 modules</div>
+                                    <div class="course-st cs-prog">▶ In Progress</div>
+                                </div>
+                            </div>
+                            <div class="course-item">
+                                <div class="course-ico">💡</div>
+                                <div>
+                                    <div class="course-n">Prompt Engineering Pro</div>
+                                    <div class="course-d">Advanced prompting techniques</div>
+                                </div>
+                                <div class="course-r">
+                                    <div class="course-dur">6 modules</div>
+                                    <div class="course-st cs-new">★ Enrolled</div>
+                                </div>
+                            </div>
+                            <div class="course-item">
+                                <div class="course-ico">🔍</div>
+                                <div>
+                                    <div class="course-n">SEO Expertise 2026</div>
+                                    <div class="course-d">Rank #1 on any search engine</div>
+                                </div>
+                                <div class="course-r">
+                                    <div class="course-dur">10 modules</div>
+                                    <div class="course-st cs-new">★ New</div>
+                                </div>
+                            </div>
+                            <div class="course-item">
+                                <div class="course-ico">⚡</div>
+                                <div>
+                                    <div class="course-n">AI Tools Mastery</div>
+                                    <div class="course-d">Automate your entire workflow</div>
+                                </div>
+                                <div class="course-r">
+                                    <div class="course-dur">5 modules</div>
+                                    <div class="course-st cs-done">✓ Done</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ DEVELOPERS ══ -->
+        <section class="prod-section dev-sec" id="developers">
+            <div class="blob"></div>
+            <div class="prod-inner rev">
+                <div class="reveal d2">
+                    <div class="dev-card">
+                        <div class="dev-bar">
+                            <div class="dev-bar-dot" style="background:#FF5F57"></div>
+                            <div class="dev-bar-dot" style="background:#FFBE2E"></div>
+                            <div class="dev-bar-dot" style="background:#28C840"></div><span
+                                class="dev-bar-title">explyra-dev-tools</span>
+                        </div>
+                        <div class="dev-body">
+                            <div class="tool-grid">
+                                <div class="tool-item">
+                                    <div class="tool-icon">🗜️</div>
+                                    <div>
+                                        <div class="tool-name">Code Minifier</div>
+                                        <div class="tool-desc">JS, CSS, HTML</div>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <div class="tool-icon">#️⃣</div>
+                                    <div>
+                                        <div class="tool-name">Hash Generator</div>
+                                        <div class="tool-desc">MD5, SHA, bcrypt</div>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <div class="tool-icon">🔐</div>
+                                    <div>
+                                        <div class="tool-name">Password Generator</div>
+                                        <div class="tool-desc">Secure & strong</div>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <div class="tool-icon">🔗</div>
+                                    <div>
+                                        <div class="tool-name">Link Shortener</div>
+                                        <div class="tool-desc">Custom slugs</div>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <div class="tool-icon">💻</div>
+                                    <div>
+                                        <div class="tool-name">Online IDE</div>
+                                        <div class="tool-desc">Run & share code</div>
+                                    </div>
+                                </div>
+                                <div class="tool-item">
+                                    <div class="tool-icon">🎨</div>
+                                    <div>
+                                        <div class="tool-name">More Tools</div>
+                                        <div class="tool-desc">Coming soon…</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dev-ide-preview">
+                                <span class="ide-ln">1 </span><span class="ide-cm">// Explyra Dev Tools</span><br>
+                                <span class="ide-ln">2 </span><span class="ide-kw">const</span> <span
+                                    class="ide-var">hash</span> <span class="ide-txt">= </span><span
+                                    class="ide-fn">SHA256</span><span class="ide-txt">(</span><span
+                                    class="ide-str">"explyra"</span><span class="ide-txt">);</span><br>
+                                <span class="ide-ln">3 </span><span class="ide-kw">const</span> <span
+                                    class="ide-var">pwd</span> <span class="ide-txt">= </span><span
+                                    class="ide-fn">strongGen</span><span class="ide-txt">({ len: </span><span
+                                    class="ide-str">20</span><span class="ide-txt"> });</span><br>
+                                <span class="ide-ln">4 </span><span class="ide-fn">console</span><span
+                                    class="ide-txt">.</span><span class="ide-fn">log</span><span
+                                    class="ide-txt">(</span><span class="ide-var">hash</span><span class="ide-txt">,
+                                </span><span class="ide-var">pwd</span><span class="ide-txt">);</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--purp)">⚡ Explyra Developers</div>
+                    <h2 class="prod-h display">Every tool a developer <em>actually needs.</em></h2>
+                    <p class="prod-p">Stop juggling 10 different websites. Explyra Developers brings every essential
+                        developer utility into one fast, clean, ad-free platform — built by a developer, for developers.
+                    </p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
+                            </div>
+                            Code Minifier — JS, CSS, HTML with one click
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
+                            </div>
+                            Hash Generator — MD5, SHA-256, bcrypt, and more
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
+                            </div>
+                            Strong Password Generator — truly secure, custom rules
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
+                            </div>
+                            Online IDE — write, run, and share code in-browser
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
+                            </div>
+                            Link Shortener with custom slugs and analytics
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
+                            </div>
+                            More tools shipping continuously — zero ads, always free
+                        </div>
+                    </div>
+                    <a href="./developers/index.html" class="btn-prod" style="background:var(--purp)">Explore Now →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ UTILITY ══ -->
+        <section class="prod-section util-sec" id="utility">
+            <div class="blob"></div>
+            <div class="prod-inner">
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--rose)">🔗 Explyra Utility</div>
+                    <h2 class="prod-h display">Connect anyone, anywhere. <em>Instantly.</em></h2>
+                    <p class="prod-p">Explyra Utility combines an intelligent AI chatbot with a powerful P2P
+                        collaboration
+                        suite — file transfer, video calls, screen share, live chat, game streaming, and even remote
+                        device
+                        access. No limits. No servers. All encrypted.</p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>AI
+                            Chatbot — intelligent assistant for every user
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>P2P
+                            Unlimited File Transfer — send any size, encrypted
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>HD
+                            Video Calls + Screen Share with zero third party
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>P2P
+                            Live Chat — encrypted, real-time messaging
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Game & Video Share — co-watch and co-play P2P
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Remote Device Access — control any connected device
+                        </div>
+                    </div>
+                    <a href="Utilites/index.html" class="btn-prod" style="background:var(--rose)">Explore Hub &rarr;</a>
+                </div>
+                <div class="reveal d2">
+                    <div class="util-card">
+                        <div class="util-header">
+                            <div class="util-h-title">Explyra Utility</div>
+                            <div class="util-h-sub">P2P Suite + AI Assistant</div>
+                            <div class="util-p2p">
+                                <div class="p2p-avatars">
+                                    <div class="p2p-av" style="background:#1847BF">A</div>
+                                    <div class="p2p-av" style="background:#047857">B</div>
+                                    <div class="p2p-av" style="background:#7C3AED">C</div>
+                                </div>
+                                <span class="p2p-status">3 peers connected · Encrypted · P2P</span>
+                                <span class="p2p-dot"></span>
+                            </div>
+                        </div>
+                        <div class="util-body">
+                            <div class="p2p-features">
+                                <div class="p2pf"><span class="p2pf-icon">📁</span>
+                                    <div>
+                                        <div class="p2pf-name">File Transfer</div>
+                                    </div>
+                                </div>
+                                <div class="p2pf"><span class="p2pf-icon">📹</span>
+                                    <div>
+                                        <div class="p2pf-name">Video Call</div>
+                                    </div>
+                                </div>
+                                <div class="p2pf"><span class="p2pf-icon">🖥️</span>
+                                    <div>
+                                        <div class="p2pf-name">Screen Share</div>
+                                    </div>
+                                </div>
+                                <div class="p2pf"><span class="p2pf-icon">💬</span>
+                                    <div>
+                                        <div class="p2pf-name">Live Chat</div>
+                                    </div>
+                                </div>
+                                <div class="p2pf"><span class="p2pf-icon">🎮</span>
+                                    <div>
+                                        <div class="p2pf-name">Game Share</div>
+                                    </div>
+                                </div>
+                                <div class="p2pf"><span class="p2pf-icon">🖱️</span>
+                                    <div>
+                                        <div class="p2pf-name">Remote Access</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chatbot-preview">
+                                <div class="chat-msg bot">
+                                    <div class="chat-av bot">AI</div>
+                                    <div class="chat-bubble">Hi! I'm your Explyra AI. How can I help you today?</div>
+                                </div>
+                                <div class="chat-msg user">
+                                    <div class="chat-av">U</div>
+                                    <div class="chat-bubble">Transfer the 2GB project file to Arjun</div>
+                                </div>
+                                <div class="chat-msg bot">
+                                    <div class="chat-av bot">AI</div>
+                                    <div class="chat-bubble">Starting encrypted P2P transfer to Arjun... 0% ▓░░░░</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ SUPPORT ══ -->
+        <section class="support-sec" id="support">
+            <div class="support-inner">
+                <div class="reveal" style="text-align:center">
+                    <div class="eyebrow" style="color:var(--slate)">🛡️ Support Centre</div>
+                    <h2 class="sec-h">We've got your back, <em>always.</em></h2>
+                    <p class="sec-p">Dedicated support for every product in the Explyra Suite. Get help when you need it
+                        —
+                        however you need it.</p>
+                </div>
+                <div class="support-grid reveal d1">
+                    <div class="sup-card"><span class="sup-icon">📖</span>
+                        <div class="sup-title">Documentation</div>
+                        <p class="sup-desc">Comprehensive guides, API references, and tutorials for every Explyra
+                            product.
+                            Search, browse, and get answers instantly.</p><a href="#contact" class="sup-link">Browse
+                            Docs
+                            →</a>
+                    </div>
+                    <div class="sup-card"><span class="sup-icon">💬</span>
+                        <div class="sup-title">Live Chat Support</div>
+                        <p class="sup-desc">Connect with our support team in real time. Available for critical issues,
+                            onboarding help, and product questions.</p><a href="#contact" class="sup-link">Start Chat
+                            →</a>
+                    </div>
+                    <div class="sup-card"><span class="sup-icon">🎫</span>
+                        <div class="sup-title">Ticketing System</div>
+                        <p class="sup-desc">Submit a support ticket for non-urgent requests. Track status, get updates,
+                            and
+                            resolve issues with full transparency.</p><a href="#contact" class="sup-link">Open Ticket
+                            →</a>
+                    </div>
+                    <div class="sup-card"><span class="sup-icon">🤖</span>
+                        <div class="sup-title">AI Support Bot</div>
+                        <p class="sup-desc">24/7 intelligent assistant that can answer product questions, walk you
+                            through
+                            setup, and escalate to humans when needed.</p><a href="#contact" class="sup-link">Try Now
+                            →</a>
+                    </div>
+                    <div class="sup-card"><span class="sup-icon">🎓</span>
+                        <div class="sup-title">Onboarding Sessions</div>
+                        <p class="sup-desc">Scheduled walkthroughs for enterprise clients. Our team will set up your
+                            workspace, train your team, and ensure a smooth launch.</p><a href="#contact"
+                            class="sup-link">Schedule →</a>
+                    </div>
+                    <div class="sup-card"><span class="sup-icon">🌐</span>
+                        <div class="sup-title">Community Forum</div>
+                        <p class="sup-desc">Connect with other Explyra users, share tips, report issues, and stay
+                            updated on
+                            new features and product announcements.</p><a href="#contact" class="sup-link">Join
+                            Community
+                            →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ FOUNDER ══ -->
+        <article class="founder-strip reveal">
+            <div class="founder-inner">
+                <div class="founder-av">MB</div>
+                <div class="founder-content">
+                    <div class="founder-name">Mitanshu Bhasin</div>
+                    <div class="founder-role">Founder & Lead Developer · Explyra</div>
+                    <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch —
+                        Firebase
+                        backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P infrastructure.
+                        Explyra is not just a product, it's a statement: the right combination of AI, design, and
+                        engineering can give teams everything they need in a single platform.</p>
+                    <div class="founder-btns">
+                        <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
+                        <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
+                        <a href="tel:+918076108584" class="founder-btn">📞 +91 8076108584</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- ══ CTA ══ -->
+        <section class="cta-banner" id="contact">
             <div class="reveal">
-                <div class="prod-label" style="color:var(--blue)">💼 Explyra Expense</div>
-                <h2 class="prod-h display">Control every rupee. <em>Effortlessly.</em></h2>
-                <p class="prod-p">Enterprise-grade expense management for modern companies. From submission to
-                    reimbursement, Explyra Expense eliminates manual work and gives finance teams the clarity they need.
-                </p>
-                <div class="feat-list">
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓</div>
-                        Multi-level approval workflows with instant notifications
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓</div>
-                        Real-time reimbursement tracking: Submitted → Approved → Paid
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓</div>
-                        Google Drive + ImgBB for receipts and large attachments
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓</div>
-                        Kimi AI: auto-categorization, anomaly detection, spend insights
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓</div>Web
-                        + Android + iOS — submit from anywhere
-                    </div>
-                </div>
-                <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-                    <a href="#contact" class="btn-prod" style="background:var(--blue)">Request Access →</a>
-                    <a href="#contact" class="btn-prod-out" style="border-color:var(--blue-b);color:var(--blue)">See
-                        Demo</a>
-                </div>
-            </div>
-            <div class="reveal d2">
-                <div class="exp-dash">
-                    <div class="dash-bar">
-                        <div class="dash-dot" style="background:#FF5F57"></div>
-                        <div class="dash-dot" style="background:#FFBE2E"></div>
-                        <div class="dash-dot" style="background:#28C840"></div><span class="dash-title">Expense
-                            Dashboard — March 2026</span>
-                    </div>
-                    <div class="dash-body">
-                        <div class="dash-kpis">
-                            <div class="kpi">
-                                <div class="kpi-v" style="color:var(--blue)">₹2.4L</div>
-                                <div class="kpi-l">Total Claims</div>
-                            </div>
-                            <div class="kpi">
-                                <div class="kpi-v" style="color:var(--teal)">₹1.8L</div>
-                                <div class="kpi-l">Reimbursed</div>
-                            </div>
-                            <div class="kpi">
-                                <div class="kpi-v" style="color:var(--amber)">₹60K</div>
-                                <div class="kpi-l">Pending</div>
-                            </div>
-                        </div>
-                        <div class="er">
-                            <div class="er-ic" style="background:rgba(21,70,192,.1)">✈️</div>
-                            <div>
-                                <div class="er-n">Mumbai — Business Trip</div>
-                                <div class="er-c">Travel · Rahul S.</div>
-                            </div>
-                            <div class="er-r">
-                                <div class="er-a">₹18,400</div>
-                                <div class="er-st st-p">Paid</div>
-                            </div>
-                        </div>
-                        <div class="er">
-                            <div class="er-ic" style="background:rgba(249,115,22,.1)">🍽️</div>
-                            <div>
-                                <div class="er-n">Client Dinner — ITC Maurya</div>
-                                <div class="er-c">Meals · Priya M.</div>
-                            </div>
-                            <div class="er-r">
-                                <div class="er-a">₹7,250</div>
-                                <div class="er-st st-e">Pending</div>
-                            </div>
-                        </div>
-                        <div class="er">
-                            <div class="er-ic" style="background:rgba(139,92,246,.1)">🛠️</div>
-                            <div>
-                                <div class="er-n">Figma Pro Annual</div>
-                                <div class="er-c">Software · Arjun K.</div>
-                            </div>
-                            <div class="er-r">
-                                <div class="er-a">₹12,800</div>
-                                <div class="er-st st-r">Review</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dash-foot"><span class="df-l">Pending Reimbursements</span><span
-                            class="df-v">₹60,050</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ HEALTH ══ -->
-    <section class="prod-section health-sec" id="health">
-        <div class="blob"></div>
-        <div class="prod-inner rev">
-            <div class="reveal d2">
-                <div class="health-card">
-                    <div class="hc-header">
-                        <div class="hc-weather">
-                            <div>
-                                <div class="hc-city">📍 New Delhi, India</div>
-                                <div class="hc-temp">29°C</div>
-                                <div class="hc-cond">Partly Cloudy · Humidity 68%</div>
-                            </div>
-                            <div style="font-size:2.5rem">⛅</div>
-                        </div>
-                        <div class="hc-ai-tip">🤖 <span><strong>AI Tip:</strong> Weather is warm today — ideal for a
-                                morning run before 8 AM. Stay hydrated: drink 3–4L water. Avoid heavy meals before
-                                workout.</span></div>
-                    </div>
-                    <div class="hc-body">
-                        <div class="hc-metrics">
-                            <div class="hm">
-                                <div class="hm-top"><span class="hm-icon">🏃</span><span class="hm-val">6,842</span>
-                                </div>
-                                <div class="hm-label">Steps Today</div>
-                                <div class="hm-bar">
-                                    <div class="hm-fill" style="width:68%;background:var(--teal)"></div>
-                                </div>
-                            </div>
-                            <div class="hm">
-                                <div class="hm-top"><span class="hm-icon">😴</span><span class="hm-val">7.2h</span>
-                                </div>
-                                <div class="hm-label">Sleep Quality</div>
-                                <div class="hm-bar">
-                                    <div class="hm-fill" style="width:82%;background:var(--blue)"></div>
-                                </div>
-                            </div>
-                            <div class="hm">
-                                <div class="hm-top"><span class="hm-icon">🔥</span><span class="hm-val">1,840</span>
-                                </div>
-                                <div class="hm-label">Calories In</div>
-                                <div class="hm-bar">
-                                    <div class="hm-fill" style="width:74%;background:var(--amber)"></div>
-                                </div>
-                            </div>
-                            <div class="hm">
-                                <div class="hm-top"><span class="hm-icon">🧘</span><span class="hm-val">20 min</span>
-                                </div>
-                                <div class="hm-label">Meditation</div>
-                                <div class="hm-bar">
-                                    <div class="hm-fill" style="width:100%;background:var(--purp)"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hc-activity">
-                            <div class="ha-icon">🌟</div>
-                            <div>
-                                <div class="ha-title">AI Workout Plan Active</div>
-                                <div class="ha-desc">Day 4 of 30 · Upper body strength · 45 min · 6:30 PM recommended
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="reveal">
-                <div class="prod-label" style="color:var(--teal)">🏃 Explyra Health</div>
-                <h2 class="prod-h display">Your AI health companion, <em>always on.</em></h2>
-                <p class="prod-p">Track every dimension of your health — physical, mental, and nutritional. Explyra
-                    Health uses real-time weather data and AI to give you personalized, context-aware recommendations
-                    every single day.</p>
-                <div class="feat-list">
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓</div>
-                        Workout tracking with AI-generated personalized plans
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓</div>
-                        Mental health journaling, mood tracking, stress scores
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓</div>
-                        Sleep quality analysis and bedtime recommendations
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓</div>
-                        Calorie tracking with AI-curated diet plans
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓</div>
-                        Live weather integration — smart suggestions based on conditions
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓</div>
-                        Meditation timer, breathing exercises, mindfulness streaks
-                    </div>
-                </div>
-                <a href="health-manager/index.html" class="btn-prod" style="background:var(--teal)">Launch App →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ LEARNING ══ -->
-    <section class="prod-section learn-sec" id="learning">
-        <div class="blob"></div>
-        <div class="prod-inner">
-            <div class="reveal">
-                <div class="prod-label" style="color:var(--amber)">📚 Explyra Learning</div>
-                <h2 class="prod-h display">Master the skills that <em>define tomorrow.</em></h2>
-                <p class="prod-p">Explyra Learning offers expert-crafted courses on the most in-demand digital skills —
-                    Agentic AI development, prompt engineering, and SEO mastery. AI-powered learning paths adapt to your
-                    pace and goals.</p>
-                <div class="feat-list">
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                        Agentic AI Development — build autonomous AI agents from scratch
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                        Prompt Engineering Mastery — get expert-level outputs every time
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>SEO
-                        Expertise — rank anything, anywhere, on any platform
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                        AI-powered progress tracking and adaptive learning paths
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                        Community challenges, certificates, and real project work
-                    </div>
-                </div>
-                <a href="explyra-learning/index.html" class="btn-prod" style="background:var(--amber)">Start Learning
+                <div class="eyebrow" style="color:var(--blue)">Get Started</div>
+                <h2 class="cta-h">Ready to experience the full <em>Explyra Suite?</em></h2>
+                <p class="cta-sub">Join the waitlist for early access to all six Explyra products. Be the first to
+                    shape
+                    what we build next.</p>
+                <a href="mailto:explyra@gmail.com" class="btn-hero" style="display:inline-flex">Request Early Access
                     →</a>
-            </div>
-            <div class="reveal d2">
-                <div class="learn-card">
-                    <div class="lc-top">
-                        <div class="lc-top-label">Currently Learning</div>
-                        <div class="lc-top-title">Agentic AI Development</div>
-                        <div class="lc-top-sub">Module 4 of 8 · Build Multi-Agent Pipelines</div>
-                        <div class="lc-progress-bar">
-                            <div class="lc-progress-fill"></div>
+                <div class="cta-contacts">
+                    <a href="tel:+918076108584" class="cta-c"><span class="cta-c-icon">📞</span>
+                        <div>
+                            <div class="cta-c-label">Phone</div>
+                            <div class="cta-c-val">+91 8076108584</div>
                         </div>
-                    </div>
-                    <div class="lc-body">
-                        <div class="course-item">
-                            <div class="course-ico">🤖</div>
-                            <div>
-                                <div class="course-n">Agentic AI Development</div>
-                                <div class="course-d">Build autonomous AI systems</div>
-                            </div>
-                            <div class="course-r">
-                                <div class="course-dur">8 modules</div>
-                                <div class="course-st cs-prog">▶ In Progress</div>
-                            </div>
+                    </a>
+                    <a href="mailto:explyra@gmail.com" class="cta-c"><span class="cta-c-icon">✉️</span>
+                        <div>
+                            <div class="cta-c-label">Email</div>
+                            <div class="cta-c-val">explyra@gmail.com</div>
                         </div>
-                        <div class="course-item">
-                            <div class="course-ico">💡</div>
-                            <div>
-                                <div class="course-n">Prompt Engineering Pro</div>
-                                <div class="course-d">Advanced prompting techniques</div>
-                            </div>
-                            <div class="course-r">
-                                <div class="course-dur">6 modules</div>
-                                <div class="course-st cs-new">★ Enrolled</div>
-                            </div>
+                    </a>
+                    <a href="https://github.com/mitanshu-bhasin" target="_blank" class="cta-c"><span
+                            class="cta-c-icon">🐙</span>
+                        <div>
+                            <div class="cta-c-label">GitHub</div>
+                            <div class="cta-c-val">@mitanshu-bhasin</div>
                         </div>
-                        <div class="course-item">
-                            <div class="course-ico">🔍</div>
-                            <div>
-                                <div class="course-n">SEO Expertise 2026</div>
-                                <div class="course-d">Rank #1 on any search engine</div>
-                            </div>
-                            <div class="course-r">
-                                <div class="course-dur">10 modules</div>
-                                <div class="course-st cs-new">★ New</div>
-                            </div>
-                        </div>
-                        <div class="course-item">
-                            <div class="course-ico">⚡</div>
-                            <div>
-                                <div class="course-n">AI Tools Mastery</div>
-                                <div class="course-d">Automate your entire workflow</div>
-                            </div>
-                            <div class="course-r">
-                                <div class="course-dur">5 modules</div>
-                                <div class="course-st cs-done">✓ Done</div>
-                            </div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- ══ DEVELOPERS ══ -->
-    <section class="prod-section dev-sec" id="developers">
-        <div class="blob"></div>
-        <div class="prod-inner rev">
-            <div class="reveal d2">
-                <div class="dev-card">
-                    <div class="dev-bar">
-                        <div class="dev-bar-dot" style="background:#FF5F57"></div>
-                        <div class="dev-bar-dot" style="background:#FFBE2E"></div>
-                        <div class="dev-bar-dot" style="background:#28C840"></div><span
-                            class="dev-bar-title">explyra-dev-tools</span>
-                    </div>
-                    <div class="dev-body">
-                        <div class="tool-grid">
-                            <div class="tool-item">
-                                <div class="tool-icon">🗜️</div>
-                                <div>
-                                    <div class="tool-name">Code Minifier</div>
-                                    <div class="tool-desc">JS, CSS, HTML</div>
-                                </div>
-                            </div>
-                            <div class="tool-item">
-                                <div class="tool-icon">#️⃣</div>
-                                <div>
-                                    <div class="tool-name">Hash Generator</div>
-                                    <div class="tool-desc">MD5, SHA, bcrypt</div>
-                                </div>
-                            </div>
-                            <div class="tool-item">
-                                <div class="tool-icon">🔐</div>
-                                <div>
-                                    <div class="tool-name">Password Generator</div>
-                                    <div class="tool-desc">Secure & strong</div>
-                                </div>
-                            </div>
-                            <div class="tool-item">
-                                <div class="tool-icon">🔗</div>
-                                <div>
-                                    <div class="tool-name">Link Shortener</div>
-                                    <div class="tool-desc">Custom slugs</div>
-                                </div>
-                            </div>
-                            <div class="tool-item">
-                                <div class="tool-icon">💻</div>
-                                <div>
-                                    <div class="tool-name">Online IDE</div>
-                                    <div class="tool-desc">Run & share code</div>
-                                </div>
-                            </div>
-                            <div class="tool-item">
-                                <div class="tool-icon">🎨</div>
-                                <div>
-                                    <div class="tool-name">More Tools</div>
-                                    <div class="tool-desc">Coming soon…</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dev-ide-preview">
-                            <span class="ide-ln">1 </span><span class="ide-cm">// Explyra Dev Tools</span><br>
-                            <span class="ide-ln">2 </span><span class="ide-kw">const</span> <span
-                                class="ide-var">hash</span> <span class="ide-txt">= </span><span
-                                class="ide-fn">SHA256</span><span class="ide-txt">(</span><span
-                                class="ide-str">"explyra"</span><span class="ide-txt">);</span><br>
-                            <span class="ide-ln">3 </span><span class="ide-kw">const</span> <span
-                                class="ide-var">pwd</span> <span class="ide-txt">= </span><span
-                                class="ide-fn">strongGen</span><span class="ide-txt">({ len: </span><span
-                                class="ide-str">20</span><span class="ide-txt"> });</span><br>
-                            <span class="ide-ln">4 </span><span class="ide-fn">console</span><span
-                                class="ide-txt">.</span><span class="ide-fn">log</span><span
-                                class="ide-txt">(</span><span class="ide-var">hash</span><span class="ide-txt">,
-                            </span><span class="ide-var">pwd</span><span class="ide-txt">);</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="reveal">
-                <div class="prod-label" style="color:var(--purp)">⚡ Explyra Developers</div>
-                <h2 class="prod-h display">Every tool a developer <em>actually needs.</em></h2>
-                <p class="prod-p">Stop juggling 10 different websites. Explyra Developers brings every essential
-                    developer utility into one fast, clean, ad-free platform — built by a developer, for developers.</p>
-                <div class="feat-list">
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓</div>
-                        Code Minifier — JS, CSS, HTML with one click
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓</div>
-                        Hash Generator — MD5, SHA-256, bcrypt, and more
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓</div>
-                        Strong Password Generator — truly secure, custom rules
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓</div>
-                        Online IDE — write, run, and share code in-browser
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓</div>
-                        Link Shortener with custom slugs and analytics
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓</div>
-                        More tools shipping continuously — zero ads, always free
-                    </div>
-                </div>
-                <a href="./developers/index.html" class="btn-prod" style="background:var(--purp)">Explore Now →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ UTILITY ══ -->
-    <section class="prod-section util-sec" id="utility">
-        <div class="blob"></div>
-        <div class="prod-inner">
-            <div class="reveal">
-                <div class="prod-label" style="color:var(--rose)">🔗 Explyra Utility</div>
-                <h2 class="prod-h display">Connect anyone, anywhere. <em>Instantly.</em></h2>
-                <p class="prod-p">Explyra Utility combines an intelligent AI chatbot with a powerful P2P collaboration
-                    suite — file transfer, video calls, screen share, live chat, game streaming, and even remote device
-                    access. No limits. No servers. All encrypted.</p>
-                <div class="feat-list">
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓</div>AI
-                        Chatbot — intelligent assistant for every user
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓</div>P2P
-                        Unlimited File Transfer — send any size, encrypted
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓</div>HD
-                        Video Calls + Screen Share with zero third party
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓</div>P2P
-                        Live Chat — encrypted, real-time messaging
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓</div>
-                        Game & Video Share — co-watch and co-play P2P
-                    </div>
-                    <div class="feat-item">
-                        <div class="feat-dot"
-                            style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓</div>
-                        Remote Device Access — control any connected device
-                    </div>
-                </div>
-                <a href="Utilites/index.html" class="btn-prod" style="background:var(--rose)">Explore Hub &rarr;</a>
-            </div>
-            <div class="reveal d2">
-                <div class="util-card">
-                    <div class="util-header">
-                        <div class="util-h-title">Explyra Utility</div>
-                        <div class="util-h-sub">P2P Suite + AI Assistant</div>
-                        <div class="util-p2p">
-                            <div class="p2p-avatars">
-                                <div class="p2p-av" style="background:#1847BF">A</div>
-                                <div class="p2p-av" style="background:#047857">B</div>
-                                <div class="p2p-av" style="background:#7C3AED">C</div>
-                            </div>
-                            <span class="p2p-status">3 peers connected · Encrypted · P2P</span>
-                            <span class="p2p-dot"></span>
-                        </div>
-                    </div>
-                    <div class="util-body">
-                        <div class="p2p-features">
-                            <div class="p2pf"><span class="p2pf-icon">📁</span>
-                                <div>
-                                    <div class="p2pf-name">File Transfer</div>
-                                </div>
-                            </div>
-                            <div class="p2pf"><span class="p2pf-icon">📹</span>
-                                <div>
-                                    <div class="p2pf-name">Video Call</div>
-                                </div>
-                            </div>
-                            <div class="p2pf"><span class="p2pf-icon">🖥️</span>
-                                <div>
-                                    <div class="p2pf-name">Screen Share</div>
-                                </div>
-                            </div>
-                            <div class="p2pf"><span class="p2pf-icon">💬</span>
-                                <div>
-                                    <div class="p2pf-name">Live Chat</div>
-                                </div>
-                            </div>
-                            <div class="p2pf"><span class="p2pf-icon">🎮</span>
-                                <div>
-                                    <div class="p2pf-name">Game Share</div>
-                                </div>
-                            </div>
-                            <div class="p2pf"><span class="p2pf-icon">🖱️</span>
-                                <div>
-                                    <div class="p2pf-name">Remote Access</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chatbot-preview">
-                            <div class="chat-msg bot">
-                                <div class="chat-av bot">AI</div>
-                                <div class="chat-bubble">Hi! I'm your Explyra AI. How can I help you today?</div>
-                            </div>
-                            <div class="chat-msg user">
-                                <div class="chat-av">U</div>
-                                <div class="chat-bubble">Transfer the 2GB project file to Arjun</div>
-                            </div>
-                            <div class="chat-msg bot">
-                                <div class="chat-av bot">AI</div>
-                                <div class="chat-bubble">Starting encrypted P2P transfer to Arjun... 0% ▓░░░░</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ SUPPORT ══ -->
-    <section class="support-sec" id="support">
-        <div class="support-inner">
-            <div class="reveal" style="text-align:center">
-                <div class="eyebrow" style="color:var(--slate)">🛡️ Support Centre</div>
-                <h2 class="sec-h">We've got your back, <em>always.</em></h2>
-                <p class="sec-p">Dedicated support for every product in the Explyra Suite. Get help when you need it —
-                    however you need it.</p>
-            </div>
-            <div class="support-grid reveal d1">
-                <div class="sup-card"><span class="sup-icon">📖</span>
-                    <div class="sup-title">Documentation</div>
-                    <p class="sup-desc">Comprehensive guides, API references, and tutorials for every Explyra product.
-                        Search, browse, and get answers instantly.</p><a href="#contact" class="sup-link">Browse Docs
-                        →</a>
-                </div>
-                <div class="sup-card"><span class="sup-icon">💬</span>
-                    <div class="sup-title">Live Chat Support</div>
-                    <p class="sup-desc">Connect with our support team in real time. Available for critical issues,
-                        onboarding help, and product questions.</p><a href="#contact" class="sup-link">Start Chat →</a>
-                </div>
-                <div class="sup-card"><span class="sup-icon">🎫</span>
-                    <div class="sup-title">Ticketing System</div>
-                    <p class="sup-desc">Submit a support ticket for non-urgent requests. Track status, get updates, and
-                        resolve issues with full transparency.</p><a href="#contact" class="sup-link">Open Ticket →</a>
-                </div>
-                <div class="sup-card"><span class="sup-icon">🤖</span>
-                    <div class="sup-title">AI Support Bot</div>
-                    <p class="sup-desc">24/7 intelligent assistant that can answer product questions, walk you through
-                        setup, and escalate to humans when needed.</p><a href="#contact" class="sup-link">Try Now →</a>
-                </div>
-                <div class="sup-card"><span class="sup-icon">🎓</span>
-                    <div class="sup-title">Onboarding Sessions</div>
-                    <p class="sup-desc">Scheduled walkthroughs for enterprise clients. Our team will set up your
-                        workspace, train your team, and ensure a smooth launch.</p><a href="#contact"
-                        class="sup-link">Schedule →</a>
-                </div>
-                <div class="sup-card"><span class="sup-icon">🌐</span>
-                    <div class="sup-title">Community Forum</div>
-                    <p class="sup-desc">Connect with other Explyra users, share tips, report issues, and stay updated on
-                        new features and product announcements.</p><a href="#contact" class="sup-link">Join Community
-                        →</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ FOUNDER ══ -->
-    <section class="founder-strip reveal">
-        <div class="founder-inner">
-            <div class="founder-av">MB</div>
-            <div class="founder-content">
-                <div class="founder-name">Mitanshu Bhasin</div>
-                <div class="founder-role">Founder & Lead Developer · Explyra</div>
-                <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch — Firebase
-                    backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P infrastructure.
-                    Explyra is not just a product, it's a statement: the right combination of AI, design, and
-                    engineering can give teams everything they need in a single platform.</p>
-                <div class="founder-btns">
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
-                    <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
-                    <a href="tel:+918076108584" class="founder-btn">📞 +91 8076108584</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ CTA ══ -->
-    <section class="cta-banner" id="contact">
-        <div class="reveal">
-            <div class="eyebrow" style="color:var(--blue)">Get Started</div>
-            <h2 class="cta-h">Ready to experience the full <em>Explyra Suite?</em></h2>
-            <p class="cta-sub">Join the waitlist for early access to all six Explyra products. Be the first to shape
-                what we build next.</p>
-            <a href="mailto:explyra@gmail.com" class="btn-hero" style="display:inline-flex">Request Early Access →</a>
-            <div class="cta-contacts">
-                <a href="tel:+918076108584" class="cta-c"><span class="cta-c-icon">📞</span>
-                    <div>
-                        <div class="cta-c-label">Phone</div>
-                        <div class="cta-c-val">+91 8076108584</div>
-                    </div>
-                </a>
-                <a href="mailto:explyra@gmail.com" class="cta-c"><span class="cta-c-icon">✉️</span>
-                    <div>
-                        <div class="cta-c-label">Email</div>
-                        <div class="cta-c-val">explyra@gmail.com</div>
-                    </div>
-                </a>
-                <a href="https://github.com/mitanshu-bhasin" target="_blank" class="cta-c"><span
-                        class="cta-c-icon">🐙</span>
-                    <div>
-                        <div class="cta-c-label">GitHub</div>
-                        <div class="cta-c-val">@mitanshu-bhasin</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- ══ FOOTER ══ -->
     <footer>

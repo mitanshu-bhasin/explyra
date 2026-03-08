@@ -1,0 +1,6 @@
+{
+    "appId": "com.mitanshu.ipec",
+    "appName": "IPEC App",
+    "webDir": "www",
+    "bundledWebRuntime": false
+}

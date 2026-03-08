@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>IPEC Consulting</ShortName>
+  <Description>IPEC Consulting - Advance process excellence.</Description>
+  <Url type="text/html" template="https://i.fouralpha.org/?q={searchTerms}"/>
+  <Image width="32" height="32">https://i.fouralpha.org/assets/images/explyra_logo.png</Image>
+  <Developer>IPEC Consulting</Developer>
+  <Contact>support@ipecconsulting.org</Contact>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

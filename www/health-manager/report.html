@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra Health - Advanced Bio-Audit Report</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Security Scan Animation */
+        .loading-scan {
+            background: linear-gradient(to bottom, transparent, #8b5cf6, transparent);
+            height: 100%;
+            width: 4px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            box-shadow: 0 0 15px #8b5cf6;
+            animation: scan 1.5s infinite ease-in-out;
+        }
+
+        @keyframes scan {
+            0% {
+                left: 0%;
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* Entry Animations */
+        .slide-up {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+
+        .delay-400 {
+            animation-delay: 400ms;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typewriter Cursor */
+        .cursor::after {
+            content: '▋';
+            animation: blink 1s infinite;
+            color: #a855f7;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Score Circle Animation */
+        .circle-chart__circle {
+            animation: circle-chart-fill 1.5s reverse;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+
+        @keyframes circle-chart-fill {
+            to {
+                stroke-dasharray: 0 100;
+            }
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            #security-check,
+            #floating-controls,
+            .no-print {
+                display: none !important;
+            }
+
+            #report-content {
+                display: block !important;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .bg-slate-900,
+            .bg-black {
+                background-color: #f8fafc !important;
+                color: black !important;
+                border: 1px solid #e2e8f0;
+            }
+
+            .text-white,
+            .text-green-400,
+            .text-slate-300 {
+                color: black !important;
+            }
+
+            .shadow-lg,
+            .shadow-xl,
+            .shadow-2xl {
+                box-shadow: none !important;
+            }
+
+            canvas {
+                max-height: 250px !important;
+                page-break-inside: avoid;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            #ai-insights {
+                border: 1px solid #000;
+                padding: 10px;
+                color: black !important;
+            }
+
+            svg text {
+                fill: black !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen relative overflow-x-hidden">
+
+    <!-- SECURITY CHECK OVERLAY -->
+    <div id="security-check"
+        class="fixed inset-0 z-[60] bg-slate-900 flex flex-col items-center justify-center text-white">
+        <div class="relative w-72 h-2 bg-slate-800 rounded-full overflow-hidden mb-6 shadow-lg shadow-indigo-500/20">
+            <div class="loading-scan w-full bg-indigo-500 h-full absolute"></div>
+        </div>
+        <div class="text-center">
+            <h2 class="text-2xl font-bold tracking-[0.2em] uppercase font-mono text-indigo-400">System Handshake</h2>
+            <div class="flex items-center justify-center gap-2 mt-2">
+                <i class="fa-solid fa-fingerprint animate-pulse text-xs text-slate-500"></i>
+                <p class="text-xs text-slate-400 font-mono uppercase" id="check-status">Biometric Verification...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN REPORT CONTAINER -->
+    <div id="report-content" class="hidden max-w-6xl mx-auto p-4 sm:p-8 pb-32 print:pb-0">
+
+        <!-- Header -->
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-slate-200 pb-6 slide-up">
+            <div>
+                <a href="main.html"
+                    class="no-print inline-flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-indigo-600 mb-3 transition-colors uppercase tracking-widest border border-slate-200 px-3 py-1 rounded-full hover:border-indigo-200 hover:bg-indigo-50">
+                    <i class="fa-solid fa-arrow-left"></i> Return to HQ
+                </a>
+                <h1 class="text-4xl sm:text-6xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                    Bio<span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Audit</span>
+                    <span
+                        class="text-xs align-top bg-slate-900 text-white px-2 py-1 rounded ml-2 font-mono tracking-widest">v2.0</span>
+                </h1>
+                <p class="text-sm text-slate-500 font-bold mt-1 tracking-wide">CONFIDENTIAL WEEKLY REPORT</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right">
+                <div class="flex items-center justify-end gap-2 mb-1">
+                    <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse">
+                    </div>
+                    <p class="text-xs font-mono font-bold text-slate-600 uppercase">Subject Identified</p>
+                </div>
+                <p id="user-email" class="text-lg font-bold text-slate-900">--</p>
+                <div class="flex items-center justify-end gap-2 mt-1">
+                    <span id="status-badge"
+                        class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-200 uppercase tracking-wide">CALCULATING...</span>
+                    <p class="text-[10px] text-slate-400 uppercase font-mono"><span id="report-date">--</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP SECTION: SCORE & AI -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 slide-up delay-100">
+
+            <!-- HealthZen Score Card -->
+            <div
+                class="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200 border border-slate-100 flex flex-col items-center justify-center relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i
+                        class="fa-solid fa-trophy text-6xl text-indigo-500"></i></div>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Overall Performance</h3>
+
+                <div class="relative w-32 h-32">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-slate-100"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none" stroke="currentColor" stroke-width="2.5" />
+                        <path id="score-circle" class="text-indigo-600" stroke-dasharray="0, 100"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <span id="hz-score" class="text-4xl font-black text-slate-900">0</span>
+                        <span class="text-[9px] font-bold text-indigo-500 uppercase">Points</span>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-4 text-center px-4">Score based on consistency, macros &
+                    intensity.</p>
+            </div>
+
+            <!-- AI INSIGHTS TERMINAL -->
+            <div
+                class="lg:col-span-2 bg-slate-900 text-green-400 p-6 rounded-3xl shadow-2xl shadow-indigo-200 font-mono text-sm border border-slate-800 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-20">
+                </div>
+                <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-microchip animate-pulse"></i>
+                        <span class="uppercase font-bold tracking-widest text-xs">Dr. Explyra // Neural Core</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    </div>
+                </div>
+                <div id="ai-insights"
+                    class="space-y-2 leading-relaxed opacity-90 h-32 overflow-y-auto pr-2 scrollbar-hide">
+                    <span class="cursor">Initializing neural link...</span>
+                </div>
+                <div class="absolute right-4 bottom-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                    <i class="fa-solid fa-robot text-6xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 slide-up delay-200">
+            <!-- Avg Calories -->
+            <div class="glass p-5 rounded-3xl shadow-sm group hover:shadow-md transition-all">
+                <div class="flex justify-between items-start mb-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Avg</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 tracking-tight" id="avg-cals">0</h3>
+                <p class="text-xs text-slate-500 font-bold uppercase mt-1">Daily Intake</p>
+            </div>
+
+            <!-- Protein Score -->
+            <div class="glass p-5 rounded-3xl shadow-sm group hover:shadow-md transition-all">
+                <div class="flex justify-between items-start mb-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-dna"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Total</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 tracking-tight" id="total-protein">0g</h3>
+                <p class="text-xs text-slate-500 font-bold uppercase mt-1">Weekly Protein</p>
+            </div>
+
+            <!-- Water Intake (NEW) -->
+            <div class="glass p-5 rounded-3xl shadow-sm group hover:shadow-md transition-all">
+                <div class="flex justify-between items-start mb-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-500 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Avg</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 tracking-tight" id="avg-water">0</h3>
+                <p class="text-xs text-slate-500 font-bold uppercase mt-1">Glasses/Day</p>
+            </div>
+
+            <!-- Heart Health (Vitals) -->
+            <div class="glass p-5 rounded-3xl shadow-sm group hover:shadow-md transition-all">
+                <div class="flex justify-between items-start mb-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-lg shadow-sm group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Avg</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 tracking-tight" id="avg-hr">--</h3>
+                <p class="text-xs text-slate-500 font-bold uppercase mt-1">Resting BPM</p>
+            </div>
+        </div>
+
+        <!-- CHARTS SECTION: WORKOUT & VITALS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 slide-up delay-300">
+            <!-- Vitals Chart -->
+            <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-wave-square text-red-500"></i> Cardio-Vascular Trends
+                    </h3>
+                    <div class="flex gap-2">
+                        <span class="flex items-center gap-1 text-[10px] font-bold text-slate-400"><span
+                                class="w-2 h-2 rounded-full bg-red-400"></span> BPM</span>
+                        <span class="flex items-center gap-1 text-[10px] font-bold text-slate-400"><span
+                                class="w-2 h-2 rounded-full bg-slate-800"></span> SYS BP</span>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="vitalsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Workout Distribution -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col">
+                <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-emerald-500"></i> Training Split
+                </h3>
+                <div class="flex-1 flex items-center justify-center relative">
+                    <canvas id="workoutChart"></canvas>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                        <i class="fa-solid fa-person-running text-slate-200 text-4xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <p class="text-[10px] text-slate-400 uppercase">Dominant Style</p>
+                    <p class="font-bold text-slate-800" id="top-activity">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHARTS SECTION: NUTRITION -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 slide-up delay-400">
+            <!-- Calorie vs Burn Trend -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-scale-balanced text-indigo-500"></i> Energy Balance (7 Days)
+                </h3>
+                <div class="h-64">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Macronutrient Split -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-utensils text-yellow-500"></i> Nutrition Quality
+                </h3>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="qualityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAILED LEDGER -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden slide-up delay-400">
+            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-database text-slate-400"></i> Data Ledger
+                </h3>
+                <span
+                    class="text-[10px] font-bold bg-white border border-slate-200 text-slate-500 px-3 py-1 rounded-full uppercase tracking-wider">Encrypted
+                    Logs</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 font-bold tracking-wider">Date</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Net Intake</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Workout</th>
+                            <th class="px-6 py-4 font-bold tracking-wider">Vitals (BP/HR)</th>
+                            <th class="px-6 py-4 text-center font-bold tracking-wider">Water</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body" class="divide-y divide-slate-100">
+                        <!-- Rows injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer for Print -->
+        <div class="hidden print:block mt-10 pt-4 border-t border-slate-200 text-center">
+            <p class="text-xs text-slate-400 uppercase font-mono">Generated by Explyra Health Ecosystem • Mitanshu
+                Bhasin</p>
+        </div>
+
+    </div>
+
+    <!-- FLOATING CONTROLS -->
+    <div id="floating-controls" class="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+        <button onclick="window.print()"
+            class="w-14 h-14 bg-slate-900 text-white rounded-full shadow-2xl shadow-indigo-500/30 flex items-center justify-center hover:scale-110 hover:bg-black transition-all group relative">
+            <i class="fa-solid fa-print text-xl"></i>
+            <span
+                class="absolute right-16 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-bold">Download
+                Report</span>
+        </button>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase Config
+        let firebaseConfig;
+        if (typeof __firebase_config !== 'undefined') {
+            firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+            firebaseConfig = {
+                apiKey: "AIzaSyAoDQhHlUbiUl57azSrst5M2eGDeQ8EydA",
+                authDomain: "mitanshusupport.firebaseapp.com",
+                projectId: "mitanshusupport",
+                storageBucket: "mitanshusupport.firebasestorage.app",
+                messagingSenderId: "490917500459",
+                appId: "1:490917500459:web:139ebcf55996d4a28f3c6e"
+            };
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- AUTH & DATA FETCHING ---
+        const statusEl = document.getElementById('check-status');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                statusEl.innerText = "Access Granted. Decrypting logs...";
+                document.getElementById('user-email').innerText = user.email || "Agent-007";
+                document.getElementById('report-date').innerText = new Date().toLocaleDateString();
+
+                await generateReport(user.uid);
+
+                setTimeout(() => {
+                    document.getElementById('security-check').classList.add('hidden');
+                    document.getElementById('report-content').classList.remove('hidden');
+                }, 1000);
+            } else {
+                statusEl.innerText = "Protocol Failed. Redirecting...";
+                statusEl.classList.add('text-red-500');
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1500);
+            }
+        });
+
+        function getLast7Days() {
+            const dates = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const offset = d.getTimezoneOffset();
+                const localDate = new Date(d.getTime() - (offset * 60 * 1000));
+                dates.push(localDate.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+
+        async function generateReport(uid) {
+            const dates = getLast7Days();
+            const reportData = [];
+
+            const promises = dates.map(date => getDoc(doc(db, "artifacts", "healthzen-pro", "users", uid, "logs", date)).catch(e => null));
+            const fallbackPromises = dates.map(date => getDoc(doc(db, "users", uid, "logs", date)).catch(e => null));
+
+            let snaps = await Promise.all(promises);
+            if (!snaps[0]?.exists && !snaps[snaps.length - 1]?.exists) {
+                snaps = await Promise.all(fallbackPromises);
+            }
+
+            snaps.forEach((snap, index) => {
+                const date = dates[index];
+                if (snap && snap.exists()) {
+                    reportData.push({ date, ...snap.data() });
+                } else {
+                    reportData.push({
+                        date, foods: [], exercises: [], water: 0, intimacy: 0,
+                        bp: [], heartRate: []
+                    });
+                }
+            });
+
+            processData(reportData);
+        }
+
+        function processData(data) {
+            let totalCals = 0, totalBurn = 0, totalPro = 0, totalCarb = 0, totalFat = 0;
+            let totalMins = 0, totalWater = 0;
+            let hrSum = 0, hrCount = 0;
+            let workoutTypes = {};
+            let daysLogged = 0;
+
+            const tableBody = document.getElementById('logs-body');
+            tableBody.innerHTML = '';
+
+            const chartLabels = [];
+            const chartIn = [];
+            const chartOut = [];
+            const chartHR = [];
+            const chartBP = [];
+
+            [...data].reverse().forEach(day => {
+                const cals = day.foods ? day.foods.reduce((a, b) => a + (Number(b.calories) || 0), 0) : 0;
+                const burn = day.exercises ? day.exercises.reduce((a, b) => a + (Number(b.burned) || 0), 0) : 0;
+                const pro = day.foods ? day.foods.reduce((a, b) => a + (Number(b.protein) || 0), 0) : 0;
+                const carb = day.foods ? day.foods.reduce((a, b) => a + (Number(b.carbs) || 0), 0) : 0;
+                const fat = day.foods ? day.foods.reduce((a, b) => a + (Number(b.fat) || 0), 0) : 0;
+                const mins = day.exercises ? day.exercises.reduce((a, b) => a + (Number(b.duration) || 0), 0) : 0;
+                const water = day.water || 0;
+                const int = day.intimacy || 0;
+
+                if (cals > 0 || water > 0) daysLogged++;
+
+                // Process Workout Types
+                if (day.exercises) {
+                    day.exercises.forEach(ex => {
+                        const cat = ex.category || 'General';
+                        workoutTypes[cat] = (workoutTypes[cat] || 0) + 1;
+                    });
+                }
+
+                // Process Vitals
+                let dayBP = "-", dayHR = "-";
+                if (day.bp && day.bp.length > 0) {
+                    const lastBP = day.bp[day.bp.length - 1];
+                    dayBP = lastBP.sys ? `${lastBP.sys}/${lastBP.dia}` : lastBP;
+                }
+                if (day.heartRate && day.heartRate.length > 0) {
+                    const lastHR = day.heartRate[day.heartRate.length - 1];
+                    dayHR = lastHR.bpm || lastHR;
+                    hrSum += Number(dayHR);
+                    hrCount++;
+                }
+
+                totalCals += cals;
+                totalBurn += burn;
+                totalPro += pro;
+                totalCarb += carb;
+                totalFat += fat;
+                totalMins += mins;
+                totalWater += water;
+
+                const row = `
+                    <tr class="hover:bg-indigo-50/30 transition-colors border-b border-slate-50 last:border-0 group">
+                        <td class="px-6 py-4 font-mono text-slate-600 text-xs font-bold">${day.date.slice(5)}</td>
+                        <td class="px-6 py-4 font-bold text-slate-800">${Math.round(cals)} kcal</td>
+                        <td class="px-6 py-4">
+                            ${mins > 0 ? `<span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-md">${mins}m Active</span>` : '<span class="text-slate-300 text-xs">Rest</span>'}
+                        </td>
+                        <td class="px-6 py-4 text-xs font-mono text-slate-600">
+                            <span class="${dayBP !== '-' ? 'text-red-600 font-bold' : ''}">BP: ${dayBP}</span> <span class="text-slate-300">|</span> 
+                            <span class="${dayHR !== '-' ? 'text-red-500 font-bold' : ''}">HR: ${dayHR}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            ${water > 0 ? `<span class="bg-cyan-100 text-cyan-600 text-[10px] font-bold px-2 py-1 rounded-full"><i class="fa-solid fa-droplet"></i> ${water}</span>` : '<span class="text-slate-300">-</span>'}
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Prepare Chart Data
+            data.forEach(day => {
+                chartLabels.push(day.date.slice(5));
+                chartIn.push(day.foods ? day.foods.reduce((a, b) => a + (Number(b.calories) || 0), 0) : 0);
+                chartOut.push(day.exercises ? day.exercises.reduce((a, b) => a + (Number(b.burned) || 0), 0) : 0);
+
+                let hrVal = null, bpVal = null;
+                if (day.heartRate && day.heartRate.length > 0) hrVal = Number(day.heartRate[day.heartRate.length - 1].bpm || day.heartRate[day.heartRate.length - 1]);
+                if (day.bp && day.bp.length > 0) bpVal = Number(day.bp[day.bp.length - 1].sys || 120);
+                chartHR.push(hrVal);
+                chartBP.push(bpVal);
+            });
+
+            // Update KPI DOM
+            document.getElementById('avg-cals').innerText = Math.round(totalCals / 7);
+            document.getElementById('total-protein').innerText = Math.round(totalPro) + 'g';
+            document.getElementById('avg-water').innerText = (totalWater / 7).toFixed(1);
+            document.getElementById('avg-hr').innerText = hrCount > 0 ? Math.round(hrSum / hrCount) : "--";
+
+            // Top Activity
+            const topActivity = Object.entries(workoutTypes).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('top-activity').innerText = topActivity ? topActivity[0] : "None";
+
+            // Determine Status
+            const avgCals = totalCals / 7;
+            const avgPro = totalPro / 7;
+            const statusBadge = document.getElementById('status-badge');
+
+            if (avgCals > 2000 && avgPro > 80) {
+                statusBadge.innerText = "STATUS: ANABOLIC 🚀";
+                statusBadge.className = "bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded border border-green-200 uppercase tracking-wide";
+            } else if (avgCals < 1200) {
+                statusBadge.innerText = "STATUS: CATABOLIC ⚠️";
+                statusBadge.className = "bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200 uppercase tracking-wide";
+            } else {
+                statusBadge.innerText = "STATUS: MAINTENANCE";
+                statusBadge.className = "bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200 uppercase tracking-wide";
+            }
+
+            // Render Charts
+            renderTrendChart(chartLabels, chartIn, chartOut);
+            renderQualityChart(totalPro, totalCarb, totalFat);
+            renderVitalsChart(chartLabels, chartHR, chartBP);
+            renderWorkoutChart(workoutTypes);
+
+            // Generate AI Advice & Score
+            calculateScoreAndAdvice(daysLogged, avgCals, avgPro, totalMins, (totalWater / 7), hrCount > 0 ? (hrSum / hrCount) : 0);
+        }
+
+        function calculateScoreAndAdvice(days, cals, pro, mins, water, avgHR) {
+            const container = document.getElementById('ai-insights');
+
+            // --- 1. CALCULATE SCORE (Gamification) ---
+            let score = 0;
+            // Consistency (Max 30)
+            score += (days / 7) * 30;
+            // Protein (Max 30) - Target approx 100g
+            score += Math.min((pro / 100) * 30, 30);
+            // Activity (Max 20) - Target 150 mins
+            score += Math.min((mins / 150) * 20, 20);
+            // Hydration (Max 20) - Target 8 glasses
+            score += Math.min((water / 8) * 20, 20);
+
+            const finalScore = Math.round(score);
+
+            // Animate Score UI
+            const scoreEl = document.getElementById('hz-score');
+            const scoreCircle = document.getElementById('score-circle');
+            let currentScore = 0;
+            const interval = setInterval(() => {
+                if (currentScore >= finalScore) clearInterval(interval);
+                else {
+                    currentScore++;
+                    scoreEl.innerText = currentScore;
+                }
+            }, 20);
+            scoreCircle.style.strokeDasharray = `${finalScore}, 100`;
+            scoreCircle.style.stroke = finalScore > 80 ? '#22c55e' : (finalScore > 50 ? '#6366f1' : '#ef4444');
+
+            // --- 2. GENERATE REBELLIOUS AI ADVICE (English Persona) ---
+            let insights = [];
+
+            // Intro
+            insights.push(finalScore > 80 ? "🔥 <strong>System Status:</strong> You are absolutely CRUSHING it." : "⚠️ <strong>System Status:</strong> We need to talk, human.");
+
+            // Protein Roast/Praise
+            if (pro < 50) insights.push("🥩 <strong>Protein Critical:</strong> Are you allergic to gains? Eat some real food, man!");
+            else if (pro < 100) insights.push("ℹ️ <strong>Protein Check:</strong> Decent, but those muscles aren't gonna grow on air. Push it.");
+            else insights.push("🦍 <strong>Beast Mode:</strong> Protein intake is elite. Your muscles are throwing a party.");
+
+            // Workout Roast/Praise
+            if (mins < 30) insights.push("🛋️ <strong>Activity Alert:</strong> Couch potato mode detected. Go lift something heavy.");
+            else if (mins < 120) insights.push("🏋️ <strong>Grind Check:</strong> Good effort, but you can definitely go harder next week.");
+            else insights.push("⚡ <strong>Power Overload:</strong> Training volume is insane. Respect.");
+
+            // Water Roast/Praise
+            if (water < 4) insights.push("🌵 <strong>Hydration:</strong> You're dryer than a desert. DRINK WATER NOW.");
+            else insights.push("💧 <strong>Hydro-Homie:</strong> Hydration levels optimal. Kidney function approved.");
+
+            // Heart Rate Check
+            if (avgHR > 95) insights.push("❤️ <strong>Heart Rate:</strong> Whoa, ease up on the stress or caffeine. Engine runs hot.");
+
+            // Typing Effect
+            container.innerHTML = "";
+            let i = 0;
+            const typeWriter = () => {
+                if (i < insights.length) {
+                    const p = document.createElement('p');
+                    p.innerHTML = `> ${insights[i]}`;
+                    p.className = "mb-1 border-l-2 border-indigo-500 pl-2 text-slate-300";
+                    container.insertBefore(p, container.lastElementChild);
+                    i++;
+                    setTimeout(typeWriter, 800);
+                } else {
+                    document.querySelector('.cursor').style.display = 'none';
+                    const p = document.createElement('p');
+                    p.innerHTML = "> End of transmission.";
+                    p.className = "text-green-500 mt-2 font-bold animate-pulse";
+                    container.appendChild(p);
+                }
+            };
+            setTimeout(typeWriter, 500);
+        }
+
+        // --- CHARTS ---
+
+        function renderTrendChart(labels, dataIn, dataOut) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const gradIn = ctx.createLinearGradient(0, 0, 0, 300);
+            gradIn.addColorStop(0, '#6366f1'); gradIn.addColorStop(1, '#a855f7');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Intake', data: dataIn, backgroundColor: gradIn, borderRadius: 6, barPercentage: 0.6 },
+                        { label: 'Burned', data: dataOut, backgroundColor: '#cbd5e1', borderRadius: 6, barPercentage: 0.6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: '#f1f5f9' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderQualityChart(p, c, f) {
+            const ctx = document.getElementById('qualityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pro', 'Carb', 'Fat'],
+                    datasets: [{
+                        data: [p, c, f],
+                        backgroundColor: ['#3b82f6', '#eab308', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } }
+                }
+            });
+        }
+
+        function renderVitalsChart(labels, hrData, bpData) {
+            const ctx = document.getElementById('vitalsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Heart Rate',
+                            data: hrData,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#ef4444',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Sys BP',
+                            data: bpData,
+                            borderColor: '#1e293b',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#f1f5f9' }, suggestedMin: 60, suggestedMax: 140 },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderWorkoutChart(types) {
+            const ctx = document.getElementById('workoutChart').getContext('2d');
+            const labels = Object.keys(types);
+            const data = Object.values(types);
+
+            if (labels.length === 0) {
+                // Mock data for visual if empty
+                labels.push('No Data'); data.push(1);
+            }
+
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { ticks: { display: false }, grid: { color: '#f1f5f9' } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
