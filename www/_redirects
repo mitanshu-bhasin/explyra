@@ -1,5 +1,0 @@
-# 🚀 Global Redirect: Purane Netlify link se Naye Domain par
-https://ipecconsulting.netlify.app/* https://i.fouralpha.org/:splat    301!
-
-# 🌐 HTTP se HTTPS Redirect (Force)
-http://ipecconsulting.netlify.app/* https://i.fouralpha.org/:splat    301!

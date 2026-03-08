@@ -1,4 +1,4 @@
-/* Human.txt for IPEC Consulting */
+/* Human.txt for Explyra */
 /* See: http://humanstxt.org/ */
 
 /* TEAM */
@@ -7,11 +7,7 @@
   Site: https://mitanshubhasin.netlify.app/
   Location: India
 
-  Contributor: Sangeet Malhotra
-  Role: COO & Project Oversight
-
 /* THANKS */
-  International Process Excellence Council (IPEC) for the opportunity.
   Google Firebase for backend services.
   Tailwind CSS for streamlined styling.
 
@@ -19,6 +15,6 @@
   Standards: HTML5, CSS3, ES6+
   Components: Chart.js, html2pdf.js, ImageKit
   Software: VS Code
-  Hosted on: Vercel (https://i.fouralpha.org)
+  Hosted on: Vercel (https://explyra.pages.dev)
   Version: 2.1.0 "Phoenix Release"
   Last Update: 2026-02-15
