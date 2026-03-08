@@ -79,7 +79,7 @@ async function sendSystemEmail(type, data) {
 
 let userData = null;
 try {
-    const cached = localStorage.getItem('ipec_admin_data_cache');
+    const cached = localStorage.getItem('explyra_admin_data_cache');
     if (cached) {
         userData = JSON.parse(cached);
         currentUser = { email: userData.email, uid: userData.uid };
@@ -225,7 +225,7 @@ onAuthStateChanged(auth, async (user) => {
             if (!snap.empty) {
                 userData = snap.docs[0].data();
                 userData.docId = snap.docs[0].id; // crucial for updates
-                localStorage.setItem('ipec_admin_data_cache', JSON.stringify(userData));
+                localStorage.setItem('explyra_admin_data_cache', JSON.stringify(userData));
 
                 // --- MAINTENANCE MODE CHECK ---
                 try {
@@ -237,7 +237,7 @@ onAuthStateChanged(auth, async (user) => {
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
                                             <h1 style="font-size:2.5rem;font-weight:bold;margin-bottom:10px;">System Under Maintenance</h1>
-                                            <p style="color:#94a3b8;font-size:1.1rem;max-width:500px;">The IPEC Expense Manager is currently down for scheduled upgrades. Please try again later.</p>
+                                            <p style="color:#94a3b8;font-size:1.1rem;max-width:500px;">The EXPLYRA Expense Manager is currently down for scheduled upgrades. Please try again later.</p>
                                         </div>
                                     `;
                             await signOut(auth);
@@ -744,7 +744,7 @@ window.handleGoogleLogin = async () => {
 
 window.logout = async () => {
     if (await showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
-        localStorage.removeItem('ipec_admin_data_cache');
+        localStorage.removeItem('explyra_admin_data_cache');
         signOut(auth);
         showToast('Logged out successfully', 'info');
     }
@@ -892,7 +892,7 @@ window.checkAccess = async () => {
         } catch (e) { console.warn("Failed to fetch role permissions", e); }
     } else {
         // Give admins all permissions locally to bypass checks
-        userData.permissions = { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true };
+        userData.permissions = { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true };
     }
 
     // --- Role Based Access Control ---
@@ -917,6 +917,12 @@ window.checkAccess = async () => {
     if (userData.permissions?.viewSettings || userData.role === 'ADMIN') {
         document.getElementById('nav-settings').classList.remove('hidden');
         document.getElementById('nav-roles').classList.remove('hidden');
+    }
+
+    // Invoices
+    if (userData.permissions?.viewInvoices || ['ADMIN', 'FINANCE_MANAGER', 'ACCOUNTS'].includes(userData.role)) {
+        const invTab = document.getElementById('nav-invoices');
+        if (invTab) invTab.classList.remove('hidden');
     }
 
     // Audit Logs: Visible to all, but data is filtered by role inside the tab
@@ -1773,18 +1779,42 @@ async function renderSettings() {
     const content = document.getElementById('content-area');
 
     let settings = { companyName: '', logo: '', email: '', phone: '', address: '', taxId: '' };
+    let cmpData = {};
     try {
         const settingsRef = doc(db, "companies", userData.companyId, "settings", "branding");
         const settingsSnap = await safeFirebaseFetch(getDoc(settingsRef));
         if (settingsSnap.exists()) {
             settings = settingsSnap.data();
             settings.name = settings.companyName || settings.name || '';
-        } else {
-            // Fallback to company doc
-            const cmpSnap = await safeFirebaseFetch(getDoc(doc(db, "companies", userData.companyId)));
-            if (cmpSnap.exists()) settings.name = cmpSnap.data().name || '';
         }
-    } catch (e) { }
+
+        // Fetch primary company doc for plan and newer fields
+        const cmpSnap = await safeFirebaseFetch(getDoc(doc(db, "companies", userData.companyId)));
+        if (cmpSnap.exists()) {
+            cmpData = cmpSnap.data();
+            if (!settings.name) settings.name = cmpData.name || '';
+            if (!settings.logo) settings.logo = cmpData.logo || '';
+        }
+    } catch (e) { console.error("Error loading settings data", e); }
+
+    const isTrial = cmpData.plan === 'trial';
+
+    // Determine end date
+    let endsAtRaw = cmpData.planEndsAt || cmpData.trialEndsAt;
+    let endsAtDate = endsAtRaw?.toDate ? endsAtRaw.toDate() : (endsAtRaw ? new Date(endsAtRaw) : null);
+
+    const planName = cmpData.plan ? cmpData.plan.toUpperCase() : 'FREE';
+
+    // Formatting cost and duration
+    let costText = isTrial ? '₹0.00 (Free Trial)' : 'Standard Pricing';
+    if (cmpData.planCost !== undefined && cmpData.planCost !== null) {
+        costText = `₹${cmpData.planCost}`;
+    }
+
+    let durationText = '';
+    if (cmpData.planDurationMonths) {
+        durationText = ` for ${cmpData.planDurationMonths} Month(s)`;
+    }
 
     content.innerHTML = `
                         <div class="max-w-2xl mx-auto space-y-6">
@@ -1799,7 +1829,7 @@ async function renderSettings() {
 
                             <div>
                                 <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Company Logo</label>
-                                <div class="flex items-center gap-6">
+                                <div class="flex items-center gap-6 mb-3">
                                     <div class="w-24 h-24 bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center overflow-hidden relative group">
                                         <img id="logo-preview" src="${settings.logo ? settings.logo : ''}" class="${settings.logo ? '' : 'hidden'} w-full h-full object-contain p-2">
                                         <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition cursor-pointer" onclick="document.getElementById('logo-upload').click()">
@@ -1809,11 +1839,40 @@ async function renderSettings() {
                                     <div class="flex-1">
                                         <input type="file" id="logo-upload" class="hidden" accept="image/*" onchange="handleLogoPreview(this)">
                                         <button onclick="document.getElementById('logo-upload').click()" class="text-sm text-green-600 font-bold hover:underline mb-1">Upload New Logo</button>
-                                        <p class="text-xs text-slate-400">Recommended: 200x200px PNG. Max 1MB.</p>
-                                        <input type="hidden" id="logo-base64" value="${settings.logo || ''}">
+                                        <p class="text-xs text-slate-400 mb-2">Recommended: 200x200px PNG. Max 1MB.</p>
                                     </div>
                                 </div>
+                                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Or paste Logo URL</label>
+                                <input type="url" id="company-logo-url" value="${settings.logo || ''}" class="input-primary text-sm" placeholder="https://..." onchange="document.getElementById('logo-preview').src = this.value; document.getElementById('logo-preview').classList.remove('hidden'); document.getElementById('logo-base64').value = this.value;">
+                                <input type="hidden" id="logo-base64" value="${settings.logo || ''}">
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Subscription & Plan</h3>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase border border-green-200">${planName} PLAN</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Current Status</p>
+                                <p class="text-slate-800 dark:text-slate-100 font-semibold"><i class="fa-solid fa-circle-check text-green-500 mr-1"></i> Active Workspace</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Billing / Cost</p>
+                                <p class="text-slate-800 dark:text-slate-100 font-semibold">${costText}${durationText}</p>
+                            </div>
+                            ${endsAtDate ? `
+                            <div class="p-4 ${isTrial ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30' : 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800/30'} rounded-xl border md:col-span-2 flex items-start gap-3">
+                                <i class="fa-solid ${isTrial ? 'fa-clock text-amber-500' : 'fa-calendar-check text-blue-500'} mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-bold ${isTrial ? 'text-amber-800 dark:text-amber-400' : 'text-blue-800 dark:text-blue-400'}">${isTrial ? 'Trial Period' : 'Plan'} Ends On: ${endsAtDate.toLocaleDateString()}</p>
+                                    <p class="text-xs ${isTrial ? 'text-amber-700 dark:text-amber-500' : 'text-blue-700 dark:text-blue-500'} mt-1">${isTrial ? 'Upgrade your plan to ensure uninterrupted access.' : 'Your workspace is active until this billing cycle ends.'}</p>
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
                     </div>
 
@@ -1821,21 +1880,53 @@ async function renderSettings() {
                         <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Company Information</h3>
                         
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Email</label>
-                                <input type="email" id="company-email" value="${settings.email || ''}" class="input-primary" placeholder="info@company.com">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Domain</label>
+                                    <input type="text" id="company-domain" value="${cmpData.domain || ''}" class="input-primary" placeholder="acme.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Industry</label>
+                                    <select id="company-industry" class="input-primary">
+                                        <option value="Technology" ${cmpData.industry === 'Technology' ? 'selected' : ''}>Technology</option>
+                                        <option value="Finance" ${cmpData.industry === 'Finance' ? 'selected' : ''}>Finance</option>
+                                        <option value="Healthcare" ${cmpData.industry === 'Healthcare' ? 'selected' : ''}>Healthcare</option>
+                                        <option value="Education" ${cmpData.industry === 'Education' ? 'selected' : ''}>Education</option>
+                                        <option value="Retail" ${cmpData.industry === 'Retail' ? 'selected' : ''}>Retail</option>
+                                        <option value="Other" ${(cmpData.industry || 'Other') === 'Other' ? 'selected' : ''}>Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Company Size</label>
+                                    <select id="company-size" class="input-primary">
+                                        <option value="0-50" ${cmpData.size === '0-50' ? 'selected' : ''}>0 - 50 employees</option>
+                                        <option value="50-100" ${cmpData.size === '50-100' ? 'selected' : ''}>50 - 100 employees</option>
+                                        <option value="100-500" ${cmpData.size === '100-500' ? 'selected' : ''}>100 - 500 employees</option>
+                                        <option value="500+" ${cmpData.size === '500+' ? 'selected' : ''}>500+ employees</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Country</label>
+                                    <input type="text" id="company-country" value="${cmpData.country || ''}" class="input-primary" placeholder="India">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Tax ID / GST</label>
+                                    <input type="text" id="company-tax-id" value="${settings.taxId || ''}" class="input-primary" placeholder="GSTIN-123456789">
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Phone</label>
-                                <input type="text" id="company-phone" value="${settings.phone || ''}" class="input-primary" placeholder="+1 234 567 8900">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Email</label>
+                                    <input type="email" id="company-email" value="${settings.email || ''}" class="input-primary" placeholder="info@company.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Phone</label>
+                                    <input type="text" id="company-phone" value="${settings.phone || ''}" class="input-primary" placeholder="+1 234 567 8900">
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Address</label>
                                 <textarea id="company-address" class="input-primary h-20" placeholder="Company address...">${settings.address || ''}</textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Tax ID / GST</label>
-                                <input type="text" id="company-tax-id" value="${settings.taxId || ''}" class="input-primary" placeholder="GSTIN-123456789">
                             </div>
                         </div>
                     </div>
@@ -2891,8 +2982,15 @@ window.submitPaymentIssue = async (e) => {
 };
 
 window.saveAllSettings = async () => {
-    const name = document.getElementById('company-name').value;
-    const logo = document.getElementById('logo-base64').value;
+    const name = document.getElementById('company-name').value.trim();
+
+    // Logo comes from hidden input which updates via Logo URL or image picker
+    const logoUrlInput = document.getElementById('company-logo-url');
+    let logo = document.getElementById('logo-base64').value;
+    if (logoUrlInput && logoUrlInput.value) {
+        logo = logoUrlInput.value;
+    }
+
     const email = document.getElementById('company-email').value;
     const phone = document.getElementById('company-phone').value;
     const address = document.getElementById('company-address').value;
@@ -2901,8 +2999,17 @@ window.saveAllSettings = async () => {
     const receiptLimit = document.getElementById('receipt-limit').value;
     const emailNotifications = document.getElementById('email-notifications').checked;
 
+    // Fetch new inputs
+    const domain = document.getElementById('company-domain') ? document.getElementById('company-domain').value.trim() : '';
+    const industry = document.getElementById('company-industry') ? document.getElementById('company-industry').value : '';
+    const size = document.getElementById('company-size') ? document.getElementById('company-size').value : '';
+    const country = document.getElementById('company-country') ? document.getElementById('company-country').value.trim() : '';
+
     try {
-        await setDoc(doc(db, "companies", userData.companyId, "settings", "branding"), {
+        const promises = [];
+
+        // Save nested settings
+        promises.push(setDoc(doc(db, "companies", userData.companyId, "settings", "branding"), {
             companyName: name,
             logo,
             email,
@@ -2913,7 +3020,22 @@ window.saveAllSettings = async () => {
             receiptLimit: parseFloat(receiptLimit),
             emailNotifications,
             updatedAt: serverTimestamp()
-        }, { merge: true });
+        }, { merge: true }));
+
+        // Save core company document info
+        const companyUpdates = {};
+        if (name) companyUpdates.name = name;
+        if (logo) companyUpdates.logo = logo;
+        if (domain !== undefined) companyUpdates.domain = domain;
+        if (industry) companyUpdates.industry = industry;
+        if (size) companyUpdates.size = size;
+        if (country) companyUpdates.country = country;
+
+        if (Object.keys(companyUpdates).length > 0) {
+            promises.push(updateDoc(doc(db, "companies", userData.companyId), companyUpdates));
+        }
+
+        await Promise.all(promises);
 
         showToast('All settings updated successfully!', 'success');
         await loadCompanyBranding(userData.companyId);
@@ -3000,7 +3122,7 @@ window.exportReport = async (format) => {
                             </tfoot>
                         </table>
                         <div class="mt-8 text-xs text-slate-400 text-center">
-                            <p>CONFIDENTIAL | IPEC Consulting Expense Management System</p>
+                            <p>CONFIDENTIAL | Explyra Suite Expense Management System</p>
                         </div>
                     `;
 
@@ -5048,14 +5170,14 @@ window.downloadMyData = async () => {
             userProfile: userData,
             expenses: expenses,
             exportDate: new Date().toISOString(),
-            generatedBy: "IPEC Admin Portal"
+            generatedBy: "EXPLYRA Admin Portal"
         };
 
         // 3. Trigger Download
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `ipec_data_export_${userData.employeeId || 'user'}_${Date.now()}.json`);
+        downloadAnchor.setAttribute("download", `explyra_data_export_${userData.employeeId || 'user'}_${Date.now()}.json`);
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
@@ -5585,12 +5707,12 @@ window.renderRoles = async () => {
             { id: 'def-emp', name: 'EMPLOYEE', systemRole: true, description: 'Basic employee — can submit expense claims and view personal tasks', permissions: { viewApprovals: false, viewReports: false } },
             { id: 'def-mgr', name: 'MANAGER', systemRole: true, description: 'Team manager — approves team expense claims and assigns tasks', permissions: { viewApprovals: true, viewReports: true } },
             { id: 'def-smgr', name: 'SENIOR_MANAGER', systemRole: true, description: 'Senior manager — approves higher-value claims and manages users', permissions: { viewApprovals: true, viewReports: true, viewUsers: true } },
-            { id: 'def-fmgr', name: 'FINANCE_MANAGER', systemRole: true, description: 'Finance manager — reviews and approves financial claims', permissions: { viewApprovals: true, viewReports: true } },
+            { id: 'def-fmgr', name: 'FINANCE_MANAGER', systemRole: true, description: 'Finance manager — reviews and approves financial claims', permissions: { viewApprovals: true, viewReports: true, viewInvoices: true } },
             { id: 'def-hr', name: 'HR', systemRole: true, description: 'Human resources — manages employee records and user accounts', permissions: { viewApprovals: false, viewReports: false, viewUsers: true } },
-            { id: 'def-accts', name: 'ACCOUNTS', systemRole: true, description: 'Accounts team — processes approved claims for payment', permissions: { viewApprovals: true, viewReports: true } },
+            { id: 'def-accts', name: 'ACCOUNTS', systemRole: true, description: 'Accounts team — processes approved claims for payment', permissions: { viewApprovals: true, viewReports: true, viewInvoices: true } },
             { id: 'def-audit', name: 'AUDIT', systemRole: true, description: 'Auditor — reviews paid claims and generates audit reports', permissions: { viewApprovals: false, viewReports: true } },
             { id: 'def-trsy', name: 'TREASURY', systemRole: true, description: 'Treasury — handles final payment disbursement', permissions: { viewApprovals: true, viewReports: true } },
-            { id: 'def-admin', name: 'ADMIN', systemRole: true, description: 'Full administrator — complete system access and control', permissions: { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true } }
+            { id: 'def-admin', name: 'ADMIN', systemRole: true, description: 'Full administrator — complete system access and control', permissions: { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true } }
         ];
 
         // Merge: DB roles override defaults with same name, but unsaved defaults still appear
@@ -5696,6 +5818,9 @@ window.renderRoles = async () => {
                                 <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                                     <input type="checkbox" id="perm-view-settings" class="rounded text-green-600 focus:ring-green-500"> Can Access Company Settings
                                 </label>
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-invoices" class="rounded text-green-600 focus:ring-green-500"> Can Access Invoices
+                                </label>
                             </div>
                         </div>
 
@@ -5740,6 +5865,7 @@ window.showRoleModal = (roleData = null) => {
         document.getElementById('perm-view-reports').checked = roleData.permissions?.viewReports || false;
         document.getElementById('perm-view-users').checked = roleData.permissions?.viewUsers || false;
         document.getElementById('perm-view-settings').checked = roleData.permissions?.viewSettings || false;
+        document.getElementById('perm-view-invoices').checked = roleData.permissions?.viewInvoices || false;
     } else {
         document.getElementById('role-modal-title').textContent = "Create Custom Role";
         nameInput.value = '';
@@ -5752,6 +5878,7 @@ window.showRoleModal = (roleData = null) => {
         document.getElementById('perm-view-reports').checked = false;
         document.getElementById('perm-view-users').checked = false;
         document.getElementById('perm-view-settings').checked = false;
+        document.getElementById('perm-view-invoices').checked = false;
     }
 
     setTimeout(() => {
@@ -5784,7 +5911,8 @@ window.saveRole = async () => {
         viewApprovals: document.getElementById('perm-view-claims').checked,
         viewReports: document.getElementById('perm-view-reports').checked,
         viewUsers: document.getElementById('perm-view-users').checked,
-        viewSettings: document.getElementById('perm-view-settings').checked
+        viewSettings: document.getElementById('perm-view-settings').checked,
+        viewInvoices: document.getElementById('perm-view-invoices').checked
     };
 
     try {

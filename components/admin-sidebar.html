@@ -9,7 +9,7 @@
     <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-950 flex-shrink-0">
         <div class="flex items-center">
             <i class="fa-solid fa-bolt text-green-500 text-xl mr-3"></i>
-            <span class="font-bold text-lg tracking-tight" id="sidebar-company-name">IPEC <span
+            <span class="font-bold text-lg tracking-tight" id="sidebar-company-name">EXPLYRA <span
                     class="text-green-500">Expense Manager</span></span>
         </div>
         <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white"><i
@@ -97,6 +97,13 @@
             <span class="ml-3 font-medium text-sm">Task Manager</span>
         </button>
 
+        <button onclick="window.location.href='Ino software/ino.html'" id="nav-invoices"
+            class="nav-item hidden w-full flex items-center p-3 rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-enterprise"
+            data-tab="invoices">
+            <i class="fa-solid fa-file-invoice-dollar w-6 text-center group-hover:scale-110 transition"></i>
+            <span class="ml-3 font-medium text-sm">Invoices</span>
+        </button>
+
         <button onclick="switchTab('chat')" id="nav-chat"
             class="nav-item w-full flex items-center p-3 rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-enterprise"
             data-tab="chat">
@@ -151,13 +158,13 @@
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "IPEC Consulting",
+  "name": "Explyra Suite",
   "url": "https://i.fouralpha.org",
   "logo": "https://i.fouralpha.org/assets/images/explyra_logo.png",
   "sameAs": [
-    "https://ipecconsulting.org/",
-    "https://www.linkedin.com/company/ipec-consulting/",
-    "https://twitter.com/ipecconsulting"
+    "https://explyra.pages.dev/",
+    "https://www.linkedin.com/company/explyra-consulting/",
+    "https://twitter.com/explyraconsulting"
   ],
   "@id": "https://i.fouralpha.org/#organization"
 }
@@ -166,7 +173,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "IPEC Expense Manager",
+  "name": "EXPLYRA Expense Manager",
   "url": "https://i.fouralpha.org",
   "publisher": {
     "@id": "https://i.fouralpha.org/#organization"

@@ -223,22 +223,53 @@ window.toggleStatus = async (compId, newStatus) => {
 };
 
 window.openEditPlan = (compId, name, currentPlan) => {
+    const comp = allCompanies.find(c => c.id === compId) || {};
+
     document.getElementById("edit-plan-company-id").value = compId;
     document.getElementById("edit-plan-company-name").textContent = name;
     document.getElementById("edit-plan-select").value = currentPlan;
+
+    document.getElementById("edit-plan-cost").value = comp.planCost || '';
+    document.getElementById("edit-plan-duration").value = comp.planDurationMonths || '';
+
+    // We handle Trial Ends At or Plan Ends At based on what's available
+    let endsAt = comp.planEndsAt || comp.trialEndsAt;
+    if (endsAt) {
+        try {
+            const d = endsAt.toDate ? endsAt.toDate() : new Date(endsAt);
+            document.getElementById("edit-plan-end-date").value = d.toISOString().split('T')[0];
+        } catch (e) {
+            document.getElementById("edit-plan-end-date").value = '';
+        }
+    } else {
+        document.getElementById("edit-plan-end-date").value = '';
+    }
+
     document.getElementById("plan-modal").classList.remove("hidden");
 };
 
 document.getElementById("save-plan-btn")?.addEventListener("click", async () => {
     const compId = document.getElementById("edit-plan-company-id").value;
     const newPlan = document.getElementById("edit-plan-select").value;
+    const planCost = document.getElementById("edit-plan-cost").value;
+    const planDuration = document.getElementById("edit-plan-duration").value;
+    const endDateVal = document.getElementById("edit-plan-end-date").value;
     const btn = document.getElementById("save-plan-btn");
 
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
     try {
-        await updateDoc(doc(db, "companies", compId), {
-            plan: newPlan
-        });
+        const updateData = {
+            plan: newPlan,
+            planCost: planCost ? parseFloat(planCost) : null,
+            planDurationMonths: planDuration ? parseInt(planDuration) : null
+        };
+
+        if (endDateVal) {
+            updateData.planEndsAt = new Date(endDateVal);
+            updateData.trialEndsAt = new Date(endDateVal); // Keep both in sync for simplicity
+        }
+
+        await updateDoc(doc(db, "companies", compId), updateData);
         document.getElementById("plan-modal").classList.add("hidden");
         alert(`Company plan updated to ${newPlan.toUpperCase()}.`);
         loadExplyraData();

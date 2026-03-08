@@ -92,9 +92,9 @@
   "url": "https://i.fouralpha.org",
   "logo": "https://i.fouralpha.org/assets/images/explyra_logo.png",
   "sameAs": [
-    "https://ipecconsulting.org/",
-    "https://www.linkedin.com/company/ipec-consulting/",
-    "https://twitter.com/ipecconsulting"
+    "https://explyra.pages.dev/",
+    "https://www.linkedin.com/company/explyra-consulting/",
+    "https://twitter.com/explyraconsulting"
   ],
   "@id": "https://i.fouralpha.org/#organization"
 }
@@ -358,14 +358,14 @@
         const elAuthStatus = document.getElementById('auth-status');
 
         // State
-        let accessToken = localStorage.getItem('ipec_drive_token') || null;
-        let tokenExpiry = localStorage.getItem('ipec_drive_token_expiry') || 0;
+        let accessToken = localStorage.getItem('explyra_drive_token') || null;
+        let tokenExpiry = localStorage.getItem('explyra_drive_token_expiry') || 0;
         let uploadStartTime = 0;
         let cachedUser = null;
 
         try {
-            if (localStorage.getItem('ipec_drive_user')) {
-                cachedUser = JSON.parse(localStorage.getItem('ipec_drive_user'));
+            if (localStorage.getItem('explyra_drive_user')) {
+                cachedUser = JSON.parse(localStorage.getItem('explyra_drive_user'));
             }
         } catch (e) { }
 
@@ -373,9 +373,9 @@
         if (accessToken && Date.now() > parseInt(tokenExpiry)) {
             accessToken = null;
             cachedUser = null;
-            localStorage.removeItem('ipec_drive_token');
-            localStorage.removeItem('ipec_drive_token_expiry');
-            localStorage.removeItem('ipec_drive_user');
+            localStorage.removeItem('explyra_drive_token');
+            localStorage.removeItem('explyra_drive_token_expiry');
+            localStorage.removeItem('explyra_drive_user');
         }
 
         // Instant visual update if token in cache
@@ -395,11 +395,11 @@
                 accessToken = credential.accessToken;
 
                 // Cache token for 55 minutes
-                localStorage.setItem('ipec_drive_token', accessToken);
-                localStorage.setItem('ipec_drive_token_expiry', (Date.now() + 55 * 60 * 1000).toString());
+                localStorage.setItem('explyra_drive_token', accessToken);
+                localStorage.setItem('explyra_drive_token_expiry', (Date.now() + 55 * 60 * 1000).toString());
 
                 // Cache user profile
-                localStorage.setItem('ipec_drive_user', JSON.stringify({
+                localStorage.setItem('explyra_drive_user', JSON.stringify({
                     displayName: result.user.displayName,
                     email: result.user.email,
                     photoURL: result.user.photoURL
@@ -416,9 +416,9 @@
 
         document.getElementById('btn-logout').onclick = () => {
             signOut(auth).then(() => {
-                localStorage.removeItem('ipec_drive_token');
-                localStorage.removeItem('ipec_drive_token_expiry');
-                localStorage.removeItem('ipec_drive_user');
+                localStorage.removeItem('explyra_drive_token');
+                localStorage.removeItem('explyra_drive_token_expiry');
+                localStorage.removeItem('explyra_drive_user');
                 location.reload();
             });
         };
@@ -507,9 +507,9 @@
                         showStep('result');
                     } else if (xhr.status === 401) {
                         alert('Session expired. Please sign in again.');
-                        localStorage.removeItem('ipec_drive_token');
-                        localStorage.removeItem('ipec_drive_token_expiry');
-                        localStorage.removeItem('ipec_drive_user');
+                        localStorage.removeItem('explyra_drive_token');
+                        localStorage.removeItem('explyra_drive_token_expiry');
+                        localStorage.removeItem('explyra_drive_user');
                         signOut(auth).then(() => location.reload());
                     } else {
                         alert('Upload failed: ' + xhr.responseText);
@@ -556,23 +556,23 @@
 
         // --- RECENT LINKS ---
         function saveRecentLink(name, url) {
-            let links = JSON.parse(localStorage.getItem('ipec_recent_links') || '[]');
+            let links = JSON.parse(localStorage.getItem('explyra_recent_links') || '[]');
             links.unshift({ name, url, date: new Date().toISOString() });
             if (links.length > 5) links = links.slice(0, 5);
-            localStorage.setItem('ipec_recent_links', JSON.stringify(links));
+            localStorage.setItem('explyra_recent_links', JSON.stringify(links));
             loadRecentLinks();
         }
 
         window.clearRecentLinks = () => {
             // Simple clear without confirm for speed if user just clicks
-            localStorage.removeItem('ipec_recent_links');
+            localStorage.removeItem('explyra_recent_links');
             loadRecentLinks();
         };
 
         function loadRecentLinks() {
             const container = document.getElementById('recent-links-container');
             const list = document.getElementById('recent-links-list');
-            const links = JSON.parse(localStorage.getItem('ipec_recent_links') || '[]');
+            const links = JSON.parse(localStorage.getItem('explyra_recent_links') || '[]');
 
             if (links.length > 0) {
                 container.classList.remove('hidden');
@@ -632,7 +632,7 @@
                 new AISupport({
                     name: 'Visitor',
                     role: 'Guest',
-                    email: 'guest@ipec.org',
+                    email: 'guest@explyra.org',
                     department: 'Link Generator'
                 });
             }, 5000);

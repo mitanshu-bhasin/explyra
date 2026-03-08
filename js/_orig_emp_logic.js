@@ -98,7 +98,7 @@ try {
 let currentUser = null;
 let userData = null;
 try {
-    const cached = localStorage.getItem('ipec_emp_data_cache');
+    const cached = localStorage.getItem('explyra_emp_data_cache');
     if (cached) {
         userData = JSON.parse(cached);
         currentUser = { email: userData.email, uid: userData.uid };
@@ -602,7 +602,7 @@ window.toggleAuthMode = (mode) => {
         loginFooter.classList.remove('hidden');
         signupFooter.classList.add('hidden');
         googleBtn.classList.remove('hidden');
-        // title.textContent = "IPEC Expense Manager";
+        // title.textContent = "EXPLYRA Expense Manager";
     }
 };
 
@@ -753,7 +753,7 @@ window.toggleSignUp = async () => {
 
 window.handleLogout = async () => {
     if (await showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
-        localStorage.removeItem('ipec_emp_data_cache');
+        localStorage.removeItem('explyra_emp_data_cache');
         signOut(auth);
         showToast('Logged out successfully', 'info');
     }
@@ -2610,7 +2610,7 @@ onAuthStateChanged(auth, async (user) => {
 
             if (!snap.empty) {
                 userData = { ...snap.docs[0].data(), docId: snap.docs[0].id };
-                localStorage.setItem('ipec_emp_data_cache', JSON.stringify(userData));
+                localStorage.setItem('explyra_emp_data_cache', JSON.stringify(userData));
 
                 // --- MAINTENANCE MODE CHECK ---
                 try {
@@ -2622,7 +2622,7 @@ onAuthStateChanged(auth, async (user) => {
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
                                             <h1 style="font-size:2.5rem;font-weight:bold;margin-bottom:10px;">System Under Maintenance</h1>
-                                            <p style="color:#94a3b8;font-size:1.1rem;max-width:500px;">The IPEC Expense Manager is currently down for scheduled upgrades. Please try again later.</p>
+                                            <p style="color:#94a3b8;font-size:1.1rem;max-width:500px;">The EXPLYRA Expense Manager is currently down for scheduled upgrades. Please try again later.</p>
                                         </div>
                                     `;
                             await signOut(auth);

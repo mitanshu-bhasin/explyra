@@ -45,7 +45,7 @@
       "author": {
           "@type": "Organization",
           "name": "Explyra",
-          "url": "https://ipecconsulting.org"
+          "url": "https://explyra.pages.dev"
       }
     }
     </script>
@@ -355,7 +355,7 @@
                         Sign In
                     </button>
                     <div class="flex justify-between mt-3 text-xs">
-                        <a href="index.html" onclick="localStorage.removeItem('ipec_portal_preference')"
+                        <a href="index.html" onclick="localStorage.removeItem('explyra_portal_preference')"
                             class="text-slate-400 hover:text-green-600 transition">Back to Website</a>
                         <a href="support.html" class="text-green-500 hover:text-green-700 transition">Contact
                             Support</a>
@@ -579,7 +579,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <button id="btn-new-expense" onclick="openCreateModal('EXPENSE')"
                         class="group bg-slate-900 hover:bg-slate-800 dark:bg-green-600 dark:hover:bg-green-700 text-white p-4 rounded-2xl flex flex-col justify-between shadow-lg shadow-slate-200 dark:shadow-none transition transform hover:-translate-y-1 h-full">
                         <div class="flex justify-between items-start w-full">
@@ -615,6 +615,8 @@
                             </p>
                         </div>
                     </button>
+
+
                 </div>
             </div>
 
@@ -642,6 +644,10 @@
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Private Records •
                             Auto-Filtered (90 Days)</p>
                     </div>
+                    <button onclick="createPersonalVaultEntry()"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> New Expense
+                    </button>
                 </div>
 
                 <!-- Claims Section -->

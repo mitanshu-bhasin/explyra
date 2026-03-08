@@ -45,7 +45,7 @@
       "author": {
           "@type": "Organization",
           "name": "Explyra",
-          "url": "https://ipecconsulting.org"
+          "url": "https://explyra.pages.dev"
       }
     }
     </script>
@@ -83,7 +83,7 @@
                             800: '#065f46',
                             900: '#064e3b'
                         },
-                        ipec: {
+                        explyra: {
                             red: '#D93025',
                             green: '#1E8E3E',
                             dark: '#0F172A'
@@ -335,7 +335,7 @@
                         Sign In
                     </button>
                     <div class="flex justify-between mt-3 text-xs">
-                        <a href="index.html" onclick="localStorage.removeItem('ipec_portal_preference')"
+                        <a href="index.html" onclick="localStorage.removeItem('explyra_portal_preference')"
                             class="text-slate-400 hover:text-green-600 transition">Back to Website</a>
                         <a href="support.html" class="text-green-500 hover:text-green-700 transition">Contact
                             Support</a>
@@ -1234,7 +1234,7 @@
         let currentUser = null;
         let userData = null;
         try {
-            const cached = localStorage.getItem('ipec_emp_data_cache');
+            const cached = localStorage.getItem('explyra_emp_data_cache');
             if (cached) {
                 userData = JSON.parse(cached);
                 currentUser = { email: userData.email, uid: userData.uid };
@@ -1724,7 +1724,7 @@
 
         window.handleLogout = async () => {
             if (await showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
-                localStorage.removeItem('ipec_emp_data_cache');
+                localStorage.removeItem('explyra_emp_data_cache');
                 signOut(auth);
                 showToast('Logged out successfully', 'info');
             }
@@ -3475,7 +3475,7 @@
 
                     if (!snap.empty) {
                         userData = { ...snap.docs[0].data(), docId: snap.docs[0].id };
-                        localStorage.setItem('ipec_emp_data_cache', JSON.stringify(userData));
+                        localStorage.setItem('explyra_emp_data_cache', JSON.stringify(userData));
 
                         // --- MAINTENANCE MODE CHECK ---
                         try {

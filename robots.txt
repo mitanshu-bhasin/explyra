@@ -3,11 +3,8 @@ Allow: /
 Disallow: /sw.js
 Disallow: /admin.html
 Disallow: /emp.html
-Disallow: /company.html
-Disallow: /test.html
 Disallow: /_test.js
 Disallow: /_optimize.js
 Disallow: /.well-known/
 
 Sitemap: https://explyra.pages.dev/sitemap.xml
-Host: https://explyra.pages.dev

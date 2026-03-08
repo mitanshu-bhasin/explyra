@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:868468480650:android:d3e5a04e2b8a651f2feb73",
         "android_client_info": {
-          "package_name": "com.mitanshu.ipec"
+          "package_name": "com.mitanshu.explyra"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mitanshu.ipec",
+            "package_name": "com.mitanshu.explyra",
             "certificate_hash": "2076e0459a9cab282b54d19a56a49441ac7c019c"
           }
         },

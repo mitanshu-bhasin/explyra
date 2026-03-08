@@ -341,7 +341,7 @@ export class AISupport {
 
         let timestamps = [];
         try {
-            timestamps = JSON.parse(localStorage.getItem('ipec_ai_timestamps') || '[]');
+            timestamps = JSON.parse(localStorage.getItem('explyra_ai_timestamps') || '[]');
         } catch (e) { timestamps = []; }
 
         timestamps = timestamps.filter(t => now - t < TIME_FRAME);
@@ -353,7 +353,7 @@ export class AISupport {
         }
 
         timestamps.push(now);
-        localStorage.setItem('ipec_ai_timestamps', JSON.stringify(timestamps));
+        localStorage.setItem('explyra_ai_timestamps', JSON.stringify(timestamps));
 
         typing.style.display = 'flex';
         messagesEl.scrollTop = messagesEl.scrollHeight;
