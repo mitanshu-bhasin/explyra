@@ -54,7 +54,7 @@ window.initNotifications = async () => {
                 if (Notification.permission === 'granted') {
                     const opts = {
                         body: d.body,
-                        icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                        icon: 'assets/images/explyra_logo.png',
                         tag: change.doc.id,
                         requireInteraction: true
                     };

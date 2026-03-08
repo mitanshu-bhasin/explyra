@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Explyra Updates</title>
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+    <!-- Login Screen -->
+    <div id="login-screen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-md">
+        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full">
+            <div class="text-center mb-8">
+                <div
+                    class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 text-white text-2xl">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1 class="text-2xl font-bold">Admin Login</h1>
+                <p class="text-slate-500 text-sm">Explyra Updates Management</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+                    <input type="email" id="login-email"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        required placeholder="explyra@gmail.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password</label>
+                    <input type="password" id="login-password"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        required placeholder="••••••••">
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">Login
+                    to Dashboard</button>
+            </form>
+            <p id="login-error" class="text-red-500 text-sm mt-4 text-center hidden"></p>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Hidden until login) -->
+    <div id="admin-panel" class="hidden">
+        <header class="bg-white border-b sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl font-extrabold text-blue-600">Explyra Admin</span>
+                    <nav class="hidden md:flex gap-6 ml-8">
+                        <a href="index.html" class="text-slate-600 hover:text-blue-600 text-sm font-semibold">View
+                            Public Site</a>
+                        <a href="#" class="text-blue-600 text-sm font-semibold">Manage Updates</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="user-display" class="text-sm font-medium text-slate-600">explyra@gmail.com</span>
+                    <button onclick="handleLogout()" class="text-slate-400 hover:text-red-600 transition">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800">Company Updates</h2>
+                    <p class="text-slate-500">Manage announcements and product releases</p>
+                </div>
+                <button onclick="openUpdateModal()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fas fa-plus"></i> New Update
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Update</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Category</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Date</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="updates-list">
+                        <!-- Updates will be loaded here -->
+                    </tbody>
+                </table>
+                <div id="list-loader" class="p-8 text-center text-slate-500">
+                    <i class="fas fa-spinner fa-spin mr-2"></i> Loading updates...
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Update Modal -->
+    <div id="update-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex justify-between items-center sticky top-0 bg-white">
+                <h3 id="modal-title" class="text-xl font-bold">Create New Update</h3>
+                <button onclick="closeUpdateModal()" class="text-slate-400 hover:text-slate-600 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="update-form" class="p-6 space-y-4">
+                <input type="hidden" id="update-id">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Title</label>
+                    <input type="text" id="update-title"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required
+                        placeholder="New Developer Tools Released">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Category</label>
+                    <select id="update-category"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Update">Update</option>
+                        <option value="Announcement">Announcement</option>
+                        <option value="Release">Release</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Short Summary (SEO
+                        Description)</label>
+                    <textarea id="update-summary"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 h-20" required
+                        placeholder="A brief overview of the update..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Content (HTML
+                        supported)</label>
+                    <textarea id="update-content"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 h-40" required
+                        placeholder="Detailed information about the release..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Thumbnail URL</label>
+                    <input type="url" id="update-thumb-url"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required
+                        placeholder="https://example.com/image.jpg">
+                    <div id="thumb-preview" class="mt-2 hidden">
+                        <img src="" alt="Preview" class="w-32 aspect-video rounded-lg object-cover border">
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="update-published" class="w-4 h-4 text-blue-600 rounded">
+                    <label for="update-published" class="text-sm font-medium text-slate-700">Publish immediately</label>
+                </div>
+                <div class="flex gap-4 pt-4 border-t">
+                    <button type="button" onclick="closeUpdateModal()"
+                        class="flex-1 px-6 py-2 border rounded-lg font-bold text-slate-600 hover:bg-slate-50 transition">Cancel</button>
+                    <button type="submit"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition">Save
+                        Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <!-- Admin Logic -->
+    <script src="scripts/admin.js"></script>
+</body>
+
+</html>

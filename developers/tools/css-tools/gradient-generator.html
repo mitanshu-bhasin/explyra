@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator - Linear & Radial Gradients | Explyra</title>
+    <meta name="description"
+        content="Create beautiful CSS gradients visually. Generate linear and radial gradients with custom colors and angles. Free online designer tool by Explyra.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .preview-box {
+            width: 100%;
+            height: 150px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--bdr);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg3);
+            border-radius: 5px;
+            appearance: none;
+            outline: none;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / CSS Tools / Gradient Generator
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">CSS Gradient Generator</h1>
+                <p class="tool-desc">Design smooth linear or radial gradients and get the CSS code instantly.</p>
+            </div>
+
+            <div class="preview-box" id="preview"></div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label>Gradient Type</label>
+                    <select id="type">
+                        <option value="linear">Linear</option>
+                        <option value="radial">Radial</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Angle: <span id="valAngle">90</span>deg</label>
+                    <input type="range" id="angle" min="0" max="360" value="90">
+                </div>
+                <div class="input-group">
+                    <label>Color 1</label>
+                    <input type="color" id="color1" value="#1546C0" style="height: 40px; padding: 0;">
+                </div>
+                <div class="input-group">
+                    <label>Color 2</label>
+                    <input type="color" id="color2" value="#6D28D9" style="height: 40px; padding: 0;">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 20px;">
+                <label>Generated CSS</label>
+                <textarea id="output" readonly style="min-height: 80px;"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="copyBtn" class="btn btn-primary">Copy Gradient Code</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const preview = document.getElementById('preview');
+        const output = document.getElementById('output');
+        const ids = ['type', 'angle', 'color1', 'color2'];
+
+        function update() {
+            const type = document.getElementById('type').value;
+            const angle = document.getElementById('angle').value;
+            const c1 = document.getElementById('color1').value;
+            const c2 = document.getElementById('color2').value;
+
+            document.getElementById('valAngle').textContent = angle;
+
+            const grad = type === 'linear'
+                ? `background: linear-gradient(${angle}deg, ${c1}, ${c2});`
+                : `background: radial-gradient(circle, ${c1}, ${c2});`;
+
+            preview.style.background = grad.replace('background: ', '').replace(';', '');
+            output.value = grad;
+        }
+
+        ids.forEach(id => document.getElementById(id).addEventListener('input', update));
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+        });
+
+        update();
+    </script>
+</body>
+
+</html>

@@ -12,7 +12,7 @@ def inject_schema(directory, same_as_url, main_domain):
         "@type": "Organization",
         "name": "IPEC Consulting",
         "url": main_domain,
-        "logo": f"{main_domain}/assets/images/cropped-ipec-logo-32x32.png",
+        "logo": f"{main_domain}/assets/images/explyra_logo.png",
         "sameAs": [
             same_as_url,
             "https://www.linkedin.com/company/ipec-consulting/",

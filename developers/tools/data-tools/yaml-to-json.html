@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML to JSON Converter - Online Data Parser | Explyra</title>
+    <meta name="description"
+        content="Convert YAML configuration files to JSON format instantly. Simple, fast, and secure online YAML to JSON converter. Works entirely in your browser.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / Data Tools / YAML to JSON
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">YAML to JSON Converter</h1>
+                <p class="tool-desc">Parse YAML content into a structured JSON object.</p>
+            </div>
+
+            <div class="input-group">
+                <label for="input">Input YAML</label>
+                <textarea id="input" placeholder="server:&#10;  port: 8080&#10;  host: localhost"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="convertBtn" class="btn btn-primary">Convert to JSON</button>
+                <button id="copyBtn" class="btn btn-secondary">Copy JSON</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+            </div>
+
+            <div class="input-group">
+                <label for="output">Generated JSON</label>
+                <textarea id="output" readonly placeholder="JSON output will appear here..."
+                    style="font-family: monospace;"></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const convertBtn = document.getElementById('convertBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // Extremely simple YAML to JSON parser for basic structures
+        function yamlToJson(yaml) {
+            const lines = yaml.split('\n');
+            const result = {};
+            let currentObj = result;
+            const stack = [{ obj: result, indent: -1 }];
+
+            lines.forEach(line => {
+                if (!line.trim() || line.startsWith('#')) return;
+
+                const indent = line.search(/\S/);
+                const [key, ...valParts] = line.trim().split(':');
+                const value = valParts.join(':').trim();
+
+                while (stack.length > 1 && indent <= stack[stack.length - 1].indent) {
+                    stack.pop();
+                }
+
+                currentObj = stack[stack.length - 1].obj;
+
+                if (value === '') {
+                    const newObj = {};
+                    currentObj[key] = newObj;
+                    stack.push({ obj: newObj, indent: indent });
+                } else {
+                    let parsedVal = value;
+                    if (!isNaN(value) && value !== '') parsedVal = Number(value);
+                    if (value.toLowerCase() === 'true') parsedVal = true;
+                    if (value.toLowerCase() === 'false') parsedVal = false;
+
+                    currentObj[key] = parsedVal;
+                }
+            });
+            return JSON.stringify(result, null, 2);
+        }
+
+        convertBtn.addEventListener('click', () => {
+            const yamlText = input.value.trim();
+            if (!yamlText) return;
+            try {
+                output.value = yamlToJson(yamlText);
+            } catch (e) {
+                output.value = "Error parsing YAML. Note: This simple parser only supports basic key-value pairs and nesting.";
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy JSON', 2000);
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            input.value = '';
+            output.value = '';
+        });
+    </script>
+</body>
+
+</html>

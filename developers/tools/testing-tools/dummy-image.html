@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Image Generator - Placeholder Image Creator | Explyra</title>
+    <meta name="description"
+        content="Generate custom placeholder image URLs for your web designs. Choose size, background color, and text color. Fast and free online developer utility.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .preview-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 30px auto;
+            display: block;
+            border: 1px solid var(--bdr);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / Testing Tools / Dummy Image Generator
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">Dummy Image Generator</h1>
+                <p class="tool-desc">Create custom placeholder image URLs for your development and testing needs.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px;">
+                <div class="input-group">
+                    <label>Width (px)</label>
+                    <input type="number" id="width" value="600">
+                </div>
+                <div class="input-group">
+                    <label>Height (px)</label>
+                    <input type="number" id="height" value="400">
+                </div>
+                <div class="input-group">
+                    <label>Background Color</label>
+                    <input type="color" id="bgColor" value="#cccccc" style="height: 40px; padding: 0;">
+                </div>
+                <div class="input-group">
+                    <label>Text Color</label>
+                    <input type="color" id="textColor" value="#ffffff" style="height: 40px; padding: 0;">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Custom Text (Optional)</label>
+                <input type="text" id="customText" placeholder="e.g. Placeholder 600x400">
+            </div>
+
+            <div class="btn-row">
+                <button id="genBtn" class="btn btn-primary">Refresh Preview</button>
+                <button id="copyBtn" class="btn btn-secondary">Copy URL</button>
+            </div>
+
+            <img id="preview" src="" alt="Placeholder Preview" class="preview-img">
+
+            <div class="input-group">
+                <label>Generated Image URL</label>
+                <input type="text" id="output" readonly>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const preview = document.getElementById('preview');
+        const output = document.getElementById('output');
+
+        function update() {
+            const w = document.getElementById('width').value;
+            const h = document.getElementById('height').value;
+            const bg = document.getElementById('bgColor').value.substring(1);
+            const tc = document.getElementById('textColor').value.substring(1);
+            const text = encodeURIComponent(document.getElementById('customText').value || `${w} x ${h}`);
+
+            const url = `https://via.placeholder.com/${w}x${h}/${bg}/${tc}?text=${text}`;
+            preview.src = url;
+            output.value = url;
+        }
+
+        document.getElementById('genBtn').addEventListener('click', update);
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+        });
+
+        update();
+    </script>
+</body>
+
+</html>

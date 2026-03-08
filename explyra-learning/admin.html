@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Explyra Learning</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/learning-style.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            background: var(--bg2);
+            border-right: 1px solid var(--bdr);
+            padding: 2rem;
+        }
+
+        .admin-sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--blue);
+        }
+
+        .admin-nav {
+            list-style: none;
+        }
+
+        .admin-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav a {
+            display: block;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--ink3);
+            font-weight: 500;
+        }
+
+        .admin-nav a.active {
+            background: var(--blue-g);
+            color: var(--blue);
+        }
+
+        .admin-main {
+            padding: 4rem 5vw;
+            background: var(--surf);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .table-container {
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg3);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink4);
+        }
+
+        td {
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid var(--bdr);
+            font-size: 0.9rem;
+        }
+
+        .action-btn {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--blue);
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+
+        .action-btn.delete {
+            color: var(--rose);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--surf);
+            padding: 3rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: var(--s4);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h2><i>E</i> Admin Panel</h2>
+            <ul class="admin-nav">
+                <li><a href="#" class="active" onclick="switchTab('courses')">Manage Courses</a></li>
+                <li><a href="#" onclick="switchTab('students')">Manage Students</a></li>
+                <li><a href="#" onclick="switchTab('certs')">Recent Certificates</a></li>
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--bdr);">
+                <li><a href="index.html">Back to Site</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-main">
+            <div id="courses-tab">
+                <div class="admin-header">
+                    <h1>Manage Courses</h1>
+                    <button class="btn btn-primary" onclick="showModal('course-modal')">+ Add New Course</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Course Title</th>
+                                <th>Category</th>
+                                <th>Lessons</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="course-table-body">
+                            <!-- Courses injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="students-tab" style="display:none;">
+                <div class="admin-header">
+                    <h1>Students Overview</h1>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Courses Started</th>
+                                <th>Quizzes Passed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body">
+                            <!-- Mock student data -->
+                            <tr>
+                                <td>Mitanshu Bhasin</td>
+                                <td>3</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>Jane Doe</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Course Modal -->
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title" style="margin-bottom: 2rem;">Add New Course</h2>
+            <div class="form-group">
+                <label>Course Title</label>
+                <input type="text" id="c-title" placeholder="e.g. Master React">
+            </div>
+            <div class="form-group">
+                <label>Category Badge</label>
+                <input type="text" id="c-badge" placeholder="e.g. Development">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="c-desc" rows="3" placeholder="Course summary..."></textarea>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveCourse()">Save
+                    Course</button>
+                <button class="btn btn-outline" style="flex:1; justify-content:center;"
+                    onclick="hideModal('course-modal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/learning-core.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCourseTable();
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('main > div').forEach(div => div.style.display = 'none');
+            document.getElementById(tab + '-tab').style.display = 'block';
+            document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function renderCourseTable() {
+            const courses = ExplyraLearning.Courses.getAll();
+            const body = document.getElementById('course-table-body');
+            body.innerHTML = courses.map(c => `
+                <tr>
+                    <td><strong>${c.title}</strong></td>
+                    <td><span class="course-badge">${c.badge}</span></td>
+                    <td>${c.lessons.length}</td>
+                    <td>
+                        <span class="action-btn" onclick="editCourse('${c.id}')">Edit</span>
+                        <span class="action-btn delete" onclick="deleteCourse('${c.id}')">Delete</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function saveCourse() {
+            const title = document.getElementById('c-title').value;
+            const badge = document.getElementById('c-badge').value;
+            const desc = document.getElementById('c-desc').value;
+
+            if (!title) return;
+
+            const courses = ExplyraLearning.Courses.getAll();
+            const newCourse = {
+                id: title.toLowerCase().replace(/ /g, '-'),
+                title, badge, desc,
+                lessons: [], quiz: []
+            };
+
+            courses.push(newCourse);
+            localStorage.setItem('explyra_courses', JSON.stringify(courses));
+            renderCourseTable();
+            hideModal('course-modal');
+        }
+
+        function deleteCourse(id) {
+            if (confirm('Delete this course?')) {
+                const courses = ExplyraLearning.Courses.getAll().filter(c => c.id !== id);
+                localStorage.setItem('explyra_courses', JSON.stringify(courses));
+                renderCourseTable();
+            }
+        }
+    </script>
+</body>
+
+</html>

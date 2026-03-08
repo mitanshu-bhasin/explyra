@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "868468480650-vlieajr08tchsvbkjl343f90mjumn07a.apps.googleusercontent.com",
+          "client_id": "411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mitanshu.ipec",
@@ -22,7 +22,7 @@
           }
         },
         {
-          "client_id": "868468480650-g5epbbdedo7tu6oslhs2k7mgbf41fl1r.apps.googleusercontent.com",
+          "client_id": "411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "868468480650-g5epbbdedo7tu6oslhs2k7mgbf41fl1r.apps.googleusercontent.com",
+              "client_id": "411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

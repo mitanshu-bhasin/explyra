@@ -12,7 +12,7 @@ window.fetchPersonalVault = () => {
         window.vaultUnsub = null;
     }
 
-    const list = document.getElementById('personal-expenses-list');
+    const list = document.getElementById('expenses-list');
     if (list) list.innerHTML = '<div class="text-center text-slate-400 mt-4"><i class="fa-solid fa-circle-notch fa-spin"></i> Syncing Vault...</div>';
 
     const db = window.db;
@@ -60,7 +60,7 @@ window.updatePersonalStats = (used) => {
 };
 
 window.renderPersonalList = (items) => {
-    const list = document.getElementById('personal-expenses-list');
+    const list = document.getElementById('expenses-list');
     if (!list) return;
     list.innerHTML = '';
 

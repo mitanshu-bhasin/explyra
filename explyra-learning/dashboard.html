@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard — Explyra Learning</title>
+    <meta name="description"
+        content="Track your learning progress, view enrolled courses, and access your verified certificates on Explyra Learning.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/learning-style.css">
+    <style>
+        /* Inherit full design tokes */
+        :root {
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --bg3: #F1EFE9;
+            --bg4: #E9E6E0;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --bdr2: #CCC8C0;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --ink4: #939BAC;
+            --blue: #1546C0;
+            --blue2: #5B8AF5;
+            --blue-g: rgba(21, 70, 192, .08);
+            --blue-b: rgba(21, 70, 192, .2);
+            --teal: #047857;
+            --teal-g: rgba(4, 120, 87, .08);
+            --teal-b: rgba(4, 120, 87, .2);
+            --rose: #BE185D;
+            --rose-g: rgba(190, 24, 93, .08);
+            --rose-b: rgba(190, 24, 93, .2);
+            --s1: 0 1px 3px rgba(0, 0, 0, .06);
+            --s2: 0 4px 16px rgba(0, 0, 0, .08);
+            --s3: 0 12px 40px rgba(0, 0, 0, .10);
+            --s4: 0 24px 72px rgba(0, 0, 0, .12);
+            --r: 10px;
+            --t: .22s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --bg4: #1B2235;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, .07);
+            --bdr2: rgba(255, 255, 255, .14);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --ink4: #4E5A70;
+            --blue: #5B8AF5;
+            --blue2: #93B4FF;
+            --blue-g: rgba(91, 138, 245, .12);
+            --blue-b: rgba(91, 138, 245, .25);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.65;
+            overflow-x: hidden;
+            transition: background .4s, color .4s
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 5vw;
+            background: rgba(248, 247, 244, .9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--bdr);
+            transition: background .4s;
+            gap: 2rem
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(8, 11, 20, .88)
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0
+        }
+
+        .nav-logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .nav-logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.2;
+            stroke-linecap: round
+        }
+
+        .nav-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink)
+        }
+
+        .nav-sub {
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--blue);
+            background: var(--blue-g);
+            border: 1px solid var(--blue-b);
+            padding: .15rem .5rem;
+            border-radius: 4px
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+            list-style: none;
+            flex: 1;
+            justify-content: center
+        }
+
+        .nav-links a {
+            font-size: .82rem;
+            font-weight: 500;
+            color: var(--ink3);
+            transition: color var(--t)
+        }
+
+        .nav-links a:hover {
+            color: var(--ink)
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            flex-shrink: 0
+        }
+
+        .btn-sm {
+            padding: .5rem 1.1rem;
+            border-radius: var(--r);
+            font-size: .82rem;
+            font-weight: 600;
+            transition: all var(--t);
+            border: 1.5px solid var(--bdr2);
+            color: var(--ink2)
+        }
+
+        .btn-sm:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--blue-g)
+        }
+
+        /* Auth gating */
+        #login-gate {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 64px);
+            text-align: center;
+            padding: 5rem 5vw;
+            margin-top: 64px
+        }
+
+        #dashboard-content {
+            display: none;
+            margin-top: 64px
+        }
+
+        /* Page header */
+        .page-hd {
+            padding: 4rem 5vw 2rem;
+            border-bottom: 1px solid var(--bdr);
+            background: var(--bg2)
+        }
+
+        .page-hd h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700
+        }
+
+        .page-hd p {
+            color: var(--ink3);
+            margin-top: .4rem
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            padding: 3rem 5vw;
+            max-width: 900px
+        }
+
+        .stat-box {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            padding: 1.8rem
+        }
+
+        .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--blue)
+        }
+
+        .stat-lbl {
+            font-size: .82rem;
+            color: var(--ink3);
+            margin-top: .3rem
+        }
+
+        /* Courses grid */
+        .section {
+            padding: 0 5vw 4rem
+        }
+
+        .section-h {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            padding-top: 3rem
+        }
+
+        .crs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem
+        }
+
+        .crs-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            padding: 2rem;
+            transition: all .28s
+        }
+
+        .crs-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--s2)
+        }
+
+        .crs-badge {
+            display: inline-flex;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: .2rem .6rem;
+            border-radius: 4px;
+            margin-bottom: .8rem;
+            background: var(--blue-g);
+            color: var(--blue);
+            border: 1px solid var(--blue-b)
+        }
+
+        .crs-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: .8rem;
+            color: var(--ink)
+        }
+
+        .prog-bar {
+            height: 6px;
+            background: var(--bg3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: .6rem 0 .4rem
+        }
+
+        .prog-inner {
+            height: 100%;
+            background: var(--blue);
+            border-radius: 3px;
+            transition: width .5s ease
+        }
+
+        .prog-txt {
+            font-size: .75rem;
+            color: var(--ink4)
+        }
+
+        /* Certificates */
+        .cert-card {
+            background: var(--bg2);
+            border: 2px dashed var(--bdr2);
+            padding: 2rem;
+            border-radius: 14px;
+            text-align: center;
+            transition: all var(--t)
+        }
+
+        .cert-card:hover {
+            border-color: var(--blue);
+            transform: scale(1.02)
+        }
+
+        .cert-icon {
+            font-size: 2.5rem;
+            margin-bottom: .8rem
+        }
+
+        .cert-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: .4rem
+        }
+
+        .cert-date {
+            font-size: .78rem;
+            color: var(--ink4)
+        }
+
+        .cert-id {
+            font-size: .7rem;
+            color: var(--ink4);
+            margin-top: .3rem;
+            font-family: monospace
+        }
+
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            margin-top: 1.2rem;
+            padding: .55rem 1.2rem;
+            border-radius: var(--r);
+            font-size: .82rem;
+            font-weight: 600;
+            background: var(--blue);
+            color: #fff;
+            transition: all var(--t)
+        }
+
+        .btn-view:hover {
+            filter: brightness(1.08)
+        }
+
+        .empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--ink4)
+        }
+
+        .empty a {
+            display: inline-flex;
+            margin-top: 1.5rem;
+            padding: .65rem 1.5rem;
+            border-radius: var(--r);
+            font-size: .85rem;
+            font-weight: 600;
+            background: var(--blue);
+            color: #fff
+        }
+
+        /* User chip */
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            background: var(--bg3);
+            border: 1px solid var(--bdr2);
+            border-radius: 100px;
+            padding: .3rem .9rem .3rem .3rem
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: #fff;
+            font-size: .75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .user-chip-name {
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--ink2)
+        }
+
+        /* Theme toggle */
+        .theme-pill {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            background: var(--bg3);
+            border: 1px solid var(--bdr2);
+            border-radius: 100px;
+            padding: .3rem .5rem .3rem .7rem;
+            cursor: pointer;
+            transition: all var(--t)
+        }
+
+        .theme-pill:hover {
+            border-color: var(--blue)
+        }
+
+        .theme-pill-label {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--ink3);
+            letter-spacing: .05em
+        }
+
+        .theme-pill-toggle {
+            width: 32px;
+            height: 18px;
+            border-radius: 9px;
+            background: var(--bg4);
+            position: relative;
+            transition: background .3s
+        }
+
+        [data-theme="dark"] .theme-pill-toggle {
+            background: var(--blue)
+        }
+
+        .theme-pill-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        [data-theme="dark"] .theme-pill-toggle::before {
+            transform: translateX(14px)
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 3L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7z" />
+                    <path d="M9 12l2 2 4-4" />
+                </svg>
+            </div>
+            <span class="nav-logo-text">Explyra</span>
+            <span class="nav-sub">Learning</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Courses</a></li>
+            <li><a href="certificates/verify.html">Verify Certificate</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="theme-pill" id="theme-toggle">
+                <span class="theme-pill-label" id="theme-label">LIGHT</span>
+                <div class="theme-pill-toggle"></div>
+            </button>
+            <div id="auth-nav-dash"></div>
+        </div>
+    </nav>
+
+    <!-- NOT LOGGED IN STATE -->
+    <div id="login-gate">
+        <div style="font-size:3rem; margin-bottom:1.5rem">🔐</div>
+        <h2 style="font-family:'Playfair Display',serif; font-size:2rem; margin-bottom:1rem">Sign in to Access Dashboard
+        </h2>
+        <p style="color:var(--ink3); max-width:400px; margin:0 auto 2rem;">Track your course progress, resume learning,
+            and download your certifications.</p>
+        <a href="index.html"
+            style="display:inline-flex; padding:.8rem 2rem; border-radius:var(--r); background:var(--blue); color:#fff; font-weight:600; font-size:.9rem;">Go
+            to Explyra Learning →</a>
+    </div>
+
+    <!-- DASHBOARD (shown when logged in) -->
+    <div id="dashboard-content">
+        <div class="page-hd">
+            <div
+                style="max-width:1200px; margin:0 auto; padding:0 5vw; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div>
+                    <h1 id="welcome-msg">Welcome back</h1>
+                    <p>Continue your learning journey below.</p>
+                </div>
+                <button class="btn-sm"
+                    onclick="document.getElementById('profile-section').scrollIntoView({behavior:'smooth'})"
+                    style="background:var(--blue-g); color:var(--blue); border-color:var(--blue-b)">⚙️ Profile
+                    Settings</button>
+            </div>
+        </div>
+
+        <div style="max-width:1200px; margin:0 auto;">
+            <div class="stats-row" id="stats-row">
+                <div class="stat-box">
+                    <div class="stat-num" id="stat-courses">0</div>
+                    <div class="stat-lbl">Courses Started</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="stat-certs">0</div>
+                    <div class="stat-lbl">Certificates Earned</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="stat-lessons">0</div>
+                    <div class="stat-lbl">Lessons Completed</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-h">My Courses</h2>
+                <div class="crs-grid" id="enrolled-grid"></div>
+                <div class="empty" id="no-courses" style="display:none;">
+                    <p>You haven't started any courses yet.</p>
+                    <a href="index.html">Browse Courses →</a>
+                </div>
+            </div>
+
+            <div class="section"
+                style="background:var(--bg3); border-radius:24px; padding:3rem 4rem; margin:0 5vw 4rem;">
+                <h2 class="section-h" style="padding-top:0">My Certificates</h2>
+                <div class="crs-grid" id="certs-grid"></div>
+                <div class="empty" id="no-certs" style="display:none;">
+                    <p>Complete a course & pass the quiz to earn your certificate.</p>
+                </div>
+            </div>
+
+            <!-- PROFILE SETTINGS SECTION -->
+            <div class="section" id="profile-section"
+                style="margin:0 5vw 4rem; background:var(--surf); border:1px solid var(--bdr); border-radius:20px; padding:3rem;">
+                <h2 class="section-h" style="padding-top:0; margin-bottom:1.5rem;">Profile Settings</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:600px;">
+                    <div>
+                        <label
+                            style="display:block; font-size:.82rem; font-weight:600; color:var(--ink2); margin-bottom:.4rem;">Display
+                            Name</label>
+                        <input type="text" id="profile-name" placeholder="Your name"
+                            style="width:100%; padding:.75rem 1rem; border:1.5px solid var(--bdr2); border-radius:8px; background:var(--bg2); color:var(--ink); font-family:inherit; font-size:.9rem; outline:none; transition:.2s ease;"
+                            onfocus="this.style.borderColor='var(--blue)'; this.style.boxShadow='0 0 0 3px var(--blue-g)'"
+                            onblur="this.style.borderColor='var(--bdr2)'; this.style.boxShadow='none'">
+                    </div>
+                    <div>
+                        <label
+                            style="display:block; font-size:.82rem; font-weight:600; color:var(--ink2); margin-bottom:.4rem;">Email</label>
+                        <input type="email" id="profile-email" disabled
+                            style="width:100%; padding:.75rem 1rem; border:1.5px solid var(--bdr); border-radius:8px; background:var(--bg3); color:var(--ink4); font-family:inherit; font-size:.9rem; cursor:not-allowed;">
+                    </div>
+                </div>
+                <div style="margin-top:1.5rem; display:flex; gap:1rem; align-items:center;">
+                    <button id="save-profile-btn" onclick="saveProfile()"
+                        style="padding:.7rem 1.8rem; border-radius:8px; background:var(--blue); color:#fff; font-size:.85rem; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:.2s ease;">Save
+                        Changes</button>
+                    <span id="profile-saved-msg"
+                        style="font-size:.82rem; color:var(--teal); font-weight:600; display:none;">✓ Saved!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/learning-core.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig, 'learning');
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                showDashboard(user);
+            } else {
+                document.getElementById('login-gate').style.display = 'flex';
+                document.getElementById('dashboard-content').style.display = 'none';
+            }
+        });
+
+        function showDashboard(user) {
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+
+            const name = user.displayName || user.email.split('@')[0];
+            // Persist name for certificates
+            localStorage.setItem('explyra_user_name', name);
+
+            document.getElementById('welcome-msg').textContent = `Welcome back, ${name} 👋`;
+
+            // Profile settings
+            document.getElementById('profile-name').value = name;
+            document.getElementById('profile-email').value = user.email;
+
+            // Update nav
+            const initial = name[0].toUpperCase();
+            document.getElementById('auth-nav-dash').innerHTML = `
+                <div class="user-chip">
+                    <div class="user-avatar">${initial}</div>
+                    <span class="user-chip-name">${name}</span>
+                </div>
+                <button class="btn-sm" style="margin-left:.5rem" onclick="window.__doSignOut()">Sign Out</button>
+            `;
+
+            renderDashboard();
+        }
+
+        // Sign out
+        window.__doSignOut = async () => {
+            localStorage.removeItem('explyra_user_name');
+            await signOut(auth);
+            window.location.reload();
+        };
+
+        // Save profile (name change)
+        window.saveProfile = async () => {
+            const newName = document.getElementById('profile-name').value.trim();
+            if (!newName) return;
+            const btn = document.getElementById('save-profile-btn');
+            btn.textContent = 'Saving…';
+            btn.disabled = true;
+            try {
+                await updateProfile(auth.currentUser, { displayName: newName });
+                localStorage.setItem('explyra_user_name', newName);
+                // Update all existing certificates with new name
+                const certs = JSON.parse(localStorage.getItem('explyra_certificates') || '[]');
+                certs.forEach(c => c.studentName = newName);
+                localStorage.setItem('explyra_certificates', JSON.stringify(certs));
+
+                document.getElementById('welcome-msg').textContent = `Welcome back, ${newName} 👋`;
+                const initial = newName[0].toUpperCase();
+                document.querySelector('.user-chip-name').textContent = newName;
+                document.querySelector('.user-avatar').textContent = initial;
+
+                document.getElementById('profile-saved-msg').style.display = 'inline';
+                setTimeout(() => document.getElementById('profile-saved-msg').style.display = 'none', 3000);
+            } catch (e) {
+                alert('Error saving: ' + e.message);
+            }
+            btn.textContent = 'Save Changes';
+            btn.disabled = false;
+        };
+
+        function renderDashboard() {
+            const allCourses = ExplyraLearning.Courses.getAll();
+            const prog = JSON.parse(localStorage.getItem('explyra_user_progress') || '{}');
+            const courseMap = { 'agentic-ai': 'agentic-ai.html', 'seo-devs': 'seo-devs.html', 'web-hosting': 'web-hosting.html', 'firebase-hosting': 'firebase-hosting.html', 'frontend-fundamentals': 'frontend-fundamentals.html' };
+
+            const enrolledIds = Object.keys(prog);
+            document.getElementById('stat-courses').textContent = enrolledIds.length;
+
+            let totalLessons = 0;
+            if (enrolledIds.length === 0) {
+                document.getElementById('no-courses').style.display = 'block';
+            } else {
+                document.getElementById('enrolled-grid').innerHTML = enrolledIds.map(id => {
+                    const course = allCourses.find(c => c.id === id);
+                    if (!course) return '';
+                    const stats = ExplyraLearning.Courses.getProgress(id);
+                    totalLessons += stats.lessons.length;
+                    return `
+                        <div class="crs-card">
+                            <span class="crs-badge">${course.badge}</span>
+                            <h3 class="crs-title">${course.title}</h3>
+                            <div class="prog-bar"><div class="prog-inner" style="width:${stats.percent}%"></div></div>
+                            <p class="prog-txt">${Math.round(stats.percent)}% complete · ${stats.lessons.length}/${course.lessons.length} lessons</p>
+                            <a href="courses/${courseMap[id] || id + '.html'}" style="display:inline-flex; margin-top:1.5rem; padding:.6rem 1.4rem; border-radius:var(--r); background:var(--blue); color:#fff; font-size:.82rem; font-weight:600;">Resume →</a>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('stat-lessons').textContent = totalLessons;
+
+            // Certificates — show ALL certificates (not filtered by name)
+            const certs = JSON.parse(localStorage.getItem('explyra_certificates') || '[]');
+            document.getElementById('stat-certs').textContent = certs.length;
+            if (certs.length === 0) {
+                document.getElementById('no-certs').style.display = 'block';
+            } else {
+                document.getElementById('certs-grid').innerHTML = certs.map(c => `
+                    <div class="cert-card">
+                        <div class="cert-icon">🏆</div>
+                        <div class="cert-title">${c.courseName}</div>
+                        <div class="cert-date">Issued: ${c.date}</div>
+                        <div class="cert-id">${c.id}</div>
+                        <a href="certificates/generator.html?id=${c.id}" class="btn-view">View Certificate →</a>
+                    </div>
+                `).join('');
+            }
+        }
+    </script>
+    <script>
+        // Theme
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        document.getElementById('theme-label').textContent = saved.toUpperCase();
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.getElementById('theme-label').textContent = next.toUpperCase();
+        });
+    </script>
+</body>
+
+</html>

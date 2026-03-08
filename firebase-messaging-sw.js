@@ -22,8 +22,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || 'Explyra Notification';
     const notificationOptions = {
         body: payload.notification?.body || '',
-        icon: '/assets/images/cropped-ipec-logo-32x32.png',
-        badge: '/assets/images/cropped-ipec-logo-32x32.png',
+        icon: '/assets/images/explyra_logo.png',
+        badge: '/assets/images/explyra_logo.png',
         vibrate: [200, 100, 200],
         tag: payload.data?.type || 'general',
         data: payload.data || {}

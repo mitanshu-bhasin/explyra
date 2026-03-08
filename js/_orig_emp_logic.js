@@ -2751,7 +2751,7 @@ onAuthStateChanged(auth, async (user) => {
                                 if (Notification.permission === 'granted') {
                                     const opts = {
                                         body: d.body,
-                                        icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                        icon: 'assets/images/explyra_logo.png',
                                         tag: change.doc.id,
                                         vibrate: [200, 100, 200]
                                     };
@@ -2778,7 +2778,7 @@ onAuthStateChanged(auth, async (user) => {
                                         if (Notification.permission === 'granted') {
                                             const opts = {
                                                 body: data.lastMessage || 'New message',
-                                                icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                                icon: 'assets/images/explyra_logo.png',
                                                 vibrate: [200, 100, 200],
                                                 tag: change.doc.id,
                                                 renotify: true
@@ -2807,7 +2807,7 @@ onAuthStateChanged(auth, async (user) => {
                             if (data.email !== userData.email) {
                                 if (document.hidden || (typeof currentChatContext !== 'undefined' && currentChatContext !== 'global')) {
                                     if (Notification.permission === 'granted') {
-                                        const opts = { body: `${data.sender}: ${data.text}`, icon: 'assets/images/cropped-ipec-logo-32x32.png', tag: 'global_chat' };
+                                        const opts = { body: `${data.sender}: ${data.text}`, icon: 'assets/images/explyra_logo.png', tag: 'global_chat' };
                                         if (navigator.serviceWorker?.controller) {
                                             navigator.serviceWorker.ready.then(reg => reg.showNotification('Global Group Message', opts));
                                         } else {
@@ -2869,9 +2869,9 @@ window.fetchExpenses = () => {
                         const body = `Your claim "${d.title}" is now ${s}.`;
 
                         if (navigator.serviceWorker.controller) {
-                            navigator.serviceWorker.ready.then(r => r.showNotification(title, { body, icon: 'assets/images/cropped-ipec-logo-32x32.png', vibration: [200] }));
+                            navigator.serviceWorker.ready.then(r => r.showNotification(title, { body, icon: 'assets/images/explyra_logo.png', vibration: [200] }));
                         } else {
-                            new Notification(title, { body, icon: 'assets/images/cropped-ipec-logo-32x32.png' });
+                            new Notification(title, { body, icon: 'assets/images/explyra_logo.png' });
                         }
                     }
                 });

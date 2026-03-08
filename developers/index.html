@@ -4,381 +4,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explyra Developers — Power Tools for Modern Devs</title>
+    <title>Explyra Developer Tools Hub - Code Beautifiers, Generators & Converters</title>
+    <meta name="description"
+        content="A comprehensive suite of essential online developer tools by Explyra. Code beautifiers, CSS generators, JSON converters, and web utilities for modern developers.">
+    <meta name="keywords"
+        content="online developer tools, code beautifier, css generator, json converter, developer utilities, Explyra tools">
+
+    <!-- Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        :root {
-            --bg: #F8F7F4;
-            --bg2: #FFFFFF;
-            --bg3: #F1EFE9;
-            --bg4: #E9E6E0;
-            --surf: #FFFFFF;
-            --bdr: #E4E1DB;
-            --bdr2: #CCC8C0;
-            --ink: #0D1117;
-            --ink2: #2A3141;
-            --ink3: #586070;
-            --ink4: #939BAC;
-            --blue: #1546C0;
-            --blue-g: rgba(21, 70, 192, .08);
-            --blue-b: rgba(21, 70, 192, .2);
-            --purp: #6D28D9;
-            --purp-g: rgba(109, 40, 217, .08);
-            --purp-b: rgba(109, 40, 217, .2);
-            --r: 12px;
-            --t: .25s ease;
-            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
-            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
-        }
-
-        [data-theme="dark"] {
-            --bg: #080B14;
-            --bg2: #0E1220;
-            --bg3: #141928;
-            --bg4: #1B2235;
-            --surf: #141928;
-            --bdr: rgba(255, 255, 255, .07);
-            --bdr2: rgba(255, 255, 255, .14);
-            --ink: #EEF0F8;
-            --ink2: #C4CCDC;
-            --ink3: #8290A8;
-            --ink4: #4E5A70;
-            --blue: #5B8AF5;
-            --purp: #A78BFA;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--ink);
-            font-family: 'Outfit', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-            transition: background .4s, color .4s;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* NAV */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5vw;
-            background: rgba(var(--bg-rgb, 248, 247, 244), .8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--bdr);
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-
-        .nav-logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--blue);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-        }
-
-        .theme-toggle {
-            cursor: pointer;
-            padding: 8px 16px;
-            background: var(--bg3);
-            border: 1px solid var(--bdr2);
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all .2s;
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--blue);
-        }
-
-        /* HERO */
-        .hero {
-            padding: 120px 5vw 60px;
+        .hero-section {
+            padding: 80px 5vw 40px;
             text-align: center;
+            background: linear-gradient(180deg, var(--bg3) 0%, var(--bg) 100%);
         }
 
-        .hero-badge {
+        .hero-section h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+        }
+
+        .hero-section p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--ink3);
+            font-size: 1.1rem;
+        }
+
+        .tagline {
             display: inline-block;
-            padding: 4px 12px;
-            background: var(--purp-g);
-            border: 1px solid var(--purp-b);
-            color: var(--purp);
+            background: var(--blue-g);
+            color: var(--blue);
+            padding: 6px 16px;
             border-radius: 100px;
-            font-size: 0.7rem;
             font-weight: 700;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            color: var(--ink3);
-            max-width: 600px;
-            margin: 0 auto;
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        /* GRID */
-        .tools-grid {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 5vw;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .tool-card {
-            background: var(--surf);
-            border: 1px solid var(--bdr);
-            border-radius: var(--r);
-            padding: 2rem;
-            transition: all var(--t);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--purp);
-            box-shadow: var(--s3);
-        }
-
-        .tool-icon {
-            font-size: 2rem;
-            width: 56px;
-            height: 56px;
-            background: var(--bg3);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .tool-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .tool-desc {
-            font-size: 0.9rem;
-            color: var(--ink3);
-            font-weight: 300;
-            flex-grow: 1;
-        }
-
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--blue);
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-top: 1rem;
-            transition: gap 0.2s;
-        }
-
-        .tool-card:hover .tool-link {
-            gap: 0.8rem;
-        }
-
-        footer {
-            text-align: center;
-            padding: 60px 5vw;
-            border-top: 1px solid var(--bdr);
-            color: var(--ink4);
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 640px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .tools-grid {
-                grid-template-columns: 1fr;
-            }
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
-    <nav>
-        <a href="../index.html" class="nav-logo">
-            <div class="nav-logo-icon">E</div>
-            <span>Explyra Devs</span>
-        </a>
-        <div class="theme-toggle" id="themeToggle">Light</div>
-    </nav>
 
-    <section class="hero">
-        <div class="hero-badge">Developer Suite</div>
-        <h1>Everything you need,<br><em>in one place.</em></h1>
-        <p>A collection of high-performance, client-side tools designed to speed up your workflow. No ads, no tracking,
-            just utility.</p>
+    <header>
+        <a href="/" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+        <div style="flex:1"></div>
+        <nav style="display: flex; gap: 20px;">
+            <a href="/" style="font-size: 0.85rem; font-weight: 500;">Main Site</a>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <span class="tagline">The Ultimate Utility Kit</span>
+        <h1 class="animate-fade">Developer Tools Hub</h1>
+        <p class="animate-fade" style="animation-delay: 0.1s;">Free, fast, and secure client-side tools to speed up your
+            workflow. No data ever leaves your browser.</p>
     </section>
 
-    <main class="tools-grid">
-        <!-- JSON Formatter -->
-        <a href="json-formatter/index.html" class="tool-card">
-            <div class="tool-icon">JSON</div>
-            <h3 class="tool-title">JSON Formatter</h3>
-            <p class="tool-desc">Beautify, minify, and validate your JSON data instantly.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+    <main class="container">
 
-        <!-- Base64 -->
-        <a href="base64-tool/index.html" class="tool-card">
-            <div class="tool-icon">B64</div>
-            <h3 class="tool-title">Base64 Tool</h3>
-            <p class="tool-desc">Encode and decode text to and from Base64 format.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+        <!-- Explyra Originals -->
+        <h2 class="category-title">⚡ Explyra Originals</h2>
+        <div class="tool-grid">
+            <a href="code-minifier/index.html" class="grid-card">
+                <h3>Code Minifier</h3>
+                <p>Compress HTML, CSS, or JavaScript code for better performance with size reduction stats.</p>
+            </a>
+            <a href="hash-generator/index.html" class="grid-card">
+                <h3>Hash Generator</h3>
+                <p>Generate SHA-256, SHA-1, and other hashes securely using your browser's Crypto API.</p>
+            </a>
+            <a href="password-generator/index.html" class="grid-card">
+                <h3>Password Generator</h3>
+                <p>Create strong, random passwords with customizable length and character options.</p>
+            </a>
+            <a href="link-shortener/index.html" class="grid-card">
+                <h3>Link Shortener</h3>
+                <p>Shorten long URLs into clean, professional short links powered by LinkShortify.</p>
+            </a>
+            <a href="base64-tool/index.html" class="grid-card">
+                <h3>Base64 Encoder/Decoder</h3>
+                <p>Encode text to Base64 or decode Base64 back to plain text instantly.</p>
+            </a>
+            <a href="json-formatter/index.html" class="grid-card">
+                <h3>JSON Formatter</h3>
+                <p>Validate, format, and beautify JSON data with syntax highlighting.</p>
+            </a>
+            <a href="url-encoder/index.html" class="grid-card">
+                <h3>URL Encoder/Decoder</h3>
+                <p>Encode or decode URL strings for safe transmission over the web.</p>
+            </a>
+            <a href="regex-tester/index.html" class="grid-card">
+                <h3>Regex Tester</h3>
+                <p>Test and debug regular expressions with real-time match highlighting.</p>
+            </a>
+            <a href="code-playground/index.html" class="grid-card">
+                <h3>Code Playground</h3>
+                <p>Write and test HTML, CSS, and JavaScript code live in your browser.</p>
+            </a>
+            <a href="fake-data-generator/index.html" class="grid-card">
+                <h3>Fake Data Generator</h3>
+                <p>Generate realistic fake data like names, emails, and addresses for testing.</p>
+            </a>
+            <a href="snippets/index.html" class="grid-card">
+                <h3>Code Snippets</h3>
+                <p>Browse and copy curated code snippets for common development patterns.</p>
+            </a>
+            <a href="resources/index.html" class="grid-card">
+                <h3>Developer Resources</h3>
+                <p>Curated links and references to essential developer documentation and tools.</p>
+            </a>
+        </div>
 
-        <!-- URL Encoder -->
-        <a href="url-encoder/index.html" class="tool-card">
-            <div class="tool-icon">URL</div>
-            <h3 class="tool-title">URL Encoder</h3>
-            <p class="tool-desc">Safely encode and decode URLs for web use.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+        <!-- Beautifier Tools -->
+        <h2 class="category-title">Beautifier Tools</h2>
+        <div class="tool-grid">
+            <a href="tools/beautifier-tools/html-beautifier.html" class="grid-card">
+                <h3>HTML Beautifier</h3>
+                <p>Clean and format messy HTML code with proper indentation and styling.</p>
+            </a>
+            <a href="tools/beautifier-tools/css-beautifier.html" class="grid-card">
+                <h3>CSS Beautifier</h3>
+                <p>Format CSS stylesheets to make them readable and consistent.</p>
+            </a>
+            <a href="tools/beautifier-tools/js-beautifier.html" class="grid-card">
+                <h3>JavaScript Beautifier</h3>
+                <p>Clean up obfuscated or minified JavaScript with one click.</p>
+            </a>
+        </div>
 
-        <!-- Regex Tester -->
-        <a href="regex-tester/index.html" class="tool-card">
-            <div class="tool-icon">RE</div>
-            <h3 class="tool-title">Regex Tester</h3>
-            <p class="tool-desc">Test and debug your regular expressions with live matching.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+        <!-- Web Development Tools -->
+        <h2 class="category-title">Web Development</h2>
+        <div class="tool-grid">
+            <a href="tools/web-tools/meta-tag-generator.html" class="grid-card">
+                <h3>Meta Tag Generator</h3>
+                <p>Generate SEO-friendly meta tags for your website headers.</p>
+            </a>
+            <a href="tools/web-tools/open-graph-generator.html" class="grid-card">
+                <h3>Open Graph Generator</h3>
+                <p>Create social media preview tags for Facebook, LinkedIn, and Twitter.</p>
+            </a>
+            <a href="tools/web-tools/robots-txt-generator.html" class="grid-card">
+                <h3>Robots.txt Generator</h3>
+                <p>Easily create robots.txt files to guide search engine crawlers.</p>
+            </a>
+            <a href="tools/web-tools/sitemap-generator.html" class="grid-card">
+                <h3>Sitemap.xml Generator</h3>
+                <p>Generate XML sitemaps to help search engines index your site.</p>
+            </a>
+            <a href="tools/web-tools/htaccess-generator.html" class="grid-card">
+                <h3>.htaccess Generator</h3>
+                <p>Generate common Apache configuration rules for redirects and security.</p>
+            </a>
+        </div>
 
-        <!-- Code Minifier -->
-        <a href="code-minifier/index.html" class="tool-card">
-            <div class="tool-icon">MIN</div>
-            <h3 class="tool-title">Code Minifier</h3>
-            <p class="tool-desc">Compress HTML, CSS, and JS to reduce file size.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+        <!-- Data Conversion Tools -->
+        <h2 class="category-title">Data Conversion</h2>
+        <div class="tool-grid">
+            <a href="tools/data-tools/csv-to-json.html" class="grid-card">
+                <h3>CSV to JSON</h3>
+                <p>Convert structured CSV data into clean JSON format for APIs.</p>
+            </a>
+            <a href="tools/data-tools/json-to-csv.html" class="grid-card">
+                <h3>JSON to CSV</h3>
+                <p>Transform JSON objects into downloadable CSV files.</p>
+            </a>
+            <a href="tools/data-tools/json-to-yaml.html" class="grid-card">
+                <h3>JSON to YAML</h3>
+                <p>Convert JSON data to YAML format for configuration files.</p>
+            </a>
+            <a href="tools/data-tools/yaml-to-json.html" class="grid-card">
+                <h3>YAML to JSON</h3>
+                <p>Parse YAML configurations into JSON objects.</p>
+            </a>
+        </div>
 
-        <!-- Hash Gen -->
-        <a href="hash-generator/index.html" class="tool-card">
-            <div class="tool-icon">#</div>
-            <h3 class="tool-title">Hash Generator</h3>
-            <p class="tool-desc">Generate MD5, SHA-1, and SHA-256 hashes for any text.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+        <!-- CSS Design Tools -->
+        <h2 class="category-title">CSS Design Tools</h2>
+        <div class="tool-grid">
+            <a href="tools/css-tools/box-shadow-generator.html" class="grid-card">
+                <h3>Box Shadow Generator</h3>
+                <p>Visual tool for creating complex CSS box shadows with live preview.</p>
+            </a>
+            <a href="tools/css-tools/gradient-generator.html" class="grid-card">
+                <h3>CSS Gradient Generator</h3>
+                <p>Create beautiful linear and radial gradients with CSS code export.</p>
+            </a>
+            <a href="tools/css-tools/border-radius-generator.html" class="grid-card">
+                <h3>Border Radius Generator</h3>
+                <p>Fine-tune individual corner radii for your design elements.</p>
+            </a>
+            <a href="tools/css-tools/clip-path-generator.html" class="grid-card">
+                <h3>CSS Clip Path Generator</h3>
+                <p>Visual editor for complex CSS clip-path shapes and polygons.</p>
+            </a>
+        </div>
 
-        <!-- Password Gen -->
-        <a href="password-generator/index.html" class="tool-card">
-            <div class="tool-icon">*</div>
-            <h3 class="tool-title">Password Gen</h3>
-            <p class="tool-desc">Create strong, secure random passwords with custom rules.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
+        <!-- Testing Tools -->
+        <h2 class="category-title">Testing & Utilities</h2>
+        <div class="tool-grid">
+            <a href="tools/testing-tools/lorem-ipsum.html" class="grid-card">
+                <h3>Lorem Ipsum Generator</h3>
+                <p>Generate placeholder text for your design mockups and prototypes.</p>
+            </a>
+            <a href="tools/testing-tools/dummy-image.html" class="grid-card">
+                <h3>Dummy Image Generator</h3>
+                <p>Generate placeholder image URLs with custom sizes and colors.</p>
+            </a>
+            <a href="tools/testing-tools/http-status-lookup.html" class="grid-card">
+                <h3>HTTP Status Lookup</h3>
+                <p>Quick reference for HTTP response status codes and their meanings.</p>
+            </a>
+            <a href="tools/testing-tools/user-agent-parser.html" class="grid-card">
+                <h3>User Agent Parser</h3>
+                <p>Analyze and decode browser user agent strings instantly.</p>
+            </a>
+        </div>
 
-        <!-- Fake Data -->
-        <a href="fake-data-generator/index.html" class="tool-card">
-            <div class="tool-icon">👤</div>
-            <h3 class="tool-title">Fake Data</h3>
-            <p class="tool-desc">Generate mock names, emails, and addresses for testing.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
-
-        <!-- Playground -->
-        <a href="code-playground/index.html" class="tool-card">
-            <div class="tool-icon">IDE</div>
-            <h3 class="tool-title">Code Playground</h3>
-            <p class="tool-desc">Live HTML, CSS, and JS editor with instant preview.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
-
-        <!-- Link Shortener -->
-        <a href="link-shortener/index.html" class="tool-card">
-            <div class="tool-icon">🔗</div>
-            <h3 class="tool-title">Link Shortener</h3>
-            <p class="tool-desc">Create short, manageable links with advanced tracking features.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
-
-        <!-- Snippets -->
-        <a href="snippets/index.html" class="tool-card">
-            <div class="tool-icon">📋</div>
-            <h3 class="tool-title">Snippets Library</h3>
-            <p class="tool-desc">A curated collection of reusable UI components.</p>
-            <span class="tool-link">Use Tool <span>→</span></span>
-        </a>
-
-        <!-- Resources -->
-        <a href="resources/index.html" class="tool-card">
-            <div class="tool-icon">📚</div>
-            <h3 class="tool-title">Dev Resources</h3>
-            <p class="tool-desc">Useful libraries, frameworks, and cheat sheets for devs.</p>
-            <span class="tool-link">View Resources <span>→</span></span>
-        </a>
     </main>
 
-    <footer>
-        <p>© 2026 Explyra · Built with vision by Mitanshu Bhasin · All rights reserved.</p>
+    <footer class="footer">
+        <p>&copy; 2026 Explyra Suite. All rights reserved.</p>
+        <p style="margin-top: 10px;">Built for developers, by developers.</p>
     </footer>
 
     <script>
-        const html = document.documentElement;
-        const toggle = document.getElementById('themeToggle');
-
-        const setTheme = (theme) => {
-            html.setAttribute('data-theme', theme);
-            toggle.textContent = theme === 'dark' ? 'Dark' : 'Light';
-            localStorage.setItem('explyra-theme', theme);
-        };
-
-        const currentTheme = localStorage.getItem('explyra-theme') || 'light';
-        setTheme(currentTheme);
-
-        toggle.addEventListener('click', () => {
-            const nextTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            setTheme(nextTheme);
-        });
+        // Simple theme toggle logic if needed in future
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // document.documentElement.setAttribute('data-theme', 'dark');
+        }
     </script>
 </body>
 
