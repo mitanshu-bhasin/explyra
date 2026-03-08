@@ -13,4 +13,4 @@ Disallow: /orig_emp.html
 Disallow: /.well-known/
 Disallow: /js/
 
-Sitemap: https://explyra.pages.dev/sitemap.xml
+Sitemap: https://explyra.me/sitemap.xml

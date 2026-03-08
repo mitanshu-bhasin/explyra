@@ -3,31 +3,31 @@
 
     <!-- === CORE PAGES === -->
     <url>
-        <loc>https://explyra.pages.dev/</loc>
+        <loc>https://explyra.me/</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/pricing.html</loc>
+        <loc>https://explyra.me/pricing.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/app.html</loc>
+        <loc>https://explyra.me/app.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/login.html</loc>
+        <loc>https://explyra.me/login.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/signup.html</loc>
+        <loc>https://explyra.me/signup.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -35,13 +35,13 @@
 
     <!-- === TEAM / ABOUT === -->
     <url>
-        <loc>https://explyra.pages.dev/team.html</loc>
+        <loc>https://explyra.me/team.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/mitanshu.html</loc>
+        <loc>https://explyra.me/mitanshu.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
@@ -49,13 +49,13 @@
 
     <!-- === DONATION & CONTACT === -->
     <url>
-        <loc>https://explyra.pages.dev/donation.html</loc>
+        <loc>https://explyra.me/donation.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/contact.html</loc>
+        <loc>https://explyra.me/contact.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
@@ -63,13 +63,13 @@
 
     <!-- === SUPPORT === -->
     <url>
-        <loc>https://explyra.pages.dev/help.html</loc>
+        <loc>https://explyra.me/help.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/support.html</loc>
+        <loc>https://explyra.me/support.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
@@ -77,31 +77,31 @@
 
     <!-- === HEALTH MANAGER === -->
     <url>
-        <loc>https://explyra.pages.dev/health-manager/index.html</loc>
+        <loc>https://explyra.me/health-manager/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/health-manager/main.html</loc>
+        <loc>https://explyra.me/health-manager/main.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/health-manager/report.html</loc>
+        <loc>https://explyra.me/health-manager/report.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/health-manager/privacy.html</loc>
+        <loc>https://explyra.me/health-manager/privacy.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/health-manager/terms.html</loc>
+        <loc>https://explyra.me/health-manager/terms.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
@@ -109,13 +109,13 @@
 
     <!-- === EXPLYRA LEARNING === -->
     <url>
-        <loc>https://explyra.pages.dev/explyra-learning/index.html</loc>
+        <loc>https://explyra.me/explyra-learning/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/explyra-learning/dashboard.html</loc>
+        <loc>https://explyra.me/explyra-learning/dashboard.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -123,79 +123,79 @@
 
     <!-- === DEVELOPERS HUB === -->
     <url>
-        <loc>https://explyra.pages.dev/developers/index.html</loc>
+        <loc>https://explyra.me/developers/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/code-minifier/index.html</loc>
+        <loc>https://explyra.me/developers/code-minifier/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/hash-generator/index.html</loc>
+        <loc>https://explyra.me/developers/hash-generator/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/password-generator/index.html</loc>
+        <loc>https://explyra.me/developers/password-generator/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/link-shortener/index.html</loc>
+        <loc>https://explyra.me/developers/link-shortener/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/code-playground/index.html</loc>
+        <loc>https://explyra.me/developers/code-playground/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/base64-tool/index.html</loc>
+        <loc>https://explyra.me/developers/base64-tool/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/json-formatter/index.html</loc>
+        <loc>https://explyra.me/developers/json-formatter/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/regex-tester/index.html</loc>
+        <loc>https://explyra.me/developers/regex-tester/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/url-encoder/index.html</loc>
+        <loc>https://explyra.me/developers/url-encoder/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/fake-data-generator/index.html</loc>
+        <loc>https://explyra.me/developers/fake-data-generator/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/snippets/index.html</loc>
+        <loc>https://explyra.me/developers/snippets/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/developers/resources/index.html</loc>
+        <loc>https://explyra.me/developers/resources/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
@@ -203,49 +203,49 @@
 
     <!-- === UTILITIES === -->
     <url>
-        <loc>https://explyra.pages.dev/Utilites/index.html</loc>
+        <loc>https://explyra.me/Utilites/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/P2P/index.html</loc>
+        <loc>https://explyra.me/Utilites/P2P/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/P2P/faq.html</loc>
+        <loc>https://explyra.me/Utilites/P2P/faq.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/P2P/privacy.html</loc>
+        <loc>https://explyra.me/Utilites/P2P/privacy.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/P2P/terms.html</loc>
+        <loc>https://explyra.me/Utilites/P2P/terms.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/P2P/license.html</loc>
+        <loc>https://explyra.me/Utilites/P2P/license.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/Doc%20Scan/index.html</loc>
+        <loc>https://explyra.me/Utilites/Doc%20Scan/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Utilites/Voice%20genrator%20and%20translator/index.html</loc>
+        <loc>https://explyra.me/Utilites/Voice%20genrator%20and%20translator/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
@@ -253,13 +253,13 @@
 
     <!-- === DRIVE & INVOICE === -->
     <url>
-        <loc>https://explyra.pages.dev/drive.html</loc>
+        <loc>https://explyra.me/drive.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/Ino%20software/ino.html</loc>
+        <loc>https://explyra.me/Ino%20software/ino.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
@@ -267,13 +267,13 @@
 
     <!-- === UPDATES / BLOG === -->
     <url>
-        <loc>https://explyra.pages.dev/updates/index.html</loc>
+        <loc>https://explyra.me/updates/index.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/updates/post.html</loc>
+        <loc>https://explyra.me/updates/post.html</loc>
         <lastmod>2026-03-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
@@ -281,31 +281,31 @@
 
     <!-- === LEGAL === -->
     <url>
-        <loc>https://explyra.pages.dev/privacy.html</loc>
+        <loc>https://explyra.me/privacy.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/terms.html</loc>
+        <loc>https://explyra.me/terms.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/license.html</loc>
+        <loc>https://explyra.me/license.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/refund.html</loc>
+        <loc>https://explyra.me/refund.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/verify.html</loc>
+        <loc>https://explyra.me/verify.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
@@ -313,13 +313,13 @@
 
     <!-- === MISC === -->
     <url>
-        <loc>https://explyra.pages.dev/404.html</loc>
+        <loc>https://explyra.me/404.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.1</priority>
     </url>
     <url>
-        <loc>https://explyra.pages.dev/offline.html</loc>
+        <loc>https://explyra.me/offline.html</loc>
         <lastmod>2026-03-06</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.1</priority>

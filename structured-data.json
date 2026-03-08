@@ -3,12 +3,12 @@
     "@graph": [
         {
             "@type": "Organization",
-            "@id": "https://explyra.pages.dev/#organization",
+            "@id": "https://explyra.me/#organization",
             "name": "Explyra",
-            "url": "https://explyra.pages.dev/",
+            "url": "https://explyra.me/",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://explyra.pages.dev/assets/images/explyra_logo.png",
+                "url": "https://explyra.me/assets/images/explyra_logo.png",
                 "width": 512,
                 "height": 512
             },
@@ -19,12 +19,12 @@
         },
         {
             "@type": "WebSite",
-            "@id": "https://explyra.pages.dev/#website",
-            "url": "https://explyra.pages.dev/",
+            "@id": "https://explyra.me/#website",
+            "url": "https://explyra.me/",
             "name": "Explyra",
             "description": "Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools.",
             "publisher": {
-                "@id": "https://explyra.pages.dev/#organization"
+                "@id": "https://explyra.me/#organization"
             }
         },
         {

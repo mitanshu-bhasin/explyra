@@ -2,8 +2,8 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>Explyra</ShortName>
   <Description>Explyra - Advance process excellence.</Description>
-  <Url type="text/html" template="https://i.fouralpha.org/?q={searchTerms}"/>
-  <Image width="32" height="32">https://explyra.pages.dev/assets/images/explyra_logo.png</Image>
+  <Url type="text/html" template="https://explyra.me/?q={searchTerms}"/>
+  <Image width="32" height="32">https://explyra.me/assets/images/explyra_logo.png</Image>
   <Developer>Explyra</Developer>
   <Contact>explyra@gmail.com</Contact>
   <InputEncoding>UTF-8</InputEncoding>

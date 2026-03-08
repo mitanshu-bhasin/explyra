@@ -15,6 +15,6 @@
   Standards: HTML5, CSS3, ES6+
   Components: Chart.js, html2pdf.js, ImageKit
   Software: VS Code
-  Hosted on: Vercel (https://explyra.pages.dev)
+  Hosted on: Vercel (https://explyra.me)
   Version: 2.1.0 "Phoenix Release"
   Last Update: 2026-02-15
