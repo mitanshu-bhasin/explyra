@@ -6,7 +6,7 @@
     <description>Latest news, feature updates, and releases from Explyra.</description>
     <language>en-us</language>
     <atom:link href="https://explyra.pages.dev/feed.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Sun, 15 Feb 2026 22:45:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 08 Mar 2026 00:00:00 GMT</lastBuildDate>
     <copyright>Copyright 2026 Explyra</copyright>
     <image>
        <url>https://explyra.pages.dev/assets/images/explyra_logo.png</url>
@@ -15,11 +15,35 @@
     </image>
 
     <item>
+      <title>Explyra Developer Tools Hub Launched</title>
+      <link>https://explyra.pages.dev/developers/index.html</link>
+      <pubDate>Sat, 08 Mar 2026 09:00:00 GMT</pubDate>
+      <description>The Explyra Developers Hub is now live with Code Minifier, Hash Generator, Password Generator, Link Shortener, Online IDE, and more tools.</description>
+      <guid>https://explyra.pages.dev/developers/index.html</guid>
+    </item>
+
+    <item>
+      <title>Explyra Health Manager Now Available</title>
+      <link>https://explyra.pages.dev/health-manager/index.html</link>
+      <pubDate>Fri, 07 Mar 2026 10:00:00 GMT</pubDate>
+      <description>Track workouts, sleep, nutrition, and mental wellness with AI-powered recommendations and live weather integration.</description>
+      <guid>https://explyra.pages.dev/health-manager/index.html</guid>
+    </item>
+
+    <item>
+      <title>Explyra Learning Platform Launched</title>
+      <link>https://explyra.pages.dev/explyra-learning/index.html</link>
+      <pubDate>Fri, 07 Mar 2026 12:00:00 GMT</pubDate>
+      <description>Expert-curated courses on Agentic AI, Prompt Engineering, and SEO — built for the next generation of digital professionals.</description>
+      <guid>https://explyra.pages.dev/explyra-learning/index.html</guid>
+    </item>
+
+    <item>
       <title>Welcome to the New Explyra Platform</title>
-      <link>https://explyra.pages.dev/index.html</link>
+      <link>https://explyra.pages.dev/</link>
       <pubDate>Mon, 15 Feb 2026 09:00:00 GMT</pubDate>
       <description>We have launched our new PWA-enabled SaaS platform for enhanced productivity, robust developer utilities, and business management.</description>
-      <guid>https://explyra.pages.dev/index.html#launch</guid>
+      <guid>https://explyra.pages.dev/#launch</guid>
     </item>
 
     <item>
