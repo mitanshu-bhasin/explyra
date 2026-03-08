@@ -107,7 +107,7 @@ walkDir(searchDir, (filePath) => {
                 "@context": "https://schema.org",
                 "@type": "Organization",
                 "name": "Explyra",
-                "url": "https://explyra.pages.dev/",
+                "url": "https://explyra.me/",
                 "sameAs": socialLinks
             };
             const schemaTag = `\n    <script type="application/ld+json">\n${JSON.stringify(orgSchema, null, 2)}\n    </script>\n`;

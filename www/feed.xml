@@ -2,32 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Explyra Suite - Updates</title>
-    <link>https://explyra.pages.dev/</link>
+    <link>https://explyra.me/</link>
     <description>Latest news and updates from the Explyra Suite.</description>
     <language>en-us</language>
-    <atom:link href="https://explyra.pages.dev/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://explyra.me/feed.xml" rel="self" type="application/rss+xml" />
     <lastBuildDate>Sun, 15 Feb 2026 22:45:00 GMT</lastBuildDate>
     <copyright>Copyright 2026 Explyra</copyright>
     <image>
-       <url>https://explyra.pages.dev/assets/images/explyra_logo.png</url>
+       <url>https://explyra.me/assets/images/explyra_logo.png</url>
        <title>Explyra</title>
-       <link>https://explyra.pages.dev/</link>
+       <link>https://explyra.me/</link>
     </image>
 
     <item>
       <title>Welcome to the New Explyra Suite</title>
-      <link>https://explyra.pages.dev/index.html</link>
+      <link>https://explyra.me/index.html</link>
       <pubDate>Mon, 15 Feb 2026 09:00:00 GMT</pubDate>
       <description>We have launched our new PWA-enabled expense management portal for enhanced productivity and offline access.</description>
-      <guid>https://explyra.pages.dev/index.html#launch</guid>
+      <guid>https://explyra.me/index.html#launch</guid>
     </item>
 
     <item>
       <title>Meet Our Technical Team</title>
-      <link>https://explyra.pages.dev/mitanshu.html</link>
+      <link>https://explyra.me/mitanshu.html</link>
       <pubDate>Mon, 15 Feb 2026 10:30:00 GMT</pubDate>
       <description>Spotlight on Mitanshu Bhasin, our lead developer driving cybersecurity and innovation.</description>
-      <guid>https://explyra.pages.dev/mitanshu.html</guid>
+      <guid>https://explyra.me/mitanshu.html</guid>
     </item>
   </channel>
 </rss>

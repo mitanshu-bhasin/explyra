@@ -55,6 +55,23 @@ service cloud.firestore {
       allow read, write: if isSignedIn();
     }
 
+    // ─── CRM Collections ───────────────────────────────────────────────────────
+    match /crm_deals/{dealId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+    }
+    match /crm_leads/{leadId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+    }
+    match /crm_contacts/{contactId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+    }
+
     // ─── Personal Vault: Strict User Isolation ─────────────────────────────────
     match /personal_vault/{itemId} {
       allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;

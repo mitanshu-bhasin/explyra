@@ -1,8 +1,8 @@
 Contact: explyra@gmail.com
 Expires: 2027-12-31T23:59:00.000Z
-Encryption: https://explyra.pages.dev/.well-known/pgp-key.txt
-Acknowledgments: https://explyra.pages.dev/security-hall-of-fame.html
+Encryption: https://explyra.me/.well-known/pgp-key.txt
+Acknowledgments: https://explyra.me/security-hall-of-fame.html
 Preferred-Languages: en
-Canonical: https://explyra.pages.dev/.well-known/security.txt
-Policy: https://explyra.pages.dev/security-policy.html
-Hiring: https://explyra.pages.dev/careers.html
+Canonical: https://explyra.me/.well-known/security.txt
+Policy: https://explyra.me/security-policy.html
+Hiring: https://explyra.me/careers.html

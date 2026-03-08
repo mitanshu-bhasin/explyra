@@ -47,7 +47,7 @@ const googleSigninRegex = /<div id="google-signin-container"[\s\S]*?<\/div>\s*(?
 
 // Redirect "Generate Drive Link" to external website for mobile
 const driveLinkRegex = /href="drive\.html"/g;
-const externalDriveUrl = 'href="https://i.fouralpha.org/drive.html"';
+const externalDriveUrl = 'href="https://explyra.me/drive.html"';
 
 ['index.html', 'emp.html', 'admin.html'].forEach(file => {
     const filePath = path.join(dest, file);

@@ -74,7 +74,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Batch inject JSON-LD schema into HTML files.")
     parser.add_argument("--dir", default=".", help="Directory to process")
     parser.add_argument("--sameAs", default="https://ipecconsulting.org/", help="Primary entity URL for sameAs")
-    parser.add_argument("--domain", default="https://i.fouralpha.org", help="Main domain URL")
+    parser.add_argument("--domain", default="https://explyra.me", help="Main domain URL")
 
     args = parser.parse_args()
     inject_schema(args.dir, args.sameAs, args.domain)
