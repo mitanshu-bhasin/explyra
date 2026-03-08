@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Border Radius Generator - Visual CSS Radius Tool | Explyra</title>
+    <meta name="description"
+        content="Generate complex CSS border-radius values with live preview. Adjust each corner individually to create unique shapes for your UI elements. Free and secure.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .preview-box {
+            width: 180px;
+            height: 180px;
+            background: var(--blue);
+            margin: 40px auto;
+            border: 1px solid var(--bdr);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg3);
+            border-radius: 5px;
+            appearance: none;
+            outline: none;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / CSS Tools / Border Radius Generator
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">Border Radius Generator</h1>
+                <p class="tool-desc">Fine-tune each corner of your elements to create smooth or asymmetric shapes.</p>
+            </div>
+
+            <div class="preview-box" id="preview"></div>
+
+            <div class="controls">
+                <div class="input-group">
+                    <label>Top-Left: <span id="valTL">20</span>px</label>
+                    <input type="range" id="tl" min="0" max="100" value="20">
+                </div>
+                <div class="input-group">
+                    <label>Top-Right: <span id="valTR">20</span>px</label>
+                    <input type="range" id="tr" min="0" max="100" value="20">
+                </div>
+                <div class="input-group">
+                    <label>Bottom-Left: <span id="valBL">20</span>px</label>
+                    <input type="range" id="bl" min="0" max="100" value="20">
+                </div>
+                <div class="input-group">
+                    <label>Bottom-Right: <span id="valBR">20</span>px</label>
+                    <input type="range" id="br" min="0" max="100" value="20">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 30px;">
+                <label>Generated CSS</label>
+                <textarea id="output" readonly style="min-height: 60px;"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="copyBtn" class="btn btn-primary">Copy Border Radius</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const preview = document.getElementById('preview');
+        const output = document.getElementById('output');
+        const ids = ['tl', 'tr', 'bl', 'br'];
+
+        function update() {
+            const tl = document.getElementById('tl').value;
+            const tr = document.getElementById('tr').value;
+            const bl = document.getElementById('bl').value;
+            const br = document.getElementById('br').value;
+
+            document.getElementById('valTL').textContent = tl;
+            document.getElementById('valTR').textContent = tr;
+            document.getElementById('valBL').textContent = bl;
+            document.getElementById('valBR').textContent = br;
+
+            const radius = `${tl}px ${tr}px ${br}px ${bl}px`;
+            preview.style.borderRadius = radius;
+            output.value = `border-radius: ${radius};`;
+        }
+
+        ids.forEach(id => document.getElementById(id).addEventListener('input', update));
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+        });
+
+        update();
+    </script>
+</body>
+
+</html>

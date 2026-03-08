@@ -1,0 +1,24 @@
+<!-- 
+  Example Optimized Image Tags for Explyra 
+  Since index.html uses CSS shapes and emojis for imagery, here are templates you can use for any future <img> tags.
+-->
+
+<!-- 1. General Hero / Important Image (Above the fold) -->
+<!-- Above the fold images should use loading="eager" (default) and fetchpriority="high" -->
+<img src="https://explyra.pages.dev/assets/images/explyra_screenshot_1.png"
+    alt="Explyra dashboard displaying real-time business and utility metrics" title="Explyra Main Dashboard Overview"
+    width="1280" height="720" fetchpriority="high" decoding="sync">
+
+<!-- 2. Standard Content Image (Below the fold) -->
+<!-- Should always use lazy loading to improve Initial Page Load & Web Vitals -->
+<img src="https://explyra.pages.dev/assets/images/explyra_screenshot_2.png"
+    alt="Explyra mobile interface showing expense tracking features" title="Track Expenses on Mobile" width="720"
+    height="1280" loading="lazy" decoding="async">
+
+<!-- 3. Picture Element (Responsive & Next-Gen formats like WebP) -->
+<picture>
+    <source srcset="assets/images/explyra_logo.webp" type="image/webp">
+    <source srcset="assets/images/explyra_logo.png" type="image/png">
+    <img src="assets/images/explyra_logo.png" alt="Explyra Official Logo" title="Explyra Logo" width="512" height="512"
+        loading="lazy">
+</picture>

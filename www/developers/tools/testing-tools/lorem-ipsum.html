@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator - Free Placeholder Text | Explyra</title>
+    <meta name="description"
+        content="Generate high-quality Lorem Ipsum placeholder text for your design mockups and prototypes. Choose between words, sentences, or paragraphs. Fast and free.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / Testing Tools / Lorem Ipsum Generator
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">Lorem Ipsum Generator</h1>
+                <p class="tool-desc">Quickly generate dummy text for your layouts, websites, and design projects.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div class="input-group">
+                    <label>Count</label>
+                    <input type="number" id="count" value="3" min="1" max="50">
+                </div>
+                <div class="input-group">
+                    <label>Type</label>
+                    <select id="type">
+                        <option value="p">Paragraphs</option>
+                        <option value="s">Sentences</option>
+                        <option value="w">Words</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button id="genBtn" class="btn btn-primary">Generate Text</button>
+                <button id="copyBtn" class="btn btn-secondary">Copy Result</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+            </div>
+
+            <div class="input-group">
+                <label>Generated Placeholder Text</label>
+                <textarea id="output" readonly style="min-height: 250px; line-height: 1.8;"></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const words = "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum".split(' ');
+
+        function generateWords(n) {
+            let res = [];
+            for (let i = 0; i < n; i++) res.push(words[Math.floor(Math.random() * words.length)]);
+            return res.join(' ');
+        }
+
+        function generateSentences(n) {
+            let res = [];
+            for (let i = 0; i < n; i++) {
+                let s = generateWords(Math.floor(Math.random() * 10) + 5);
+                res.push(s.charAt(0).toUpperCase() + s.slice(1) + ".");
+            }
+            return res.join(' ');
+        }
+
+        function generateParagraphs(n) {
+            let res = [];
+            for (let i = 0; i < n; i++) res.push(generateSentences(Math.floor(Math.random() * 3) + 3));
+            return res.join('\n\n');
+        }
+
+        const genBtn = document.getElementById('genBtn');
+        const output = document.getElementById('output');
+
+        genBtn.addEventListener('click', () => {
+            const n = parseInt(document.getElementById('count').value);
+            const t = document.getElementById('type').value;
+            if (t === 'w') output.value = generateWords(n);
+            else if (t === 's') output.value = generateSentences(n);
+            else output.value = generateParagraphs(n);
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+        });
+
+        document.getElementById('genBtn').click(); // Initial generation
+    </script>
+</body>
+
+</html>

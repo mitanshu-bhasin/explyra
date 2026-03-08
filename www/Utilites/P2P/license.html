@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIT License | EXPLYRA P2P Enterprise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        corp: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569', 500: '#64748b', accent: '#BE185D' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        .legal-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .license-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            background: #f1f5f9;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            line-height: 1.8;
+            border: 1px dashed #cbd5e1;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen py-12 px-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <a href="index.html"
+                class="inline-flex items-center gap-2 text-slate-400 hover:text-rose-600 text-sm font-bold mb-6 transition">
+                <i class="fas fa-arrow-left"></i> Back to App
+            </a>
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <div
+                    class="w-10 h-10 bg-rose-600 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-rose-200">
+                    M</div>
+                <h1 class="text-3xl font-black tracking-tight text-slate-800 uppercase">MIT License</h1>
+            </div>
+            <p class="text-slate-500 font-medium">Standard Open Source License</p>
+        </header>
+
+        <main class="legal-card p-8 md:p-12 space-y-8 leading-relaxed">
+            <div class="license-text whitespace-pre-wrap">
+                MIT License
+
+                Copyright (c) 2026 Explyra P2P Enterprise
+
+                Permission is hereby granted, free of charge, to any person obtaining a copy
+                of this software and associated documentation files (the "Software"), to deal
+                in the Software without restriction, including without limitation the rights
+                to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                copies of the Software, and to permit persons to whom the Software is
+                furnished to do so, subject to the following conditions:
+
+                The above copyright notice and this permission notice shall be included in all
+                copies or substantial portions of the Software.
+
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                SOFTWARE.
+            </div>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-black text-slate-800 flex items-center gap-2 uppercase tracking-tight">
+                    <i class="fas fa-info-circle text-rose-600"></i> What does this mean?
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <strong class="text-emerald-700 block mb-1">You CAN:</strong>
+                        <ul class="text-sm text-emerald-600 space-y-1 list-inside list-check">
+                            <li><i class="fas fa-check mr-2"></i> Use for commercial items</li>
+                            <li><i class="fas fa-check mr-2"></i> Modify the source code</li>
+                            <li><i class="fas fa-check mr-2"></i> Distribute the software</li>
+                            <li><i class="fas fa-check mr-2"></i> Private use</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-2xl border border-red-100">
+                        <strong class="text-red-700 block mb-1">You CAN'T:</strong>
+                        <ul class="text-sm text-red-600 space-y-1 list-inside list-times">
+                            <li><i class="fas fa-times mr-2"></i> Hold authors liable</li>
+                            <li><i class="fas fa-times mr-2"></i> Claim implied warranty</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pt-10 border-t border-slate-100 text-center">
+                <div class="inline-flex items-center gap-2 px-6 py-2 bg-slate-50 rounded-2xl border border-slate-200">
+                    <span class="text-sm font-black text-slate-800 uppercase tracking-tighter">Developed by <span
+                            class="text-rose-600">Explyra Bhasin</span> ❤️</span>
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-12 text-center text-slate-400 text-xs font-bold uppercase tracking-widest">
+            &copy; 2026 Explyra P2P Enterprise &bull; Open Source License
+        </footer>
+    </div>
+</body>
+
+</html>

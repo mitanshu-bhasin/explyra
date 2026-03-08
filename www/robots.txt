@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /sw.js
+Disallow: /js/admin-helper.js
+Disallow: /js/theme.js
+Disallow: /.well-known/
+
+Sitemap: https://i.fouralpha.org/sitemap.xml
+Host: https://i.fouralpha.org
