@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>IPEC Consulting Expenses - Updates</title>
-    <link>https://i.fouralpha.org/</link>
-    <description>Latest news and updates from the International Process Excellence Council.</description>
+    <title>Explyra Suite - Updates</title>
+    <link>https://explyra.pages.dev/</link>
+    <description>Latest news and updates from the Explyra Suite.</description>
     <language>en-us</language>
-    <atom:link href="https://i.fouralpha.org/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://explyra.pages.dev/feed.xml" rel="self" type="application/rss+xml" />
     <lastBuildDate>Sun, 15 Feb 2026 22:45:00 GMT</lastBuildDate>
-    <copyright>Copyright 2026 IPEC Consulting</copyright>
+    <copyright>Copyright 2026 Explyra</copyright>
     <image>
-       <url>https://i.fouralpha.org/assets/images/explyra_logo.png</url>
-       <title>IPEC Consulting</title>
-       <link>https://i.fouralpha.org/</link>
+       <url>https://explyra.pages.dev/assets/images/explyra_logo.png</url>
+       <title>Explyra</title>
+       <link>https://explyra.pages.dev/</link>
     </image>
 
     <item>
-      <title>Welcome to the New IPEC Portal</title>
-      <link>https://i.fouralpha.org/index.html</link>
+      <title>Welcome to the New Explyra Suite</title>
+      <link>https://explyra.pages.dev/index.html</link>
       <pubDate>Mon, 15 Feb 2026 09:00:00 GMT</pubDate>
       <description>We have launched our new PWA-enabled expense management portal for enhanced productivity and offline access.</description>
-      <guid>https://i.fouralpha.org/index.html#launch</guid>
+      <guid>https://explyra.pages.dev/index.html#launch</guid>
     </item>
 
     <item>
       <title>Meet Our Technical Team</title>
-      <link>https://i.fouralpha.org/mitanshu.html</link>
+      <link>https://explyra.pages.dev/mitanshu.html</link>
       <pubDate>Mon, 15 Feb 2026 10:30:00 GMT</pubDate>
       <description>Spotlight on Mitanshu Bhasin, our lead developer driving cybersecurity and innovation.</description>
-      <guid>https://i.fouralpha.org/mitanshu.html</guid>
+      <guid>https://explyra.pages.dev/mitanshu.html</guid>
     </item>
   </channel>
 </rss>

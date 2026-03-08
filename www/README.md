@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/explyra_logo.png" alt="Explyra Logo" width="120" />
+  <img src="../assets/images/explyra_logo.png" alt="Explyra Logo" width="120" />
 </p>
 
 <h1 align="center">Explyra — Modern SaaS Developer Platform & Utility Suite</h1>
@@ -242,5 +242,5 @@ Direct commercial utilization, raw cloning for monetization, or explicit reverse
 ## 🏅 Credits
 
 - **Architect & Core Maintainer**: Mitanshu Bhasin
-- **Organization**: Explyra Ecosystem Platform / IPEC Consulting
+- **Organization**: Explyra Ecosystem Platform / Explyra Consulting
 - **Technologies Acknowledged**: Firebase, Chart.js, Tailwind CSS Open Communities.
