@@ -2266,6 +2266,8 @@
         /* ═══════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════ */
+
+        /* ── 1024px: Tablet landscape ── */
         @media(max-width:1024px) {
             .ov-grid {
                 grid-template-columns: repeat(2, 1fr)
@@ -2274,7 +2276,8 @@
             .prod-inner,
             .prod-inner.rev {
                 grid-template-columns: 1fr;
-                direction: ltr
+                direction: ltr;
+                gap: 3rem
             }
 
             .support-grid {
@@ -2290,6 +2293,99 @@
             }
         }
 
+        /* ── 768px: Tablet portrait / large phone ── */
+        @media(max-width:768px) {
+
+            /* Navbar */
+            nav {
+                padding: 0 1.25rem;
+                height: 60px;
+                gap: 1rem
+            }
+
+            /* Hide the CTA button in desktop nav — it's in the mobile drawer */
+            .btn-try {
+                display: none
+            }
+
+            /* Hero */
+            .hero {
+                padding: 90px 1.25rem 60px
+            }
+
+            .hero-badge {
+                font-size: .65rem;
+                padding: .35rem .85rem;
+                margin-bottom: 1.5rem
+            }
+
+            .hero h1 {
+                font-size: clamp(2.4rem, 8vw, 3.6rem);
+                word-break: break-word
+            }
+
+            .hero-desc {
+                font-size: 1rem
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+                gap: .75rem
+            }
+
+            .btn-hero,
+            .btn-hero-ghost {
+                width: 100%;
+                max-width: 340px;
+                justify-content: center
+            }
+
+            /* Section padding */
+            .prod-section {
+                padding: 4rem 1.25rem
+            }
+
+            .overview {
+                padding: 4rem 1.25rem
+            }
+
+            .ov-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem
+            }
+
+            .support-grid {
+                grid-template-columns: 1fr
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr
+            }
+
+            /* Grids */
+            .dash-kpis {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+                padding: 2rem 1.25rem
+            }
+
+            .foot-links {
+                gap: 1rem
+            }
+
+            .founder-inner {
+                flex-direction: column;
+                align-items: flex-start
+            }
+        }
+
+        /* ── 640px: Large phone ── */
         @media(max-width:640px) {
 
             .ov-grid,
@@ -2298,13 +2394,13 @@
                 grid-template-columns: 1fr
             }
 
-            .dash-kpis {
-                grid-template-columns: repeat(2, 1fr)
-            }
-
             .hc-metrics,
             .tool-grid {
                 grid-template-columns: 1fr
+            }
+
+            .dash-kpis {
+                grid-template-columns: repeat(2, 1fr)
             }
 
             .founder-inner {
@@ -2315,6 +2411,193 @@
             footer {
                 flex-direction: column;
                 align-items: flex-start
+            }
+
+            .prod-inner {
+                gap: 2rem
+            }
+        }
+
+        /* ── 480px: Small phone ── */
+        @media(max-width:480px) {
+
+            /* Navbar */
+            nav {
+                padding: 0 1rem;
+                height: 56px;
+                gap: .625rem
+            }
+
+            .nav-logo-text {
+                font-size: 1.05rem
+            }
+
+            .nav-logo-icon {
+                width: 30px;
+                height: 30px
+            }
+
+            /* Keep theme pill compact: hide the text label */
+            .theme-pill-label {
+                display: none
+            }
+
+            .theme-pill {
+                padding: .28rem .4rem
+            }
+
+            /* Hero */
+            .hero {
+                padding: 80px 1rem 50px
+            }
+
+            .hero h1 {
+                font-size: clamp(2rem, 10vw, 2.8rem)
+            }
+
+            .hero-desc {
+                font-size: .92rem
+            }
+
+            .hero-badge {
+                font-size: .62rem;
+                margin-bottom: 1.2rem
+            }
+
+            .suite-pills {
+                gap: .5rem
+            }
+
+            .suite-pill {
+                font-size: .72rem;
+                padding: .35rem .75rem
+            }
+
+            /* Cards */
+            .ov-card {
+                padding: 1.4rem
+            }
+
+            .prod-section {
+                padding: 3.5rem 1rem
+            }
+
+            .overview {
+                padding: 3.5rem 1rem
+            }
+
+            /* Dashboard KPIs: 1 column */
+            .dash-kpis {
+                grid-template-columns: 1fr
+            }
+
+            /* Footer */
+            footer {
+                padding: 1.8rem 1rem;
+                gap: 1.2rem
+            }
+
+            .foot-links {
+                flex-wrap: wrap;
+                gap: .8rem
+            }
+
+            /* Buttons */
+            .btn-hero,
+            .btn-hero-ghost {
+                font-size: .88rem;
+                padding: .75rem 1.5rem
+            }
+
+            .btn-prod {
+                font-size: .82rem;
+                padding: .65rem 1.4rem
+            }
+        }
+
+        /* ── 375px: iPhone-class ── */
+        @media(max-width:375px) {
+            nav {
+                padding: 0 .875rem
+            }
+
+            .hero {
+                padding: 76px .875rem 44px
+            }
+
+            .hero h1 {
+                font-size: clamp(1.85rem, 11vw, 2.4rem)
+            }
+
+            .hero-desc {
+                font-size: .88rem
+            }
+
+            .ov-card {
+                padding: 1.2rem
+            }
+
+            .prod-section,
+            .overview {
+                padding: 3rem .875rem
+            }
+
+            /* Mobile menu full width on tiny screens */
+            .mobile-menu {
+                width: 100%;
+                right: -100%
+            }
+
+            footer {
+                padding: 1.5rem .875rem
+            }
+        }
+
+        /* ── 320px: Smallest common width ── */
+        @media(max-width:320px) {
+            nav {
+                padding: 0 .75rem
+            }
+
+            .nav-logo-text {
+                font-size: .95rem
+            }
+
+            .hero {
+                padding: 72px .75rem 40px
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+                letter-spacing: -.015em
+            }
+
+            .hero-desc {
+                font-size: .84rem
+            }
+
+            .hero-badge {
+                font-size: .58rem;
+                padding: .28rem .65rem
+            }
+
+            .btn-hero,
+            .btn-hero-ghost {
+                font-size: .82rem;
+                padding: .65rem 1.1rem
+            }
+
+            .ov-card {
+                padding: 1rem
+            }
+
+            .prod-section,
+            .overview {
+                padding: 2.5rem .75rem
+            }
+
+            footer {
+                padding: 1.25rem .75rem
             }
         }
     </style>
@@ -2379,6 +2662,11 @@
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
             </ul>
+            <div style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--bdr)">
+                <a href="#contact" class="btn-try"
+                    style="display:block;text-align:center;padding:.7rem 1.2rem;border-radius:var(--r);font-size:.9rem">Get
+                    Early Access</a>
+            </div>
         </div>
         <div class="menu-overlay" id="menuOverlay"></div>
     </header>
