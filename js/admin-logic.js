@@ -379,7 +379,7 @@ onAuthStateChanged(auth, async (user) => {
                             if (title && Notification.permission === 'granted') {
                                 const opts = {
                                     body: body,
-                                    icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                    icon: 'assets/images/explyra_logo.png',
                                     vibrate: [200, 100, 200]
                                 };
                                 if (navigator.serviceWorker && navigator.serviceWorker.controller) {
@@ -404,7 +404,7 @@ onAuthStateChanged(auth, async (user) => {
                                         if (Notification.permission === 'granted') {
                                             const opts = {
                                                 body: data.lastMessage || 'New message',
-                                                icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                                icon: 'assets/images/explyra_logo.png',
                                                 vibrate: [200, 100, 200],
                                                 tag: change.doc.id,
                                                 renotify: true
@@ -436,7 +436,7 @@ onAuthStateChanged(auth, async (user) => {
                                     if (Notification.permission === 'granted') {
                                         const opts = {
                                             body: `${data.sender}: ${data.text}`,
-                                            icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                            icon: 'assets/images/explyra_logo.png',
                                             tag: 'global_chat'
                                         };
                                         if (navigator.serviceWorker?.controller) {
@@ -479,7 +479,7 @@ onAuthStateChanged(auth, async (user) => {
                                 if (Notification.permission === 'granted') {
                                     const opts = {
                                         body: d.body,
-                                        icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                        icon: 'assets/images/explyra_logo.png',
                                         tag: change.doc.id,
                                         vibrate: [200, 100, 200]
                                     };

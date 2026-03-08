@@ -5,7 +5,7 @@ window.empTasksData = [];
 window.empTasksLoaded = false;
 
 window.fetchEmpTasks = () => {
-    if (!window.currentUser || !window.userData || !window.companyId) return;
+    if (!window.currentUser || !window.userData) return;
 
     window.empTasksLoaded = true;
     const list = document.getElementById('emp-tasks-list');
@@ -14,9 +14,7 @@ window.fetchEmpTasks = () => {
     const db = window.db;
     const q = query(
         collection(db, "tasks"),
-        where("companyId", "==", window.companyId),
         where("assignedTo", "==", window.userData.email),
-        orderBy("createdAt", "desc"),
         limit(50)
     );
 
@@ -30,6 +28,13 @@ window.fetchEmpTasks = () => {
 
         snapshot.forEach(docSnap => {
             window.empTasksData.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        // Client-side sort by createdAt desc
+        window.empTasksData.sort((a, b) => {
+            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return dateB - dateA;
         });
 
         window.filterEmpTasks();

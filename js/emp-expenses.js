@@ -8,7 +8,7 @@ window.expensesUnsub = null;
 window.currentMode = 'company';
 
 window.fetchExpenses = () => {
-    if (!window.currentUser || !window.userData || !window.companyId) return;
+    if (!window.currentUser || !window.userData) return;
 
     if (window.expensesUnsub) {
         window.expensesUnsub();
@@ -21,7 +21,6 @@ window.fetchExpenses = () => {
     const db = window.db;
     const q = query(
         collection(db, "expenses"),
-        where("companyId", "==", window.companyId),
         where("userId", "==", window.userData.docId)
     );
 
@@ -58,6 +57,14 @@ window.fetchExpenses = () => {
 
         if (window.aiAssistant) {
             window.aiAssistant.updateContext({ dashboardData: { expenses: window.expensesData.slice(0, 20), summary: { pending: pendingTotal, paid: paidTotal } } });
+        }
+    }, (error) => {
+        console.error("Sync Error:", error);
+        if (list) {
+            list.innerHTML = `<div class="text-center text-red-500 mt-4 p-4 border border-red-200 bg-red-50 rounded-lg">
+                <p class="font-bold">Sync Error</p>
+                <p class="text-xs">Failed to sync expenses. Please refresh or contact admin. (${error.code})</p>
+            </div>`;
         }
     });
 };
@@ -133,17 +140,30 @@ window.renderExpensesList = (expenses) => {
 
 window.filterExpenses = (term) => {
     if (window.currentMode === 'personal') {
-        const filtered = window.personalData.filter(i => (i.expenseName || '').toLowerCase().includes(term.toLowerCase()));
-        window.renderPersonalList(filtered);
+        const filtered = (window.personalData || []).filter(i => (i.expenseName || '').toLowerCase().includes(term.toLowerCase()));
+        if (window.renderPersonalList) window.renderPersonalList(filtered);
     } else {
-        const filtered = window.expensesData.filter(e => (e.title || '').toLowerCase().includes(term.toLowerCase()));
+        const filtered = (window.expensesData || []).filter(e => (e.title || '').toLowerCase().includes(term.toLowerCase()));
         window.renderExpensesList(filtered);
     }
 };
 
 window.getInitialStageStatus = async (role) => {
-    const config = window.workflowConfigCache;
+    let config = window.workflowConfigCache;
+    if (!config) {
+        try {
+            const snap = await getDoc(doc(window.db, "settings", "workflow_config"));
+            if (snap.exists()) {
+                config = snap.data();
+                window.workflowConfigCache = config;
+            }
+        } catch (e) {
+            console.error("Config fetch error", e);
+        }
+    }
+
     if (!config) return 'PENDING_MANAGER';
+
     let chain = config.defaultFlow;
     if (config.roleOverrides && config.roleOverrides[role] && config.roleOverrides[role].flow) {
         chain = config.roleOverrides[role].flow;
@@ -152,7 +172,10 @@ window.getInitialStageStatus = async (role) => {
 };
 
 window.submitExpense = async () => {
-    if (window.currentMode === 'personal') return window.submitPersonalExpense();
+    if (window.currentMode === 'personal') {
+        if (window.submitPersonalExpense) return window.submitPersonalExpense();
+        else return window.showToast("Personal vault logic not loaded.", "error");
+    }
 
     const docId = document.getElementById('expense-id').value;
     const title = document.getElementById('report-title').value.trim();
@@ -192,11 +215,12 @@ window.submitExpense = async () => {
         const initialStatus = await window.getInitialStageStatus(window.userData.role);
         const isSpam = checkSpam(title + ' ' + notes);
         const expenseData = {
-            companyId: window.companyId,
+            companyId: window.companyId || 'UNKNOWN_COMPANY',
             userId: window.userData.docId,
             userName: window.userData.name,
             userEmail: window.userData.email,
-            userRole: window.userData.role,
+            userPhone: window.userData.phone || null,
+            userRole: window.userData.role || 'EMPLOYEE',
             title, isSpam, projectCode, type: claimType, currency, preApproved,
             approvalProof: preApproved ? proofUrl : null,
             notes, status: initialStatus, totalAmount: total.toString(), lineItems: items,
@@ -230,150 +254,91 @@ window.submitExpense = async () => {
 
 window.toggleMode = (mode) => {
     window.currentMode = mode;
-    const corpSec = document.getElementById('mode-corporate-section');
-    const persSec = document.getElementById('mode-personal-section');
-    const corpBtn = document.getElementById('nav-mode-corporate');
-    const persBtn = document.getElementById('nav-mode-personal');
-    const fabCorp = document.getElementById('fab-create-expense');
-    const fabPers = document.getElementById('fab-create-personal');
 
-    if (mode === 'company') {
-        if (corpSec) corpSec.classList.remove('hidden');
-        if (persSec) persSec.classList.add('hidden');
-        if (corpBtn) corpBtn.classList.add('bg-green-500', 'text-white', 'shadow-lg');
-        if (persBtn) persBtn.classList.remove('bg-green-500', 'text-white', 'shadow-lg');
-        if (fabCorp) fabCorp.classList.remove('hidden');
-        if (fabPers) fabPers.classList.add('hidden');
+    // UI Elements
+    const statsContainer = document.getElementById('stats-container');
+    const tabsContainer = document.getElementById('tabs-container');
+    const vaultHeader = document.getElementById('personal-vault-header');
+    const personalAnalysis = document.getElementById('personal-analysis');
+
+    const btnNew = document.getElementById('btn-new-expense');
+    const btnReq = document.getElementById('btn-request-item');
+    const textNew = document.getElementById('text-new-expense');
+    const subNew = document.getElementById('sub-new-expense');
+    const textReq = document.getElementById('text-request-item');
+    const subReq = document.getElementById('sub-request-item');
+
+    const secClaims = document.getElementById('section-claims');
+    const secTasks = document.getElementById('section-tasks');
+
+    // Clear list immediately to prevent showing old data
+    const list = document.getElementById('expenses-list');
+    if (list) list.innerHTML = '';
+
+    if (mode === 'personal') {
+        // Hide company-only UI
+        if (statsContainer) statsContainer.classList.add('hidden');
+        if (tabsContainer) tabsContainer.classList.add('hidden');
+        if (vaultHeader) vaultHeader.classList.remove('hidden');
+        if (personalAnalysis) personalAnalysis.classList.remove('hidden');
+
+        // Force Claims view (where the list resides) and hide Tasks
+        if (secClaims) secClaims.classList.remove('hidden');
+        if (secTasks) secTasks.classList.add('hidden');
+
+        // Hide "Request Item" button and make "Vault Entry" full width
+        if (btnNew && btnReq) {
+            btnNew.parentElement.classList.remove('grid-cols-2');
+            btnNew.parentElement.classList.add('grid-cols-1');
+            btnReq.classList.add('hidden');
+        }
+
+        // Change button labels for personal mode
+        if (textNew) textNew.textContent = "Vault Entry";
+        if (subNew) subNew.textContent = "Add Personal Expense";
+
+        // Change New Expense button onclick to open personal vault modal
+        if (btnNew) btnNew.setAttribute('onclick', "createPersonalVaultEntry()");
+
+        if (window.fetchPersonalVault) window.fetchPersonalVault();
+    } else {
+        // Show company UI
+        if (statsContainer) statsContainer.classList.remove('hidden');
+        if (tabsContainer) tabsContainer.classList.remove('hidden');
+        if (vaultHeader) vaultHeader.classList.add('hidden');
+        if (personalAnalysis) personalAnalysis.classList.add('hidden');
+
+        // Default back to Claims view for Company mode
+        if (secClaims) secClaims.classList.remove('hidden');
+        if (secTasks) secTasks.classList.add('hidden');
+
+        // Restore both buttons
+        if (btnNew && btnReq) {
+            btnNew.parentElement.classList.remove('grid-cols-1');
+            btnNew.parentElement.classList.add('grid-cols-2');
+            btnReq.classList.remove('hidden');
+        }
+
+        // Reset Tabs Look
+        const btnClaims = document.getElementById('btn-view-claims');
+        const btnTasks = document.getElementById('btn-view-tasks');
+        if (btnClaims && btnTasks) {
+            btnClaims.classList.add('border-green-500', 'bg-white');
+            btnTasks.classList.remove('border-green-500', 'bg-white');
+            btnTasks.classList.add('border-transparent');
+        }
+
+        // Reset Creation Button labels
+        if (textNew) textNew.textContent = "New Expense";
+        if (subNew) subNew.textContent = "Upload Receipt";
+        if (textReq) textReq.textContent = "Request Item";
+        if (subReq) subReq.textContent = "Software / Hardware";
+
+        // Reset New Expense button onclick to open company expense modal
+        if (btnNew) btnNew.setAttribute('onclick', "openCreateModal('EXPENSE')");
+
         window.fetchExpenses();
-    } else {
-        if (corpSec) corpSec.classList.add('hidden');
-        if (persSec) persSec.classList.remove('hidden');
-        if (persBtn) persBtn.classList.add('bg-green-500', 'text-white', 'shadow-lg');
-        if (corpBtn) corpBtn.classList.remove('bg-green-500', 'text-white', 'shadow-lg');
-        if (fabCorp) fabCorp.classList.add('hidden');
-        if (fabPers) fabPers.classList.remove('hidden');
-        window.fetchPersonalVault();
     }
-};
-
-window.openCreateModal = (type = 'EXPENSE') => {
-    if (window.currentMode === 'personal' || type === 'PERSONAL') {
-        return window.createPersonalVaultEntry();
-    }
-    const modal = document.getElementById('modal-create');
-    if (!modal) return;
-    modal.classList.remove('hidden');
-    document.getElementById('expense-id').value = '';
-    document.getElementById('claim-type').value = type;
-    document.getElementById('line-items-container').innerHTML = '';
-    window.addLineItem();
-    window.loadProjects();
-};
-
-window.addLineItem = () => {
-    const tpl = document.getElementById('tpl-line-item');
-    const container = document.getElementById('line-items-container');
-    if (!tpl || !container) return;
-    container.appendChild(tpl.content.cloneNode(true));
-};
-
-window.calculateTotal = () => {
-    let total = 0;
-    document.querySelectorAll('.item-amount').forEach(i => total += (parseFloat(i.value) || 0));
-    const el = document.getElementById('running-total');
-    if (el) el.textContent = total.toLocaleString();
-};
-
-window.handleFileSelect = async (input) => {
-    const file = input.files[0];
-    if (!file) return;
-    const el = input.closest('.line-item');
-    const hidden = el.querySelector('.item-img-url');
-    const label = el.querySelector('.receipt-label');
-    const orig = label.innerHTML;
-    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-    try {
-        const fd = new FormData();
-        fd.append('key', IMGBB_KEY);
-        fd.append('image', file);
-        const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
-        const data = await res.json();
-        hidden.value = data.data.url;
-        label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i>';
-    } catch (e) {
-        label.innerHTML = orig;
-        window.showToast("Upload failed", "error");
-    }
-};
-
-window.addLineItem = () => {
-    const container = document.getElementById('line-items-container');
-    const tpl = document.getElementById('tpl-line-item');
-    if (!container || !tpl) return;
-
-    const clone = tpl.content.cloneNode(true);
-    const dateInput = clone.querySelector('.item-date');
-    if (dateInput) {
-        dateInput.value = new Date().toISOString().split('T')[0];
-    }
-    container.appendChild(clone);
-};
-
-window.handleProofUpload = async (input) => {
-    const file = input.files[0];
-    if (!file) return;
-    const hidden = document.getElementById('approval-proof-final-url');
-    const label = document.getElementById('proof-upload-label');
-    const orig = label.innerHTML;
-    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-    try {
-        const fd = new FormData();
-        fd.append('key', IMGBB_KEY);
-        fd.append('image', file);
-        const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
-        const data = await res.json();
-        hidden.value = data.data.url;
-        label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Attached';
-    } catch (e) {
-        label.innerHTML = orig;
-        window.showToast("Upload failed", "error");
-    }
-};
-
-window.removeProof = () => {
-    const hidden = document.getElementById('approval-proof-final-url');
-    const label = document.getElementById('proof-upload-label');
-    if (hidden) hidden.value = '';
-    if (label) label.innerHTML = '<i class="fa-solid fa-file-arrow-up"></i> Upload Proof';
-};
-
-window.loadProjects = async () => {
-    const select = document.getElementById('project-code');
-    if (!select || !window.companyId) return;
-    try {
-        const q = query(collection(window.db, "projects"), where("companyId", "==", window.companyId), where("active", "==", true));
-        const snap = await getDocs(q);
-        let h = '<option value="">Select Project...</option>';
-        snap.forEach(d => h += `<option value="${d.data().code}">${d.data().code}</option>`);
-        select.innerHTML = h;
-    } catch (e) { console.error(e); }
-};
-
-
-window.removeLineItem = (btn) => {
-    if (document.querySelectorAll('.line-item').length > 1) {
-        btn.closest('.line-item').remove();
-        window.calculateTotal();
-    } else {
-        window.showToast("At least one expense item is required.", "warning");
-    }
-};
-
-window.calculateTotal = () => {
-    let total = 0;
-    document.querySelectorAll('.item-amount').forEach(inp => total += parseFloat(inp.value) || 0);
-    const totalEl = document.getElementById('running-total');
-    if (totalEl) totalEl.textContent = total.toFixed(2);
 };
 
 window.openCreateModal = (type = 'EXPENSE') => {
@@ -453,6 +418,143 @@ window.openCreateModal = (type = 'EXPENSE') => {
     window.addLineItem();
 };
 
+window.addLineItem = () => {
+    const container = document.getElementById('line-items-container');
+    const tpl = document.getElementById('tpl-line-item');
+    if (!container || !tpl) return;
+
+    const clone = tpl.content.cloneNode(true);
+    const dateInput = clone.querySelector('.item-date');
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    container.appendChild(clone);
+};
+
+window.calculateTotal = () => {
+    let total = 0;
+    document.querySelectorAll('.item-amount').forEach(inp => total += parseFloat(inp.value) || 0);
+    const totalEl = document.getElementById('running-total');
+    if (totalEl) totalEl.textContent = total.toFixed(2);
+};
+
+window.handleFileSelect = async (input) => {
+    const file = input.files[0];
+    if (!file) return;
+    const el = input.closest('.line-item');
+    const hidden = el.querySelector('.item-img-url');
+    const label = el.querySelector('.receipt-label');
+    const status = el.querySelector('.file-status');
+    const removeBtn = el.querySelector('.btn-remove-img');
+    const orig = label.innerHTML;
+
+    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    try {
+        const fd = new FormData();
+        fd.append('key', IMGBB_KEY);
+        fd.append('image', file);
+        const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (data && data.data && data.data.url) {
+            hidden.value = data.data.url;
+            label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Done';
+            if (status) status.classList.remove('hidden');
+            if (removeBtn) removeBtn.classList.remove('hidden');
+        } else {
+            throw new Error("Upload failed");
+        }
+    } catch (e) {
+        label.innerHTML = orig;
+        window.showToast("Upload failed", "error");
+    }
+};
+
+window.removeImage = (btn) => {
+    const el = btn.closest('.line-item');
+    if (!el) return;
+    const hidden = el.querySelector('.item-img-url');
+    const label = el.querySelector('.receipt-label');
+    const status = el.querySelector('.file-status');
+    const removeBtn = el.querySelector('.btn-remove-img');
+    const urlInput = el.querySelector('.item-url-input');
+
+    if (hidden) hidden.value = '';
+    if (urlInput) urlInput.value = '';
+    if (label) label.innerHTML = `<div class="w-6 h-6 bg-slate-200 rounded flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-camera text-xs"></i></div><span class="text-xs text-slate-500 dark:text-slate-400 truncate">Upload / Snap (Optional)</span>`;
+    if (status) status.classList.add('hidden');
+    if (removeBtn) removeBtn.classList.add('hidden');
+};
+
+window.handleUrlInput = (input) => {
+    const el = input.closest('.line-item');
+    if (!el) return;
+    const hidden = el.querySelector('.item-img-url');
+    const status = el.querySelector('.file-status');
+    const removeBtn = el.querySelector('.btn-remove-img');
+
+    if (input.value.trim()) {
+        hidden.value = input.value.trim();
+        if (status) status.classList.remove('hidden');
+        if (removeBtn) removeBtn.classList.remove('hidden');
+    } else {
+        hidden.value = '';
+        if (status) status.classList.add('hidden');
+        if (removeBtn) removeBtn.classList.add('hidden');
+    }
+};
+
+window.handleProofUpload = async (input) => {
+    const file = input.files[0];
+    if (!file) return;
+    const hidden = document.getElementById('approval-proof-final-url');
+    const label = document.getElementById('proof-upload-label');
+    const orig = label.innerHTML;
+    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+    try {
+        const fd = new FormData();
+        fd.append('key', IMGBB_KEY);
+        fd.append('image', file);
+        const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data && data.data && data.data.url) {
+            hidden.value = data.data.url;
+            label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Attached';
+        } else { throw new Error("Upload failed"); }
+    } catch (e) {
+        label.innerHTML = orig;
+        window.showToast("Upload failed", "error");
+    }
+};
+
+window.removeProof = () => {
+    const hidden = document.getElementById('approval-proof-final-url');
+    const label = document.getElementById('proof-upload-label');
+    if (hidden) hidden.value = '';
+    if (label) label.innerHTML = '<i class="fa-solid fa-file-arrow-up"></i> Upload Proof';
+};
+
+window.loadProjects = async () => {
+    const select = document.getElementById('project-code');
+    if (!select || !window.companyId) return;
+    try {
+        const q = query(collection(window.db, "projects"), where("companyId", "==", window.companyId), where("active", "==", true));
+        const snap = await getDocs(q);
+        let h = '<option value="">Select Project...</option>';
+        snap.forEach(d => h += `<option value="${d.data().code}">${d.data().code}</option>`);
+        select.innerHTML = h;
+    } catch (e) { console.error(e); }
+};
+
+window.removeLineItem = (btn) => {
+    if (document.querySelectorAll('.line-item').length > 1) {
+        btn.closest('.line-item').remove();
+        window.calculateTotal();
+    } else {
+        window.showToast("At least one expense item is required.", "warning");
+    }
+};
+
 window.editExpense = (id) => {
     const e = window.expensesData.find(ex => ex.id === id);
     if (!e) return;
@@ -490,8 +592,8 @@ window.deleteExpense = async (id) => {
     }
 };
 
-window.viewReportHistory = (dataId) => {
-    const data = window.expensesData.find(e => e.id === dataId);
+window.viewReportHistory = (input) => {
+    const data = (typeof input === 'string') ? window.expensesData.find(e => e.id === input) : input;
     if (!data) return;
 
     const modal = document.getElementById('modal-view');
@@ -499,8 +601,53 @@ window.viewReportHistory = (dataId) => {
 
     modal.classList.remove('hidden');
     document.getElementById('view-title').textContent = data.title;
-    document.getElementById('view-status').textContent = data.status;
-    document.getElementById('view-amount').textContent = '₹' + parseFloat(data.totalAmount).toLocaleString();
+
+    const statusEl = document.getElementById('view-status');
+    if (statusEl) {
+        statusEl.textContent = data.status.replace(/_/g, ' ');
+        statusEl.className = 'badge ' + (window.getStatusColor(data.status));
+    }
+
+    const amountEl = document.getElementById('view-amount');
+    if (amountEl) {
+        amountEl.textContent = `${window.getSymbol(data.currency)} ${parseFloat(data.totalAmount).toLocaleString()}`;
+    }
+
+    const projectEl = document.getElementById('view-project');
+    if (projectEl) projectEl.textContent = data.projectCode || 'No Project';
+
+    const currEl = document.getElementById('view-currency');
+    if (currEl) currEl.textContent = data.currency;
+
+    const preApp = document.getElementById('view-pre-approved');
+    if (preApp) {
+        if (data.preApproved) {
+            preApp.classList.remove('hidden');
+            const proof = document.getElementById('view-approval-proof');
+            const link = document.getElementById('view-approval-link');
+            if (data.approvalProof) {
+                if (proof) proof.classList.remove('hidden');
+                if (link) {
+                    link.href = data.approvalProof;
+                    link.textContent = data.approvalProof;
+                }
+            } else {
+                if (proof) proof.classList.add('hidden');
+            }
+        } else {
+            preApp.classList.add('hidden');
+        }
+    }
+
+    const rej = document.getElementById('view-reject-msg');
+    if (rej) {
+        if (data.status === 'REJECTED' && data.rejectionNote) {
+            rej.classList.remove('hidden');
+            document.getElementById('reject-reason-text').textContent = data.rejectionNote;
+        } else {
+            rej.classList.add('hidden');
+        }
+    }
 
     const timeline = document.getElementById('view-timeline');
     if (timeline) {
@@ -508,9 +655,11 @@ window.viewReportHistory = (dataId) => {
             const date = h.date?.toDate ? h.date.toDate() : new Date(h.date);
             return `
                 <div class="flex gap-4 pb-4 border-l-2 border-slate-100 dark:border-slate-700 ml-2 pl-4 relative">
-                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                        <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+                    </div>
                     <div>
-                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${h.action}</p>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${h.action.replace(/_/g, ' ')}</p>
                         <p class="text-[10px] text-slate-500">${h.by} • ${date.toLocaleString()}</p>
                     </div>
                 </div>
@@ -519,28 +668,27 @@ window.viewReportHistory = (dataId) => {
     }
 };
 
-
 window.createExpenseFromAI = async (data) => {
-    console.log(\ Creating expense from AI:\, data);
-    window.openCreateModal(\EXPENSE\);
+    console.log('Creating expense from AI:', data);
+    window.openCreateModal('EXPENSE');
     await new Promise(r => setTimeout(r, 200));
 
-    const projectSelect = document.getElementById(\project-code\);
+    const projectSelect = document.getElementById('project-code');
     if (projectSelect && data.projectCode) {
         const options = Array.from(projectSelect.options);
         const match = options.find(o => o.value.toLowerCase() === data.projectCode.toLowerCase() || o.text.toLowerCase().includes(data.projectCode.toLowerCase()));
         if (match) projectSelect.value = match.value;
-        else window.showToast(\Project Code not found, please select manually.\, \warning\);
+        else window.showToast('Project Code not found, please select manually.', 'warning');
     }
 
-    const firstItem = document.querySelector(\.line-item\);
+    const firstItem = document.querySelector('.line-item');
     if (firstItem) {
-        firstItem.querySelector(\.item-category\).value = data.category || \Other\;
-        firstItem.querySelector(\.item-amount\).value = data.amount || 0;
-        firstItem.querySelector(\.item-desc\).value = data.description || \\;
-        firstItem.querySelector(\.item-date\).value = new Date().toISOString().split(\T\)[0];
+        if (firstItem.querySelector('.item-category')) firstItem.querySelector('.item-category').value = data.category || 'Other';
+        if (firstItem.querySelector('.item-amount')) firstItem.querySelector('.item-amount').value = data.amount || 0;
+        if (firstItem.querySelector('.item-desc')) firstItem.querySelector('.item-desc').value = data.description || '';
+        if (firstItem.querySelector('.item-date')) firstItem.querySelector('.item-date').value = new Date().toISOString().split('T')[0];
     }
 
     if (window.calculateTotal) window.calculateTotal();
-    window.showToast(\AI prepared your expense claim.\, \info\);
+    window.showToast('AI prepared your expense claim.', 'info');
 };

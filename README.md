@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/ipec.jpg" alt="IPEC Consulting Logo" width="120" />
+  <img src="assets/images/explyra_logo.png" alt="IPEC Consulting Logo" width="120" />
 </p>
 
 <h1 align="center">IPEC Expense Manager</h1>

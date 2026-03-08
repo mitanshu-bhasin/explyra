@@ -73,7 +73,7 @@ if ('Notification' in window && Notification.permission === 'default') {
                         const title = "Test Notification";
                         const opts = {
                             body: "This is a test notification to confirm setup.",
-                            icon: "assets/images/cropped-ipec-logo-32x32.png"
+                            icon: "assets/images/explyra_logo.png"
                         };
                         if (navigator.serviceWorker && navigator.serviceWorker.controller) {
                             navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts));

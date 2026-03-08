@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Beautifier - Online JS Formatter | Explyra</title>
+    <meta name="description"
+        content="Free online JavaScript beautifier. Format, indent and clean up obfuscated JS code instantly. Client-side processing for maximum privacy.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / Beautifier Tools / JavaScript Beautifier
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">JavaScript Beautifier</h1>
+                <p class="tool-desc">Clean up and format your JavaScript code for better readability.</p>
+            </div>
+
+            <div class="input-group">
+                <label for="input">Input JavaScript</label>
+                <textarea id="input" placeholder="Paste your JS code here..."></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="formatBtn" class="btn btn-primary">Format JS</button>
+                <button id="copyBtn" class="btn btn-secondary">Copy Output</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+            </div>
+
+            <div class="input-group">
+                <label for="output">Formatted Output</label>
+                <textarea id="output" readonly placeholder="Formatted code will appear here..."></textarea>
+            </div>
+        </div>
+
+        <section style="margin-top: 40px; color: var(--ink3); font-size: 0.9rem;">
+            <h2 style="color: var(--ink); margin-bottom: 15px; font-family: 'Playfair Display';">Security & Privacy</h2>
+            <p>Our JavaScript Beautifier runs entirely within your browser. We never send your code to our servers for
+                processing. This ensures that even sensitive scripts remain private while you format them. Use it to
+                understand logic in minimized libraries or to prepare your own code for review.</p>
+        </section>
+    </main>
+
+    <script>
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const formatBtn = document.getElementById('formatBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        function formatJS(js) {
+            let tab = '  ';
+            let result = '';
+            let indent = '';
+
+            js = js.replace(/([^\{\}\n;]+[;\{])/g, '$1\n');
+            js = js.replace(/([\}])/g, '\n$1\n');
+            js = js.replace(/\n\s*\n/g, '\n');
+
+            js.split('\n').forEach(line => {
+                line = line.trim();
+                if (line.match(/^\}/)) {
+                    indent = indent.substring(tab.length);
+                }
+                result += indent + line + '\n';
+                if (line.match(/\{$/)) {
+                    indent += tab;
+                }
+            });
+            return result.trim();
+        }
+
+        formatBtn.addEventListener('click', () => {
+            const code = input.value.trim();
+            if (!code) return;
+            output.value = formatJS(code);
+        });
+
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy Output', 2000);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            output.value = '';
+        });
+    </script>
+</body>
+
+</html>

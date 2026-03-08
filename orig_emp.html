@@ -10,8 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Explyra">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/cropped-ipec-logo-32x32.png">
-    <link rel="apple-touch-icon" href="assets/images/ipec.jpg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
+    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png">
     <meta name="description"
         content="Explyra Employee Portal by Explyra & Mitanshu Bhasin. Submit expense claims and track reimbursements efficiently and securely.">
     <meta name="keywords" content="Explyra, Employee, Expense, Claims, Reimbursement, Mitanshu Bhasin, Explyra">
@@ -24,13 +24,13 @@
     <meta property="og:description"
         content="Explyra Employee Portal by Explyra & Mitanshu Bhasin. Submit expense claims and track reimbursements efficiently and securely.">
     <meta property="og:url" content="https://i.fouralpha.org/emp.html">
-    <meta property="og:image" content="https://i.fouralpha.org/assets/images/ipec.jpg">
+    <meta property="og:image" content="https://i.fouralpha.org/assets/images/explyra_logo.png">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Explyra Employee Portal">
     <meta name="twitter:description" content="Manage your corporate expenses efficiently.">
-    <meta name="twitter:image" content="https://i.fouralpha.org/assets/images/ipec.jpg">
+    <meta name="twitter:image" content="https://i.fouralpha.org/assets/images/explyra_logo.png">
 
     <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
@@ -257,7 +257,7 @@
                                     const title = "Test Notification";
                                     const opts = {
                                         body: "This is a test notification to confirm setup.",
-                                        icon: "assets/images/cropped-ipec-logo-32x32.png"
+                                        icon: "assets/images/explyra_logo.png"
                                     };
                                     if (navigator.serviceWorker && navigator.serviceWorker.controller) {
                                         navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts));
@@ -293,7 +293,7 @@
                     <div id="login-logo-container"
                         class="w-20 h-20 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-200 overflow-hidden">
                         <img id="login-logo-img" class="w-full h-full object-contain hidden"
-                            src="assets/images/ipec.jpg" alt="Company Logo">
+                            src="assets/images/explyra_logo.png" alt="Company Logo">
                         <i id="login-logo-fallback" class="fa-solid fa-seedling text-3xl text-white"></i>
                     </div>
                     <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100" id="login-company-name">Explyra
@@ -3589,7 +3589,7 @@
                                         if (Notification.permission === 'granted') {
                                             const opts = {
                                                 body: d.body,
-                                                icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                                icon: 'assets/images/explyra_logo.png',
                                                 tag: change.doc.id,
                                                 vibrate: [200, 100, 200]
                                             };
@@ -3616,7 +3616,7 @@
                                                 if (Notification.permission === 'granted') {
                                                     const opts = {
                                                         body: data.lastMessage || 'New message',
-                                                        icon: 'assets/images/cropped-ipec-logo-32x32.png',
+                                                        icon: 'assets/images/explyra_logo.png',
                                                         vibrate: [200, 100, 200],
                                                         tag: change.doc.id,
                                                         renotify: true
@@ -3645,7 +3645,7 @@
                                     if (data.email !== userData.email) {
                                         if (document.hidden || (typeof currentChatContext !== 'undefined' && currentChatContext !== 'global')) {
                                             if (Notification.permission === 'granted') {
-                                                const opts = { body: `${data.sender}: ${data.text}`, icon: 'assets/images/cropped-ipec-logo-32x32.png', tag: 'global_chat' };
+                                                const opts = { body: `${data.sender}: ${data.text}`, icon: 'assets/images/explyra_logo.png', tag: 'global_chat' };
                                                 if (navigator.serviceWorker?.controller) {
                                                     navigator.serviceWorker.ready.then(reg => reg.showNotification('Global Group Message', opts));
                                                 } else {
@@ -3707,9 +3707,9 @@
                                 const body = `Your claim "${d.title}" is now ${s}.`;
 
                                 if (navigator.serviceWorker.controller) {
-                                    navigator.serviceWorker.ready.then(r => r.showNotification(title, { body, icon: 'assets/images/cropped-ipec-logo-32x32.png', vibration: [200] }));
+                                    navigator.serviceWorker.ready.then(r => r.showNotification(title, { body, icon: 'assets/images/explyra_logo.png', vibration: [200] }));
                                 } else {
-                                    new Notification(title, { body, icon: 'assets/images/cropped-ipec-logo-32x32.png' });
+                                    new Notification(title, { body, icon: 'assets/images/explyra_logo.png' });
                                 }
                             }
                         });

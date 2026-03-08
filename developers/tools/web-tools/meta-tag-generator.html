@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Generator - SEO Header Tag Creator | Explyra</title>
+    <meta name="description"
+        content="Generate SEO-optimized meta tags for your website. Easy-to-use form to create title, description, keywords, and author tags for better search engine rankings.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / Web Tools / Meta Tag Generator
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">Meta Tag Generator</h1>
+                <p class="tool-desc">Fill in the details below to generate SEO-optimized meta tags for your website.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label for="siteTitle">Site Title</label>
+                    <input type="text" id="siteTitle" placeholder="e.g. My Awesome Website">
+                </div>
+                <div class="input-group">
+                    <label for="siteAuthor">Author</label>
+                    <input type="text" id="siteAuthor" placeholder="e.g. John Doe">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="siteDesc">Site Description (max 160 chars)</label>
+                <textarea id="siteDesc" style="min-height: 80px;"
+                    placeholder="Brief summary of your website..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="siteKeywords">Keywords (comma separated)</label>
+                <input type="text" id="siteKeywords" placeholder="e.g. saas, platform, tool, analytics">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label for="siteLang">Language</label>
+                    <select id="siteLang">
+                        <option value="English">English</option>
+                        <option value="French">French</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="German">German</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="allowRobots">Robots follow?</label>
+                    <select id="allowRobots">
+                        <option value="index, follow">Yes (index, follow)</option>
+                        <option value="noindex, nofollow">No (noindex, nofollow)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button id="genBtn" class="btn btn-primary">Generate Tags</button>
+                <button id="copyBtn" class="btn btn-secondary">Copy Result</button>
+            </div>
+
+            <div class="input-group">
+                <label for="output">Generated HTML Tags</label>
+                <textarea id="output" readonly style="min-height: 150px;"></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const genBtn = document.getElementById('genBtn');
+        const output = document.getElementById('output');
+        const copyBtn = document.getElementById('copyBtn');
+
+        genBtn.addEventListener('click', () => {
+            const title = document.getElementById('siteTitle').value;
+            const desc = document.getElementById('siteDesc').value;
+            const keywords = document.getElementById('siteKeywords').value;
+            const author = document.getElementById('siteAuthor').value;
+            const robots = document.getElementById('allowRobots').value;
+            const lang = document.getElementById('siteLang').value;
+
+            let tags = `<!-- Primary Meta Tags -->\n`;
+            if (title) tags += `<title>${title}</title>\n`;
+            tags += `<meta name="title" content="${title}">\n`;
+            tags += `<meta name="description" content="${desc}">\n`;
+            tags += `<meta name="keywords" content="${keywords}">\n`;
+            tags += `<meta name="author" content="${author}">\n`;
+            tags += `<meta name="robots" content="${robots}">\n`;
+            tags += `<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n`;
+            tags += `<meta name="language" content="${lang}">\n`;
+
+            output.value = tags;
+        });
+
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            const oldText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = oldText, 2000);
+        });
+    </script>
+</body>
+
+</html>

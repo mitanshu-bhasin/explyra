@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Explyra Utility — Tools & P2P Suite | Explyra</title>
+    <meta name="description"
+        content="Explyra Utility brings you powerful P2P tools — unlimited file transfer, video calls, screen share, live chat, game share, and remote device access." />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #F8F7F4;
+            --bg2: #FFF;
+            --bg3: #F1EFE9;
+            --bg4: #E9E6E0;
+            --surf: #FFF;
+            --bdr: #E4E1DB;
+            --bdr2: #CCC8C0;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --ink4: #939BAC;
+            --rose: #BE185D;
+            --rose2: #F472B6;
+            --rose-g: rgba(190, 24, 93, .08);
+            --rose-b: rgba(190, 24, 93, .2);
+            --purp: #6D28D9;
+            --purp2: #A78BFA;
+            --purp-g: rgba(109, 40, 217, .08);
+            --purp-b: rgba(109, 40, 217, .2);
+            --slate: #334155;
+            --slt-g: rgba(51, 65, 85, .08);
+            --slt-b: rgba(51, 65, 85, .2);
+            --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
+            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
+            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
+            --r: 8px;
+            --t: .2s ease
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --bg4: #1B2235;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, .07);
+            --bdr2: rgba(255, 255, 255, .14);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --ink4: #4E5A70;
+            --rose: #F472B6;
+            --rose2: #FBCFE8;
+            --rose-g: rgba(244, 114, 182, .10);
+            --rose-b: rgba(244, 114, 182, .22);
+            --purp: #A78BFA;
+            --purp2: #C4B5FD;
+            --purp-g: rgba(167, 139, 250, .10);
+            --purp-b: rgba(167, 139, 250, .22);
+            --slate: #94A3B8;
+            --slt-g: rgba(148, 163, 184, .10);
+            --slt-b: rgba(148, 163, 184, .22);
+            --s1: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 8px rgba(0, 0, 0, .25);
+            --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
+            --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3)
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+            line-height: 1.65;
+            overflow-x: hidden;
+            transition: background .4s, color .4s
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 5vw;
+            background: rgba(248, 247, 244, .9);
+            backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--bdr);
+            transition: background .4s, border-color .4s;
+            gap: 2rem
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(8, 11, 20, .88)
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0
+        }
+
+        .nav-logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--rose);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .nav-logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.2;
+            stroke-linecap: round
+        }
+
+        .nav-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: .03em;
+            color: var(--ink)
+        }
+
+        .nav-logo-sub {
+            font-weight: 400;
+            font-family: 'Outfit', sans-serif;
+            font-size: .8rem;
+            color: var(--ink3);
+            margin-left: 4px
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            flex-shrink: 0;
+            margin-left: auto
+        }
+
+        .btn-back {
+            font-size: .82rem;
+            font-weight: 500;
+            color: var(--ink3);
+            transition: color var(--t);
+            white-space: nowrap
+        }
+
+        .btn-back:hover {
+            color: var(--ink)
+        }
+
+        .theme-pill {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            background: var(--bg3);
+            border: 1px solid var(--bdr2);
+            border-radius: 100px;
+            padding: .3rem .5rem .3rem .7rem;
+            cursor: pointer;
+            transition: all var(--t)
+        }
+
+        .theme-pill:hover {
+            border-color: var(--rose)
+        }
+
+        .theme-pill-label {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--ink3);
+            letter-spacing: .05em
+        }
+
+        .theme-pill-toggle {
+            width: 32px;
+            height: 18px;
+            border-radius: 9px;
+            background: var(--bg4);
+            position: relative;
+            transition: background .3s
+        }
+
+        [data-theme="dark"] .theme-pill-toggle {
+            background: var(--rose)
+        }
+
+        .theme-pill-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        [data-theme="dark"] .theme-pill-toggle::before {
+            transform: translateX(14px)
+        }
+
+        .hero {
+            min-height: 55vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 5vw 60px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero-mesh {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .hero-mesh::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(190, 24, 93, .07) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(244, 114, 182, .06) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .06) 0%, transparent 60%)
+        }
+
+        [data-theme="dark"] .hero-mesh::before {
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(244, 114, 182, .15) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(190, 24, 93, .12) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .12) 0%, transparent 60%)
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(var(--bdr) 1px, transparent 1px), linear-gradient(90deg, var(--bdr) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+            opacity: .5
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 880px
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: var(--rose-g);
+            border: 1px solid var(--rose-b);
+            color: var(--rose);
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            padding: .4rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 2rem;
+            animation: fadeUp .8s ease both
+        }
+
+        .badge-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--rose);
+            animation: pulse 2s infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.4)
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -.025em;
+            color: var(--ink);
+            margin-bottom: 1.4rem;
+            animation: fadeUp .8s .1s ease both
+        }
+
+        .hero h1 .grad {
+            background: linear-gradient(135deg, var(--rose), var(--purp));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        [data-theme="dark"] .hero h1 .grad {
+            background: linear-gradient(135deg, var(--rose2), var(--purp2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .hero h1 em {
+            font-style: italic
+        }
+
+        .hero-desc {
+            font-size: 1.05rem;
+            color: var(--ink3);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+            font-weight: 300;
+            animation: fadeUp .8s .2s ease both
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .tools-section {
+            padding: 3rem 5vw 5rem;
+            background: var(--bg2);
+            border-top: 1px solid var(--bdr)
+        }
+
+        .tools-inner {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .eyebrow {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--rose);
+            margin-bottom: .8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .6rem
+        }
+
+        .eyebrow::before,
+        .eyebrow::after {
+            content: '';
+            width: 20px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 2px
+        }
+
+        .sec-h {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -.02em;
+            color: var(--ink);
+            text-align: center
+        }
+
+        .sec-h em {
+            font-style: italic
+        }
+
+        .sec-p {
+            font-size: .92rem;
+            color: var(--ink3);
+            line-height: 1.75;
+            max-width: 520px;
+            margin: .8rem auto 0;
+            font-weight: 300;
+            text-align: center
+        }
+
+        .tools-header {
+            text-align: center;
+            margin-bottom: 3rem
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem
+        }
+
+        .tool-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all .28s;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--rose);
+            border-radius: 14px 14px 0 0;
+            opacity: 0;
+            transition: opacity .28s
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--s3);
+            border-color: var(--rose)
+        }
+
+        .tool-card:hover::before {
+            opacity: 1
+        }
+
+        [data-theme="dark"] .tool-card {
+            background: var(--bg3);
+            border-color: var(--bdr)
+        }
+
+        [data-theme="dark"] .tool-card:hover {
+            background: var(--bg4)
+        }
+
+        .tool-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+            background: var(--rose-g);
+            border: 1px solid var(--rose-b)
+        }
+
+        .tool-badge {
+            display: inline-flex;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: .2rem .6rem;
+            border-radius: 4px;
+            margin-bottom: .8rem;
+            background: var(--rose-g);
+            color: var(--rose);
+            border: 1px solid var(--rose-b)
+        }
+
+        .tool-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: .5rem
+        }
+
+        .tool-desc {
+            font-size: .84rem;
+            color: var(--ink3);
+            line-height: 1.7;
+            font-weight: 300
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--rose);
+            margin-top: 1.2rem;
+            transition: gap .2s
+        }
+
+        .tool-card:hover .tool-link {
+            gap: .6rem
+        }
+
+        .tool-card.coming-soon {
+            opacity: .55;
+            cursor: default;
+            border-style: dashed
+        }
+
+        .tool-card.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--bdr)
+        }
+
+        .tool-card.coming-soon::before {
+            display: none
+        }
+
+        .tool-card.coming-soon .tool-icon {
+            background: var(--slt-g);
+            border-color: var(--slt-b)
+        }
+
+        .tool-card.coming-soon .tool-badge {
+            background: var(--slt-g);
+            color: var(--slate);
+            border-color: var(--slt-b)
+        }
+
+        .tool-card.coming-soon .tool-link {
+            color: var(--ink4)
+        }
+
+        footer {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 2rem 5vw;
+            border-top: 1px solid var(--bdr);
+            background: var(--bg)
+        }
+
+        .foot-left {
+            display: flex;
+            align-items: center;
+            gap: .8rem
+        }
+
+        .foot-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 700
+        }
+
+        .foot-tagline {
+            font-size: .73rem;
+            color: var(--ink4);
+            font-weight: 400
+        }
+
+        .foot-copy {
+            font-size: .72rem;
+            color: var(--ink4);
+            margin-left: auto
+        }
+
+        .foot-links {
+            display: flex;
+            gap: 1.3rem;
+            flex-wrap: wrap
+        }
+
+        .foot-links a {
+            font-size: .73rem;
+            color: var(--ink3);
+            font-weight: 500;
+            transition: color var(--t)
+        }
+
+        .foot-links a:hover {
+            color: var(--ink)
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .d1 {
+            transition-delay: .15s
+        }
+
+        @media(max-width:768px) {
+            .hero {
+                min-height: 45vh;
+                padding: 90px 5vw 40px
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            .foot-copy {
+                margin-left: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-icon"><svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                </svg></div>
+            <span class="nav-logo-text">Explyra <span class="nav-logo-sub">Utility</span></span>
+        </a>
+        <div class="nav-right">
+            <a href="../index.html" class="btn-back">&larr; Main Site</a>
+            <div class="theme-pill" id="themePill">
+                <span class="theme-pill-label" id="themeLabel">Light</span>
+                <div class="theme-pill-toggle"></div>
+            </div>
+        </div>
+    </nav>
+    <section class="hero">
+        <div class="hero-mesh"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-inner">
+            <div class="hero-badge"><span class="badge-pulse"></span>Explyra Utility Hub</div>
+            <h1><em>Connect.</em> Share. <span class="grad">Collaborate.</span></h1>
+            <p class="hero-desc">A powerful suite of peer-to-peer tools &mdash; unlimited file transfer, video calls,
+                screen share, live chat, game share, and remote access. All encrypted. All P2P. No limits.</p>
+        </div>
+    </section>
+    <section class="tools-section">
+        <div class="tools-inner">
+            <div class="tools-header reveal">
+                <div class="eyebrow">Available Tools</div>
+                <h2 class="sec-h">Your utility <em>toolkit.</em></h2>
+                <p class="sec-p">Powerful tools for seamless peer-to-peer collaboration. More tools are shipping
+                    continuously.</p>
+            </div>
+            <div class="tool-grid reveal d1">
+                <a href="P2P/index.html" class="tool-card">
+                    <div class="tool-icon">&#128279;</div>
+                    <div class="tool-badge">P2P Suite</div>
+                    <div class="tool-title">P2P Collaboration Suite</div>
+                    <p class="tool-desc">Unlimited file transfer, HD video calls, screen share, live chat, game
+                        streaming, and remote device access &mdash; all peer-to-peer and encrypted.</p>
+                    <div class="tool-link">Launch App <span>&rarr;</span></div>
+                </a>
+                <a href="Doc Scan/index.html" class="tool-card">
+                    <div class="tool-icon">&#128196;</div>
+                    <div class="tool-badge">Scanner</div>
+                    <div class="tool-title">DocScan Pro</div>
+                    <p class="tool-desc">Free online document scanner. Scan notes, receipts, and IDs to PDF instantly in
+                        your browser. Privacy-focused, no server uploads.</p>
+                    <div class="tool-link">Launch Scanner <span>&rarr;</span></div>
+                </a>
+                <a href="Voice genrator and translator/index.html" class="tool-card">
+                    <div class="tool-icon">&#127897;</div>
+                    <div class="tool-badge">EchoReader AI</div>
+                    <div class="tool-title">Voice Generator & Translator</div>
+                    <p class="tool-desc">Ultimate AI-powered neural voice command center. High-fidelity text-to-speech,
+                        real-time live dictation, and multi-language translation.</p>
+                    <div class="tool-link">Launch AI Hub <span>&rarr;</span></div>
+                </a>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="foot-left">
+            <span class="foot-logo">Explyra</span>
+            <span class="foot-tagline">One Platform. Everything.</span>
+        </div>
+        <p class="foot-copy">&copy; 2026 Explyra &middot; Founded by Mitanshu Bhasin &middot; All rights reserved.</p>
+        <div class="foot-links">
+            <a href="../index.html">Home</a>
+            <a href="../developers/index.html">Developers</a>
+            <a href="../health-manager/index.html">Health</a>
+            <a href="../pricing.html">Pricing</a>
+            <a href="../privacy.html">Privacy</a>
+            <a href="../terms.html">Terms</a>
+        </div>
+    </footer>
+    <script>
+        const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
+        const saved = localStorage.getItem('explyra-theme') || 'light';
+        html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
+        pill.addEventListener('click', () => { const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light'; html.setAttribute('data-theme', nxt); lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light'; localStorage.setItem('explyra-theme', nxt) });
+        const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .08 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    </script>
+</body>
+
+</html>
