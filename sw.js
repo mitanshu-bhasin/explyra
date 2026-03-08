@@ -1,7 +1,7 @@
-// IPEC Consulting PWA Service Worker v4
+// Explyra Suite PWA Service Worker v4
 // Strategies: Network-first for navigations, Stale-while-revalidate for assets, Cache-first for CDNs
 
-const CACHE_NAME = 'ipec-consulting-cache-v5';
+const CACHE_NAME = 'explyra-consulting-cache-v5';
 const OFFLINE_URL = './offline.html';
 
 // Core app shell to precache (local files only — no CDN URLs that may fail)
@@ -22,7 +22,7 @@ const APP_SHELL = [
 ];
 
 // CDN domains to cache at runtime
-const CDN_CACHE_NAME = 'ipec-cdn-cache-v1';
+const CDN_CACHE_NAME = 'explyra-cdn-cache-v1';
 const CDN_DOMAINS = [
     'fonts.googleapis.com',
     'fonts.gstatic.com',

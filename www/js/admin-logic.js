@@ -79,7 +79,7 @@ async function sendSystemEmail(type, data) {
 
 let userData = null;
 try {
-    const cached = localStorage.getItem('ipec_admin_data_cache');
+    const cached = localStorage.getItem('explyra_admin_data_cache');
     if (cached) {
         userData = JSON.parse(cached);
         currentUser = { email: userData.email, uid: userData.uid };
@@ -225,7 +225,7 @@ onAuthStateChanged(auth, async (user) => {
             if (!snap.empty) {
                 userData = snap.docs[0].data();
                 userData.docId = snap.docs[0].id; // crucial for updates
-                localStorage.setItem('ipec_admin_data_cache', JSON.stringify(userData));
+                localStorage.setItem('explyra_admin_data_cache', JSON.stringify(userData));
 
                 // --- MAINTENANCE MODE CHECK ---
                 try {
@@ -237,7 +237,7 @@ onAuthStateChanged(auth, async (user) => {
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
                                             <h1 style="font-size:2.5rem;font-weight:bold;margin-bottom:10px;">System Under Maintenance</h1>
-                                            <p style="color:#94a3b8;font-size:1.1rem;max-width:500px;">The IPEC Expense Manager is currently down for scheduled upgrades. Please try again later.</p>
+                                            <p style="color:#94a3b8;font-size:1.1rem;max-width:500px;">The EXPLYRA Expense Manager is currently down for scheduled upgrades. Please try again later.</p>
                                         </div>
                                     `;
                             await signOut(auth);
@@ -744,7 +744,7 @@ window.handleGoogleLogin = async () => {
 
 window.logout = async () => {
     if (await showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
-        localStorage.removeItem('ipec_admin_data_cache');
+        localStorage.removeItem('explyra_admin_data_cache');
         signOut(auth);
         showToast('Logged out successfully', 'info');
     }
@@ -3000,7 +3000,7 @@ window.exportReport = async (format) => {
                             </tfoot>
                         </table>
                         <div class="mt-8 text-xs text-slate-400 text-center">
-                            <p>CONFIDENTIAL | IPEC Consulting Expense Management System</p>
+                            <p>CONFIDENTIAL | Explyra Suite Expense Management System</p>
                         </div>
                     `;
 
@@ -5048,14 +5048,14 @@ window.downloadMyData = async () => {
             userProfile: userData,
             expenses: expenses,
             exportDate: new Date().toISOString(),
-            generatedBy: "IPEC Admin Portal"
+            generatedBy: "EXPLYRA Admin Portal"
         };
 
         // 3. Trigger Download
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `ipec_data_export_${userData.employeeId || 'user'}_${Date.now()}.json`);
+        downloadAnchor.setAttribute("download", `explyra_data_export_${userData.employeeId || 'user'}_${Date.now()}.json`);
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();

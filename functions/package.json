@@ -1,6 +1,6 @@
 {
-  "name": "ipec-functions",
-  "description": "IPEC Expense Manager Cloud Functions",
+  "name": "explyra-functions",
+  "description": "EXPLYRA Expense Manager Cloud Functions",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
