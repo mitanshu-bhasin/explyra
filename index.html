@@ -2685,6 +2685,407 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+        /* ═══════════════════════════════════════════
+   STATS BAR
+═══════════════════════════════════════════ */
+        .stats-bar {
+            background: var(--bg2);
+            border-top: 1px solid var(--bdr);
+            border-bottom: 1px solid var(--bdr);
+            padding: 2.8rem 5vw
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0 3rem
+        }
+
+        .stat-val {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 700;
+            color: var(--blue);
+            line-height: 1;
+            margin-bottom: .3rem
+        }
+
+        .stat-label {
+            font-size: .72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--ink4)
+        }
+
+        .stat-div {
+            width: 1px;
+            height: 40px;
+            background: var(--bdr2)
+        }
+
+        @media(max-width:768px) {
+            .stats-inner {
+                gap: 1rem
+            }
+
+            .stat-item {
+                padding: .5rem 1.5rem
+            }
+
+            .stat-div {
+                display: none
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+   CRM SECTION
+═══════════════════════════════════════════ */
+        .crm-sec {
+            background: var(--bg)
+        }
+
+        .crm-sec .blob {
+            width: 500px;
+            height: 500px;
+            background: var(--rose);
+            top: -100px;
+            left: -100px
+        }
+
+        .crm-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            box-shadow: var(--s4);
+            overflow: hidden
+        }
+
+        [data-theme="dark"] .crm-card {
+            background: var(--bg3);
+            border-color: var(--bdr2);
+            box-shadow: var(--s4), 0 0 0 1px rgba(244, 114, 182, .1), inset 0 1px 0 rgba(255, 255, 255, .05)
+        }
+
+        .crm-bar {
+            background: var(--bg3);
+            border-bottom: 1px solid var(--bdr);
+            padding: .85rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        [data-theme="dark"] .crm-bar {
+            background: var(--bg4)
+        }
+
+        .crm-body {
+            padding: 1.2rem
+        }
+
+        .crm-kpis {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .7rem;
+            margin-bottom: 1rem
+        }
+
+        .crm-pipeline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .7rem
+        }
+
+        .crm-stage {
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            border-radius: 9px;
+            padding: .85rem
+        }
+
+        [data-theme="dark"] .crm-stage {
+            background: var(--bg4)
+        }
+
+        .crm-stage-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: .7rem
+        }
+
+        .crm-stage-count {
+            background: var(--bg4);
+            color: var(--ink3);
+            border-radius: 100px;
+            padding: .1rem .45rem;
+            font-size: .65rem
+        }
+
+        [data-theme="dark"] .crm-stage-count {
+            background: var(--bg2)
+        }
+
+        .crm-lead {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .5rem .65rem;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 7px;
+            margin-bottom: .35rem;
+            transition: box-shadow .2s
+        }
+
+        [data-theme="dark"] .crm-lead {
+            background: var(--bg3)
+        }
+
+        .crm-lead:hover {
+            box-shadow: var(--s1)
+        }
+
+        .crm-lead-av {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+
+        .crm-lead-n {
+            font-size: .76rem;
+            font-weight: 600;
+            color: var(--ink2)
+        }
+
+        .crm-lead-v {
+            font-size: .65rem;
+            color: var(--ink4)
+        }
+
+        .crm-lead-tag {
+            margin-left: auto;
+            font-size: .6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            padding: .15rem .45rem;
+            border-radius: 4px;
+            flex-shrink: 0
+        }
+
+        /* ═══════════════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════════════ */
+        .testimonials-sec {
+            padding: 5rem 5vw;
+            background: var(--bg2);
+            border-top: 1px solid var(--bdr)
+        }
+
+        .test-inner {
+            max-width: 1250px;
+            margin: 0 auto
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem
+        }
+
+        .test-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            padding: 1.8rem;
+            transition: all .28s;
+            display: flex;
+            flex-direction: column
+        }
+
+        [data-theme="dark"] .test-card {
+            background: var(--bg3);
+            border-color: var(--bdr)
+        }
+
+        .test-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--s3)
+        }
+
+        .test-stars {
+            color: var(--amber);
+            font-size: 1rem;
+            letter-spacing: .05em;
+            margin-bottom: 1rem
+        }
+
+        .test-quote {
+            font-size: .88rem;
+            color: var(--ink2);
+            line-height: 1.75;
+            font-weight: 300;
+            flex: 1;
+            margin-bottom: 1.5rem
+        }
+
+        .test-author {
+            display: flex;
+            align-items: center;
+            gap: .85rem
+        }
+
+        .test-av {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+
+        .test-name {
+            font-size: .86rem;
+            font-weight: 600;
+            color: var(--ink)
+        }
+
+        .test-role {
+            font-size: .72rem;
+            color: var(--ink4);
+            margin-top: .15rem
+        }
+
+        @media(max-width:900px) {
+            .test-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:580px) {
+            .test-grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════ */
+        .faq-sec {
+            padding: 5rem 5vw;
+            background: var(--bg);
+            border-top: 1px solid var(--bdr)
+        }
+
+        .faq-inner {
+            max-width: 820px;
+            margin: 0 auto
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            margin-top: .5rem
+        }
+
+        .faq-item {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border-color .25s
+        }
+
+        [data-theme="dark"] .faq-item {
+            background: var(--bg3)
+        }
+
+        .faq-item:has(.faq-q[aria-expanded="true"]) {
+            border-color: var(--blue)
+        }
+
+        .faq-q {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.1rem 1.4rem;
+            text-align: left;
+            font-size: .92rem;
+            font-weight: 600;
+            color: var(--ink);
+            gap: 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color .2s
+        }
+
+        .faq-q:hover {
+            color: var(--blue)
+        }
+
+        .faq-icon {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .faq-q[aria-expanded="true"] .faq-icon {
+            transform: rotate(180deg);
+            color: var(--blue)
+        }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s cubic-bezier(.4, 0, .2, 1), padding .3s
+        }
+
+        .faq-a.open {
+            max-height: 400px;
+            padding-bottom: 1.2rem
+        }
+
+        .faq-a p {
+            padding: 0 1.4rem;
+            font-size: .87rem;
+            color: var(--ink3);
+            line-height: 1.8;
+            font-weight: 300
+        }
+
     </style>
 </head>
 
@@ -2707,12 +3108,11 @@
                 <li><a href="#expense">Expense</a></li>
                 <li><a href="health-manager/index.html">Health</a></li>
                 <li><a href="explyra-learning/index.html">Learning</a></li>
+                <li><a href="#crm">CRM</a></li>
                 <li><a href="#developers">Developers</a></li>
                 <li><a href="Utilites/index.html">Utility</a></li>
                 <li><a href="#support">Support</a></li>
-                <li><a href="team.html">Team</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
             </ul>
             <div class="nav-right">
@@ -2742,12 +3142,11 @@
                 <li><a href="#expense">Expense</a></li>
                 <li><a href="health-manager/index.html">Health</a></li>
                 <li><a href="explyra-learning/index.html">Learning</a></li>
+                <li><a href="#crm">CRM</a></li>
                 <li><a href="#developers">Developers</a></li>
                 <li><a href="Utilites/index.html">Utility</a></li>
                 <li><a href="#support">Support</a></li>
-                <li><a href="team.html">Team</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
                 <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
             </ul>
@@ -2781,9 +3180,44 @@
                     <div class="suite-pill sp-blue">💼 Explyra Expense</div>
                     <div class="suite-pill sp-teal">🏃 Explyra Health</div>
                     <div class="suite-pill sp-amber">📚 Explyra Learning</div>
+                    <div class="suite-pill sp-rose">📊 Explyra CRM</div>
                     <div class="suite-pill sp-purp">⚡ Explyra Developers</div>
-                    <div class="suite-pill sp-rose">🔗 Explyra Utility</div>
-                    <div class="suite-pill sp-slate">🛡️ Support Centre</div>
+                    <div class="suite-pill sp-slate">🔗 Explyra Utility</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ STATS BAR ══ -->
+        <section class="stats-bar" aria-label="Platform stats">
+            <div class="stats-inner">
+                <div class="stat-item reveal">
+                    <div class="stat-val">7+</div>
+                    <div class="stat-label">Products in Suite</div>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-item reveal d1">
+                    <div class="stat-val">100%</div>
+                    <div class="stat-label">Free to Start</div>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-item reveal d2">
+                    <div class="stat-val">PWA</div>
+                    <div class="stat-label">Works Offline</div>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-item reveal d3">
+                    <div class="stat-val">AI</div>
+                    <div class="stat-label">Powered Core</div>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-item reveal d4">
+                    <div class="stat-val">P2P</div>
+                    <div class="stat-label">Encrypted Comms</div>
+                </div>
+                <div class="stat-div"></div>
+                <div class="stat-item reveal d5">
+                    <div class="stat-val">Cross</div>
+                    <div class="stat-label">Platform (Web + Mobile)</div>
                 </div>
             </div>
         </section>
@@ -2793,7 +3227,7 @@
             <div class="overview-inner">
                 <div class="ov-header reveal">
                     <div class="eyebrow">The Explyra Suite</div>
-                    <h2 class="sec-h">Six products. <em>One vision.</em></h2>
+                    <h2 class="sec-h">Seven products. <em>One vision.</em></h2>
                     <p class="sec-p">Every tool your company and team needs — built with the same standard of
                         intelligence,
                         design, and reliability.</p>
@@ -2825,6 +3259,14 @@
                             next generation of digital professionals.</p>
                         <a href="explyra-learning/index.html" class="ov-link">Launch App <span>→</span></a>
                     </div>
+                    <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
+                        <div class="ov-icon">📊</div>
+                        <div class="ov-badge">CRM</div>
+                        <div class="ov-title">Explyra CRM</div>
+                        <p class="ov-desc">A full-featured customer relationship platform — manage contacts, leads, sales
+                            pipeline, and analytics in one elegant workspace.</p>
+                        <a href="#crm" class="ov-link">Explore <span>→</span></a>
+                    </div>
                     <div class="ov-card" style="--card-clr:var(--purp);--card-g:var(--purp-g);--card-b:var(--purp-b)">
                         <div class="ov-icon">⚡</div>
                         <div class="ov-badge">Developers</div>
@@ -2834,7 +3276,7 @@
                             generator, online IDE, link shortener, and more.</p>
                         <a href="#developers" class="ov-link">Explore <span>→</span></a>
                     </div>
-                    <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
+                    <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
                         <div class="ov-icon">🔗</div>
                         <div class="ov-badge">Utility</div>
                         <div class="ov-title">Explyra Utility</div>
@@ -2843,7 +3285,7 @@
                             live chat, gaming, remote device access — all encrypted, all P2P.</p>
                         <a href="Utilites/index.html" class="ov-link">Explore <span>→</span></a>
                     </div>
-                    <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
+                    <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
                         <div class="ov-icon">🛡️</div>
                         <div class="ov-badge">Support</div>
                         <div class="ov-title">Support Centre</div>
@@ -3435,6 +3877,320 @@
             </div>
         </section>
 
+        <!-- ══ CRM ══ -->
+        <section class="prod-section crm-sec" id="crm">
+            <div class="blob"></div>
+            <div class="prod-inner">
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--rose)">📊 Explyra CRM</div>
+                    <h2 class="prod-h display">Close deals faster. <em>Smarter.</em></h2>
+                    <p class="prod-p">Explyra CRM gives your sales and relationship teams a single pane of glass to
+                        manage every contact, lead, and deal — from first touch to closed won. Powered by real-time
+                        Firestore sync and built-in analytics.</p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Contact management with tagging, history, and activity logs
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Visual sales pipeline — drag leads through custom stages
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Lead scoring, source tracking, and follow-up reminders
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Analytics dashboard — revenue trends, conversion rates, win/loss
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            Real-time sync across all team members via Firebase
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
+                            </div>
+                            API failover built-in — zero downtime for your sales ops
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+                        <a href="crm/index.html" class="btn-prod" style="background:var(--rose)">Open CRM →</a>
+                        <a href="company.html" class="btn-prod-out"
+                            style="border-color:var(--rose-b);color:var(--rose)">Request Demo</a>
+                    </div>
+                </div>
+                <div class="reveal d2">
+                    <div class="crm-card">
+                        <div class="crm-bar">
+                            <div class="dash-dot" style="background:#FF5F57"></div>
+                            <div class="dash-dot" style="background:#FFBE2E"></div>
+                            <div class="dash-dot" style="background:#28C840"></div>
+                            <span class="dash-title">Explyra CRM — Pipeline View</span>
+                        </div>
+                        <div class="crm-body">
+                            <div class="crm-kpis">
+                                <div class="kpi">
+                                    <div class="kpi-v" style="color:var(--rose)">₹48L</div>
+                                    <div class="kpi-l">Pipeline Value</div>
+                                </div>
+                                <div class="kpi">
+                                    <div class="kpi-v" style="color:var(--teal)">68%</div>
+                                    <div class="kpi-l">Win Rate</div>
+                                </div>
+                                <div class="kpi">
+                                    <div class="kpi-v" style="color:var(--amber)">24</div>
+                                    <div class="kpi-l">Active Leads</div>
+                                </div>
+                            </div>
+                            <div class="crm-pipeline">
+                                <div class="crm-stage">
+                                    <div class="crm-stage-hdr" style="color:var(--blue)">
+                                        <span>Qualified</span><span class="crm-stage-count">8</span>
+                                    </div>
+                                    <div class="crm-lead">
+                                        <div class="crm-lead-av" style="background:var(--blue-g);color:var(--blue)">A</div>
+                                        <div>
+                                            <div class="crm-lead-n">Acme Corp</div>
+                                            <div class="crm-lead-v">₹8.5L</div>
+                                        </div>
+                                        <div class="crm-lead-tag" style="background:var(--blue-g);color:var(--blue)">Hot</div>
+                                    </div>
+                                    <div class="crm-lead">
+                                        <div class="crm-lead-av" style="background:var(--purp-g);color:var(--purp)">T</div>
+                                        <div>
+                                            <div class="crm-lead-n">TechVision Ltd</div>
+                                            <div class="crm-lead-v">₹4.2L</div>
+                                        </div>
+                                        <div class="crm-lead-tag" style="background:var(--purp-g);color:var(--purp)">Warm</div>
+                                    </div>
+                                </div>
+                                <div class="crm-stage">
+                                    <div class="crm-stage-hdr" style="color:var(--amber)">
+                                        <span>Proposal</span><span class="crm-stage-count">5</span>
+                                    </div>
+                                    <div class="crm-lead">
+                                        <div class="crm-lead-av" style="background:var(--amb-g);color:var(--amber)">S</div>
+                                        <div>
+                                            <div class="crm-lead-n">Stellar Fin</div>
+                                            <div class="crm-lead-v">₹12L</div>
+                                        </div>
+                                        <div class="crm-lead-tag" style="background:var(--teal-g);color:var(--teal)">Close</div>
+                                    </div>
+                                    <div class="crm-lead">
+                                        <div class="crm-lead-av" style="background:var(--rose-g);color:var(--rose)">N</div>
+                                        <div>
+                                            <div class="crm-lead-n">NovaTech Inc</div>
+                                            <div class="crm-lead-v">₹6.8L</div>
+                                        </div>
+                                        <div class="crm-lead-tag" style="background:var(--amb-g);color:var(--amber)">Review</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ TESTIMONIALS ══ -->
+        <section class="testimonials-sec" id="testimonials">
+            <div class="test-inner">
+                <div class="ov-header reveal">
+                    <div class="eyebrow">What People Say</div>
+                    <h2 class="sec-h">Built for the people who <em>build things.</em></h2>
+                    <p class="sec-p">Early users and contributors share their experience with the Explyra Suite.</p>
+                </div>
+                <div class="test-grid reveal d1">
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"Explyra Expense completely replaced our manual reimbursement process. The
+                            multi-level approval workflow alone saved us 8+ hours a week. The AI categorisation is
+                            scarily accurate."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--blue-g);color:var(--blue)">RK</div>
+                            <div>
+                                <div class="test-name">Rahul Kapoor</div>
+                                <div class="test-role">Finance Lead · Mid-Size IT Firm</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"I use Explyra Health every single day. The AI workout plans adapt to my
+                            schedule and the weather — that context-awareness is unlike any other health app I've tried.
+                            The offline mode is a game changer."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--teal-g);color:var(--teal)">PS</div>
+                            <div>
+                                <div class="test-name">Priya Sharma</div>
+                                <div class="test-role">Software Engineer · Fitness Enthusiast</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"The Developer Tools hub is insanely useful. No ads, no clutter — just the
+                            tools. The code playground and hash generator have become daily tabs for me. Kudos to the
+                            team behind this."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--purp-g);color:var(--purp)">AK</div>
+                            <div>
+                                <div class="test-name">Arjun Kumar</div>
+                                <div class="test-role">Full-Stack Developer · Freelancer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"Explyra Learning's Agentic AI course is the most practical content I've
+                            found on the topic. It's not theory — it's build-along. I shipped my first AI agent two weeks
+                            after starting the course."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--amb-g);color:var(--amber)">NM</div>
+                            <div>
+                                <div class="test-name">Neha Malhotra</div>
+                                <div class="test-role">AI Product Manager · Startup Founder</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"The P2P file transfer is magic. Sent a 4GB video to a colleague — no
+                            cloud, no wait, completely encrypted, browser to browser. Explyra Utility is now our default
+                            collaboration tool for large transfers."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--rose-g);color:var(--rose)">VR</div>
+                            <div>
+                                <div class="test-name">Vikram Rao</div>
+                                <div class="test-role">Creative Director · Digital Agency</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"What impressed me most is how polished the entire platform is — one person
+                            built all of this. The dark mode, the animations, the Firebase real-time sync — it feels like
+                            a funded startup product."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--slt-g);color:var(--slate)">SA</div>
+                            <div>
+                                <div class="test-name">Sneha Agarwal</div>
+                                <div class="test-role">Product Designer · Tech Community Contributor</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ FAQ ══ -->
+        <section class="faq-sec" id="faq">
+            <div class="faq-inner">
+                <div class="ov-header reveal">
+                    <div class="eyebrow">FAQ</div>
+                    <h2 class="sec-h">Answers to your <em>most common questions.</em></h2>
+                    <p class="sec-p">Everything you need to know about the Explyra Suite before getting started.</p>
+                </div>
+                <div class="faq-list reveal d1">
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>Is Explyra completely free to use?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Yes. All core Explyra products — Expense, Health, Learning, Developers, Utility, and CRM —
+                                are free to access and use. Enterprise features and custom deployment options are
+                                available via the <a href="pricing.html" style="color:var(--blue)">Pricing page</a>.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>Does Explyra work offline?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Yes. Explyra is built as a Progressive Web App (PWA). The Health Manager and Expense
+                                portal have full offline support via Service Workers — your data is cached locally and
+                                synced when connectivity is restored.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>Can I use Explyra on mobile?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Absolutely. Explyra is fully responsive and installable on Android and iOS as a PWA.
+                                Native Android builds are also available via Capacitor. All features — expense
+                                submission, health tracking, learning, CRM — work seamlessly on any screen size.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>How secure is my data?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Security is a core design pillar. Explyra uses Firebase Authentication for identity,
+                                strict Firestore Security Rules to prevent unauthorised reads/writes, and Firebase Cloud
+                                Functions for server-side operations. P2P file transfer and calls are end-to-end
+                                encrypted with no data passing through third-party servers.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>What AI technology powers Explyra?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Explyra integrates multiple AI layers: the AI Support Assistant uses Groq's Llama 3
+                                models for ultra-fast responses, expense categorisation leverages Kimi AI for anomaly
+                                detection and spend insights, and the Health Manager uses contextual weather and
+                                nutritional data to generate personalised recommendations.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>How do I get access to Explyra Expense for my company?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Use the <a href="company.html" style="color:var(--blue)">Request Access</a> button at the
+                                top of the page. Our team will set up your organisation's workspace, configure roles and
+                                approval workflows, and onboard your team. Enterprise setups typically take under 24
+                                hours.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">
+                            <span>Is Explyra open-source?</span>
+                            <svg class="faq-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>The repository is publicly viewable on
+                                <a href="https://github.com/mitanshu-bhasin/explyra" target="_blank"
+                                    style="color:var(--blue)">GitHub</a>. The codebase is proprietary — direct
+                                commercial use, monetised cloning, or reverse engineering without authorisation from
+                                Explyra Operations is not permitted. Contributions and integration requests are welcome
+                                via the contribution guide in the README.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- ══ SUPPORT ══ -->
         <section class="support-sec" id="support">
             <div class="support-inner">
@@ -3559,11 +4315,12 @@
             <a href="#expense">Expense</a>
             <a href="health-manager/index.html">Health</a>
             <a href="explyra-learning/index.html">Learning</a>
+            <a href="#crm">CRM</a>
             <a href="developers/index.html">Developers</a>
             <a href="Utilites/index.html">Utility</a>
             <a href="#support">Support</a>
-            <a href="team.html">Team</a>
             <a href="pricing.html">Pricing</a>
+            <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms</a>
@@ -3651,6 +4408,16 @@
     </button>
 
     <script>
+        /* FAQ */
+        document.querySelectorAll('.faq-q').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const isOpen = btn.getAttribute('aria-expanded') === 'true';
+                const answer = btn.nextElementSibling;
+                btn.setAttribute('aria-expanded', String(!isOpen));
+                answer.classList.toggle('open', !isOpen);
+            });
+        });
+
         /* THEME */
         const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
         const saved = localStorage.getItem('explyra-theme') || 'light';
