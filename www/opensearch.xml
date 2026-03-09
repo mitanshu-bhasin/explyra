@@ -5,6 +5,6 @@
   <Url type="text/html" template="https://explyra.me/?q={searchTerms}"/>
   <Image width="32" height="32">https://explyra.me/assets/images/explyra_logo.png</Image>
   <Developer>Explyra</Developer>
-  <Contact>explyra@gmail.com</Contact>
+  <Contact>support@explyra.org</Contact>
   <InputEncoding>UTF-8</InputEncoding>
 </OpenSearchDescription>

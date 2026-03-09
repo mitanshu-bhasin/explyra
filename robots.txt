@@ -1,16 +1,9 @@
 User-agent: *
 Allow: /
-Allow: /donation.html
-Allow: /contact.html
-Disallow: /sw.js
-Disallow: /admin.html
-Disallow: /emp.html
-Disallow: /_test.js
-Disallow: /_test.py
-Disallow: /_optimize.js
-Disallow: /_rename.py
-Disallow: /orig_emp.html
-Disallow: /.well-known/
-Disallow: /js/
 
+Sitemap: https://explyra.me/sitemap-index.xml
 Sitemap: https://explyra.me/sitemap.xml
+Sitemap: https://explyra.me/images.xml
+Sitemap: https://explyra.me/feed.xml
+Sitemap: https://explyra.me/rss.xml
+Sitemap: https://explyra.me/atom.xml

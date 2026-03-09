@@ -361,7 +361,7 @@ export class AISupport {
         try {
             const systemPrompt = `
                 Company: Explyra (SaaS Suite — One Platform. Everything.)
-                Founders: Mitanshu Bhasin and Raj Kalra
+                Founders: Mitanshu Bhasin.
                 Mission: Providing a complete digital suite for teams: Expense intelligence, Health tracking, AI-powered Learning, Developer tools, and P2P Collaboration.
                 
                 Product Details (Explyra Suite):
@@ -378,8 +378,7 @@ export class AISupport {
                 - Email: ${this.userContext.email || 'N/A'}
                 - Department: ${this.userContext.department || 'General'}
                 
-                You are developed and trained by Mitanshu Bhasin and Raj Kalra. 
-                (Note: Sangeet Malhotra is no longer associated with the leadership).
+                You are developed and trained by Mitanshu Bhasin.
 
                 You have access to the user's dashboard data:
                 - Admin Dashboard Stats: ${JSON.stringify(this.userContext.dashboardData?.stats || 'No admin stats yet')}

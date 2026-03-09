@@ -1,4 +1,4 @@
-// Explyra Suite PWA Service Worker v4
+// Explyra Suite PWA Service Worker v5
 // Strategies: Network-first for navigations, Stale-while-revalidate for assets, Cache-first for CDNs
 
 const CACHE_NAME = 'explyra-consulting-cache-v5';
@@ -12,7 +12,6 @@ const APP_SHELL = [
     './admin.html',
     './offline.html',
     './manifest.json',
-    './assets/images/explyra_logo.png',
     './assets/images/explyra_logo.png',
     './js/theme.js',
     './js/admin-helper.js',
@@ -114,8 +113,10 @@ async function handleNavigation(event) {
 
         // Otherwise, network fetch
         const networkResponse = await fetch(event.request);
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(event.request, networkResponse.clone());
+        if (networkResponse.ok) {
+            const cache = await caches.open(CACHE_NAME);
+            cache.put(event.request, networkResponse.clone());
+        }
         return networkResponse;
     } catch (error) {
         // Offline: try cache, then offline page

@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <title>Explyra — Modern SaaS Developer Platform & Utility Suite</title>
-    <meta name="title" content="Explyra — Modern SaaS Developer Platform & Utility Suite" />
+    <title>Explyra — The All-in-One SaaS Ecosystem for Companies & Teams</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="title" content="Explyra — The All-in-One SaaS Ecosystem for Companies & Teams" />
     <meta name="description"
-        content="Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools." />
+        content="Explyra is the ultimate productivity suite for developers, enterprises, and teams. Intelligent expense management, CRM, Health tracking, AI-learning, and professional invoicing — all in one unified ecosystem." />
     <meta name="keywords"
-        content="Explyra, SaaS platform, developer tools, team productivity, expense tracker, utility suite, software application" />
+        content="Explyra, SaaS ecosystem, developer utilities, expense tracker, CRM software, health manager, invoicing tool, team productivity, professional development, AI learning" />
     <meta name="author" content="Mitanshu Bhasin" />
     <link rel="canonical" href="https://explyra.me/" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -19,17 +20,17 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://explyra.me/" />
-    <meta property="og:title" content="Explyra — Modern SaaS Developer Platform & Utility Suite" />
+    <meta property="og:title" content="Explyra — The All-in-One SaaS Ecosystem for Developers & Teams" />
     <meta property="og:description"
-        content="Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools." />
+        content="Explyra is the ultimate productivity suite for developers, enterprises, and teams. Intelligent expense management, CRM, Health tracking, AI-learning, and professional invoicing — all in one unified ecosystem." />
     <meta property="og:image" content="https://explyra.me/assets/images/explyra_screenshot_1.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://explyra.me/" />
-    <meta property="twitter:title" content="Explyra — Modern SaaS Developer Platform & Utility Suite" />
+    <meta property="twitter:title" content="Explyra — The All-in-One SaaS Ecosystem for Developers & Teams" />
     <meta property="twitter:description"
-        content="Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools." />
+        content="Explyra is the ultimate productivity suite for developers, enterprises, and teams. Intelligent expense management, CRM, Health tracking, AI-learning, and professional invoicing — all in one unified ecosystem." />
     <meta property="twitter:image" content="https://explyra.me/assets/images/explyra_screenshot_1.png" />
 
     <!-- Icons & App Config -->
@@ -337,6 +338,85 @@
 
         .nav-links a:hover {
             color: var(--ink)
+        }
+
+        /* Dropdown Styles */
+        .nav-item-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .dropdown-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .dropdown-trigger i {
+            font-size: 0.65rem;
+            transition: transform 0.3s;
+        }
+
+        .nav-item-dropdown:hover .dropdown-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            width: 240px;
+            padding: 0.8rem;
+            box-shadow: var(--s3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.2rem;
+            z-index: 1000;
+        }
+
+        [data-theme="dark"] .dropdown-content {
+            background: var(--bg3);
+            border-color: var(--bdr2);
+        }
+
+        .nav-item-dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ink2);
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--blue-g);
+            color: var(--blue);
+            transform: translateX(4px);
+        }
+
+        .dropdown-item-icon {
+            width: 24px;
+            text-align: center;
+            font-size: 1rem;
         }
 
         .nav-right {
@@ -2278,6 +2358,52 @@
             transform: translateX(4px);
         }
 
+        /* Mobile Submenu */
+        .mobile-has-submenu {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-submenu-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .mobile-submenu-trigger i {
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .mobile-has-submenu.open .mobile-submenu-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .mobile-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            padding-left: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .mobile-has-submenu.open .mobile-submenu {
+            max-height: 1000px;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-submenu a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--ink3);
+            padding: 0.6rem 1rem;
+        }
+
         .menu-overlay {
             position: fixed;
             inset: 0;
@@ -2733,8 +2859,78 @@
                 <span class="nav-logo-text">Explyra</span>
             </a>
             <ul class="nav-links">
-                <li><a href="attendance/index.html">Attendance</a></li>
-                <li><a href="https://book.explyra.me">Booking</a></li>
+                <li class="nav-item-dropdown">
+                    <a href="#" class="dropdown-trigger">Products <i class="fa-solid fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#expense" class="dropdown-item">
+                            <span class="dropdown-item-icon">💼</span> Explyra Expense
+                        </a>
+                        <a href="crm/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📈</span> Explyra CRM
+                        </a>
+                        <a href="health-manager/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🏃</span> Explyra Health
+                        </a>
+                        <a href="explyra-learning/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📚</span> Explyra Learning
+                        </a>
+                        <a href="Ino software/ino.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📄</span> Invoice Software
+                        </a>
+                        <a href="#developers" class="dropdown-item">
+                            <span class="dropdown-item-icon">⚡</span> Explyra Developers
+                        </a>
+                        <a href="Utilites/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🔗</span> Explyra Utility
+                        </a>
+                        <a href="attendance/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">✅</span> Attendance
+                        </a>
+                        <a href="https://book.explyra.me" class="dropdown-item">
+                            <span class="dropdown-item-icon">📅</span> Booking
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item-dropdown">
+                    <a href="#" class="dropdown-trigger">Solutions <i class="fa-solid fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="solutions/expense-manager.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">💼</span> Expense Manager
+                        </a>
+                        <a href="solutions/invoice-software.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📄</span> Invoice Software
+                        </a>
+                        <a href="solutions/booking-system.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📅</span> Booking System
+                        </a>
+                        <a href="solutions/attendance-system.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">✅</span> Attendance System
+                        </a>
+                        <a href="solutions/crm.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📈</span> CRM
+                        </a>
+                        <a href="solutions/health.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🏃</span> Health
+                        </a>
+                        <a href="solutions/developers.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">⚡</span> Developers
+                        </a>
+                        <a href="solutions/learning.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">📚</span> Learning
+                        </a>
+                        <a href="solutions/utilities.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🔗</span> Utilities
+                        </a>
+                        <a href="solutions/suite.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🌐</span> Suite
+                        </a>
+                    </div>
+                </li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="updates/index.html">Updates</a></li>
+                <li><a href="docs/index.html">Docs</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="support.html">Help Desk</a></li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
             </ul>
@@ -2762,8 +2958,46 @@
                 <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close mobile menu">&times;</button>
             </div>
             <ul class="mobile-nav-links">
-                <li><a href="attendance/index.html">Attendance</a></li>
-                <li><a href="https://book.explyra.me">Booking</a></li>
+                <li class="mobile-has-submenu">
+                    <div class="mobile-submenu-trigger">
+                        <a href="#">Products</a>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-submenu">
+                        <a href="#expense">💼 Expense</a>
+                        <a href="crm/index.html">📈 CRM</a>
+                        <a href="health-manager/index.html">🏃 Health</a>
+                        <a href="explyra-learning/index.html">📚 Learning</a>
+                        <a href="Ino software/ino.html">📄 Invoice Software</a>
+                        <a href="#developers">⚡ Developers</a>
+                        <a href="Utilites/index.html">🔗 Utility</a>
+                        <a href="attendance/index.html">✅ Attendance</a>
+                        <a href="https://book.explyra.me">📅 Booking</a>
+                    </div>
+                </li>
+                <li class="mobile-has-submenu">
+                    <div class="mobile-submenu-trigger">
+                        <a href="#">Solutions</a>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-submenu">
+                        <a href="solutions/expense-manager.html">💼 Expense Manager</a>
+                        <a href="solutions/invoice-software.html">📄 Invoice Software</a>
+                        <a href="solutions/booking-system.html">📅 Booking System</a>
+                        <a href="solutions/attendance-system.html">✅ Attendance System</a>
+                        <a href="solutions/crm.html">📈 CRM</a>
+                        <a href="solutions/health.html">🏃 Health</a>
+                        <a href="solutions/developers.html">⚡ Developers</a>
+                        <a href="solutions/learning.html">📚 Learning</a>
+                        <a href="solutions/utilities.html">🔗 Utilities</a>
+                        <a href="solutions/suite.html">🌐 Suite</a>
+                    </div>
+                </li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="updates/index.html">Updates</a></li>
+                <li><a href="docs/index.html">Docs</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="support.html">Help Desk</a></li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
                 <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
@@ -3700,6 +3934,8 @@
             <a href="explyra-learning/index.html">Learning</a>
             <a href="developers/index.html">Developers</a>
             <a href="Utilites/index.html">Utility</a>
+            <a href="attendance/index.html">Attendance</a>
+            <a href="https://book.explyra.me">Booking</a>
             <a href="support.html">Help Desk</a>
             <a href="team.html">Team</a>
             <a href="pricing.html">Pricing</a>
@@ -3828,7 +4064,22 @@
         if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
         if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
-        mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
+        mobileNavLinks.forEach(link => {
+            if (!link.closest('.mobile-has-submenu')) {
+                link.addEventListener('click', toggleMenu);
+            }
+        });
+
+        /* MOBILE SUBMENU TOGGLE */
+        const mobileSubmenuTrigger = document.querySelector('.mobile-submenu-trigger');
+        if (mobileSubmenuTrigger) {
+            mobileSubmenuTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const parent = mobileSubmenuTrigger.closest('.mobile-has-submenu');
+                parent.classList.toggle('open');
+            });
+        }
 
         /* BACK TO TOP */
         const btt = document.getElementById('backToTop');

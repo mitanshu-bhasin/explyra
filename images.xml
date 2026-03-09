@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://explyra.me/</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/explyra_logo.png</image:loc>
+      <image:title>Explyra Logo</image:title>
+      <image:caption>The official logo of Explyra Suite.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/explyra_screenshot_1.png</image:loc>
+      <image:title>Explyra Dashboard Preview</image:title>
+      <image:caption>A preview of the integrated Explyra dashboard experience.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/team.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/team_photo.jpg</image:loc>
+      <image:title>Explyra Team</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/attendance-system.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/attendance-system-ui.png</image:loc>
+      <image:title>Explyra Attendance System Interface</image:title>
+      <image:caption>Modern attendance tracking with geofenced check-ins and real-time logs.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/booking-system.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/booking-system-ui.png</image:loc>
+      <image:title>Explyra Booking System Interface</image:title>
+      <image:caption>Sleek online booking and appointment management dashboard.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/crm.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/crm-pipeline-ui.png</image:loc>
+      <image:title>Explyra CRM Pipeline Interface</image:title>
+      <image:caption>Visual sales pipeline and lead management analytics.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/developers.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/developers-api-ui.png</image:loc>
+      <image:title>Explyra Developer Portal Interface</image:title>
+      <image:caption>Futuristic API documentation and developer tools interface.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/expense-manager.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/expense-manager-ui.png</image:loc>
+      <image:title>Explyra Expense Manager Interface</image:title>
+      <image:caption>AI-powered expense tracking and financial oversight dashboard.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/health.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/health-manager-ui.png</image:loc>
+      <image:title>Explyra Health Manager Interface</image:title>
+      <image:caption>Modern healthcare management and patient record tracking.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/invoice-software.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/invoice-software-ui.png</image:loc>
+      <image:title>Explyra Invoice Software Interface</image:title>
+      <image:caption>Professional invoicing and payment status tracking software.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/learning.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/learning-platform-ui.png</image:loc>
+      <image:title>Explyra Learning Platform Interface</image:title>
+      <image:caption>Vibrant educational dashboard for advanced technology courses.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/suite.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/saas-suite-ui.png</image:loc>
+      <image:title>Explyra Enterprise Suite Overview</image:title>
+      <image:caption>Integrated ecosystem of business and productivity tools.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/solutions/utilities.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/utility-tools-ui.png</image:loc>
+      <image:title>Explyra Utility Tools Suite</image:title>
+      <image:caption>Essential digital tools for calculations, conversions, and more.</image:caption>
+    </image:image>
+  </url>
+</urlset>

@@ -260,9 +260,71 @@
     </url>
     <url>
         <loc>https://explyra.me/Ino%20software/ino.html</loc>
-        <lastmod>2026-03-08</lastmod>
+        <lastmod>2026-03-10</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
+    </url>
+
+    <!-- === SOLUTIONS === -->
+    <url>
+        <loc>https://explyra.me/solutions/expense-manager.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/booking-system.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/attendance-system.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/crm.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/health.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/developers.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/learning.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/utilities.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/suite.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://explyra.me/solutions/invoice-software.html</loc>
+        <lastmod>2026-03-10</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
     </url>
 
     <!-- === UPDATES / BLOG === -->

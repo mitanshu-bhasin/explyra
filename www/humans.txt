@@ -7,9 +7,6 @@
   Site: https://mitanshubhasin.netlify.app/
   Location: India
 
-  Contributor: Rohan
-  Role: Project Oversight
-
 /* THANKS */
   Google Firebase for backend services.
   Tailwind CSS for streamlined styling.
@@ -18,6 +15,6 @@
   Standards: HTML5, CSS3, ES6+
   Components: Chart.js, html2pdf.js, ImageKit
   Software: VS Code
-  Hosted on: Cloudflare Pages (https://explyra.me)
+  Hosted on: Vercel (https://explyra.me)
   Version: 2.1.0 "Phoenix Release"
   Last Update: 2026-02-15

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Explyra Suite - Updates</title>
+  <subtitle>Latest news, feature updates, and releases from Explyra.</subtitle>
+  <link href="https://explyra.me/atom.xml" rel="self" />
+  <link href="https://explyra.me/" />
+  <updated>2026-03-10T10:00:00Z</updated>
+  <id>https://explyra.me/</id>
+  <author>
+    <name>Explyra</name>
+  </author>
+  <rights>Copyright 2026 Explyra</rights>
+  <logo>https://explyra.me/assets/images/explyra_logo.png</logo>
+
+  <entry>
+    <title>Industry Solutions Hub Now Live</title>
+    <link href="https://explyra.me/solutions/suite.html" />
+    <id>https://explyra.me/solutions/suite.html</id>
+    <updated>2026-03-10T10:00:00Z</updated>
+    <summary>We've launched a comprehensive Solutions Hub featuring dedicated landing pages for Expense Management, CRM, Health, Learning, Developers, and our new Invoice Software.</summary>
+  </entry>
+
+  <entry>
+    <title>Contact Us Page Now Live</title>
+    <link href="https://explyra.me/contact.html" />
+    <id>https://explyra.me/contact.html</id>
+    <updated>2026-03-08T17:30:00Z</updated>
+    <summary>Get in touch with the Explyra team. Reach out for support, partnerships, bug reports, or any inquiries about the Explyra Suite.</summary>
+  </entry>
+
+  <entry>
+    <title>Support Explyra — Donation Page Launched</title>
+    <link href="https://explyra.me/donation.html" />
+    <id>https://explyra.me/donation.html</id>
+    <updated>2026-03-08T17:15:00Z</updated>
+    <summary>Support the Explyra Suite by donating via WhatsApp. Every contribution fuels server costs and scaling the ecosystem.</summary>
+  </entry>
+
+  <entry>
+    <title>Explyra Developer Tools Hub Launched</title>
+    <link href="https://explyra.me/developers/index.html" />
+    <id>https://explyra.me/developers/index.html</id>
+    <updated>2026-03-08T09:00:00Z</updated>
+    <summary>The Explyra Developers Hub is now live with Code Minifier, Hash Generator, Password Generator, and more tools.</summary>
+  </entry>
+
+  <entry>
+    <title>Explyra Health Manager Now Available</title>
+    <link href="https://explyra.me/health-manager/index.html" />
+    <id>https://explyra.me/health-manager/index.html</id>
+    <updated>2026-03-07T10:00:00Z</updated>
+    <summary>Track workouts, sleep, nutrition, and mental wellness with AI-powered recommendations.</summary>
+  </entry>
+
+  <entry>
+    <title>Explyra Learning Platform Launched</title>
+    <link href="https://explyra.me/explyra-learning/index.html" />
+    <id>https://explyra.me/explyra-learning/index.html</id>
+    <updated>2026-03-07T12:00:00Z</updated>
+    <summary>Expert-curated courses on Agentic AI, Prompt Engineering, and SEO.</summary>
+  </entry>
+
+  <entry>
+    <title>Welcome to the New Explyra Platform</title>
+    <link href="https://explyra.me/" />
+    <id>https://explyra.me/#launch</id>
+    <updated>2026-02-15T09:00:00Z</updated>
+    <summary>We have launched our new PWA-enabled SaaS platform for enhanced productivity.</summary>
+  </entry>
+
+  <entry>
+    <title>Meet Our Technical Team</title>
+    <link href="https://explyra.me/mitanshu.html" />
+    <id>https://explyra.me/mitanshu.html</id>
+    <updated>2026-02-15T10:30:00Z</updated>
+    <summary>Spotlight on Mitanshu Bhasin, our lead developer driving cybersecurity and innovation at Explyra.</summary>
+  </entry>
+</feed>

@@ -1,4 +1,4 @@
-#Expense Manager - AI Context
+# Expense Manager - AI Context
 
 ## Project Overview
 This is a Vanilla JS web application that uses Firebase for the backend and Capacitor for Android app packaging.

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Explyra Search</title>
+    <meta name="description" content="Discover the web with Explyra Search." />
+
+    <!-- Preload Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* ═══════════════════════════════════════════
+           DESIGN TOKENS (From Explyra Theme)
+        ═══════════════════════════════════════════ */
+        :root {
+            --bg: #F8F7F4;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --blue: #1546C0;
+            --blue-g: rgba(21, 70, 192, 0.08);
+            --blue-hover: #0f348f;
+            --r: 8px;
+            --r-lg: 24px;
+            --t: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, 0.1);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --blue: #5B8AF5;
+            --blue-g: rgba(91, 138, 245, 0.15);
+            --blue-hover: #7ba2ff;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.6);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESET & BASE
+        ═══════════════════════════════════════════ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            transition: background 0.4s, color 0.4s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: scroll;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        /* ═══════════════════════════════════════════
+           LAYOUT CONTROLS
+        ═══════════════════════════════════════════ */
+        #app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Mode: Home */
+        #app.home-mode #header {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            padding: 2rem;
+            transition: all 0.5s ease;
+        }
+
+        #app.home-mode .logo-container {
+            margin-bottom: 2rem;
+            transform: scale(1.4);
+            transition: transform 0.5s ease;
+        }
+
+        #app.home-mode .search-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #app.home-mode #main-content {
+            display: none;
+        }
+
+        /* Mode: Results */
+        #app.results-mode #header {
+            flex-direction: row;
+            align-items: center;
+            padding: 1rem 2rem;
+            min-height: auto;
+            border-bottom: 1px solid var(--bdr);
+            background: rgba(248, 247, 244, 0.85);
+            /* Slightly transparent for glassmorphism */
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.5s ease;
+        }
+
+        [data-theme="dark"] #app.results-mode #header {
+            background: rgba(8, 11, 20, 0.85);
+        }
+
+        #app.results-mode .logo-container {
+            margin-bottom: 0;
+            margin-right: 2rem;
+            transform: scale(1);
+            transition: transform 0.5s ease;
+        }
+
+        #app.results-mode .search-container {
+            max-width: 700px;
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        #app.results-mode #main-content {
+            display: block;
+            flex-grow: 1;
+            padding: 2rem;
+            max-width: 800px;
+            margin-left: 120px;
+            /* Offset for Google-like alignment */
+            animation: fadeIn 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            #app.results-mode #header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            #app.results-mode .logo-container {
+                margin-right: 0;
+            }
+
+            #app.results-mode #main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           COMPONENTS
+        ═══════════════════════════════════════════ */
+
+        /* Logo */
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+        }
+
+        /* Search Bar (Glassmorphism + clean tech) */
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 30px;
+            padding: 0.2rem 1rem;
+            box-shadow: var(--shadow);
+            transition: var(--t);
+            z-index: 10;
+        }
+
+        .search-wrapper:hover,
+        .search-wrapper.active {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--blue);
+        }
+
+        .search-icon {
+            color: var(--ink3);
+            margin-right: 0.5rem;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            border: none;
+            background: none;
+            padding: 0.8rem 0;
+            font-size: 1.1rem;
+            color: var(--ink);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: var(--ink4);
+        }
+
+        .search-btn {
+            background: var(--blue-g);
+            color: var(--blue);
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: var(--t);
+            margin-left: 0.5rem;
+        }
+
+        .search-btn:hover {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        /* Dropdown Suggestions */
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            margin-top: 0.5rem;
+            box-shadow: var(--shadow-hover);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 50;
+        }
+
+        .search-wrapper.active .suggestions {
+            display: flex;
+        }
+
+        .suggestion-item {
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--ink2);
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.selected {
+            background: var(--bg);
+            color: var(--ink);
+        }
+
+        /* Controls (Theme toggle) */
+        .top-controls {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
+
+        #app.results-mode .top-controls {
+            position: static;
+            margin-left: auto;
+        }
+
+        .theme-toggle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink);
+            box-shadow: var(--shadow);
+            transition: var(--t);
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        /* Results Area */
+        .meta-stats {
+            font-size: 0.85rem;
+            color: var(--ink3);
+            margin-bottom: 1.5rem;
+        }
+
+        .result-item {
+            margin-bottom: 2rem;
+            max-width: 650px;
+        }
+
+        .result-url {
+            font-size: 0.85rem;
+            color: var(--ink3);
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .result-url img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            color: var(--blue);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .result-title:hover {
+            text-decoration: underline;
+        }
+
+        [data-theme="dark"] .result-title {
+            color: var(--blue2);
+        }
+
+        .result-snippet {
+            font-size: 0.95rem;
+            color: var(--ink2);
+            line-height: 1.6;
+        }
+
+        .result-snippet b {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 3rem;
+            margin-bottom: 4rem;
+            align-items: center;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--r);
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+            font-weight: 500;
+            transition: var(--t);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--blue-g);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-num {
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .page-num.active {
+            background: var(--blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .page-num:hover:not(.active) {
+            background: var(--bg);
+        }
+
+        /* States Loader / Error */
+        .loader {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bdr);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 3rem auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-msg {
+            color: #E11D48;
+            background: rgba(225, 29, 72, 0.1);
+            padding: 1rem;
+            border-radius: var(--r);
+            border: 1px solid rgba(225, 29, 72, 0.2);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--ink3);
+            border-top: 1px solid var(--bdr);
+        }
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}
+    </script>
+</head>
+
+<body>
+
+    <div id="app" class="home-mode">
+
+        <!-- Top Controls (Theme) -->
+        <div class="top-controls">
+            <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Header Section -->
+        <header id="header">
+            <div class="logo-container" id="logo-btn">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                        </svg>
+                    </div>
+                    <span>Explyra</span>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <div class="search-wrapper" id="search-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search Explyra..."
+                        autocomplete="off" spellcheck="false" />
+                    <button class="search-btn" id="search-btn">Explyra Search</button>
+
+                    <!-- Suggestions Dropdown Mock -->
+                    <div class="suggestions" id="suggestions-box">
+                        <div class="suggestion-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg> explyra developer utilities</div>
+                        <div class="suggestion-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg> recent search example</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Results Content -->
+        <main id="main-content">
+            <div id="error-container" class="error-msg"></div>
+            <div id="loader" class="loader"></div>
+
+            <div id="results-meta" class="meta-stats"></div>
+            <div id="results-container"></div>
+
+            <div id="pagination" class="pagination" style="display: none;">
+                <button class="page-btn" id="prev-btn">Previous</button>
+                <div id="page-numbers" style="display:flex; gap: 0.3rem;"></div>
+                <button class="page-btn" id="next-btn">Next</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            &copy; <span id="year"></span> Explyra. All rights reserved. Built for developers.
+        
+            <div class="foot-socials-wrapper" style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136, 136, 136, 0.2); padding-top: 20px;">
+        <p style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">Follow Us</p>
+        <div class="foot-socials" style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center;">
+            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details" target="_blank" rel="noopener noreferrer" title="Facebook" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
+            </a>
+            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" title="Instagram" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" title="YouTube" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" title="LinkedIn" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" title="Threads" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.28 12.3c-.023-.5-.224-.954-.575-1.282-.35-.328-.823-.512-1.323-.512-.5 0-.974.184-1.324.512-.35.328-.552.782-.575 1.282h3.797zm-.05-1.785c.616.143 1.158.465 1.583.94l1.248-1.127c-.6-.71-1.378-1.23-2.26-1.51-.882-.28-1.84-.316-2.738-.106-2.115.485-3.69 2.3-3.69 4.49 0 2.515 2.036 4.5 4.55 4.5 1.528 0 2.923-.74 3.794-1.954l-1.386-1.026c-.66.924-1.72 1.48-2.85 1.48-1.683 0-3.05-1.32-3.05-2.95 0-1.65 1.34-3 3-3 .67 0 1.31.22 1.83.62l-1.19 1.48h-1.6v1.5h3.69v-1.343l1.05-1.3Z"/></svg>
+            </a>
+            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
+            </a>
+        </div>
+    </div>
+    </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        /* ═══════════════════════════════════════════
+           STATE AND CONFIGURATION
+        ═══════════════════════════════════════════ */
+        const CONFIG = {
+            // REPLACE THESE WITH REAL GOOGLE CUSTOM SEARCH CREDENTIALS
+            API_KEY: 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0',
+            CX_ID: 'c57fb5273f98f49c1',
+            RESULTS_PER_PAGE: 10
+        };
+
+        const state = {
+            query: '',
+            startIndex: 1,
+            totalResults: 0,
+            isLoading: false
+        };
+
+        /* ═══════════════════════════════════════════
+           DOM ELEMENTS
+        ═══════════════════════════════════════════ */
+        const app = document.getElementById('app');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const searchWrapper = document.getElementById('search-wrapper');
+        const suggestionsBox = document.getElementById('suggestions-box');
+        const logoBtn = document.getElementById('logo-btn');
+
+        const resultsContainer = document.getElementById('results-container');
+        const resultsMeta = document.getElementById('results-meta');
+        const loader = document.getElementById('loader');
+        const errorContainer = document.getElementById('error-container');
+        const pagination = document.getElementById('pagination');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pageNumbers = document.getElementById('page-numbers');
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+
+        /* ═══════════════════════════════════════════
+           THEME MANAGEMENT
+        ═══════════════════════════════════════════ */
+        function initTheme() {
+            const storedTheme = localStorage.getItem('explyra-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', storedTheme);
+            updateThemeIcon(storedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('explyra-theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeToggleBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            } else {
+                themeToggleBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        initTheme();
+
+        /* ═══════════════════════════════════════════
+           EVENT LISTENERS (Search interactions)
+        ═══════════════════════════════════════════ */
+
+        // Auto-focus logic
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim().length > 0) {
+                searchWrapper.classList.add('active');
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            // Small timeout to allow clicking on suggestions
+            setTimeout(() => searchWrapper.classList.remove('active'), 200);
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            if (e.target.value.trim().length > 0) {
+                searchWrapper.classList.add('active');
+            } else {
+                searchWrapper.classList.remove('active');
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            // Handle suggestions navigation with up/down arrows
+            const items = document.querySelectorAll('.suggestion-item');
+            let selectedIndex = Array.from(items).findIndex(el => el.classList.contains('selected'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (selectedIndex < items.length - 1) {
+                    if (selectedIndex >= 0) items[selectedIndex].classList.remove('selected');
+                    items[selectedIndex + 1].classList.add('selected');
+                    searchInput.value = items[selectedIndex + 1].textContent.trim();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (selectedIndex > 0) {
+                    items[selectedIndex].classList.remove('selected');
+                    items[selectedIndex - 1].classList.add('selected');
+                    searchInput.value = items[selectedIndex - 1].textContent.trim();
+                }
+            } else if (e.key === 'Enter') {
+                triggerSearch(searchInput.value);
+                searchWrapper.classList.remove('active');
+            }
+        });
+
+        searchBtn.addEventListener('click', () => {
+            triggerSearch(searchInput.value);
+        });
+
+        logoBtn.addEventListener('click', () => {
+            resetToHome();
+        });
+
+        // Pagination listeners
+        prevBtn.addEventListener('click', () => {
+            if (state.startIndex > 1) {
+                state.startIndex = Math.max(1, state.startIndex - CONFIG.RESULTS_PER_PAGE);
+                executeSearch();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            state.startIndex += CONFIG.RESULTS_PER_PAGE;
+            executeSearch();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /* ═══════════════════════════════════════════
+           SEARCH LOGIC
+        ═══════════════════════════════════════════ */
+
+        function triggerSearch(query) {
+            query = query.trim();
+            if (!query) return;
+
+            state.query = query;
+            state.startIndex = 1;
+
+            // Switch layout to results mode
+            app.classList.remove('home-mode');
+            app.classList.add('results-mode');
+
+            executeSearch();
+        }
+
+        function resetToHome() {
+            app.classList.remove('results-mode');
+            app.classList.add('home-mode');
+            searchInput.value = '';
+            resultsContainer.innerHTML = '';
+            resultsMeta.innerHTML = '';
+            pagination.style.display = 'none';
+            errorContainer.style.display = 'none';
+        }
+
+        async function executeSearch() {
+            if (!state.query) return;
+
+            // UI Reset
+            resultsContainer.innerHTML = '';
+            resultsMeta.innerHTML = '';
+            pagination.style.display = 'none';
+            errorContainer.style.display = 'none';
+            loader.style.display = 'block';
+            state.isLoading = true;
+
+            try {
+                const url = `https://www.googleapis.com/customsearch/v1?key=${CONFIG.API_KEY}&cx=${CONFIG.CX_ID}&q=${encodeURIComponent(state.query)}&start=${state.startIndex}`;
+
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'Failed to fetch search results.');
+                }
+
+                const data = await response.json();
+                renderResults(data);
+
+            } catch (error) {
+                console.error('Search error:', error);
+                showError(error.message);
+            } finally {
+                loader.style.display = 'none';
+                state.isLoading = false;
+            }
+        }
+
+        function renderResults(data) {
+            // Meta stats
+            const searchTime = data.searchInformation?.formattedSearchTime || '0.00';
+            const totalNum = data.searchInformation?.formattedTotalResults || '0';
+            resultsMeta.innerHTML = `About ${totalNum} results (${searchTime} seconds)`;
+
+            state.totalResults = parseInt(data.searchInformation?.totalResults || '0');
+
+            // Results
+            if (data.items && data.items.length > 0) {
+                resultsContainer.innerHTML = data.items.map(item => createResultItemHTML(item)).join('');
+                setupPagination();
+            } else {
+                resultsContainer.innerHTML = `<p style="color: var(--ink2); font-size: 1.1rem; margin-top: 2rem;">No documents match your search for <b>${state.query}</b>.</p>`;
+                pagination.style.display = 'none';
+            }
+        }
+
+        function createResultItemHTML(item) {
+            // Highlight keywords in snippet
+            let snippet = item.htmlSnippet || item.snippet || '';
+            if (!item.htmlSnippet) {
+                // Basic highlighter if htmlSnippet isn't available
+                const qRegex = new RegExp(`(${state.query.split(' ').join('|')})`, 'gi');
+                snippet = snippet.replace(qRegex, '<b>$1</b>');
+            }
+
+            // Get favicon domain for display
+            const domain = new URL(item.link).hostname;
+            const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+
+            const displayLink = item.displayLink || domain;
+
+            return `
+            <div class="result-item">
+                <div class="result-url">
+                    <img src="${faviconUrl}" alt="" loading="lazy"/> 
+                    <span>${displayLink}</span>
+                </div>
+                <a href="${item.link}" target="_blank" rel="noopener" class="result-title">
+                    ${item.htmlTitle || item.title}
+                </a>
+                <div class="result-snippet">
+                    ${snippet}
+                </div>
+            </div>
+        `;
+        }
+
+        function setupPagination() {
+            if (state.totalResults <= CONFIG.RESULTS_PER_PAGE) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+            prevBtn.disabled = state.startIndex <= 1;
+
+            // Google Custom Search API only supports up to 100 pages (start index 100)
+            const maxStart = 100;
+            nextBtn.disabled = state.startIndex + CONFIG.RESULTS_PER_PAGE > state.totalResults || state.startIndex >= maxStart;
+
+            // Render page numbers (simplified standard google pagination)
+            const currentPage = Math.floor((state.startIndex - 1) / CONFIG.RESULTS_PER_PAGE) + 1;
+
+            let html = '';
+            // Show up to 5 page numbers around the current page
+            const startPage = Math.max(1, currentPage - 5);
+            const endPage = Math.min(Math.ceil(Math.min(state.totalResults, 100) / CONFIG.RESULTS_PER_PAGE), startPage + 9);
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    html += `<div class="page-num active">${i}</div>`;
+                } else {
+                    html += `<div class="page-num" onclick="goToPage(${i})">${i}</div>`;
+                }
+            }
+            pageNumbers.innerHTML = html;
+        }
+
+        window.goToPage = function (pageNum) {
+            state.startIndex = ((pageNum - 1) * CONFIG.RESULTS_PER_PAGE) + 1;
+            executeSearch();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function showError(message) {
+            errorContainer.textContent = `Error: ${message}. 
+        Please ensure you have configured a valid Google Custom Search API Key and Search Engine ID (CX) in the code.`;
+            errorContainer.style.display = 'block';
+        }
+
+        /* ═══════════════════════════════════════════
+           MOCK RESULTS (For Demonstration purposes)
+        ═══════════════════════════════════════════ */
+        function renderMockResults(query) {
+            const mockData = {
+                searchInformation: {
+                    formattedSearchTime: "0.42",
+                    formattedTotalResults: "1,420,000",
+                    totalResults: "1420000"
+                },
+                items: Array(10).fill().map((_, i) => ({
+                    title: `${query.charAt(0).toUpperCase() + query.slice(1)} - Example Result ${state.startIndex + i}`,
+                    link: `https://example.com/result/${state.startIndex + i}`,
+                    displayLink: 'example.com',
+                    snippet: `Provides comprehensive documentation, tools, and resources related to <b>${query}</b>. Designed by Explyra to help developers build better applications faster...`
+                }))
+            };
+            renderResults(mockData);
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra Core Documentation | Business Ecosystem</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .doc-layout {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar a {
+            color: var(--ink3);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: var(--blue);
+        }
+
+        .content {
+            flex: 1;
+            max-width: 800px;
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: var(--ink);
+        }
+
+        .content p {
+            margin-bottom: 1.2rem;
+            color: var(--ink2);
+            font-size: 1.05rem;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: var(--s3);
+        }
+
+        .step-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--blue);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <div
+                style="width: 34px; height: 34px; background: var(--blue); border-radius: 9px; display: flex; align-items: center; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"
+                    stroke-linecap="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+            </div>
+            <span style="font-family: 'Playfair Display', serif; color: var(--ink);">Explyra Core Docs</span>
+        </a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="index.html" style="font-size: 0.85rem; font-weight: 500; color: var(--ink2);">Docs Hub</a>
+            <button id="themeToggle"
+                style="background: var(--bg3); padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Toggle
+                Theme</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <img src="../assets/images/docs_explyra_hero.png" alt="Explyra Ecosystem" class="hero-img">
+
+        <div class="doc-layout">
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#introduction" class="active">Introduction</a></li>
+                    <li><a href="#getting-started">Getting Started</a></li>
+                    <li><a href="#organization">Organization Management</a></li>
+                    <li><a href="#integrations">Global Integrations</a></li>
+                    <li><a href="#security">Security & Compliance</a></li>
+                </ul>
+            </aside>
+
+            <article class="content">
+                <section id="introduction">
+                    <h2>The Ultimate SaaS Suite</h2>
+                    <p>Welcome to Explyra, the unified ecosystem designed to streamline your business operations.
+                        Explyra is not just a tool; it's a comprehensive platform that combines expense tracking, health
+                        management, professional invoicing, and developer utilities into one seamless experience.</p>
+                    <p>Our goal is to eliminate tool fatigue by providing everything your team needs in a single,
+                        high-performance environment.</p>
+                </section>
+
+                <section id="getting-started">
+                    <h2>Getting Started</h2>
+                    <div class="step-card">
+                        <h4>1. Create Your Account</h4>
+                        <p>Sign up via the main portal to access the Explyra dashboard. Your account is universal across
+                            all products in the ecosystem.</p>
+                    </div>
+                    <div class="step-card">
+                        <h4>2. Set Up Your Workspace</h4>
+                        <p>Configure your organization name, logo, and team members from the settings panel.</p>
+                    </div>
+                    <div class="step-card">
+                        <h4>3. Choose Your Products</h4>
+                        <p>Enable only the tools you need. Whether it's Finance, Health, or Dev tools, Explyra scales
+                            with you.</p>
+                    </div>
+                </section>
+
+                <section id="organization">
+                    <h2>Organization Management</h2>
+                    <p>Explyra provides granular control over your team. Manage roles, permissions, and
+                        department-specific access from the centralized admin panel.</p>
+                    <p>Our "Company-First" architecture ensures that data remains isolated and secure within your
+                        private cloud instance.</p>
+                </section>
+
+                <section id="integrations">
+                    <h2>Global Integrations</h2>
+                    <p>Connect Explyra with your existing workflow. We support webhooks, REST API access, and native
+                        integrations with popular productivity tools.</p>
+                </section>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Explyra. Empowering modern enterprises.</p>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', savedTheme);
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+
+</html>

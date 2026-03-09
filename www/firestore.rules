@@ -22,6 +22,12 @@ service cloud.firestore {
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if false;
+
+      // Allow access to subcollections (inventory, invoices, customers, etc) if user belongs to this company
+      match /{subcollection}/{docId} {
+        allow read, write: if isSignedIn() && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId == companyId;
+      }
     }
 
     // ─── Company Members Collection ────────────────────────────────────────────
@@ -47,6 +53,23 @@ service cloud.firestore {
     // ─── Tasks Collection ──────────────────────────────────────────────────────
     match /tasks/{taskId} {
       allow read, write: if isSignedIn();
+    }
+
+    // ─── CRM Collections ───────────────────────────────────────────────────────
+    match /crm_deals/{dealId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+    }
+    match /crm_leads/{leadId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
+    }
+    match /crm_contacts/{contactId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+      );
     }
 
     // ─── Personal Vault: Strict User Isolation ─────────────────────────────────
