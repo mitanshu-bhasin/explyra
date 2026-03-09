@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Booking Suite</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="booking.css">
+    <style>
+        .sidebar {
+            background: var(--surf);
+            border-right: 1px solid var(--bdr);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            color: var(--ink3);
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--blue-g);
+            color: var(--blue);
+        }
+
+        .main-content {
+            padding: 2.5rem;
+            background: var(--bg);
+            overflow-y: auto;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .booking-table th,
+        .booking-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .booking-table th {
+            color: var(--ink3);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        /* Status Colors */
+        .status-upcoming {
+            background: var(--blue-g);
+            color: var(--blue);
+        }
+
+        .status-completed {
+            background: rgba(52, 211, 153, 0.1);
+            color: #047857;
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 90%;
+            max-width: 500px;
+            background: var(--surf);
+            border-radius: var(--r);
+            padding: 2.5rem;
+            box-shadow: var(--s3);
+        }
+
+        /* Setup Modal Specifics */
+        #setupModal .modal-card {
+            max-width: 420px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div
+                style="font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem;">
+                Booking<span style="color: var(--ink);">Suite</span>
+            </div>
+
+            <div id="user-info" style="margin-bottom: 1.5rem; display: none;">
+                <div id="userName" style="font-weight: 600;">Loading...</div>
+                <div id="userPublicUrl"
+                    style="font-size: 0.8rem; color: var(--blue); cursor: pointer; text-decoration: underline;"></div>
+                <button class="btn btn-ghost" id="copyLinkBtn"
+                    style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-copy"></i> Copy Link
+                </button>
+            </div>
+            <div id="sidebar-loader" style="padding: 1rem; text-align: center; color: var(--ink4);">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+            </div>
+
+            <nav>
+                <div class="nav-item active" onclick="showSection('bookings')">
+                    <i class="fa-solid fa-list-ul"></i> Bookings
+                </div>
+                <div class="nav-item" onclick="showSection('availability')">
+                    <i class="fa-solid fa-calendar-days"></i> Availability
+                </div>
+                <div class="nav-item" onclick="showSection('settings')">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </div>
+                <div class="nav-item" style="margin-top: auto;" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Bookings Section -->
+            <section id="bookings-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+                    <h1 style="font-family: 'Playfair Display', serif;">Overview</h1>
+                </div>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: var(--blue-g); color: var(--blue);">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--ink3);">Upcoming</div>
+                            <div id="count-upcoming" style="font-size: 1.5rem; font-weight: 700;">0</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: rgba(52, 211, 153, 0.1); color: #047857;">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--ink3);">Completed</div>
+                            <div id="count-completed" style="font-size: 1.5rem; font-weight: 700;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem;">Recent Bookings</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="booking-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Meeting Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-list">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 3rem; color: var(--ink4);">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Loading bookings...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Availability Section -->
+            <section id="availability-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1 style="font-family: 'Playfair Display', serif;">Availability Settings</h1>
+                </div>
+                <div class="card">
+                    <form id="availabilityForm">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <div class="form-group">
+                                <label class="form-label">Working Hours Start</label>
+                                <input type="time" id="avail-start" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Working Hours End</label>
+                                <input type="time" id="avail-end" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Meeting Duration (Minutes)</label>
+                            <select id="avail-duration" class="form-input">
+                                <option value="15">15 Minutes</option>
+                                <option value="30">30 Minutes</option>
+                                <option value="60">60 Minutes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Working Days</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="monday"> Monday
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="tuesday"> Tuesday
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="wednesday"> Wednesday
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="thursday"> Thursday
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="friday"> Friday
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="saturday"> Saturday
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="workday" value="sunday"> Sunday
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Availability</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1 style="font-family: 'Playfair Display', serif;">Account Settings</h1>
+                </div>
+                <div class="card">
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label class="form-label">Display Name</label>
+                            <input type="text" id="settings-name" class="form-input" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Username (URL Path)</label>
+                            <div style="position: relative;">
+                                <input type="text" id="settings-username" class="form-input"
+                                    placeholder="unique-username" required>
+                                <div id="username-check" style="font-size: 0.75rem; margin-top: 0.25rem;"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="save-settings-btn">Save Changes</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Meeting Link Modal -->
+    <div id="linkModal" class="modal">
+        <div class="modal-card">
+            <h3 style="margin-bottom: 1rem;">Update Meeting Link</h3>
+            <p style="color: var(--ink3); font-size: 0.9rem; margin-bottom: 1.5rem;">Paste the Google Meet, Zoom, or any
+                other meeting URL below.</p>
+            <div class="form-group">
+                <label class="form-label">Meeting URL</label>
+                <input type="url" id="meeting-url-input" class="form-input" placeholder="https://meet.google.com/..."
+                    required>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="saveLinkBtn">Save Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Profile Modal (for existing auth users without a profile) -->
+    <div id="setupModal" class="modal">
+        <div class="modal-card">
+            <div style="font-size: 3rem; color: var(--blue); margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 0.5rem;">Complete Your Profile</h2>
+            <p style="color: var(--ink3); font-size: 0.9rem; margin-bottom: 2rem;">You're logged in, but we need a few
+                more details to set up your booking page.</p>
+
+            <form id="setupForm" style="text-align: left;">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" id="setup-name" class="form-input" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Choose Username (for URL)</label>
+                    <div style="position: relative;">
+                        <input type="text" id="setup-username" class="form-input" placeholder="unique-username"
+                            required>
+                        <div id="setup-username-check" style="font-size: 0.75rem; margin-top: 0.25rem;"></div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;" id="setup-submit-btn">Finish
+                    Setup</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, checkAuth, logout } from './booking.js';
+        import { collection, query, where, getDocs, doc, getDoc, setDoc, updateDoc, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        let currentUserId = null;
+        let selectedBookingId = null;
+
+        checkAuth(async (user) => {
+            sessionStorage.removeItem('auth_in_progress');
+            if (user) {
+                currentUserId = user.uid;
+                fetchProfile();
+                listenToBookings();
+            }
+        });
+
+        const fetchProfile = async () => {
+            document.getElementById('sidebar-loader').style.display = 'block';
+            document.getElementById('user-info').style.display = 'none';
+
+            try {
+                const docRef = doc(db, "booking_profiles", currentUserId);
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    document.getElementById('userName').innerText = data.displayName;
+                    // Updated for subdomain book.explyra.me
+                    const publicUrl = 'https://book.explyra.me/' + data.username;
+                    document.getElementById('userPublicUrl').innerText = '@' + data.username;
+                    document.getElementById('userPublicUrl').onclick = () => window.open(publicUrl, '_blank');
+
+                    document.getElementById('copyLinkBtn').onclick = () => {
+                        navigator.clipboard.writeText(publicUrl);
+                        alert("Public link copied to clipboard!");
+                    };
+
+                    // Populate availability form
+                    document.getElementById('avail-start').value = data.availableSlots?.start || '09:00';
+                    document.getElementById('avail-end').value = data.availableSlots?.end || '17:00';
+                    document.getElementById('avail-duration').value = data.meetingDuration || '30';
+
+                    const dayChecks = document.querySelectorAll('input[name="workday"]');
+                    const workDays = data.availableSlots?.days || [];
+                    dayChecks.forEach(ch => ch.checked = workDays.includes(ch.value));
+
+                    // Populate settings form
+                    document.getElementById('settings-name').value = data.displayName || '';
+                    document.getElementById('settings-username').value = data.username || '';
+
+                    document.getElementById('sidebar-loader').style.display = 'none';
+                    document.getElementById('user-info').style.display = 'block';
+                    return data;
+                } else {
+                    console.warn("Profile not found for existing user. Showing setup modal.");
+                    document.getElementById('sidebar-loader').style.display = 'none';
+                    document.getElementById('setupModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+                alert("Error loading dashboard. Please check your connection or try again.");
+                document.getElementById('sidebar-loader').innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Error';
+            }
+        };
+
+        // Username Availability Check
+        let usernameTimeout = null;
+        document.getElementById('settings-username').addEventListener('input', (e) => {
+            const username = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            e.target.value = username;
+            const checkEl = document.getElementById('username-check');
+            const saveBtn = document.getElementById('save-settings-btn');
+
+            if (username.length < 3) {
+                checkEl.innerText = 'Username too short';
+                checkEl.style.color = 'var(--ink4)';
+                return;
+            }
+
+            clearTimeout(usernameTimeout);
+            usernameTimeout = setTimeout(async () => {
+                checkEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
+
+                const q = query(collection(db, "booking_profiles"), where("username", "==", username));
+                const snap = await getDocs(q);
+
+                let isTaken = false;
+                snap.forEach(docSnap => {
+                    if (docSnap.id !== currentUserId) isTaken = true;
+                });
+
+                if (isTaken) {
+                    checkEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Red is taken';
+                    checkEl.style.color = '#dc2626';
+                    saveBtn.disabled = true;
+                } else {
+                    checkEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Available';
+                    checkEl.style.color = '#047857';
+                    saveBtn.disabled = false;
+                }
+            }, 500);
+        });
+
+        // Setup Form Handlers (identical logic to settings but for the modal)
+        document.getElementById('setup-username').addEventListener('input', (e) => {
+            const username = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            e.target.value = username;
+            const checkEl = document.getElementById('setup-username-check');
+            const submitBtn = document.getElementById('setup-submit-btn');
+
+            if (username.length < 3) {
+                checkEl.innerText = 'Username too short';
+                checkEl.style.color = 'var(--ink4)';
+                return;
+            }
+
+            clearTimeout(usernameTimeout);
+            usernameTimeout = setTimeout(async () => {
+                checkEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
+                const q = query(collection(db, "booking_profiles"), where("username", "==", username));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    checkEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Already taken';
+                    checkEl.style.color = '#dc2626';
+                    submitBtn.disabled = true;
+                } else {
+                    checkEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Available';
+                    checkEl.style.color = '#047857';
+                    submitBtn.disabled = false;
+                }
+            }, 500);
+        });
+
+        document.getElementById('setupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const displayName = document.getElementById('setup-name').value;
+            const username = document.getElementById('setup-username').value;
+            const submitBtn = document.getElementById('setup-submit-btn');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Setting up...';
+
+            try {
+                await setDoc(doc(db, "booking_profiles", currentUserId), {
+                    displayName,
+                    username,
+                    email: auth.currentUser.email,
+                    availableSlots: {
+                        days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+                        start: '09:00',
+                        end: '17:00'
+                    },
+                    meetingDuration: 30,
+                    createdAt: new Date().toISOString()
+                });
+
+                document.getElementById('setupModal').classList.remove('active');
+                alert("Profile set up successfully! Welcome aboard.");
+                fetchProfile();
+            } catch (error) {
+                console.error("Error in setup:", error);
+                alert("Setup failed: " + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Finish Setup';
+            }
+        });
+
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const displayName = document.getElementById('settings-name').value;
+            const username = document.getElementById('settings-username').value;
+            const saveBtn = document.getElementById('save-settings-btn');
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+
+            try {
+                await updateDoc(doc(db, "booking_profiles", currentUserId), {
+                    displayName,
+                    username
+                });
+                alert("Profile settings updated successfully!");
+                fetchProfile();
+            } catch (error) {
+                console.error("Error updating settings:", error);
+                alert("Error updating settings. Please try again.");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'Save Changes';
+            }
+        });
+
+        document.getElementById('availabilityForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const start = document.getElementById('avail-start').value;
+            const end = document.getElementById('avail-end').value;
+            const duration = parseInt(document.getElementById('avail-duration').value);
+            const days = Array.from(document.querySelectorAll('input[name="workday"]:checked')).map(el => el.value);
+
+            try {
+                await updateDoc(doc(db, "booking_profiles", currentUserId), {
+                    availableSlots: { start, end, days },
+                    meetingDuration: duration
+                });
+                alert("Availability updated successfully!");
+            } catch (error) {
+                console.error("Error updating availability:", error);
+            }
+        });
+
+        const listenToBookings = () => {
+            try {
+                const q = query(collection(db, "bookings"), where("userId", "==", currentUserId), orderBy("scheduledAt", "desc"));
+
+                onSnapshot(q, (snapshot) => {
+                    const list = document.getElementById('bookings-list');
+                    list.innerHTML = '';
+
+                    let upcoming = 0;
+                    let completed = 0;
+
+                    if (snapshot.empty) {
+                        list.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--ink4);">No bookings found</td></tr>';
+                    }
+
+                    snapshot.forEach((docSnap) => {
+                        const b = docSnap.data();
+                        const id = docSnap.id;
+                        const date = new Date(b.scheduledAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+
+                        if (b.status === 'upcoming') upcoming++;
+                        if (b.status === 'completed') completed++;
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>
+                                <div style="font-weight: 500;">${b.customerName}</div>
+                                <div style="font-size: 0.8rem; color: var(--ink3);">${b.customerEmail}</div>
+                            </td>
+                            <td>${date}</td>
+                            <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+                            <td>
+                                ${b.meetingLink ? `<a href="${b.meetingLink}" target="_blank" style="color: var(--blue); font-size: 0.85rem;">View Link <i class="fa-solid fa-external-link"></i></a>` : '<span style="color: var(--ink4); font-size: 0.85rem;">Not added</span>'}
+                            </td>
+                            <td>
+                                <button class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="openLinkModal('${id}', '${b.meetingLink || ''}')">
+                                    <i class="fa-solid fa-link"></i>
+                                </button>
+                                <button class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: #dc2626;" onclick="cancelBooking('${id}')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </td>
+                        `;
+                        list.appendChild(tr);
+                    });
+
+                    document.getElementById('count-upcoming').innerText = upcoming;
+                    document.getElementById('count-completed').innerText = completed;
+                }, (error) => {
+                    console.error("Booking listener error:", error);
+                    document.getElementById('bookings-list').innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem; color: #dc2626;">Error loading bookings: ${error.message}</td></tr>`;
+                });
+            } catch (error) {
+                console.error("Failed to setup bookings listener:", error);
+            }
+        };
+
+        // --- Section Navigation ---
+        window.showSection = (section) => {
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(section + '-section').style.display = 'block';
+            event.currentTarget.classList.add('active');
+        };
+
+        // --- Meeting Link Modal ---
+        window.openLinkModal = (bookingId, currentLink) => {
+            selectedBookingId = bookingId;
+            document.getElementById('meeting-url-input').value = currentLink;
+            document.getElementById('linkModal').classList.add('active');
+        };
+
+        window.closeModal = () => {
+            document.getElementById('linkModal').classList.remove('active');
+        };
+
+        document.getElementById('saveLinkBtn').addEventListener('click', async () => {
+            const url = document.getElementById('meeting-url-input').value;
+            if (!url) return;
+
+            try {
+                await updateDoc(doc(db, "bookings", selectedBookingId), {
+                    meetingLink: url
+                });
+                closeModal();
+            } catch (error) {
+                console.error("Error updating link:", error);
+            }
+        });
+
+        window.cancelBooking = async (id) => {
+            if (confirm("Are you sure you want to cancel this booking?")) {
+                await updateDoc(doc(db, "bookings", id), { status: 'cancelled' });
+            }
+        };
+
+        document.getElementById('logoutBtn').onclick = logout;
+    </script>
+</body>
+
+</html>

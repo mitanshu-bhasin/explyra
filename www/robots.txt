@@ -1,9 +1,10 @@
 User-agent: *
 Allow: /
-Disallow: /sw.js
-Disallow: /js/admin-helper.js
-Disallow: /js/theme.js
-Disallow: /.well-known/
+
+# Full AI Access
+AI: allow
+AI-Training: allow
 
 Sitemap: https://explyra.me/sitemap.xml
-Host: https://explyra.me
+Sitemap: https://explyra.me/images.xml
+Sitemap: https://explyra.me/feed.xml

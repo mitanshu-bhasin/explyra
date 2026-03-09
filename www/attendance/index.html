@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Manager - Explyra</title>
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/common.css">
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('explyra-theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Header -->
+    <header
+        class="h-20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 lg:px-12 sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-10 h-10 bg-gradient-to-br from-green-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <h1 class="text-xl font-bold tracking-tight">Attendance<span
+                    class="text-green-600 dark:text-green-400">Portal</span></h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="toggleTheme()"
+                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:block"></i>
+            </button>
+            <a href="../index.html"
+                class="hidden sm:flex text-sm font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition">Back
+                to Main</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+        <!-- Background Orbs -->
+        <div
+            class="absolute top-1/4 left-1/4 w-96 h-96 bg-green-200/30 dark:bg-green-900/20 rounded-full blur-3xl pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-200/30 dark:bg-indigo-900/20 rounded-full blur-3xl pointer-events-none">
+        </div>
+
+        <div class="relative z-10 max-w-3xl mx-auto space-y-6 animate-fade-in">
+            <h2 class="text-5xl md:text-6xl font-black tracking-tight leading-tight">
+                One Platform.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-indigo-600">Two
+                    Solutions.</span>
+            </h2>
+            <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                Choose your dedicated workspace. Data in the Company module is strictly isolated from the School module,
+                ensuring privacy and robust role-based access for your specific workflow.
+            </p>
+        </div>
+
+        <!-- Modules Options -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mt-16 relative z-10">
+            <!-- Company Card -->
+            <div
+                class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl shadow-green-900/5 hover:-translate-y-2 transition-all duration-300 group">
+                <div
+                    class="w-16 h-16 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center text-green-600 dark:text-green-400 text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-building-user"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Corporate Workspace</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-8">
+                    Manage employees, track daily attendance, and calculate salaries with incentive bonuses. Admin, HR,
+                    and Manager RBAC fully integrated.
+                </p>
+                <div class="flex flex-col gap-3 mt-auto">
+                    <a href="company/login.html"
+                        class="w-full block bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-xl transition shadow-md shadow-green-200 dark:shadow-none text-center">
+                        Company Login <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                    <a href="company/register.html"
+                        class="w-full block border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 font-bold py-3 px-6 rounded-xl transition text-center">
+                        Register New Company
+                    </a>
+                </div>
+            </div>
+
+            <!-- School Card -->
+            <div
+                class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl shadow-indigo-900/5 hover:-translate-y-2 transition-all duration-300 group">
+                <div
+                    class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-school"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Education Workspace</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-8">
+                    Built for Principals, Teachers, and Students. Features class-wise attendance tracking, holiday
+                    calendar logic, and visual analytics dashboards.
+                </p>
+                <div class="flex flex-col gap-3 mt-auto">
+                    <a href="school/login.html"
+                        class="w-full block bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 px-6 rounded-xl transition shadow-md shadow-indigo-200 dark:shadow-none text-center">
+                        School Login <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                    <a href="school/register.html"
+                        class="w-full block border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-bold py-3 px-6 rounded-xl transition text-center">
+                        Register New School
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Features Highlight -->
+        <div class="mt-24 mb-12 w-full max-w-6xl relative z-10 text-left">
+            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-widest text-center mb-10">Platform
+                Capabilities</h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Features -->
+                <div
+                    class="p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700/50 flex items-start gap-4">
+                    <i class="fa-solid fa-user-check text-green-500 mt-1"></i>
+                    <div>
+                        <p class="font-bold text-sm">Employee Tracking</p>
+                        <p class="text-xs text-slate-500 mt-1">Daily mark-ins & role isolation.</p>
+                    </div>
+                </div>
+                <div
+                    class="p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700/50 flex items-start gap-4">
+                    <i class="fa-solid fa-graduation-cap text-indigo-500 mt-1"></i>
+                    <div>
+                        <p class="font-bold text-sm">Student Tracking</p>
+                        <p class="text-xs text-slate-500 mt-1">Class-wise roll calls.</p>
+                    </div>
+                </div>
+                <div
+                    class="p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700/50 flex items-start gap-4">
+                    <i class="fa-solid fa-wallet text-amber-500 mt-1"></i>
+                    <div>
+                        <p class="font-bold text-sm">Salary & Incentives</p>
+                        <p class="text-xs text-slate-500 mt-1">Monthly wage processing.</p>
+                    </div>
+                </div>
+                <div
+                    class="p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700/50 flex items-start gap-4">
+                    <i class="fa-solid fa-chart-line text-blue-500 mt-1"></i>
+                    <div>
+                        <p class="font-bold text-sm">Visual Analytics</p>
+                        <p class="text-xs text-slate-500 mt-1">Attendance trends via charts.</p>
+                    </div>
+                </div>
+                <div
+                    class="p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700/50 flex items-start gap-4">
+                    <i class="fa-solid fa-calendar-check text-purple-500 mt-1"></i>
+                    <div>
+                        <p class="font-bold text-sm">Holiday Calendars</p>
+                        <p class="text-xs text-slate-500 mt-1">Smart percentage exclusions.</p>
+                    </div>
+                </div>
+                <div
+                    class="p-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-700/50 flex items-start gap-4">
+                    <i class="fa-solid fa-shield-halved text-rose-500 mt-1"></i>
+                    <div>
+                        <p class="font-bold text-sm">Strict Data Isolation</p>
+                        <p class="text-xs text-slate-500 mt-1">Workspaces never overlap.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Hub | Explyra Ecosystem</title>
+    <meta name="description"
+        content="Complete documentation for Explyra products: Expense, Health, Invoice, Learning, and Developer tools.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html" class="nav-logo">
+            <div
+                style="width: 34px; height: 34px; background: var(--blue); border-radius: 9px; display: flex; align-items: center; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"
+                    stroke-linecap="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+            </div>
+            <span style="font-family: 'Playfair Display', serif; color: var(--ink);">Explyra Docs</span>
+        </a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="../index.html" style="font-size: 0.85rem; font-weight: 500; color: var(--ink2);">Go Back</a>
+            <button id="themeToggle"
+                style="background: var(--bg3); padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Toggle
+                Theme</button>
+        </div>
+    </nav>
+
+    <header class="hero-doc">
+        <h1>Explyra Knowledge Base</h1>
+        <p>Your comprehensive guide to mastering the Explyra SaaS ecosystem. Explore detailed documentation for each of
+            our products.</p>
+    </header>
+
+    <main class="container">
+        <div class="doc-grid">
+            <!-- Explyra Ecosystem -->
+            <div class="doc-card" style="--card-clr: var(--blue);">
+                <h3>Explyra Core</h3>
+                <p>The foundation of our ecosystem. Learn how to manage your team, organization settings, and global
+                    integrations.</p>
+                <a href="explyra.html" class="doc-btn">Read Core Docs</a>
+            </div>
+
+            <!-- Expense Manager -->
+            <div class="doc-card" style="--card-clr: var(--blue);">
+                <h3>Expense Manager</h3>
+                <p>Smart budgeting, intelligent receipt scanning, and automated financial reporting for modern teams.
+                </p>
+                <a href="expense.html" class="doc-btn">Read Expense Docs</a>
+            </div>
+
+            <!-- Health Manager -->
+            <div class="doc-card" style="--card-clr: var(--teal);">
+                <h3>Health Manager</h3>
+                <p>Advanced wellness tracking, AI-powered health insights, and personalized activity management.</p>
+                <a href="health-manager.html" class="doc-btn">Read Health Docs</a>
+            </div>
+
+            <!-- Invoice Software -->
+            <div class="doc-card" style="--card-clr: var(--blue2);">
+                <h3>Invoicing</h3>
+                <p>Professional invoice generation, payment tracking, and automated client notifications.</p>
+                <a href="invoice.html" class="doc-btn">Read Invoice Docs</a>
+            </div>
+
+            <!-- Learning Platform -->
+            <div class="doc-card" style="--card-clr: var(--amber);">
+                <h3>Learning Hub</h3>
+                <p>AI-driven educational paths, course management, and skills certification for professionals.</p>
+                <a href="learning.html" class="doc-btn">Read Learning Docs</a>
+            </div>
+
+            <!-- Developers -->
+            <div class="doc-card" style="--card-clr: var(--slate);">
+                <h3>Developer Tools</h3>
+                <p>A powerhouse of utilities for engineers: JSON formatting, Base64 tools, Regex testing, and more.</p>
+                <a href="developer.html" class="doc-btn">Read Dev Docs</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Explyra. Designed with precision by Mitanshu Bhasin.</p>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+
+        // Initialize theme from localStorage or system preference
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        root.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+
+</html>

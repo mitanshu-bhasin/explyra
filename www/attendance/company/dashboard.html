@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Dashboard - Explyra</title>
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="company.css">
+
+    <!-- Firebase SDKs (Compat version as used in main app) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/firebase-config.js" defer></script>
+
+    <!-- Logic -->
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/auth.js"></script>
+    <script>
+        // Dashboard specific logic
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth('company');
+            // Will load stats after auth check finishes in auth.js
+            setTimeout(loadDashboardStats, 300);
+        });
+
+        async function loadDashboardStats() {
+            const session = getSession('company_session');
+            if (!session) return;
+
+            let emps = [];
+            let att = {};
+            let sals = {};
+
+            if (typeof window.db !== 'undefined' && session.companyId) {
+                try {
+                    const empSnap = await window.db.collection('employees').where('companyId', '==', session.companyId).get();
+                    empSnap.forEach(doc => emps.push({ firebaseId: doc.id, ...doc.data() }));
+
+                    const attSnap = await window.db.collection('attendance').doc(session.companyId).get();
+                    if (attSnap.exists) att = attSnap.data();
+
+                    const salSnap = await window.db.collection('salaries').doc(session.companyId).get();
+                    if (salSnap.exists) sals = salSnap.data();
+
+                } catch (e) {
+                    console.error("Firestore error loading dashboard stats", e);
+                }
+            } else {
+                const data = getAppData('attendance_app_data', {});
+                emps = data.employees[session.companyId] || [];
+                att = data.attendance[session.companyId] || {};
+                sals = data.salaries[session.companyId] || {};
+            }
+
+            // Total Employees
+            document.getElementById('stat-total-emp').textContent = emps.length;
+
+            // Today's Attendance
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayAtt = att[todayStr] || {};
+            let presentCount = 0;
+            emps.forEach(e => {
+                const safeId = e.id || e.firebaseId;
+                if (todayAtt[safeId] === 'Present' || todayAtt[safeId] === 'Half Day') {
+                    presentCount++;
+                }
+            });
+            document.getElementById('stat-present').textContent = presentCount;
+
+            // Attendance Percentage
+            const pct = emps.length > 0 ? Math.round((presentCount / emps.length) * 100) : 0;
+            document.getElementById('stat-att-pct').textContent = pct + '%';
+
+            // Salary Status (Current Month)
+            const monthStr = todayStr.substring(0, 7); // YYYY-MM
+            const monthSals = sals[monthStr] || {};
+            let paidAmount = 0;
+            let pendingAmount = 0;
+
+            emps.forEach(e => {
+                const safeId = e.id || e.firebaseId;
+                const salData = monthSals[safeId];
+                const expected = parseFloat(e.salary) || 0;
+                if (salData && salData.paid) {
+                    paidAmount += expected + (parseFloat(salData.incentive) || 0);
+                } else {
+                    pendingAmount += expected;
+                }
+            });
+
+            document.getElementById('stat-paid').textContent = formatCurrency(paidAmount);
+            document.getElementById('stat-pending').textContent = formatCurrency(pendingAmount);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+
+        // Initial theme check
+        if (localStorage.getItem('explyra-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] h-screen overflow-hidden flex transition-colors duration-300">
+
+    <!-- Sidebar -->
+    <aside
+        class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0 hidden md:flex">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-700">
+            <i class="fa-solid fa-layer-group text-green-600 text-xl mr-3"></i>
+            <span class="font-bold text-lg tracking-tight">CM Workspace</span>
+        </div>
+
+        <div class="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/20">
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Active Company</p>
+            <p id="sidebar-company-name" class="font-bold text-slate-700 dark:text-slate-200 truncate">Loading...</p>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <a href="dashboard.html"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold transition">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
+            </a>
+            <a href="employees.html"
+                class="hr-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-solid fa-users w-5 text-center"></i> Employees
+            </a>
+            <a href="attendance.html"
+                class="hr-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-regular fa-calendar-check w-5 text-center"></i> Attendance
+            </a>
+            <a href="salary.html"
+                class="admin-only flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-solid fa-wallet w-5 text-center"></i> Salary & Bonus
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <p id="sidebar-user-name" class="text-sm font-bold truncate">User</p>
+                    <p id="sidebar-user-role" class="text-[10px] font-bold uppercase text-slate-400 truncate">Role</p>
+                </div>
+            </div>
+            <button onclick="doLogout('company')"
+                class="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Mobile Header -->
+        <header
+            class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shrink-0 z-10">
+            <div class="flex items-center gap-3">
+                <h1 class="text-lg font-bold">Dashboard</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()"
+                    class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold">Welcome back!</h2>
+                    <p class="text-slate-500 text-sm mt-1">Here is the overview for today.</p>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Employees -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                    <div
+                        class="absolute -right-6 -top-6 text-slate-50 dark:text-slate-800/50 text-7xl transition-transform group-hover:scale-110">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Employees</p>
+                        <p class="text-4xl font-black text-slate-800 dark:text-white" id="stat-total-emp">0</p>
+                    </div>
+                </div>
+
+                <!-- Present Today -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                    <div
+                        class="absolute -right-6 -top-6 text-green-50 dark:text-green-900/20 text-7xl transition-transform group-hover:scale-110">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Present Today</p>
+                        <p class="text-4xl font-black text-green-600 dark:text-green-400" id="stat-present">0</p>
+                    </div>
+                </div>
+
+                <!-- Attendance % -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                    <div
+                        class="absolute -right-6 -top-6 text-blue-50 dark:text-blue-900/20 text-7xl transition-transform group-hover:scale-110">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Attendance Rate</p>
+                        <p class="text-4xl font-black text-blue-600 dark:text-blue-400" id="stat-att-pct">0%</p>
+                    </div>
+                </div>
+
+                <!-- Salaries Paid vs Pending -->
+                <div
+                    class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group flex flex-col justify-center">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2"><i
+                            class="fa-solid fa-wallet mr-1"></i> Salary Status (Month)</p>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-xs text-slate-500 mb-0.5">Paid</p>
+                            <p class="text-lg font-bold text-green-600 dark:text-green-400 font-mono" id="stat-paid">₹0
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-500 mb-0.5">Pending</p>
+                            <p class="text-lg font-bold text-amber-500 font-mono" id="stat-pending">₹0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Info -->
+            <div
+                class="bg-gradient-to-r from-green-50 to-indigo-50 dark:from-slate-800/80 dark:to-slate-800 border border-green-100 dark:border-slate-700 rounded-2xl p-6 relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 opacity-10 text-9xl -mr-10 -mb-10 text-green-500">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="relative z-10 md:w-2/3">
+                    <h3 class="text-lg font-bold mb-2 text-slate-800 dark:text-white">Workspace Isolated & Secure</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
+                        This module is strictly mapped to your Company ID. Data is logically isolated to ensure no
+                        cross-company leakage. Admin has full rights to manage salaries, while HR handles day-to-day
+                        employee and attendance management.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="badge bg-green-100 text-green-800 border-green-200">System Live</span>
+                        <span class="badge bg-blue-100 text-blue-800 border-blue-200">v1.0.0</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>
