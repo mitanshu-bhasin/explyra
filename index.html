@@ -2212,6 +2212,24 @@
             border-left: 1px solid var(--bdr);
         }
 
+        /* Custom Scrollbar for Mobile Menu */
+        .mobile-nav-links::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .mobile-nav-links::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .mobile-nav-links::-webkit-scrollbar-thumb {
+            background-color: var(--bdr2);
+            border-radius: 4px;
+        }
+
+        [data-theme="dark"] .mobile-nav-links::-webkit-scrollbar-thumb {
+            background-color: var(--bdr);
+        }
+
         .mobile-menu.open {
             right: 0;
         }
@@ -2235,18 +2253,29 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 0.5rem;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-right: -0.5rem;
         }
 
         .mobile-nav-links a {
-            font-size: 1.2rem;
+            display: block;
+            font-size: 1.15rem;
             font-weight: 600;
             color: var(--ink2);
-            transition: color var(--t);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            background: transparent;
+            transition: all var(--t);
         }
 
-        .mobile-nav-links a:hover {
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a:active {
             color: var(--blue);
+            background: var(--bg3);
+            transform: translateX(4px);
         }
 
         .menu-overlay {
@@ -2705,11 +2734,12 @@
             </a>
             <ul class="nav-links">
                 <li><a href="#expense">Expense</a></li>
+                <li><a href="crm/index.html">CRM</a></li>
                 <li><a href="health-manager/index.html">Health</a></li>
                 <li><a href="explyra-learning/index.html">Learning</a></li>
                 <li><a href="#developers">Developers</a></li>
                 <li><a href="Utilites/index.html">Utility</a></li>
-                <li><a href="#support">Support</a></li>
+                <li><a href="support.html">Help Desk</a></li>
                 <li><a href="team.html">Team</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
@@ -2740,11 +2770,12 @@
             </div>
             <ul class="mobile-nav-links">
                 <li><a href="#expense">Expense</a></li>
+                <li><a href="crm/index.html">CRM</a></li>
                 <li><a href="health-manager/index.html">Health</a></li>
                 <li><a href="explyra-learning/index.html">Learning</a></li>
                 <li><a href="#developers">Developers</a></li>
                 <li><a href="Utilites/index.html">Utility</a></li>
-                <li><a href="#support">Support</a></li>
+                <li><a href="support.html">Help Desk</a></li>
                 <li><a href="team.html">Team</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
@@ -2779,11 +2810,12 @@
                 </div>
                 <div class="suite-pills">
                     <div class="suite-pill sp-blue">💼 Explyra Expense</div>
+                    <div class="suite-pill sp-blue">📈 Explyra CRM</div>
                     <div class="suite-pill sp-teal">🏃 Explyra Health</div>
                     <div class="suite-pill sp-amber">📚 Explyra Learning</div>
                     <div class="suite-pill sp-purp">⚡ Explyra Developers</div>
                     <div class="suite-pill sp-rose">🔗 Explyra Utility</div>
-                    <div class="suite-pill sp-slate">🛡️ Support Centre</div>
+                    <div class="suite-pill sp-slate">🛡️ Help Desk</div>
                 </div>
             </div>
         </section>
@@ -2799,6 +2831,14 @@
                         design, and reliability.</p>
                 </div>
                 <div class="ov-grid reveal d1">
+                    <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
+                        <div class="ov-icon">📈</div>
+                        <div class="ov-badge">CRM</div>
+                        <div class="ov-title">Explyra CRM</div>
+                        <p class="ov-desc">Enterprise-grade customer relationship management with high-performance sales
+                            pipelines, analytics, and intelligent lead tracking.</p>
+                        <a href="crm/index.html" class="ov-link">Launch App <span>→</span></a>
+                    </div>
                     <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
                         <div class="ov-icon">💼</div>
                         <div class="ov-badge">Expense</div>
@@ -2845,11 +2885,11 @@
                     </div>
                     <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
                         <div class="ov-icon">🛡️</div>
-                        <div class="ov-badge">Support</div>
-                        <div class="ov-title">Support Centre</div>
+                        <div class="ov-badge">Help Desk</div>
+                        <div class="ov-title">Help Desk</div>
                         <p class="ov-desc">Dedicated support for every Explyra product — documentation, live chat,
                             ticketing, and an AI assistant available 24/7 for your team.</p>
-                        <a href="#support" class="ov-link">Explore <span>→</span></a>
+                        <a href="support.html" class="ov-link">Explore <span>→</span></a>
                     </div>
                 </div>
             </div>
@@ -2965,6 +3005,99 @@
                         <div class="dash-foot"><span class="df-l">Pending Reimbursements</span><span
                                 class="df-v">₹60,050</span></div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ CRM ══ -->
+        <section class="prod-section dev-sec" id="crm">
+            <div class="blob" style="background:var(--blue);bottom:-100px;left:-100px;width:500px;height:500px"></div>
+            <div class="prod-inner rev">
+                <div class="reveal d2">
+                    <div class="dev-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
+                        <div class="dev-bar"
+                            style="background:#1E1E2E;padding:.85rem 1.2rem;display:flex;align-items:center;gap:.5rem">
+                            <div class="dev-bar-dot" style="background:#FF5F57"></div>
+                            <div class="dev-bar-dot" style="background:#FFBE2E"></div>
+                            <div class="dev-bar-dot" style="background:#28C840"></div><span class="dev-bar-title"
+                                style="color:#7C8FAC;font-family:monospace;margin-left:.3rem;font-size:.7rem;font-weight:600">explyra-crm</span>
+                        </div>
+                        <div class="dev-body" style="padding:1.4rem;background:var(--bg3)">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                                <div
+                                    style="background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;box-shadow:var(--s1)">
+                                    <h3
+                                        style="font-size:.65rem;font-weight:700;color:var(--ink4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">
+                                        Pipeline Value</h3>
+                                    <p style="font-size:1.4rem;font-weight:800;color:var(--blue)">₹14.2M</p>
+                                    <p style="font-size:.7rem;color:var(--teal);margin-top:.4rem;font-weight:600">+12%
+                                        this quarter</p>
+                                </div>
+                                <div
+                                    style="background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;box-shadow:var(--s1)">
+                                    <h3
+                                        style="font-size:.65rem;font-weight:700;color:var(--ink4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">
+                                        Win Rate</h3>
+                                    <p style="font-size:1.4rem;font-weight:800;color:var(--purp)">34%</p>
+                                    <p style="font-size:.7rem;color:var(--ink3);margin-top:.4rem;font-weight:500">Avg
+                                        cycle: 14 days</p>
+                                </div>
+                            </div>
+                            <div
+                                style="margin-top:1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;box-shadow:var(--s1)">
+                                <h3 style="font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:.8rem">Recent
+                                    Leads</h3>
+                                <div
+                                    style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--bdr)">
+                                    <span style="font-size:.75rem;color:var(--ink2);font-weight:500">Enterprise Software
+                                        License</span>
+                                    <span
+                                        style="font-size:.6rem;background:var(--teal-g);color:var(--teal);padding:.2rem .5rem;border-radius:4px;font-weight:700;letter-spacing:.05em;text-transform:uppercase">Qualified</span>
+                                </div>
+                                <div
+                                    style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0">
+                                    <span style="font-size:.75rem;color:var(--ink2);font-weight:500">Q3 Expansion
+                                        Protocol</span>
+                                    <span
+                                        style="font-size:.6rem;background:var(--blue-g);color:var(--blue);padding:.2rem .5rem;border-radius:4px;font-weight:700;letter-spacing:.05em;text-transform:uppercase">New</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal">
+                    <div class="prod-label" style="color:var(--blue)">📈 Explyra CRM</div>
+                    <h2 class="prod-h display">Accelerate sales. <em>Close deals faster.</em></h2>
+                    <p class="prod-p">Manage leads, track your pipeline, and analyze sales performance with Explyra CRM.
+                        High-performance enterprise CRM without the complexity.</p>
+                    <div class="feat-list">
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Interactive Kanban Board for visual sales pipelines
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Lead capturing and unified contact management
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Real-time Revenue Forecasting & Win Rate Analytics
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-dot"
+                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
+                            </div>
+                            Seamless integration with ERP Expense Projects
+                        </div>
+                    </div>
+                    <a href="crm/index.html" class="btn-prod" style="background:var(--blue)">Launch CRM <span
+                            style="margin-left:.4rem">→</span></a>
                 </div>
             </div>
         </section>
@@ -3439,7 +3572,7 @@
         <section class="support-sec" id="support">
             <div class="support-inner">
                 <div class="reveal" style="text-align:center">
-                    <div class="eyebrow" style="color:var(--slate)">🛡️ Support Centre</div>
+                    <div class="eyebrow" style="color:var(--slate)">🛡️ Help Desk</div>
                     <h2 class="sec-h">We've got your back, <em>always.</em></h2>
                     <p class="sec-p">Dedicated support for every product in the Explyra Suite. Get help when you need it
                         —
@@ -3484,7 +3617,8 @@
                         <div class="sup-title">Community Forum</div>
                         <p class="sup-desc">Connect with other Explyra users, share tips, report issues, and stay
                             updated on
-                            new features and product announcements.</p><a href="#contact" class="sup-link">Join
+                            new features and product announcements.</p><a href="community-hub/index.html"
+                            class="sup-link">Join
                             Community
                             →</a>
                     </div>
@@ -3557,11 +3691,12 @@
         <p class="foot-copy">© 2026 Explyra · Founded by Mitanshu Bhasin · All rights reserved.</p>
         <div class="foot-links">
             <a href="#expense">Expense</a>
+            <a href="crm/index.html">CRM</a>
             <a href="health-manager/index.html">Health</a>
             <a href="explyra-learning/index.html">Learning</a>
             <a href="developers/index.html">Developers</a>
             <a href="Utilites/index.html">Utility</a>
-            <a href="#support">Support</a>
+            <a href="support.html">Help Desk</a>
             <a href="team.html">Team</a>
             <a href="pricing.html">Pricing</a>
             <a href="#contact">Contact</a>
