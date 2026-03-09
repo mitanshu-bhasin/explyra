@@ -30,7 +30,12 @@
             ]
         }
     ],
-    "rewrites": [],
+    "rewrites": [
+        {
+            "source": "/booking/:username",
+            "destination": "/booking/booking-page.html?u=:username"
+        }
+    ],
     "redirects": [
         {
             "source": "/firestore.rules",

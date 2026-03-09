@@ -1,0 +1,5 @@
+/booking/dashboard /booking/dashboard.html 200
+/booking/login /booking/login.html 200
+/booking/track /booking/track.html 200
+/booking/index /booking/index.html 200
+/booking/:username /booking/booking-page.html 200

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students - Explyra School</title>
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="school.css">
+
+    <!-- Firebase SDKs (Compat version as used in main app) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/firebase-config.js" defer></script>
+
+    <!-- Logic -->
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth('school');
+
+            // Students themselves cannot view the main student list editing tools
+            if (hasAccess(['Student'], 'school')) {
+                document.body.innerHTML = '<div class="flex items-center justify-center h-screen bg-slate-50 text-slate-500 font-bold text-xl">Self-Service Profile coming soon... <a href="dashboard.html" class="text-indigo-600 ml-2 underline">Go back</a></div>';
+                return;
+            }
+
+            setTimeout(renderStudents, 200);
+        });
+
+        let cachedStudents = [];
+
+        async function renderStudents() {
+            const session = getSession('school_session');
+            if (!session) return;
+
+            const tbody = document.getElementById('students-tbody');
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading students...</td></tr>';
+
+            let students = [];
+            if (typeof window.db !== 'undefined' && session.schoolId) {
+                try {
+                    const snap = await window.db.collection('students').where('schoolId', '==', session.schoolId).get();
+                    snap.forEach(doc => students.push({ firebaseId: doc.id, ...doc.data() }));
+                } catch (e) { console.error("Firestore get students error", e); }
+            } else {
+                const data = getAppData('school_attendance_data', {});
+                students = data.students?.[session.schoolId] || [];
+            }
+
+            cachedStudents = students;
+
+            // Optional Filter
+            const classFilter = document.getElementById('filter-class').value;
+            let filtered = students;
+            if (classFilter !== 'All') {
+                filtered = students.filter(s => s.stuClass === classFilter);
+            }
+
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500">No students found for this selection.</td></tr>`;
+                return;
+            }
+
+            // Sort by Roll No
+            filtered.sort((a, b) => parseInt(a.roll) - parseInt(b.roll));
+
+            filtered.forEach((s, index) => {
+                const safeId = s.id || s.firebaseId;
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition animate-fade-in";
+                tr.style.animationDelay = `${index * 0.05}s`;
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-sm">${s.roll || ''}</td>
+                    <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">${s.name || ''}</td>
+                    <td class="px-6 py-4 text-sm font-bold text-indigo-600 dark:text-indigo-400">Class ${s.stuClass || ''}</td>
+                    <td class="px-6 py-4 font-mono text-sm">${s.section || ''}</td>
+                    <td class="px-6 py-4 font-mono text-sm text-slate-500">${safeId}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <button onclick="editStudent('${safeId}')" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteStudent('${safeId}')" class="text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300 transition principal-only" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Hide delete buttons if Teacher
+            updateUIForRole(session.role, 'school');
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('student-modal');
+            if (show) {
+                modal.classList.remove('hidden');
+                document.getElementById('student-id').focus();
+            } else {
+                modal.classList.add('hidden');
+                document.getElementById('student-form').reset();
+                document.getElementById('student-id').readOnly = false;
+            }
+        }
+
+        let currentEditingFirebaseId = null;
+
+        async function handleSaveStudent(e) {
+            e.preventDefault();
+            const session = getSession('school_session');
+
+            let studentData = {
+                id: document.getElementById('student-id').value.trim() || generateId(session.schoolId, 'stu'),
+                name: document.getElementById('student-name').value.trim(),
+                stuClass: document.getElementById('student-class').value,
+                section: document.getElementById('student-section').value.trim(),
+                roll: document.getElementById('student-roll').value.trim() || "0",
+                schoolId: session.schoolId
+            };
+
+            const btn = document.querySelector('#student-form button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            if (typeof window.db !== 'undefined' && session.schoolId) {
+                try {
+                    const stuCollection = window.db.collection('students');
+                    if (currentEditingFirebaseId) {
+                        await stuCollection.doc(currentEditingFirebaseId).set(studentData, { merge: true });
+                    } else {
+                        const existingSnap = await stuCollection.where('schoolId', '==', session.schoolId).where('id', '==', studentData.id).get();
+                        if (!existingSnap.empty) {
+                            await stuCollection.doc(existingSnap.docs[0].id).set(studentData, { merge: true });
+                        } else {
+                            await stuCollection.add(studentData);
+                        }
+                    }
+                } catch (e) { console.error("Firestore save error", e); }
+            } else {
+                const data = getAppData('school_attendance_data', {});
+                if (!data.students[session.schoolId]) {
+                    data.students[session.schoolId] = [];
+                }
+
+                const existingIndex = data.students[session.schoolId].findIndex(s => s.id === studentData.id);
+                if (existingIndex >= 0) {
+                    data.students[session.schoolId][existingIndex] = studentData;
+                } else {
+                    data.students[session.schoolId].push(studentData);
+                }
+                saveAppData('school_attendance_data', data);
+            }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
+            toggleModal(false);
+            renderStudents();
+        }
+
+        function editStudent(id) {
+            const student = cachedStudents.find(s => s.id === id || s.firebaseId === id);
+
+            if (student) {
+                if (student.firebaseId) currentEditingFirebaseId = student.firebaseId;
+                else currentEditingFirebaseId = null;
+
+                document.getElementById('student-id').value = student.id || student.firebaseId || '';
+                document.getElementById('student-id').readOnly = true;
+                document.getElementById('student-name').value = student.name || '';
+                document.getElementById('student-class').value = student.stuClass || '9';
+                document.getElementById('student-section').value = student.section || '';
+                document.getElementById('student-roll').value = student.roll || '';
+                toggleModal(true);
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (confirm("Are you sure you want to permanently remove this student?")) {
+                const session = getSession('school_session');
+
+                const student = cachedStudents.find(s => s.id === id || s.firebaseId === id);
+
+                if (typeof window.db !== 'undefined' && session.schoolId && student?.firebaseId) {
+                    try {
+                        await window.db.collection('students').doc(student.firebaseId).delete();
+                    } catch (e) { console.error("Firestore delete error", e); }
+                } else {
+                    const data = getAppData('school_attendance_data', {});
+                    if (data.students[session.schoolId]) {
+                        data.students[session.schoolId] = data.students[session.schoolId].filter(s => s.id !== id);
+                        saveAppData('school_attendance_data', data);
+                    }
+                }
+                renderStudents();
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] h-screen overflow-hidden flex transition-colors duration-300">
+
+    <!-- Modal -->
+    <div id="student-modal"
+        class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center hidden">
+        <div
+            class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl w-full max-w-lg border border-slate-100 dark:border-slate-700 animate-fade-in relative">
+            <button onclick="toggleModal(false)"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"><i
+                    class="fa-solid fa-xmark text-xl"></i></button>
+            <h2 class="text-2xl font-bold mb-6">Student Enrollment</h2>
+
+            <form id="student-form" onsubmit="handleSaveStudent(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Student Hash (ID)</label>
+                        <input type="text" id="student-id"
+                            class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder:text-slate-400 font-mono"
+                            placeholder="Auto-generated if blank">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Roll Number</label>
+                        <input type="number" id="student-roll"
+                            class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder:text-slate-400 font-mono"
+                            placeholder="12" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                    <input type="text" id="student-name"
+                        class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                        required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Grade / Class</label>
+                        <select id="student-class"
+                            class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                            <option value="11">Class 11</option>
+                            <option value="12">Class 12</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Section</label>
+                        <input type="text" id="student-section"
+                            class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                            placeholder="A" required>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="toggleModal(false)"
+                        class="px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">Cancel</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg shadow-md transition">Enroll
+                        Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside
+        class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0 hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-700">
+            <i class="fa-solid fa-graduation-cap text-indigo-600 text-xl mr-3"></i>
+            <span class="font-bold text-lg tracking-tight">Edu Workspace</span>
+        </div>
+
+        <div class="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/20">
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Active School</p>
+            <p id="sidebar-org-name" class="font-bold text-slate-700 dark:text-slate-200 truncate">Loading...</p>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <a href="dashboard.html"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
+            </a>
+            <a href="teachers.html"
+                class="principal-only flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-solid fa-chalkboard-user w-5 text-center"></i> Teachers
+            </a>
+            <a href="students.html"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-bold transition">
+                <i class="fa-solid fa-users w-5 text-center"></i> Students
+            </a>
+            <a href="attendance.html"
+                class="teacher-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-regular fa-calendar-check w-5 text-center"></i> Attendance
+            </a>
+            <a href="analytics.html"
+                class="teacher-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i> Analytics
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <p id="sidebar-user-name" class="text-sm font-bold truncate">User</p>
+                    <p id="sidebar-user-role" class="text-[10px] font-bold uppercase text-slate-400 truncate">Role</p>
+                </div>
+            </div>
+            <button onclick="doLogout('school')"
+                class="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header
+            class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shrink-0 z-10">
+            <div class="flex items-center gap-3">
+                <h1 class="text-lg font-bold">Manage Students</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()"
+                    class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in"
+                style="animation-delay: 0.1s;">
+                <div>
+                    <h2 class="text-2xl font-bold">Student Roster</h2>
+                    <p class="text-slate-500 text-sm mt-1">Enroll students and map them to their designated Classes &
+                        Sections.</p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <select id="filter-class" onchange="renderStudents()"
+                        class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none shadow-sm cursor-pointer">
+                        <option value="All">All Classes</option>
+                        <option value="9">Class 9</option>
+                        <option value="10">Class 10</option>
+                        <option value="11">Class 11</option>
+                        <option value="12">Class 12</option>
+                    </select>
+
+                    <button onclick="toggleModal(true)"
+                        class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-md shadow-indigo-500/20 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> Enroll Student
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden animate-fade-in"
+                style="animation-delay: 0.2s;">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead
+                            class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                            <tr>
+                                <th class="px-6 py-4">Roll</th>
+                                <th class="px-6 py-4">Student Name</th>
+                                <th class="px-6 py-4">Class</th>
+                                <th class="px-6 py-4">Sec</th>
+                                <th class="px-6 py-4">Internal ID</th>
+                                <th class="px-6 py-4 w-24">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-tbody" class="text-sm">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>

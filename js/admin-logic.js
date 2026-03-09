@@ -503,8 +503,22 @@ onAuthStateChanged(auth, async (user) => {
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
                 if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
-                    console.log('[Auth] Explyra admin detected, skipping admin portal auth.');
-                    showLogin(); // just show the login screen, don't kill session
+                    console.log('[Auth] Explyra admin detected, bypassing normal auth checks.');
+
+                    // Create mock userData for the master admin so the dashboard can load
+                    userData = {
+                        name: 'Master Admin',
+                        email: user.email,
+                        role: 'ADMIN',
+                        uid: user.uid,
+                        companyId: 'GLOBAL', // Special identifier for master access
+                        status: 'ACTIVE'
+                    };
+
+                    // Update global var
+                    currentUser = user;
+
+                    showDashboard();
                 } else {
                     showToast(`User record [${user.email}] not found in database.`, 'error');
                     await signOut(auth);
@@ -851,26 +865,39 @@ function showDashboard() {
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('dashboard-screen').classList.remove('hidden');
 
-    document.getElementById('current-user-name').textContent = userData.name;
-    document.getElementById('current-user-role').textContent = userData.role.replace('_', ' ');
-
-    const avatarContainer = document.getElementById('sidebar-user-avatar');
-    if (avatarContainer) {
-        if (userData.photoUrl && userData.photoUrl.trim() !== '') {
-            avatarContainer.innerHTML = `<img src="${userData.photoUrl}" class="w-full h-full object-cover">`;
-        } else {
-            avatarContainer.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
+    const initUI = () => {
+        const nameEl = document.getElementById('current-user-name');
+        if (!nameEl) {
+            // Wait for sidebar component to load
+            setTimeout(initUI, 50);
+            return;
         }
-    }
 
-    // Reset visibility for optional tabs
-    const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit', 'roles', 'tasks', 'workflow'];
-    optionalTabs.forEach(id => {
-        const el = document.getElementById(`nav-${id}`);
-        if (el) el.classList.add('hidden');
-    });
+        nameEl.textContent = userData.name;
 
-    checkAccess();
+        const roleEl = document.getElementById('current-user-role');
+        if (roleEl) roleEl.textContent = userData.role.replace('_', ' ');
+
+        const avatarContainer = document.getElementById('sidebar-user-avatar');
+        if (avatarContainer) {
+            if (userData.photoUrl && userData.photoUrl.trim() !== '') {
+                avatarContainer.innerHTML = `<img src="${userData.photoUrl}" class="w-full h-full object-cover">`;
+            } else {
+                avatarContainer.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
+            }
+        }
+
+        // Reset visibility for optional tabs
+        const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit', 'roles', 'tasks', 'workflow'];
+        optionalTabs.forEach(id => {
+            const el = document.getElementById(`nav-${id}`);
+            if (el) el.classList.add('hidden');
+        });
+
+        checkAccess();
+    };
+
+    initUI();
 }
 
 window.checkAccess = async () => {
@@ -892,7 +919,7 @@ window.checkAccess = async () => {
         } catch (e) { console.warn("Failed to fetch role permissions", e); }
     } else {
         // Give admins all permissions locally to bypass checks
-        userData.permissions = { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true };
+        userData.permissions = { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true, viewCrm: true };
     }
 
     // --- Role Based Access Control ---
@@ -904,19 +931,28 @@ window.checkAccess = async () => {
 
     // User Mgmt & Projects
     if (userData.permissions?.viewUsers || ['ADMIN', 'HR'].includes(userData.role)) {
-        document.getElementById('nav-users').classList.remove('hidden');
-        document.getElementById('nav-projects').classList.remove('hidden'); // Assuming users implies project access for now
+        const navU = document.getElementById('nav-users');
+        if (navU) navU.classList.remove('hidden');
+        const navP = document.getElementById('nav-projects');
+        if (navP) navP.classList.remove('hidden'); // Assuming users implies project access for now
     }
 
     // Reports
     if (userData.permissions?.viewReports || ['ADMIN', 'TREASURY', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS'].includes(userData.role)) {
-        document.getElementById('nav-reports').classList.remove('hidden');
+        const navR = document.getElementById('nav-reports');
+        if (navR) navR.classList.remove('hidden');
     }
 
     // Settings
     if (userData.permissions?.viewSettings || userData.role === 'ADMIN') {
-        document.getElementById('nav-settings').classList.remove('hidden');
-        document.getElementById('nav-roles').classList.remove('hidden');
+        const navS = document.getElementById('nav-settings');
+        if (navS) navS.classList.remove('hidden');
+    }
+
+    // Role Management (Admin and HR only)
+    if (['ADMIN', 'HR'].includes(userData.role)) {
+        const navRo = document.getElementById('nav-roles');
+        if (navRo) navRo.classList.remove('hidden');
     }
 
     // Invoices
@@ -925,8 +961,19 @@ window.checkAccess = async () => {
         if (invTab) invTab.classList.remove('hidden');
     }
 
+    // CRM
+    const navCrm = document.getElementById('nav-crm');
+    if (navCrm) {
+        if (userData.permissions?.viewCrm || userData.role === 'ADMIN') {
+            navCrm.classList.remove('hidden');
+        } else {
+            navCrm.classList.add('hidden');
+        }
+    }
+
     // Audit Logs: Visible to all, but data is filtered by role inside the tab
-    document.getElementById('nav-audit').classList.remove('hidden');
+    const navA = document.getElementById('nav-audit');
+    if (navA) navA.classList.remove('hidden');
 
     // Task Manager: Visible to all positions
     const navTasks = document.getElementById('nav-tasks');
@@ -934,7 +981,8 @@ window.checkAccess = async () => {
 
     // Workflow: Admin only
     if (userData.role === 'ADMIN') {
-        document.getElementById('nav-workflow').classList.remove('hidden');
+        const navW = document.getElementById('nav-workflow');
+        if (navW) navW.classList.remove('hidden');
     }
 
     // Default Tab Logic
@@ -1855,7 +1903,14 @@ async function renderSettings() {
                             <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase border border-green-200">${planName} PLAN</span>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Company Unique ID</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-slate-800 dark:text-slate-100 font-mono text-sm max-w-[150px] truncate" title="${userData.companyId}">${userData.companyId}</p>
+                                    <button onclick="navigator.clipboard.writeText('${userData.companyId}'); showToast('Copied ID to clipboard!', 'success');" class="text-green-600 hover:text-green-800 transition"><i class="fa-regular fa-copy"></i></button>
+                                </div>
+                            </div>
                             <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Current Status</p>
                                 <p class="text-slate-800 dark:text-slate-100 font-semibold"><i class="fa-solid fa-circle-check text-green-500 mr-1"></i> Active Workspace</p>
@@ -5712,7 +5767,7 @@ window.renderRoles = async () => {
             { id: 'def-accts', name: 'ACCOUNTS', systemRole: true, description: 'Accounts team — processes approved claims for payment', permissions: { viewApprovals: true, viewReports: true, viewInvoices: true } },
             { id: 'def-audit', name: 'AUDIT', systemRole: true, description: 'Auditor — reviews paid claims and generates audit reports', permissions: { viewApprovals: false, viewReports: true } },
             { id: 'def-trsy', name: 'TREASURY', systemRole: true, description: 'Treasury — handles final payment disbursement', permissions: { viewApprovals: true, viewReports: true } },
-            { id: 'def-admin', name: 'ADMIN', systemRole: true, description: 'Full administrator — complete system access and control', permissions: { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true } }
+            { id: 'def-admin', name: 'ADMIN', systemRole: true, description: 'Full administrator — complete system access and control', permissions: { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true, viewCrm: true } }
         ];
 
         // Merge: DB roles override defaults with same name, but unsaved defaults still appear
@@ -5821,6 +5876,9 @@ window.renderRoles = async () => {
                                 <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                                     <input type="checkbox" id="perm-view-invoices" class="rounded text-green-600 focus:ring-green-500"> Can Access Invoices
                                 </label>
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-crm" class="rounded text-green-600 focus:ring-green-500"> Can Access CRM
+                                </label>
                             </div>
                         </div>
 
@@ -5866,6 +5924,7 @@ window.showRoleModal = (roleData = null) => {
         document.getElementById('perm-view-users').checked = roleData.permissions?.viewUsers || false;
         document.getElementById('perm-view-settings').checked = roleData.permissions?.viewSettings || false;
         document.getElementById('perm-view-invoices').checked = roleData.permissions?.viewInvoices || false;
+        document.getElementById('perm-view-crm').checked = roleData.permissions?.viewCrm || false;
     } else {
         document.getElementById('role-modal-title').textContent = "Create Custom Role";
         nameInput.value = '';
@@ -5879,6 +5938,7 @@ window.showRoleModal = (roleData = null) => {
         document.getElementById('perm-view-users').checked = false;
         document.getElementById('perm-view-settings').checked = false;
         document.getElementById('perm-view-invoices').checked = false;
+        document.getElementById('perm-view-crm').checked = false;
     }
 
     setTimeout(() => {
@@ -5912,7 +5972,8 @@ window.saveRole = async () => {
         viewReports: document.getElementById('perm-view-reports').checked,
         viewUsers: document.getElementById('perm-view-users').checked,
         viewSettings: document.getElementById('perm-view-settings').checked,
-        viewInvoices: document.getElementById('perm-view-invoices').checked
+        viewInvoices: document.getElementById('perm-view-invoices').checked,
+        viewCrm: document.getElementById('perm-view-crm').checked
     };
 
     try {
