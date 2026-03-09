@@ -388,7 +388,8 @@
                 if (snap.exists()) {
                     const data = snap.data();
                     document.getElementById('userName').innerText = data.displayName;
-                    const publicUrl = window.location.origin + '/booking/' + data.username;
+                    // Updated for subdomain book.explyra.me
+                    const publicUrl = 'https://book.explyra.me/' + data.username;
                     document.getElementById('userPublicUrl').innerText = '@' + data.username;
                     document.getElementById('userPublicUrl').onclick = () => window.open(publicUrl, '_blank');
 
