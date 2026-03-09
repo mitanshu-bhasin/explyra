@@ -212,13 +212,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         let username = urlParams.get('u');
 
-        // Fallback: extract from path if clean URL /booking/username is used
+        // Fallback: extract from path if clean URL is used
         if (!username) {
-            const pathParts = window.location.pathname.split('/');
-            // Expected path: /booking/username
-            const bookingIdx = pathParts.indexOf('booking');
-            if (bookingIdx !== -1 && pathParts[bookingIdx + 1]) {
-                username = pathParts[bookingIdx + 1].replace('.html', '');
+            const pathParts = window.location.pathname.split('/').filter(p => p);
+            // If hosted on a subdomain (book.explyra.me/username), username is the first segment
+            // If hosted on a subfolder (explyra.me/booking/username), username is the second segment
+
+            if (pathParts.length > 0) {
+                if (pathParts[0] === 'booking' && pathParts[1]) {
+                    username = pathParts[1].replace('.html', '');
+                } else if (pathParts[0] !== 'booking') {
+                    username = pathParts[0].replace('.html', '');
+                }
+
                 // Check if it's a reserved filename
                 if (['dashboard', 'login', 'track', 'index', 'booking-page'].includes(username)) {
                     username = null;
