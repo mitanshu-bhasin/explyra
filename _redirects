@@ -1,5 +1,10 @@
-/booking/dashboard /booking/dashboard.html 200
-/booking/login /booking/login.html 200
-/booking/track /booking/track.html 200
-/booking/index /booking/index.html 200
-/booking/:username /booking/booking-page.html 200
+# Specific Pages
+/booking/dashboard    /booking/dashboard.html    200
+/booking/login        /booking/login.html        200
+/booking/track        /booking/track.html        200
+
+# Home Page (Avoid redirecting index to index.html)
+/booking              /booking/index.html        200
+
+# Dynamic Username (Ye hamesha last mein hona chahiye)
+/booking/:username    /booking/booking-page.html 200
