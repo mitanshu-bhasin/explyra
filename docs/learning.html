@@ -102,43 +102,120 @@
         <div class="doc-layout">
             <aside class="sidebar">
                 <ul>
-                    <li><a href="#ai-learning">AI-Driven Learning</a></li>
-                    <li><a href="#courses">Course Library</a></li>
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#curation">Content Curation</a></li>
+                    <li><a href="#matrices">Skill Matrices</a></li>
                     <li><a href="#certifications">Certifications</a></li>
-                    <li><a href="#analytics">Growth Analytics</a></li>
+                    <li><a href="#analytics">LMS Analytics</a></li>
                 </ul>
             </aside>
 
             <article class="content">
-                <section id="ai-learning">
+                <section id="overview">
                     <h2>Knowledge Accelerated</h2>
                     <p>Explyra Learning Hub utilizes generative AI to create personalized educational experiences.
                         Whether you are learning a new programming language or mastering financial management, our
                         platform adapts to your pace and style.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-brain"></i>
+                            <h4>AI Tutoring</h4>
+                            <p>Get instant answers to course-related questions from our context-aware AI tutor.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h4>Micro-Learning</h4>
+                            <p>Byte-sized lessons designed for busy professionals to learn on the go.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-users"></i>
+                            <h4>Social Learning</h4>
+                            <p>Collaborate with peers through integrated discussion forums and group projects.</p>
+                        </div>
+                    </div>
                 </section>
 
-                <section id="courses">
-                    <h2>Comprehensive Course Library</h2>
-                    <div class="course-card">
-                        <i class="fas fa-code"></i>
+                <section id="curation">
+                    <h2>Content Curation & Uploads</h2>
+                    <p>Building your internal knowledge base is simple. Explyra supports a wide variety of content
+                        formats to keep learning engaging.</p>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-video"></i> Multimedia Support</h4>
+                        <p>Upload videos (MP4), interactive slide decks, and SCORM packages for standardized corporate
+                            training.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-question-circle"></i> Interactive Quizzes</h4>
+                        <p>Create dynamic assessments with multiple-choice, coding challenges, and open-ended questions
+                            that are automatically graded.</p>
+                    </div>
+                </section>
+
+                <section id="matrices">
+                    <h2>Skill Matrices & Competencies</h2>
+                    <p>Map your organization's skills and identify gaps before they become problems. Explyra helps align
+                        learning with business goals.</p>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-th"></i>
                         <div>
-                            <h4>Full-Stack Mastery</h4>
-                            <p>From HTML/CSS to advanced React and Node.js architectures.</p>
+                            <strong>Gap Analysis:</strong> Automatically identify employees who need specific training
+                            based on their role requirements and current certifications.
                         </div>
                     </div>
-                    <div class="course-card">
-                        <i class="fas fa-brain"></i>
-                        <div>
-                            <h4>AI & Data Science</h4>
-                            <p>Understand the fundamentals of machine learning and large language models.</p>
-                        </div>
-                    </div>
+
+                    <h3>Personalized Paths</h3>
+                    <p>Our AI suggests the next best course for an employee based on their current skill matrix and
+                        career aspirations within the company.</p>
                 </section>
 
                 <section id="certifications">
-                    <h2>Industry-Recognized Certifications</h2>
-                    <p>Complete courses and pass assessments to earn digital certificates. Share them directly on
-                        LinkedIn or your professional portfolio with our verified credentials system.</p>
+                    <h2>Certification Paths</h2>
+                    <p>Validate expertise with our robust certification engine. Professional, verifiable credentials for
+                        modern careers.</p>
+
+                    <ul>
+                        <li><strong>Automated Issuance:</strong> Certificates are instantly generated and sent to users
+                            upon passing final assessments.</li>
+                        <li><strong>Expiration Alerts:</strong> Automatically notify users and managers when a
+                            certification is nearing its expiry date.</li>
+                        <li><strong>External Verification:</strong> Each certificate includes a unique QR code for
+                            external verification by third parties.</li>
+                    </ul>
+                </section>
+
+                <section id="analytics">
+                    <h2>LMS Analytics & Reporting</h2>
+                    <p>Track the ROI of your training programs. Real-time data on how your team is growing.</p>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <strong>Engagement Tracking:</strong> Monitor completion rates, average quiz scores, and
+                            time-spent-per-lesson to identify where students are struggling.
+                        </div>
+                    </div>
+
+                    <h3>Exportable Reports</h3>
+                    <p>Generate CSV or PDF reports for management meetings, showing departmental progress and
+                        top-performing learners.</p>
+                </section>
+
+                <section id="faq">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-item">
+                        <h4>Can I import content from other LMS?</h4>
+                        <p>Yes. We support SCORM 1.2 and 2004 standards, allowing you to migrate your existing course
+                            library with ease.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>How does the AI tutor work?</h4>
+                        <p>The AI tutor is trained specifically on your course content, ensuring it provides accurate,
+                            context-specific help without straying into unrelated topics.</p>
+                    </div>
                 </section>
             </article>
         </div>
@@ -153,6 +230,29 @@
         const root = document.documentElement;
         const savedTheme = localStorage.getItem('theme') || 'light';
         root.setAttribute('data-theme', savedTheme);
+
+        // Highlight active sidebar link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
         themeToggle.addEventListener('click', () => {
             const currentTheme = root.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';

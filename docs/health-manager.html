@@ -99,38 +99,122 @@
         <div class="doc-layout">
             <aside class="sidebar">
                 <ul>
-                    <li><a href="#activity">Activity Tracking</a></li>
-                    <li><a href="#wellness">Wellness Metrics</a></li>
-                    <li><a href="#ai-insights">AI Health Insights</a></li>
-                    <li><a href="#privacy">Data Privacy</a></li>
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#wellness-score">Wellness Score</a></li>
+                    <li><a href="#integrations">Wearable Sync</a></li>
+                    <li><a href="#corporate">Corporate Wellness</a></li>
+                    <li><a href="#privacy">Privacy Controls</a></li>
                 </ul>
             </aside>
 
             <article class="content">
-                <section id="activity">
+                <section id="overview">
                     <h2>Living Better Every Day</h2>
                     <p>Explyra Health Manager is your personal companion for a balanced lifestyle. We track your steps,
                         active minutes, and sleep quality using advanced algorithms that adapt to your personal
                         baseline.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-heartbeat"></i>
+                            <h4>Vitals Tracking</h4>
+                            <p>Monitor heart rate, blood pressure, and oxygen levels with manual or wearable input.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-running"></i>
+                            <h4>Workout Logs</h4>
+                            <p>Track 50+ activity types, from yoga and swimming to high-intensity interval training.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-bed"></i>
+                            <h4>Sleep Analysis</h4>
+                            <p>Understand your circadian rhythm with deep, light, and REM sleep phase breakdown.</p>
+                        </div>
+                    </div>
                 </section>
 
-                <div class="tip-box">
-                    <h4><i class="fas fa-lightbulb"></i> Pro Tip</h4>
-                    <p>Sync your Health Manager with the Finance module to see how your lifestyle choices impact your
-                        wallet (and vice versa!).</p>
-                </div>
+                <section id="wellness-score">
+                    <h2>The Wellness Score</h2>
+                    <p>Stop guessing how healthy you are. Explyra's proprietary Wellness Score provides a single, daily
+                        metric (0-100) based on your aggregated data.</p>
 
-                <section id="wellness">
-                    <h2>Advanced Wellness Metrics</h2>
-                    <p>Go beyond basic counting. Monitor your hydration levels, heart rate patterns, and stress
-                        indicators. Our intuitive dashboard provides a literal "health score" so you can see your
-                        progress at a glance.</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-calculator"></i>
+                        <div>
+                            <strong>Algorithms at Work:</strong> Your score is calculated by weighting activity (40%),
+                            sleep (30%), nutrition (20%), and stress levels (10%).
+                        </div>
+                    </div>
+
+                    <h3>Daily Goals</h3>
+                    <p>Based on your score trends, the AI sets personalized daily targets to help you gradually improve
+                        your baseline health without feeling overwhelmed.</p>
                 </section>
 
-                <section id="ai-insights">
-                    <h2>Intelligent Insights</h2>
-                    <p>Our AI doesn't just show data; it explains it. "You've been less active after 3 PM this week—try
-                        a short walk to boost your evening energy."</p>
+                <section id="integrations">
+                    <h2>Wearable Integration</h2>
+                    <p>Explyra Health Manager works with the devices you already own. We support seamless, background
+                        syncing with all major health platforms.</p>
+
+                    <div class="step-card">
+                        <h4><i class="fab fa-apple"></i> Apple Health & Google Fit</h4>
+                        <p>One-click sync for iPhone and Android users to pull in steps, calories, and standard activity
+                            data.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-clock"></i> Professional Wearables</h4>
+                        <p>Native integration for Garmin, Fitbit, and Oura Ring users for advanced heart rate
+                            variability (HRV) and recovery metrics.</p>
+                    </div>
+                </section>
+
+                <section id="corporate">
+                    <h2>Corporate Wellness & Challenges</h2>
+                    <p>For organizations, Health Manager fosters a culture of wellness through gamified team challenges.
+                    </p>
+
+                    <ul>
+                        <li><strong>Team Leaderboards:</strong> Create friendly competition with step challenges or
+                            "movement minutes" goals.</li>
+                        <li><strong>Activity Badges:</strong> Earn digital rewards for consistent streaks and reaching
+                            personal milestones.</li>
+                        <li><strong>Health Insights for HR:</strong> Anonymized team data helps HR departments
+                            understand team burnout levels and design better wellness programs.</li>
+                    </ul>
+                </section>
+
+                <section id="privacy">
+                    <h2>Privacy & Data Controls</h2>
+                    <p>Your health data is sensitive. We treat it with the highest level of confidentiality and give you
+                        total control.</p>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-user-shield"></i>
+                        <div>
+                            <strong>Zero Knowledge:</strong> Even in corporate environments, your specific vital signs
+                            (heart rate, weight, etc.) are NEVER shared with your employer. They only see anonymized,
+                            aggregated team averages.
+                        </div>
+                    </div>
+
+                    <h3>Granular Sharing</h3>
+                    <p>Choose exactly what data to sync. Want to track steps but keep your sleep data private? Our
+                        fine-grained permission toggles let you decide.</p>
+                </section>
+
+                <section id="faq">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-item">
+                        <h4>Can I log food intake?</h4>
+                        <p>Yes. Our "Nutrition Lab" allows you to scan barcodes or search our database of 2M+ food items
+                            to track calories and macros.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Does it track mental health?</h4>
+                        <p>We include a "Mindfulness Tracker" for logging mood trends and guided meditation sessions,
+                            helping you connect mental and physical well-being.</p>
+                    </div>
                 </section>
             </article>
         </div>
@@ -145,6 +229,29 @@
         const root = document.documentElement;
         const savedTheme = localStorage.getItem('theme') || 'light';
         root.setAttribute('data-theme', savedTheme);
+
+        // Highlight active sidebar link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
         themeToggle.addEventListener('click', () => {
             const currentTheme = root.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';

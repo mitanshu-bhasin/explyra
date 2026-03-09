@@ -123,11 +123,11 @@
         <div class="doc-layout">
             <aside class="sidebar">
                 <ul>
-                    <li><a href="#overview">Overview</a></li>
-                    <li><a href="#tracking">Tracking Expenses</a></li>
-                    <li><a href="#budgeting">Budget Planning</a></li>
-                    <li><a href="#reporting">Financial Reports</a></li>
-                    <li><a href="#automation">AI Automation</a></li>
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#smart-cat">Smart Categorization</a></li>
+                    <li><a href="#receipt-ocr">Receipt OCR</a></li>
+                    <li><a href="#approvals">Approval Workflows</a></li>
+                    <li><a href="#exports">Advanced Export</a></li>
                 </ul>
             </aside>
 
@@ -137,37 +137,107 @@
                     <p>Explyra's Expense Manager is a powerful tool designed for individuals and teams to gain full
                         control over their financial health. From daily coffee runs to major corporate procurement,
                         every transaction is tracked with precision.</p>
-                </section>
 
-                <section id="features" class="feature-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-bolt"></i>
-                        <h4>Rapid Entry</h4>
-                        <p>Log expenses in under 5 seconds with our streamlined mobile-first interface.</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-chart-pie"></i>
-                        <h4>Visual Analytics</h4>
-                        <p>Beautiful charts and graphs that break down your spending by category and time.</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <h4>Tax Ready</h4>
-                        <p>Export your data in CSV or PDF format, perfectly formatted for tax season.</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-shield-alt"></i>
-                        <h4>Bank-Level Security</h4>
-                        <p>All financial data is encrypted with 256-bit AES protection.</p>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-bolt"></i>
+                            <h4>Rapid Entry</h4>
+                            <p>Log expenses in under 5 seconds with our streamlined mobile-first interface.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-chart-pie"></i>
+                            <h4>Visual Analytics</h4>
+                            <p>Beautiful charts and graphs that break down your spending by category and time.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-shield-alt"></i>
+                            <h4>Bank-Level Security</h4>
+                            <p>All financial data is encrypted with 256-bit AES protection.</p>
+                        </div>
                     </div>
                 </section>
 
-                <section id="tracking">
-                    <h2>Tracking Expenses</h2>
-                    <p>You can categorize expenses using pre-defined tags or create your own. Attach receipts directly
-                        to transactions for easy auditing later.</p>
-                    <p>Our smart detector automatically flags duplicate entries or unusual spending patterns to keep
-                        your budget on track.</p>
+                <section id="smart-cat">
+                    <h2>Smart Categorization</h2>
+                    <p>Tired of manually assigning categories to every transaction? Explyra's AI engine learns from your
+                        spending habits to automatically sort your expenses.</p>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>AI Learning:</strong> The more you use the platform, the more accurate the
+                            categorization becomes. It can even predict tax-deductible expenses!
+                        </div>
+                    </div>
+
+                    <h3>Auto-Tagging Rules</h3>
+                    <p>Create custom rules based on merchant name, amount, or keyword. For example, any transaction from
+                        "Uber" can be automatically tagged as "Transport".</p>
+                </section>
+
+                <section id="receipt-ocr">
+                    <h2>Receipt OCR & Scanning</h2>
+                    <p>Eliminate paper clutter. Use the Explyra mobile app to snap a photo of any receipt, and our OCR
+                        (Optical Character Recognition) engine will extract the details instantly.</p>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-camera"></i> Capture & Extract</h4>
+                        <p>Our engine extracts the Merchant Name, Date, Total Amount, and even Tax amounts with 99%
+                            accuracy across 40+ languages.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-link"></i> Digital Proof</h4>
+                        <p>Scanned receipts are permanently attached to the expense entry, meeting most international
+                            tax audit requirements.</p>
+                    </div>
+                </section>
+
+                <section id="approvals">
+                    <h2>Approval Workflows</h2>
+                    <p>For organizations, Explyra provides robust approval hierarchies to manage employee reimbursements
+                        and corporate spending.</p>
+
+                    <ul>
+                        <li><strong>Multi-Level Approval:</strong> Set up workflows where an expense must be approved by
+                            a Manager and then an Accountant.</li>
+                        <li><strong>Spending Limits:</strong> Automatically flag or block expenses that exceed
+                            pre-defined budget limits for specific departments.</li>
+                        <li><strong>Instant Notifications:</strong> Employees get notified via Slack, Email, or Push
+                            when their expense is approved or rejected.</li>
+                    </ul>
+                </section>
+
+                <section id="exports">
+                    <h2>Advanced Export & Integration</h2>
+                    <p>Moving data out of Explyra is just as easy as putting it in. Custom-build your exports to match
+                        your accounting software's requirements.</p>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-file-export"></i>
+                        <div>
+                            <strong>ERP Ready:</strong> Export formats are available for SAP, Oracle, QuickBooks, and
+                            Xero.
+                        </div>
+                    </div>
+
+                    <h3>Custom Templates</h3>
+                    <p>Use our template builder to choose which columns to include in your CSV/PDF exports. Reorder
+                        columns, change headers, and apply filters to get exactly what you need for tax season.</p>
+                </section>
+
+                <section id="faq">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-item">
+                        <h4>What happens if I lose my phone?</h4>
+                        <p>Your data is synced to the cloud in real-time. Simply log in from any other device to access
+                            your full financial history.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Are there limits on receipt uploads?</h4>
+                        <p>Standard accounts include 1GB of receipt storage, while Enterprise accounts offer unlimited
+                            storage for all your digital proofs.</p>
+                    </div>
                 </section>
             </article>
         </div>
@@ -182,6 +252,29 @@
         const root = document.documentElement;
         const savedTheme = localStorage.getItem('theme') || 'light';
         root.setAttribute('data-theme', savedTheme);
+
+        // Scroll-spy logic
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
         themeToggle.addEventListener('click', () => {
             const currentTheme = root.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';

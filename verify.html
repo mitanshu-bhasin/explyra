@@ -2,6 +2,15 @@
 <html lang="en" class="scroll-smooth">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TFBZ5GZ22C');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1E8E3E">
@@ -16,7 +25,7 @@
             const theme = localStorage.getItem('explyra-theme') || 'light';
             if (theme === 'dark') document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
-            
+
             window.addEventListener('storage', (e) => {
                 if (e.key === 'explyra-theme') {
                     if (e.newValue === 'dark') document.documentElement.classList.add('dark');
@@ -237,7 +246,7 @@
             left: 100%;
         }
     </style>
-<script type="application/ld+json">
+    <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -256,7 +265,7 @@
   "@id": "https://explyra.me/#organization"
 }
 </script>
-<script type="application/ld+json">
+    <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -295,8 +304,7 @@
                     <a href="index.html" class="flex items-center gap-3 group">
                         <div
                             class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-green-600 shadow-lg overflow-hidden border border-green-100">
-                            <img src="assets/images/explyra_logo.png" alt="Explyra Logo"
-                                class="w-8 h-8 object-contain">
+                            <img src="assets/images/explyra_logo.png" alt="Explyra Logo" class="w-8 h-8 object-contain">
                         </div>
                         <div>
                             <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">Explyra</span>
