@@ -851,26 +851,39 @@ function showDashboard() {
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('dashboard-screen').classList.remove('hidden');
 
-    document.getElementById('current-user-name').textContent = userData.name;
-    document.getElementById('current-user-role').textContent = userData.role.replace('_', ' ');
-
-    const avatarContainer = document.getElementById('sidebar-user-avatar');
-    if (avatarContainer) {
-        if (userData.photoUrl && userData.photoUrl.trim() !== '') {
-            avatarContainer.innerHTML = `<img src="${userData.photoUrl}" class="w-full h-full object-cover">`;
-        } else {
-            avatarContainer.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
+    const initUI = () => {
+        const nameEl = document.getElementById('current-user-name');
+        if (!nameEl) {
+            // Wait for sidebar component to load
+            setTimeout(initUI, 50);
+            return;
         }
-    }
 
-    // Reset visibility for optional tabs
-    const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit', 'roles', 'tasks', 'workflow'];
-    optionalTabs.forEach(id => {
-        const el = document.getElementById(`nav-${id}`);
-        if (el) el.classList.add('hidden');
-    });
+        nameEl.textContent = userData.name;
 
-    checkAccess();
+        const roleEl = document.getElementById('current-user-role');
+        if (roleEl) roleEl.textContent = userData.role.replace('_', ' ');
+
+        const avatarContainer = document.getElementById('sidebar-user-avatar');
+        if (avatarContainer) {
+            if (userData.photoUrl && userData.photoUrl.trim() !== '') {
+                avatarContainer.innerHTML = `<img src="${userData.photoUrl}" class="w-full h-full object-cover">`;
+            } else {
+                avatarContainer.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
+            }
+        }
+
+        // Reset visibility for optional tabs
+        const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit', 'roles', 'tasks', 'workflow'];
+        optionalTabs.forEach(id => {
+            const el = document.getElementById(`nav-${id}`);
+            if (el) el.classList.add('hidden');
+        });
+
+        checkAccess();
+    };
+
+    initUI();
 }
 
 window.checkAccess = async () => {
@@ -904,23 +917,43 @@ window.checkAccess = async () => {
 
     // User Mgmt & Projects
     if (userData.permissions?.viewUsers || ['ADMIN', 'HR'].includes(userData.role)) {
-        document.getElementById('nav-users').classList.remove('hidden');
-        document.getElementById('nav-projects').classList.remove('hidden'); // Assuming users implies project access for now
+        const navU = document.getElementById('nav-users');
+        if (navU) navU.classList.remove('hidden');
+        const navP = document.getElementById('nav-projects');
+        if (navP) navP.classList.remove('hidden'); // Assuming users implies project access for now
     }
 
     // Reports
     if (userData.permissions?.viewReports || ['ADMIN', 'TREASURY', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS'].includes(userData.role)) {
-        document.getElementById('nav-reports').classList.remove('hidden');
+        const navR = document.getElementById('nav-reports');
+        if (navR) navR.classList.remove('hidden');
     }
 
     // Settings
     if (userData.permissions?.viewSettings || userData.role === 'ADMIN') {
-        document.getElementById('nav-settings').classList.remove('hidden');
-        document.getElementById('nav-roles').classList.remove('hidden');
+        const navS = document.getElementById('nav-settings');
+        if (navS) navS.classList.remove('hidden');
+    }
+
+    // Role Management (Admin and HR only)
+    if (['ADMIN', 'HR'].includes(userData.role)) {
+        const navRo = document.getElementById('nav-roles');
+        if (navRo) navRo.classList.remove('hidden');
+    }
+
+    // CRM
+    const navCrm = document.getElementById('nav-crm');
+    if (navCrm) {
+        if (userData.permissions?.viewCrm || userData.role === 'ADMIN') {
+            navCrm.classList.remove('hidden');
+        } else {
+            navCrm.classList.add('hidden');
+        }
     }
 
     // Audit Logs: Visible to all, but data is filtered by role inside the tab
-    document.getElementById('nav-audit').classList.remove('hidden');
+    const navA = document.getElementById('nav-audit');
+    if (navA) navA.classList.remove('hidden');
 
     // Task Manager: Visible to all positions
     const navTasks = document.getElementById('nav-tasks');
@@ -928,7 +961,8 @@ window.checkAccess = async () => {
 
     // Workflow: Admin only
     if (userData.role === 'ADMIN') {
-        document.getElementById('nav-workflow').classList.remove('hidden');
+        const navW = document.getElementById('nav-workflow');
+        if (navW) navW.classList.remove('hidden');
     }
 
     // Default Tab Logic
@@ -1821,6 +1855,13 @@ async function renderSettings() {
                         <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Company Information</h3>
                         
                         <div class="space-y-4">
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between mb-4 mt-2">
+                                <div>
+                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Company Unique ID</p>
+                                    <p class="text-slate-800 dark:text-slate-100 font-mono text-sm max-w-[200px] truncate" title="${userData.companyId}">${userData.companyId}</p>
+                                </div>
+                                <button type="button" onclick="navigator.clipboard.writeText('${userData.companyId}'); showToast('Copied ID to clipboard!', 'success');" class="text-green-600 hover:text-green-800 transition bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded flex items-center gap-2 text-xs font-bold shadow-sm"><i class="fa-regular fa-copy"></i> Copy</button>
+                            </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Email</label>
                                 <input type="email" id="company-email" value="${settings.email || ''}" class="input-primary" placeholder="info@company.com">
@@ -5696,6 +5737,9 @@ window.renderRoles = async () => {
                                 <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                                     <input type="checkbox" id="perm-view-settings" class="rounded text-green-600 focus:ring-green-500"> Can Access Company Settings
                                 </label>
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" id="perm-view-crm" class="rounded text-green-600 focus:ring-green-500"> Can Access CRM
+                                </label>
                             </div>
                         </div>
 
@@ -5740,6 +5784,7 @@ window.showRoleModal = (roleData = null) => {
         document.getElementById('perm-view-reports').checked = roleData.permissions?.viewReports || false;
         document.getElementById('perm-view-users').checked = roleData.permissions?.viewUsers || false;
         document.getElementById('perm-view-settings').checked = roleData.permissions?.viewSettings || false;
+        document.getElementById('perm-view-crm').checked = roleData.permissions?.viewCrm || false;
     } else {
         document.getElementById('role-modal-title').textContent = "Create Custom Role";
         nameInput.value = '';
@@ -5752,6 +5797,7 @@ window.showRoleModal = (roleData = null) => {
         document.getElementById('perm-view-reports').checked = false;
         document.getElementById('perm-view-users').checked = false;
         document.getElementById('perm-view-settings').checked = false;
+        document.getElementById('perm-view-crm').checked = false;
     }
 
     setTimeout(() => {
@@ -5784,7 +5830,8 @@ window.saveRole = async () => {
         viewApprovals: document.getElementById('perm-view-claims').checked,
         viewReports: document.getElementById('perm-view-reports').checked,
         viewUsers: document.getElementById('perm-view-users').checked,
-        viewSettings: document.getElementById('perm-view-settings').checked
+        viewSettings: document.getElementById('perm-view-settings').checked,
+        viewCrm: document.getElementById('perm-view-crm').checked
     };
 
     try {
