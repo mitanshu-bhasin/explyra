@@ -103,41 +103,121 @@
         <div class="doc-layout">
             <aside class="sidebar">
                 <ul>
-                    <li><a href="#introduction">Power Tools for Devs</a></li>
-                    <li><a href="#utilities">Utility Catalog</a></li>
-                    <li><a href="#api">Explyra API</a></li>
-                    <li><a href="#webhooks">Working with Webhooks</a></li>
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#json-xml">JSON & XML Tools</a></li>
+                    <li><a href="#api-playground">API Playground</a></li>
+                    <li><a href="#regex-lab">Regex Lab</a></li>
+                    <li><a href="#network">Network Utilities</a></li>
                 </ul>
             </aside>
 
             <article class="content">
-                <section id="introduction">
+                <section id="overview">
                     <h2>Built by Developers, for Developers</h2>
                     <p>Explyra's Developer Tools is a comprehensive suite of utilities designed to save time on
                         repetitive tasks. From formatting data to testing regular expressions, we've built the tools we
                         wanted to use ourselves.</p>
-                </section>
 
-                <section id="utilities">
-                    <h2>Utility Catalog</h2>
-                    <p>Our catalog includes over 20 essential tools, including:</p>
-                    <div style="margin: 1.5rem 0;">
-                        <span class="tool-tag">JSON Formatter</span>
-                        <span class="tool-tag">Base64 Encode/Decode</span>
-                        <span class="tool-tag">Regex Tester</span>
-                        <span class="tool-tag">Password Generator</span>
-                        <span class="tool-tag">URL Encoder</span>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-terminal"></i>
+                            <h4>CLI Friendly</h4>
+                            <p>Most tools are accessible via our open-source CLI for terminal-based workflows.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-lock"></i>
+                            <h4>Privacy First</h4>
+                            <p>All processing happens in your browser. Your data never leaves your machine.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-code-branch"></i>
+                            <h4>Open Source</h4>
+                            <p>Core utility logic is open-source and community-vetted on GitHub.</p>
+                        </div>
                     </div>
                 </section>
 
-                <section id="api">
-                    <h2>Explyra API</h2>
-                    <p>Programmatically access your data across the Explyra ecosystem. Use our RESTful API to integrate
-                        your own applications.</p>
-                    <div class="code-snippet">
-                        GET /api/v1/expenses<br>
-                        Host: api.explyra.me<br>
-                        Authorization: Bearer YOUR_API_KEY
+                <section id="json-xml">
+                    <h2>JSON & XML Tools</h2>
+                    <p>Format, minify, and validate complex data structures with ease. Our tools handle even the most
+                        nested objects effortlessly.</p>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-indent"></i> Smart Prettifier</h4>
+                        <p>Automatically fix common syntax errors (like trailing commas) while prettifying your JSON for
+                            readability.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-shield-virus"></i> Schema Validation</h4>
+                        <p>Validate your payloads against JSON Schema or XSD to ensure compliance before deployment.</p>
+                    </div>
+                </section>
+
+                <section id="api-playground">
+                    <h2>REST API Playground</h2>
+                    <p>Test your endpoints directly from Explyra without needing external clients like Postman. Perfect
+                        for quick debugging.</p>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-plug"></i>
+                        <div>
+                            <strong>CORS Bypass:</strong> Use our optional browser extension to bypass CORS restrictions
+                            when testing local APIs.
+                        </div>
+                    </div>
+
+                    <h3>Example Request</h3>
+                    <div
+                        style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; font-family: monospace; margin: 1rem 0;">
+                        curl -X GET "https://api.explyra.me/v1/health" \<br>
+                        &nbsp;&nbsp;-H "Authorization: Bearer dev_token_..."
+                    </div>
+                </section>
+
+                <section id="regex-lab">
+                    <h2>Regex Lab & Debugger</h2>
+                    <p>Stop guessing why your regular expressions aren't matching. Use the Regex Lab for real-time
+                        visual feedback.</p>
+
+                    <ul>
+                        <li><strong>Live Previews:</strong> See matches as you type, with highlighted capture groups.
+                        </li>
+                        <li><strong>Explanation Engine:</strong> Understand exactly what each part of your regex is
+                            doing in plain English.</li>
+                        <li><strong>Cheat Sheet:</strong> Quick access to common patterns (Email, URL, IP Address, etc.)
+                            via the sidebar library.</li>
+                    </ul>
+                </section>
+
+                <section id="network">
+                    <h2>Network & Security Utilities</h2>
+                    <p>Essential tools for diagnosing connection issues and verifying security configurations.</p>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-network-wired"></i>
+                        <div>
+                            <strong>Network Diagnostics:</strong> Use our cloud-based agents to perform DNS lookups,
+                            Pings, and Port scans from multiple global locations.
+                        </div>
+                    </div>
+
+                    <h3>Security Tools</h3>
+                    <p>Generate secure passwords, calculate MD5/SHA256 hashes, and inspect SSL certificates for any
+                        domain directly from the dashboard.</p>
+                </section>
+
+                <section id="faq">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-item">
+                        <h4>Is there a rate limit?</h4>
+                        <p>For browser-based utilities, there are no limits. Cloud-based network tools have a limit of
+                            100 requests per hour for free accounts.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Can I contribute to the tools?</h4>
+                        <p>Absolutely! Visit our GitHub repository to suggest new features or submit a Pull Request for
+                            existing ones.</p>
                     </div>
                 </section>
             </article>
@@ -153,6 +233,29 @@
         const root = document.documentElement;
         const savedTheme = localStorage.getItem('theme') || 'light';
         root.setAttribute('data-theme', savedTheme);
+
+        // Highlight active sidebar link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
         themeToggle.addEventListener('click', () => {
             const currentTheme = root.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';

@@ -114,10 +114,10 @@
             <aside class="sidebar">
                 <ul>
                     <li><a href="#introduction" class="active">Introduction</a></li>
-                    <li><a href="#getting-started">Getting Started</a></li>
-                    <li><a href="#organization">Organization Management</a></li>
-                    <li><a href="#integrations">Global Integrations</a></li>
-                    <li><a href="#security">Security & Compliance</a></li>
+                    <li><a href="#global-settings">Global Settings</a></li>
+                    <li><a href="#team-roles">Team Roles</a></li>
+                    <li><a href="#security">SSO & Security</a></li>
+                    <li><a href="#audit-logs">Audit Logs</a></li>
                 </ul>
             </aside>
 
@@ -127,40 +127,106 @@
                     <p>Welcome to Explyra, the unified ecosystem designed to streamline your business operations.
                         Explyra is not just a tool; it's a comprehensive platform that combines expense tracking, health
                         management, professional invoicing, and developer utilities into one seamless experience.</p>
-                    <p>Our goal is to eliminate tool fatigue by providing everything your team needs in a single,
-                        high-performance environment.</p>
-                </section>
 
-                <section id="getting-started">
-                    <h2>Getting Started</h2>
-                    <div class="step-card">
-                        <h4>1. Create Your Account</h4>
-                        <p>Sign up via the main portal to access the Explyra dashboard. Your account is universal across
-                            all products in the ecosystem.</p>
-                    </div>
-                    <div class="step-card">
-                        <h4>2. Set Up Your Workspace</h4>
-                        <p>Configure your organization name, logo, and team members from the settings panel.</p>
-                    </div>
-                    <div class="step-card">
-                        <h4>3. Choose Your Products</h4>
-                        <p>Enable only the tools you need. Whether it's Finance, Health, or Dev tools, Explyra scales
-                            with you.</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Universal Account:</strong> Your Explyra credentials work across all products in the
+                            suite. Enable only the modules your team needs.
+                        </div>
                     </div>
                 </section>
 
-                <section id="organization">
-                    <h2>Organization Management</h2>
-                    <p>Explyra provides granular control over your team. Manage roles, permissions, and
-                        department-specific access from the centralized admin panel.</p>
-                    <p>Our "Company-First" architecture ensures that data remains isolated and secure within your
-                        private cloud instance.</p>
+                <section id="global-settings">
+                    <h2>Global Settings</h2>
+                    <p>Configure your organization's core identity from the Centralized Dashboard. These settings
+                        cascade down to all active Explyra modules.</p>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-building"></i> Organization Profile</h4>
+                        <p>Set your official company name, upload high-resolution logos for branding, and define your
+                            primary business address.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <h4><i class="fas fa-globe"></i> Localization</h4>
+                        <p>Define your default currency (USD, EUR, INR, etc.) and timezone. This ensures all reports and
+                            timestamps are consistent across your global team.</p>
+                    </div>
                 </section>
 
-                <section id="integrations">
-                    <h2>Global Integrations</h2>
-                    <p>Connect Explyra with your existing workflow. We support webhooks, REST API access, and native
-                        integrations with popular productivity tools.</p>
+                <section id="team-roles">
+                    <h2>Team Roles & Permissions</h2>
+                    <p>Explyra uses a granular RBAC (Role-Based Access Control) system to ensure data security and
+                        operational efficiency.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-user-shield"></i>
+                            <h4>Super Admin</h4>
+                            <p>Full access to all settings, billing, and user management. Can enable/disable entire
+                                modules.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-user-tie"></i>
+                            <h4>Manager</h4>
+                            <p>Can view team reports, approve requests, and manage department-specific settings.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-user"></i>
+                            <h4>Employee</h4>
+                            <p>Standard access to use assigned tools (e.g., logging expenses or tracking health).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="security">
+                    <h2>SSO & Enhanced Security</h2>
+                    <p>Protect your enterprise data with our multi-layered security protocols.</p>
+
+                    <h3>Two-Factor Authentication (2FA)</h3>
+                    <p>Require all users to verify their identity via SMS or Authenticator apps (Google, Authy) upon
+                        login.</p>
+
+                    <h3>Single Sign-On (SSO)</h3>
+                    <p>Integrate Explyra with your existing identity provider using SAML 2.0 or OpenID Connect. Support
+                        for Okta, Azure AD, and Google Workspace is built-in.</p>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Security Policy:</strong> We recommend enforcing 2FA for all accounts with "Manager"
+                            or "Admin" privileges to prevent unauthorized access.
+                        </div>
+                    </div>
+                </section>
+
+                <section id="audit-logs">
+                    <h2>Audit Logs</h2>
+                    <p>Maintain complete transparency with comprehensive activity tracking. Every significant action
+                        within the ecosystem is recorded.</p>
+                    <ul>
+                        <li><strong>User Management:</strong> Track who was invited, deactivated, or had their role
+                            changed.</li>
+                        <li><strong>Security Events:</strong> Log failed login attempts, 2FA bypasses, and API key
+                            generation.</li>
+                        <li><strong>Configuration Changes:</strong> See exactly who changed organizational settings and
+                            when.</li>
+                    </ul>
+                </section>
+
+                <section id="faq">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-item">
+                        <h4>Can I use Explyra modules independently?</h4>
+                        <p>Yes. While they integrate perfectly, you can choose to enable only the Expense Manager or
+                            only the Invoicing software based on your current needs.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Is my data backed up?</h4>
+                        <p>We perform encrypted backups every 4 hours across multiple geographic regions to ensure zero
+                            data loss.</p>
+                    </div>
                 </section>
             </article>
         </div>
@@ -175,6 +241,29 @@
         const root = document.documentElement;
         const savedTheme = localStorage.getItem('theme') || 'light';
         root.setAttribute('data-theme', savedTheme);
+
+        // Highlight active sidebar link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
         themeToggle.addEventListener('click', () => {
             const currentTheme = root.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';

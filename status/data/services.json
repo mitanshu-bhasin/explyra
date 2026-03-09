@@ -1,0 +1,117 @@
+{
+    "last_updated": "2026-03-10T04:53:07+05:30",
+    "overall_status": "operational",
+    "groups": [
+        {
+            "name": "Core Platform Services",
+            "services": [
+                {
+                    "id": "website",
+                    "name": "Website",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "api",
+                    "name": "API",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "auth",
+                    "name": "Authentication",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "db",
+                    "name": "Database",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                }
+            ]
+        },
+        {
+            "name": "Product Systems",
+            "services": [
+                {
+                    "id": "meetings",
+                    "name": "Meetings",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "booking",
+                    "name": "Booking System",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "attendance",
+                    "name": "Attendance System",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "crm",
+                    "name": "CRM",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "expense",
+                    "name": "Expense Manager",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "notifications",
+                    "name": "Notifications",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                }
+            ]
+        },
+        {
+            "name": "Infrastructure",
+            "services": [
+                {
+                    "id": "firebase",
+                    "name": "Firebase Services",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "video",
+                    "name": "Video Signaling",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "storage",
+                    "name": "Storage",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                },
+                {
+                    "id": "messaging",
+                    "name": "Realtime Messaging",
+                    "status": "operational",
+                    "last_checked": "2026-03-10T04:50:00Z"
+                }
+            ]
+        }
+    ],
+    "incidents": [
+        {
+            "date": "June 12",
+            "title": "Booking system latency issue",
+            "status": "Resolved"
+        },
+        {
+            "date": "June 3",
+            "title": "Scheduled maintenance",
+            "status": "Completed"
+        }
+    ]
+}
