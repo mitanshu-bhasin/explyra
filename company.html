@@ -384,39 +384,61 @@
         }
 
         // Check Auth State on Load
+        let authHandled = false;
+
+        // Safety Timeout: If auth check hangs for more than 5s, show the form
+        const safetyTimeout = setTimeout(() => {
+            if (!authHandled) {
+                console.warn("[Auth] Safety timeout triggered. Showing form.");
+                showForm();
+            }
+        }, 5000);
+
         onAuthStateChanged(auth, async (user) => {
+            if (authHandled) return;
+
             if (user) {
                 currentUser = user;
-                try {
-                    // Try direct lookup by UID first
-                    let userDoc = await getDoc(doc(db, "users", user.uid));
+                console.log("[Auth] User detected:", user.email);
 
-                    // Fallback: query by email (for legacy users whose doc ID != uid)
-                    if (!userDoc.exists()) {
+                try {
+                    // 1. Try direct lookup by UID
+                    let userDocSnap = await getDoc(doc(db, "users", user.uid));
+                    let userDocData = userDocSnap.exists() ? userDocSnap.data() : null;
+
+                    // 2. Fallback: query by email (for legacy users)
+                    if (!userDocData && user.email) {
+                        console.log("[Auth] UID lookup failed, trying email query...");
                         const q = query(collection(db, "users"), where("email", "==", user.email));
                         const snap = await getDocs(q);
                         if (!snap.empty) {
-                            userDoc = snap.docs[0];
+                            userDocSnap = snap.docs[0];
+                            userDocData = userDocSnap.data();
                         }
                     }
 
-                    if (userDoc.exists ? userDoc.exists() : false) {
-                        const data = typeof userDoc.data === 'function' ? userDoc.data() : userDoc;
-                        userDocId = userDoc.id || user.uid;
-                        if (data.companyId) {
+                    if (userDocData) {
+                        userDocId = userDocSnap.id;
+                        if (userDocData.companyId) {
                             showToast("You already belong to a company. Redirecting...", "info");
                             setTimeout(() => window.location.href = 'admin.html', 1500);
                             return;
                         }
                     }
 
-                    // No company found — show the form
+                    // No company found or no record - show the form
+                    authHandled = true;
+                    clearTimeout(safetyTimeout);
                     showForm();
                 } catch (err) {
-                    console.error("Error checking user:", err);
-                    showForm(); // Show form anyway so user isn't stuck
+                    console.error("[Auth] Error checking user record:", err);
+                    authHandled = true;
+                    clearTimeout(safetyTimeout);
+                    showForm();
                 }
             } else {
+                authHandled = true;
+                clearTimeout(safetyTimeout);
                 window.location.href = 'signup.html';
             }
         });
@@ -493,6 +515,7 @@
             }
         });
     </script>
+    <script src="js/global-enhancements.js"></script>
 </body>
 
 </html>
