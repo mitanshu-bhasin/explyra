@@ -525,21 +525,21 @@
         const themeIcon = document.getElementById('themeIcon');
         const html = document.documentElement;
 
-        // Check system preference initially
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            html.setAttribute('data-theme', 'dark');
-            themeIcon.className = 'fas fa-moon';
-        }
+        // Function to set theme
+        const setTheme = (theme) => {
+            html.setAttribute('data-theme', theme);
+            themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('explyra-theme', theme);
+        };
+
+        // Initialize theme: check localStorage first, then default to light
+        const savedTheme = localStorage.getItem('explyra-theme') || 'light';
+        setTheme(savedTheme);
 
         toggleBtn.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                themeIcon.className = 'fas fa-sun';
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                themeIcon.className = 'fas fa-moon';
-            }
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
         });
     </script>
 </body>
