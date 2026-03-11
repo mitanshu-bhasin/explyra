@@ -296,15 +296,22 @@ refreshBtn.addEventListener('click', () => {
 // ============================
 // Compose Modal
 // ============================
-composeBtn.addEventListener('click', () => composeModal.classList.remove('hidden'));
-closeCompose.addEventListener('click', closeComposeModal);
-discardBtn.addEventListener('click', closeComposeModal);
-composeModal.addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#compose-btn')) {
+    composeModal.classList.remove('hidden');
+    composeModal.style.display = 'flex';
+  }
+});
+
+closeCompose?.addEventListener('click', closeComposeModal);
+discardBtn?.addEventListener('click', closeComposeModal);
+composeModal?.addEventListener('click', (e) => {
   if (e.target === composeModal) closeComposeModal();
 });
 
 function closeComposeModal() {
   composeModal.classList.add('hidden');
+  composeModal.style.display = 'none';
   composeForm.reset();
 }
 
