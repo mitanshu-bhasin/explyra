@@ -350,7 +350,7 @@ composeForm.addEventListener('submit', async (e) => {
     }
   } catch (err) {
     console.error('Send failed:', err);
-    showToast('Failed to send email', 'error');
+    showToast(`Failed to send email: ${err.message || 'Unknown error'}`, 'error');
   } finally {
     sendBtn.disabled = false;
     sendBtn.innerHTML = `
