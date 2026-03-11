@@ -25,6 +25,8 @@
     },
     "devDependencies": {
         "@capacitor/assets": "^3.0.5",
-        "@capacitor/cli": "^6.1.2"
+        "@capacitor/cli": "^6.1.2",
+        "postal-mime": "^2.7.3",
+        "wrangler": "^4.72.0"
     }
 }
