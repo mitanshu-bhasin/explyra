@@ -1,0 +1,6 @@
+[
+    { "name": "Aluminum Alloy", "type": "Raw Material", "quantity": 500, "reorderLevel": 600, "supplier": "AluCorp", "lastUpdated": "2026-03-09" },
+    { "name": "Steel Sheets", "type": "Raw Material", "quantity": 1200, "reorderLevel": 500, "supplier": "SteelMasters", "lastUpdated": "2026-03-10" },
+    { "name": "Machine Oil", "type": "Consumable", "quantity": 50, "reorderLevel": 100, "supplier": "LubriLink", "lastUpdated": "2026-03-05" },
+    { "name": "Piston Rings", "type": "Component", "quantity": 800, "reorderLevel": 200, "supplier": "PartsGenie", "lastUpdated": "2026-03-08" }
+]

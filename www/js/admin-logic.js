@@ -205,9 +205,16 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user) {
         try {
-            // Fetch full user profile
-            const q = query(collection(db, "users"), where("email", "==", user.email));
-            let snap = await safeFirebaseFetch(getDocs(q));
+            // Fetch full user profile - Primary lookup by UID, fallback to Email
+            let userDocSnap = await safeFirebaseFetch(getDoc(doc(db, "users", user.uid)));
+            let snap = { empty: true, docs: [] };
+            
+            if (userDocSnap.exists()) {
+                snap = { empty: false, docs: [userDocSnap] };
+            } else {
+                const q = query(collection(db, "users"), where("email", "==", user.email));
+                snap = await safeFirebaseFetch(getDocs(q));
+            }
 
             if (snap.empty) {
                 try {
@@ -702,9 +709,16 @@ window.handleGoogleLogin = async () => {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        // 1. Fetch only email from Google and verify in our records
-        const q = query(collection(db, "users"), where("email", "==", user.email));
-        let snap = await safeFirebaseFetch(getDocs(q));
+        // 1. Fetch user by UID first, fallback to email
+        let userDocSnap = await safeFirebaseFetch(getDoc(doc(db, "users", user.uid)));
+        let snap = { empty: true, docs: [] };
+        
+        if (userDocSnap.exists()) {
+            snap = { empty: false, docs: [userDocSnap] };
+        } else {
+            const q = query(collection(db, "users"), where("email", "==", user.email));
+            snap = await safeFirebaseFetch(getDocs(q));
+        }
 
         if (snap.empty) {
             // Fallback: Case-insensitive/Trim search
@@ -2478,6 +2492,7 @@ window.showAddUserModal = async () => {
     document.getElementById('user-department').value = '';
     document.getElementById('user-employee-id').value = '';
     document.getElementById('user-budget-limit').value = '';
+    document.getElementById('user-mr-role').value = '';
 
     // Profile Pic Logic
     const picContainer = document.getElementById('user-profile-pic-container');
@@ -2519,6 +2534,7 @@ window.editUser = async (id) => {
     document.getElementById('user-department').value = user.department || '';
     document.getElementById('user-employee-id').value = user.employeeId || '';
     document.getElementById('user-budget-limit').value = user.budgetLimit || '';
+    document.getElementById('user-mr-role').value = user.mrRole || '';
 
     // Profile Pic
     if (MAIN_ADMIN_EMAILS.includes(userData.email)) {
@@ -2640,6 +2656,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
     const department = document.getElementById('user-department').value.trim();
     const employeeId = document.getElementById('user-employee-id').value.trim();
     const budgetLimit = document.getElementById('user-budget-limit').value;
+    const mrRole = document.getElementById('user-mr-role').value;
     const photoUrl = document.getElementById('user-profile-pic').value.trim();
 
     if (!name || !email) {
@@ -2659,6 +2676,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
                 budgetLimit: budgetLimit ? parseFloat(budgetLimit) : null,
                 phone: phone || null,
                 dob: dob || null,
+                mrRole: mrRole || null,
                 photoUrl: photoUrl || null,
                 updatedAt: serverTimestamp()
             });
@@ -2702,6 +2720,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
                 budgetLimit: budgetLimit ? parseFloat(budgetLimit) : null,
                 phone: phone || null,
                 dob: dob || null,
+                mrRole: mrRole || null,
                 photoUrl: photoUrl || null,
                 createdAt: serverTimestamp()
             });

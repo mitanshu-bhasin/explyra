@@ -2,6 +2,19 @@
 <html lang="en" data-theme="light">
 
 <head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TFBZ5GZ22C');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Mitanshu Bhasin | Founder & Lead Developer</title>
@@ -497,8 +510,7 @@
                 <i class="fa-brands fa-x-twitter"></i>
                 <span>X / Twitter</span>
             </a>
-            <a href="https://wa.me/message/918076108584" class="social-card" target="_blank"
-                rel="noopener noreferrer">
+            <a href="https://wa.me/message/918076108584" class="social-card" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-whatsapp" style="color:#25D366;"></i>
                 <span>WhatsApp</span>
             </a>
@@ -517,21 +529,21 @@
         const themeIcon = document.getElementById('themeIcon');
         const html = document.documentElement;
 
-        // Check system preference initially
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            html.setAttribute('data-theme', 'dark');
-            themeIcon.className = 'fas fa-moon';
-        }
+        // Function to set theme
+        const setTheme = (theme) => {
+            html.setAttribute('data-theme', theme);
+            themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('explyra-theme', theme);
+        };
+
+        // Initialize theme: check localStorage first, then default to light
+        const savedTheme = localStorage.getItem('explyra-theme') || 'light';
+        setTheme(savedTheme);
 
         toggleBtn.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                themeIcon.className = 'fas fa-sun';
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                themeIcon.className = 'fas fa-moon';
-            }
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
         });
     </script>
 </body>

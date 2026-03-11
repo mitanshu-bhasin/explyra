@@ -12,6 +12,14 @@ window.CrmPipeline = {
         if (!window.companyId) return;
         this.renderBoardSkeleton();
         this.listenToDeals();
+
+        // Global fallback to rigorously clear dragged state if mouse released outside
+        window.addEventListener('mouseup', () => {
+            if (this.draggedElementId) this.dragEnd();
+        });
+        window.addEventListener('dragend', () => {
+            if (this.draggedElementId) this.dragEnd();
+        });
     },
 
     /**

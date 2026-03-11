@@ -553,6 +553,39 @@
             opacity: .5
         }
 
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .p-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--blue);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float-particle 10s infinite linear;
+            box-shadow: 0 0 8px var(--blue);
+        }
+
+        [data-theme="dark"] .p-dot {
+            background: var(--blue2);
+            box-shadow: 0 0 10px var(--blue2);
+            opacity: 0.5;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            5% { opacity: 0.6; }
+            50% { transform: translateY(-40px) scale(1.5); opacity: 0.2; }
+            95% { opacity: 0; }
+            100% { transform: translateY(-80px) scale(1); opacity: 0; }
+        }
+
         .hero-inner {
             position: relative;
             z-index: 1;
@@ -596,6 +629,239 @@
                 opacity: .5;
                 transform: scale(1.4)
             }
+        }
+
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem 4rem;
+            margin-top: 3.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bdr);
+        }
+
+        .h-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .h-stat-num {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            color: var(--ink);
+        }
+
+        .h-stat-lbl {
+            font-size: 0.85rem;
+            color: var(--ink3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Social Proof Logos */
+        .social-proof {
+            padding: 2.5rem 5vw;
+            text-align: center;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .sp-text {
+            font-size: 0.8rem;
+            color: var(--ink4);
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sp-logos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .sp-logo {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ink4);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            filter: grayscale(100%);
+        }
+
+        .sp-logo i {
+            font-size: 1.4rem;
+        }
+
+        .sp-logo:hover {
+            opacity: 1;
+            color: var(--ink2);
+            filter: grayscale(0%);
+        }
+
+        /* AI Capabilities Strip */
+        .ai-strip {
+            padding: 3rem 5vw;
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg) 100%);
+            border-bottom: 1px solid var(--bdr);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-strip::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(167, 139, 250, .08) 0%, transparent 60%);
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .ai-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--purp-g);
+            color: var(--purp);
+            border: 1px solid var(--purp-b);
+            border-radius: 100px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.8rem;
+        }
+
+        .ai-h {
+            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--ink);
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .ai-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .ai-f {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ink2);
+            padding: 0.7rem 1.2rem;
+            background: var(--bg);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .ai-f:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(167, 139, 250, 0.1);
+            border-color: var(--purp-b);
+        }
+
+        .ai-f-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 6rem 5vw;
+            background: var(--bg);
+            text-align: center;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            text-align: left;
+        }
+
+        .test-card {
+            background: var(--bg2);
+            padding: 2.5rem 2rem;
+            border-radius: var(--r);
+            border: 1px solid var(--bdr);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .test-stars {
+            color: #F59E0B;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .test-quote {
+            font-size: 1.05rem;
+            color: var(--ink2);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .test-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .test-av {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .test-name {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 0.95rem;
+        }
+
+        .test-role {
+            font-size: 0.8rem;
+            color: var(--ink3);
         }
 
         .hero h1 {
@@ -3044,6 +3310,9 @@
                         <a href="https://book.explyra.me" class="dropdown-item">
                             <span class="dropdown-item-icon">📅</span> Booking
                         </a>
+                        <a href="manufacturing/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🏭</span> Explyra ERP
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item-dropdown">
@@ -3076,11 +3345,15 @@
                         <a href="solutions/utilities.html" class="dropdown-item">
                             <span class="dropdown-item-icon">🔗</span> Utilities
                         </a>
+                        <a href="solutions/manufacturing.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🏭</span> Manufacturing
+                        </a>
                         <a href="solutions/suite.html" class="dropdown-item">
                             <span class="dropdown-item-icon">🌐</span> Suite
                         </a>
                     </div>
                 </li>
+                <li><a href="events/index.html">Events</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="updates/index.html">Updates</a></li>
                 <li><a href="docs/index.html">Docs</a></li>
@@ -3128,6 +3401,7 @@
                         <a href="Utilites/index.html">🔗 Utility</a>
                         <a href="attendance/index.html">✅ Attendance</a>
                         <a href="https://book.explyra.me">📅 Booking</a>
+                        <a href="manufacturing/index.html">🏭 Explyra ERP</a>
                     </div>
                 </li>
                 <li class="mobile-has-submenu">
@@ -3145,6 +3419,7 @@
                         <a href="solutions/developers.html">⚡ Developers</a>
                         <a href="solutions/learning.html">📚 Learning</a>
                         <a href="solutions/utilities.html">🔗 Utilities</a>
+                        <a href="solutions/manufacturing.html">🏭 Manufacturing</a>
                         <a href="solutions/suite.html">🌐 Suite</a>
                     </div>
                 </li>
@@ -3172,9 +3447,17 @@
         <!-- ══ HERO ══ -->
         <section class="hero" aria-label="Hero">
             <div class="hero-mesh"></div>
+            <div class="hero-particles">
+                <div class="p-dot" style="top:20%;left:15%;animation-delay:0s"></div>
+                <div class="p-dot" style="top:60%;left:5%;animation-delay:1s"></div>
+                <div class="p-dot" style="top:30%;right:15%;animation-delay:2.5s"></div>
+                <div class="p-dot" style="top:70%;right:8%;animation-delay:1.2s"></div>
+                <div class="p-dot" style="top:85%;left:25%;animation-delay:0.8s"></div>
+                <div class="p-dot" style="top:15%;right:30%;animation-delay:1.9s"></div>
+            </div>
             <div class="hero-grid"></div>
             <div class="hero-inner">
-                <div class="hero-badge"><span class="badge-pulse"></span>Introducing the Explyra Suite</div>
+                <div class="hero-badge"><span class="badge-pulse"></span>Introducing the Explyra ERP Suite</div>
                 <h1><em>One platform.</em><br><span class="grad">Everything</span><br>your team needs.</h1>
                 <p class="hero-desc">Explyra is not just an app — it's a complete digital suite. Expense intelligence,
                     health tracking, AI-powered learning, developer tools, and seamless P2P collaboration. All under one
@@ -3193,7 +3476,37 @@
                     <div class="suite-pill sp-slate">🛡️ Help Desk</div>
                     <div class="suite-pill sp-blue">📅 Booking</div>
                     <div class="suite-pill sp-teal">✅ Attendance</div>
+                    <div class="suite-pill sp-slate">🏭 Explyra ERP</div>
                 </div>
+                
+                <div class="hero-stats reveal">
+                    <div class="h-stat">
+                        <div class="h-stat-num">500+</div>
+                        <div class="h-stat-lbl">Early Users</div>
+                    </div>
+                    <div class="h-stat">
+                        <div class="h-stat-num">9</div>
+                        <div class="h-stat-lbl">Core Products</div>
+                    </div>
+                    <div class="h-stat">
+                        <div class="h-stat-num">1</div>
+                        <div class="h-stat-lbl">Visionary Builder</div>
+                    </div>
+                    <div class="h-stat">
+                        <div class="h-stat-num">24/7</div>
+                        <div class="h-stat-lbl">AI Support</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ POWERED BY ══ -->
+        <section class="social-proof reveal">
+            <p class="sp-text">Powered by</p>
+            <div class="sp-logos">
+                <div class="sp-logo"><i class="fa-brands fa-github"></i> GitHub</div>
+                <div class="sp-logo"><i class="fa-brands fa-cloudflare"></i> Cloudflare</div>
+                <div class="sp-logo"><i class="fa-brands fa-google"></i> Google</div>
             </div>
         </section>
 
@@ -3201,8 +3514,8 @@
         <section class="overview" id="overview">
             <div class="overview-inner">
                 <div class="ov-header reveal">
-                    <div class="eyebrow">The Explyra Suite</div>
-                    <h2 class="sec-h">Eight products. <em>One vision.</em></h2>
+                    <div class="eyebrow">The Explyra ERP Suite</div>
+                    <h2 class="sec-h">Ten products. <em>One vision.</em></h2>
                     <p class="sec-p">Every tool your company and team needs — built with the same standard of
                         intelligence,
                         design, and reliability.</p>
@@ -3260,14 +3573,6 @@
                             live chat, gaming, remote device access — all encrypted, all P2P.</p>
                         <a href="Utilites/index.html" class="ov-link">Explore <span>→</span></a>
                     </div>
-                    <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
-                        <div class="ov-icon">🛡️</div>
-                        <div class="ov-badge">Help Desk</div>
-                        <div class="ov-title">Help Desk</div>
-                        <p class="ov-desc">Dedicated support for every Explyra product — documentation, live chat,
-                            ticketing, and an AI assistant available 24/7 for your team.</p>
-                        <a href="support.html" class="ov-link">Explore <span>→</span></a>
-                    </div>
                     <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
                         <div class="ov-icon">📅</div>
                         <div class="ov-badge">Booking</div>
@@ -3284,6 +3589,35 @@
                             real-time logs, and intelligent reporting.</p>
                         <a href="attendance/index.html" class="ov-link">Launch App <span>→</span></a>
                     </div>
+                    <div class="ov-card" style="--card-clr:var(--slate);--card-g:var(--slt-g);--card-b:var(--slt-b)">
+                        <div class="ov-icon">🏭</div>
+                        <div class="ov-badge">ERP</div>
+                        <div class="ov-title">Explyra Manufacturing</div>
+                        <p class="ov-desc">Professional ERP system for production planning, real-time inventory
+                            management, and machine tracking across the factory floor.</p>
+                        <a href="manufacturing/index.html" class="ov-link">Launch App <span>→</span></a>
+                    </div>
+                    <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
+                        <div class="ov-icon">📄</div>
+                        <div class="ov-badge">Billing</div>
+                        <div class="ov-title">Explyra Invoicing</div>
+                        <p class="ov-desc">Professional invoicing and billing software for small businesses. Create, send, and track invoices with automatic reminders.</p>
+                        <a href="Ino software/ino.html" class="ov-link">Launch App <span>→</span></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ AI CAPABILITIES STRIP ══ -->
+        <section class="ai-strip reveal">
+            <div class="ai-strip-inner">
+                <div class="ai-chip"><i class="fa-solid fa-sparkles"></i> AI-Powered</div>
+                <h2 class="ai-h">Intelligence built into every layer.</h2>
+                <div class="ai-features">
+                    <div class="ai-f"><span class="ai-f-icon">🧠</span> Autonomous Agents</div>
+                    <div class="ai-f"><span class="ai-f-icon">📊</span> Predictive Analytics</div>
+                    <div class="ai-f"><span class="ai-f-icon">💬</span> Smart Assistants</div>
+                    <div class="ai-f"><span class="ai-f-icon">🔎</span> Contextual Search</div>
                 </div>
             </div>
         </section>
@@ -3961,6 +4295,49 @@
             </div>
         </section>
 
+        <!-- ══ TESTIMONIALS ══ -->
+        <section class="testimonials reveal">
+            <div class="test-inner">
+                <div class="eyebrow" style="color:var(--rose)">Customer Stories</div>
+                <h2 class="sec-h">Don't just take our word for it.</h2>
+                <div class="test-grid">
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"Explyra Expense completely transformed how we handle corporate spending. It saved us countless hours of manual work."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--blue-g);color:var(--blue)">S</div>
+                            <div>
+                                <div class="test-name">Sarah Jenkins</div>
+                                <div class="test-role">Finance Director, TechLogix</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"The Health companion gives insanely accurate recommendations based on live weather data. Nothing else compares."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--teal-g);color:var(--teal)">M</div>
+                            <div>
+                                <div class="test-name">Marcus Reed</div>
+                                <div class="test-role">Pro Athlete</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <div class="test-stars">★★★★★</div>
+                        <p class="test-quote">"As a developer, having the Explyra Dev Tools all in one place without ads is a lifesaver. Extremely fast and well-designed."</p>
+                        <div class="test-author">
+                            <div class="test-av" style="background:var(--purp-g);color:var(--purp)">E</div>
+                            <div>
+                                <div class="test-name">Elena Rostova</div>
+                                <div class="test-role">Senior Engineer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- ══ SUPPORT ══ -->
         <section class="support-sec" id="support">
             <div class="support-inner">
@@ -3976,34 +4353,34 @@
                         <div class="sup-title">Documentation</div>
                         <p class="sup-desc">Comprehensive guides, API references, and tutorials for every Explyra
                             product.
-                            Search, browse, and get answers instantly.</p><a href="#contact" class="sup-link">Browse
+                            Search, browse, and get answers instantly.</p><a href="docs/index.html" class="sup-link">Browse
                             Docs
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">💬</span>
                         <div class="sup-title">Live Chat Support</div>
                         <p class="sup-desc">Connect with our support team in real time. Available for critical issues,
-                            onboarding help, and product questions.</p><a href="#contact" class="sup-link">Start Chat
+                            onboarding help, and product questions.</p><a href="support.html" class="sup-link">Start Chat
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🎫</span>
                         <div class="sup-title">Ticketing System</div>
                         <p class="sup-desc">Submit a support ticket for non-urgent requests. Track status, get updates,
                             and
-                            resolve issues with full transparency.</p><a href="#contact" class="sup-link">Open Ticket
+                            resolve issues with full transparency.</p><a href="support.html" class="sup-link">Open Ticket
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🤖</span>
                         <div class="sup-title">AI Support Bot</div>
                         <p class="sup-desc">24/7 intelligent assistant that can answer product questions, walk you
                             through
-                            setup, and escalate to humans when needed.</p><a href="#contact" class="sup-link">Try Now
+                            setup, and escalate to humans when needed.</p><a href="#" onclick="document.querySelector('.ai-support-bubble').click(); return false;" class="sup-link">Try Now
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🎓</span>
                         <div class="sup-title">Onboarding Sessions</div>
                         <p class="sup-desc">Scheduled walkthroughs for enterprise clients. Our team will set up your
-                            workspace, train your team, and ensure a smooth launch.</p><a href="#contact"
+                            workspace, train your team, and ensure a smooth launch.</p><a href="contact.html"
                             class="sup-link">Schedule →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🌐</span>
@@ -4044,17 +4421,17 @@
         <section class="cta-banner" id="contact">
             <div class="reveal">
                 <div class="eyebrow" style="color:var(--blue)">Get Started</div>
-                <h2 class="cta-h">Ready to experience the full <em>Explyra Suite?</em></h2>
-                <p class="cta-sub">Join the waitlist for early access to all six Explyra products. Be the first to
+                <h2 class="cta-h">Ready to experience the full <em>Explyra ERP Suite?</em></h2>
+                <p class="cta-sub">Join the waitlist for early access to all ten Explyra products. Be the first to
                     shape
                     what we build next.</p>
-                <a href="mailto:explyra@gmail.com" class="btn-hero" style="display:inline-flex">Request Early Access
+                <a href="company.html" class="btn-hero" style="display:inline-flex">Request Early Access
                     →</a>
                 <div class="cta-contacts">
-                    <a href="tel:+918076108584" class="cta-c"><span class="cta-c-icon">📞</span>
+                    <a href="contact.html" class="cta-c"><span class="cta-c-icon">📞</span>
                         <div>
                             <div class="cta-c-label">Phone</div>
-                            <div class="cta-c-val">+91 8076108584</div>
+                            <div class="cta-c-val">Request Call</div>
                         </div>
                     </a>
                     <a href="mailto:explyra@gmail.com" class="cta-c"><span class="cta-c-icon">✉️</span>
@@ -4100,6 +4477,8 @@
                     <li><a href="Utilites/index.html">Utility Hub</a></li>
                     <li><a href="attendance/index.html">Attendance Portal</a></li>
                     <li><a href="https://book.explyra.me">Service Booking</a></li>
+                    <li><a href="manufacturing/index.html">Explyra ERP</a></li>
+                    <li><a href="Ino software/ino.html">Invoice Software</a></li>
                 </ul>
             </div>
 
@@ -4120,6 +4499,7 @@
                 <ul>
                     <li><a href="docs/index.html">Documentation</a></li>
                     <li><a href="support.html">Help Desk</a></li>
+                    <li><a href="events/index.html">Events Portal</a></li>
                     <li><a href="integrations/index.html">Integrations</a></li>
                     <li><a href="status/index.html">System Status</a></li>
                     <li><a href="compare/index.html">Compare Explyra</a></li>
@@ -4220,15 +4600,15 @@
         });
 
         /* MOBILE SUBMENU TOGGLE */
-        const mobileSubmenuTrigger = document.querySelector('.mobile-submenu-trigger');
-        if (mobileSubmenuTrigger) {
-            mobileSubmenuTrigger.addEventListener('click', (e) => {
+        const mobileSubmenuTriggers = document.querySelectorAll('.mobile-submenu-trigger');
+        mobileSubmenuTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                const parent = mobileSubmenuTrigger.closest('.mobile-has-submenu');
+                const parent = trigger.closest('.mobile-has-submenu');
                 parent.classList.toggle('open');
             });
-        }
+        });
 
         /* BACK TO TOP */
         const btt = document.getElementById('backToTop');

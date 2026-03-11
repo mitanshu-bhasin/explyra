@@ -209,6 +209,11 @@ window.saveDeal = async function () {
     const notes = document.getElementById('deal-notes').value.trim();
     const projectId = document.getElementById('deal-project-id').value;
 
+    if (!window.userData || !window.userData.uid || !window.companyId) {
+        alert("Session invalid or not fully loaded. Please refresh.");
+        return;
+    }
+
     if (!name || !contact || amount <= 0) {
         alert("Please fill in required fields correctly.");
         return;
