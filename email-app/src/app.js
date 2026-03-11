@@ -337,17 +337,31 @@ composeForm.addEventListener('submit', async (e) => {
   `;
 
   try {
-    const token = await currentUser.getIdToken();
-    const res = await fetch('/api/send', {
+    // Use absolute production URL so it works from localhost too
+    const API_BASE = window.location.hostname === 'localhost' 
+      ? 'https://explyra.me' 
+      : '';
+
+    const res = await fetch(`${API_BASE}/api/send`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ to, subject, body }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        to, 
+        subject, 
+        body,
+        from: `${currentUser.displayName || 'User'} <${currentUser.email.split('@')[0]}@explyra.me>`
+      }),
     });
 
-    const data = await res.json();
+    // Safely parse response
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      showToast('API not available. Please deploy to Vercel first.', 'error');
+      return;
+    }
 
     if (data.success) {
       closeComposeModal();
@@ -357,7 +371,7 @@ composeForm.addEventListener('submit', async (e) => {
     }
   } catch (err) {
     console.error('Send failed:', err);
-    showToast(`Failed to send email: ${err.message || 'Unknown error'}`, 'error');
+    showToast(`Send failed: ${err.message}`, 'error');
   } finally {
     sendBtn.disabled = false;
     sendBtn.innerHTML = `
@@ -366,6 +380,7 @@ composeForm.addEventListener('submit', async (e) => {
     `;
   }
 });
+
 
 // ============================
 // Auto-Create Alias on Signup
