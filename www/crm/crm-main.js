@@ -25,7 +25,7 @@ async function initializeCrm(user) {
         let userData;
         if (usersSnap.empty) {
             // Check if it's the main platform admin
-            const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'mfskufgu@gmail.com'];
+            const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
             if (MAIN_ADMIN_EMAILS.includes(user.email)) {
                 console.log("Main Admin detected via fallback.");
                 userData = {

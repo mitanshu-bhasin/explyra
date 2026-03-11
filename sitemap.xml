@@ -381,10 +381,15 @@
         <priority>0.1</priority>
     </url>
     <url>
-        <loc>https://explyra.me/offline.html</loc>
-        <lastmod>2026-03-06</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.1</priority>
+        <loc>https://explyra.me/mailbox</loc>
+        <lastmod>2026-03-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
     </url>
-
+    <url>
+        <loc>https://explyra.me/email-app/src/index.html</loc>
+        <lastmod>2026-03-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 </urlset>
