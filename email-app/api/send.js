@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields: to, subject' });
     }
 
-    const fromAddress = `${decoded.name || 'User'} <${decoded.email.split('@')[0]}@${process.env.EMAIL_DOMAIN}>`;
+    const fromAddress = `${decoded.name || 'User'} <${decoded.email.split('@')[0]}@${process.env.EMAIL_DOMAIN || 'explyra.me'}>`;
 
     const { data, error } = await resend.emails.send({
       from: fromAddress,
