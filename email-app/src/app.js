@@ -278,44 +278,29 @@ async function loadEmails() {
   if (!currentUser?.email) return;
 
   const qInbox = query(collection(db, 'emails'), where('to', '==', currentUser.email));
-  const qSent = query(collection(db, 'emails'), where('from', '==', currentUser.email));
+  const qSent  = query(collection(db, 'emails'), where('from', '==', currentUser.email));
 
-  const combineAndProcess = async (snapshot, type) => {
-    let firebaseData = [];
-    snapshot.forEach((doc) => firebaseData.push({ id: doc.id, ...doc.data() }));
+  // Each snapshot stores into its own array, then re-renders
+  onSnapshot(qInbox, (snap) => {
+    inboxEmails = [];
+    snap.forEach(d => inboxEmails.push({ id: d.id, ...d.data() }));
+    rebuildEmails();
+  });
 
-    // QUOTA LOGIC: Only keep 30 in Firebase
-    if (firebaseData.length > FIREBASE_LIMIT) {
-      const sorted = firebaseData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      const toMove = sorted.slice(FIREBASE_LIMIT);
-      
-      for (const mail of toMove) {
-        // Add to Local Storage
-        if (!localEmails.find(ex => ex.id === mail.id)) {
-          localEmails.push(mail);
-        }
-        // Remove from Firebase (Silent catch for rules)
-        try {
-          // Note: In real app, you delete via API or rule. Here we just move logic for client-side persistence.
-          // await deleteDoc(doc(db, 'emails', mail.id)); 
-        } catch(e) {}
-      }
-      localStorage.setItem('mailbox_local_emails', JSON.stringify(localEmails));
-    }
+  onSnapshot(qSent, (snap) => {
+    sentEmails = [];
+    snap.forEach(d => sentEmails.push({ id: d.id, ...d.data() }));
+    rebuildEmails();
+  });
+}
 
-    // Merge for UI
-    const allEmails = [...firebaseData, ...localEmails].filter(m => 
-      (type === 'inbox' && (m.to === currentUser.email && m.folder !== 'sent')) ||
-      (type === 'sent' && (m.from === currentUser.email || m.folder === 'sent'))
-    );
-
-    emails = allEmails;
-    showLoading(false);
-    sortEmails('newest'); // Default sort
-  };
-
-  onSnapshot(qInbox, (snap) => combineAndProcess(snap, 'inbox'));
-  onSnapshot(qSent, (snap) => combineAndProcess(snap, 'sent'));
+function rebuildEmails() {
+  // Merge firebase + local, deduplicate
+  const all = [...inboxEmails, ...sentEmails, ...localEmails];
+  const seen = new Set();
+  emails = all.filter(e => seen.has(e.id) ? false : seen.add(e.id));
+  showLoading(false);
+  sortEmails(currentSort);
 }
 
 let currentSort = 'newest';
