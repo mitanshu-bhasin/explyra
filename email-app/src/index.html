@@ -84,6 +84,7 @@
       <div id="signup-form-container" class="hidden">
         <form id="email-signup-form" onsubmit="return false;" class="space-y-4 mb-6">
           <input type="text" id="signup-name" placeholder="Your Name" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+          <input type="email" id="signup-personal-email" placeholder="Personal Email (for forwarding)" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
           <div class="relative">
             <input type="text" id="signup-prefix" placeholder="Choose Username" required class="input-field w-full rounded-xl pl-4 pr-32 py-3 text-white placeholder-slate-500 text-sm">
             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">@explyra.me</span>
@@ -153,6 +154,14 @@
               <p id="user-name" class="text-sm font-semibold truncate"></p>
               <p id="user-email" class="text-xs text-slate-500 truncate"></p>
             </div>
+            
+            <button id="settings-btn" class="text-slate-500 hover:text-indigo-400 transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer" title="Settings">
+              <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </button>
+
             <button id="logout-btn" class="text-slate-500 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer" title="Sign out">
               <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
@@ -258,9 +267,51 @@
     </div>
   </div>
 
+  <!-- ==================== SETTINGS MODAL ==================== -->
+  <div id="settings-modal" class="hidden fixed inset-0 z-50 flex justify-center items-end sm:items-center modal-overlay sm:p-4">
+    <div class="glass-strong w-full sm:w-[500px] sm:rounded-2xl h-[90vh] sm:h-[auto] flex flex-col slide-up shadow-2xl relative border-t sm:border border-white/10">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
+        <h3 class="text-lg font-bold text-white">Settings</h3>
+        <button id="close-settings" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Settings Form -->
+      <form id="settings-form" onsubmit="return false;" class="px-6 py-5 flex-1 overflow-y-auto space-y-6">
+        <div>
+          <label class="block text-sm font-semibold text-slate-300 mb-2">Personal Email</label>
+          <input type="email" id="settings-personal-email" placeholder="example@gmail.com" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+          <p class="text-xs text-slate-500 mt-2">Emails sent to your @explyra.me address will be forwarded here if enabled.</p>
+        </div>
+        
+        <div class="flex items-center justify-between pt-2">
+          <div>
+            <h4 class="text-sm font-semibold text-slate-300">Enable Forwarding</h4>
+            <p class="text-xs text-slate-500 mt-0.5">Automatically forward all incoming emails</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="settings-forwarding" class="sr-only peer">
+            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+          </label>
+        </div>
+        
+        <div class="pt-6 pb-2">
+          <button type="submit" id="save-settings-btn" class="btn-primary w-full text-white font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer text-sm">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-[100] space-y-2"></div>
 
-  <script type="module" src="/email-app/src/app.js?v=5"></script>
+  <script type="module" src="/email-app/src/app.js?v=6"></script>
 </body>
 </html>

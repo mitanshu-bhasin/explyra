@@ -11,13 +11,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { from, to, subject, body } = req.body;
+    const { fromName, fromEmail, to, subject, textBody, htmlBody } = req.body;
+
+    const fromAddress = fromName ? `${fromName} <${fromEmail}>` : fromEmail;
 
     await db.collection('emails').add({
-      from: from || 'unknown',
+      from: fromAddress || 'unknown',
       to: to || 'unknown',
       subject: subject || '(No Subject)',
-      body: body || '',
+      textBody: textBody || '',
+      htmlBody: htmlBody || '',
       timestamp: new Date().toISOString(),
       read: false,
       folder: 'inbox',
