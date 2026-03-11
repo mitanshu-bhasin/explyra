@@ -261,11 +261,11 @@ function renderEmails() {
       (email) => `
     <div class="email-row px-6 py-4 border-b border-white/[0.04] cursor-pointer flex items-start gap-4" data-email-id="${email.id}">
       <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">
-        ${getInitials(email.from)}
+        ${getInitials(currentFolder === 'sent' ? email.to : email.from)}
       </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between mb-0.5">
-          <span class="text-sm font-semibold ${email.read ? 'text-slate-400' : 'text-white'} truncate">${escapeHtml(extractName(email.from))}</span>
+          <span class="text-sm font-semibold ${email.read ? 'text-slate-400' : 'text-white'} truncate">${escapeHtml(currentFolder === 'sent' ? 'To: ' + extractName(email.to) : extractName(email.from))}</span>
           <span class="text-[11px] text-slate-500 flex-shrink-0 ml-3 font-medium">${formatTime(email.timestamp)}</span>
         </div>
         <p class="text-[13px] ${email.read ? 'text-slate-500' : 'text-slate-200'} font-medium truncate">${escapeHtml(email.subject)}</p>
@@ -293,7 +293,7 @@ emailList.addEventListener('click', (e) => {
 // Detail Panel Logic
 function showEmailDetail(email) {
   detailSubject.textContent = email.subject || '(No Subject)';
-  detailFrom.textContent = `From: ${email.from}`;
+  detailFrom.textContent = currentFolder === 'sent' ? `To: ${email.to}` : `From: ${email.from}`;
   detailTime.textContent = formatTimeFull(email.timestamp);
   detailBody.textContent = email.body || '';
   
