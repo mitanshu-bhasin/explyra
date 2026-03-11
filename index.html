@@ -213,6 +213,179 @@
         }
 
         /* ═══════════════════════════════════════════
+   VIDEO PREVIEW SECTION
+═══════════════════════════════════════════ */
+        .video-suite-section {
+            padding: 80px 5vw;
+            background: var(--bg2);
+            text-align: center;
+            border-top: 1px solid var(--bdr);
+        }
+
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: var(--s3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+            margin: 0 auto;
+            border: 4px solid var(--bg3);
+        }
+
+        .video-thumbnail:hover {
+            transform: scale(1.03);
+            box-shadow: var(--s4);
+            border-color: var(--blue-b);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.4s;
+        }
+
+        .video-thumbnail:hover img {
+            opacity: 1;
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            transition: background 0.4s;
+        }
+
+        .play-btn-circle {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue);
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(21, 70, 192, 0.3);
+            transition: all 0.4s;
+            padding-left: 5px;
+        }
+
+        .video-thumbnail:hover .play-btn-circle {
+            transform: scale(1.15);
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(21, 70, 192, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════
+   VIDEO MODAL
+═══════════════════════════════════════════ */
+        .v-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s, visibility 0.4s;
+        }
+
+        .v-modal.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        .v-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 11, 20, 0.85);
+            backdrop-filter: blur(10px);
+        }
+
+        .v-modal-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 32px 100px rgba(0, 0, 0, 0.8);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .v-modal.active .v-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .v-modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .v-modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .v-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .video-thumbnail {
+                border-radius: 12px;
+            }
+            .play-btn-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+            .v-modal {
+                padding: 1rem;
+            }
+            .v-modal-close {
+                top: -45px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════
    RESET & BASE
 ═══════════════════════════════════════════ */
         *,
@@ -528,7 +701,13 @@
             text-align: center;
             padding: 100px 5vw 80px;
             position: relative;
-            overflow: hidden
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(248, 247, 244, 0.85), rgba(248, 247, 244, 0.95)), url('assets/images/hero_bg.png') center/cover no-repeat;
+            transition: background 0.4s;
+        }
+
+        [data-theme="dark"] .hero {
+            background: linear-gradient(to bottom, rgba(8, 11, 20, 0.8), rgba(8, 11, 20, 0.9)), url('assets/images/hero_bg.png') center/cover no-repeat;
         }
 
         /* Hero mesh background */
@@ -585,11 +764,28 @@
         }
 
         @keyframes float-particle {
-            0% { transform: translateY(0) scale(1); opacity: 0; }
-            5% { opacity: 0.6; }
-            50% { transform: translateY(-40px) scale(1.5); opacity: 0.2; }
-            95% { opacity: 0; }
-            100% { transform: translateY(-80px) scale(1); opacity: 0; }
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: translateY(-40px) scale(1.5);
+                opacity: 0.2;
+            }
+
+            95% {
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(-80px) scale(1);
+                opacity: 0;
+            }
         }
 
         .hero-inner {
@@ -784,7 +980,7 @@
             background: var(--bg);
             border: 1px solid var(--bdr);
             border-radius: var(--r);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
         }
 
@@ -819,7 +1015,7 @@
             padding: 2.5rem 2rem;
             border-radius: var(--r);
             border: 1px solid var(--bdr);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
             transition: transform 0.3s ease;
         }
 
@@ -1035,8 +1231,13 @@
 ═══════════════════════════════════════════ */
         .overview {
             padding: 4rem 5vw;
-            background: var(--bg2);
-            border-top: 1px solid var(--bdr)
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.95)), url('assets/images/overview_bg.png') center/cover no-repeat;
+            border-top: 1px solid var(--bdr);
+            transition: background 0.4s;
+        }
+
+        [data-theme="dark"] .overview {
+            background: linear-gradient(to bottom, rgba(14, 18, 32, 0.9), rgba(14, 18, 32, 0.95)), url('assets/images/overview_bg.png') center/cover no-repeat;
         }
 
         .overview-inner {
@@ -2236,8 +2437,13 @@
    SUPPORT
 ═══════════════════════════════════════════ */
         .support-sec {
-            background: var(--bg2);
-            padding: 7rem 5vw
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95)), url('assets/images/support_bg.png') center/cover no-repeat;
+            padding: 7rem 5vw;
+            transition: background 0.4s;
+        }
+
+        [data-theme="dark"] .support-sec {
+            background: linear-gradient(to bottom, rgba(14, 18, 32, 0.85), rgba(14, 18, 32, 0.95)), url('assets/images/support_bg.png') center/cover no-repeat;
         }
 
         .support-inner {
@@ -2310,89 +2516,221 @@
         /* ═══════════════════════════════════════════
    FOUNDER STRIP
 ═══════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════
+   FOUNDER & VIDEO SPLIT
+═══════════════════════════════════════════ */
         .founder-strip {
-            padding: 5rem 5vw;
-            background: var(--bg);
-            border-top: 1px solid var(--bdr)
+            padding: 6rem 5vw;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 247, 244, 0.98)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
+            border-top: 1px solid var(--bdr);
+            position: relative;
+            overflow: hidden;
+            color: var(--ink);
+        }
+
+        [data-theme="dark"] .founder-strip {
+            background: linear-gradient(135deg, rgba(8, 11, 20, 0.96), rgba(13, 17, 23, 0.98)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
+            color: #fff;
         }
 
         .founder-inner {
-            max-width: 960px;
+            max-width: 1200px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .founder-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .founder-info-top {
             display: flex;
             align-items: center;
-            gap: 3rem
+            gap: 1.5rem;
         }
 
         .founder-av {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: var(--blue);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff;
             flex-shrink: 0;
-            box-shadow: 0 0 0 4px var(--blue-g), 0 0 0 8px var(--blue-b)
+            box-shadow: 0 0 0 4px var(--blue-g), 0 10px 30px rgba(21, 70, 192, 0.2);
+            overflow: hidden;
+            border: 2px solid #fff;
         }
 
-        .founder-content {
-            flex: 1
+        [data-theme="dark"] .founder-av {
+            border-color: var(--bg3);
+        }
+
+        .founder-av img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .founder-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: var(--ink)
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        [data-theme="dark"] .founder-name {
+            color: #fff;
         }
 
         .founder-role {
-            font-size: .75rem;
+            font-size: .8rem;
             font-weight: 600;
-            letter-spacing: .12em;
+            letter-spacing: .1em;
             text-transform: uppercase;
             color: var(--blue);
-            margin: .2rem 0 .8rem
+            margin-top: 0.3rem;
         }
 
         .founder-bio {
-            font-size: .9rem;
+            font-size: 1rem;
             color: var(--ink3);
-            line-height: 1.75;
+            line-height: 1.8;
             font-weight: 300;
-            max-width: 600px
+        }
+
+        [data-theme="dark"] .founder-bio {
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .founder-btns {
             display: flex;
-            gap: .7rem;
-            margin-top: 1.2rem;
-            flex-wrap: wrap
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .founder-btn {
             display: flex;
             align-items: center;
-            gap: .4rem;
+            gap: .5rem;
             background: var(--bg3);
             border: 1px solid var(--bdr2);
             color: var(--ink2);
-            padding: .45rem .9rem;
-            border-radius: 6px;
-            font-size: .78rem;
+            padding: .6rem 1.2rem;
+            border-radius: 10px;
+            font-size: .85rem;
             font-weight: 500;
-            transition: all .2s
+            transition: all .25s;
+        }
+
+        [data-theme="dark"] .founder-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
         }
 
         .founder-btn:hover {
             border-color: var(--blue);
             color: var(--blue);
-            background: var(--blue-g)
+            background: var(--blue-g);
+            transform: translateY(-2px);
+        }
+
+        .founder-video-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: var(--bg);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid var(--bdr);
+            box-shadow: var(--s2);
+        }
+
+        [data-theme="dark"] .founder-video-col {
+            background: var(--bg3);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: var(--s3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+            border: 3px solid var(--bg3);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        .video-thumbnail:hover {
+            transform: scale(1.02);
+            box-shadow: var(--s4);
+        }
+
+        @media (max-width: 1024px) {
+            .founder-inner {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .founder-video-col {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .founder-strip {
+                padding: 4rem 5vw;
+                text-align: center;
+            }
+            .founder-info-top {
+                flex-direction: column;
+                text-align: center;
+            }
+            .founder-btns {
+                justify-content: center;
+            }
+            .founder-name {
+                font-size: 1.5rem;
+            }
+            .founder-bio {
+                font-size: 0.9rem;
+            }
+            .founder-video-col {
+                gap: 1rem;
+                padding: 1.2rem;
+            }
+            .video-thumbnail {
+                max-width: 100%;
+                border-radius: 12px;
+            }
+            .v-modal {
+                padding: 0;
+            }
+            .v-modal-content {
+                border-radius: 0;
+            }
+            .v-modal-close {
+                top: 15px;
+                right: 15px;
+                z-index: 10;
+                background: rgba(0, 0, 0, 0.5);
+            }
         }
 
         /* ═══════════════════════════════════════════
@@ -2403,8 +2741,14 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            background: var(--bg2);
-            border-top: 1px solid var(--bdr)
+            background: linear-gradient(135deg, rgba(13, 17, 23, 0.9), rgba(21, 70, 192, 0.8)), url('assets/images/cta_refined_bg.png') center/cover no-repeat;
+            border-top: 1px solid var(--bdr);
+            color: #fff;
+            transition: background 0.4s;
+        }
+
+        [data-theme="dark"] .cta-banner {
+            background: linear-gradient(135deg, rgba(8, 11, 20, 0.95), rgba(13, 17, 23, 0.85)), url('assets/images/cta_refined_bg.png') center/cover no-repeat;
         }
 
         .cta-banner::before {
@@ -2420,19 +2764,21 @@
             font-weight: 700;
             line-height: 1.1;
             letter-spacing: -.02em;
-            color: var(--ink);
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             max-width: 650px;
             margin: 0 auto 1.2rem
         }
 
         .cta-h em {
             font-style: italic;
-            color: var(--blue)
+            color: #89b4fa;
+            /* Lighter blue for better contrast on dark bg */
         }
 
         .cta-sub {
             font-size: 1rem;
-            color: var(--ink3);
+            color: rgba(255, 255, 255, 0.8);
             max-width: 500px;
             margin: 0 auto 2.5rem;
             font-weight: 300
@@ -2449,37 +2795,49 @@
         .cta-c {
             display: flex;
             align-items: center;
-            gap: .6rem;
-            background: var(--bg3);
-            border: 1px solid var(--bdr);
-            border-radius: 9px;
-            padding: .85rem 1.3rem;
-            transition: all .2s;
-            font-size: .84rem
+            gap: .8rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .cta-c:hover {
-            border-color: var(--blue-b);
-            background: var(--blue-g);
-            transform: translateY(-2px)
+            border-color: #89b4fa;
+            background: rgba(137, 180, 250, 0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
         .cta-c-icon {
-            font-size: 1.1rem
+            font-size: 1.3rem;
+            background: rgba(137, 180, 250, 0.15);
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: #89b4fa;
         }
 
         .cta-c-label {
-            font-size: .62rem;
+            font-size: .65rem;
             text-transform: uppercase;
-            letter-spacing: .1em;
-            color: var(--ink4);
-            font-weight: 600
+            letter-spacing: .12em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            margin-bottom: 2px;
         }
 
         .cta-c-val {
-            font-size: .82rem;
+            font-size: .9rem;
             font-weight: 600;
-            color: var(--blue)
+            color: #fff;
         }
 
         /* ═══════════════════════════════════════════
@@ -2489,14 +2847,15 @@
            FOOTER (NEW)
         ═══════════════════════════════════════════ */
         footer {
-            background: var(--ink);
+            background: linear-gradient(to bottom, rgba(13, 17, 23, 0.92), rgba(13, 17, 23, 0.98)), url('assets/images/footer_bg.png') center/cover no-repeat;
             color: #fff;
-            padding: 4rem 5vw 2.5rem;
+            padding: 4rem 5vw 3rem;
             border-top: 1px solid var(--bdr);
+            position: relative;
         }
 
         [data-theme="dark"] footer {
-            background: #040608;
+            background: linear-gradient(to bottom, rgba(8, 11, 20, 0.95), rgba(8, 11, 20, 0.98)), url('assets/images/footer_bg.png') center/cover no-repeat;
         }
 
         .foot-container {
@@ -3307,9 +3666,7 @@
                         <a href="#developers" class="dropdown-item">
                             <span class="dropdown-item-icon">⚡</span> Explyra Developers
                         </a>
-                        <a href="Utilites/index.html" class="dropdown-item">
-                            <span class="dropdown-item-icon">🔗</span> Explyra Utility
-                        </a>
+
                         <a href="attendance/index.html" class="dropdown-item">
                             <span class="dropdown-item-icon">✅</span> Attendance
                         </a>
@@ -3481,14 +3838,14 @@
                     <div class="suite-pill sp-teal">🏃 Explyra Health</div>
                     <div class="suite-pill sp-amber">📚 Explyra Learning</div>
                     <div class="suite-pill sp-purp">⚡ Explyra Developers</div>
-                    <div class="suite-pill sp-rose">🔗 Explyra Utility</div>
+
                     <div class="suite-pill sp-slate">🛡️ Help Desk</div>
                     <div class="suite-pill sp-blue">📅 Booking</div>
                     <div class="suite-pill sp-teal">✅ Attendance</div>
                     <div class="suite-pill sp-slate">🏭 Explyra ERP</div>
                     <div class="suite-pill sp-rose">✉️ Explyra MailBox</div>
                 </div>
-                
+
                 <div class="hero-stats reveal">
                     <div class="h-stat">
                         <div class="h-stat-num">500+</div>
@@ -3574,15 +3931,7 @@
                             generator, online IDE, link shortener, and more.</p>
                         <a href="#developers" class="ov-link">Explore <span>→</span></a>
                     </div>
-                    <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
-                        <div class="ov-icon">🔗</div>
-                        <div class="ov-badge">Utility</div>
-                        <div class="ov-title">Explyra Utility</div>
-                        <p class="ov-desc">AI chatbot + P2P superpowers: unlimited file transfer, video calls, screen
-                            share,
-                            live chat, gaming, remote device access — all encrypted, all P2P.</p>
-                        <a href="Utilites/index.html" class="ov-link">Explore <span>→</span></a>
-                    </div>
+
                     <div class="ov-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
                         <div class="ov-icon">📅</div>
                         <div class="ov-badge">Booking</div>
@@ -3611,14 +3960,16 @@
                         <div class="ov-icon">📄</div>
                         <div class="ov-badge">Billing</div>
                         <div class="ov-title">Explyra Invoicing</div>
-                        <p class="ov-desc">Professional invoicing and billing software for small businesses. Create, send, and track invoices with automatic reminders.</p>
+                        <p class="ov-desc">Professional invoicing and billing software for small businesses. Create,
+                            send, and track invoices with automatic reminders.</p>
                         <a href="Ino software/ino.html" class="ov-link">Launch App <span>→</span></a>
                     </div>
                     <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
                         <div class="ov-icon">✉️</div>
                         <div class="ov-badge">Mail</div>
                         <div class="ov-title">Explyra MailBox</div>
-                        <p class="ov-desc">Powerful professional email for your domain, featuring an intuitive interface, fast search, and spam protection.</p>
+                        <p class="ov-desc">Powerful professional email for your domain, featuring an intuitive
+                            interface, fast search, and spam protection.</p>
                         <a href="email-app/src/index.html" class="ov-link">Launch App <span>→</span></a>
                     </div>
                 </div>
@@ -4192,125 +4543,7 @@
             </div>
         </section>
 
-        <!-- ══ UTILITY ══ -->
-        <section class="prod-section util-sec" id="utility">
-            <div class="blob"></div>
-            <div class="prod-inner">
-                <div class="reveal">
-                    <div class="prod-label" style="color:var(--rose)">🔗 Explyra Utility</div>
-                    <h2 class="prod-h display">Connect anyone, anywhere. <em>Instantly.</em></h2>
-                    <p class="prod-p">Explyra Utility combines an intelligent AI chatbot with a powerful P2P
-                        collaboration
-                        suite — file transfer, video calls, screen share, live chat, game streaming, and even remote
-                        device
-                        access. No limits. No servers. All encrypted.</p>
-                    <div class="feat-list">
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
-                            </div>AI
-                            Chatbot — intelligent assistant for every user
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
-                            </div>P2P
-                            Unlimited File Transfer — send any size, encrypted
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
-                            </div>HD
-                            Video Calls + Screen Share with zero third party
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
-                            </div>P2P
-                            Live Chat — encrypted, real-time messaging
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
-                            </div>
-                            Game & Video Share — co-watch and co-play P2P
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--rose-g);color:var(--rose);border:1px solid var(--rose-b)">✓
-                            </div>
-                            Remote Device Access — control any connected device
-                        </div>
-                    </div>
-                    <a href="Utilites/index.html" class="btn-prod" style="background:var(--rose)">Explore Hub &rarr;</a>
-                </div>
-                <div class="reveal d2">
-                    <div class="util-card">
-                        <div class="util-header">
-                            <div class="util-h-title">Explyra Utility</div>
-                            <div class="util-h-sub">P2P Suite + AI Assistant</div>
-                            <div class="util-p2p">
-                                <div class="p2p-avatars">
-                                    <div class="p2p-av" style="background:#1847BF">A</div>
-                                    <div class="p2p-av" style="background:#047857">B</div>
-                                    <div class="p2p-av" style="background:#7C3AED">C</div>
-                                </div>
-                                <span class="p2p-status">3 peers connected · Encrypted · P2P</span>
-                                <span class="p2p-dot"></span>
-                            </div>
-                        </div>
-                        <div class="util-body">
-                            <div class="p2p-features">
-                                <div class="p2pf"><span class="p2pf-icon">📁</span>
-                                    <div>
-                                        <div class="p2pf-name">File Transfer</div>
-                                    </div>
-                                </div>
-                                <div class="p2pf"><span class="p2pf-icon">📹</span>
-                                    <div>
-                                        <div class="p2pf-name">Video Call</div>
-                                    </div>
-                                </div>
-                                <div class="p2pf"><span class="p2pf-icon">🖥️</span>
-                                    <div>
-                                        <div class="p2pf-name">Screen Share</div>
-                                    </div>
-                                </div>
-                                <div class="p2pf"><span class="p2pf-icon">💬</span>
-                                    <div>
-                                        <div class="p2pf-name">Live Chat</div>
-                                    </div>
-                                </div>
-                                <div class="p2pf"><span class="p2pf-icon">🎮</span>
-                                    <div>
-                                        <div class="p2pf-name">Game Share</div>
-                                    </div>
-                                </div>
-                                <div class="p2pf"><span class="p2pf-icon">🖱️</span>
-                                    <div>
-                                        <div class="p2pf-name">Remote Access</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chatbot-preview">
-                                <div class="chat-msg bot">
-                                    <div class="chat-av bot">AI</div>
-                                    <div class="chat-bubble">Hi! I'm your Explyra AI. How can I help you today?</div>
-                                </div>
-                                <div class="chat-msg user">
-                                    <div class="chat-av">U</div>
-                                    <div class="chat-bubble">Transfer the 2GB project file to Arjun</div>
-                                </div>
-                                <div class="chat-msg bot">
-                                    <div class="chat-av bot">AI</div>
-                                    <div class="chat-bubble">Starting encrypted P2P transfer to Arjun... 0% ▓░░░░</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+
 
         <!-- ══ TESTIMONIALS ══ -->
         <section class="testimonials reveal">
@@ -4320,7 +4553,8 @@
                 <div class="test-grid">
                     <div class="test-card">
                         <div class="test-stars">★★★★★</div>
-                        <p class="test-quote">"Explyra Expense completely transformed how we handle corporate spending. It saved us countless hours of manual work."</p>
+                        <p class="test-quote">"Explyra Expense completely transformed how we handle corporate spending.
+                            It saved us countless hours of manual work."</p>
                         <div class="test-author">
                             <div class="test-av" style="background:var(--blue-g);color:var(--blue)">S</div>
                             <div>
@@ -4331,7 +4565,8 @@
                     </div>
                     <div class="test-card">
                         <div class="test-stars">★★★★★</div>
-                        <p class="test-quote">"The Health companion gives insanely accurate recommendations based on live weather data. Nothing else compares."</p>
+                        <p class="test-quote">"The Health companion gives insanely accurate recommendations based on
+                            live weather data. Nothing else compares."</p>
                         <div class="test-author">
                             <div class="test-av" style="background:var(--teal-g);color:var(--teal)">M</div>
                             <div>
@@ -4342,7 +4577,8 @@
                     </div>
                     <div class="test-card">
                         <div class="test-stars">★★★★★</div>
-                        <p class="test-quote">"As a developer, having the Explyra Dev Tools all in one place without ads is a lifesaver. Extremely fast and well-designed."</p>
+                        <p class="test-quote">"As a developer, having the Explyra Dev Tools all in one place without ads
+                            is a lifesaver. Extremely fast and well-designed."</p>
                         <div class="test-author">
                             <div class="test-av" style="background:var(--purp-g);color:var(--purp)">E</div>
                             <div>
@@ -4370,28 +4606,33 @@
                         <div class="sup-title">Documentation</div>
                         <p class="sup-desc">Comprehensive guides, API references, and tutorials for every Explyra
                             product.
-                            Search, browse, and get answers instantly.</p><a href="docs/index.html" class="sup-link">Browse
+                            Search, browse, and get answers instantly.</p><a href="docs/index.html"
+                            class="sup-link">Browse
                             Docs
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">💬</span>
                         <div class="sup-title">Live Chat Support</div>
                         <p class="sup-desc">Connect with our support team in real time. Available for critical issues,
-                            onboarding help, and product questions.</p><a href="support.html" class="sup-link">Start Chat
+                            onboarding help, and product questions.</p><a href="support.html" class="sup-link">Start
+                            Chat
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🎫</span>
                         <div class="sup-title">Ticketing System</div>
                         <p class="sup-desc">Submit a support ticket for non-urgent requests. Track status, get updates,
                             and
-                            resolve issues with full transparency.</p><a href="support.html" class="sup-link">Open Ticket
+                            resolve issues with full transparency.</p><a href="support.html" class="sup-link">Open
+                            Ticket
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🤖</span>
                         <div class="sup-title">AI Support Bot</div>
                         <p class="sup-desc">24/7 intelligent assistant that can answer product questions, walk you
                             through
-                            setup, and escalate to humans when needed.</p><a href="#" onclick="document.querySelector('.ai-support-bubble').click(); return false;" class="sup-link">Try Now
+                            setup, and escalate to humans when needed.</p><a href="#"
+                            onclick="document.querySelector('.ai-support-bubble').click(); return false;"
+                            class="sup-link">Try Now
                             →</a>
                     </div>
                     <div class="sup-card"><span class="sup-icon">🎓</span>
@@ -4413,23 +4654,39 @@
             </div>
         </section>
 
-        <!-- ══ FOUNDER ══ -->
+        <!-- ══ FOUNDER & VIDEO TRAILER ══ -->
         <article class="founder-strip reveal">
             <div class="founder-inner">
-                <div class="founder-av">MB</div>
-                <div class="founder-content">
-                    <div class="founder-name">Mitanshu Bhasin</div>
-                    <div class="founder-role">Founder & Lead Developer · Explyra</div>
-                    <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch —
-                        Firebase
-                        backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P infrastructure.
-                        Explyra is not just a product, it's a statement: the right combination of AI, design, and
-                        engineering can give teams everything they need in a single platform.</p>
+                <div class="founder-card">
+                    <div class="founder-info-top">
+                        <div class="founder-av">
+                            <img src="mitanshu.png" alt="Mitanshu Bhasin" loading="lazy">
+                        </div>
+                        <div>
+                            <div class="founder-name">Mitanshu Bhasin</div>
+                            <div class="founder-role">Founder & Lead Developer · Explyra</div>
+                        </div>
+                    </div>
+                    <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch — Firebase backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P infrastructure. Explyra is not just a product, it's a statement: the right combination of AI, design, and engineering can give teams everything they need in a single platform.</p>
                     <div class="founder-btns">
                         <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
                         <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
                         <a href="tel:+918076108584" class="founder-btn">📞 +91 8076108584</a>
                     </div>
+                </div>
+
+                <div class="founder-video-col">
+                    <div class="eyebrow" style="color:var(--purp); justify-content: flex-start;">Experience Explyra</div>
+                    <h2 class="founder-name" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Explyra Suite <em>Trailer</em></h2>
+                    <div class="video-thumbnail" id="videoTrigger">
+                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="cta-sub" style="margin-top: 0.5rem; opacity: 0.8; font-size: 0.85rem;">Witness the future of unified productivity in 120 seconds.</p>
                 </div>
             </div>
         </article>
@@ -4491,7 +4748,7 @@
                     <li><a href="health-manager/index.html">Health Companion</a></li>
                     <li><a href="explyra-learning/index.html">AI Learning</a></li>
                     <li><a href="developers/index.html">Developer Tools</a></li>
-                    <li><a href="Utilites/index.html">Utility Hub</a></li>
+
                     <li><a href="attendance/index.html">Attendance Portal</a></li>
                     <li><a href="https://book.explyra.me">Service Booking</a></li>
                     <li><a href="manufacturing/index.html">Explyra ERP</a></li>
@@ -4547,7 +4804,9 @@
 
         <div class="foot-bottom">
             <p class="foot-copy">© 2026 Explyra · Built with ♥ by Mitanshu Bhasin · All rights reserved.</p>
-            <p style="font-size:0.7rem; opacity:0.7; margin-top:0.4rem; letter-spacing:0.02em;">Software and Design Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is strictly prohibited and subject to legal action.</p>
+            <p style="font-size:0.7rem; opacity:0.7; margin-top:0.4rem; letter-spacing:0.02em;">Software and Design
+                Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
+                strictly prohibited and subject to legal action.</p>
             <div class="foot-socials">
                 <a href="https://github.com/Explyra" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
                 <a href="https://x.com/explyras" target="_blank" title="X (Twitter)"><i class="fab fa-twitter"></i></a>
@@ -4564,6 +4823,17 @@
             </div>
         </div>
     </footer>
+
+    <!-- VIDEO MODAL STRUCTURE -->
+    <div class="v-modal" id="videoModal">
+        <div class="v-modal-overlay" id="videoOverlay"></div>
+        <div class="v-modal-content">
+            <button class="v-modal-close" id="closeVideo" aria-label="Close video">
+                <i class="fas fa-times"></i>
+            </button>
+            <iframe id="videoIframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </div>
 
     <!-- BACK TO TOP -->
     <button class="back-to-top" id="backToTop" aria-label="Scroll to top">
@@ -4650,6 +4920,34 @@
                     });
                 }
             });
+        });
+
+        /* VIDEO MODAL LOGIC */
+        const vModal = document.getElementById('videoModal');
+        const vTrigger = document.getElementById('videoTrigger');
+        const vClose = document.getElementById('closeVideo');
+        const vIframe = document.getElementById('videoIframe');
+        const vOverlay = document.getElementById('videoOverlay');
+
+        if (vTrigger) {
+            vTrigger.addEventListener('click', () => {
+                vModal.classList.add('active');
+                vIframe.src = "https://www.youtube.com/embed/7Ti-C171jyw?si=fDb5xG1iwX0zHjDR&autoplay=1";
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        const closeFunc = () => {
+            vModal.classList.remove('active');
+            vIframe.src = "";
+            document.body.style.overflow = '';
+        };
+
+        if (vClose) vClose.addEventListener('click', closeFunc);
+        if (vOverlay) vOverlay.addEventListener('click', closeFunc);
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && vModal.classList.contains('active')) closeFunc();
         });
     </script>
     <script src="js/global-enhancements.js"></script>

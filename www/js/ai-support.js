@@ -467,7 +467,7 @@ export class AISupport {
                     'Authorization': `Bearer ${GROQ_API_KEY}`
                 },
                 body: JSON.stringify({
-                    model: 'moonshotai/kimi-k2-instruct-0905',
+                    model: 'moonshotai/kimi-k2-instruct',
                     messages: messages,
                     temperature: 0.7,
                     max_tokens: 1024

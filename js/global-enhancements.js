@@ -147,6 +147,7 @@
             padding: 4px 6px 4px 16px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            z-index: 101;
         }
         .fsb-wrapper:focus-within {
             border-color: var(--blue, #1546C0);
@@ -176,6 +177,100 @@
             cursor: pointer;
         }
         .fsb-btn:hover { transform: scale(1.08); }
+
+        /* Ecosystem Search Dropdown */
+        .fsb-dropdown {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 0;
+            width: 100%;
+            background: var(--surf, #fff);
+            border: 1px solid var(--bdr, #E4E1DB);
+            border-radius: 16px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px;
+            z-index: 100;
+        }
+        [data-theme="dark"] .fsb-dropdown {
+            background: var(--bg3, #141928);
+            border-color: var(--bdr, rgba(255,255,255,0.07));
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+        }
+        .fsb-wrapper:focus-within .fsb-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .fsb-result {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--ink, #0D1117);
+            transition: background 0.2s;
+            cursor: pointer;
+            text-align: left;
+        }
+        [data-theme="dark"] .fsb-result {
+            color: var(--ink, #EEF0F8);
+        }
+        .fsb-result:hover, .fsb-result.keyboard-selected {
+            background: var(--blue-g, rgba(21,70,192,0.08));
+        }
+        [data-theme="dark"] .fsb-result:hover, [data-theme="dark"] .fsb-result.keyboard-selected {
+            background: rgba(91, 138, 245, 0.12);
+        }
+        .fsb-result-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--blue, #1546C0);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        [data-theme="dark"] .fsb-result-title {
+            color: var(--blue2, #93B4FF);
+        }
+        .fsb-result-type {
+            font-size: 0.6rem;
+            background: var(--bg3, #F1EFE9);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--ink3, #666);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        [data-theme="dark"] .fsb-result-type {
+            background: var(--bg4, #1B2235);
+            color: var(--ink3, #8290A8);
+        }
+        .fsb-result-desc {
+            font-size: 0.75rem;
+            color: var(--ink3, #666);
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        [data-theme="dark"] .fsb-result-desc {
+            color: var(--ink3, #8290A8);
+        }
+        .fsb-no-results {
+            padding: 16px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--ink3, #666);
+        }
 
         .ecb-actions { display: flex; gap: 12px; }
         .ecb-btn { 
@@ -443,14 +538,15 @@
 
         const searchForm = `
             <div class="fsb-container">
-                <form class="fsb-wrapper" id="footSearchForm">
-                    <input type="text" class="fsb-input" placeholder="Search everywhere..." required>
+                <form class="fsb-wrapper" id="footSearchForm" autocomplete="off">
+                    <input type="text" class="fsb-input" id="fsbInput" placeholder="Search everywhere..." required>
                     <button type="submit" class="fsb-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                     </button>
+                    <div class="fsb-dropdown" id="fsbDropdown"></div>
                 </form>
                 <div class="fsb-links">
                     <a href="https://status.explyra.me" class="fsb-link" target="_blank"><i class="fas fa-signal"></i> Status</a>
@@ -476,11 +572,99 @@
             footer.appendChild(container);
         }
 
+        let ecosystemIndex = [];
+        async function loadEcosystemIndex() {
+            try {
+                const response = await fetch('/ecosystem-index.json');
+                if (response.ok) {
+                    ecosystemIndex = await response.json();
+                } else {
+                    // Fallback to minimal index if fetch fails
+                    ecosystemIndex = [
+                        { title: "Explyra Home", type: "Product", url: "/index.html", desc: "Main landing page" }
+                    ];
+                }
+            } catch (e) {
+                console.warn('Failed to load search index:', e);
+            }
+        }
+        loadEcosystemIndex();
+
         const form = document.getElementById('footSearchForm');
-        if (form) {
+        const input = document.getElementById('fsbInput');
+        const dropdown = document.getElementById('fsbDropdown');
+
+        if (form && input && dropdown) {
+            let selectedIndex = -1;
+
+            const renderResults = (query) => {
+                const results = ecosystemIndex.filter(item => 
+                    item.title.toLowerCase().includes(query) || 
+                    item.desc.toLowerCase().includes(query) || 
+                    item.type.toLowerCase().includes(query)
+                ).slice(0, 5); // Limit to 5 results
+
+                dropdown.innerHTML = '';
+                
+                if (results.length === 0) {
+                    dropdown.innerHTML = `<div class="fsb-no-results">No results for "${query}"<br><span style="font-size:0.75rem;opacity:0.6;margin-top:6px;display:block">Press Enter to perform global search</span></div>`;
+                    return;
+                }
+
+                results.forEach((res, idx) => {
+                    const a = document.createElement('a');
+                    a.href = res.url;
+                    a.className = 'fsb-result';
+                    a.setAttribute('data-index', idx);
+                    a.innerHTML = `
+                        <div class="fsb-result-title">
+                            ${res.title}
+                            <span class="fsb-result-type">${res.type}</span>
+                        </div>
+                        <div class="fsb-result-desc">${res.desc}</div>
+                    `;
+                    dropdown.appendChild(a);
+                });
+            };
+
+            input.addEventListener('input', (e) => {
+                const q = e.target.value.trim().toLowerCase();
+                selectedIndex = -1;
+                if (q.length > 0) {
+                    renderResults(q);
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                const items = dropdown.querySelectorAll('.fsb-result');
+                if (items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = (selectedIndex + 1) % items.length;
+                    updateSelection(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                    updateSelection(items);
+                } else if (e.key === 'Enter') {
+                    if (selectedIndex >= 0 && selectedIndex < items.length) {
+                        e.preventDefault();
+                        window.location.href = items[selectedIndex].href;
+                    }
+                }
+            });
+
+            const updateSelection = (items) => {
+                items.forEach((item, idx) => {
+                    if (idx === selectedIndex) item.classList.add('keyboard-selected');
+                    else item.classList.remove('keyboard-selected');
+                });
+            };
+
             form.onsubmit = (e) => {
                 e.preventDefault();
-                const q = e.target.querySelector('input').value.trim();
+                const q = input.value.trim();
                 if (q) window.location.href = `/search.html?q=${encodeURIComponent(q)}`;
             };
         }
