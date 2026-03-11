@@ -18,39 +18,21 @@ export default async function handler(req, res) {
     let cleanText = textBody || '';
     let cleanHtml = htmlBody || '';
 
-    // If the textBody looks like a raw email (has RFC headers), extract the body properly
-    const looksRaw = /^(Received:|ARC-Seal:|DKIM-Signature:|MIME-Version:|From:|Message-ID:)/im.test(cleanText);
-    if (looksRaw) {
-      // Split on the first blank line to separate headers from body
-      const parts = cleanText.split(/\r?\n\r?\n/);
-      if (parts.length > 1) {
-        // The body is everything after the first blank line
-        let rawBody = parts.slice(1).join('\n\n').trim();
-
-        // Handle quoted-printable soft line breaks and =XX encoding
-        rawBody = rawBody
-          .replace(/=\r?\n/g, '')                        // soft line breaks
-          .replace(/=[0-9A-Fa-f]{2}/g, m =>              // =XX → char
-            String.fromCharCode(parseInt(m.slice(1), 16))
-          );
-
-        // If multipart boundary exists, try to extract text/plain part
-        const boundaryMatch = cleanText.match(/boundary="([^"]+)"/i);
-        if (boundaryMatch) {
-          const boundary = boundaryMatch[1];
-          const boundaryParts = rawBody.split(new RegExp(`--${boundary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
-          for (const part of boundaryParts) {
-            if (/Content-Type:\s*text\/plain/i.test(part)) {
-              const bodyContent = part.split(/\r?\n\r?\n/).slice(1).join('\n\n').trim();
-              if (bodyContent) { cleanText = bodyContent; break; }
-            }
-          }
-        } else {
-          cleanText = rawBody;
+    // If the content looks like a raw MIME message, use PostalMime to parse it
+    if (/^(Received:|ARC-Seal:|DKIM-Signature:|MIME-Version:|From:|Message-ID:)/im.test(cleanText)) {
+      try {
+        const { default: PostalMime } = await import('postal-mime');
+        const parser = new PostalMime();
+        const parsed = await parser.parse(cleanText);
+        cleanText = parsed.text || '';
+        cleanHtml = parsed.html || '';
+      } catch (e) {
+        console.error('PostalMime parsing failed, falling back to basic extraction:', e);
+        // Fallback: Split headers and body manually if library fails
+        const parts = cleanText.split(/\r?\n\r?\n/);
+        if (parts.length > 1) {
+          cleanText = parts.slice(1).join('\n\n').replace(/=\r?\n/g, '').replace(/=[0-9A-Fa-f]{2}/g, m => String.fromCharCode(parseInt(m.slice(1), 16))).trim();
         }
-
-        // Strip any remaining header-like lines from the top
-        cleanText = cleanText.replace(/^(Content-Type|Content-Transfer-Encoding|MIME-Version)[^\n]*\n/gim, '').trim();
       }
     }
 
