@@ -1,153 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  /* Light Theme */
-  --bg: #F8F7F4;
-  --bg2: #FFFFFF;
-  --bg3: #F1EFE9;
-  --bg4: #E9E6E0;
-  --surf: #FFFFFF;
-  --bdr: #E4E1DB;
-  --bdr2: #CCC8C0;
-  --ink: #0D1117;
-  --ink2: #2A3141;
-  --ink3: #586070;
-  --ink4: #939BAC;
-  
-  /* Accents */
-  --blue: #1546C0;
-  --blue2: #5B8AF5;
-  --blue-g: rgba(21, 70, 192, 0.08);
-  --blue-b: rgba(21, 70, 192, 0.2);
-  --teal: #047857;
-  --teal2: #34D399;
-  --teal-g: rgba(4, 120, 87, 0.08);
-  --teal-b: rgba(4, 120, 87, 0.2);
-  --amber: #B45309;
-  --amb2: #FBBF24;
-  --amb-g: rgba(180, 83, 9, 0.08);
-  --amb-b: rgba(180, 83, 9, 0.2);
-  --purp: #6D28D9;
-  --purp2: #A78BFA;
-  --purp-g: rgba(109, 40, 217, 0.08);
-  --purp-b: rgba(109, 40, 217, 0.2);
-  --rose: #BE185D;
-  --rose2: #F472B6;
-  --rose-g: rgba(190, 24, 93, 0.08);
-  --rose-b: rgba(190, 24, 93, 0.2);
-  --slate: #334155;
-  --slt2: #94A3B8;
-  --slt-g: rgba(51, 65, 85, 0.08);
-  --slt-b: rgba(51, 65, 85, 0.2);
-  
-  /* Shadows */
-  --s1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 8px rgba(0, 0, 0, 0.04);
-  --s2: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --s3: 0 12px 40px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.05);
-  --s4: 0 24px 72px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
-  --r: 8px;
-  --t: 0.2s ease;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-[data-theme="dark"] {
-  --bg: #080B14;
-  --bg2: #0E1220;
-  --bg3: #141928;
-  --bg4: #1B2235;
-  --surf: #141928;
-  --bdr: rgba(255, 255, 255, 0.07);
-  --bdr2: rgba(255, 255, 255, 0.14);
-  --ink: #EEF0F8;
-  --ink2: #C4CCDC;
-  --ink3: #8290A8;
-  --ink4: #4E5A70;
-  --blue: #5B8AF5;
-  --blue2: #93B4FF;
-  --blue-g: rgba(91, 138, 245, 0.12);
-  --blue-b: rgba(91, 138, 245, 0.25);
-  --teal: #34D399;
-  --teal2: #6EE7B7;
-  --teal-g: rgba(52, 211, 153, 0.10);
-  --teal-b: rgba(52, 211, 153, 0.22);
-  --amber: #FBBF24;
-  --amb2: #FDE68A;
-  --amb-g: rgba(251, 191, 36, 0.10);
-  --amb-b: rgba(251, 191, 36, 0.22);
-  --purp: #A78BFA;
-  --purp2: #C4B5FD;
-  --purp-g: rgba(167, 139, 250, 0.10);
-  --purp-b: rgba(167, 139, 250, 0.22);
-  --rose: #F472B6;
-  --rose2: #FBCFE8;
-  --rose-g: rgba(244, 114, 182, 0.10);
-  --rose-b: rgba(244, 114, 182, 0.22);
-  --slate: #94A3B8;
-  --slt2: #CBD5E1;
-  --slt-g: rgba(148, 163, 184, 0.10);
-  --slt-b: rgba(148, 163, 184, 0.22);
-  --s1: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 8px rgba(0, 0, 0, 0.25);
-  --s2: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
-  --s3: 0 12px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
-  --s4: 0 24px 72px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.35);
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--blue) var(--bg3);
-}
-
-/* Webkit scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg3);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--blue);
-  border-radius: 100px;
-  border: 2px solid var(--bg3);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--blue2);
-}
-
-[data-theme="dark"] ::-webkit-scrollbar-track {
-  background: var(--bg2);
-}
-
-[data-theme="dark"] ::-webkit-scrollbar-thumb {
-  border-color: var(--bg2);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-outfit), sans-serif;
-  font-weight: 400;
-  line-height: 1.65;
-  overflow-x: hidden;
-  transition: background 0.4s, color 0.4s;
-  margin: 0;
-  padding: 0;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }

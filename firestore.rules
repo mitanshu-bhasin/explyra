@@ -118,6 +118,57 @@ service cloud.firestore {
       allow write: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
     }
 
+    // ─── Retired Professionals Marketplace ─────────────────────────────────────
+
+    // Users (expert/client profiles)
+    match /retired_users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // Expert profiles (public read, owner write)
+    match /retired_experts/{expertId} {
+      allow read: if true; // Public for SEO
+      allow create, update: if isSignedIn() && request.auth.uid == expertId;
+      allow delete: if isSignedIn();
+    }
+
+    // Bookings
+    match /retired_bookings/{bookingId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // Reviews (public read)
+    match /retired_reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // Knowledge posts (public read)
+    match /retired_posts/{postId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource.data.authorId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+    }
+
+    // Chat rooms
+    match /retired_chats/{chatId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && request.auth.uid in resource.data.participants;
+
+      // Messages in chat
+      match /messages/{msgId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
     // ─── Fallback: Deny everything else ───────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
