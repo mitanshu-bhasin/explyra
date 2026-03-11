@@ -48,6 +48,10 @@ body {
 header {
     text-align: center;
     margin-bottom: 60px;
+    padding: 100px 5vw 60px;
+    border-radius: 30px;
+    background: linear-gradient(rgba(248, 247, 244, 0.8), rgba(248, 247, 244, 0.95)), url('../assets/images/integrations_bg.png') center/cover no-repeat;
+    border: 1px solid var(--bdr);
 }
 
 .title {

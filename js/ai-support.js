@@ -3,7 +3,7 @@
  * Provides a chat interface for users to get support and insights via Llama 3 models.
  */
 
-const GROQ_API_KEY = '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';
+const GROQ_API_KEY = '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';
 const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export class AISupport {

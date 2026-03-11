@@ -165,6 +165,7 @@ nav {
 .hero {
     padding: 180px 5vw 80px;
     text-align: center;
+    background: linear-gradient(rgba(248, 247, 244, 0.8), rgba(248, 247, 244, 0.95)), url('../assets/images/developers_bg.png') center/cover no-repeat;
 }
 
 .hero h1 {
