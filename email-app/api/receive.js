@@ -16,15 +16,41 @@ export default async function handler(req, res) {
     const fromAddress = fromName ? `${fromName} <${fromEmail}>` : fromEmail;
 
     let cleanText = textBody || '';
-    
-    // Fallback: Strip common SMTP headers if they accidentally appear at the start of the body
-    const headerPattern = /^(Received:|ARC-Seal:|ARC-Message-Signature:|ARC-Authentication-Results:|DKIM-Signature:|X-Google-DKIM-Signature:|X-Gm-Message-State:|X-Gm-Gg:|X-Received:|MIME-Version:|From:|Date:|X-Gm-Features:|Message-ID:|Subject:|To:|Content-Type:|--)/i;
-    
-    if (headerPattern.test(cleanText)) {
-      // If we find headers, try to find the first double newline or boundary that separates headers from body
-      const bodyStart = cleanText.search(/\r?\n\r?\n/);
-      if (bodyStart !== -1) {
-        cleanText = cleanText.substring(bodyStart).trim();
+    let cleanHtml = htmlBody || '';
+
+    // If the textBody looks like a raw email (has RFC headers), extract the body properly
+    const looksRaw = /^(Received:|ARC-Seal:|DKIM-Signature:|MIME-Version:|From:|Message-ID:)/im.test(cleanText);
+    if (looksRaw) {
+      // Split on the first blank line to separate headers from body
+      const parts = cleanText.split(/\r?\n\r?\n/);
+      if (parts.length > 1) {
+        // The body is everything after the first blank line
+        let rawBody = parts.slice(1).join('\n\n').trim();
+
+        // Handle quoted-printable soft line breaks and =XX encoding
+        rawBody = rawBody
+          .replace(/=\r?\n/g, '')                        // soft line breaks
+          .replace(/=[0-9A-Fa-f]{2}/g, m =>              // =XX → char
+            String.fromCharCode(parseInt(m.slice(1), 16))
+          );
+
+        // If multipart boundary exists, try to extract text/plain part
+        const boundaryMatch = cleanText.match(/boundary="([^"]+)"/i);
+        if (boundaryMatch) {
+          const boundary = boundaryMatch[1];
+          const boundaryParts = rawBody.split(new RegExp(`--${boundary.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`));
+          for (const part of boundaryParts) {
+            if (/Content-Type:\s*text\/plain/i.test(part)) {
+              const bodyContent = part.split(/\r?\n\r?\n/).slice(1).join('\n\n').trim();
+              if (bodyContent) { cleanText = bodyContent; break; }
+            }
+          }
+        } else {
+          cleanText = rawBody;
+        }
+
+        // Strip any remaining header-like lines from the top
+        cleanText = cleanText.replace(/^(Content-Type|Content-Transfer-Encoding|MIME-Version)[^\n]*\n/gim, '').trim();
       }
     }
 
@@ -34,7 +60,7 @@ export default async function handler(req, res) {
       to: to || 'unknown',
       subject: subject || '(No Subject)',
       textBody: cleanText,
-      htmlBody: htmlBody || '',
+      htmlBody: cleanHtml,
       timestamp: new Date().toISOString(),
       read: false,
       folder: 'inbox',
