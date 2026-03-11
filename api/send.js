@@ -35,6 +35,31 @@ module.exports = async (req, res) => {
     const data = await response.json();
 
     if (response.ok) {
+      // Save to Firestore "emails" collection for the "Sent" folder
+      try {
+        const PROJECT_ID = 'explyras';
+        const API_KEY = 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0';
+        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/emails?key=${API_KEY}`;
+
+        await fetch(firestoreUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              from: { stringValue: fromAddress },
+              to: { stringValue: Array.isArray(to) ? to.join(', ') : to },
+              subject: { stringValue: subject },
+              body: { stringValue: body || '' },
+              timestamp: { stringValue: new Date().toISOString() },
+              read: { booleanValue: true },
+              folder: { stringValue: 'sent' },
+            }
+          })
+        });
+      } catch (dbError) {
+        console.error('Failed to save to Firestore:', dbError);
+      }
+
       return res.status(200).json({ success: true, id: data.id });
     } else {
       return res.status(response.status).json({ 
