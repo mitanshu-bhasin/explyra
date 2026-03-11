@@ -14,8 +14,8 @@ module.exports = async (req, res) => {
     const PROJECT_ID = 'explyras';
     const API_KEY = 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0';
 
-    // Write to Firestore "mailbox" collection using REST API
-    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/mailbox?key=${API_KEY}`;
+    // Write to Firestore "emails" collection using REST API
+    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/emails?key=${API_KEY}`;
 
     const firestoreDoc = {
       fields: {
