@@ -38,17 +38,31 @@ const authInstance = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// ============================
 // DOM References
-// ============================
 const $ = (id) => document.getElementById(id);
 const loginScreen = $('login-screen');
 const dashboard = $('dashboard');
+
+// Auth Form Containers
+const loginFormContainer = $('login-form-container');
+const signupFormContainer = $('signup-form-container');
+
+// Login Elements
 const emailLoginForm = $('email-login-form');
 const emailLoginBtn = $('email-login-btn');
-const loginEmail = $('login-email');
+const loginPrefix = $('login-prefix');
 const loginPassword = $('login-password');
-const googleLoginBtn = $('google-login-btn');
+const showSignupBtn = $('show-signup-btn');
+
+// Signup Elements
+const emailSignupForm = $('email-signup-form');
+const emailSignupBtn = $('email-signup-btn');
+const signupName = $('signup-name');
+const signupPrefix = $('signup-prefix');
+const signupPassword = $('signup-password');
+const showLoginBtn = $('show-login-btn');
+
+// Dashboard Elements
 const composeBtn = $('compose-btn');
 const composeModal = $('compose-modal');
 const closeCompose = $('close-compose');
@@ -66,12 +80,15 @@ const inboxCount = $('inbox-count');
 const refreshBtn = $('refresh-btn');
 const folderTitle = $('folder-title');
 const folderSubtitle = $('folder-subtitle');
-const emailDetailModal = $('email-detail-modal');
+
+// Detail Panel Elements
+const detailPanel = $('detail-panel');
 const detailSubject = $('detail-subject');
 const detailFrom = $('detail-from');
 const detailTime = $('detail-time');
 const detailBody = $('detail-body');
 const closeDetail = $('close-detail');
+const closeDetailDesktop = $('close-detail-desktop');
 const toastContainer = $('toast-container');
 
 // ============================
@@ -107,39 +124,64 @@ onAuthStateChanged(authInstance, (user) => {
   }
 });
 
-// ============================
-// Google Login
-// ============================
-googleLoginBtn.addEventListener('click', async () => {
+// Auth Logic - Toggles
+showSignupBtn?.addEventListener('click', () => {
+  loginFormContainer.classList.add('hidden');
+  signupFormContainer.classList.remove('hidden');
+});
+
+showLoginBtn?.addEventListener('click', () => {
+  signupFormContainer.classList.add('hidden');
+  loginFormContainer.classList.remove('hidden');
+});
+
+// Signup Logic
+emailSignupForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = signupName.value.trim();
+  const prefix = signupPrefix.value.trim().toLowerCase();
+  const password = signupPassword.value;
+
+  if (!name || !prefix || !password) {
+    showToast('Please fill in all fields', 'error');
+    return;
+  }
+
+  const email = `${prefix}@explyra.me`;
+
+  const originalText = emailSignupBtn.innerHTML;
+  emailSignupBtn.innerHTML = `
+    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+    Creating Account…
+  `;
+  emailSignupBtn.disabled = true;
+
   try {
-    const result = await signInWithPopup(authInstance, provider);
-    if (!result.user.email.endsWith('@explyra.me')) {
-      await signOut(authInstance);
-      showToast('Login restricted to @explyra.me emails', 'error');
-    }
+    const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    const userCredential = await createUserWithEmailAndPassword(authInstance, email, password);
+    await updateProfile(userCredential.user, { displayName: name });
+    showToast('Account created successfully!');
   } catch (err) {
-    console.error('Login failed:', err);
-    showToast('Login failed. Please try again.', 'error');
+    console.error('Signup failed:', err);
+    showToast(err.message || 'Signup failed', 'error');
+  } finally {
+    emailSignupBtn.innerHTML = originalText;
+    emailSignupBtn.disabled = false;
   }
 });
 
-// ============================
-// Email/Password Login
-// ============================
+// Login Logic
 emailLoginForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const email = loginEmail.value.trim();
+  const prefix = loginPrefix.value.trim().toLowerCase();
   const password = loginPassword.value;
-  
-  if (!email || !password) {
-    showToast('Please enter both email and password', 'error');
+
+  if (!prefix || !password) {
+    showToast('Please enter both username and password', 'error');
     return;
   }
 
-  if (!email.endsWith('@explyra.me')) {
-    showToast('Only @explyra.me emails are allowed', 'error');
-    return;
-  }
+  const email = `${prefix}@explyra.me`;
 
   const originalText = emailLoginBtn.innerHTML;
   emailLoginBtn.innerHTML = `
@@ -248,23 +290,29 @@ emailList.addEventListener('click', (e) => {
   showEmailDetail(email);
 });
 
-// ============================
-// Email Detail Modal
-// ============================
+// Detail Panel Logic
 function showEmailDetail(email) {
   detailSubject.textContent = email.subject || '(No Subject)';
   detailFrom.textContent = `From: ${email.from}`;
   detailTime.textContent = formatTimeFull(email.timestamp);
   detailBody.textContent = email.body || '';
-  emailDetailModal.classList.remove('hidden');
+  
+  detailPanel.classList.remove('hidden');
+  detailPanel.classList.add('flex');
 }
 
-closeDetail.addEventListener('click', () => {
-  emailDetailModal.classList.add('hidden');
-});
+function closeDetailView() {
+  detailPanel.classList.add('hidden');
+  detailPanel.classList.remove('flex');
+}
 
-emailDetailModal.addEventListener('click', (e) => {
-  if (e.target === emailDetailModal) emailDetailModal.classList.add('hidden');
+closeDetail.addEventListener('click', closeDetailView);
+closeDetailDesktop.addEventListener('click', closeDetailView);
+
+dashboard.addEventListener('click', (e) => {
+  if (window.innerWidth < 1024 && e.target === detailPanel) {
+    closeDetailView();
+  }
 });
 
 // ============================
