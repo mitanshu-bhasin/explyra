@@ -30,6 +30,8 @@ export default function ExpertDetailPage() {
   const [showReview, setShowReview] = useState(false);
   const [bookingData, setBookingData] = useState({ dateTime: "", duration: 60 as 30 | 60, notes: "" });
   const [reviewData, setReviewData] = useState({ rating: 5, comment: "" });
+  const [bookingStep, setBookingStep] = useState(1);
+  const [paymentData, setPaymentData] = useState({ cardNumber: "", expiry: "", cvv: "", name: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -59,8 +61,10 @@ export default function ExpertDetailPage() {
         price,
         notes: bookingData.notes,
       });
-      toast.success("Booking submitted! The expert will confirm shortly.");
+      toast.success("Booking confirmed! (Demo — no real charge)");
       setShowBooking(false);
+      setBookingStep(1);
+      setPaymentData({ cardNumber: "", expiry: "", cvv: "", name: "" });
     } catch (err: any) {
       toast.error(err.message || "Booking failed");
     }
@@ -117,8 +121,28 @@ export default function ExpertDetailPage() {
     );
   }
 
+  const sessionPrice = bookingData.duration === 30 ? expert.consultationPrice / 2 : expert.consultationPrice;
+
   return (
-    <div style={{ padding: "2.5rem 0" }}>
+    <div style={{ padding: "0" }}>
+      {/* DEMO Banner */}
+      <div style={{
+        background: "linear-gradient(90deg, #f59e0b, #ef4444)",
+        color: "#fff",
+        textAlign: "center",
+        padding: "0.6rem 1rem",
+        fontWeight: 700,
+        fontSize: "0.85rem",
+        letterSpacing: "0.5px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "0.5rem"
+      }}>
+        🏷️ DEMO MODE — Payments are simulated. No real charges will be made.
+      </div>
+
+      <div style={{ padding: "2.5rem 0" }}>
       <div className="container" style={{ maxWidth: "960px" }}>
         {/* Profile header */}
         <div className="card card-body" style={{ padding: "2.5rem" }}>
@@ -160,7 +184,7 @@ export default function ExpertDetailPage() {
                 </span>
                 {user && role === "client" && (
                   <>
-                    <button onClick={() => setShowBooking(true)} className="btn btn-primary">
+                    <button onClick={() => { setShowBooking(true); setBookingStep(1); }} className="btn btn-primary">
                       <Calendar size={18} /> Book Session
                     </button>
                     <button onClick={handleMessage} className="btn btn-outline">
@@ -224,40 +248,128 @@ export default function ExpertDetailPage() {
           )}
         </div>
       </div>
+      </div>
 
-      {/* Booking Modal */}
+      {/* Booking Modal — 2-Step */}
       {showBooking && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "1.5rem" }}>
-          <div className="card card-body" style={{ maxWidth: "500px", width: "100%", padding: "2rem", position: "relative" }}>
-            <button onClick={() => setShowBooking(false)} style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", cursor: "pointer", color: "var(--color-secondary)" }}>
+          <div className="card card-body" style={{ maxWidth: "520px", width: "100%", padding: "2rem", position: "relative" }}>
+            <button onClick={() => { setShowBooking(false); setBookingStep(1); }} style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", cursor: "pointer", color: "var(--color-secondary)" }}>
               <X size={24} />
             </button>
-            <h2 style={{ marginBottom: "0.5rem" }}>Book a Session</h2>
-            <p style={{ color: "var(--color-text-muted)", marginBottom: "1.5rem" }}>with {expert.fullName}</p>
-            <form onSubmit={handleBook}>
-              <div className="form-group">
-                <label className="form-label">Date & Time</label>
-                <input className="form-input" type="datetime-local" value={bookingData.dateTime} onChange={e => setBookingData(prev => ({ ...prev, dateTime: e.target.value }))} required />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Duration</label>
-                <div style={{ display: "flex", gap: "0.75rem" }}>
-                  {([30, 60] as const).map(d => (
-                    <button type="button" key={d} onClick={() => setBookingData(prev => ({ ...prev, duration: d }))}
-                      className={`btn ${bookingData.duration === d ? "btn-primary" : "btn-outline"}`} style={{ flex: 1 }}>
-                      {d} min – ${d === 30 ? expert.consultationPrice / 2 : expert.consultationPrice}
-                    </button>
-                  ))}
+
+            {/* Step indicators */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.5rem" }}>
+              <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--color-primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.85rem" }}>1</div>
+              <div style={{ flex: 1, height: "2px", background: bookingStep >= 2 ? "var(--color-primary)" : "var(--color-border)" }} />
+              <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: bookingStep >= 2 ? "var(--color-primary)" : "var(--color-border)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.85rem" }}>2</div>
+            </div>
+
+            {bookingStep === 1 ? (
+              <>
+                <h2 style={{ marginBottom: "0.5rem" }}>Book a Session</h2>
+                <p style={{ color: "var(--color-text-muted)", marginBottom: "1.5rem" }}>with {expert.fullName}</p>
+                <div className="form-group">
+                  <label className="form-label">Date & Time</label>
+                  <input className="form-input" type="datetime-local" value={bookingData.dateTime} onChange={e => setBookingData(prev => ({ ...prev, dateTime: e.target.value }))} required />
                 </div>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Notes (optional)</label>
-                <textarea className="form-input" rows={3} placeholder="What would you like to discuss?" value={bookingData.notes} onChange={e => setBookingData(prev => ({ ...prev, notes: e.target.value }))} style={{ resize: "vertical" }} />
-              </div>
-              <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={saving}>
-                {saving ? "Booking..." : "Confirm Booking"}
-              </button>
-            </form>
+                <div className="form-group">
+                  <label className="form-label">Duration</label>
+                  <div style={{ display: "flex", gap: "0.75rem" }}>
+                    {([30, 60] as const).map(d => (
+                      <button type="button" key={d} onClick={() => setBookingData(prev => ({ ...prev, duration: d }))}
+                        className={`btn ${bookingData.duration === d ? "btn-primary" : "btn-outline"}`} style={{ flex: 1 }}>
+                        {d} min – ${d === 30 ? expert.consultationPrice / 2 : expert.consultationPrice}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Notes (optional)</label>
+                  <textarea className="form-input" rows={3} placeholder="What would you like to discuss?" value={bookingData.notes} onChange={e => setBookingData(prev => ({ ...prev, notes: e.target.value }))} style={{ resize: "vertical" }} />
+                </div>
+                <button type="button" className="btn btn-primary" style={{ width: "100%" }} disabled={!bookingData.dateTime}
+                  onClick={() => setBookingStep(2)}>
+                  Continue to Payment →
+                </button>
+              </>
+            ) : (
+              <form onSubmit={handleBook}>
+                <h2 style={{ marginBottom: "0.25rem" }}>Payment Details</h2>
+                <div style={{
+                  background: "linear-gradient(90deg, #f59e0b22, #ef444422)",
+                  border: "1px solid #f59e0b55",
+                  borderRadius: "8px",
+                  padding: "0.5rem 0.75rem",
+                  marginBottom: "1.25rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  color: "#b45309"
+                }}>
+                  🏷️ DEMO — No real payment will be processed
+                </div>
+
+                {/* Order summary */}
+                <div style={{ background: "var(--color-bg-light)", borderRadius: "10px", padding: "1rem", marginBottom: "1.25rem", border: "1px solid var(--color-border)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+                    <span style={{ color: "var(--color-text-muted)" }}>Session with {expert.fullName}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+                    <span style={{ color: "var(--color-text-muted)" }}>{bookingData.duration} min consultation</span>
+                    <span style={{ fontWeight: 700 }}>${sessionPrice}</span>
+                  </div>
+                  <div style={{ borderTop: "1px solid var(--color-border)", marginTop: "0.5rem", paddingTop: "0.5rem", display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontWeight: 700 }}>Total</span>
+                    <span style={{ fontWeight: 800, fontSize: "1.15rem", color: "var(--color-primary)" }}>${sessionPrice}</span>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Cardholder Name</label>
+                  <input className="form-input" placeholder="John Doe" value={paymentData.name}
+                    onChange={e => setPaymentData(prev => ({ ...prev, name: e.target.value }))} required />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Card Number</label>
+                  <input className="form-input" placeholder="4242 4242 4242 4242" maxLength={19}
+                    value={paymentData.cardNumber}
+                    onChange={e => {
+                      const v = e.target.value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
+                      setPaymentData(prev => ({ ...prev, cardNumber: v }));
+                    }} required />
+                </div>
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label className="form-label">Expiry</label>
+                    <input className="form-input" placeholder="MM/YY" maxLength={5}
+                      value={paymentData.expiry}
+                      onChange={e => {
+                        let v = e.target.value.replace(/\D/g, "");
+                        if (v.length > 2) v = v.slice(0, 2) + "/" + v.slice(2, 4);
+                        setPaymentData(prev => ({ ...prev, expiry: v }));
+                      }} required />
+                  </div>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label className="form-label">CVV</label>
+                    <input className="form-input" placeholder="123" maxLength={4} type="password"
+                      value={paymentData.cvv}
+                      onChange={e => setPaymentData(prev => ({ ...prev, cvv: e.target.value.replace(/\D/g, "") }))} required />
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setBookingStep(1)}>
+                    ← Back
+                  </button>
+                  <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={saving}>
+                    {saving ? "Processing..." : `Pay $${sessionPrice} (Demo)`}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
