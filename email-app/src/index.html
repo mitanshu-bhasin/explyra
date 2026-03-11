@@ -63,7 +63,7 @@
         <p class="text-slate-400 text-sm">Your private, custom email client</p>
       </div>
 
-      <form id="email-login-form" class="space-y-4 mb-6">
+      <form id="email-login-form" onsubmit="return false;" class="space-y-4 mb-6">
         <input type="email" id="login-email" placeholder="Email address" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
         <input type="password" id="login-password" placeholder="Password" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
         <button type="submit" id="email-login-btn" class="btn-primary w-full text-white font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer text-sm">
@@ -199,7 +199,7 @@
           </svg>
         </button>
       </div>
-      <form id="compose-form" class="p-6">
+      <form id="compose-form" onsubmit="return false;" class="p-6">
         <div class="space-y-3 mb-6">
           <input type="email" id="compose-to" placeholder="To" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
           <input type="text" id="compose-subject" placeholder="Subject" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
@@ -244,6 +244,6 @@
   <!-- ==================== TOAST CONTAINER ==================== -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-[100] space-y-2"></div>
 
-  <script type="module" src="/src/app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
