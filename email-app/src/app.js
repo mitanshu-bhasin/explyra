@@ -15,8 +15,10 @@ import {
   collection,
   query,
   where,
-  orderBy,
   onSnapshot,
+  doc,
+  setDoc,
+  getDoc
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 // ============================
@@ -58,6 +60,7 @@ const showSignupBtn = $('show-signup-btn');
 const emailSignupForm = $('email-signup-form');
 const emailSignupBtn = $('email-signup-btn');
 const signupName = $('signup-name');
+const signupPersonalEmail = $('signup-personal-email');
 const signupPrefix = $('signup-prefix');
 const signupPassword = $('signup-password');
 const showLoginBtn = $('show-login-btn');
@@ -90,6 +93,15 @@ const detailBody = $('detail-body');
 const closeDetail = $('close-detail');
 const closeDetailDesktop = $('close-detail-desktop');
 const toastContainer = $('toast-container');
+
+// Settings Elements
+const settingsBtn = $('settings-btn');
+const settingsModal = $('settings-modal');
+const closeSettings = $('close-settings');
+const settingsForm = $('settings-form');
+const settingsPersonalEmail = $('settings-personal-email');
+const settingsForwarding = $('settings-forwarding');
+const saveSettingsBtn = $('save-settings-btn');
 
 // ============================
 // State
@@ -139,10 +151,11 @@ showLoginBtn?.addEventListener('click', () => {
 emailSignupForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = signupName.value.trim();
+  const personalEmail = signupPersonalEmail.value.trim();
   const prefix = signupPrefix.value.trim().toLowerCase();
   const password = signupPassword.value;
 
-  if (!name || !prefix || !password) {
+  if (!name || !personalEmail || !prefix || !password) {
     showToast('Please fill in all fields', 'error');
     return;
   }
@@ -160,6 +173,13 @@ emailSignupForm?.addEventListener('submit', async (e) => {
     const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     const userCredential = await createUserWithEmailAndPassword(authInstance, email, password);
     await updateProfile(userCredential.user, { displayName: name });
+    
+    // Save personal email setting
+    await setDoc(doc(db, 'users', email), {
+      personalEmail: personalEmail,
+      forwardingEnabled: false
+    });
+
     showToast('Account created successfully!');
   } catch (err) {
     console.error('Signup failed:', err);
@@ -210,27 +230,54 @@ logoutBtn.addEventListener('click', async () => {
 });
 
 // ============================
-// Load Emails (Real-time Firestore)
+// Load Emails (Real-time Firestore) Privacy Fixed
 // ============================
+let inboxEmails = [];
+let sentEmails = [];
+let unsubscribeInbox = null;
+let unsubscribeSent = null;
+
 function loadEmails() {
   showLoading(true);
 
-  const q = query(
-    collection(db, 'emails'),
-    orderBy('timestamp', 'desc')
-  );
+  if (!currentUser?.email) return;
 
-  unsubscribeEmails = onSnapshot(q, (snapshot) => {
-    emails = [];
-    snapshot.forEach((doc) => {
-      emails.push({ id: doc.id, ...doc.data() });
-    });
+  const qInbox = query(collection(db, 'emails'), where('to', '==', currentUser.email));
+  const qSent = query(collection(db, 'emails'), where('from', '==', currentUser.email));
+
+  const combineAndRender = () => {
+    // Combine and sort by timestamp descending in JS to avoid index requirements
+    emails = [...inboxEmails, ...sentEmails].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    // Deduplicate in case an email is both sent and received by the user
+    const uniqueEmails = [];
+    const seen = new Set();
+    for (const email of emails) {
+      if (!seen.has(email.id)) {
+        seen.add(email.id);
+        uniqueEmails.push(email);
+      }
+    }
+    emails = uniqueEmails;
+    
     showLoading(false);
     renderEmails();
+  };
+
+  unsubscribeInbox = onSnapshot(qInbox, (snapshot) => {
+    inboxEmails = [];
+    snapshot.forEach((doc) => inboxEmails.push({ id: doc.id, ...doc.data() }));
+    combineAndRender();
   }, (error) => {
-    console.error('Firestore error:', error);
-    showLoading(false);
-    showToast('Failed to load emails', 'error');
+    console.error('Firestore inbox error:', error);
+  });
+
+  unsubscribeSent = onSnapshot(qSent, (snapshot) => {
+    sentEmails = [];
+    snapshot.forEach((doc) => sentEmails.push({ id: doc.id, ...doc.data() }));
+    combineAndRender();
+  }, (error) => {
+    console.error('Firestore sent error:', error);
   });
 }
 
@@ -269,7 +316,7 @@ function renderEmails() {
           <span class="text-[11px] text-slate-500 flex-shrink-0 ml-3 font-medium">${formatTime(email.timestamp)}</span>
         </div>
         <p class="text-[13px] ${email.read ? 'text-slate-500' : 'text-slate-200'} font-medium truncate">${escapeHtml(email.subject)}</p>
-        <p class="text-xs text-slate-600 truncate mt-0.5 leading-relaxed">${escapeHtml((email.body || '').substring(0, 120))}</p>
+        <p class="text-xs text-slate-600 truncate mt-0.5 leading-relaxed">${escapeHtml((email.textBody || email.body || '').substring(0, 120))}</p>
       </div>
       ${!email.read ? '<div class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0 mt-3 unread-dot"></div>' : ''}
     </div>
@@ -295,7 +342,12 @@ function showEmailDetail(email) {
   detailSubject.textContent = email.subject || '(No Subject)';
   detailFrom.textContent = currentFolder === 'sent' ? `To: ${email.to}` : `From: ${email.from}`;
   detailTime.textContent = formatTimeFull(email.timestamp);
-  detailBody.textContent = email.body || '';
+  
+  if (email.htmlBody) {
+    detailBody.innerHTML = email.htmlBody; // Render HTML cleanly
+  } else {
+    detailBody.textContent = email.textBody || email.body || '';
+  }
   
   detailPanel.classList.remove('hidden');
   detailPanel.classList.add('flex');
@@ -312,6 +364,58 @@ closeDetailDesktop.addEventListener('click', closeDetailView);
 dashboard.addEventListener('click', (e) => {
   if (window.innerWidth < 1024 && e.target === detailPanel) {
     closeDetailView();
+  }
+});
+
+// ============================
+// Settings Modal Logic
+// ============================
+settingsBtn?.addEventListener('click', async () => {
+  if (!currentUser) return;
+  settingsModal.classList.remove('hidden');
+  
+  try {
+    const userDoc = await getDoc(doc(db, 'users', currentUser.email));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      settingsPersonalEmail.value = data.personalEmail || '';
+      settingsForwarding.checked = data.forwardingEnabled || false;
+    }
+  } catch (err) {
+    console.error('Error fetching settings:', err);
+    showToast('Failed to load settings', 'error');
+  }
+});
+
+closeSettings?.addEventListener('click', () => {
+  settingsModal.classList.add('hidden');
+});
+
+settingsForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!currentUser) return;
+
+  const originalText = saveSettingsBtn.innerHTML;
+  saveSettingsBtn.innerHTML = 'Saving...';
+  saveSettingsBtn.disabled = true;
+
+  try {
+    const personalEmail = settingsPersonalEmail.value.trim();
+    const forwardingEnabled = settingsForwarding.checked;
+    
+    await setDoc(doc(db, 'users', currentUser.email), {
+      personalEmail,
+      forwardingEnabled
+    }, { merge: true });
+    
+    showToast('Settings saved successfully!');
+    settingsModal.classList.add('hidden');
+  } catch (err) {
+    console.error('Error saving settings:', err);
+    showToast('Failed to save settings', 'error');
+  } finally {
+    saveSettingsBtn.innerHTML = originalText;
+    saveSettingsBtn.disabled = false;
   }
 });
 
