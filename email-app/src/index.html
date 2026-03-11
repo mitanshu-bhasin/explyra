@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MailBox — Custom Email Client</title>
+  <meta name="description" content="A modern, custom email client powered by Cloudflare and Vercel">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    body { background: #06080f; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+    .glass { background: rgba(255,255,255,0.025); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.05); }
+    .glass-strong { background: rgba(255,255,255,0.04); backdrop-filter: blur(32px); border: 1px solid rgba(255,255,255,0.07); }
+    .email-row { transition: background 0.15s ease; }
+    .email-row:hover { background: rgba(255,255,255,0.035); }
+    .nav-item { transition: all 0.15s ease; }
+    .nav-item.active { background: rgba(99,102,241,0.12); color: #a5b4fc; }
+    .nav-item:hover:not(.active) { background: rgba(255,255,255,0.04); color: #e2e8f0; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%); transition: all 0.2s ease; }
+    .btn-primary:hover { box-shadow: 0 8px 30px rgba(99,102,241,0.3); transform: translateY(-1px); }
+    .input-field { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+    .input-field:focus { border-color: rgba(99,102,241,0.4); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); outline: none; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+    .slide-up { animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1); }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    .unread-dot { animation: pulse-dot 2s ease-in-out infinite; }
+    .gradient-text { background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .logo-glow { box-shadow: 0 0 40px rgba(99,102,241,0.2), 0 0 80px rgba(139,92,246,0.1); }
+    .modal-overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); }
+  </style>
+</head>
+<body class="text-white min-h-screen overflow-hidden">
+
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center">
+    <div class="glass-strong rounded-3xl p-10 w-full max-w-md text-center slide-up">
+      <div class="mb-8">
+        <div class="w-20 h-20 btn-primary rounded-2xl flex items-center justify-center mx-auto mb-5 logo-glow">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+          </svg>
+        </div>
+        <h1 class="text-4xl font-extrabold gradient-text mb-2">MailBox</h1>
+        <p class="text-slate-400 text-sm">Your private, custom email client</p>
+      </div>
+
+      <form id="email-login-form" class="space-y-4 mb-6">
+        <input type="email" id="login-email" placeholder="Email address" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+        <input type="password" id="login-password" placeholder="Password" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+        <button type="submit" id="email-login-btn" class="btn-primary w-full text-white font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer text-sm">
+          Sign In
+        </button>
+      </form>
+
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-[1px] flex-1 bg-white/10"></div>
+        <span class="text-xs text-slate-500 font-medium">OR</span>
+        <div class="h-[1px] flex-1 bg-white/10"></div>
+      </div>
+
+      <button id="google-login-btn" class="w-full bg-white text-gray-800 font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 hover:shadow-lg hover:shadow-white/10 transition-all duration-200 cursor-pointer">
+        <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Sign in with Google
+      </button>
+
+      <p class="mt-6 text-xs text-slate-500">Secured by Firebase Authentication</p>
+    </div>
+  </div>
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <div id="dashboard" class="hidden h-screen">
+    <div class="flex h-full">
+
+      <!-- Sidebar -->
+      <aside class="w-72 glass border-r border-white/5 flex flex-col">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 px-6 py-5 border-b border-white/5">
+          <div class="w-9 h-9 btn-primary rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+            </svg>
+          </div>
+          <span class="font-bold text-lg gradient-text">MailBox</span>
+        </div>
+
+        <!-- Compose Button -->
+        <div class="px-4 pt-5 pb-2">
+          <button id="compose-btn" class="btn-primary w-full text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
+            </svg>
+            Compose
+          </button>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-3 pt-2 space-y-1">
+          <button data-folder="inbox" class="nav-item active w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium cursor-pointer">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-17.5 0V6.75A2.25 2.25 0 016.5 4.5h11.25a2.25 2.25 0 012.25 2.25v6.75m-17.25 0v4.5A2.25 2.25 0 006.5 19.5h11.25a2.25 2.25 0 002.25-2.25v-4.5"/>
+            </svg>
+            <span class="flex-1 text-left">Inbox</span>
+            <span id="inbox-count" class="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">0</span>
+          </button>
+          <button data-folder="sent" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 cursor-pointer">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+            </svg>
+            <span class="flex-1 text-left">Sent</span>
+          </button>
+        </nav>
+
+        <!-- User Profile -->
+        <div class="px-4 py-4 border-t border-white/5">
+          <div class="flex items-center gap-3">
+            <img id="user-avatar" class="w-9 h-9 rounded-full ring-2 ring-white/10" src="" alt="Avatar">
+            <div class="flex-1 min-w-0">
+              <p id="user-name" class="text-sm font-semibold truncate"></p>
+              <p id="user-email" class="text-xs text-slate-500 truncate"></p>
+            </div>
+            <button id="logout-btn" class="text-slate-500 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer" title="Sign out">
+              <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col min-w-0">
+        <!-- Header -->
+        <header class="px-8 py-4 border-b border-white/5 flex items-center justify-between flex-shrink-0">
+          <div>
+            <h2 id="folder-title" class="text-xl font-bold">Inbox</h2>
+            <p id="folder-subtitle" class="text-xs text-slate-500 mt-0.5">Your received emails</p>
+          </div>
+          <button id="refresh-btn" class="text-slate-400 hover:text-white transition-all p-2.5 rounded-xl hover:bg-white/5 cursor-pointer" title="Refresh">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/>
+            </svg>
+          </button>
+        </header>
+
+        <!-- Email List -->
+        <div id="email-list" class="flex-1 overflow-y-auto"></div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden flex-1 flex-col items-center justify-center">
+          <div class="w-20 h-20 rounded-2xl glass flex items-center justify-center mb-5">
+            <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-17.5 0V6.75A2.25 2.25 0 016.5 4.5h11.25a2.25 2.25 0 012.25 2.25v6.75m-17.25 0v4.5A2.25 2.25 0 006.5 19.5h11.25a2.25 2.25 0 002.25-2.25v-4.5"/>
+            </svg>
+          </div>
+          <p class="text-slate-400 font-medium mb-1">No emails yet</p>
+          <p class="text-slate-600 text-sm">Incoming emails will appear here</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden flex-1 flex-col items-center justify-center">
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 bg-indigo-500 rounded-full" style="animation:pulse-dot 1.2s ease-in-out infinite"></div>
+            <div class="w-2.5 h-2.5 bg-violet-500 rounded-full" style="animation:pulse-dot 1.2s ease-in-out 0.2s infinite"></div>
+            <div class="w-2.5 h-2.5 bg-purple-500 rounded-full" style="animation:pulse-dot 1.2s ease-in-out 0.4s infinite"></div>
+          </div>
+          <p class="text-slate-500 text-sm mt-4">Loading emails…</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== COMPOSE MODAL ==================== -->
+  <div id="compose-modal" class="hidden fixed inset-0 modal-overlay flex items-end sm:items-center justify-center z-50 p-4">
+    <div class="glass-strong rounded-2xl w-full max-w-2xl slide-up shadow-2xl shadow-black/40">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
+        <h3 class="font-bold text-lg">New Message</h3>
+        <button id="close-compose" class="text-slate-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="compose-form" class="p-6">
+        <div class="space-y-3 mb-6">
+          <input type="email" id="compose-to" placeholder="To" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+          <input type="text" id="compose-subject" placeholder="Subject" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+          <textarea id="compose-body" placeholder="Write your message…" rows="10" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm resize-none"></textarea>
+        </div>
+        <div class="flex items-center justify-between">
+          <button type="button" id="discard-btn" class="text-slate-500 hover:text-slate-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/5 transition-all cursor-pointer">
+            Discard
+          </button>
+          <button type="submit" id="send-btn" class="btn-primary text-white font-semibold px-8 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+            </svg>
+            Send
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== EMAIL DETAIL MODAL ==================== -->
+  <div id="email-detail-modal" class="hidden fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4">
+    <div class="glass-strong rounded-2xl w-full max-w-3xl max-h-[80vh] flex flex-col slide-up shadow-2xl shadow-black/40">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 flex-shrink-0">
+        <div class="flex-1 min-w-0 mr-4">
+          <h3 id="detail-subject" class="font-bold text-lg truncate"></h3>
+          <p id="detail-from" class="text-sm text-slate-400 mt-0.5"></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="detail-time" class="text-xs text-slate-500"></span>
+          <button id="close-detail" class="text-slate-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="detail-body" class="flex-1 overflow-y-auto px-6 py-5 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST CONTAINER ==================== -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[100] space-y-2"></div>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+name = "email-worker"
+main = "index.js"
+compatibility_date = "2024-09-01"
+
+[vars]
+WEBHOOK_URL = "https://your-app.vercel.app/api/receive"
+WEBHOOK_SECRET = "generate_a_random_secret_here"
