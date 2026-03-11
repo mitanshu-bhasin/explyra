@@ -51,6 +51,14 @@
             --section-bg: #F1EFE9;
         }
 
+        [data-theme="dark"] {
+            --primary-text: #F8F7F4;
+            --secondary-text: #939BAC;
+            --border-color: #2A3141;
+            --bg-color: #0D1117;
+            --section-bg: #161B22;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -1014,6 +1022,14 @@
                 );
             }
         });
+    </script>
+
+    <!-- Theme Initialization -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('explyra-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
     </script>
 </body>
 

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machines — Manufacturing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+</head>
+<body>
+    <div class="sidebar"></div>
+
+    <main class="main-content">
+        <header class="reveal">
+            <div>
+                <h1>Machine <span class="grad">Management</span></h1>
+                <p style="color: var(--text-muted);">Monitor equipment health, capacity, and maintenance schedules.</p>
+            </div>
+            <button class="btn btn-primary"><i class="fas fa-plus"></i> Add Machine</button>
+        </header>
+
+        <section class="stat-grid reveal">
+            <div class="glass-card">
+                <div class="stat-label">Total Machines</div>
+                <div class="stat-value" id="totalMachines">0</div>
+            </div>
+            <div class="glass-card">
+                <div class="stat-label">Units / Day (Total)</div>
+                <div class="stat-value" id="unitsPerDay">0</div>
+            </div>
+            <div class="glass-card">
+                <div class="stat-label">In Maintenance</div>
+                <div class="stat-value" style="color: var(--danger);" id="maintenanceCount">0</div>
+            </div>
+        </section>
+
+        <section class="glass-card reveal">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Machine Fleet Status</h3>
+                <div style="display: flex; gap: 10px;">
+                    <select class="btn" style="padding: 0.5rem 1rem;">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Idle</option>
+                        <option>Maintenance</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="machinesTable">
+                    <thead>
+                        <tr>
+                            <th>Machine ID</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Capacity</th>
+                            <th>Last Maintenance</th>
+                            <th>OEE (Overall Efficiency)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/data-handler.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const data = await DataHandler.fetchData('machines');
+            
+            document.getElementById('totalMachines').textContent = data.length;
+            document.getElementById('maintenanceCount').textContent = data.filter(d => d.status === 'maintenance').length;
+            document.getElementById('unitsPerDay').textContent = data.reduce((acc, curr) => acc + parseInt(curr.capacity), 0);
+
+            const tableBody = document.querySelector('#machinesTable tbody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td><strong>${item.id}</strong></td>
+                    <td>${item.name}</td>
+                    <td><span class="badge badge-${item.status}">${item.status}</span></td>
+                    <td>${item.capacity}</td>
+                    <td>${item.lastMaintenance}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: 600; font-size: 0.85rem;">${item.status === 'active' ? '92%' : (item.status === 'idle' ? '0%' : 'N/A')}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('Maintenance schedule feature coming soon!', 'info')"><i class="fas fa-tools"></i></button>
+                        <button class="btn" style="padding: 5px 10px; color: var(--danger);" onclick="deleteItem('machines', 'id', '${item.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        });
+    </script>
+</body>
+</html>

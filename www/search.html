@@ -2,6 +2,20 @@
 <html lang="en" data-theme="light">
 
 <head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TFBZ5GZ22C');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Explyra Search</title>
@@ -28,30 +42,29 @@
             --blue: #1546C0;
             --blue-g: rgba(21, 70, 192, 0.08);
             --blue-hover: #0f348f;
-            --r: 8px;
-            --r-lg: 24px;
-            --t: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --r: 12px;
+            --r-lg: 30px;
+            --t: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.1);
+            --bg-rgb: 248, 247, 244;
         }
 
         [data-theme="dark"] {
-            --bg: #080B14;
-            --surf: #141928;
-            --bdr: rgba(255, 255, 255, 0.1);
-            --ink: #EEF0F8;
-            --ink2: #C4CCDC;
-            --ink3: #8290A8;
-            --blue: #5B8AF5;
-            --blue-g: rgba(91, 138, 245, 0.15);
-            --blue-hover: #7ba2ff;
-            --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.6);
+            --bg: #0D1117;
+            --surf: #161B22;
+            --bdr: #30363D;
+            --ink: #F0F6FC;
+            --ink2: #C9D1D9;
+            --ink3: #8B949E;
+            --blue: #58A6FF;
+            --blue-g: rgba(88, 166, 255, 0.1);
+            --blue-hover: #79C0FF;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --bg-rgb: 13, 17, 23;
         }
 
-        /* ═══════════════════════════════════════════
-           RESET & BASE
-        ═══════════════════════════════════════════ */
         *,
         *::before,
         *::after {
@@ -63,26 +76,189 @@
         body {
             background: var(--bg);
             color: var(--ink);
-            font-family: 'Outfit', sans-serif;
-            font-weight: 400;
+            font-family: 'Outfit', -apple-system, sans-serif;
             line-height: 1.6;
-            transition: background 0.4s, color 0.4s;
+            transition: background 0.5s, color 0.5s;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════
+           HEADER & SEARCH BAR
+        ═══════════════════════════════════════════ */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(var(--bg-rgb), 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--bdr);
+            padding: 1rem 1.5rem;
             display: flex;
-            flex-direction: column;
-            overflow-y: scroll;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.4s;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        button {
-            cursor: pointer;
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2.5;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 690px;
+            position: relative;
+        }
+
+        .search-wrapper {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 30px;
+            padding: 0.4rem 1.2rem;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: var(--t);
+        }
+
+        .search-wrapper:focus-within {
+            border-color: var(--blue);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .search-input {
+            flex: 1;
             border: none;
             background: none;
+            outline: none;
+            padding: 0.6rem 0.5rem;
+            font-size: 1.05rem;
+            color: var(--ink);
             font-family: inherit;
+        }
+
+        .clear-btn {
+            padding: 0.5rem;
+            color: var(--ink3);
+            cursor: pointer;
+            display: none;
+            transition: color 0.2s;
+        }
+
+        .clear-btn:hover {
+            color: var(--ink);
+        }
+
+        .clear-btn.visible {
+            display: flex;
+        }
+
+        /* Hero / Home Mode Styles */
+        .home-hero {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        #app.home-mode .home-hero {
+            display: block;
+        }
+
+        .home-tagline {
+            font-size: 1.1rem;
+            color: var(--ink3);
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .search-suggestions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-chip {
+            padding: 0.5rem 1.2rem;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.3s var(--t);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Tabs System */
+        .search-tabs {
+            display: flex;
+            gap: 2rem;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--bdr);
+            background: var(--bg);
+            margin-top: -1px;
+            /* Align with header border */
+        }
+
+        .tab-item {
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ink3);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-item:hover {
+            color: var(--ink);
+        }
+
+        .tab-item.active {
+            color: var(--blue);
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--blue);
+            border-radius: 3px 3px 0 0;
         }
 
         /* ═══════════════════════════════════════════
@@ -95,376 +271,172 @@
         }
 
         /* Mode: Home */
-        #app.home-mode #header {
-            flex-direction: column;
+        #app.home-mode {
             justify-content: center;
             align-items: center;
-            min-height: 60vh;
-            padding: 2rem;
-            transition: all 0.5s ease;
+            background: var(--bg);
         }
 
-        #app.home-mode .logo-container {
-            margin-bottom: 2rem;
-            transform: scale(1.4);
-            transition: transform 0.5s ease;
+        #app.home-mode header {
+            position: relative;
+            flex-direction: column;
+            border-bottom: none;
+            background: transparent;
+            backdrop-filter: none;
+            gap: 2.5rem;
+            padding-bottom: 10vh;
+        }
+
+        #app.home-mode .logo {
+            transform: scale(1.6);
+            margin-bottom: 1rem;
+        }
+
+        #app.home-mode .search-tabs,
+        #app.home-mode main,
+        #app.home-mode .top-controls {
+            display: none !important;
         }
 
         #app.home-mode .search-container {
-            width: 100%;
+            width: 90%;
             max-width: 600px;
         }
 
-        #app.home-mode #main-content {
-            display: none;
-        }
-
         /* Mode: Results */
-        #app.results-mode #header {
-            flex-direction: row;
-            align-items: center;
-            padding: 1rem 2rem;
-            min-height: auto;
-            border-bottom: 1px solid var(--bdr);
-            background: rgba(248, 247, 244, 0.85);
-            /* Slightly transparent for glassmorphism */
-            backdrop-filter: blur(12px);
+        #app.results-mode header {
             position: sticky;
             top: 0;
-            z-index: 100;
-            transition: all 0.5s ease;
+            background: rgba(var(--bg-rgb), 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--bdr);
         }
 
-        [data-theme="dark"] #app.results-mode #header {
-            background: rgba(8, 11, 20, 0.85);
+        .results-list {
+            max-width: 650px;
         }
 
-        #app.results-mode .logo-container {
-            margin-bottom: 0;
-            margin-right: 2rem;
-            transform: scale(1);
-            transition: transform 0.5s ease;
-        }
-
-        #app.results-mode .search-container {
-            max-width: 700px;
-            width: 100%;
-            flex-grow: 1;
-        }
-
-        #app.results-mode #main-content {
-            display: block;
-            flex-grow: 1;
-            padding: 2rem;
-            max-width: 800px;
-            margin-left: 120px;
-            /* Offset for Google-like alignment */
-            animation: fadeIn 0.5s ease;
-        }
-
-        @media (max-width: 768px) {
-            #app.results-mode #header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            #app.results-mode .logo-container {
-                margin-right: 0;
-            }
-
-            #app.results-mode #main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-        }
-
-        /* ═══════════════════════════════════════════
-           COMPONENTS
-        ═══════════════════════════════════════════ */
-
-        /* Logo */
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--ink);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-
-        .logo-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: var(--blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2.2;
-            stroke-linecap: round;
-        }
-
-        /* Search Bar (Glassmorphism + clean tech) */
-        .search-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            background: var(--surf);
-            border: 1px solid var(--bdr);
-            border-radius: 30px;
-            padding: 0.2rem 1rem;
-            box-shadow: var(--shadow);
-            transition: var(--t);
-            z-index: 10;
-        }
-
-        .search-wrapper:hover,
-        .search-wrapper.active {
-            box-shadow: var(--shadow-hover);
-            border-color: var(--blue);
-        }
-
-        .search-icon {
-            color: var(--ink3);
-            margin-right: 0.5rem;
-        }
-
-        .search-input {
-            flex-grow: 1;
-            border: none;
-            background: none;
-            padding: 0.8rem 0;
-            font-size: 1.1rem;
-            color: var(--ink);
-            outline: none;
-            font-family: inherit;
-        }
-
-        .search-input::placeholder {
-            color: var(--ink4);
-        }
-
-        .search-btn {
-            background: var(--blue-g);
-            color: var(--blue);
-            padding: 0.5rem 1.2rem;
-            border-radius: 20px;
-            font-weight: 500;
-            transition: var(--t);
-            margin-left: 0.5rem;
-        }
-
-        .search-btn:hover {
-            background: var(--blue);
-            color: #fff;
-        }
-
-        /* Dropdown Suggestions */
-        .suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--surf);
-            border: 1px solid var(--bdr);
-            border-radius: 16px;
-            margin-top: 0.5rem;
-            box-shadow: var(--shadow-hover);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 50;
-        }
-
-        .search-wrapper.active .suggestions {
-            display: flex;
-        }
-
-        .suggestion-item {
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            color: var(--ink2);
-        }
-
-        .suggestion-item:hover,
-        .suggestion-item.selected {
-            background: var(--bg);
-            color: var(--ink);
-        }
-
-        /* Controls (Theme toggle) */
-        .top-controls {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-        }
-
-        #app.results-mode .top-controls {
-            position: static;
-            margin-left: auto;
-        }
-
-        .theme-toggle-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--surf);
-            border: 1px solid var(--bdr);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--ink);
-            box-shadow: var(--shadow);
-            transition: var(--t);
-        }
-
-        .theme-toggle-btn:hover {
-            border-color: var(--blue);
-            color: var(--blue);
-        }
-
-        /* Results Area */
-        .meta-stats {
+        .meta-text {
             font-size: 0.85rem;
             color: var(--ink3);
             margin-bottom: 1.5rem;
         }
 
         .result-item {
-            margin-bottom: 2rem;
-            max-width: 650px;
+            margin-bottom: 2.5rem;
+            animation: slideUp 0.6s var(--t) forwards;
         }
 
-        .result-url {
-            font-size: 0.85rem;
-            color: var(--ink3);
+        .r-link {
+            display: block;
+            text-decoration: none;
             margin-bottom: 0.2rem;
+        }
+
+        .r-url {
+            font-size: 0.85rem;
+            color: var(--ink2);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
-        .result-url img {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-        }
-
-        .result-title {
-            font-size: 1.3rem;
-            color: var(--blue);
+        .r-title {
+            font-size: 1.25rem;
             font-weight: 500;
-            margin-bottom: 0.3rem;
+            color: var(--blue);
+            margin-bottom: 0.4rem;
             display: inline-block;
-            text-decoration: none;
         }
 
-        .result-title:hover {
+        .r-title:hover {
             text-decoration: underline;
         }
 
-        [data-theme="dark"] .result-title {
-            color: var(--blue2);
-        }
-
-        .result-snippet {
+        .r-snippet {
             font-size: 0.95rem;
             color: var(--ink2);
             line-height: 1.6;
         }
 
-        .result-snippet b {
-            color: var(--ink);
-            font-weight: 600;
+        .badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
         }
 
-        /* Pagination */
-        .pagination {
+        .badge-update {
+            background: #E1F5FE;
+            color: #01579B;
+        }
+
+        .badge-doc {
+            background: #F3E5F5;
+            color: #4A148C;
+        }
+
+        .badge-solution {
+            background: #E8F5E9;
+            color: #1B5E20;
+        }
+
+        .badge-site {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        /* Sidebar - Only on Desktop */
+        .sidebar {
             display: flex;
-            gap: 0.5rem;
-            margin-top: 3rem;
-            margin-bottom: 4rem;
-            align-items: center;
+            flex-direction: column;
+            gap: 2rem;
         }
 
-        .page-btn {
-            padding: 0.5rem 1rem;
-            border-radius: var(--r);
+        .side-card {
             background: var(--surf);
             border: 1px solid var(--bdr);
-            color: var(--ink2);
-            font-weight: 500;
-            transition: var(--t);
+            border-radius: 16px;
+            padding: 1.5rem;
         }
 
-        .page-btn:hover:not(:disabled) {
-            border-color: var(--blue);
-            color: var(--blue);
-            background: var(--blue-g);
-        }
+        /* Responsiveness */
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
 
-        .page-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+            .sidebar {
+                display: none;
+            }
 
-        .page-num {
-            padding: 0.5rem 0.8rem;
-            border-radius: var(--r);
-            cursor: pointer;
-            transition: var(--t);
-        }
+            header {
+                flex-wrap: wrap;
+            }
 
-        .page-num.active {
-            background: var(--blue);
-            color: white;
-            font-weight: 600;
-        }
+            .logo {
+                order: 1;
+            }
 
-        .page-num:hover:not(.active) {
-            background: var(--bg);
-        }
+            .top-controls {
+                order: 2;
+                margin-left: auto;
+            }
 
-        /* States Loader / Error */
-        .loader {
-            display: none;
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--bdr);
-            border-top-color: var(--blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 3rem auto;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+            .search-container {
+                order: 3;
+                width: 100%;
+                max-width: none;
             }
         }
 
-        @keyframes fadeIn {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
 
             to {
@@ -473,24 +445,46 @@
             }
         }
 
-        .error-msg {
-            color: #E11D48;
-            background: rgba(225, 29, 72, 0.1);
-            padding: 1rem;
-            border-radius: var(--r);
-            border: 1px solid rgba(225, 29, 72, 0.2);
-            margin-bottom: 2rem;
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bdr);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 4rem auto;
             display: none;
         }
 
-        /* Footer */
-        footer {
-            margin-top: auto;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
             text-align: center;
-            padding: 1.5rem;
-            font-size: 0.85rem;
+            padding: 4rem 2rem;
+            display: none;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
             color: var(--ink3);
-            border-top: 1px solid var(--bdr);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .empty-state p {
+            color: var(--ink3);
         }
     </style>
 
@@ -516,426 +510,426 @@
 <body>
 
     <div id="app" class="home-mode">
-
-        <!-- Top Controls (Theme) -->
-        <div class="top-controls">
-            <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-            </button>
-        </div>
-
-        <!-- Header Section -->
-        <header id="header">
-            <div class="logo-container" id="logo-btn">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                        </svg>
-                    </div>
-                    <span>Explyra</span>
+        <!-- Sticky Header -->
+        <header id="main-header">
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+            <div class="logo" id="logo-btn" style="cursor: pointer;">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
                 </div>
+                <span>Explyra</span>
             </div>
 
             <div class="search-container">
+                <!-- Home Hero (Visible only in home-mode) -->
+                <div class="home-hero">
+                    <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 0.5rem;">Explyra
+                        Search</h1>
+                    <p class="home-tagline">Search the entire Explyra ecosystem instantly.</p>
+                </div>
+
                 <div class="search-wrapper" id="search-wrapper">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search Explyra..."
+                        autocomplete="off" spellcheck="false" />
+
+                    <div id="clear-btn" class="clear-btn" title="Clear search">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </div>
+
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="cursor: pointer; margin-left: 10px;" id="search-btn">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input type="text" id="search-input" class="search-input" placeholder="Search Explyra..."
-                        autocomplete="off" spellcheck="false" />
-                    <button class="search-btn" id="search-btn">Explyra Search</button>
-
-                    <!-- Suggestions Dropdown Mock -->
-                    <div class="suggestions" id="suggestions-box">
-                        <div class="suggestion-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg> explyra developer utilities</div>
-                        <div class="suggestion-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg> recent search example</div>
-                    </div>
                 </div>
+
+                <!-- Suggestions Chips (Home Mode) -->
+                <div class="search-suggestions" id="suggestions-chips">
+                    <span class="suggestion-chip">Next.js Docs</span>
+                    <span class="suggestion-chip">Expense Tracker</span>
+                    <span class="suggestion-chip">Latest Updates</span>
+                    <span class="suggestion-chip">Health Manager</span>
+                </div>
+            </div>
+
+            <div class="top-controls">
+                <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme"></button>
             </div>
         </header>
 
+        <!-- Category Tabs -->
+        <nav class="search-tabs" id="search-tabs" style="display: none;">
+            <div class="tab-item active" data-category="all">All</div>
+            <div class="tab-item" data-category="updates">Updates</div>
+            <div class="tab-item" data-category="docs">Docs</div>
+            <div class="tab-item" data-category="solutions">Solutions</div>
+            <div class="tab-item" data-category="web">Web</div>
+        </nav>
+
         <!-- Main Results Content -->
         <main id="main-content">
-            <div id="error-container" class="error-msg"></div>
-            <div id="loader" class="loader"></div>
+            <div class="results-column">
+                <div id="error-container" class="error-msg" style="display: none;"></div>
+                <div id="loader" class="loader"></div>
+                <div id="results-meta" class="meta-text"></div>
 
-            <div id="results-meta" class="meta-stats"></div>
-            <div id="results-container"></div>
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="12"></line>
+                        <line x1="11" y1="14" x2="11" y2="14.5"></line>
+                    </svg>
+                    <h3>No results found</h3>
+                    <p>We couldn't find anything matching your search. Try different keywords or check out our <a
+                            href="/docs" style="color: var(--blue);">documentation</a>.</p>
+                </div>
 
-            <div id="pagination" class="pagination" style="display: none;">
-                <button class="page-btn" id="prev-btn">Previous</button>
-                <div id="page-numbers" style="display:flex; gap: 0.3rem;"></div>
-                <button class="page-btn" id="next-btn">Next</button>
+                <div id="results-list" class="results-list"></div>
             </div>
+
+            <aside class="sidebar">
+                <div class="side-card">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1rem;">About Explyra Search</h3>
+                    <p style="font-size: 0.85rem; color: var(--ink3);">Searching locally indexed content from Explyra
+                        Suite. No external APIs used, ensuring 100% privacy.</p>
+                </div>
+                <!-- Future dynamic widgets can go here -->
+            </aside>
         </main>
 
         <!-- Footer -->
         <footer>
             &copy; <span id="year"></span> Explyra. All rights reserved. Built for developers.
-        
-            <div class="foot-socials-wrapper" style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136, 136, 136, 0.2); padding-top: 20px;">
-        <p style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">Follow Us</p>
-        <div class="foot-socials" style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center;">
-            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details" target="_blank" rel="noopener noreferrer" title="Facebook" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
-            </a>
-            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" title="Instagram" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"/></svg>
-            </a>
-            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" title="YouTube" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"/></svg>
-            </a>
-            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" title="LinkedIn" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </a>
-            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" title="Threads" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.28 12.3c-.023-.5-.224-.954-.575-1.282-.35-.328-.823-.512-1.323-.512-.5 0-.974.184-1.324.512-.35.328-.552.782-.575 1.282h3.797zm-.05-1.785c.616.143 1.158.465 1.583.94l1.248-1.127c-.6-.71-1.378-1.23-2.26-1.51-.882-.28-1.84-.316-2.738-.106-2.115.485-3.69 2.3-3.69 4.49 0 2.515 2.036 4.5 4.55 4.5 1.528 0 2.923-.74 3.794-1.954l-1.386-1.026c-.66.924-1.72 1.48-2.85 1.48-1.683 0-3.05-1.32-3.05-2.95 0-1.65 1.34-3 3-3 .67 0 1.31.22 1.83.62l-1.19 1.48h-1.6v1.5h3.69v-1.343l1.05-1.3Z"/></svg>
-            </a>
-            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-            </a>
-        </div>
+
+            <div class="foot-socials-wrapper"
+                style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136, 136, 136, 0.2); padding-top: 20px;">
+                <p
+                    style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">
+                    Follow Us</p>
+                <div class="foot-socials"
+                    style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center;">
+                    <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)"
+                        style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details"
+                        target="_blank" rel="noopener noreferrer" title="Facebook"
+                        style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer"
+                        title="Instagram" style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer"
+                        title="YouTube" style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer"
+                        title="LinkedIn" style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer"
+                        title="Threads" style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M14.28 12.3c-.023-.5-.224-.954-.575-1.282-.35-.328-.823-.512-1.323-.512-.5 0-.974.184-1.324.512-.35.328-.552.782-.575 1.282h3.797zm-.05-1.785c.616.143 1.158.465 1.583.94l1.248-1.127c-.6-.71-1.378-1.23-2.26-1.51-.882-.28-1.84-.316-2.738-.106-2.115.485-3.69 2.3-3.69 4.49 0 2.515 2.036 4.5 4.55 4.5 1.528 0 2.923-.74 3.794-1.954l-1.386-1.026c-.66.924-1.72 1.48-2.85 1.48-1.683 0-3.05-1.32-3.05-2.95 0-1.65 1.34-3 3-3 .67 0 1.31.22 1.83.62l-1.19 1.48h-1.6v1.5h3.69v-1.343l1.05-1.3Z" />
+                        </svg>
+                    </a>
+                    <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub"
+                        style="color: var(--text-2, #888); transition: color 0.2s;"
+                        onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
-    </footer>
-    </div>
+
+    <!-- Firebase SDKs (v9 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        /* ═══════════════════════════════════════════
-           STATE AND CONFIGURATION
-        ═══════════════════════════════════════════ */
-        const CONFIG = {
-            // REPLACE THESE WITH REAL GOOGLE CUSTOM SEARCH CREDENTIALS
-            API_KEY: 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0',
-            CX_ID: 'c57fb5273f98f49c1',
-            RESULTS_PER_PAGE: 10
-        };
-
         const state = {
             query: '',
-            startIndex: 1,
-            totalResults: 0,
+            allResults: { updates: [], docs: [], solutions: [], web: [] },
+            activeCategory: 'all',
             isLoading: false
         };
 
-        /* ═══════════════════════════════════════════
-           DOM ELEMENTS
-        ═══════════════════════════════════════════ */
-        const app = document.getElementById('app');
-        const searchInput = document.getElementById('search-input');
-        const searchBtn = document.getElementById('search-btn');
-        const searchWrapper = document.getElementById('search-wrapper');
-        const suggestionsBox = document.getElementById('suggestions-box');
-        const logoBtn = document.getElementById('logo-btn');
-
-        const resultsContainer = document.getElementById('results-container');
-        const resultsMeta = document.getElementById('results-meta');
-        const loader = document.getElementById('loader');
-        const errorContainer = document.getElementById('error-container');
-        const pagination = document.getElementById('pagination');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const pageNumbers = document.getElementById('page-numbers');
-
-        const themeToggleBtn = document.getElementById('theme-toggle');
+        const elements = {
+            app: document.getElementById('app'),
+            header: document.getElementById('main-header'),
+            searchInput: document.getElementById('search-input'),
+            searchBtn: document.getElementById('search-btn'),
+            clearBtn: document.getElementById('clear-btn'),
+            searchWrapper: document.getElementById('search-wrapper'),
+            tabs: document.getElementById('search-tabs'),
+            resultsList: document.getElementById('results-list'),
+            resultsMeta: document.getElementById('results-meta'),
+            loader: document.getElementById('loader'),
+            emptyState: document.getElementById('empty-state'),
+            errorContainer: document.getElementById('error-container'),
+            logoBtn: document.getElementById('logo-btn'),
+            tabItems: document.querySelectorAll('.tab-item'),
+            themeToggle: document.getElementById('theme-toggle'),
+            suggestionChips: document.querySelectorAll('.suggestion-chip')
+        };
 
         /* ═══════════════════════════════════════════
-           THEME MANAGEMENT
+           THEME & INITIALIZATION
         ═══════════════════════════════════════════ */
-        function initTheme() {
-            const storedTheme = localStorage.getItem('explyra-theme') || 'light';
-            document.documentElement.setAttribute('data-theme', storedTheme);
-            updateThemeIcon(storedTheme);
-        }
+        function init() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
 
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('explyra-theme', newTheme);
-            updateThemeIcon(newTheme);
+            const urlParams = new URLSearchParams(window.location.search);
+            const q = urlParams.get('q');
+            if (q) {
+                elements.searchInput.value = q;
+                triggerSearch(q);
+                elements.clearBtn.classList.add('visible');
+            }
         }
 
         function updateThemeIcon(theme) {
-            if (theme === 'dark') {
-                themeToggleBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-            } else {
-                themeToggleBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
-            }
+            elements.themeToggle.innerHTML = theme === 'dark'
+                ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+                : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
         }
 
-        themeToggleBtn.addEventListener('click', toggleTheme);
-        initTheme();
-
-        /* ═══════════════════════════════════════════
-           EVENT LISTENERS (Search interactions)
-        ═══════════════════════════════════════════ */
-
-        // Auto-focus logic
-        searchInput.addEventListener('focus', () => {
-            if (searchInput.value.trim().length > 0) {
-                searchWrapper.classList.add('active');
-            }
-        });
-
-        searchInput.addEventListener('blur', () => {
-            // Small timeout to allow clicking on suggestions
-            setTimeout(() => searchWrapper.classList.remove('active'), 200);
-        });
-
-        searchInput.addEventListener('input', (e) => {
-            if (e.target.value.trim().length > 0) {
-                searchWrapper.classList.add('active');
-            } else {
-                searchWrapper.classList.remove('active');
-            }
-        });
-
-        searchInput.addEventListener('keydown', (e) => {
-            // Handle suggestions navigation with up/down arrows
-            const items = document.querySelectorAll('.suggestion-item');
-            let selectedIndex = Array.from(items).findIndex(el => el.classList.contains('selected'));
-
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (selectedIndex < items.length - 1) {
-                    if (selectedIndex >= 0) items[selectedIndex].classList.remove('selected');
-                    items[selectedIndex + 1].classList.add('selected');
-                    searchInput.value = items[selectedIndex + 1].textContent.trim();
-                }
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (selectedIndex > 0) {
-                    items[selectedIndex].classList.remove('selected');
-                    items[selectedIndex - 1].classList.add('selected');
-                    searchInput.value = items[selectedIndex - 1].textContent.trim();
-                }
-            } else if (e.key === 'Enter') {
-                triggerSearch(searchInput.value);
-                searchWrapper.classList.remove('active');
-            }
-        });
-
-        searchBtn.addEventListener('click', () => {
-            triggerSearch(searchInput.value);
-        });
-
-        logoBtn.addEventListener('click', () => {
-            resetToHome();
-        });
-
-        // Pagination listeners
-        prevBtn.addEventListener('click', () => {
-            if (state.startIndex > 1) {
-                state.startIndex = Math.max(1, state.startIndex - CONFIG.RESULTS_PER_PAGE);
-                executeSearch();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            state.startIndex += CONFIG.RESULTS_PER_PAGE;
-            executeSearch();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        elements.themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('explyra-theme', target);
+            updateThemeIcon(target);
         });
 
         /* ═══════════════════════════════════════════
-           SEARCH LOGIC
+           SEARCH ACTIONS
         ═══════════════════════════════════════════ */
-
-        function triggerSearch(query) {
-            query = query.trim();
-            if (!query) return;
-
-            state.query = query;
-            state.startIndex = 1;
-
-            // Switch layout to results mode
-            app.classList.remove('home-mode');
-            app.classList.add('results-mode');
-
+        function triggerSearch(q) {
+            q = q.trim();
+            if (!q) return;
+            state.query = q;
+            elements.app.classList.remove('home-mode');
+            elements.app.classList.add('results-mode');
+            elements.tabs.style.display = 'flex';
             executeSearch();
         }
 
-        function resetToHome() {
-            app.classList.remove('results-mode');
-            app.classList.add('home-mode');
-            searchInput.value = '';
-            resultsContainer.innerHTML = '';
-            resultsMeta.innerHTML = '';
-            pagination.style.display = 'none';
-            errorContainer.style.display = 'none';
+        elements.searchInput.addEventListener('input', e => {
+            if (e.target.value.length > 0) {
+                elements.clearBtn.classList.add('visible');
+            } else {
+                elements.clearBtn.classList.remove('visible');
+            }
+        });
+
+        elements.clearBtn.addEventListener('click', () => {
+            elements.searchInput.value = '';
+            elements.clearBtn.classList.remove('visible');
+            elements.searchInput.focus();
+        });
+
+        elements.searchInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                triggerSearch(elements.searchInput.value);
+            }
+        });
+
+        // Suggestion chips
+        elements.suggestionChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const q = chip.textContent;
+                elements.searchInput.value = q;
+                elements.clearBtn.classList.add('visible');
+                triggerSearch(q);
+            });
+        });
+
+        // Ensure both the button and the icon trigger search
+        elements.searchBtn.addEventListener('click', () => triggerSearch(elements.searchInput.value));
+        elements.logoBtn.addEventListener('click', () => {
+            elements.app.classList.add('home-mode');
+            elements.app.classList.remove('results-mode');
+            elements.tabs.style.display = 'none';
+            elements.resultsList.innerHTML = '';
+            elements.resultsMeta.innerHTML = '';
+            elements.searchInput.value = '';
+            elements.clearBtn.classList.remove('visible');
+            elements.emptyState.style.display = 'none';
+        });
+
+        // Tab Switching
+        elements.tabItems.forEach(tab => {
+            tab.addEventListener('click', () => {
+                elements.tabItems.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                state.activeCategory = tab.dataset.category;
+                renderResults();
+            });
+        });
+
+        async function fetchLocalData(q) {
+            try {
+                const res = await fetch('/sitemap.xml');
+                const xml = await (new DOMParser()).parseFromString(await res.text(), 'text/xml');
+                const urls = Array.from(xml.querySelectorAll('loc')).map(l => l.textContent);
+                const terms = q.toLowerCase().split(' ');
+
+                const results = { docs: [], solutions: [], web: [] };
+                urls.forEach(url => {
+                    const path = url.toLowerCase();
+                    const matchCount = terms.filter(t => path.includes(t)).length;
+                    if (matchCount === 0) return;
+
+                    let title = url.split('/').filter(p => p).pop().replace('.html', '').replace(/-/g, ' ');
+                    if (!title || title === 'index') {
+                        const parts = url.split('/').filter(p => p);
+                        title = parts[parts.length - 2] || "Explyra Page";
+                    }
+                    title = title.replace(/%20/g, ' ').split('?')[0];
+                    title = title.charAt(0).toUpperCase() + title.slice(1);
+
+                    const item = {
+                        title, link: url,
+                        snippet: `Part of the Explyra ecosystem. Found at: ${url.replace('https://explyra.me', '')}`,
+                        score: matchCount
+                    };
+
+                    if (path.includes('/docs/')) results.docs.push(item);
+                    else if (path.includes('/solutions/')) results.solutions.push(item);
+                    else results.web.push(item);
+                });
+                return results;
+            } catch (e) { return { docs: [], solutions: [], web: [] }; }
+        }
+
+        async function fetchUpdates(q) {
+            if (!window.db) return [];
+            try {
+                const terms = q.toLowerCase().split(' ');
+                const snap = await window.db.collection('updates').where('published', '==', true).get();
+                const matches = [];
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const t = (d.title || '').toLowerCase();
+                    const s = (d.summary || '').toLowerCase();
+                    if (terms.some(term => t.includes(term) || s.includes(term))) {
+                        matches.push({
+                            title: d.title,
+                            link: `/updates/post.html?id=${doc.id}`,
+                            snippet: d.summary || 'Explyra Update post.'
+                        });
+                    }
+                });
+                return matches;
+            } catch (e) { return []; }
         }
 
         async function executeSearch() {
-            if (!state.query) return;
+            elements.loader.style.display = 'block';
+            elements.resultsList.innerHTML = '';
+            elements.resultsMeta.innerHTML = '';
+            elements.emptyState.style.display = 'none';
 
-            // UI Reset
-            resultsContainer.innerHTML = '';
-            resultsMeta.innerHTML = '';
-            pagination.style.display = 'none';
-            errorContainer.style.display = 'none';
-            loader.style.display = 'block';
-            state.isLoading = true;
+            const [local, updates] = await Promise.all([fetchLocalData(state.query), fetchUpdates(state.query)]);
+            state.allResults = { ...local, updates };
 
-            try {
-                const url = `https://www.googleapis.com/customsearch/v1?key=${CONFIG.API_KEY}&cx=${CONFIG.CX_ID}&q=${encodeURIComponent(state.query)}&start=${state.startIndex}`;
-
-                const response = await fetch(url);
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'Failed to fetch search results.');
-                }
-
-                const data = await response.json();
-                renderResults(data);
-
-            } catch (error) {
-                console.error('Search error:', error);
-                showError(error.message);
-            } finally {
-                loader.style.display = 'none';
-                state.isLoading = false;
-            }
+            elements.loader.style.display = 'none';
+            renderResults();
         }
 
-        function renderResults(data) {
-            // Meta stats
-            const searchTime = data.searchInformation?.formattedSearchTime || '0.00';
-            const totalNum = data.searchInformation?.formattedTotalResults || '0';
-            resultsMeta.innerHTML = `About ${totalNum} results (${searchTime} seconds)`;
+        function renderResults() {
+            let targetSet = [];
+            const cat = state.activeCategory;
 
-            state.totalResults = parseInt(data.searchInformation?.totalResults || '0');
+            if (cat === 'all') {
+                targetSet = [
+                    ...state.allResults.updates.map(r => ({ ...r, type: 'update' })),
+                    ...state.allResults.docs.map(r => ({ ...r, type: 'doc' })),
+                    ...state.allResults.solutions.map(r => ({ ...r, type: 'solution' })),
+                    ...state.allResults.web.map(r => ({ ...r, type: 'site' }))
+                ];
+            } else if (cat === 'updates') targetSet = state.allResults.updates.map(r => ({ ...r, type: 'update' }));
+            else if (cat === 'docs') targetSet = state.allResults.docs.map(r => ({ ...r, type: 'doc' }));
+            else if (cat === 'solutions') targetSet = state.allResults.solutions.map(r => ({ ...r, type: 'solution' }));
+            else if (cat === 'web') targetSet = state.allResults.web.map(r => ({ ...r, type: 'site' }));
 
-            // Results
-            if (data.items && data.items.length > 0) {
-                resultsContainer.innerHTML = data.items.map(item => createResultItemHTML(item)).join('');
-                setupPagination();
-            } else {
-                resultsContainer.innerHTML = `<p style="color: var(--ink2); font-size: 1.1rem; margin-top: 2rem;">No documents match your search for <b>${state.query}</b>.</p>`;
-                pagination.style.display = 'none';
-            }
-        }
-
-        function createResultItemHTML(item) {
-            // Highlight keywords in snippet
-            let snippet = item.htmlSnippet || item.snippet || '';
-            if (!item.htmlSnippet) {
-                // Basic highlighter if htmlSnippet isn't available
-                const qRegex = new RegExp(`(${state.query.split(' ').join('|')})`, 'gi');
-                snippet = snippet.replace(qRegex, '<b>$1</b>');
-            }
-
-            // Get favicon domain for display
-            const domain = new URL(item.link).hostname;
-            const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
-
-            const displayLink = item.displayLink || domain;
-
-            return `
-            <div class="result-item">
-                <div class="result-url">
-                    <img src="${faviconUrl}" alt="" loading="lazy"/> 
-                    <span>${displayLink}</span>
-                </div>
-                <a href="${item.link}" target="_blank" rel="noopener" class="result-title">
-                    ${item.htmlTitle || item.title}
-                </a>
-                <div class="result-snippet">
-                    ${snippet}
-                </div>
-            </div>
-        `;
-        }
-
-        function setupPagination() {
-            if (state.totalResults <= CONFIG.RESULTS_PER_PAGE) {
-                pagination.style.display = 'none';
+            if (targetSet.length === 0) {
+                elements.resultsList.innerHTML = '';
+                elements.resultsMeta.innerHTML = `About 0 results for "${state.query}"`;
+                elements.emptyState.style.display = 'block';
                 return;
             }
 
-            pagination.style.display = 'flex';
-            prevBtn.disabled = state.startIndex <= 1;
-
-            // Google Custom Search API only supports up to 100 pages (start index 100)
-            const maxStart = 100;
-            nextBtn.disabled = state.startIndex + CONFIG.RESULTS_PER_PAGE > state.totalResults || state.startIndex >= maxStart;
-
-            // Render page numbers (simplified standard google pagination)
-            const currentPage = Math.floor((state.startIndex - 1) / CONFIG.RESULTS_PER_PAGE) + 1;
-
-            let html = '';
-            // Show up to 5 page numbers around the current page
-            const startPage = Math.max(1, currentPage - 5);
-            const endPage = Math.min(Math.ceil(Math.min(state.totalResults, 100) / CONFIG.RESULTS_PER_PAGE), startPage + 9);
-
-            for (let i = startPage; i <= endPage; i++) {
-                if (i === currentPage) {
-                    html += `<div class="page-num active">${i}</div>`;
-                } else {
-                    html += `<div class="page-num" onclick="goToPage(${i})">${i}</div>`;
-                }
-            }
-            pageNumbers.innerHTML = html;
+            elements.emptyState.style.display = 'none';
+            elements.resultsMeta.innerHTML = `About ${targetSet.length} results for "${state.query}"`;
+            elements.resultsList.innerHTML = targetSet.map(item => `
+                <div class="result-item">
+                    <a href="${item.link}" class="r-link">
+                        <div class="r-url">
+                            <img src="https://www.google.com/s2/favicons?domain=explyra.me&sz=32" alt=""/>
+                            <span>explyra.me${item.link.replace('https://explyra.me', '')}</span>
+                        </div>
+                    </a>
+                    <a href="${item.link}" class="r-title">${item.title}</a>
+                    <span class="badge badge-${item.type}">${item.type}</span>
+                    <div class="r-snippet">${item.snippet}</div>
+                </div>
+            `).join('');
         }
 
-        window.goToPage = function (pageNum) {
-            state.startIndex = ((pageNum - 1) * CONFIG.RESULTS_PER_PAGE) + 1;
-            executeSearch();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        function showError(message) {
-            errorContainer.textContent = `Error: ${message}. 
-        Please ensure you have configured a valid Google Custom Search API Key and Search Engine ID (CX) in the code.`;
-            errorContainer.style.display = 'block';
-        }
-
-        /* ═══════════════════════════════════════════
-           MOCK RESULTS (For Demonstration purposes)
-        ═══════════════════════════════════════════ */
-        function renderMockResults(query) {
-            const mockData = {
-                searchInformation: {
-                    formattedSearchTime: "0.42",
-                    formattedTotalResults: "1,420,000",
-                    totalResults: "1420000"
-                },
-                items: Array(10).fill().map((_, i) => ({
-                    title: `${query.charAt(0).toUpperCase() + query.slice(1)} - Example Result ${state.startIndex + i}`,
-                    link: `https://example.com/result/${state.startIndex + i}`,
-                    displayLink: 'example.com',
-                    snippet: `Provides comprehensive documentation, tools, and resources related to <b>${query}</b>. Designed by Explyra to help developers build better applications faster...`
-                }))
-            };
-            renderResults(mockData);
-        }
+        init();
     </script>
 
 </body>

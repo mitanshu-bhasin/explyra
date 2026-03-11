@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
   <ShortName>Explyra</ShortName>
-  <Description>Explyra - Advance process excellence.</Description>
-  <Url type="text/html" template="https://explyra.me/?q={searchTerms}"/>
-  <Image width="32" height="32">https://explyra.me/assets/images/explyra_logo.png</Image>
-  <Developer>Explyra</Developer>
-  <Contact>support@explyra.org</Contact>
+  <LongName>Explyra - Advance Process Excellence Suite</LongName>
+  <Description>Search Explyra for digital tools, developer utilities, and business solutions.</Description>
+  <Url type="text/html" template="https://explyra.me/search.html?q={searchTerms}"/>
+  <Url type="application/x-suggestions+json" template="https://explyra.me/js/suggestions.json?q={searchTerms}"/>
+  <Image width="32" height="32" type="image/x-icon">https://explyra.me/favicon.ico</Image>
+  <Image width="64" height="64" type="image/png">https://explyra.me/assets/images/explyra_logo.png</Image>
+  <Developer>Explyra Council</Developer>
+  <Contact>info@explyra.me</Contact>
   <InputEncoding>UTF-8</InputEncoding>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <moz:SearchForm>https://explyra.me/search.html</moz:SearchForm>
 </OpenSearchDescription>

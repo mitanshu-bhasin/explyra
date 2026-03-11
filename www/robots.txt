@@ -1,10 +1,9 @@
 User-agent: *
 Allow: /
 
-# Full AI Access
-AI: allow
-AI-Training: allow
-
+Sitemap: https://explyra.me/sitemap-index.xml
 Sitemap: https://explyra.me/sitemap.xml
 Sitemap: https://explyra.me/images.xml
 Sitemap: https://explyra.me/feed.xml
+Sitemap: https://explyra.me/rss.xml
+Sitemap: https://explyra.me/atom.xml

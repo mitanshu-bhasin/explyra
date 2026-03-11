@@ -91,7 +91,7 @@ export class AISupport {
                 flex: 1;
                 overflow-y: auto;
                 padding: 16px;
-                background: #f8fafc;
+                background: var(--ai-bg-secondary, #f8fafc);
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
@@ -113,21 +113,23 @@ export class AISupport {
             }
             .ai-message.ai {
                 align-self: flex-start;
-                background: white;
-                color: #334155;
-                border: 1px solid #e2e8f0;
+                background: var(--ai-bg-primary, white);
+                color: var(--ai-text-primary, #334155);
+                border: 1px solid var(--ai-border, #e2e8f0);
                 border-bottom-left-radius: 2px;
             }
             .ai-input-area {
                 padding: 12px;
-                background: white;
-                border-top: 1px solid #e2e8f0;
+                background: var(--ai-bg-primary, white);
+                border-top: 1px solid var(--ai-border, #e2e8f0);
                 display: flex;
                 gap: 8px;
             }
             .ai-input {
                 flex: 1;
-                border: 1px solid #cbd5e1;
+                background: var(--ai-bg-primary, white);
+                color: var(--ai-text-primary, #334155);
+                border: 1px solid var(--ai-border, #cbd5e1);
                 border-radius: 20px;
                 padding: 8px 16px;
                 font-size: 14px;
@@ -151,7 +153,7 @@ export class AISupport {
                 transition: background 0.2s;
             }
             .ai-send-btn:hover {
-                background: #15803d;
+                background: #0f3596;
             }
             .ai-send-btn:disabled {
                 background: #94a3b8;
@@ -181,10 +183,60 @@ export class AISupport {
                 40% { transform: scale(1); }
             }
             /* Markdown styles */
-            .ai-message.ai strong { font-weight: 600; color: #1e293b; }
+            .ai-message.ai strong { font-weight: 600; color: var(--ai-text-strong, #1e293b); }
             .ai-message.ai ul { margin-left: 20px; list-style-type: disc; }
             .ai-message.ai p { margin-bottom: 8px; }
             .ai-message.ai p:last-child { margin-bottom: 0; }
+
+            /* Quick Action Buttons */
+            .ai-quick-btn {
+                font-size: 12px;
+                background: var(--ai-bg-primary, white);
+                padding: 4px 12px;
+                border-radius: 9999px;
+                white-space: nowrap;
+                transition: all 0.2s;
+                cursor: pointer;
+            }
+            .ai-quick-btn.blue {
+                border: 1px solid #bfdbfe;
+                color: #2563eb;
+            }
+            .ai-quick-btn.blue:hover { background: #eff6ff; }
+            .ai-quick-btn.green {
+                border: 1px solid #bbf7d0;
+                color: #16a34a;
+            }
+            .ai-quick-btn.green:hover { background: #f0fdf4; }
+
+            /* Dark Mode Support */
+            [data-theme="dark"] .ai-chat-window {
+                --ai-bg-primary: #1e293b;
+                --ai-bg-secondary: #0f172a;
+                --ai-text-primary: #f8fafc;
+                --ai-text-strong: #ffffff;
+                --ai-border: #334155;
+                background: var(--ai-bg-primary);
+                border-color: var(--ai-border);
+            }
+            [data-theme="dark"] .typing-indicator {
+                background: var(--ai-bg-primary);
+            }
+            [data-theme="dark"] .typing-dot {
+                background: #64748b;
+            }
+            [data-theme="dark"] .ai-quick-btn.blue {
+                background: #1e3a8a;
+                border-color: #1e3a8a;
+                color: #bfdbfe;
+            }
+            [data-theme="dark"] .ai-quick-btn.blue:hover { background: #1e40af; }
+            [data-theme="dark"] .ai-quick-btn.green {
+                background: #14532d;
+                border-color: #14532d;
+                color: #bbf7d0;
+            }
+            [data-theme="dark"] .ai-quick-btn.green:hover { background: #166534; }
 
             @media (max-width: 480px) {
                 .ai-chat-window {
@@ -218,18 +270,18 @@ export class AISupport {
         this.chatWindow.className = 'ai-chat-window';
         this.chatWindow.innerHTML = `
             <div class="ai-header">
-                <div class="flex items-center gap-2">
+                <div style="display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-sparkles"></i>
-                    <span class="font-bold">Explyra AI Assistant</span>
+                    <span style="font-weight: 700;">Explyra AI Assistant</span>
                 </div>
-                <button class="text-white hover:text-gray-200" id="ai-close-btn">
+                <button id="ai-close-btn" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 16px;">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
             <div class="ai-messages" id="ai-messages">
                 <div class="ai-message ai">
                     Hello <strong>${this.userContext.name || this.userContext.displayName || 'User'}</strong>! I'm your Explyra AI Assistant. 
-                    I'm developed and trained by <strong>Mitanshu Bhasin</strong> and <strong>Raj Kalra</strong>.
+                    I'm developed and trained by <strong>Mitanshu Bhasin</strong>.
                     I can help you with expense policies, company info, health tracking, navigating the suite, or analyzing your data.
                 </div>
             </div>
@@ -238,15 +290,15 @@ export class AISupport {
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
             </div>
-            <div class="p-2 flex gap-2 overflow-x-auto bg-gray-50 border-t border-gray-100">
-                <button class="text-xs bg-white border border-blue-200 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 whitespace-nowrap transition" onclick="window.triggerAIAction('policy')">Expense Policy?</button>
-                <button class="text-xs bg-white border border-blue-200 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 whitespace-nowrap transition" onclick="window.triggerAIAction('about')">About Explyra?</button>
-                <button class="text-xs bg-white border border-green-200 text-green-600 px-3 py-1 rounded-full hover:bg-green-50 whitespace-nowrap transition" onclick="window.triggerAIAction('analyze')">Analyze Spending</button>
+            <div style="padding: 8px; display: flex; gap: 8px; overflow-x: auto; background: var(--ai-bg-secondary, #f8fafc); border-top: 1px solid var(--ai-border, #f1f5f9);">
+                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('policy')">Expense Policy?</button>
+                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('about')">About Explyra?</button>
+                <button class="ai-quick-btn green" onclick="window.triggerAIAction('analyze')">Analyze Spending</button>
             </div>
             <div class="ai-input-area">
                 <input type="text" class="ai-input" placeholder="Ask me anything..." id="ai-input">
                 <button class="ai-send-btn" id="ai-send-btn">
-                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                    <i class="fa-solid fa-paper-plane" style="font-size: 14px;"></i>
                 </button>
             </div>
         `;
