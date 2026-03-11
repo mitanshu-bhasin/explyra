@@ -17,8 +17,11 @@ import {
   where,
   onSnapshot,
   doc,
+  getDoc,
   setDoc,
-  getDoc
+  addDoc,
+  getDocs,
+  deleteDoc,
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
 // ============================
@@ -700,6 +703,25 @@ sendBtn.addEventListener('click', async () => {
     const data = await res.json();
 
     if (data.success) {
+      // Save copy to Firestore "Sent" folder
+      try {
+        await addDoc(collection(db, 'emails'), {
+          messageId: data.id || "",
+          from: `${currentUser.displayName || 'User'} <${currentUser.email}>`,
+          to,
+          cc,
+          bcc,
+          subject,
+          textBody,
+          htmlBody,
+          timestamp: new Date().toISOString(),
+          read: true,
+          folder: 'sent'
+        });
+      } catch (saveErr) {
+        console.error('Error saving to sent folder:', saveErr);
+      }
+
       closeComposeModal();
       showToast('Email sent successfully!');
     } else {
