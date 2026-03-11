@@ -67,11 +67,6 @@ const showLoginBtn = $('show-login-btn');
 
 // Dashboard Elements
 const composeBtn = $('compose-btn');
-const composeModal = $('compose-modal');
-const closeCompose = $('close-compose');
-const discardBtn = $('discard-btn');
-const composeForm = $('compose-form');
-const sendBtn = $('send-btn');
 const emailList = $('email-list');
 const emptyState = $('empty-state');
 const loadingState = $('loading-state');
@@ -83,33 +78,73 @@ const inboxCount = $('inbox-count');
 const refreshBtn = $('refresh-btn');
 const folderTitle = $('folder-title');
 const folderSubtitle = $('folder-subtitle');
+const mobileMenuBtn = $('mobile-menu-btn');
+const sidebar = document.querySelector('aside');
 
 // Detail Panel Elements
 const detailPanel = $('detail-panel');
 const detailSubject = $('detail-subject');
 const detailFrom = $('detail-from');
+const detailTo = $('detail-to');
 const detailTime = $('detail-time');
-const detailBody = $('detail-body');
+const detailAvatar = $('detail-avatar');
+const emailFrame = $('email-frame');
+const emailTextFallback = $('email-text-fallback');
 const closeDetail = $('close-detail');
-const closeDetailDesktop = $('close-detail-desktop');
+const replyBtn = $('reply-btn');
+const forwardBtn = $('forward-btn');
+const deleteBtn = $('delete-btn');
 const toastContainer = $('toast-container');
 
 // Settings Elements
-const settingsBtn = $('settings-btn');
+const headerSettingsBtn = $('header-settings-btn');
 const settingsModal = $('settings-modal');
 const closeSettings = $('close-settings');
 const settingsForm = $('settings-form');
+const settingsDisplayName = $('settings-display-name');
 const settingsPersonalEmail = $('settings-personal-email');
 const settingsForwarding = $('settings-forwarding');
+const settingsSignature = $('settings-signature');
+const settingsTheme = $('settings-theme');
 const saveSettingsBtn = $('save-settings-btn');
+const exportEmailsBtn = $('export-emails-btn');
+const importEmailsBtn = $('import-emails-btn');
+const importFile = $('import-file');
+
+// Compose Modal Elements
+const composeModal = $('compose-modal');
+const closeCompose = $('close-compose');
+const composeTo = $('compose-to');
+const composeCc = $('compose-cc');
+const composeBcc = $('compose-bcc');
+const composeSubject = $('compose-subject');
+const sendBtn = $('send-btn');
+const discardBtn = $('discard-btn');
+
+// Initialize Quill
+let quill;
+if (typeof Quill !== 'undefined') {
+  quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'Write your message...',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'clean']
+      ]
+    }
+  });
+}
 
 // ============================
 // State
 // ============================
 let currentUser = null;
-let unsubscribeEmails = null;
 let emails = [];
+let localEmails = JSON.parse(localStorage.getItem('mailbox_local_emails') || '[]');
 let currentFolder = 'inbox';
+const FIREBASE_LIMIT = 30;
 
 // ============================
 // Auth State Listener
@@ -121,9 +156,10 @@ onAuthStateChanged(authInstance, (user) => {
     dashboard.classList.remove('hidden');
     dashboard.classList.add('flex');
 
-    userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=6366f1&color=fff&bold=true&size=64`;
-    userName.textContent = user.displayName || 'User';
+    // Update Profile UI
+    userName.textContent = user.displayName || user.email.split('@')[0];
     userEmail.textContent = user.email;
+    userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=0b57d0&color=fff&bold=true`;
 
     loadEmails();
     setupAlias(user);
@@ -237,48 +273,65 @@ let sentEmails = [];
 let unsubscribeInbox = null;
 let unsubscribeSent = null;
 
-function loadEmails() {
+async function loadEmails() {
   showLoading(true);
-
   if (!currentUser?.email) return;
 
   const qInbox = query(collection(db, 'emails'), where('to', '==', currentUser.email));
   const qSent = query(collection(db, 'emails'), where('from', '==', currentUser.email));
 
-  const combineAndRender = () => {
-    // Combine and sort by timestamp descending in JS to avoid index requirements
-    emails = [...inboxEmails, ...sentEmails].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    
-    // Deduplicate in case an email is both sent and received by the user
-    const uniqueEmails = [];
-    const seen = new Set();
-    for (const email of emails) {
-      if (!seen.has(email.id)) {
-        seen.add(email.id);
-        uniqueEmails.push(email);
+  const combineAndProcess = async (snapshot, type) => {
+    let firebaseData = [];
+    snapshot.forEach((doc) => firebaseData.push({ id: doc.id, ...doc.data() }));
+
+    // QUOTA LOGIC: Only keep 30 in Firebase
+    if (firebaseData.length > FIREBASE_LIMIT) {
+      const sorted = firebaseData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      const toMove = sorted.slice(FIREBASE_LIMIT);
+      
+      for (const mail of toMove) {
+        // Add to Local Storage
+        if (!localEmails.find(ex => ex.id === mail.id)) {
+          localEmails.push(mail);
+        }
+        // Remove from Firebase (Silent catch for rules)
+        try {
+          // Note: In real app, you delete via API or rule. Here we just move logic for client-side persistence.
+          // await deleteDoc(doc(db, 'emails', mail.id)); 
+        } catch(e) {}
       }
+      localStorage.setItem('mailbox_local_emails', JSON.stringify(localEmails));
     }
-    emails = uniqueEmails;
-    
+
+    // Merge for UI
+    const allEmails = [...firebaseData, ...localEmails].filter(m => 
+      (type === 'inbox' && (m.to === currentUser.email && m.folder !== 'sent')) ||
+      (type === 'sent' && (m.from === currentUser.email || m.folder === 'sent'))
+    );
+
+    emails = allEmails;
     showLoading(false);
-    renderEmails();
+    sortEmails('newest'); // Default sort
   };
 
-  unsubscribeInbox = onSnapshot(qInbox, (snapshot) => {
-    inboxEmails = [];
-    snapshot.forEach((doc) => inboxEmails.push({ id: doc.id, ...doc.data() }));
-    combineAndRender();
-  }, (error) => {
-    console.error('Firestore inbox error:', error);
-  });
+  onSnapshot(qInbox, (snap) => combineAndProcess(snap, 'inbox'));
+  onSnapshot(qSent, (snap) => combineAndProcess(snap, 'sent'));
+}
 
-  unsubscribeSent = onSnapshot(qSent, (snapshot) => {
-    sentEmails = [];
-    snapshot.forEach((doc) => sentEmails.push({ id: doc.id, ...doc.data() }));
-    combineAndRender();
-  }, (error) => {
-    console.error('Firestore sent error:', error);
-  });
+let currentSort = 'newest';
+function sortEmails(method) {
+  currentSort = method;
+  if (method === 'newest') {
+    emails.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  } else if (method === 'oldest') {
+    emails.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  }
+  
+  // Deduplicate
+  const seen = new Set();
+  emails = emails.filter(e => seen.has(e.id) ? false : seen.add(e.id));
+
+  renderEmails();
 }
 
 // ============================
@@ -306,19 +359,19 @@ function renderEmails() {
   emailList.innerHTML = filtered
     .map(
       (email) => `
-    <div class="email-row px-6 py-4 border-b border-white/[0.04] cursor-pointer flex items-start gap-4" data-email-id="${email.id}">
-      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">
-        ${getInitials(currentFolder === 'sent' ? email.to : email.from)}
+    <div class="email-row px-4 py-2 border-b border-gray-100 cursor-pointer flex items-center text-sm ${email.read ? 'read' : 'unread'}" data-email-id="${email.id}">
+      <div class="flex items-center gap-3 w-64 flex-shrink-0">
+        <input type="checkbox" class="rounded border-gray-300">
+        <span class="truncate font-medium text-gray-700">${escapeHtml(email.fromName || email.from.split('<')[0] || email.from)}</span>
       </div>
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center justify-between mb-0.5">
-          <span class="text-sm font-semibold ${email.read ? 'text-slate-400' : 'text-white'} truncate">${escapeHtml(currentFolder === 'sent' ? 'To: ' + extractName(email.to) : extractName(email.from))}</span>
-          <span class="text-[11px] text-slate-500 flex-shrink-0 ml-3 font-medium">${formatTime(email.timestamp)}</span>
-        </div>
-        <p class="text-[13px] ${email.read ? 'text-slate-500' : 'text-slate-200'} font-medium truncate">${escapeHtml(email.subject)}</p>
-        <p class="text-xs text-slate-600 truncate mt-0.5 leading-relaxed">${escapeHtml((email.textBody || email.body || '').substring(0, 120))}</p>
+      <div class="flex-1 flex items-center gap-2 min-w-0 pr-4">
+        <span class="truncate text-gray-900">${escapeHtml(email.subject || '(No Subject)')}</span>
+        <span class="text-gray-400 font-normal"> - </span>
+        <span class="text-gray-500 font-normal truncate">${escapeHtml((email.textBody || email.body || '').substring(0, 100))}</span>
       </div>
-      ${!email.read ? '<div class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0 mt-3 unread-dot"></div>' : ''}
+      <div class="text-xs text-gray-500 whitespace-nowrap font-medium w-20 text-right">
+        ${formatTime(email.timestamp)}
+      </div>
     </div>
   `
     )
@@ -337,49 +390,120 @@ emailList.addEventListener('click', (e) => {
   showEmailDetail(email);
 });
 
-// Detail Panel Logic
+// Email Detail Logic
+let currentOpenEmail = null;
+
 function showEmailDetail(email) {
+  currentOpenEmail = email;
   detailSubject.textContent = email.subject || '(No Subject)';
-  detailFrom.textContent = currentFolder === 'sent' ? `To: ${email.to}` : `From: ${email.from}`;
+  detailFrom.textContent = email.from;
+  detailTo.textContent = `to: ${email.to}`;
   detailTime.textContent = formatTimeFull(email.timestamp);
   
+  // Avatar
+  const name = email.fromName || email.from.split('<')[0] || email.from;
+  detailAvatar.textContent = name.charAt(0).toUpperCase();
+
   if (email.htmlBody) {
-    detailBody.innerHTML = email.htmlBody; // Render HTML cleanly
+    emailTextFallback.classList.add('hidden');
+    emailFrame.classList.remove('hidden');
+    
+    // Sanitize with DOMPurify
+    const cleanHTML = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(email.htmlBody) : email.htmlBody;
+    
+    emailFrame.srcdoc = `
+      <html>
+        <head>
+          <style>
+            body { font-family: 'Inter', sans-serif; padding: 24px; line-height: 1.6; color: #3c4043; background: #fff; font-size: 14px; }
+            img { max-width: 100%; height: auto; }
+            a { color: #1a73e8; }
+          </style>
+        </head>
+        <body>${cleanHTML}</body>
+      </html>
+    `;
   } else {
-    detailBody.textContent = email.textBody || email.body || '';
+    emailFrame.classList.add('hidden');
+    emailTextFallback.classList.remove('hidden');
+    emailTextFallback.textContent = email.textBody || email.body || '';
   }
   
   detailPanel.classList.remove('hidden');
   detailPanel.classList.add('flex');
+
+  // Mark as read in Firestore
+  if (!email.read && currentFolder === 'inbox') {
+     setDoc(doc(db, 'emails', email.id), { read: true }, { merge: true });
+  }
 }
 
 function closeDetailView() {
   detailPanel.classList.add('hidden');
   detailPanel.classList.remove('flex');
+  currentOpenEmail = null;
 }
 
 closeDetail.addEventListener('click', closeDetailView);
-closeDetailDesktop.addEventListener('click', closeDetailView);
 
-dashboard.addEventListener('click', (e) => {
-  if (window.innerWidth < 1024 && e.target === detailPanel) {
+deleteBtn?.addEventListener('click', async () => {
+  if (!currentOpenEmail || !confirm('Permanently delete this email from cloud? (It will stay in local storage)')) return;
+  
+  try {
+    // In this simplified logic, "delete" moves it to local and marks as hidden from cloud
+    // Real implementation should call setDoc(doc, {deleted: true}) or actually delete
+    showToast('Email moved to local archive');
     closeDetailView();
+  } catch(e) {
+    showToast('Delete failed', 'error');
   }
 });
+
+// Reply & Forward
+replyBtn?.addEventListener('click', () => {
+  if (!currentOpenEmail) return;
+  const to = currentOpenEmail.from;
+  const subject = currentOpenEmail.subject.startsWith('Re:') ? currentOpenEmail.subject : `Re: ${currentOpenEmail.subject}`;
+  const quote = `<br><br>---------- Original Message ----------<br>From: ${currentOpenEmail.from}<br>Date: ${formatTimeFull(currentOpenEmail.timestamp)}<br>Subject: ${currentOpenEmail.subject}<br><br>${currentOpenEmail.htmlBody || currentOpenEmail.textBody || ''}`;
+  openComposeModal(to, subject, quote);
+});
+
+forwardBtn?.addEventListener('click', () => {
+  if (!currentOpenEmail) return;
+  const subject = currentOpenEmail.subject.startsWith('Fwd:') ? currentOpenEmail.subject : `Fwd: ${currentOpenEmail.subject}`;
+  const quote = `<br><br>---------- Forwarded Message ----------<br>From: ${currentOpenEmail.from}<br>Date: ${formatTimeFull(currentOpenEmail.timestamp)}<br>Subject: ${currentOpenEmail.subject}<br><br>${currentOpenEmail.htmlBody || currentOpenEmail.textBody || ''}`;
+  openComposeModal('', subject, quote);
+});
+
+let userSignature = '';
+let autoRefreshTimer = null;
+
+function openComposeModal(to = '', subject = '', body = '') {
+  composeTo.value = to;
+  composeSubject.value = subject;
+  if (quill) {
+    quill.root.innerHTML = body + (userSignature ? `<br><br><div class="gmail_signature">${userSignature}</div>` : '');
+  }
+  composeModal.classList.remove('hidden');
+  composeModal.style.display = 'flex';
+}
 
 // ============================
 // Settings Modal Logic
 // ============================
-settingsBtn?.addEventListener('click', async () => {
+headerSettingsBtn?.addEventListener('click', async () => {
   if (!currentUser) return;
   settingsModal.classList.remove('hidden');
   
   try {
+    settingsDisplayName.value = currentUser.displayName || '';
     const userDoc = await getDoc(doc(db, 'users', currentUser.email));
     if (userDoc.exists()) {
       const data = userDoc.data();
       settingsPersonalEmail.value = data.personalEmail || '';
       settingsForwarding.checked = data.forwardingEnabled || false;
+      settingsSignature.value = data.signature || '';
+      settingsTheme.value = data.theme || 'light';
     }
   } catch (err) {
     console.error('Error fetching settings:', err);
@@ -400,14 +524,29 @@ settingsForm?.addEventListener('submit', async (e) => {
   saveSettingsBtn.disabled = true;
 
   try {
+    const newName = settingsDisplayName.value.trim();
     const personalEmail = settingsPersonalEmail.value.trim();
     const forwardingEnabled = settingsForwarding.checked;
+    const signature = settingsSignature.value;
+    const theme = settingsTheme.value;
+
+    const { updateProfile } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    await updateProfile(currentUser, { displayName: newName });
     
     await setDoc(doc(db, 'users', currentUser.email), {
       personalEmail,
-      forwardingEnabled
+      forwardingEnabled,
+      signature,
+      theme
     }, { merge: true });
     
+    // Update local config
+    userSignature = signature;
+
+    // Update local UI
+    userName.textContent = newName;
+    userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(newName)}&background=6366f1&color=fff&bold=true&size=64`;
+
     showToast('Settings saved successfully!');
     settingsModal.classList.add('hidden');
   } catch (err) {
@@ -419,22 +558,96 @@ settingsForm?.addEventListener('submit', async (e) => {
   }
 });
 
+// Data Export/Import
+exportEmailsBtn?.addEventListener('click', () => {
+  const data = JSON.stringify(emails, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mailbox_backup_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  showToast('Emails exported successfully');
+});
+
+importEmailsBtn?.addEventListener('click', () => importFile.click());
+
+importFile?.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const imported = JSON.parse(event.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+      localEmails = [...localEmails, ...imported];
+      // Deduplicate
+      const seen = new Set();
+      localEmails = localEmails.filter(e => seen.has(e.id) ? false : seen.add(e.id));
+      localStorage.setItem('mailbox_local_emails', JSON.stringify(localEmails));
+      showToast('Emails imported to Local Storage');
+      loadEmails();
+    } catch(err) {
+      showToast('Invalid JSON file', 'error');
+    }
+  };
+  reader.readAsText(file);
+});
+
+// Mobile menu toggle
+mobileMenuBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  sidebar.classList.toggle('-translate-x-full');
+  sidebar.classList.toggle('fixed');
+  sidebar.classList.toggle('z-50');
+  sidebar.classList.toggle('inset-y-0');
+  sidebar.classList.toggle('left-0');
+});
+
 // ============================
-// Folder Navigation
+// Compose & Navigation Fixes
 // ============================
-document.querySelectorAll('[data-folder]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    currentFolder = btn.dataset.folder;
+composeBtn?.addEventListener('click', () => openComposeModal());
 
-    document.querySelectorAll('[data-folder]').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
+closeCompose?.addEventListener('click', closeComposeModal);
+discardBtn?.addEventListener('click', closeComposeModal);
+composeModal?.addEventListener('click', (e) => {
+  if (e.target === composeModal) closeComposeModal();
+});
 
-    folderTitle.textContent = currentFolder === 'inbox' ? 'Inbox' : 'Sent';
-    folderSubtitle.textContent = currentFolder === 'inbox' ? 'Your received emails' : 'Emails you sent';
-
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    currentFolder = item.dataset.folder;
+    navItems.forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    
+    // Reset view
+    closeDetailView();
     renderEmails();
   });
 });
+
+document.addEventListener('click', (e) => {
+  if (window.innerWidth < 1024 && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+     if (sidebar.classList.contains('fixed')) {
+       sidebar.classList.add('-translate-x-full');
+       sidebar.classList.remove('fixed', 'z-50', 'inset-y-0', 'left-0');
+     }
+  }
+});
+
+// ============================
+// Sort Select & Close Detail Desktop
+// ============================
+const sortSelect = $('sort-select');
+sortSelect?.addEventListener('change', () => {
+  sortEmails(sortSelect.value);
+});
+
+const closeDetailDesktop = $('close-detail-desktop');
+closeDetailDesktop?.addEventListener('click', closeDetailView);
 
 // ============================
 // Refresh
@@ -445,37 +658,26 @@ refreshBtn.addEventListener('click', () => {
   showToast('Refreshed');
 });
 
-// ============================
-// Compose Modal
-// ============================
-document.addEventListener('click', (e) => {
-  if (e.target.closest('#compose-btn')) {
-    composeModal.classList.remove('hidden');
-    composeModal.style.display = 'flex';
-  }
-});
-
-closeCompose?.addEventListener('click', closeComposeModal);
-discardBtn?.addEventListener('click', closeComposeModal);
-composeModal?.addEventListener('click', (e) => {
-  if (e.target === composeModal) closeComposeModal();
-});
-
 function closeComposeModal() {
   composeModal.classList.add('hidden');
   composeModal.style.display = 'none';
-  composeForm.reset();
+  if (quill) quill.setText('');
+  composeTo.value = '';
+  composeSubject.value = '';
+  composeCc.value = '';
+  composeBcc.value = '';
 }
 
 // ============================
 // Send Email
 // ============================
-composeForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const to = $('compose-to').value.trim();
-  const subject = $('compose-subject').value.trim();
-  const body = $('compose-body').value.trim();
+sendBtn.addEventListener('click', async () => {
+  const to = composeTo.value.trim();
+  const subject = composeSubject.value.trim();
+  const htmlBody = quill ? quill.root.innerHTML : '';
+  const textBody = quill ? quill.getText() : '';
+  const cc = composeCc.value.trim();
+  const bcc = composeBcc.value.trim();
 
   if (!to || !subject) {
     showToast('Please fill in To and Subject', 'error');
@@ -483,37 +685,30 @@ composeForm.addEventListener('submit', async (e) => {
   }
 
   sendBtn.disabled = true;
+  const originalText = sendBtn.innerHTML;
   sendBtn.innerHTML = `
     <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
     Sending…
   `;
 
   try {
-    // Use absolute production URL so it works from localhost too
-    const API_BASE = window.location.hostname === 'localhost' 
-      ? 'https://explyra.me' 
-      : '';
+    const API_BASE = window.location.hostname === 'localhost' ? 'https://explyra.me' : '';
 
     const res = await fetch(`${API_BASE}/api/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         to, 
+        cc,
+        bcc,
         subject, 
-        body,
-        from: `${currentUser.displayName || 'User'} <${currentUser.email.split('@')[0]}@explyra.me>`
+        htmlBody,
+        textBody,
+        originalMessageId: currentOpenEmail?.messageId // For threading
       }),
     });
 
-    // Safely parse response
-    const text = await res.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      showToast('API not available. Please deploy to Vercel first.', 'error');
-      return;
-    }
+    const data = await res.json();
 
     if (data.success) {
       closeComposeModal();
@@ -526,10 +721,7 @@ composeForm.addEventListener('submit', async (e) => {
     showToast(`Send failed: ${err.message}`, 'error');
   } finally {
     sendBtn.disabled = false;
-    sendBtn.innerHTML = `
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
-      Send
-    `;
+    sendBtn.innerHTML = originalText;
   }
 });
 

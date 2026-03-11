@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     const decoded = await auth.verifyIdToken(token);
-    const { to, subject, body } = req.body;
+    const { to, cc, bcc, subject, htmlBody, textBody, originalMessageId } = req.body;
 
     if (!to || !subject) {
       return res.status(400).json({ error: 'Missing required fields: to, subject' });
@@ -21,12 +21,26 @@ export default async function handler(req, res) {
 
     const fromAddress = `${decoded.name || 'User'} <${decoded.email.split('@')[0]}@${process.env.EMAIL_DOMAIN || 'explyra.me'}>`;
 
-    const { data, error } = await resend.emails.send({
+    const emailOptions = {
       from: fromAddress,
       to: [to],
       subject,
-      text: body || '',
-    });
+      html: htmlBody || '',
+      text: textBody || '',
+    };
+
+    if (cc) emailOptions.cc = cc.split(',').map(e => e.trim());
+    if (bcc) emailOptions.bcc = bcc.split(',').map(e => e.trim());
+
+    // Threading headers
+    if (originalMessageId) {
+      emailOptions.headers = {
+        'In-Reply-To': originalMessageId,
+        'References': originalMessageId
+      };
+    }
+
+    const { data, error } = await resend.emails.send(emailOptions);
 
     if (error) {
       console.error('Resend API Error:', error);
