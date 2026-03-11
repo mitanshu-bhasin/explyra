@@ -112,7 +112,11 @@ onAuthStateChanged(authInstance, (user) => {
 // ============================
 googleLoginBtn.addEventListener('click', async () => {
   try {
-    await signInWithPopup(authInstance, provider);
+    const result = await signInWithPopup(authInstance, provider);
+    if (!result.user.email.endsWith('@explyra.me')) {
+      await signOut(authInstance);
+      showToast('Login restricted to @explyra.me emails', 'error');
+    }
   } catch (err) {
     console.error('Login failed:', err);
     showToast('Login failed. Please try again.', 'error');
@@ -129,6 +133,11 @@ emailLoginForm?.addEventListener('submit', async (e) => {
   
   if (!email || !password) {
     showToast('Please enter both email and password', 'error');
+    return;
+  }
+
+  if (!email.endsWith('@explyra.me')) {
+    showToast('Only @explyra.me emails are allowed', 'error');
     return;
   }
 
@@ -357,7 +366,7 @@ composeForm.addEventListener('submit', async (e) => {
 async function setupAlias(user) {
   try {
     const token = await user.getIdToken();
-    const emailDomain = 'yourdomain.com'; // Update to your actual domain
+    const emailDomain = 'explyra.me'; 
     const alias = `${user.email.split('@')[0]}@${emailDomain}`;
 
     await fetch('/api/create-alias', {
