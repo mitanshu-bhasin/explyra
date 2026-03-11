@@ -678,10 +678,14 @@ sendBtn.addEventListener('click', async () => {
 
   try {
     const API_BASE = window.location.hostname === 'localhost' ? 'https://explyra.me' : '';
+    const token = currentUser ? await currentUser.getIdToken() : null;
 
     const res = await fetch(`${API_BASE}/api/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
       body: JSON.stringify({ 
         to, 
         cc,

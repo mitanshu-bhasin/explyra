@@ -21,12 +21,15 @@ export default async function handler(req, res) {
 
     const fromAddress = `${decoded.name || 'User'} <${decoded.email.split('@')[0]}@${process.env.EMAIL_DOMAIN || 'explyra.me'}>`;
 
+    // Resend requires at least one of html or text — never send both empty
+    const plainText = (textBody || '').trim();
+    const richHtml = (htmlBody || '').trim();
     const emailOptions = {
       from: fromAddress,
       to: [to],
       subject,
-      html: htmlBody || '',
-      text: textBody || '',
+      html: richHtml || `<p>${plainText}</p>`,   // fallback: wrap plain text in <p>
+      text: plainText || richHtml.replace(/<[^>]+>/g, '') || subject, // fallback: strip html tags
     };
 
     if (cc) emailOptions.cc = cc.split(',').map(e => e.trim());
