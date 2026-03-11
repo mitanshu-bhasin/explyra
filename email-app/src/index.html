@@ -6,12 +6,28 @@
   <title>MailBox — Custom Email Client</title>
   <meta name="description" content="A modern, custom email client powered by Cloudflare and Vercel">
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Quill.js for Rich Text -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <!-- DOMPurify for HTML sanitization -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+  
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            gmail: {
+              bg: '#f6f8fc',
+              sidebar: '#f6f8fc',
+              active: '#d3e3fd',
+              hover: '#eaf1fb',
+              text: '#1f1f1f',
+              blue: '#0b57d0'
+            }
+          }
         }
       }
     }
@@ -21,85 +37,85 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Inter', system-ui, sans-serif; }
-    body { background: #06080f; }
-    ::-webkit-scrollbar { width: 5px; }
+    body { background: #f6f8fc; color: #1f1f1f; }
+    ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
-    .glass { background: rgba(255,255,255,0.025); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.05); }
-    .glass-strong { background: rgba(255,255,255,0.04); backdrop-filter: blur(32px); border: 1px solid rgba(255,255,255,0.07); }
-    .email-row { transition: background 0.15s ease; }
-    .email-row:hover { background: rgba(255,255,255,0.035); }
-    .nav-item { transition: all 0.15s ease; }
-    .nav-item.active { background: rgba(99,102,241,0.12); color: #a5b4fc; }
-    .nav-item:hover:not(.active) { background: rgba(255,255,255,0.04); color: #e2e8f0; }
-    .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%); transition: all 0.2s ease; }
-    .btn-primary:hover { box-shadow: 0 8px 30px rgba(99,102,241,0.3); transform: translateY(-1px); }
-    .input-field { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); transition: border-color 0.2s ease, box-shadow 0.2s ease; }
-    .input-field:focus { border-color: rgba(99,102,241,0.4); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); outline: none; }
-    @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    @keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
-    .slide-up { animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1); }
-    .fade-in { animation: fadeIn 0.3s ease; }
-    .unread-dot { animation: pulse-dot 2s ease-in-out infinite; }
-    .gradient-text { background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .logo-glow { box-shadow: 0 0 40px rgba(99,102,241,0.2), 0 0 80px rgba(139,92,246,0.1); }
-    .modal-overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    
+    .sidebar-item { transition: all 0.2s ease; border-radius: 0 20px 20px 0; }
+    .sidebar-item.active { background: #d3e3fd; color: #041e49; font-weight: 700; }
+    .sidebar-item:hover:not(.active) { background: #eaf1fb; }
+    
+    .gmail-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149); }
+    .email-row { border-bottom: 1px solid #f1f3f4; transition: box-shadow 0.2s; }
+    .email-row:hover { box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15); z-index: 1; position: relative; }
+    .email-row.unread { background: #fff; font-weight: 700; }
+    .email-row.read { background: #f2f6fc; font-weight: 400; }
+    
+    .btn-compose { background: #c2e7ff; color: #001d35; transition: box-shadow 0.2s; }
+    .btn-compose:hover { box-shadow: 0 1px 3px 0 rgba(60,64,67,0.302), 0 4px 8px 3px rgba(60,64,67,0.149); }
+    
+    .ql-toolbar.ql-snow { border: none !important; border-bottom: 1px solid #f1f3f4 !important; padding: 8px 12px !important; }
+    .ql-container.ql-snow { border: none !important; font-size: 14px !important; }
+    
+    .modal-overlay { background: rgba(0,0,0,0.5); }
+    .compose-modal { width: 600px; height: 600px; bottom: 0; right: 80px; position: fixed; display: flex; flex-direction: column; background: white; border-radius: 8px 8px 0 0; box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2); }
   </style>
 </head>
-<body class="text-white min-h-screen overflow-hidden">
+<body class="bg-gmail-bg text-gmail-text min-h-screen overflow-hidden">
 
   <!-- ==================== LOGIN SCREEN ==================== -->
   <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
-    <div class="glass-strong rounded-3xl p-8 sm:p-10 w-full max-w-md text-center slide-up">
+    <div class="bg-white rounded-3xl p-8 sm:p-10 w-full max-w-md text-center shadow-xl border border-gray-100 slide-up">
       <div class="mb-8">
-        <div class="w-16 h-16 btn-primary rounded-2xl flex items-center justify-center mx-auto mb-5 logo-glow">
+        <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
           <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
           </svg>
         </div>
-        <h1 class="text-3xl font-extrabold gradient-text mb-2">MailBox</h1>
-        <p class="text-slate-400 text-sm">Your private, custom email client</p>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">MailBox</h1>
+        <p class="text-gray-500 text-sm">Sign in with your @explyra.me account</p>
       </div>
 
       <!-- Login Form -->
       <div id="login-form-container">
         <form id="email-login-form" onsubmit="return false;" class="space-y-4 mb-6">
           <div class="relative">
-            <input type="text" id="login-prefix" placeholder="Username" required class="input-field w-full rounded-xl pl-4 pr-32 py-3 text-white placeholder-slate-500 text-sm">
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">@explyra.me</span>
+            <input type="text" id="login-prefix" placeholder="Username" required class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-32 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">@explyra.me</span>
           </div>
-          <input type="password" id="login-password" placeholder="Password" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
-          <button type="submit" id="email-login-btn" class="btn-primary w-full text-white font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer text-sm">
+          <input type="password" id="login-password" placeholder="Password" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          <button type="submit" id="email-login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all duration-200 cursor-pointer text-sm">
             Sign In
           </button>
         </form>
-        <p class="text-sm text-slate-400">
-          New here? <button id="show-signup-btn" class="text-indigo-400 font-semibold hover:underline">Create Account</button>
+        <p class="text-sm text-gray-500">
+          New here? <button id="show-signup-btn" class="text-blue-600 font-bold hover:underline">Create Account</button>
         </p>
       </div>
 
       <!-- Signup Form -->
       <div id="signup-form-container" class="hidden">
         <form id="email-signup-form" onsubmit="return false;" class="space-y-4 mb-6">
-          <input type="text" id="signup-name" placeholder="Your Name" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
-          <input type="email" id="signup-personal-email" placeholder="Personal Email (for forwarding)" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
+          <input type="text" id="signup-name" placeholder="Your Name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          <input type="email" id="signup-personal-email" placeholder="Personal Email (for forwarding)" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
           <div class="relative">
-            <input type="text" id="signup-prefix" placeholder="Choose Username" required class="input-field w-full rounded-xl pl-4 pr-32 py-3 text-white placeholder-slate-500 text-sm">
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">@explyra.me</span>
+            <input type="text" id="signup-prefix" placeholder="Choose Username" required class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-32 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">@explyra.me</span>
           </div>
-          <input type="password" id="signup-password" placeholder="Set Password" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
-          <button type="submit" id="email-signup-btn" class="btn-primary w-full text-white font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer text-sm">
+          <input type="password" id="signup-password" placeholder="Set Password" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          <button type="submit" id="email-signup-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all duration-200 cursor-pointer text-sm">
             Create Account
           </button>
         </form>
-        <p class="text-sm text-slate-400">
-          Already have an account? <button id="show-login-btn" class="text-indigo-400 font-semibold hover:underline">Sign In</button>
+        <p class="text-sm text-gray-500">
+          Already have an account? <button id="show-login-btn" class="text-blue-600 font-bold hover:underline">Sign In</button>
         </p>
       </div>
+    </div>
+  </div>
 
-      <p class="mt-8 text-[10px] text-slate-600 uppercase tracking-widest font-bold">Secured by Firebase</p>
+  <p class="mt-8 text-[10px] text-slate-600 uppercase tracking-widest font-bold">Secured by Firebase</p>
     </div>
   </div>
 
@@ -108,200 +124,274 @@
     <div class="flex h-full">
 
       <!-- Sidebar -->
-      <aside class="w-72 glass border-r border-white/5 flex flex-col">
+      <aside class="w-64 flex flex-col pt-2 pr-4 bg-gmail-sidebar">
         <!-- Logo -->
-        <div class="flex items-center gap-3 px-6 py-5 border-b border-white/5">
-          <div class="w-9 h-9 btn-primary rounded-lg flex items-center justify-center flex-shrink-0">
-            <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
-            </svg>
-          </div>
-          <span class="font-bold text-lg gradient-text">MailBox</span>
+        <div class="flex items-center gap-3 px-6 py-4 mb-2">
+          <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">MB</div>
+          <span class="font-medium text-xl text-gray-800 tracking-tight">MailBox</span>
         </div>
 
-        <!-- Compose Button -->
-        <div class="px-4 pt-5 pb-2">
-          <button id="compose-btn" class="btn-primary w-full text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 cursor-pointer">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
-            </svg>
+        <!-- Compose -->
+        <div class="px-2 mb-4">
+          <button id="compose-btn" class="btn-compose flex items-center gap-3 px-6 py-4 rounded-2xl font-medium text-sm shadow-sm transition-all cursor-pointer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
             Compose
           </button>
         </div>
 
-        <!-- Nav -->
-        <nav class="flex-1 px-3 pt-2 space-y-1">
-          <button data-folder="inbox" class="nav-item active w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium cursor-pointer">
+        <nav class="flex-1 px-3 space-y-1">
+          <button data-folder="inbox" class="nav-item active w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold cursor-pointer">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-17.5 0V6.75A2.25 2.25 0 016.5 4.5h11.25a2.25 2.25 0 012.25 2.25v6.75m-17.25 0v4.5A2.25 2.25 0 006.5 19.5h11.25a2.25 2.25 0 002.25-2.25v-4.5"/>
             </svg>
             <span class="flex-1 text-left">Inbox</span>
-            <span id="inbox-count" class="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">0</span>
+            <span id="inbox-count" class="bg-indigo-500/10 text-indigo-400 text-xs font-bold px-2 py-0.5 rounded">0</span>
           </button>
-          <button data-folder="sent" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 cursor-pointer">
+          <button data-folder="sent" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold cursor-pointer">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
             </svg>
-            <span class="flex-1 text-left">Sent</span>
+            <span class="flex-1 text-left text-slate-400">Sent</span>
           </button>
         </nav>
 
-        <!-- User Profile -->
-        <div class="px-4 py-4 border-t border-white/5">
+        <div class="mt-auto p-4 border-t border-white/[0.05]">
           <div class="flex items-center gap-3">
-            <img id="user-avatar" class="w-9 h-9 rounded-full ring-2 ring-white/10" src="" alt="Avatar">
+            <img id="user-avatar" class="w-9 h-9 rounded-full bg-slate-800 flex-shrink-0" src="" alt="">
             <div class="flex-1 min-w-0">
-              <p id="user-name" class="text-sm font-semibold truncate"></p>
-              <p id="user-email" class="text-xs text-slate-500 truncate"></p>
+              <p id="user-name" class="text-sm font-bold truncate text-white"></p>
+              <p id="user-email" class="text-[11px] text-slate-500 truncate"></p>
             </div>
-            
-            <button id="settings-btn" class="text-slate-500 hover:text-indigo-400 transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer" title="Settings">
-              <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-            </button>
-
-            <button id="logout-btn" class="text-slate-500 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer" title="Sign out">
-              <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <button id="logout-btn" class="text-slate-500 hover:text-red-400 p-1.5 cursor-pointer flex-shrink-0 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
               </svg>
             </button>
           </div>
         </div>
-      </aside>
-
-      <!-- Main Content Area -->
-      <main class="flex-1 flex flex-row min-w-0">
-        <!-- Email List Section -->
-        <div class="flex-1 flex flex-col border-r border-white/5 bg-black/20">
-          <header class="px-8 py-4 border-b border-white/5 flex items-center justify-between flex-shrink-0">
-            <div>
-              <h2 id="folder-title" class="text-xl font-bold font-serif underline decoration-indigo-500/30">Inbox</h2>
-              <p id="folder-subtitle" class="text-xs text-slate-500 mt-0.5">Your received emails</p>
-            </div>
-            <button id="refresh-btn" class="text-slate-400 hover:text-white transition-all p-2.5 rounded-xl hover:bg-white/5 cursor-pointer" title="Refresh">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/>
-              </svg>
+      </aside>      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col min-w-0 pt-2 pr-4 pb-4">
+        <div class="flex-1 gmail-card flex flex-col overflow-hidden">
+        
+        <!-- Header / Toolbar -->
+        <header class="h-14 border-b border-gray-100 flex items-center justify-between px-4 bg-white z-10">
+          <div class="flex items-center gap-2">
+            <button id="mobile-menu-btn" class="lg:hidden text-gray-500 p-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-          </header>
+            <button id="refresh-btn" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors" title="Refresh">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+            </button>
+            <div class="h-6 w-px bg-gray-200 mx-1"></div>
+            <select id="sort-select" class="bg-transparent text-sm text-gray-600 outline-none cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 max-w-2xl px-4">
+            <div class="relative group">
+              <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+              <input type="text" id="search-emails" placeholder="Search mail" class="w-full bg-slate-100 focus:bg-white focus:shadow-md border-transparent focus:border-transparent rounded-full py-2.5 pl-12 pr-4 text-sm transition-all">
+            </div>
+          </div>
 
+          <div class="flex items-center gap-2">
+            <button id="header-settings-btn" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full cursor-pointer" title="Settings">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="flex-1 flex overflow-hidden">
           <!-- Email List -->
-          <div id="email-list" class="flex-1 overflow-y-auto"></div>
+          <div class="flex-1 border-r border-gray-100 flex flex-col min-w-0">
+            <div id="email-list" class="flex-1 overflow-y-auto"></div>
 
-          <!-- Empty State -->
-          <div id="empty-state" class="hidden flex-1 flex-col items-center justify-center">
-            <div class="w-20 h-20 rounded-2xl glass flex items-center justify-center mb-5">
-              <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-17.5 0V6.75A2.25 2.25 0 016.5 4.5h11.25a2.25 2.25 0 012.25 2.25v6.75m-17.25 0v4.5A2.25 2.25 0 006.5 19.5h11.25a2.25 2.25 0 002.25-2.25v-4.5"/>
-              </svg>
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden flex-1 flex flex-col items-center justify-center">
+              <img src="https://ssl.gstatic.com/ui/v1/icons/mail/empty/0t/enbox_empty_96dp.png" class="w-24 opacity-20 mb-4" alt="">
+              <p class="text-gray-400 font-medium">Your inbox is empty</p>
             </div>
-            <p class="text-slate-400 font-medium mb-1">No emails yet</p>
-            <p class="text-slate-600 text-sm">Incoming emails will appear here</p>
+
+            <!-- Loading -->
+            <div id="loading-state" class="hidden flex-1 flex items-center justify-center">
+              <div class="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+            </div>
           </div>
 
-          <!-- Loading State -->
-          <div id="loading-state" class="hidden flex-1 flex-col items-center justify-center">
-            <div class="flex gap-1.5">
-              <div class="w-2.5 h-2.5 bg-indigo-500 rounded-full" style="animation:pulse-dot 1.2s ease-in-out infinite"></div>
-              <div class="w-2.5 h-2.5 bg-violet-500 rounded-full" style="animation:pulse-dot 1.2s ease-in-out 0.2s infinite"></div>
-              <div class="w-2.5 h-2.5 bg-purple-500 rounded-full" style="animation:pulse-dot 1.2s ease-in-out 0.4s infinite"></div>
+          <!-- Detail Section -->
+          <div id="detail-panel" class="hidden flex-col flex-1 bg-white lg:static fixed inset-0 z-40 border-l border-gray-100 min-w-0">
+            <div class="flex items-center gap-4 px-6 py-4 border-b border-gray-50 flex-shrink-0">
+              <button id="close-detail" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full lg:hidden"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg></button>
+              <h3 id="detail-subject" class="font-medium text-lg flex-1 truncate"></h3>
+              <button id="close-detail-desktop" class="hidden lg:block text-gray-400 hover:text-gray-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
-            <p class="text-slate-500 text-sm mt-4">Loading emails…</p>
-          </div>
-        </div>
+            
+            <div class="px-6 py-4 border-b border-gray-50 bg-gray-50/30">
+              <div class="flex items-start gap-3">
+                <div id="detail-avatar" class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <span id="detail-from" class="text-sm font-bold text-gray-900 truncate"></span>
+                    <span id="detail-time" class="text-xs text-gray-500"></span>
+                  </div>
+                  <p id="detail-to" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+              </div>
+            </div>
 
-        <!-- Detail Panel (Desktop: Side, Mobile: Fixed/Full) -->
-        <div id="detail-panel" class="hidden lg:flex flex-col w-full lg:w-[600px] xl:w-[700px] bg-black/40 backdrop-blur-md lg:static fixed inset-0 z-40 slide-up border-l border-white/5">
-          <div class="flex items-center justify-between px-6 py-5 border-b border-white/5 flex-shrink-0">
-            <button id="close-detail" class="text-slate-500 hover:text-white transition-colors p-2 rounded-xl hover:bg-white/5 cursor-pointer lg:hidden">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-            </button>
-            <div class="flex-1 min-w-0 mx-4">
-              <h3 id="detail-subject" class="font-bold text-lg truncate text-indigo-100"></h3>
-              <p id="detail-from" class="text-sm text-slate-400 mt-0.5"></p>
+            <div id="detail-body" class="flex-1 overflow-y-auto p-0 relative">
+              <iframe id="email-frame" class="w-full h-full border-none hidden"></iframe>
+              <div id="email-text-fallback" class="p-8 text-sm text-gray-800 whitespace-pre-wrap leading-relaxed"></div>
             </div>
-            <div class="flex items-center gap-3">
-              <span id="detail-time" class="text-xs text-slate-500 font-medium"></span>
-              <button id="close-detail-desktop" class="text-slate-500 hover:text-white transition-colors p-2 rounded-xl hover:bg-white/5 cursor-pointer hidden lg:block">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+
+            <!-- Action Buttons Footer -->
+            <div class="p-4 border-t border-gray-100 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <button id="reply-btn" class="flex items-center gap-2 px-6 py-2 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
+                  Reply
+                </button>
+                <button id="forward-btn" class="flex items-center gap-2 px-6 py-2 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a5 5 0 00-5 5v2a1 1 0 11-2 0v-2a7 7 0 017-7h7.586l-2.293-2.293a1 1 0 010-1.414z"/></svg>
+                  Forward
+                </button>
+              </div>
+              <button id="delete-btn" class="text-gray-400 hover:text-red-600 p-2 transition-colors cursor-pointer" title="Delete Email">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
               </button>
             </div>
           </div>
-          <div id="detail-body" class="flex-1 overflow-y-auto px-10 py-8 text-[15px] text-slate-300 leading-relaxed whitespace-pre-wrap selection:bg-indigo-500/30"></div>
+        </div>
         </div>
       </main>
     </div>
   </div>
 
-  <!-- ==================== COMPOSE MODAL ==================== -->
-  <div id="compose-modal" class="hidden fixed inset-0 modal-overlay flex items-end sm:items-center justify-center z-50 p-4">
-    <div class="glass-strong rounded-2xl w-full max-w-2xl slide-up shadow-2xl shadow-black/40">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
-        <h3 class="font-bold text-lg">New Message</h3>
-        <button id="close-compose" class="text-slate-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
+  <!-- ==================== COMPOSE MODAL (Gmail Style) ==================== -->
+  <div id="compose-modal" class="hidden">
+    <div class="compose-modal">
+      <div class="bg-gray-800 text-white px-4 py-3 flex items-center justify-between rounded-t-lg">
+        <span class="text-sm font-medium">New Message</span>
+        <button id="close-compose" class="hover:bg-white/10 p-1.5 rounded transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <form id="compose-form" onsubmit="return false;" class="p-6">
-        <div class="space-y-3 mb-6">
-          <input type="email" id="compose-to" placeholder="To" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
-          <input type="text" id="compose-subject" placeholder="Subject" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
-          <textarea id="compose-body" placeholder="Write your message…" rows="10" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm resize-none"></textarea>
+      
+      <div class="px-4 border-b border-gray-100 py-2">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400 text-sm">To</span>
+          <input type="email" id="compose-to" required class="flex-1 outline-none text-sm py-1">
+          <button type="button" onclick="toggleCcBcc()" class="text-gray-500 text-xs hover:underline">Cc/Bcc</button>
         </div>
-        <div class="flex items-center justify-between">
-          <button type="button" id="discard-btn" class="text-slate-500 hover:text-slate-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/5 transition-all cursor-pointer">
-            Discard
-          </button>
-          <button type="submit" id="send-btn" class="btn-primary text-white font-semibold px-8 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer text-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
-            </svg>
+      </div>
+
+      <div id="cc-bcc-fields" class="hidden px-4 border-b border-gray-100 py-2 space-y-2 fade-in">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400 text-sm">Cc</span>
+          <input type="text" id="compose-cc" class="flex-1 outline-none text-sm py-1">
+        </div>
+        <div class="flex items-center gap-2 border-t border-gray-50 pt-2">
+          <span class="text-gray-400 text-sm">Bcc</span>
+          <input type="text" id="compose-bcc" class="flex-1 outline-none text-sm py-1">
+        </div>
+      </div>
+
+      <div class="px-4 border-b border-gray-100 py-2">
+        <input type="text" id="compose-subject" placeholder="Subject" required class="w-full outline-none text-sm py-1">
+      </div>
+
+      <div class="flex-1 flex flex-col overflow-hidden bg-white">
+        <div id="editor-container" class="flex-1 overflow-y-auto"></div>
+      </div>
+
+      <div class="p-4 flex items-center justify-between border-t border-gray-100 bg-white">
+        <div class="flex items-center gap-2">
+          <button id="send-btn" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 px-8 rounded-full text-sm shadow-md transition-all cursor-pointer">
             Send
           </button>
         </div>
+        <button id="discard-btn" class="text-gray-500 hover:text-gray-800 p-2 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCcBcc() {
+      const fields = document.getElementById('cc-bcc-fields');
+      fields.classList.toggle('hidden');
+    }
+  </script>
       </form>
     </div>
   </div>
 
   <!-- ==================== SETTINGS MODAL ==================== -->
   <div id="settings-modal" class="hidden fixed inset-0 z-50 flex justify-center items-end sm:items-center modal-overlay sm:p-4">
-    <div class="glass-strong w-full sm:w-[500px] sm:rounded-2xl h-[90vh] sm:h-[auto] flex flex-col slide-up shadow-2xl relative border-t sm:border border-white/10">
+    <div class="bg-white w-full sm:w-[500px] sm:rounded-2xl h-[90vh] sm:h-auto flex flex-col slide-up shadow-2xl relative border border-gray-100">
       
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
-        <h3 class="text-lg font-bold text-white">Settings</h3>
-        <button id="close-settings" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-bold text-gray-800">Settings</h3>
+        <button id="close-settings" class="text-gray-400 hover:bg-gray-100 p-2 rounded-lg transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
       <!-- Settings Form -->
       <form id="settings-form" onsubmit="return false;" class="px-6 py-5 flex-1 overflow-y-auto space-y-6">
         <div>
-          <label class="block text-sm font-semibold text-slate-300 mb-2">Personal Email</label>
-          <input type="email" id="settings-personal-email" placeholder="example@gmail.com" required class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm">
-          <p class="text-xs text-slate-500 mt-2">Emails sent to your @explyra.me address will be forwarded here if enabled.</p>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Display Name</label>
+          <input type="text" id="settings-display-name" placeholder="John Doe" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
-        
-        <div class="flex items-center justify-between pt-2">
-          <div>
-            <h4 class="text-sm font-semibold text-slate-300">Enable Forwarding</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Automatically forward all incoming emails</p>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="settings-forwarding" class="sr-only peer">
-            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+
+        <div class="space-y-4">
+          <label class="block">
+            <span class="text-gray-700 text-sm font-semibold mb-2 block">Email Signature</span>
+            <textarea id="settings-signature" rows="2" placeholder="Sent from MailBox..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"></textarea>
           </label>
+          <div class="flex items-center justify-between gap-4">
+            <label class="flex-1">
+              <span class="text-gray-700 text-sm font-semibold mb-2 block">Theme</span>
+              <select id="settings-theme" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <option value="light">Light</option>
+                <option value="dark">Dark (Coming soon)</option>
+              </select>
+            </label>
+          </div>
+          <div class="pt-2">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Email</label>
+            <input type="email" id="settings-personal-email" placeholder="example@gmail.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            <p class="text-[11px] text-gray-500 mt-2 italic">* Forwarding destination email.</p>
+          </div>
+          
+          <div class="flex items-center justify-between pt-2">
+            <div>
+              <h4 class="text-sm font-semibold text-gray-800">Enable Forwarding</h4>
+              <p class="text-xs text-gray-500 mt-0.5">Automatically forward all incoming emails</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="settings-forwarding" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
         </div>
         
-        <div class="pt-6 pb-2">
-          <button type="submit" id="save-settings-btn" class="btn-primary w-full text-white font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer text-sm">
+        <div class="pt-4 pb-2 border-t border-gray-100 flex gap-3">
+          <button id="export-emails-btn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-xs">
+            Export Data
+          </button>
+          <button id="import-emails-btn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-xs">
+            Import Data
+          </button>
+          <input type="file" id="import-file" class="hidden" accept=".json">
+        </div>
+
+        <div class="pt-4 pb-2">
+          <button type="submit" id="save-settings-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all duration-200 cursor-pointer text-sm">
             Save Changes
           </button>
         </div>
@@ -312,6 +402,6 @@
   <!-- Toast Container -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-[100] space-y-2"></div>
 
-  <script type="module" src="/email-app/src/app.js?v=6"></script>
+  <script type="module" src="app.js?v=7"></script>
 </body>
 </html>

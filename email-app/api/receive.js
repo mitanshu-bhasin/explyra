@@ -11,15 +11,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { fromName, fromEmail, to, subject, textBody, htmlBody } = req.body;
+    const { messageId, fromName, fromEmail, to, subject, textBody, htmlBody } = req.body;
 
     const fromAddress = fromName ? `${fromName} <${fromEmail}>` : fromEmail;
 
+    let cleanText = textBody || '';
+    
+    // Fallback: Strip common SMTP headers if they accidentally appear at the start of the body
+    const headerPattern = /^(Received:|ARC-Seal:|ARC-Message-Signature:|ARC-Authentication-Results:|DKIM-Signature:|X-Google-DKIM-Signature:|X-Gm-Message-State:|X-Gm-Gg:|X-Received:|MIME-Version:|From:|Date:|X-Gm-Features:|Message-ID:|Subject:|To:|Content-Type:|--)/i;
+    
+    if (headerPattern.test(cleanText)) {
+      // If we find headers, try to find the first double newline or boundary that separates headers from body
+      const bodyStart = cleanText.search(/\r?\n\r?\n/);
+      if (bodyStart !== -1) {
+        cleanText = cleanText.substring(bodyStart).trim();
+      }
+    }
+
     await db.collection('emails').add({
+      messageId: messageId || "",
       from: fromAddress || 'unknown',
       to: to || 'unknown',
       subject: subject || '(No Subject)',
-      textBody: textBody || '',
+      textBody: cleanText,
       htmlBody: htmlBody || '',
       timestamp: new Date().toISOString(),
       read: false,
