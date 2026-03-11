@@ -34,6 +34,14 @@
         {
             "source": "/booking/:username",
             "destination": "/booking/booking-page.html?u=:username"
+        },
+        {
+            "source": "/mailbox",
+            "destination": "/email-app/src/index.html"
+        },
+        {
+            "source": "/mail",
+            "destination": "/email-app/src/index.html"
         }
     ],
     "redirects": [

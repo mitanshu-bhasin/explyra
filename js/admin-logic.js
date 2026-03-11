@@ -239,7 +239,7 @@ onAuthStateChanged(auth, async (user) => {
                     const settingsRef = doc(db, "settings", "global");
                     const setSnap = await safeFirebaseFetch(getDoc(settingsRef));
                     if (setSnap.exists() && setSnap.data().maintenanceMode === true) {
-                        if (user.email !== 'mfskufgu@gmail.com' && user.email !== 'info@fouralpha.org') {
+                        if (user.email !== 'explyra@gmail.com' && user.email !== 'info@fouralpha.org') {
                             document.body.innerHTML = `
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
@@ -2499,7 +2499,7 @@ window.showAddUserModal = async () => {
     const picInput = document.getElementById('user-profile-pic');
     if (picContainer) {
         picInput.value = '';
-        if (['info@fouralpha.org', 'mfskufgu@gmail.com'].includes(userData.email)) {
+        if (['info@fouralpha.org', 'explyra@gmail.com'].includes(userData.email)) {
             picContainer.classList.remove('hidden');
         } else {
             picContainer.classList.add('hidden');
@@ -2518,7 +2518,7 @@ window.editUser = async (id) => {
     const user = globalUsersCache.find(u => u.id === id);
     if (!user) return showToast("User not found", "error");
 
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'mfskufgu@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
     if (MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be edited.", "error");
     }
@@ -2574,7 +2574,7 @@ window.closeUserModal = () => {
 
 window.showDeleteModal = (docId, name) => {
     const user = globalUsersCache.find(u => u.id === docId);
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'mfskufgu@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
 
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be deleted.", "error");
@@ -2605,7 +2605,7 @@ window.confirmDeleteUser = async () => {
     if (!userToDelete) return;
 
     const user = globalUsersCache.find(u => u.id === userToDelete);
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'mfskufgu@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
 
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be deleted.", "error");
@@ -2902,7 +2902,7 @@ function renderUserRows(usersList) {
     }
 
     const myRank = roleRank[userData.role] || 0;
-    const MAIN_ADMIN_EMAIL = 'mfskufgu@gmail.com';
+    const MAIN_ADMIN_EMAIL = 'explyra@gmail.com';
 
     tbody.innerHTML = usersList.map(u => {
         const uRank = roleRank[u.role] || 1;

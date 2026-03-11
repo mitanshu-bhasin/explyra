@@ -2617,7 +2617,7 @@ onAuthStateChanged(auth, async (user) => {
                     const settingsRef = doc(db, "settings", "global");
                     const setSnap = await getDoc(settingsRef);
                     if (setSnap.exists() && setSnap.data().maintenanceMode === true) {
-                        if (user.email !== 'mfskufgu@gmail.com' && user.email !== 'info@fouralpha.org') {
+                        if (user.email !== 'explyra@gmail.com' && user.email !== 'info@fouralpha.org') {
                             document.body.innerHTML = `
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
