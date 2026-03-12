@@ -377,9 +377,10 @@
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
     <script>
+        const EMAILJS_PUBLIC_KEY = window.EMAILJS_PUBLIC_KEY || "i1GEROAXLarlKvxnp";
         window.addEventListener('DOMContentLoaded', () => {
             if (window.emailjs?.init) {
-                emailjs.init("i1GEROAXLarlKvxnp");
+                emailjs.init(EMAILJS_PUBLIC_KEY);
             } else {
                 console.warn('EmailJS SDK unavailable; init skipped.');
             }

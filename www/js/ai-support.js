@@ -3,7 +3,7 @@
  * Provides a chat interface for users to get support and insights via Llama 3 models.
  */
 
-const resolveGroqKey = () => {
+const resolveGroqKey = window.resolveGroqKey || (() => {
     const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
     return (
         window.__GROQ_API_KEY ||
@@ -12,7 +12,7 @@ const resolveGroqKey = () => {
         localStorage.getItem('explyra_groq_key') ||
         ''
     );
-};
+});
 
 const GROQ_API_KEY = resolveGroqKey();
 const API_URL = window.AI_CONFIG?.url || 'https://api.groq.com/openai/v1/chat/completions';

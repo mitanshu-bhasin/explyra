@@ -266,7 +266,7 @@
             } catch(e) { console.error(e); }
         }
 
-        const resolveGroqKey = () => {
+        const resolveGroqKey = window.resolveGroqKey || (() => {
             const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
             return (
                 window.__GROQ_API_KEY ||
@@ -275,7 +275,7 @@
                 localStorage.getItem('explyra_groq_key') ||
                 ''
             );
-        };
+        });
 
         async function triggerSearch(q) {
             if (!q.trim()) return;

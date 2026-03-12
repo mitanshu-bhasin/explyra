@@ -48,7 +48,7 @@ let FOOD_DB = [];
 let EXERCISE_DB = []; // Will be loaded from CSV
 
 // --- AI CONFIGURATION ---
-const resolveGroqKey = () => {
+const resolveGroqKey = window.resolveGroqKey || (() => {
     const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
     return (
         window.__GROQ_API_KEY ||
@@ -57,11 +57,11 @@ const resolveGroqKey = () => {
         localStorage.getItem('explyra_groq_key') ||
         ''
     );
-};
+});
 
-const GROQ_API_KEY = resolveGroqKey();
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const AI_MODEL = "llama-3.3-70b-versatile"; 
+const getGroqApiKey = () => resolveGroqKey();
 
 let currentUser = null;
 let userProfile = null;
@@ -688,7 +688,8 @@ async function fetchChatResponse(userText) {
             { role: "user", content: userText }
         ];
 
-        if (!GROQ_API_KEY) {
+        const groqKey = getGroqApiKey();
+        if (!groqKey) {
             document.getElementById(loadingId).remove();
             appendMessage('ai', "AI coach is disabled because no API key is configured. Provide window.__GROQ_API_KEY, set window.AI_CONFIG.apiKey, add a <meta name=\"groq-api-key\"> tag, or store 'explyra_groq_key' in local storage.");
             return;
@@ -697,7 +698,7 @@ async function fetchChatResponse(userText) {
         const response = await fetch(GROQ_API_URL, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${GROQ_API_KEY}`,
+                "Authorization": `Bearer ${groqKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -790,7 +791,8 @@ window.generateAIPlan = async (force = false) => {
             }
         `;
 
-        if (!GROQ_API_KEY) {
+        const groqKey = getGroqApiKey();
+        if (!groqKey) {
             loader.classList.add('hidden');
             container.innerHTML = '<p class="text-center text-gray-500">AI plan generation is disabled: configure window.__GROQ_API_KEY, window.AI_CONFIG.apiKey, a groq-api-key meta tag, or localStorage key.</p>';
             return;
@@ -799,7 +801,7 @@ window.generateAIPlan = async (force = false) => {
         const response = await fetch(GROQ_API_URL, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${GROQ_API_KEY}`,
+                "Authorization": `Bearer ${groqKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
