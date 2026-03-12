@@ -48,7 +48,17 @@ let FOOD_DB = [];
 let EXERCISE_DB = []; // Will be loaded from CSV
 
 // --- AI CONFIGURATION ---
-const GROQ_API_KEY = "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";
+const resolveGroqKey = () => {
+    const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
+    return (
+        window.__GROQ_API_KEY ||
+        metaKey ||
+        localStorage.getItem('explyra_groq_key') ||
+        ''
+    );
+};
+
+const GROQ_API_KEY = resolveGroqKey();
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const AI_MODEL = "llama-3.3-70b-versatile"; 
 
@@ -677,6 +687,12 @@ async function fetchChatResponse(userText) {
             { role: "user", content: userText }
         ];
 
+        if (!GROQ_API_KEY) {
+            document.getElementById(loadingId).remove();
+            appendMessage('ai', "AI coach is disabled because no API key is configured. Please set 'explyra_groq_key' in local storage or inject window.__GROQ_API_KEY.");
+            return;
+        }
+
         const response = await fetch(GROQ_API_URL, {
             method: "POST",
             headers: {
@@ -772,6 +788,12 @@ window.generateAIPlan = async (force = false) => {
                 "note": "Short motivational quote or medical tip"
             }
         `;
+
+        if (!GROQ_API_KEY) {
+            loader.classList.add('hidden');
+            container.innerHTML = '<p class="text-center text-gray-500">AI plan generation is disabled: no API key configured.</p>';
+            return;
+        }
 
         const response = await fetch(GROQ_API_URL, {
             method: "POST",

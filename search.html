@@ -266,6 +266,17 @@
             } catch(e) { console.error(e); }
         }
 
+        const resolveGroqKey = () => {
+            const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
+            return (
+                window.AI_CONFIG?.apiKey ||
+                window.__GROQ_API_KEY ||
+                metaKey ||
+                localStorage.getItem('explyra_groq_key') ||
+                ''
+            );
+        };
+
         async function triggerSearch(q) {
             if (!q.trim()) return;
             state.query = q.trim().toLowerCase();
@@ -321,8 +332,13 @@
             try {
                 // Use global config if available, otherwise fallback to hardcoded new values
                 const apiBase = window.AI_CONFIG?.url || 'https://api.groq.com/openai/v1/chat/completions';
-                const apiKey = window.AI_CONFIG?.apiKey || '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';
+                const apiKey = resolveGroqKey();
                 const apiModel = window.AI_CONFIG?.model || 'moonshotai/kimi-k2-instruct';
+
+                if (!apiKey) {
+                    body.innerHTML = `<span style="color:var(--ink3)">AI summary disabled: no API key configured.</span>`;
+                    return;
+                }
 
                 const res = await fetch(apiBase, {
                     method: 'POST',

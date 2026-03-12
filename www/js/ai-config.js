@@ -1,6 +1,16 @@
 // Explyra AI Configuration
+const resolveGroqKey = () => {
+    const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
+    return (
+        metaKey ||
+        window.__GROQ_API_KEY ||
+        localStorage.getItem('explyra_groq_key') ||
+        ''
+    );
+};
+
 const AI_CONFIG = {
-    apiKey: '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',
+    apiKey: resolveGroqKey(),
     url: 'https://api.groq.com/openai/v1/chat/completions',
     model: ''
 };

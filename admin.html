@@ -72,23 +72,27 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#F8F7F4',
-                            100: '#F1EFE9',
-                            500: '#0070f3',
+        if (window.tailwind) {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Outfit', 'sans-serif'],
+                        },
+                        colors: {
+                            brand: {
+                                50: '#F8F7F4',
+                                100: '#F1EFE9',
+                                500: '#0070f3',
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
+        } else {
+            console.warn('Tailwind CDN unavailable; skipped runtime config.');
+        }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -371,8 +375,16 @@
     <link rel="manifest" href="/manifest.json">
 
     <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.emailjs?.init) {
+                emailjs.init("i1GEROAXLarlKvxnp");
+            } else {
+                console.warn('EmailJS SDK unavailable; init skipped.');
+            }
+        });
+    </script>
 
 </head>
 

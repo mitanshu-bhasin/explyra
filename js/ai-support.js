@@ -3,8 +3,19 @@
  * Provides a chat interface for users to get support and insights via Llama 3 models.
  */
 
-const GROQ_API_KEY = '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';
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const resolveGroqKey = () => {
+    const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
+    return (
+        window.AI_CONFIG?.apiKey ||
+        window.__GROQ_API_KEY ||
+        metaKey ||
+        localStorage.getItem('explyra_groq_key') ||
+        ''
+    );
+};
+
+const GROQ_API_KEY = resolveGroqKey();
+const API_URL = window.AI_CONFIG?.url || 'https://api.groq.com/openai/v1/chat/completions';
 
 export class AISupport {
     constructor(userContext = {}, containerId = null) {
@@ -459,6 +470,12 @@ export class AISupport {
                 ...this.chatHistory,
                 { role: "user", content: query }
             ];
+
+            if (!GROQ_API_KEY) {
+                this.addMessage("AI assistant is disabled because no API key is configured. Please set 'explyra_groq_key' in local storage or provide window.__GROQ_API_KEY.", 'ai');
+                typing.style.display = 'none';
+                return;
+            }
 
             const response = await fetch(API_URL, {
                 method: 'POST',

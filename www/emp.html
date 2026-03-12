@@ -71,66 +71,70 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif']
-                    },
-                    colors: {
-                        slate: {
-                            50: '#F8F7F4',   // light bg -> Explyra --bg
-                            100: '#F1EFE9',  // light bg3 -> Explyra --bg3
-                            200: '#E4E1DB',  // light border -> Explyra --bdr
-                            300: '#CCC8C0',  // dark border light
-                            400: '#939BAC',  // muted text
-                            500: '#8290A8',  // dark muted text
-                            600: '#586070',  // secondary text
-                            700: '#0D1117',  // root text
-                            800: '#141928',  // Explyra --surf (Dark)
-                            900: '#080B14'   // Explyra --bg (Dark)
+        if (window.tailwind) {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Outfit', 'sans-serif'],
+                            serif: ['Playfair Display', 'serif']
                         },
-                        green: {
-                            50: '#eef2ff',
-                            100: 'rgba(21,70,192,0.08)',
-                            200: '#93B4FF',
-                            300: '#5B8AF5',
-                            400: '#5B8AF5', // Dark mode blue
-                            500: '#1546C0', // Light mode blue
-                            600: '#1546C0',
-                            700: '#113A9F',
-                            800: '#0C2B7A',
-                            900: '#051234'
-                        },
-                        amber: {
-                            50: 'rgba(180,83,9,0.08)',
-                            100: '#FDE68A',
-                            400: '#FBBF24',
-                            500: '#B45309',
-                            600: '#B45309'
-                        },
-                        brand: {
-                            50: '#F8F7F4',
-                            100: '#F1EFE9',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#1546C0',
-                            600: '#1546C0',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a'
-                        },
-                        explyra: {
-                            red: '#BE185D',
-                            green: '#047857',
-                            dark: '#0D1117'
+                        colors: {
+                            slate: {
+                                50: '#F8F7F4',
+                                100: '#F1EFE9',
+                                200: '#E4E1DB',
+                                300: '#CCC8C0',
+                                400: '#939BAC',
+                                500: '#8290A8',
+                                600: '#586070',
+                                700: '#0D1117',
+                                800: '#141928',
+                                900: '#080B14'
+                            },
+                            green: {
+                                50: '#eef2ff',
+                                100: 'rgba(21,70,192,0.08)',
+                                200: '#93B4FF',
+                                300: '#5B8AF5',
+                                400: '#5B8AF5',
+                                500: '#1546C0',
+                                600: '#1546C0',
+                                700: '#113A9F',
+                                800: '#0C2B7A',
+                                900: '#051234'
+                            },
+                            amber: {
+                                50: 'rgba(180,83,9,0.08)',
+                                100: '#FDE68A',
+                                400: '#FBBF24',
+                                500: '#B45309',
+                                600: '#B45309'
+                            },
+                            brand: {
+                                50: '#F8F7F4',
+                                100: '#F1EFE9',
+                                200: '#c7d2fe',
+                                300: '#a5b4fc',
+                                400: '#818cf8',
+                                500: '#1546C0',
+                                600: '#1546C0',
+                                700: '#1d4ed8',
+                                800: '#1e40af',
+                                900: '#1e3a8a'
+                            },
+                            explyra: {
+                                red: '#BE185D',
+                                green: '#047857',
+                                dark: '#0D1117'
+                            }
                         }
                     }
                 }
             }
+        } else {
+            console.warn('Tailwind CDN unavailable; skipped runtime config.');
         }
     </script>
     <script src="js/theme.js"></script>
@@ -293,8 +297,16 @@
     </script>
 
     <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.emailjs?.init) {
+                emailjs.init("i1GEROAXLarlKvxnp");
+            } else {
+                console.warn('EmailJS SDK unavailable; init skipped.');
+            }
+        });
+    </script>
 
 </head>
 

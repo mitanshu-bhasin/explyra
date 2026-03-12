@@ -71,47 +71,51 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'Outfit', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    },
-                    colors: {
-                        geist: {
-                            50: '#fafafa',
-                            100: '#eaeaea',
-                            200: '#999',
-                            300: '#888',
-                            400: '#666',
-                            500: '#444',
-                            600: '#333',
-                            700: '#111',
-                            800: '#000',
-                            900: '#000'
+        if (window.tailwind) {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'Outfit', 'sans-serif'],
+                            mono: ['JetBrains Mono', 'monospace']
                         },
-                        brand: {
-                            50: '#f0f7ff',
-                            100: '#e0effe',
-                            200: '#bae2fd',
-                            300: '#7ccbfd',
-                            400: '#38b2f9',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                        colors: {
+                            geist: {
+                                50: '#fafafa',
+                                100: '#eaeaea',
+                                200: '#999',
+                                300: '#888',
+                                400: '#666',
+                                500: '#444',
+                                600: '#333',
+                                700: '#111',
+                                800: '#000',
+                                900: '#000'
+                            },
+                            brand: {
+                                50: '#f0f7ff',
+                                100: '#e0effe',
+                                200: '#bae2fd',
+                                300: '#7ccbfd',
+                                400: '#38b2f9',
+                                500: '#0ea5e9',
+                                600: '#0284c7',
+                                700: '#0369a1',
+                                800: '#075985',
+                                900: '#0c4a6e',
+                            }
+                        },
+                        boxShadow: {
+                            'geist': '0 1px 2px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04)',
+                            'geist-hover': '0 4px 6px rgba(0,0,0,0.04), 0 10px 15px rgba(0,0,0,0.04)',
+                            'geist-dark': '0 1px 2px rgba(255,255,255,0.04), 0 2px 4px rgba(255,255,255,0.04)',
                         }
-                    },
-                    boxShadow: {
-                        'geist': '0 1px 2px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04)',
-                        'geist-hover': '0 4px 6px rgba(0,0,0,0.04), 0 10px 15px rgba(0,0,0,0.04)',
-                        'geist-dark': '0 1px 2px rgba(255,255,255,0.04), 0 2px 4px rgba(255,255,255,0.04)',
                     }
                 }
             }
+        } else {
+            console.warn('Tailwind CDN unavailable; skipped runtime config.');
         }
     </script>
     <script src="js/theme.js"></script>
@@ -316,8 +320,16 @@
     </script>
 
     <!-- EmailJS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.emailjs?.init) {
+                emailjs.init("i1GEROAXLarlKvxnp");
+            } else {
+                console.warn('EmailJS SDK unavailable; init skipped.');
+            }
+        });
+    </script>
 
 </head>
 
