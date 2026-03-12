@@ -27,7 +27,7 @@
 
     <!-- Fonts & Icons -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&family=Roboto+Mono:wght@500&family=Lato:wght@400;700&family=Courier+Prime:wght@400;700&family=Dancing+Script:wght@700&family=Orbitron:wght@500;700&family=Comic+Neue:wght@700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Roboto+Mono:wght@500&family=Dancing+Script:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -37,63 +37,101 @@
 
     <style>
         /* --- THEME VARIABLES (Explyra Theme) --- */
-        :root,
-        [data-theme="light"] {
-            --primary: #F8F7F4;
-            --secondary: #FFFFFF;
-            --accent: #1546C0;
-            --accent-hover: #0a2d85;
-            --accent-grad: linear-gradient(135deg, #1546C0 0%, #5B8AF5 100%);
-            --text: #0D1117;
-            --text-muted: #586070;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(13, 17, 23, 0.1);
+        :root {
+            --bg: #ffffff;
+            --fg: #000000;
+            --accents-1: #fafafa;
+            --accents-2: #eaeaea;
+            --accents-3: #999999;
+            --accents-4: #888888;
+            --accents-5: #666666;
+            --accents-6: #444444;
+            --accents-7: #333333;
+            --accents-8: #111111;
+
+            --primary: #000000;
+            --secondary: #666666;
+            --success: #0070f3;
+            --error: #ee0000;
+            --warning: #f5a623;
+            
+            --card-bg: #ffffff;
+            --card-border: #eaeaea;
+            --card-shadow: 0 4px 14px 0 rgba(0,0,0,0.1);
+            
+            --radius: 8px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-headings: 'Outfit', sans-serif;
+
+            /* Legacy Mappings */
+            --text: var(--fg);
+            --text-muted: var(--accents-5);
+            --accent: var(--primary);
+            --accent-hover: var(--accents-7);
+            --accent-grad: var(--primary);
+            --glass-bg: var(--accents-1);
+            --glass-border: var(--accents-2);
+            --input-bg: var(--bg);
+            --input-border: var(--accents-2);
             --paper-white: #ffffff;
-            --paper-text: #1a1f2e;
-            --danger: #BE185D;
-            --success: #047857;
-            --warning: #B45309;
-            --info: #1546C0;
-            --input-bg: #FFFFFF;
-            --input-border: #E4E1DB;
+            --paper-text: #000000;
+            --danger: var(--error);
+            --info: var(--success);
         }
 
-        /* DARK THEME */
         [data-theme="dark"] {
-            --primary: #080B14;
-            --secondary: #0E1220;
-            --accent: #5B8AF5;
-            --accent-hover: #8baef8;
-            --accent-grad: linear-gradient(135deg, #1546C0 0%, #5B8AF5 100%);
-            --text: #ffffff;
-            --text-muted: #939BAC;
-            --glass-bg: rgba(14, 18, 32, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg: #000000;
+            --fg: #ffffff;
+            --accents-8: #fafafa;
+            --accents-7: #eaeaea;
+            --accents-6: #999999;
+            --accents-5: #888888;
+            --accents-4: #666666;
+            --accents-3: #444444;
+            --accents-2: #333333;
+            --accents-1: #111111;
+
+            --primary: #ffffff;
+            --secondary: #888888;
+            --success: #0070f3;
+            --error: #ff0000;
+            
+            --card-bg: #000000;
+            --card-border: #333333;
+            --card-shadow: 0 0 0 1px #333333;
+            
             --paper-white: #ffffff;
-            --paper-text: #1a1f2e;
-            --input-bg: rgba(255, 255, 255, 0.05);
-            --input-border: rgba(255, 255, 255, 0.1);
+            --paper-text: #000000;
+            --accent-grad: var(--primary);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
+            font-family: var(--font-main);
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--primary);
-            color: var(--text);
+            background-color: var(--bg);
+            color: var(--fg);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding-bottom: 80px;
-            /* More space for mobile scroll */
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.2s;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #app-interface {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
         }
 
         /* --- TOAST NOTIFICATIONS --- */
@@ -341,14 +379,14 @@
         }
 
         .login-box {
-            background: var(--secondary);
+            background: var(--card-bg);
             padding: 40px;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            border: 1px solid var(--card-border);
             width: 90%;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
             animation: floatUp 0.5s ease-out;
         }
 
@@ -365,32 +403,26 @@
         }
 
         .btn-main {
-            background: var(--accent-grad);
-            color: var(--primary);
-            font-weight: 800;
+            background: var(--primary);
+            color: var(--bg);
+            font-weight: 600;
             padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
+            border: 1px solid var(--primary);
+            border-radius: var(--radius);
             cursor: pointer;
             transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             width: 100%;
             margin-top: 15px;
         }
 
-        [data-theme="light"] .btn-main {
-            color: #fff;
-        }
-
         .btn-main:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: var(--bg);
+            color: var(--primary);
         }
 
         .btn-main.delete-mode {
@@ -422,22 +454,22 @@
 
         /* --- TOOLBAR --- */
         .toolbar {
-            width: 98%;
-            max-width: 210mm;
+            width: 100%;
+            max-width: 1200px;
             margin: 20px 0;
-            padding: 15px;
-            background: var(--secondary);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
+            padding: 12px 20px;
+            background: var(--bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            gap: 12px;
+            box-shadow: var(--card-shadow);
             position: sticky;
-            top: 10px;
-            z-index: 100;
+            top: 20px;
+            z-index: 1000;
         }
 
         .tool-group {
@@ -448,33 +480,34 @@
         }
 
         .tool-btn {
-            background: rgba(125, 125, 125, 0.1);
-            color: var(--text);
-            border: 1px solid var(--glass-border);
-            padding: 8px 12px;
-            border-radius: 6px;
+            background: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--card-border);
+            padding: 8px 14px;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: 0.2s;
+            gap: 8px;
+            transition: all 0.15s ease;
         }
 
         .tool-btn:hover {
-            background: rgba(125, 125, 125, 0.2);
-            border-color: var(--text-muted);
+            background: var(--accents-1);
+            border-color: var(--accents-3);
         }
 
         .tool-btn.primary {
-            background: var(--accent);
-            color: var(--primary);
-            border: none;
+            background: var(--primary);
+            color: var(--bg);
+            border: 1px solid var(--primary);
         }
 
-        [data-theme="light"] .tool-btn.primary {
-            color: #fff;
+        .tool-btn.primary:hover {
+            background: var(--bg);
+            color: var(--primary);
         }
 
         .tool-btn.success {
@@ -510,16 +543,18 @@
         }
 
         .invoice-sheet {
-            background: var(--paper-white);
-            color: var(--paper-text);
+            background: #ffffff;
+            color: #000000;
             width: 210mm;
             min-height: 297mm;
-            /* A4 Size */
-            padding: 30px 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 50px 60px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--accents-2);
+            border-radius: var(--radius);
             position: relative;
             transition: all 0.3s ease;
             transform-origin: top center;
+            margin: 0 auto 40px;
         }
 
         /* WATERMARK */
@@ -673,12 +708,12 @@
         }
 
         .logo-area {
-            font-size: 1.8rem;
-            font-weight: 900;
+            font-family: var(--font-headings);
+            font-size: 2rem;
+            font-weight: 800;
             color: #000;
             line-height: 1;
-            text-transform: uppercase;
-            letter-spacing: -1px;
+            letter-spacing: -0.05em;
         }
 
         #company-details p {
@@ -739,42 +774,41 @@
         }
 
         .box-title {
-            font-size: 0.75rem;
-            font-weight: 800;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
-            color: #777;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 2px;
+            color: var(--accents-5);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
         }
 
         .inv-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 30px;
         }
 
         .inv-table th {
-            background: #1a1f2e;
-            color: #fff;
-            padding: 8px 6px;
+            background: var(--accents-1);
+            color: var(--accents-6);
+            padding: 12px 10px;
             text-align: left;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
-            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--accents-2);
         }
 
         .inv-table td {
-            border-bottom: 1px solid #eee;
-            padding: 6px 6px;
-            font-size: 0.8rem;
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--accents-2);
+            font-size: 0.9rem;
             vertical-align: top;
         }
 
         .inv-table tr:last-child td {
-            border-bottom: 2px solid #000;
+            border-bottom: 2px solid var(--fg);
         }
 
         .col-sno {
@@ -2102,44 +2136,23 @@
                 </div>
 
                 <!-- Totals -->
-                <div class="total-section">
-                    <div class="total-grid">
-                        <div class="total-row">
-                            <span class="t-label" data-translate="subtotal">Subtotal</span>
-                            <span class="t-val">₹ <span id="subtotal">0.00</span></span>
+                <div class="total-section" style="margin-top: 40px; border-top: 2px solid var(--accents-8); padding-top: 20px;">
+                    <div class="total-grid" style="max-width: 400px; margin-left: auto;">
+                        <div class="total-row" style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span class="t-label" style="font-weight: 500; color: var(--accents-5);">Subtotal</span>
+                            <span class="t-val" style="font-weight: 600;">₹ <span id="subtotal">0.00</span></span>
                         </div>
-                        <div class="total-row">
-                            <span class="t-label" data-translate="discount">Less: Discount</span>
-                            <input type="number" id="discount-val" class="editable num" value="0" style="width: 80px;"
-                                oninput="calcTotal()">
+                        <div class="total-row" style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span class="t-label" style="font-weight: 500; color: var(--accents-5);">Discount</span>
+                            <input type="number" id="discount-val" class="editable num" value="0" style="width: 80px; text-align: right; border: none; font-weight: 600;" oninput="calcTotal()">
                         </div>
-                        <div class="total-row">
-                            <span class="t-label">CGST <input type="number" id="cgst-rate" value="9"
-                                    class="editable num" style="width: 30px;" oninput="calcTotal()">%</span>
-                            <span class="t-val">₹ <span id="cgst-val">0.00</span></span>
+                        <div class="total-row" style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span class="t-label" style="font-weight: 500; color: var(--accents-5);">Taxes</span>
+                            <span class="t-val" style="font-weight: 600;">₹ <span id="tax-summary-val">0.00</span></span>
                         </div>
-                        <div class="total-row">
-                            <span class="t-label">SGST <input type="number" id="sgst-rate" value="9"
-                                    class="editable num" style="width: 30px;" oninput="calcTotal()">%</span>
-                            <span class="t-val">₹ <span id="sgst-val">0.00</span></span>
-                        </div>
-                        <div class="total-row">
-                            <span class="t-label">IGST <input type="number" id="igst-rate" value="0"
-                                    class="editable num" style="width: 30px;" oninput="calcTotal()">%</span>
-                            <span class="t-val">₹ <span id="igst-val">0.00</span></span>
-                        </div>
-                        <div class="total-row">
-                            <span class="t-label" data-translate="other_charges">Other Charges</span>
-                            <input type="number" id="other-charges" class="editable num" value="0" style="width: 80px;"
-                                oninput="calcTotal()">
-                        </div>
-                        <div class="total-row final">
-                            <span class="t-label" data-translate="grand_total">Grand Total</span>
-                            <span class="t-val" style="color: #000;">₹ <span id="grand-total">0.00</span></span>
-                        </div>
-                        <div
-                            style="font-size: 0.75rem; color: #666; margin-top: 5px; text-align: right; font-style: italic;">
-                            Amount in words: <span id="amount-words">Zero Only</span>
+                        <div class="total-row final" style="display: flex; justify-content: space-between; padding: 16px 0; border-top: 1px solid var(--accents-2); margin-top: 10px;">
+                            <span class="t-label" style="font-size: 1.1rem; font-weight: 700;">Total Amount</span>
+                            <span class="t-val" style="font-size: 1.1rem; font-weight: 800;">₹ <span id="grand-total">0.00</span></span>
                         </div>
                     </div>
                 </div>
@@ -3031,7 +3044,7 @@
 
                 if (!window.companyId) {
                     Toast.error("No company linked. Please create a workspace first.");
-                    window.location.href = '../company.html';
+                    // window.location.href = '../company.html';
                     return;
                 }
 
