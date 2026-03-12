@@ -32,7 +32,7 @@ async function initializeCrm(user) {
                     email: user.email,
                     role: 'MAIN_ADMIN',
                     name: 'Explyra Admin',
-                    companyId: 'EXPLYRA_GLOBAL' // Or a dummy ID if they want to test CRM
+                    companyId: 'EXPLYRA_GLOBAL'
                 };
             } else {
                 throw new Error("User profile not found in database.");
@@ -57,17 +57,10 @@ async function initializeCrm(user) {
         window.userData = { ...userData, uid: user.uid };
         window.companyId = userData.companyId;
 
-        // Pre-fill header
+        // Pre-fill header avatar
         if (document.getElementById('header-avatar')) {
             const initial = userData.name ? userData.name.charAt(0).toUpperCase() : '?';
-            document.getElementById('header-avatar').innerHTML = `<span class="font-bold text-slate-600 dark:text-slate-300">${initial}</span>`;
-
-            // Populate Dropdown
-            if (document.getElementById('crm-dd-name')) {
-                document.getElementById('crm-dd-name').textContent = userData.name || 'User';
-                document.getElementById('crm-dd-email').textContent = user.email || '';
-                document.getElementById('crm-dd-role').textContent = (userData.role || 'EMP').replace('_', ' ');
-            }
+            document.getElementById('header-avatar').innerHTML = `<span class="font-bold" style="font-size: 0.75rem;">${initial}</span>`;
         }
 
         console.log("[CRM Core] Initialized for company:", window.companyId);
@@ -78,11 +71,15 @@ async function initializeCrm(user) {
         if (window.CrmContacts) window.CrmContacts.init();
         if (window.CrmAnalytics) window.CrmAnalytics.init();
 
+        // Populate dashboard with initial data
+        updateDashboardStats();
+
         // Bind global save button based on active tab
         const newRecordBtn = document.getElementById("btn-new-record");
         if (newRecordBtn) {
             newRecordBtn.addEventListener("click", () => {
-                const activeTab = document.querySelector(".crm-nav-item.active").dataset.tab;
+                const activeBtn = document.querySelector(".crm-nav-item.active");
+                const activeTab = activeBtn ? activeBtn.dataset.tab : 'dashboard';
                 if (activeTab === 'pipeline') {
                     openDealModal();
                 } else if (activeTab === 'leads') {
@@ -101,7 +98,81 @@ async function initializeCrm(user) {
     }
 }
 
-// Global UI Functions
+// ===================== Dashboard Stats =====================
+window.updateDashboardStats = function () {
+    // Leads count
+    const leadsCount = window.CrmLeads ? window.CrmLeads.leads.length : 0;
+    const el1 = document.getElementById('dash-total-leads');
+    if (el1) el1.textContent = leadsCount;
+
+    // Active deals (non-closed)
+    let activeDeals = 0;
+    let pipelineValue = 0;
+    const allDeals = window.CrmPipeline ? window.CrmPipeline.deals : [];
+    allDeals.forEach(d => {
+        if (d.stage !== 'Closed-Won' && d.stage !== 'Closed-Lost') {
+            activeDeals++;
+            pipelineValue += (d.amount || 0);
+        }
+    });
+    const el2 = document.getElementById('dash-active-deals');
+    if (el2) el2.textContent = activeDeals;
+    const el4 = document.getElementById('dash-pipeline-value');
+    if (el4) el4.textContent = `₹${pipelineValue.toLocaleString()}`;
+
+    // Contacts count
+    const contactsCount = window.CrmContacts ? window.CrmContacts.contacts.length : 0;
+    const el3 = document.getElementById('dash-total-contacts');
+    if (el3) el3.textContent = contactsCount;
+
+    // Recent deals list
+    renderRecentDeals(allDeals);
+};
+
+function renderRecentDeals(deals) {
+    const container = document.getElementById('dash-recent-deals');
+    if (!container) return;
+
+    // Show up to 5 most recent
+    const recent = [...deals]
+        .sort((a, b) => {
+            const t1 = a.updatedAt ? (a.updatedAt.toMillis ? a.updatedAt.toMillis() : 0) : 0;
+            const t2 = b.updatedAt ? (b.updatedAt.toMillis ? b.updatedAt.toMillis() : 0) : 0;
+            return t2 - t1;
+        })
+        .slice(0, 5);
+
+    if (recent.length === 0) {
+        container.innerHTML = `<div class="flex items-center justify-center py-8" style="color: var(--text-secondary);"><p class="text-xs">No deals yet — start by adding one!</p></div>`;
+        return;
+    }
+
+    let html = '<div class="space-y-2">';
+    recent.forEach(deal => {
+        let stageColor = 'var(--text-secondary)';
+        if (deal.stage === 'Closed-Won') stageColor = '#10b981';
+        if (deal.stage === 'Closed-Lost') stageColor = '#ef4444';
+        if (deal.stage === 'Proposal') stageColor = '#3b82f6';
+        if (deal.stage === 'Negotiation') stageColor = '#f59e0b';
+
+        html += `
+            <div class="flex items-center justify-between py-2 px-1" style="border-bottom: 1px solid var(--border-color);">
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold truncate" style="color: var(--text-primary);">${deal.name || 'Untitled'}</p>
+                    <p class="text-[10px]" style="color: var(--text-secondary);">${deal.contact || ''}</p>
+                </div>
+                <div class="text-right flex-shrink-0 ml-3">
+                    <p class="text-xs font-mono font-semibold" style="color: var(--text-primary);">₹${(deal.amount || 0).toLocaleString()}</p>
+                    <p class="text-[10px] font-bold" style="color: ${stageColor};">${deal.stage}</p>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ===================== Global UI Functions =====================
 window.toggleCrmProfile = function () {
     const dropdown = document.getElementById('crm-profile-dropdown');
     if (dropdown) {
@@ -112,10 +183,10 @@ window.toggleCrmProfile = function () {
 window.switchCrmTab = function (tabId) {
     // Update nav active state
     document.querySelectorAll('.crm-nav-item').forEach(btn => {
-        btn.classList.remove('active', 'bg-white/10', 'text-white');
+        btn.classList.remove('active');
     });
     const activeBtn = document.querySelector(`.crm-nav-item[data-tab="${tabId}"]`);
-    if (activeBtn) activeBtn.classList.add('active', 'bg-white/10', 'text-white');
+    if (activeBtn) activeBtn.classList.add('active');
 
     // Hide all views
     document.querySelectorAll('.crm-view').forEach(view => {
@@ -130,35 +201,48 @@ window.switchCrmTab = function (tabId) {
     const titleEl = document.getElementById('crm-page-title');
     const newRecordBtn = document.getElementById('btn-new-record');
 
-    if (tabId === 'pipeline') {
-        if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-layer-group text-blue-500"></i> Sales Pipeline`;
-        if (newRecordBtn) {
-            newRecordBtn.style.display = 'flex';
-            newRecordBtn.innerHTML = `<i class="fa-solid fa-plus"></i> New Deal`;
-        }
-    } else if (tabId === 'leads') {
-        if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-filter text-blue-500"></i> Lead Management`;
-        if (newRecordBtn) {
-            newRecordBtn.style.display = 'flex';
-            newRecordBtn.innerHTML = `<i class="fa-solid fa-plus"></i> New Lead`;
-        }
-    } else if (tabId === 'contacts') {
-        if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-address-book text-blue-500"></i> Contact Directory`;
-        if (newRecordBtn) {
-            newRecordBtn.style.display = 'flex';
-            newRecordBtn.innerHTML = `<i class="fa-solid fa-plus"></i> New Contact`;
-        }
-    } else if (tabId === 'analytics') {
-        if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Sales Analytics`;
-        if (newRecordBtn) newRecordBtn.style.display = 'none'; // No "New Analytics"
+    const titleMap = {
+        dashboard: { icon: 'fa-chart-pie', label: 'Dashboard', showBtn: false },
+        pipeline: { icon: 'fa-layer-group', label: 'Sales Pipeline', showBtn: true, btnLabel: 'New Deal' },
+        leads: { icon: 'fa-filter', label: 'Lead Management', showBtn: true, btnLabel: 'New Lead' },
+        contacts: { icon: 'fa-address-book', label: 'Contact Directory', showBtn: true, btnLabel: 'New Contact' },
+        analytics: { icon: 'fa-chart-line', label: 'Sales Analytics', showBtn: false },
+        settings: { icon: 'fa-gear', label: 'Settings', showBtn: false }
+    };
 
-        // Trigger chart render if needed
+    const config = titleMap[tabId] || titleMap.dashboard;
+    if (titleEl) {
+        titleEl.innerHTML = `<i class="fa-solid ${config.icon}" style="color: var(--text-secondary);"></i> ${config.label}`;
+    }
+
+    if (newRecordBtn) {
+        if (config.showBtn) {
+            newRecordBtn.style.display = 'inline-flex';
+            newRecordBtn.innerHTML = `<i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">${config.btnLabel}</span>`;
+        } else {
+            newRecordBtn.style.display = 'none';
+        }
+    }
+
+    // Tab-specific logic
+    if (tabId === 'analytics') {
         if (window.CrmAnalytics && window.CrmAnalytics.renderCharts) {
             window.CrmAnalytics.renderCharts();
         }
     }
-}
 
+    if (tabId === 'dashboard') {
+        updateDashboardStats();
+    }
+
+    // Close mobile sidebar
+    const sidebar = document.getElementById('crm-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('sidebar-open');
+    if (overlay) overlay.classList.remove('active');
+};
+
+// ===================== Deal Modal =====================
 window.openDealModal = function (dealData = null) {
     const modal = document.getElementById('modal-deal');
     const content = document.getElementById('modal-deal-content');
@@ -166,7 +250,7 @@ window.openDealModal = function (dealData = null) {
     // Reset form
     document.getElementById('deal-form').reset();
     document.getElementById('deal-id').value = '';
-    document.getElementById('modal-deal-title').innerHTML = `<i class="fa-solid fa-handshake text-blue-500"></i> New Deal`;
+    document.getElementById('modal-deal-title').innerHTML = `<i class="fa-solid fa-handshake" style="color: var(--text-secondary);"></i> New Deal`;
 
     if (dealData) {
         document.getElementById('deal-id').value = dealData.id || '';
@@ -176,28 +260,26 @@ window.openDealModal = function (dealData = null) {
         document.getElementById('deal-stage').value = dealData.stage || 'Discovery';
         document.getElementById('deal-probability').value = dealData.probability || '';
         document.getElementById('deal-notes').value = dealData.notes || '';
-        document.getElementById('modal-deal-title').innerHTML = `<i class="fa-solid fa-pen text-blue-500"></i> Edit Deal`;
+        document.getElementById('modal-deal-title').innerHTML = `<i class="fa-solid fa-pen" style="color: var(--text-secondary);"></i> Edit Deal`;
     }
 
-    modal.classList.remove('hidden');
-    // Small delay to allow display:block to apply before animating opacity/scale
+    modal.classList.add('show');
     setTimeout(() => {
-        content.classList.remove('opacity-0', 'scale-95');
+        content.classList.remove('entering');
     }, 10);
 
-    // Attempt to load existing projects for the link dropdown
     loadProjectsDropdown();
-}
+};
 
 window.closeDealModal = function () {
     const modal = document.getElementById('modal-deal');
     const content = document.getElementById('modal-deal-content');
 
-    content.classList.add('opacity-0', 'scale-95');
+    content.classList.add('entering');
     setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 300); // match duration
-}
+        modal.classList.remove('show');
+    }, 300);
+};
 
 window.saveDeal = async function () {
     const id = document.getElementById('deal-id').value;
@@ -233,13 +315,11 @@ window.saveDeal = async function () {
 
     try {
         if (id) {
-            // Update
             await window.CrmApi.withRetry(() =>
                 window.db.collection('crm_deals').doc(id).update(docData),
                 'Update Deal'
             );
         } else {
-            // Create
             docData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
             docData.createdBy = window.userData.uid;
 
@@ -256,7 +336,7 @@ window.saveDeal = async function () {
         console.error("Save deal error", e);
         alert("Error saving deal: " + e.message);
     }
-}
+};
 
 async function loadProjectsDropdown() {
     const dropdown = document.getElementById('deal-project-id');

@@ -9,23 +9,37 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - Explyra School</title>
-    <!-- Tailwind & Icons -->
+    <title>Insights | Edu.OS</title>
+    
+    <!-- Tailwind & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Chart.js CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom CSS & Utilities -->
-    <link rel="stylesheet" href="../../css/common.css">
-    <link rel="stylesheet" href="../shared/shared.css">
-    <link rel="stylesheet" href="school.css">
-
-    <!-- Firebase SDKs (Compat version as used in main app) -->
+    
+    <!-- SaaS UI Styles -->
+    <link rel="stylesheet" href="../shared/saas-ui.css">
+    
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        .v-sidebar-item.active {
+            background: var(--v-accents-2);
+            color: var(--v-foreground);
+            font-weight: 600;
+        }
+        .v-sidebar-item i { width: 24px; text-align: center; margin-right: 12px; }
+        
+        /* Custom chart container styles */
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+    
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -34,23 +48,114 @@
     <!-- Logic -->
     <script src="../shared/utils.js"></script>
     <script src="../shared/auth.js"></script>
-    <script src="../shared/charts.js"></script>
-
+    <!-- We'll redefine charts logic to match SaaS UI right here -->
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             initAuth('school');
 
             if (hasAccess(['Student'], 'school')) {
-                document.body.innerHTML = '<div class="flex items-center justify-center h-screen bg-slate-50 text-slate-500 font-bold text-xl">Access Denied. Students cannot view Analytics. <a href="dashboard.html" class="text-indigo-600 ml-2 underline">Go back</a></div>';
+                document.body.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-screen bg-[var(--v-bg)] text-center p-6">
+                        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-600 border border-red-100 mb-6 shadow-sm">
+                            <i class="fa-solid fa-lock text-2xl"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold tracking-tight mb-2 text-[var(--v-foreground)]">Clearance Required</h1>
+                        <p class="text-[var(--v-accents-5)] mb-8 max-w-md mx-auto">Analytics matrix is restricted to administrative and faculty personnel.</p>
+                        <a href="dashboard.html" class="v-btn-primary bg-[var(--v-foreground)] text-[var(--v-bg)] border-none">Return to Hub</a>
+                    </div>`;
                 return;
             }
 
-            // Give UI time to paint, then render charts
+            // Sync theme changes with charts
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        renderAllCharts();
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
+
             setTimeout(renderAllCharts, 300);
         });
 
+        // Simple chart instantiation helper (replaces shared/charts.js)
+        let activeCharts = {};
+        function renderChartSaaS(canvasId, type, dataConfig, optionsConfig = {}) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            
+            if (activeCharts[canvasId]) {
+                activeCharts[canvasId].destroy();
+            }
+            
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = isDark ? '#888888' : '#888888';
+            
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: { size: 11, weight: '600' },
+                            boxWidth: 12,
+                            boxHeight: 12,
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#111111' : '#ffffff',
+                        titleColor: isDark ? '#ffffff' : '#000000',
+                        bodyColor: isDark ? '#a0a0a0' : '#666666',
+                        borderColor: isDark ? '#333333' : '#eaeaeb',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12, weight: '500' },
+                        padding: 12,
+                        boxPadding: 6
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor, drawBorder: false },
+                        ticks: { color: textColor, font: { size: 11, weight: '600' } },
+                        border: { display: false }
+                    },
+                    y: {
+                        grid: { color: gridColor, drawBorder: false },
+                        ticks: { color: textColor, font: { size: 11, weight: '600' }, padding: 10 },
+                        border: { display: false }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            };
+
+            const mergedOptions = { ...baseOptions };
+            if (optionsConfig.scales) {
+                mergedOptions.scales.y = { ...mergedOptions.scales.y, ...optionsConfig.scales.y };
+            }
+
+            activeCharts[canvasId] = new Chart(ctx, {
+                type: type,
+                data: dataConfig,
+                options: mergedOptions
+            });
+        }
+
         async function calculateClassAverages() {
             const session = getSession('school_session');
+            if (!session) return { labels: [], data: [] };
 
             let students = [];
             let attendance = {};
@@ -80,7 +185,7 @@
 
             // Init buckets
             students.forEach(s => {
-                const cls = `Class ${s.stuClass}`;
+                const cls = `Grade ${s.stuClass}`;
                 if (!classStats[cls]) classStats[cls] = { totalStudents: 0, possibleDays: 0, presentHits: 0 };
                 classStats[cls].totalStudents++;
             });
@@ -93,21 +198,27 @@
                     const dayRecords = attendance[dateStr];
 
                     students.forEach(s => {
-                        const cls = `Class ${s.stuClass}`;
-                        classStats[cls].possibleDays++;
-
-                        if (dayRecords[s.id] === 'Present') {
-                            classStats[cls].presentHits++;
+                        const safeId = s.id || s.firebaseId;
+                        const cls = `Grade ${s.stuClass}`;
+                        
+                        if (classStats[cls]) {
+                            classStats[cls].possibleDays++;
+                            if (dayRecords[safeId] === 'Present') {
+                                classStats[cls].presentHits++;
+                            }
                         }
                     });
                 }
             });
 
-            // Format for Chart.js
             const labels = [];
             const dataPts = [];
 
-            Object.keys(classStats).sort().forEach(cls => {
+            Object.keys(classStats).sort((a,b) => {
+                const numA = parseInt(a.replace('Grade ',''));
+                const numB = parseInt(b.replace('Grade ',''));
+                return numA - numB;
+            }).forEach(cls => {
                 labels.push(cls);
                 const stats = classStats[cls];
                 if (stats.possibleDays === 0) {
@@ -121,173 +232,242 @@
         }
 
         function getMonthlyTrend() {
-            // Mock trend data logic; in reality, would group all historical dates by YYYY-MM
+            // Mock trend data
             return {
-                labels: ['August', 'September', 'October', 'November', 'December'],
-                data: [92, 94.5, 88.2, 95.1, 91.0]
+                labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                data: [88.5, 92.1, 94.5, 88.2, 95.1, 91.0]
             };
         }
 
         async function renderAllCharts() {
-            const classBg = document.documentElement.classList.contains('dark') ? 'rgba(99, 102, 241, 0.5)' : 'rgba(99, 102, 241, 0.8)';
-            const classBorder = 'rgba(99, 102, 241, 1)';
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            // SaaS Color Palette
+            const primaryColor = isDark ? '#ededed' : '#171717';
+            const primaryBg = isDark ? 'rgba(237, 237, 237, 0.1)' : 'rgba(23, 23, 23, 0.05)';
+            const accentColor = '#3b82f6'; // Blue
+            const accentBg = 'rgba(59, 130, 246, 0.1)';
 
             // 1. Class-wise Averages (Bar)
             const classData = await calculateClassAverages();
+            
             if (classData.labels.length > 0) {
-                renderChart('classAverageChart', 'bar', {
+                document.getElementById('chart-container-1').innerHTML = '<canvas id="classAverageChart"></canvas>';
+                
+                renderChartSaaS('classAverageChart', 'bar', {
                     labels: classData.labels,
                     datasets: [{
-                        label: 'Avg Attendance % (Current Month)',
+                        label: 'Active Yield (Current Month)',
                         data: classData.data,
-                        backgroundColor: classBg,
-                        borderColor: classBorder,
+                        backgroundColor: primaryBg,
+                        borderColor: primaryColor,
                         borderWidth: 1,
-                        borderRadius: 6
+                        borderRadius: 4,
+                        hoverBackgroundColor: primaryColor,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
                     }]
                 }, {
-                    scales: { y: { beginAtZero: true, max: 100 } }
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            ticks: { callback: function(value) { return value + '%' } }
+                        } 
+                    }
                 });
             } else {
-                document.getElementById('chart-container-1').innerHTML = `<div class="h-64 flex items-center justify-center text-slate-400 text-sm">No student data available to chart.</div>`;
+                document.getElementById('chart-container-1').innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-[var(--v-accents-4)]">
+                        <i class="fa-solid fa-chart-simple text-3xl mb-3"></i>
+                        <p class="text-xs font-bold uppercase tracking-widest">Insufficient Data</p>
+                    </div>`;
             }
 
             // 2. Trend Line
             const trendData = getMonthlyTrend();
-            renderChart('trendChart', 'line', {
+            renderChartSaaS('trendChart', 'line', {
                 labels: trendData.labels,
                 datasets: [{
-                    label: 'Campus Attendance %',
+                    label: 'Global Institutional Average %',
                     data: trendData.data,
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    borderColor: 'rgba(16, 185, 129, 1)',
-                    borderWidth: 3,
-                    tension: 0.4,
+                    backgroundColor: accentBg,
+                    borderColor: accentColor,
+                    borderWidth: 2,
+                    tension: 0.3,
                     fill: true,
-                    pointBackgroundColor: 'rgba(16, 185, 129, 1)',
-                    pointRadius: 4
+                    pointBackgroundColor: accentColor,
+                    pointBorderColor: isDark ? '#000' : '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             }, {
-                scales: { y: { min: 60, max: 100 } }
+                scales: { 
+                    y: { 
+                        min: 60, 
+                        max: 100,
+                        ticks: { callback: function(value) { return value + '%' } }
+                    } 
+                }
             });
         }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+        
+        (function() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
     </script>
 </head>
 
-<body
-    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] h-screen overflow-hidden flex transition-colors duration-300">
+<body class="flex h-screen overflow-hidden bg-[var(--v-bg)]">
 
     <!-- Sidebar -->
-    <aside
-        class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0 hidden md:flex z-20">
-        <div class="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-700">
-            <i class="fa-solid fa-graduation-cap text-indigo-600 text-xl mr-3"></i>
-            <span class="font-bold text-lg tracking-tight">Edu Workspace</span>
+    <aside class="v-sidebar shrink-0 hidden md:flex border-r border-[var(--v-border)] z-40 relative">
+        <div class="h-16 flex items-center px-6 border-b border-[var(--v-border)]">
+            <div class="w-7 h-7 bg-indigo-600 rounded flex items-center justify-center mr-3 shadow-inner text-white text-[10px]">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span class="font-bold text-sm tracking-tight">EDU<span class="text-[var(--v-accents-4)]">.OS</span></span>
         </div>
 
-        <div class="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/20">
-            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Active School</p>
-            <p id="sidebar-org-name" class="font-bold text-slate-700 dark:text-slate-200 truncate">Loading...</p>
+        <div class="p-5">
+            <p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] mb-2 tracking-widest">Active Institution</p>
+            <div class="flex items-center gap-3 p-2 rounded-md bg-[var(--v-bg)] border border-[var(--v-border)] shadow-sm">
+                <div class="w-7 h-7 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs" id="sidebar-org-initial">S</div>
+                <p id="sidebar-org-name" class="font-bold text-xs truncate">Loading Setup...</p>
+            </div>
         </div>
 
-        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-            <a href="dashboard.html"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
+        <nav class="flex-1 px-3 space-y-1">
+            <a href="dashboard.html" class="v-sidebar-item">
+                <i class="fa-solid fa-chart-pie opacity-70"></i> Hub
             </a>
-            <a href="teachers.html"
-                class="principal-only flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-solid fa-chalkboard-user w-5 text-center"></i> Teachers
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Directories</p>
+            </div>
+            <a href="teachers.html" class="v-sidebar-item principal-only">
+                <i class="fa-solid fa-chalkboard-user opacity-70"></i> Faculty
             </a>
-            <a href="students.html"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-solid fa-users w-5 text-center"></i> Students
+            <a href="students.html" class="v-sidebar-item">
+                <i class="fa-solid fa-users opacity-70"></i> Students
             </a>
-            <a href="attendance.html"
-                class="teacher-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-regular fa-calendar-check w-5 text-center"></i> Attendance
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Operations</p>
+            </div>
+            <a href="attendance.html" class="v-sidebar-item teacher-auth">
+                <i class="fa-regular fa-calendar-check opacity-70"></i> Roll Call
             </a>
-            <a href="analytics.html"
-                class="teacher-auth flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-bold transition">
-                <i class="fa-solid fa-chart-line w-5 text-center"></i> Analytics
+            <a href="analytics.html" class="v-sidebar-item active teacher-auth">
+                <i class="fa-solid fa-chart-line text-[var(--v-foreground)]"></i> Insights
             </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-200 dark:border-slate-700">
-            <div class="flex items-center gap-3 mb-4">
-                <div
-                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold">
+        <div class="p-4 border-t border-[var(--v-border)]">
+            <div class="flex items-center gap-3 mb-4 p-2">
+                <div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs border border-[var(--v-border)]">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="overflow-hidden">
-                    <p id="sidebar-user-name" class="text-sm font-bold truncate">User</p>
-                    <p id="sidebar-user-role" class="text-[10px] font-bold uppercase text-slate-400 truncate">Role</p>
+                    <p id="sidebar-user-name" class="text-xs font-bold truncate">User</p>
+                    <p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-[var(--v-accents-5)] truncate">Role</p>
                 </div>
             </div>
-            <button onclick="doLogout('school')"
-                class="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            <button onclick="doLogout('school')" class="w-full flex items-center justify-center gap-2 py-2.5 text-[var(--v-accents-6)] hover:bg-[var(--v-accents-2)] hover:text-red-500 rounded-md text-xs font-bold transition border border-transparent hover:border-red-200">
+                <i class="fa-solid fa-power-off"></i> Sign Out
             </button>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <header
-            class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shrink-0 z-10">
-    <meta property="og:site_name" content="Explyra" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:site" content="@explyras" />
-    <meta name="twitter:creator" content="@explyras" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[var(--v-accents-1)]">
+        
+        <!-- Header -->
+        <header class="v-header shrink-0 z-30 relative bg-[var(--v-bg)] border-b border-[var(--v-border)]">
             <div class="flex items-center gap-3">
-                <h1 class="text-lg font-bold">Performance Analytics</h1>
+                <h1 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Operations / Insights</h1>
             </div>
             <div class="flex items-center gap-4">
-                <button onclick="toggleTheme()"
-                    class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
-                    <i class="fa-solid fa-moon dark:hidden"></i>
-                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                <button onclick="toggleTheme()" class="w-8 h-8 rounded border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition shadow-sm bg-[var(--v-bg)]">
+                    <i class="fa-solid fa-moon dark:hidden text-[11px] text-[var(--v-accents-5)]"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-[11px] text-[var(--v-accents-5)] hover:text-yellow-500"></i>
                 </button>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
-
-            <div class="flex items-center justify-between animate-fade-in" style="animation-delay: 0.1s;">
-                <div>
-                    <h2 class="text-2xl font-bold">Attendance Trends</h2>
-                    <p class="text-slate-500 text-sm mt-1">Visualize student consistency across classes and historical
-                        months.</p>
-                </div>
-            </div>
-
-            <!-- Charts Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in" style="animation-delay: 0.2s;">
-
-                <!-- Class Average Chart -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-                    <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-6">Class-wise Summaries</h3>
-                    <div id="chart-container-1" class="h-64 relative w-full">
-                        <canvas id="classAverageChart"></canvas>
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative custom-scrollbar">
+            
+            <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8 pb-12">
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight">System Analytics</h2>
+                        <p class="text-[var(--v-accents-5)] text-sm mt-1 max-w-lg leading-relaxed">Visualize institutional presence patterns and long-term cohort behavior.</p>
                     </div>
+                    
+                    <button onclick="renderAllCharts()" class="w-10 h-10 rounded border border-[var(--v-border)] bg-[var(--v-bg)] flex items-center justify-center text-[var(--v-accents-5)] hover:bg-[var(--v-accents-2)] hover:text-[var(--v-foreground)] transition shadow-sm" title="Refresh Data">
+                        <i class="fa-solid fa-rotate-right text-xs"></i>
+                    </button>
                 </div>
 
-                <!-- Monthly Trend Line -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-                    <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-6">Historical Institutional Trend</h3>
-                    <div class="h-64 relative w-full">
-                        <canvas id="trendChart"></canvas>
+                <!-- Charts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- Class Average Chart -->
+                    <div class="v-card border-[var(--v-border)] shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded bg-[var(--v-accents-1)] border border-[var(--v-border)] flex items-center justify-center text-[var(--v-foreground)]">
+                                <i class="fa-solid fa-chart-column text-[10px]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold tracking-tight text-[var(--v-foreground)]">Cohort Averages</h3>
+                                <p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] tracking-widest mt-0.5">Current Operating Month</p>
+                            </div>
+                        </div>
+                        
+                        <div id="chart-container-1" class="chart-wrapper">
+                            <canvas id="classAverageChart"></canvas>
+                        </div>
                     </div>
+
+                    <!-- Monthly Trend Line -->
+                    <div class="v-card border-[var(--v-border)] shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 flex items-center justify-center text-blue-600">
+                                <i class="fa-solid fa-chart-line text-[10px]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold tracking-tight text-[var(--v-foreground)]">Historical Metrics</h3>
+                                <p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] tracking-widest mt-0.5">6-Month Institutional Trend</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-wrapper">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-info text-[10px] text-[var(--v-accents-4)]"></i>
+                    <p class="text-[10px] text-[var(--v-accents-5)] uppercase font-bold tracking-widest">System note: Authorized halts and holidays are inherently excluded from analytic calculations.</p>
                 </div>
 
             </div>
-
-            <p class="text-[10px] text-slate-400 uppercase tracking-widest text-center mt-8">Note: Real-time graphs
-                automatically strip out marked holidays</p>
-
+            
         </div>
     </main>
 

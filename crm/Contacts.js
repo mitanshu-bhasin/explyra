@@ -36,15 +36,15 @@ window.CrmContacts = {
             document.getElementById('modal-contact-title').innerHTML = `<i class="fa-solid fa-pen text-blue-500"></i> Edit Contact`;
         }
 
-        modal.classList.remove('hidden');
-        setTimeout(() => content.classList.remove('opacity-0', 'scale-95'), 10);
+        modal.classList.add('show');
+        setTimeout(() => content.classList.remove('entering'), 10);
     },
 
     closeContactModal() {
         const modal = document.getElementById('modal-contact');
         const content = document.getElementById('modal-contact-content');
-        content.classList.add('opacity-0', 'scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 300);
+        content.classList.add('entering');
+        setTimeout(() => modal.classList.remove('show'), 300);
     },
 
     async saveContact() {
@@ -95,6 +95,7 @@ window.CrmContacts = {
             // Client side sort
             this.contacts.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
             this.renderContactsGrid();
+            if (window.updateDashboardStats) window.updateDashboardStats();
         }, (error) => {
             console.error("[CRM Contacts] Error fetching contacts:", error);
         });
@@ -121,36 +122,37 @@ window.CrmContacts = {
 
         filtered.forEach(contact => {
             const card = document.createElement('div');
-            card.className = "bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 hover:shadow-soft transition-all group overflow-hidden relative cursor-pointer";
+            card.className = "rounded-xl p-5 transition-all group overflow-hidden relative cursor-pointer";
+            card.style.cssText = `background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md);`;
+            card.onmouseover = function() { this.style.borderColor = 'var(--text-secondary)'; this.style.transform = 'translateY(-2px)'; this.style.boxShadow = '0 8px 24px rgba(0,0,0,0.06)'; };
+            card.onmouseout = function() { this.style.borderColor = 'var(--border-color)'; this.style.transform = 'none'; this.style.boxShadow = 'var(--card-shadow)'; };
 
             card.addEventListener('click', () => {
                 this.openContactModal(contact);
             });
 
             card.innerHTML = `
-                <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-bl from-blue-100/50 to-transparent dark:from-blue-900/20 rounded-bl-full z-0 transition-transform group-hover:scale-110"></div>
-                
-                <div class="relative z-10 flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-blue-500 font-bold text-lg flex-shrink-0">
+                <div class="relative z-10 flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary);">
                         ${contact.name ? contact.name.charAt(0).toUpperCase() : '?'}
                     </div>
                     <div class="min-w-0">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg truncate pr-2">${contact.name || 'Unknown'}</h4>
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5 truncate">${contact.company || 'Independent'}</p>
+                        <h4 class="font-bold text-sm truncate pr-2" style="color: var(--text-primary);">${contact.name || 'Unknown'}</h4>
+                        <p class="text-[10px] font-semibold uppercase tracking-wider mt-0.5 truncate" style="color: var(--text-secondary);">${contact.company || 'Independent'}</p>
                     </div>
                 </div>
                 
-                <div class="mt-5 space-y-2 relative z-10">
-                    <p class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-2 truncate">
-                        <i class="fa-solid fa-envelope w-4 text-center text-slate-400"></i>
-                        <a href="mailto:${contact.email}" class="hover:text-blue-500 hover:underline truncate">${contact.email || '--'}</a>
+                <div class="mt-4 space-y-1.5 relative z-10">
+                    <p class="text-xs flex items-center gap-2 truncate" style="color: var(--text-secondary);">
+                        <i class="fa-solid fa-envelope w-4 text-center" style="opacity: 0.5;"></i>
+                        <a href="mailto:${contact.email}" class="truncate" style="color: var(--text-primary);">${contact.email || '--'}</a>
                     </p>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-2 truncate">
-                        <i class="fa-solid fa-phone w-4 text-center text-slate-400"></i>
-                        <a href="tel:${contact.phone}" class="hover:text-blue-500 hover:underline truncate">${contact.phone || '--'}</a>
+                    <p class="text-xs flex items-center gap-2 truncate" style="color: var(--text-secondary);">
+                        <i class="fa-solid fa-phone w-4 text-center" style="opacity: 0.5;"></i>
+                        <a href="tel:${contact.phone}" class="truncate" style="color: var(--text-primary);">${contact.phone || '--'}</a>
                     </p>
                     ${contact.linkedProjectId ? `
-                    <p class="text-xs mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 font-bold text-emerald-600 dark:text-emerald-500 flex items-center gap-2">
+                    <p class="text-[10px] mt-3 pt-3 font-bold flex items-center gap-1.5" style="border-top: 1px solid var(--border-color); color: #10b981;">
                         <i class="fa-solid fa-link"></i> Linked to Project
                     </p>
                     ` : ''}

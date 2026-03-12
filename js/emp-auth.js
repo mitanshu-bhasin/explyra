@@ -90,12 +90,30 @@ function showEmployeeDashboard() {
     const roleD = document.getElementById('user-role-display');
     if (roleD) roleD.textContent = window.userData.role || 'Employee';
 
+    // Update Sidebar Profile
+    const sidebarName = document.getElementById('sidebar-user-name');
+    if (sidebarName) sidebarName.textContent = window.userData.name || 'User';
+
+    const sidebarRole = document.getElementById('sidebar-user-role');
+    if (sidebarRole) sidebarRole.textContent = window.userData.role || 'Employee';
+
+    const sidebarAvatar = document.getElementById('sidebar-user-avatar');
+    if (sidebarAvatar) {
+        if (window.userData.photoUrl) {
+            sidebarAvatar.innerHTML = `<img src="${window.userData.photoUrl}" class="w-full h-full object-cover rounded-full">`;
+        } else {
+            const firstLetter = (window.userData.name || 'U').charAt(0).toUpperCase();
+            sidebarAvatar.innerHTML = `<span class="text-xs font-bold">${firstLetter}</span>`;
+        }
+    }
+
     const avContainer = document.getElementById('header-profile-avatar');
     if (avContainer) {
         if (window.userData.photoUrl) {
             avContainer.innerHTML = `<img src="${window.userData.photoUrl}" class="w-full h-full object-cover">`;
         } else {
-            avContainer.innerHTML = `<i class="fa-solid fa-user-gear text-xs"></i>`;
+            const firstLetter = (window.userData.name || 'U').charAt(0).toUpperCase();
+            avContainer.innerHTML = `<span class="text-xs font-bold text-gray-400">${firstLetter}</span>`;
         }
     }
 

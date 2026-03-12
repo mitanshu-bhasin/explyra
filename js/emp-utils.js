@@ -126,35 +126,123 @@ function updateEmpLangUI(lang) {
 window.toggleEmpView = (view) => {
     const btnClaims = document.getElementById('btn-view-claims');
     const btnTasks = document.getElementById('btn-view-tasks');
+    const btnFinancials = document.getElementById('btn-view-financials');
     const secClaims = document.getElementById('section-claims');
     const secTasks = document.getElementById('section-tasks');
+    const secFinancials = document.getElementById('section-financials');
+
+    // Reset all buttons
+    [btnClaims, btnTasks, btnFinancials].forEach(btn => {
+        if (btn) {
+            btn.classList.remove('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            btn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-black', 'dark:hover:text-white');
+        }
+    });
+
+    // Hide all sections
+    [secClaims, secTasks, secFinancials].forEach(sec => {
+        if (sec) sec.classList.add('hidden');
+    });
 
     if (view === 'claims') {
-        if (btnClaims) btnClaims.classList.add('border-green-500', 'bg-white', 'dark:bg-slate-800', 'text-slate-800', 'dark:text-slate-100');
-        if (btnClaims) btnClaims.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
-
-        if (btnTasks) btnTasks.classList.remove('border-green-500', 'bg-white', 'dark:bg-slate-800', 'text-slate-800', 'dark:text-slate-100');
-        if (btnTasks) btnTasks.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
-
-        if (secClaims) secClaims.classList.remove('hidden');
-        if (secTasks) secTasks.classList.add('hidden');
-    } else {
-        if (btnTasks) btnTasks.classList.add('border-green-500', 'bg-white', 'dark:bg-slate-800', 'text-slate-800', 'dark:text-slate-100');
-        if (btnTasks) btnTasks.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
-
-        if (btnClaims) btnClaims.classList.remove('border-green-500', 'bg-white', 'dark:bg-slate-800', 'text-slate-800', 'dark:text-slate-100');
-        if (btnClaims) btnClaims.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
-
-        if (secTasks) secTasks.classList.remove('hidden');
-        if (secClaims) secClaims.classList.add('hidden');
-
-        if (!window.empTasksLoaded && window.fetchEmpTasks) {
-            window.fetchEmpTasks();
+        if (btnClaims) {
+            btnClaims.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            btnClaims.classList.remove('text-gray-500', 'dark:text-gray-400');
         }
+        if (secClaims) secClaims.classList.remove('hidden');
+    } else if (view === 'tasks') {
+        if (btnTasks) {
+            btnTasks.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            btnTasks.classList.remove('text-gray-500', 'dark:text-gray-400');
+        }
+        if (secTasks) secTasks.classList.remove('hidden');
+        if (!window.empTasksLoaded && window.fetchEmpTasks) window.fetchEmpTasks();
+    } else if (view === 'financials') {
+        if (btnFinancials) {
+            btnFinancials.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            btnFinancials.classList.remove('text-gray-500', 'dark:text-gray-400');
+        }
+        if (secFinancials) secFinancials.classList.remove('hidden');
+        if (window.fetchFinancialAccounts) window.fetchFinancialAccounts();
     }
 };
 
 window.closeModal = (id) => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
+};
+
+window.toggleMainView = (viewId) => {
+    // viewId can be 'dashboard' or 'messages'
+    const viewDashboard = document.getElementById('main-view-dashboard');
+    const viewMessages = document.getElementById('main-view-messages');
+
+    // Sidebar items
+    const sidebarItems = document.querySelectorAll('#main-sidebar .sidebar-item');
+    
+    // First remove active state from all
+    sidebarItems.forEach(item => {
+        item.classList.remove('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white', 'hover:bg-gray-100', 'dark:hover:bg-[#111]');
+        item.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-black', 'dark:hover:text-white', 'hover:bg-gray-100', 'dark:hover:bg-[#111]');
+        
+        const icon = item.querySelector('i');
+        if (icon) {
+            icon.classList.remove('text-black', 'dark:text-white');
+            icon.classList.add('text-gray-400', 'group-hover:text-black', 'dark:group-hover:text-white');
+        }
+    });
+
+    // Make the clicked one active
+    const tgtText = viewId === 'dashboard' ? 'Home' : 'Messages';
+    sidebarItems.forEach(item => {
+        if (item.textContent.includes(tgtText)) {
+            item.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            item.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-black', 'dark:hover:text-white', 'hover:bg-gray-100', 'dark:hover:bg-[#111]');
+            
+            const icon = item.querySelector('i');
+            if (icon) {
+                icon.classList.remove('text-gray-400', 'group-hover:text-black', 'dark:group-hover:text-white');
+            }
+        }
+    });
+
+    if (viewId === 'dashboard') {
+        if (viewDashboard) viewDashboard.classList.remove('hidden');
+        if (viewDashboard) viewDashboard.classList.add('flex-1', 'overflow-y-auto');
+        if (viewMessages) viewMessages.classList.add('hidden');
+        if (viewMessages) viewMessages.classList.remove('flex-1', 'flex', 'flex-col');
+    } else if (viewId === 'messages') {
+        if (viewDashboard) viewDashboard.classList.add('hidden');
+        if (viewDashboard) viewDashboard.classList.remove('flex-1', 'overflow-y-auto');
+        if (viewMessages) viewMessages.classList.remove('hidden');
+        if (viewMessages) viewMessages.classList.add('flex-1', 'flex', 'flex-col');
+        
+        // Fetch chat users if not already fetched
+        if (window.fetchChatUsers) {
+            window.fetchChatUsers();
+            if (window.currentChatContext === 'global' || !window.currentChatContext) {
+                 window.selectChat('global');
+            }
+        }
+    }
+
+    // On mobile, close sidebar after clicking
+    const sidebar = document.getElementById('main-sidebar');
+    if (sidebar && !sidebar.classList.contains('hidden') && window.innerWidth < 768) {
+         sidebar.classList.add('hidden');
+         sidebar.classList.remove('flex', 'absolute', 'z-50', 'h-full', 'left-0');
+    }
+};
+
+window.toggleMobileSidebar = () => {
+    const sidebar = document.getElementById('main-sidebar');
+    if (sidebar) {
+        if (sidebar.classList.contains('hidden')) {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex', 'absolute', 'z-50', 'h-full', 'left-0');
+        } else {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex', 'absolute', 'z-50', 'h-full', 'left-0');
+        }
+    }
 };

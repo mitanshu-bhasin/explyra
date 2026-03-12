@@ -76,58 +76,39 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif']
+                        sans: ['Inter', 'Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
                     },
                     colors: {
-                        slate: {
-                            50: '#F8F7F4',   // light bg -> Explyra --bg
-                            100: '#F1EFE9',  // light bg3 -> Explyra --bg3
-                            200: '#E4E1DB',  // light border -> Explyra --bdr
-                            300: '#CCC8C0',  // dark border light
-                            400: '#939BAC',  // muted text
-                            500: '#8290A8',  // dark muted text
-                            600: '#586070',  // secondary text
-                            700: '#0D1117',  // root text
-                            800: '#141928',  // Explyra --surf (Dark)
-                            900: '#080B14'   // Explyra --bg (Dark)
-                        },
-                        green: {
-                            50: '#eef2ff',
-                            100: 'rgba(21,70,192,0.08)',
-                            200: '#93B4FF',
-                            300: '#5B8AF5',
-                            400: '#5B8AF5', // Dark mode blue
-                            500: '#1546C0', // Light mode blue
-                            600: '#1546C0',
-                            700: '#113A9F',
-                            800: '#0C2B7A',
-                            900: '#051234'
-                        },
-                        amber: {
-                            50: 'rgba(180,83,9,0.08)',
-                            100: '#FDE68A',
-                            400: '#FBBF24',
-                            500: '#B45309',
-                            600: '#B45309'
+                        geist: {
+                            50: '#fafafa',
+                            100: '#eaeaea',
+                            200: '#999',
+                            300: '#888',
+                            400: '#666',
+                            500: '#444',
+                            600: '#333',
+                            700: '#111',
+                            800: '#000',
+                            900: '#000'
                         },
                         brand: {
-                            50: '#F8F7F4',
-                            100: '#F1EFE9',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#1546C0',
-                            600: '#1546C0',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a'
-                        },
-                        explyra: {
-                            red: '#BE185D',
-                            green: '#047857',
-                            dark: '#0D1117'
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae2fd',
+                            300: '#7ccbfd',
+                            400: '#38b2f9',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
                         }
+                    },
+                    boxShadow: {
+                        'geist': '0 1px 2px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04)',
+                        'geist-hover': '0 4px 6px rgba(0,0,0,0.04), 0 10px 15px rgba(0,0,0,0.04)',
+                        'geist-dark': '0 1px 2px rgba(255,255,255,0.04), 0 2px 4px rgba(255,255,255,0.04)',
                     }
                 }
             }
@@ -136,160 +117,202 @@
     <script src="js/theme.js"></script>
     <script src="js/utils.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: theme('colors.slate.50');
-            color: theme('colors.slate.700');
+        @layer base {
+            body {
+                background-color: white;
+                color: #171717;
+                font-family: inherit;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            .dark body {
+                background-color: #000;
+                color: #ededed;
+            }
         }
 
-        .dark body {
-            background-color: theme('colors.slate.900');
-            color: #EEF0F8;
+        @layer components {
+            .vercel-card {
+                background-color: white;
+                border: 1px solid #eaeaea;
+                border-radius: 0.75rem;
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .dark .vercel-card {
+                background-color: #0a0a0a;
+                border-color: #333;
+            }
+            .vercel-card:hover {
+                border-color: #999;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04);
+            }
+            .dark .vercel-card:hover {
+                border-color: #666;
+                box-shadow: none;
+            }
+            .input-geist {
+                width: 100%;
+                background-color: white;
+                border: 1px solid #eaeaea;
+                border-radius: 0.375rem;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                transition: all 0.2s;
+            }
+            .dark .input-geist {
+                background-color: transparent;
+                border-color: #333;
+            }
+            .input-geist:focus {
+                outline: 2px solid transparent;
+                outline-offset: 2px;
+                --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+                --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+                box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+                --tw-ring-color: #000;
+                border-color: #000;
+            }
+            .dark .input-geist:focus {
+                --tw-ring-color: #fff;
+                border-color: #fff;
+            }
+            .input-geist::placeholder {
+                color: #9ca3af;
+            }
+            .btn-geist-primary {
+                background-color: #000;
+                color: #fff;
+                padding: 0.5rem 1rem;
+                border-radius: 0.375rem;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                font-weight: 500;
+                transition: opacity 0.2s, transform 0.1s;
+            }
+            .dark .btn-geist-primary {
+                background-color: #fff;
+                color: #000;
+            }
+            .btn-geist-primary:hover {
+                opacity: 0.9;
+            }
+            .btn-geist-primary:active {
+                transform: scale(0.98);
+            }
+            .btn-geist-secondary {
+                background-color: #fff;
+                color: #000;
+                border: 1px solid #eaeaea;
+                padding: 0.5rem 1rem;
+                border-radius: 0.375rem;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                font-weight: 500;
+                transition: all 0.2s;
+            }
+            .dark .btn-geist-secondary {
+                background-color: transparent;
+                color: #fff;
+                border-color: #333;
+            }
+            .btn-geist-secondary:hover {
+                background-color: #f9fafb;
+            }
+            .dark .btn-geist-secondary:hover {
+                background-color: #111;
+            }
+            .btn-geist-secondary:active {
+                transform: scale(0.98);
+            }
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.375rem;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                font-weight: 500;
+                cursor: pointer;
+            }
+            .sidebar-item.active {
+                color: #000;
+                background-color: #f3f4f6;
+            }
+            .dark .sidebar-item.active {
+                color: #fff;
+                background-color: #111;
+            }
+            .badge-vercel {
+                display: inline-flex;
+                align-items: center;
+                padding: 0.125rem 0.5rem;
+                border-radius: 9999px;
+                font-size: 10px;
+                font-weight: 600;
+                background-color: #f3f4f6;
+                color: #1f2937;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            .dark .badge-vercel {
+                background-color: #333;
+                color: #f3f4f6;
+            }
         }
 
-        .card {
-            background: white;
-            border: 1px solid theme('colors.slate.200');
-            box-shadow: 0 4px 16px rgba(0,0,0,.04);
+        /* Custom Scrollbar for Vercel Look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #eaeaea;
+            border-radius: 9999px;
+            border: 2px solid white;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: #333;
+            border-color: black;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #ccc;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background-color: #444;
         }
 
-        .card:hover {
-            box-shadow: 0 12px 40px rgba(0,0,0,.10);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         .glass-header {
-            background: rgba(248, 247, 244, 0.9);
-            backdrop-filter: blur(20px) saturate(160%);
-            border-bottom: 1px solid theme('colors.slate.200');
-        }
-
-        .input-field {
-            background: theme('colors.slate.50');
-            border: 1px solid theme('colors.slate.200');
-            transition: all 0.2s;
-            color: theme('colors.slate.700');
-        }
-
-        .input-field:focus {
-            background: white;
-            border-color: theme('colors.green.500');
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(21, 70, 192, 0.1);
-        }
-
-        .dark .card {
-            background-color: theme('colors.slate.800');
-            border-color: rgba(255,255,255,.07);
-            color: #EEF0F8;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #eaeaea;
         }
         .dark .glass-header {
-            background: rgba(8, 11, 20, 0.88);
-            border-bottom: 1px solid rgba(255,255,255,.07);
-        }
-        .dark .input-field {
-            background: theme('colors.slate.900');
-            border-color: rgba(255,255,255,.07);
-            color: #EEF0F8;
-        }
-        .dark .input-field:focus {
-            background: theme('colors.slate.800');
-        }
-
-        .badge {
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: slideUp 0.3s ease-out forwards;
-        }
-
-        /* Distinct Gradient Background */
-        /* Logo Gradient Text Effect */
-        .gradient-text {
-            background: linear-gradient(135deg, #1546C0, #6D28D9);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .dark .gradient-text {
-            background: linear-gradient(135deg, #5B8AF5, #A78BFA);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Subtle Gradient Background for Hero */
-        .hero-bg {
-            background: transparent;
-        }
-
-        .dark .hero-bg {
-            background: transparent;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: theme('colors.green.500');
-            border-radius: 3px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: theme('colors.green.400');
+            background-color: rgba(0, 0, 0, 0.8);
+            border-color: #333;
         }
     </style>
     <link rel="manifest" href="manifest.json">
     <script>
         if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
-        if ('Notification' in window && Notification.permission === 'default') {
-            window.addEventListener('load', () => {
-                // Check if running on mobile view (width < 768px)
-                if (window.innerWidth < 768) {
-                    setTimeout(() => {
-                        Notification.requestPermission().then(perm => {
-                            if (perm === 'granted') {
-                                setTimeout(() => {
-                                    const title = "Test Notification";
-                                    const opts = {
-                                        body: "This is a test notification to confirm setup.",
-                                        icon: "assets/images/explyra_logo.png"
-                                    };
-                                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                                        navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts));
-                                    } else {
-                                        new Notification(title, opts);
-                                    }
-                                }, 5000);
-                            }
-                        });
-                    }, 3000);
-                }
-            });
-        }
     </script>
 
     <!-- EmailJS SDK -->
@@ -298,12 +321,8 @@
 
 </head>
 
-<body
-    class="h-[100dvh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-100 transition-colors duration-300 relative hero-bg">
-
-
-
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+<body class="h-screen flex flex-col overflow-hidden relative selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2"></div>
 
     <!-- Auth Screen Wrapper -->
     <div id="auth-screen" class="w-full h-[100dvh] flex flex-col relative overflow-y-auto overflow-x-hidden">
@@ -315,10 +334,10 @@
                 class="card p-6 md:p-8 rounded-2xl w-full max-w-md z-10 relative bg-white/90 dark:bg-slate-800/90 backdrop-blur mb-8 shadow-xl border border-slate-100 dark:border-slate-700">
                 <div class="text-center mb-8">
                     <div id="login-logo-container"
-                        class="w-20 h-20 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-200 overflow-hidden">
+                        class="w-20 h-20 bg-black dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl overflow-hidden">
                         <img id="login-logo-img" class="w-full h-full object-contain hidden"
                             src="assets/images/explyra_logo.png" alt="Company Logo">
-                        <i id="login-logo-fallback" class="fa-solid fa-seedling text-3xl text-white"></i>
+                        <i id="login-logo-fallback" class="fa-solid fa-bolt text-3xl text-white dark:text-black"></i>
                     </div>
                     <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100" id="login-company-name">Explyra
                         Expense Manager
@@ -350,18 +369,18 @@
                         </div>
                         <div class="text-right mt-1">
                             <button type="button" onclick="forgotPassword()"
-                                class="text-xs text-green-600 hover:text-emerald-800 font-semibold hover:underline">Forgot
+                                class="text-xs text-black dark:text-white hover:underline font-semibold">Forgot
                                 Password?</button>
                         </div>
                     </div>
                     <button type="submit" id="login-btn"
-                        class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-2.5 px-4 rounded-lg transition-all shadow-md shadow-green-200 dark:shadow-none py-3 rounded-lg transition shadow-lg shadow-green-200 transform hover:translate-y-[-1px]">
+                        class="w-full bg-black dark:bg-white text-white dark:text-black font-bold py-3 rounded-lg transition-all shadow-md transform hover:translate-y-[-1px] active:scale-[0.98]">
                         Sign In
                     </button>
                     <div class="flex justify-between mt-3 text-xs">
                         <a href="index.html" onclick="localStorage.removeItem('explyra_portal_preference')"
-                            class="text-slate-400 hover:text-green-600 transition">Back to Website</a>
-                        <a href="support.html" class="text-green-500 hover:text-green-700 transition">Contact
+                            class="text-slate-400 hover:text-black dark:hover:text-white transition">Back to Website</a>
+                        <a href="support.html" class="text-gray-500 hover:text-black dark:hover:text-white transition">Contact
                             Support</a>
                     </div>
                 </form>
@@ -391,7 +410,7 @@
                         </div>
                     </div>
                     <button type="submit" id="signup-btn"
-                        class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-2.5 px-4 rounded-lg transition-all shadow-md shadow-green-200 dark:shadow-none py-3 rounded-lg transition shadow-lg shadow-green-200 transform hover:translate-y-[-1px]">
+                        class="w-full bg-black dark:bg-white text-white dark:text-black font-bold py-3 rounded-lg transition-all shadow-lg transform hover:translate-y-[-1px] active:scale-[0.98]">
                         Activate Account
                     </button>
                 </form>
@@ -483,265 +502,274 @@
         </div>
     </div>
 
-    <!-- Background Blobs -->
-    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
-        <div
-            class="absolute top-[10%] left-[10%] w-96 h-96 bg-green-200/50 rounded-full blur-3xl mix-blend-multiply filter dark:bg-green-900/20">
-        </div>
-        <div
-            class="absolute bottom-[20%] right-[10%] w-96 h-96 bg-green-200/50 rounded-full blur-3xl mix-blend-multiply filter dark:bg-green-900/20">
-        </div>
-        <div
-            class="absolute top-[40%] left-[60%] w-72 h-72 bg-red-200/50 rounded-full blur-3xl mix-blend-multiply filter dark:bg-red-900/20">
-        </div>
-    </div>
-    </div>
-
     <!-- Dashboard Screen -->
-    <div id="dashboard-screen" class="hidden flex-1 flex h-[100dvh] bg-transparent">
-
-        <header
-            class="h-16 glass-header fixed top-0 w-full z-30 px-4 md:px-8 flex items-center justify-between border-b border-white/40 dark:border-slate-800/50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm">
-    <meta property="og:site_name" content="Explyra" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:site" content="@explyras" />
-    <meta name="twitter:creator" content="@explyras" />
-            <div class="flex items-center gap-3">
-                <div id="header-logo-container"
-                    class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-green-600 text-sm shadow-sm overflow-hidden border border-slate-100">
-                    <img id="header-logo-img" class="w-full h-full object-contain hidden">
-                    <i id="header-logo-fallback" class="fa-solid fa-bolt"></i>
+    <div id="dashboard-screen" class="hidden h-screen flex overflow-hidden bg-white dark:bg-black transition-colors duration-300">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="main-sidebar" class="w-64 border-r border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black hidden md:flex flex-col shrink-0 z-40">
+            <div class="px-6 py-8 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="sidebar-logo-container" class="w-8 h-8 bg-black dark:bg-white rounded flex items-center justify-center text-white dark:text-black shadow-sm overflow-hidden">
+                        <img id="sidebar-logo-img" class="w-full h-full object-contain hidden">
+                        <i id="sidebar-logo-fallback" class="fa-solid fa-bolt text-xs"></i>
+                    </div>
+                    <span class="font-bold text-black dark:text-white tracking-tight text-lg" id="sidebar-company-name">Explyra</span>
                 </div>
-                <div class="flex flex-col">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 text-lg tracking-tight leading-none"
-                        id="header-company-name">Explyra <span class="text-green-600">Expense Manager</span></span>
-                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider hidden sm:block">Employee
-                        Dashboard</span>
-                </div>
+                <button class="md:hidden text-gray-500 hover:text-black dark:hover:text-white transition-colors" onclick="toggleMobileSidebar()">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
 
-            <div class="flex items-center gap-3">
-                <button id="pwa-install-btn-emp"
-                    class="hidden text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 transition font-bold shadow-sm animate-pulse">
-                    <i class="fa-solid fa-download mr-1"></i> Install
-                </button>
-
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100" id="user-name-display">Loading...
-                    </p>
-                    <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wide bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block mt-0.5"
-                        id="user-role-display">...</p>
+            <nav class="flex-1 px-3 space-y-1">
+                <div class="px-3 mb-2">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">General</p>
                 </div>
-
-                <div class="relative mr-2">
-                    <select id="mode-selector" onchange="toggleMode(this.value)"
-                        class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 pl-3 pr-8 text-xs font-bold text-slate-700 dark:text-slate-200 focus:ring-1 focus:ring-green-500 outline-none appearance-none cursor-pointer">
-                        <option value="company">🏢 Company</option>
-                        <option value="personal">🔒 Personal</option>
-                    </select>
-                    <i
-                        class="fa-solid fa-chevron-down absolute right-2.5 top-2.5 text-slate-400 text-[10px] pointer-events-none"></i>
+                <a href="#" onclick="toggleMainView('dashboard'); return false;" class="sidebar-item group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-100 dark:bg-[#111] text-black dark:text-white transition-all">
+                    <i class="fa-solid fa-house w-6 text-center"></i>
+                    <span class="truncate">Home</span>
+                </a>
+                <a href="#" onclick="toggleMainView('dashboard'); setTimeout(() => toggleEmpView('tasks'), 100); return false;" class="sidebar-item group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#111] transition-all">
+                    <i class="fa-solid fa-list-check w-6 text-center text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors"></i>
+                    <span class="truncate">Tasks</span>
+                    <span id="sidebar-task-count" class="ml-auto bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+                <a href="#" onclick="toggleMainView('dashboard'); setTimeout(() => openModeSelector(), 100); return false;" class="sidebar-item group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#111] transition-all">
+                    <i class="fa-solid fa-vault w-6 text-center text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors"></i>
+                    <span class="truncate">Vault</span>
+                </a>
+                
+                <div class="pt-6 px-3 mb-2">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Communication</p>
                 </div>
+                <a href="#" onclick="toggleMainView('messages'); return false;" class="sidebar-item group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#111] transition-all">
+                    <i class="fa-regular fa-comments w-6 text-center text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors"></i>
+                    <span class="truncate">Messages</span>
+                    <span id="sidebar-msg-badge" class="ml-auto bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
 
-                <div
-                    class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-full border border-slate-200 dark:border-slate-700">
-                    <button onclick="openChatModal()"
-                        class="w-8 h-8 rounded-full text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-green-600 transition flex items-center justify-center relative">
-                        <i class="fa-solid fa-comments text-xs"></i>
-                        <span id="chat-badge"
-                            class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-100 dark:border-slate-800 hidden"></span>
-                    </button>
-                    <button onclick="toggleTheme()"
-                        class="w-8 h-8 rounded-full text-slate-500 dark:text-yellow-400 hover:bg-white dark:hover:bg-slate-700 transition flex items-center justify-center">
-                        <i class="fa-solid fa-moon theme-toggle-icon text-xs"></i>
-                    </button>
-                    <button onclick="openProfileModal()" id="header-profile-btn"
-                        class="w-8 h-8 rounded-full text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-green-600 transition flex items-center justify-center p-0 overflow-hidden">
-                        <div id="header-profile-avatar" class="w-full h-full flex items-center justify-center">
-                            <i class="fa-solid fa-user-gear text-xs"></i>
-                        </div>
-                    </button>
+                <div class="pt-6 px-3 mb-2">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Account</p>
                 </div>
-
-                <button onclick="handleLogout()"
-                    class="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 border border-red-100 transition flex items-center justify-center shadow-sm">
+                <div class="sidebar-item" onclick="openProfileModal()">
+                    <i class="fa-solid fa-user-gear text-xs"></i>
+                    <span>Profile</span>
+                </div>
+                <div class="sidebar-item" onclick="handleLogout()">
                     <i class="fa-solid fa-power-off text-xs"></i>
-                </button>
-            </div>
-        </header>
-
-        <main class="flex-1 flex flex-col pt-20 w-full max-w-6xl mx-auto px-4 pb-24 md:pb-6 overflow-y-auto">
-
-            <!-- Stats -->
-            <div id="stats-container" class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mb-8 fade-in">
-                <div id="stat-card-paid"
-                    class="card p-5 lg:p-6 rounded-2xl border border-white dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-300 relative overflow-hidden group">
-                    <div
-                        class="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-emerald-100/80 to-transparent dark:from-emerald-900/30 rounded-bl-full -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-125">
-                    </div>
-                    <div class="relative z-10 flex justify-between items-start">
-                        <div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Total Paid</p>
-                            <p class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 font-mono tracking-tight"
-                                id="stat-paid">₹0</p>
-                        </div>
-                        <div
-                            class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
-                            <i class="fa-solid fa-wallet"></i>
-                        </div>
-                    </div>
+                    <span>Logout</span>
                 </div>
+            </nav>
 
-                <div id="stat-card-pending"
-                    class="card p-5 lg:p-6 rounded-2xl border border-white dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-300 relative overflow-hidden group">
-                    <div
-                        class="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-amber-100/80 to-transparent dark:from-amber-900/30 rounded-bl-full -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-125">
+            <div class="p-4 border-t border-[#eaeaea] dark:border-[#333]">
+                <div class="vercel-card p-3 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-[#111] flex items-center justify-center text-xs font-bold" id="sidebar-user-avatar">?</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-black dark:text-white truncate" id="sidebar-user-name">Loading...</p>
+                        <p class="text-[10px] text-gray-500 truncate" id="sidebar-user-role">...</p>
                     </div>
-                    <div class="relative z-10 flex justify-between items-start">
-                        <div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Pending</p>
-                            <p class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 font-mono tracking-tight"
-                                id="stat-pending">₹0</p>
-                        </div>
-                        <div
-                            class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                            <i class="fa-solid fa-hourglass-half"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <button id="btn-new-expense" onclick="openCreateModal('EXPENSE')"
-                        class="group bg-slate-900 hover:bg-slate-800 dark:bg-green-600 dark:hover:bg-green-700 text-white p-4 rounded-2xl flex flex-col justify-between shadow-lg shadow-slate-200 dark:shadow-none transition transform hover:-translate-y-1 h-full">
-                        <div class="flex justify-between items-start w-full">
-                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                                <i class="fa-solid fa-receipt text-emerald-300"></i>
-                            </div>
-                            <i
-                                class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition duration-300 opacity-50"></i>
-                        </div>
-                        <div class="mt-3 text-left">
-                            <p data-i18n="btn_new_expense" class="text-sm font-bold text-white mb-0.5"
-                                id="text-new-expense">New Expense</p>
-                            <p data-i18n="btn_new_expense_sub" class="text-[10px] text-slate-300 dark:text-emerald-100"
-                                id="sub-new-expense">
-                                Upload Receipt</p>
-                        </div>
-                    </button>
-
-                    <button id="btn-request-item" onclick="openCreateModal('REQUEST')"
-                        class="group bg-green-600 hover:bg-green-700 text-white p-4 rounded-2xl flex flex-col justify-between shadow-lg shadow-teal-200 dark:shadow-none transition transform hover:-translate-y-1 h-full">
-                        <div class="flex justify-between items-start w-full">
-                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                                <i class="fa-solid fa-box-open text-green-200"></i>
-                            </div>
-                            <i
-                                class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition duration-300 opacity-50"></i>
-                        </div>
-                        <div class="mt-3 text-left">
-                            <p data-i18n="btn_request_item" class="text-sm font-bold text-white mb-0.5"
-                                id="text-request-item">Request Item</p>
-                            <p data-i18n="btn_request_item_sub" class="text-[10px] text-green-100"
-                                id="sub-request-item">Software / Hardware
-                            </p>
-                        </div>
-                    </button>
-
-
                 </div>
             </div>
+        </aside>
 
-            <!-- Expenses List -->
-            <div class="card rounded-2xl flex-1 min-h-[500px] flex-shrink-0 overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white dark:border-slate-700/50 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md fade-in mb-6"
-                style="animation-delay: 0.1s">
-                <div id="tabs-container"
-                    class="flex border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30">
-                    <button onclick="toggleEmpView('claims')" id="btn-view-claims"
-                        class="flex-1 py-4 font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wide border-b-2 border-green-500 bg-white dark:bg-slate-800 transition">
-                        <i class="fa-solid fa-receipt mr-2 text-green-500"></i> Your Claims
+        <!-- Main Content Area Wrapper -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+            
+            <!-- Top Header -->
+            <header class="glass-header h-16 flex items-center justify-between px-6 shrink-0">
+                <div class="flex items-center gap-4 flex-1">
+                    <button class="md:hidden text-gray-500" onclick="toggleMobileSidebar()">
+                        <i class="fa-solid fa-bars-staggered"></i>
                     </button>
-                    <button onclick="toggleEmpView('tasks')" id="btn-view-tasks"
-                        class="flex-1 py-4 font-bold text-slate-600 dark:text-slate-300 text-sm uppercase tracking-wide border-b-2 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:text-green-600 transition">
-                        <i class="fa-solid fa-list-check mr-2 text-amber-500"></i> Your Tasks
-                    </button>
+                    
+                    <!-- Search Bar -->
+                    <div class="max-w-md w-full relative hidden sm:block">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" placeholder="Search claims, tasks..." class="input-geist pl-9 w-full" id="global-search-input" onkeyup="filterExpenses(this.value)">
+                    </div>
+                    
+                    <div class="md:hidden flex items-center gap-2">
+                        <div class="w-8 h-8 bg-black dark:bg-white rounded flex items-center justify-center text-white dark:text-black">
+                            <i class="fa-solid fa-bolt text-xs"></i>
+                        </div>
+                        <span class="font-bold text-sm">Explyra</span>
+                    </div>
                 </div>
 
-                <!-- Personal Vault Header (Hidden by default) -->
-                <div id="personal-vault-header"
-                    class="hidden p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex items-center bg-[#fafafa] dark:bg-[#111] rounded-md p-1 border border-[#eaeaea] dark:border-[#333]">
+                        <select id="mode-selector" onchange="toggleMode(this.value)" class="bg-transparent border-none text-[10px] font-bold uppercase tracking-wider px-2 py-1 focus:ring-0 cursor-pointer outline-none">
+                            <option value="company">🏢 Company</option>
+                            <option value="personal">🔒 Personal</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-1 sm:gap-2">
+                        <button onclick="openNotifList()" class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors relative">
+                            <i class="fa-solid fa-bell text-sm text-gray-500 dark:text-gray-400"></i>
+                            <span id="header-notif-dot" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-black hidden"></span>
+                        </button>
+                        
+                        <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors">
+                            <i class="fa-solid fa-moon theme-toggle-icon text-sm text-gray-500 dark:text-gray-400"></i>
+                        </button>
+                        
+                        <div class="h-6 w-[1px] bg-[#eaeaea] dark:border-[#333] mx-1"></div>
+                        
+                        <button onclick="openProfileModal()" class="w-9 h-9 rounded-full overflow-hidden border border-[#eaeaea] dark:border-[#333] hover:ring-2 hover:ring-black dark:hover:ring-white transition-all">
+                            <div id="header-profile-avatar" class="w-full h-full bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center text-xs font-bold">
+                                <i class="fa-solid fa-user-circle text-lg text-gray-400"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </header>
+             <!-- Main Content Area: Dashboard -->
+            <main id="main-view-dashboard" class="flex-1 overflow-y-auto p-6 md:p-10 bg-[#fafafa] dark:bg-black">
+            
+            <!-- Dashboard Stats Grid -->
+            <div id="stats-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-fade-in">
+                <!-- Paid Stats -->
+                <div id="stat-card-paid" class="vercel-card p-6 relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Paid</p>
+                        <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-[#111] flex items-center justify-center text-black dark:text-white">
+                            <i class="fa-solid fa-wallet text-xs"></i>
+                        </div>
+                    </div>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100"><i
-                                class="fa-solid fa-vault mr-2 text-green-600"></i> Personal Vault</h3>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Private Records •
-                            Auto-Filtered (90 Days)</p>
+                        <p class="text-3xl font-bold text-black dark:text-white font-mono" id="stat-paid">₹0</p>
+                        <p class="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-trend-up text-green-500"></i> Updated just now
+                        </p>
                     </div>
-                    <button onclick="createPersonalVaultEntry()"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> New Expense
+                </div>
+
+                <!-- Pending Stats -->
+                <div id="stat-card-pending" class="vercel-card p-6 relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pending Approval</p>
+                        <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-[#111] flex items-center justify-center text-black dark:text-white">
+                            <i class="fa-solid fa-hourglass-half text-xs"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold text-black dark:text-white font-mono" id="stat-pending">₹0</p>
+                        <p class="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-clock text-amber-500"></i> Requires attention
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 gap-3 h-full">
+                    <button id="btn-new-expense" onclick="openCreateModal('EXPENSE')" class="btn-geist-primary flex flex-col items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-plus text-xs group-hover:scale-110 transition-transform"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">New Claim</span>
+                    </button>
+                    
+                    <button id="btn-request-item" onclick="openCreateModal('REQUEST')" class="btn-geist-secondary flex flex-col items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-shopping-bag text-xs group-hover:scale-110 transition-transform"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Request</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Section (Tabs & Lists) -->
+            <div class="vercel-card overflow-hidden flex flex-col mb-12 animate-fade-in" style="animation-delay: 0.1s">
+                <!-- Navigation Tabs -->
+                <div id="tabs-container" class="flex border-b border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black p-1">
+                    <button onclick="toggleEmpView('claims')" id="btn-view-claims" class="flex-1 py-3 text-sm font-medium transition-all rounded-md bg-gray-100 dark:bg-[#111] text-black dark:text-white">
+                        <i class="fa-solid fa-receipt mr-2 text-xs"></i> Expenses
+                    </button>
+                    <button onclick="toggleEmpView('tasks')" id="btn-view-tasks" class="flex-1 py-3 text-sm font-medium transition-all rounded-md text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                        <i class="fa-solid fa-list-check mr-2 text-xs"></i> Tasks
+                    </button>
+                    <button onclick="toggleEmpView('financials')" id="btn-view-financials" class="hidden flex-1 py-3 text-sm font-medium transition-all rounded-md text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                        <i class="fa-solid fa-building-columns mr-2 text-xs"></i> Accounts
                     </button>
                 </div>
 
-                <!-- Claims Section -->
-                <div id="section-claims" class="flex-1 flex flex-col overflow-hidden">
-                    <div
-                        class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/30">
-                        <div class="flex gap-2">
-                            <div class="relative">
-                                <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                <input type="text" id="emp-search" onkeyup="filterExpenses(this.value)"
-                                    class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 pl-8 pr-3 text-xs focus:ring-1 focus:ring-green-500 outline-none"
-                                    placeholder="Search...">
-                            </div>
-                            <button onclick="fetchExpenses()"
-                                class="text-slate-400 hover:text-green-600 transition p-2"><i
-                                    class="fa-solid fa-rotate-right"></i></button>
-                        </div>
+                <!-- Personal Vault Header (Shown only in Personal Mode) -->
+                <div id="personal-vault-header" class="hidden p-6 border-b border-[#eaeaea] dark:border-[#333] items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-black dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-vault text-gray-400"></i> Personal Vault
+                        </h3>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Private Records • Secure Storage</p>
                     </div>
-                    <div id="expenses-list"
-                        class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/30">
-                        <div class="flex flex-col items-center justify-center h-64 text-slate-400">
-                            <i class="fa-solid fa-circle-notch fa-spin text-2xl mb-3"></i>
-                            <p class="text-xs">Syncing claims...</p>
-                        </div>
-                    </div>
+                    <button onclick="createPersonalVaultEntry()" class="btn-geist-primary text-[10px] py-1.5 px-3">
+                        <i class="fa-solid fa-plus mr-1"></i> New Item
+                    </button>
                 </div>
 
-                <!-- Tasks Section -->
-                <div id="section-tasks" class="hidden flex-1 flex flex-col overflow-hidden">
-                    <div
-                        class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/30">
-                        <div class="flex gap-2 items-center w-full">
-                            <div class="relative w-full md:w-auto flex-1">
-                                <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                <input type="text" id="emp-task-search" onkeyup="filterEmpTasks()"
-                                    class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 pl-8 pr-3 text-xs focus:ring-1 focus:ring-green-500 outline-none"
-                                    placeholder="Search tasks...">
+                <!-- Lists Container -->
+                <div class="flex-1 min-h-[400px]">
+                    <!-- Claims View -->
+                    <div id="section-claims" class="flex flex-col h-full">
+                        <div class="p-4 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-gray-50/50 dark:bg-black">
+                            <div class="relative max-w-sm w-full">
+                                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
+                                <input type="text" id="emp-search" onkeyup="filterExpenses(this.value)" class="input-geist pl-8 text-xs py-1.5" placeholder="Filter expenses...">
                             </div>
-                            <button type="button" onclick="openEmpTaskModal()"
-                                class="shrink-0 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-sm">
-                                <i class="fa-solid fa-plus"></i>
-                                New Task
+                            <button onclick="fetchExpenses()" class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-400 transition-colors">
+                                <i class="fa-solid fa-arrows-rotate text-xs"></i>
                             </button>
                         </div>
+                        
+                        <div id="expenses-list" class="flex-1 p-4 space-y-2">
+                            <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                                <i class="fa-solid fa-circle-notch fa-spin text-xl mb-4"></i>
+                                <p class="text-xs font-medium">Loading your records...</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/30"
-                        id="emp-tasks-list">
-                        <div class="flex flex-col items-center justify-center h-64 text-slate-400">
-                            <i class="fa-solid fa-circle-notch fa-spin text-2xl mb-3"></i>
-                            <p class="text-xs">Loading tasks...</p>
+
+                    <!-- Tasks View -->
+                    <div id="section-tasks" class="hidden flex flex-col h-full">
+                        <div class="p-4 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-gray-50/50 dark:bg-black">
+                            <div class="flex gap-3 items-center w-full">
+                                <div class="relative flex-1 max-w-sm">
+                                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
+                                    <input type="text" id="emp-task-search" onkeyup="filterEmpTasks()" class="input-geist pl-8 text-xs py-1.5" placeholder="Search tasks...">
+                                </div>
+                                <button type="button" onclick="openEmpTaskModal()" class="btn-geist-primary text-[10px] py-1.5 px-3 whitespace-nowrap">
+                                    <i class="fa-solid fa-plus mr-1"></i> New Task
+                                </button>
+                            </div>
+                        </div>
+                        <div id="emp-tasks-list" class="flex-1 p-4 space-y-2 overflow-y-auto">
+                            <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                                <i class="fa-solid fa-circle-notch fa-spin text-xl mb-4"></i>
+                                <p class="text-xs font-medium">Loading tasks...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Accounts View -->
+                    <div id="section-financials" class="hidden flex flex-col h-full">
+                        <div class="p-4 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-gray-50/50 dark:bg-black">
+                            <div>
+                                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400">Financial Accounts</h3>
+                            </div>
+                            <button onclick="openFinancialAccountModal()" class="btn-geist-primary text-[10px] py-1.5 px-3">
+                                <i class="fa-solid fa-plus mr-1"></i> Add Account
+                            </button>
+                        </div>
+                        <div id="financial-accounts-list" class="flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto">
+                            <!-- Accounts will be injected here -->
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Monthly Analysis Section (Personal Mode Only) -->
-            <div id="personal-analysis" class="hidden fade-in mb-6" style="animation-delay: 0.2s">
-                <div
-                    class="card rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white dark:border-slate-700/50 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md">
-                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div id="personal-analysis" class="hidden animate-fade-in mb-12" style="animation-delay: 0.2s">
+                <div class="vercel-card overflow-hidden">
+                    <div class="p-6 border-b border-[#eaeaea] dark:border-[#333] flex items-center justify-between">
                         <div>
-                            <h3 class="text-base font-bold text-slate-800 dark:text-slate-100"><i
-                                    class="fa-solid fa-chart-pie mr-2 text-green-600"></i> Monthly Analysis</h3>
+                            <h3 class="text-sm font-bold text-black dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-gray-400"></i> Monthly Analysis
+                            </h3>
                             <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Last 3 Months
                                 Overview</p>
                         </div>
@@ -759,7 +787,65 @@
                 </div>
             </div>
         </main>
-    </div>
+
+        <!-- Messages View (Hidden by default) -->
+        <main id="main-view-messages" class="hidden flex-1 flex flex-col bg-white dark:bg-black relative overflow-hidden">
+            <div class="flex flex-1 h-full overflow-hidden">
+                <!-- Chat Sidebar -->
+                <div class="w-full md:w-1/3 max-w-sm border-r border-[#eaeaea] dark:border-[#333] flex flex-col z-10 bg-[#fafafa] dark:bg-black" id="emp-chat-sidebar">
+                    <div class="p-4 sm:p-5 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-white dark:bg-black">
+                        <h3 class="font-bold tracking-tight text-black dark:text-white">Conversations</h3>
+                        <button onclick="fetchChatUsers()" class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="p-3 border-b border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black shrink-0 relative">
+                        <i class="fa-solid fa-search absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
+                        <input type="text" onkeyup="filterChatUsers(this.value)" class="input-geist pl-9 text-xs py-2 w-full" placeholder="Search coworkers...">
+                    </div>
+                    <div id="chat-user-list" class="flex-1 overflow-y-auto p-2 space-y-1">
+                         <div class="flex justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin text-gray-300"></i></div>
+                    </div>
+                </div>
+                
+                <!-- Main Chat Area -->
+                <div class="flex-1 flex flex-col absolute md:relative inset-0 bg-white dark:bg-black transform transition-transform duration-300 translate-x-full md:translate-x-0 z-20" id="chat-main-area">
+                    <div class="h-16 border-b border-[#eaeaea] dark:border-[#333] flex items-center justify-between px-4 sm:px-6 shrink-0 bg-white/80 dark:bg-black/80 backdrop-blur-md">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <button class="md:hidden text-gray-500 hover:text-black dark:hover:text-white transition p-2" onclick="hideMobileChatArea()">
+                                <i class="fa-solid fa-arrow-left text-sm"></i>
+                            </button>
+                            <div id="active-chat-avatar" class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold shrink-0 overflow-hidden text-xs">
+                                <i class="fa-solid fa-globe"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <h3 id="active-chat-name" class="text-sm font-semibold tracking-tight text-black dark:text-white truncate">Global Group</h3>
+                                <p id="active-chat-status" class="text-[10px] text-gray-500 truncate">Company Wide</p>
+                            </div>
+                        </div>
+                        <div id="chat-call-actions" class="flex items-center gap-2 hidden transition-all">
+                            <button onclick="initiateCall('voice')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-[#111] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#222] transition flex items-center justify-center shadow-sm" title="Voice Call">
+                                <i class="fa-solid fa-phone text-xs"></i>
+                            </button>
+                            <button onclick="initiateCall('video')" class="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black hover:opacity-80 transition flex items-center justify-center shadow-sm" title="Video Call">
+                                <i class="fa-solid fa-video text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="chat-messages-emp" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 relative">
+                        <div class="flex justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin text-gray-300"></i></div>
+                    </div>
+                    <form onsubmit="sendChatMessage(event)" class="p-4 border-t border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black flex gap-3 shrink-0">
+                        <input type="text" id="chat-input-emp" class="input-geist flex-1 text-sm py-2 px-3" placeholder="Type your message..." required autocomplete="off">
+                        <button type="submit" class="btn-geist-primary px-5 py-2">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div> <!-- Close Content Area Wrapper -->
+</div> <!-- Close Dashboard Screen -->
 
     <!-- Employee Task Modal -->
     <div id="modal-emp-task"
@@ -810,7 +896,7 @@
                         Cancel
                     </button>
                     <button type="submit" id="btn-emp-create-task"
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg text-sm font-bold transition shadow-lg shadow-green-200 dark:shadow-none flex items-center justify-center gap-2">
+                        class="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg text-sm font-bold transition shadow-lg flex items-center justify-center gap-2">
                         <span>Send</span>
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
@@ -819,235 +905,155 @@
         </div>
     </div>
 
-    <!-- Personal Vault Create Modal (Multi-Item) -->
-    <div id="modal-personal-create"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-center items-end md:items-center sm:p-4">
-        <div
-            class="bg-white dark:bg-slate-800 w-full max-w-lg sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-[slideUp_0.3s_ease-out]">
-            <div
-                class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-gradient-to-r from-emerald-50 to-green-50 dark:from-slate-900 dark:to-slate-900 sm:rounded-t-2xl">
+    <!-- Personal Vault Create Modal -->
+    <div id="modal-personal-create" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4">
+        <div class="vercel-card w-full max-w-lg flex flex-col max-h-[90vh] animate-slide-up bg-white dark:bg-black p-0 overflow-hidden">
+            <div class="px-6 py-5 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-[#fafafa] dark:bg-black">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100"><i
-                            class="fa-solid fa-vault mr-2 text-green-600"></i> New Personal Expense</h3>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold">
-                        Private • Add Multiple Items</p>
+                    <h3 class="text-sm font-bold text-black dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-vault text-gray-400"></i> New Personal Expense
+                    </h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Private • Multi-Item Entry</p>
                 </div>
-                <button type="button" onclick="closeModal('modal-personal-create')"
-                    class="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center">
+                <button type="button" onclick="closeModal('modal-personal-create')" class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-400 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div id="personal-expense-form" class="p-6 space-y-4 overflow-y-auto flex-1">
-                <!-- Expense Name -->
+            
+            <div id="personal-expense-form" class="p-6 space-y-6 overflow-y-auto flex-1">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Expense
-                        Name <span class="text-red-500">*</span></label>
-                    <input type="text" id="pv-name" class="input-field w-full rounded-lg p-3 text-sm"
-                        placeholder="e.g., Aaj ka Shopping Mall, Daily Groceries" required>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Expense Name</label>
+                    <input type="text" id="pv-name" class="input-geist w-full" placeholder="e.g., Daily Groceries" required>
                 </div>
                 <div>
-                    <label
-                        class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Description</label>
-                    <textarea id="pv-description" class="input-field w-full rounded-lg p-3 text-sm h-12 resize-none"
-                        placeholder="Optional details..."></textarea>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Description</label>
+                    <textarea id="pv-description" class="input-geist w-full h-20 resize-none" placeholder="Optional details..."></textarea>
                 </div>
 
-                <!-- Line Items Section -->
                 <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase"><i
-                                class="fa-solid fa-list mr-1"></i> Items</label>
-                        <button type="button" onclick="addPvLineItem()"
-                            class="text-[10px] bg-green-50 hover:bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-bold transition flex items-center gap-1">
-                            <i class="fa-solid fa-plus text-[8px]"></i> Add Item
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Line Items</label>
+                        <button type="button" onclick="addPvLineItem()" class="btn-geist-secondary text-[10px] py-1 px-2.5">
+                            <i class="fa-solid fa-plus mr-1"></i> Add
                         </button>
                     </div>
-                    <div id="pv-line-items" class="space-y-2">
-                        <!-- Line items get added here dynamically -->
-                    </div>
+                    <div id="pv-line-items" class="space-y-3"></div>
                 </div>
 
-                <!-- Running Total -->
-                <div
-                    class="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 flex justify-between items-center border border-slate-100 dark:border-slate-700">
+                <div class="bg-[#fafafa] dark:bg-[#111] rounded-lg p-5 flex justify-between items-center border border-[#eaeaea] dark:border-[#333]">
                     <div>
-                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400" id="pv-item-count">0 items</p>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Total Amount</p>
+                        <p class="text-xs text-gray-500" id="pv-item-count">0 items</p>
                     </div>
-                    <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 font-mono" id="pv-running-total">₹0
-                    </p>
+                    <p class="text-2xl font-bold text-black dark:text-white font-mono" id="pv-running-total">₹0</p>
                 </div>
             </div>
-            <div
-                class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 sm:rounded-b-2xl flex justify-end gap-3">
-                <button onclick="closeModal('modal-personal-create')"
-                    class="px-5 py-2.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 text-sm font-bold transition">Cancel</button>
-                <button onclick="submitPersonalExpense(event)" id="btn-pv-submit"
-                    class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg shadow-green-200 dark:shadow-none text-sm transition flex items-center gap-2 transform hover:translate-y-[-1px]">
-                    <i class="fa-solid fa-vault"></i> Save to Vault
+
+            <div class="px-6 py-4 border-t border-[#eaeaea] dark:border-[#333] flex justify-end gap-3 bg-[#fafafa] dark:bg-black">
+                <button onclick="closeModal('modal-personal-create')" class="btn-geist-secondary">Cancel</button>
+                <button onclick="submitPersonalExpense(event)" id="btn-pv-submit" class="btn-geist-primary">
+                    <i class="fa-solid fa-vault mr-2"></i> Save to Vault
                 </button>
             </div>
         </div>
     </div>
 
-
-    <!-- Create Modal -->
-    <div id="modal-create"
-        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex justify-center items-end md:items-center sm:p-4">
-        <div
-            class="bg-white dark:bg-slate-800 w-full max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-[slideUp_0.3s_ease-out]">
-            <div
-                class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 sm:rounded-t-2xl">
+    <!-- Create Modal (Expense Claim) -->
+    <div id="modal-create" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4">
+        <div class="vercel-card w-full max-w-3xl flex flex-col max-h-[90vh] animate-slide-up bg-white dark:bg-black p-0 overflow-hidden">
+            <div class="px-6 py-5 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-[#fafafa] dark:bg-black text-black">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">New Expense Claim</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Fill in the details below</p>
+                    <h3 class="text-sm font-bold text-black dark:text-white">New Expense Claim</h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Corporate Reimbursement</p>
                 </div>
-                <button onclick="closeModal('modal-create')"
-                    class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 flex items-center justify-center text-slate-500 dark:text-slate-400 transition"><i
-                        class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal('modal-create')" class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-400 transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-900/30">
-                <form id="expense-form" class="space-y-5">
+            <div class="flex-1 overflow-y-auto p-6 bg-white dark:bg-black">
+                <form id="expense-form" class="space-y-8">
                     <input type="hidden" id="expense-id">
+                    <input type="hidden" id="claim-type" value="EXPENSE">
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <input type="hidden" id="claim-type" value="EXPENSE">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label id="label-report-id"
-                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Report
-                                ID <span class="text-green-500 text-[10px] font-normal">(Auto-Generated)</span></label>
-                            <input type="text" id="report-title"
-                                class="input-field w-full rounded-lg p-3 text-sm font-bold text-slate-600 bg-slate-100 cursor-not-allowed"
-                                placeholder="Generating..." readonly>
+                            <label id="label-report-id" class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Report ID</label>
+                            <input type="text" id="report-title" class="input-geist w-full opacity-60 cursor-not-allowed font-mono text-xs" readonly placeholder="Generating...">
                         </div>
 
                         <div>
-                            <label
-                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Project
-                                / Cost Code <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <i
-                                    class="fa-solid fa-hashtag absolute left-3.5 top-3.5 text-slate-400 text-xs z-10"></i>
-                                <select id="project-code"
-                                    class="input-field w-full rounded-lg p-3 pl-9 text-sm bg-white dark:bg-slate-800 appearance-none cursor-pointer">
-                                    <option value="" disabled selected>Loading Projects...</option>
-                                </select>
-                                <i
-                                    class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
-                            </div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Project / Cost Code <span class="text-black dark:text-white">*</span></label>
+                            <select id="project-code" class="input-geist w-full appearance-none bg-no-repeat bg-[right_0.5rem_center]" style="background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22><path stroke=%22%236b7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22m6 8 4 4 4-4%22/></svg>')">
+                                <option value="" disabled selected>Loading Projects...</option>
+                            </select>
                         </div>
 
                         <div>
-                            <label
-                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Currency</label>
-                            <div class="relative">
-                                <select id="currency"
-                                    class="input-field w-full rounded-lg p-3 text-sm bg-white dark:bg-slate-800 appearance-none cursor-pointer">
-                                    <option value="INR">🇮🇳 INR (Rupee)</option>
-                                    <option value="USD">🇺🇸 USD (Dollar)</option>
-                                    <option value="EUR">🇪🇺 EUR (Euro)</option>
-                                    <option value="GBP">🇬🇧 GBP (Pound)</option>
-                                </select>
-                                <i
-                                    class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
-                            </div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Currency</label>
+                            <select id="currency" class="input-geist w-full appearance-none">
+                                <option value="INR">🇮🇳 INR (Rupee)</option>
+                                <option value="USD">🇺🇸 USD (Dollar)</option>
+                                <option value="EUR">🇪🇺 EUR (Euro)</option>
+                                <option value="GBP">🇬🇧 GBP (Pound)</option>
+                            </select>
                         </div>
 
                         <div class="md:col-span-2">
-                            <label
-                                class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 cursor-pointer transition">
-                                <input type="checkbox" id="pre-approved"
-                                    class="mt-1 w-4 h-4 text-green-600 rounded focus:ring-green-500 border-gray-300">
+                            <label class="flex items-start gap-3 p-4 rounded-md border border-[#eaeaea] dark:border-[#333] hover:bg-[#fafafa] dark:hover:bg-[#111] cursor-pointer transition-colors">
+                                <input type="checkbox" id="pre-approved" class="mt-1 w-4 h-4 rounded appearance-none border border-[#ccc] dark:border-[#333] checked:bg-black dark:checked:bg-white transition-all">
                                 <div>
-                                    <span
-                                        class="block text-sm font-bold text-slate-700 dark:text-slate-200">Pre-Approved
-                                        Activity</span>
-                                    <span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">Check this if
-                                        you received prior approval for these expenses.</span>
+                                    <span class="block text-xs font-bold text-black dark:text-white">Pre-Approved Activity</span>
+                                    <span class="block text-[10px] text-gray-500 mt-1">Check this if you received prior approval for these expenses.</span>
                                 </div>
                             </label>
 
-                            <div id="pre-approved-proof-container"
-                                class="hidden mt-3 pl-2 border-l-2 border-emerald-200 ml-2">
-                                <label class="block text-xs font-bold text-green-600 uppercase mb-1">Approval
-                                    Proof</label>
-
-                                <div class="flex flex-col gap-2">
-                                    <!-- File Upload -->
-                                    <div class="relative w-full">
-                                        <label id="proof-upload-label"
-                                            class="flex items-center gap-2 w-full p-2 border border-dashed border-emerald-300 rounded cursor-pointer hover:bg-emerald-50 transition bg-emerald-50/50">
-                                            <div
-                                                class="w-8 h-8 bg-emerald-100 rounded flex items-center justify-center text-green-600">
-                                                <i class="fa-solid fa-file-arrow-up"></i>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <span class="block text-xs font-bold text-green-700">Upload
-                                                    Proof</span>
-                                                <span class="block text-[10px] text-green-600/70 truncate">Image or
-                                                    PDF</span>
-                                            </div>
-                                            <input type="file" id="proof-file-input" accept="image/*,application/pdf"
-                                                class="hidden" onchange="handleProofUpload(this)">
-                                        </label>
-                                        <button type="button" onclick="removeProof(this)" id="btn-remove-proof"
-                                            class="hidden absolute top-1 right-1 w-6 h-6 bg-white rounded-full text-red-500 shadow-md flex items-center justify-center hover:bg-red-50 transition"><i
-                                                class="fa-solid fa-times text-xs"></i></button>
-                                    </div>
-
-                                    <div class="relative">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="text-[10px] text-slate-400 font-bold uppercase">OR</span>
-                                            <div class="h-px bg-slate-200 flex-1"></div>
+                            <div id="pre-approved-proof-container" class="hidden mt-4 pl-4 border-l border-black dark:border-white space-y-3 animate-fade-in">
+                                <div class="relative">
+                                    <label id="proof-upload-label" class="flex items-center gap-3 w-full p-3 border border-dashed border-[#eaeaea] dark:border-[#333] rounded cursor-pointer hover:bg-[#fafafa] dark:hover:bg-[#111] transition-all">
+                                        <i class="fa-solid fa-arrow-up-from-bracket text-gray-400"></i>
+                                        <div class="flex-1">
+                                            <span class="block text-[10px] font-bold text-black dark:text-white uppercase">Upload Proof</span>
+                                            <span class="block text-[9px] text-gray-500">PDF, JPG or PNG (Max 5MB)</span>
                                         </div>
-                                        <i class="fa-solid fa-link absolute left-2 top-6 text-slate-400 text-xs"></i>
-                                        <input type="url" id="approval-proof-url"
-                                            class="input-field w-full rounded-lg p-2 pl-7 text-xs"
-                                            placeholder="Paste Email/Doc Link...">
-                                    </div>
+                                        <input type="file" id="proof-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleProofUpload(this)">
+                                    </label>
+                                    <button type="button" onclick="removeProof(this)" id="btn-remove-proof" class="hidden absolute top-2 right-2 w-6 h-6 bg-white dark:bg-black border border-[#eaeaea] dark:border-[#333] rounded-full text-red-500 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                                        <i class="fa-solid fa-times text-[10px]"></i>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <input type="url" id="approval-proof-url" class="input-geist w-full text-[10px] py-2" placeholder="Or paste link to approval document...">
                                     <input type="hidden" id="approval-proof-final-url">
                                 </div>
                             </div>
                         </div>
 
                         <div class="md:col-span-2">
-                            <label
-                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Notes
-                                (Optional)</label>
-                            <textarea id="expense-notes"
-                                class="input-field w-full rounded-lg p-3 text-sm h-20 resize-none"
-                                placeholder="Additional details, justifications, etc..."></textarea>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Notes (Optional)</label>
+                            <textarea id="expense-notes" class="input-geist w-full h-24 resize-none" placeholder="Justification or extra context..."></textarea>
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <div
-                            class="flex justify-between items-end border-b border-slate-200 dark:border-slate-700 pb-2">
-                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase"><i
-                                    class="fa-solid fa-receipt mr-1"></i> Expenses</label>
-                            <span class="text-xs font-bold text-green-600 bg-emerald-50 px-2 py-1 rounded">Total:
-                                <span id="running-total">0.00</span></span>
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-end border-b border-[#eaeaea] dark:border-[#333] pb-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Line Items</label>
+                            <span class="text-xs font-bold text-black dark:text-white">Total Claim: <span id="running-total" class="font-mono">0.00</span></span>
                         </div>
 
-                        <div id="line-items-container" class="space-y-4">
-                        </div>
+                        <div id="line-items-container" class="space-y-4"></div>
 
-                        <button type="button" onclick="addLineItem()"
-                            class="w-full py-3 border border-dashed border-slate-300 rounded-lg text-slate-500 dark:text-slate-400 hover:text-green-600 hover:border-green-400 hover:bg-emerald-50 transition text-xs font-bold uppercase flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-plus-circle"></i> Add Another Expense
+                        <button type="button" onclick="addLineItem()" class="w-full py-4 border border-dashed border-[#eaeaea] dark:border-[#333] rounded-md text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-all">
+                            <i class="fa-solid fa-plus-circle mr-2 text-xs"></i> Add Another Expense Item
                         </button>
                     </div>
                 </form>
             </div>
 
-            <div
-                class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 sm:rounded-b-2xl flex justify-end gap-3">
-                <button onclick="closeModal('modal-create')"
-                    class="px-5 py-2.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 text-sm font-bold transition">Cancel</button>
-                <button onclick="submitExpense()" id="btn-submit"
-                    class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-green-600 dark:hover:bg-green-700 text-white font-bold rounded-lg shadow-lg shadow-slate-200 dark:shadow-none text-sm transition flex items-center gap-2 transform hover:translate-y-[-1px]">
-                    <span>Submit Claim</span> <i class="fa-solid fa-paper-plane"></i>
+            <div class="px-6 py-4 border-t border-[#eaeaea] dark:border-[#333] flex justify-end gap-3 bg-[#fafafa] dark:bg-black">
+                <button onclick="closeModal('modal-create')" class="btn-geist-secondary">Cancel</button>
+                <button onclick="submitExpense()" id="btn-submit" class="btn-geist-primary">
+                    <span class="mr-2">Submit Claim</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
                 </button>
             </div>
         </div>
@@ -1266,6 +1272,11 @@
                         <input type="tel" id="profile-phone" class="input-field w-full rounded-lg p-2.5 text-sm"
                             placeholder="+91...">
                     </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Photo URL</label>
+                        <input type="url" id="profile-photo-url" class="input-field w-full rounded-lg p-2.5 text-sm"
+                            placeholder="https://example.com/photo.jpg">
+                    </div>
                 </div>
 
                 <div class="pt-4 flex flex-col gap-3 border-t border-slate-100 dark:border-slate-800 mt-2">
@@ -1283,49 +1294,143 @@
                             <label
                                 class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Theme</label>
                             <button type="button" onclick="toggleTheme()"
-                                class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-moon theme-toggle-icon"></i> Toggle Theme
+                                class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-moon theme-toggle-icon"></i> Toggle
                             </button>
                         </div>
                     </div>
+                    
                     <button type="button"
                         onclick="if(window.aiAssistant) window.aiAssistant.toggleChat(); closeModal('modal-profile');"
-                        class="w-full px-4 py-2.5 bg-green-50 text-green-600 hover:bg-green-100 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 border border-green-100">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Ask AI
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Ask AI Assistant
                     </button>
 
-                    <div class="flex gap-3">
+                    <div class="flex gap-3 pt-2">
                         <button type="button" onclick="resetUserPassword()"
-                            class="px-4 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-bold transition flex-1 border border-red-100">
+                            class="px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-red-500 rounded-xl text-xs font-bold transition flex-1">
                             Reset Password
                         </button>
                         <button type="submit"
-                            class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold transition shadow-lg shadow-green-200 dark:shadow-none flex-1">
+                            class="px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold transition shadow-lg flex-1 active:scale-95">
                             Save Changes
                         </button>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 mt-1">
                         <button type="button" onclick="handleLogout()"
-                            class="w-full px-4 py-2.5 bg-slate-800 text-white hover:bg-slate-900 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-slate-200 dark:shadow-none">
-                            <i class="fa-solid fa-power-off"></i> Sign Out
+                            class="w-full px-4 py-2.5 bg-red-500 text-white rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-power-off"></i> Logout
                         </button>
                         <a href="support.html"
-                            class="w-full px-4 py-2.5 bg-green-50 text-green-600 hover:bg-green-100 border border-green-100 dark:border-green-900/50 dark:bg-green-900/20 dark:hover:bg-green-900/40 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+                            class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 text-slate-600">
                             <i class="fa-solid fa-headset"></i> Support
                         </a>
                     </div>
 
-                    <div class="flex justify-between items-center text-xs text-slate-400 mt-2">
+                    <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 px-1">
                         <button type="button" onclick="downloadMyData(event)"
-                            class="hover:text-green-600 transition flex items-center gap-1">
-                            <i class="fa-solid fa-download"></i> Download My Data
+                            class="hover:text-black dark:hover:text-white transition flex items-center gap-1">
+                            <i class="fa-solid fa-download"></i> Export Data
                         </button>
-                        <a href="privacy.html" target="_blank" class="hover:text-green-600 transition">Privacy
-                            Policy</a>
+                        <a href="privacy.html" target="_blank" class="hover:text-black dark:hover:text-white transition">Privacy</a>
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Financial Account Modal -->
+    <div id="modal-financial-create"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl flex flex-col animate-[slideUp_0.2s] border border-slate-100 dark:border-slate-800">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                <h3 class="text-xs font-black uppercase tracking-widest text-slate-800 dark:text-slate-100">Add Global Account</h3>
+                <button onclick="closeModal('modal-financial-create')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="financial-form" onsubmit="window.submitFinancialAccount(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Account Category</label>
+                    <select id="fa-type" class="input-geist w-full rounded-lg p-2.5 text-sm" required>
+                        <option value="Savings Account">🏦 Savings Account</option>
+                        <option value="Current Account">🏛️ Current Account</option>
+                        <option value="UPI Wallet">💳 UPI / Digital Wallet</option>
+                        <option value="Credit Card">💳 Credit Card</option>
+                        <option value="Investment">📈 Investment Account</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Account / Bank Name</label>
+                    <input type="text" id="fa-name" class="input-geist w-full rounded-lg p-2.5 text-sm" placeholder="e.g. HDFC Bank, Google Pay" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Unique Identifier</label>
+                    <input type="text" id="fa-details" class="input-geist w-full rounded-lg p-2.5 text-sm" placeholder="A/c Number or UPI ID" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Opening Balance</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">₹</span>
+                        <input type="number" id="fa-balance" class="input-geist w-full rounded-lg p-2.5 pl-7 text-sm" placeholder="0.00" required>
+                    </div>
+                </div>
+                <button type="submit" id="btn-fa-submit" class="w-full bg-black dark:bg-white text-white dark:text-black py-4 rounded-xl font-black uppercase tracking-widest text-xs shadow-xl transition active:scale-95">
+                    Save Account
+                </button>
+            </form>
+        </div>
+    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification List Modal -->
+    <div id="modal-notif-list" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('modal-notif-list')"></div>
+        <div id="modal-notif-list-content" class="bg-white dark:bg-[#0a0a0a] w-full max-w-lg rounded-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[80vh] border border-[#eaeaea] dark:border-[#333] animate-[slideUp_0.2s]">
+            <div class="px-6 py-4 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-[#fafafa] dark:bg-black">
+                <h3 class="text-xs font-black uppercase tracking-widest text-black dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-bell text-yellow-500"></i> Notifications
+                </h3>
+                <button onclick="closeModal('modal-notif-list')" class="p-1.5 hover:bg-gray-100 dark:hover:bg-[#111] rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-gray-400"></i>
+                </button>
+            </div>
+            <div id="notif-list-container" class="overflow-y-auto p-4 space-y-2 bg-white dark:bg-[#0a0a0a] flex-1 min-h-[250px]">
+                <div class="text-center py-10 opacity-50"><i class="fa-solid fa-circle-notch fa-spin text-2xl"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Detail (PDP) Modal -->
+    <div id="modal-notif-pdp" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onclick="closeModal('modal-notif-pdp')"></div>
+        <div id="modal-notif-pdp-content" class="bg-white dark:bg-[#0a0a0a] w-full max-w-md rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-[#eaeaea] dark:border-[#333] animate-[slideUp_0.2s]">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-[#111] border border-[#eaeaea] dark:border-[#333] flex items-center justify-center">
+                        <i class="fa-solid fa-envelope-open text-xl text-black dark:text-white"></i>
+                    </div>
+                    <button onclick="closeModal('modal-notif-pdp')" class="p-2 hover:bg-gray-100 dark:hover:bg-[#111] rounded-full transition">
+                        <i class="fa-solid fa-xmark text-gray-400"></i>
+                    </button>
+                </div>
+                <h4 id="pdp-notif-title" class="text-lg font-black text-black dark:text-white mb-2">Notification Title</h4>
+                <div class="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                    <span id="pdp-notif-sender">System</span>
+                    <span>•</span>
+                    <span id="pdp-notif-date">Date</span>
+                </div>
+                <div id="pdp-notif-body" class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed bg-[#fafafa] dark:bg-[#111] p-4 rounded-xl border border-[#eaeaea] dark:border-[#333] mb-6 min-h-[80px] whitespace-pre-wrap">
+                    Notification body goes here...
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="closeModal('modal-notif-pdp')" class="px-8 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold text-xs shadow-lg hover:opacity-90 transition uppercase tracking-widest">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 

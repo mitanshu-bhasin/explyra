@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
     <meta property="og:site_name" content="Explyra" />
@@ -9,364 +9,566 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Booking Suite</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <title>Dashboard — Booking Suite | Explyra</title>
+
+    <!-- Theme FOUC prevention -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="booking.css">
-    <style>
-        .sidebar {
-            background: var(--surf);
-            border-right: 1px solid var(--bdr);
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            color: var(--ink3);
-            font-weight: 500;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: var(--blue-g);
-            color: var(--blue);
-        }
-
-        .main-content {
-            padding: 2.5rem;
-            background: var(--bg);
-            overflow-y: auto;
-        }
-
-        .stat-card {
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .booking-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
-        }
-
-        .booking-table th,
-        .booking-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--bdr);
-        }
-
-        .booking-table th {
-            color: var(--ink3);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-
-        /* Status Colors */
-        .status-upcoming {
-            background: var(--blue-g);
-            color: var(--blue);
-        }
-
-        .status-completed {
-            background: rgba(52, 211, 153, 0.1);
-            color: #047857;
-        }
-
-        .status-cancelled {
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
-        }
-
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-card {
-            width: 90%;
-            max-width: 500px;
-            background: var(--surf);
-            border-radius: var(--r);
-            padding: 2.5rem;
-            box-shadow: var(--s3);
-        }
-
-        /* Setup Modal Specifics */
-        #setupModal .modal-card {
-            max-width: 420px;
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <div class="dashboard-grid">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div
-                style="font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem;">
-                Booking<span style="color: var(--ink);">Suite</span>
+    <div class="app-shell">
+        <!-- ===================== SIDEBAR ===================== -->
+        <aside class="sidebar" id="app-sidebar">
+            <!-- Brand Header -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <div class="sidebar-brand-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <span class="sidebar-brand-text">EXPLYRA <span>Booking</span></span>
+                </div>
+                <button class="sidebar-close" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
-            <div id="user-info" style="margin-bottom: 1.5rem; display: none;">
-                <div id="userName" style="font-weight: 600;">Loading...</div>
-                <div id="userPublicUrl"
-                    style="font-size: 0.8rem; color: var(--blue); cursor: pointer; text-decoration: underline;"></div>
-                <button class="btn btn-ghost" id="copyLinkBtn"
-                    style="padding: 0.2rem 0.5rem; font-size: 0.7rem; margin-top: 0.5rem;">
+            <!-- User Info -->
+            <div class="sidebar-user" id="user-info" style="display: none;">
+                <div class="sidebar-user-name" id="userName">Loading...</div>
+                <div class="sidebar-user-link" id="userPublicUrl"></div>
+                <button class="btn-ghost" id="copyLinkBtn" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; margin-top: 0.5rem;">
                     <i class="fa-solid fa-copy"></i> Copy Link
                 </button>
             </div>
-            <div id="sidebar-loader" style="padding: 1rem; text-align: center; color: var(--ink4);">
+            <div id="sidebar-loader" style="padding: 1rem; text-align: center; color: var(--text-secondary);">
                 <i class="fa-solid fa-circle-notch fa-spin"></i>
             </div>
 
-            <nav>
-                <div class="nav-item active" onclick="showSection('bookings')">
+            <!-- Navigation -->
+            <nav class="sidebar-nav">
+                <div class="sidebar-section-label">Main</div>
+                <button class="sidebar-item active" data-section="dashboard" onclick="showSection('dashboard', this)">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="sidebar-item" data-section="bookings" onclick="showSection('bookings', this)">
                     <i class="fa-solid fa-list-ul"></i> Bookings
-                </div>
-                <div class="nav-item" onclick="showSection('availability')">
-                    <i class="fa-solid fa-calendar-days"></i> Availability
-                </div>
-                <div class="nav-item" onclick="showSection('settings')">
+                </button>
+                <button class="sidebar-item" data-section="calendar" onclick="showSection('calendar', this)">
+                    <i class="fa-solid fa-calendar-days"></i> Calendar
+                </button>
+
+                <div class="sidebar-section-label">Management</div>
+                <button class="sidebar-item" data-section="availability" onclick="showSection('availability', this)">
+                    <i class="fa-solid fa-clock"></i> Availability
+                </button>
+                <button class="sidebar-item" data-section="settings" onclick="showSection('settings', this)">
                     <i class="fa-solid fa-gear"></i> Settings
-                </div>
-                <div class="nav-item" style="margin-top: auto;" id="logoutBtn">
+                </button>
+
+                <div class="sidebar-divider"></div>
+
+                <a href="../admin.html" class="sidebar-item" style="color: var(--text-secondary);">
+                    <i class="fa-solid fa-arrow-left"></i> Back to ERP
+                </a>
+                <button class="sidebar-item" id="logoutBtn" style="color: var(--danger);">
                     <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </div>
+                </button>
             </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="sidebar-footer-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div>
+                    <div class="sidebar-footer-label">Module</div>
+                    <div class="sidebar-footer-value">Booking Suite</div>
+                </div>
+            </div>
         </aside>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Bookings Section -->
-            <section id="bookings-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
-                    <h1 style="font-family: 'Playfair Display', serif;">Overview</h1>
+        <!-- ===================== MAIN WORKSPACE ===================== -->
+        <div class="main-wrapper">
+            <!-- Header Bar -->
+            <header class="header-bar">
+                <div class="header-left">
+                    <button class="header-hamburger" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="header-title" id="page-title">
+                        <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    </h2>
                 </div>
 
-                <div
-                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
-                    <div class="card stat-card">
-                        <div class="stat-icon" style="background: var(--blue-g); color: var(--blue);">
-                            <i class="fa-solid fa-clock"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--ink3);">Upcoming</div>
-                            <div id="count-upcoming" style="font-size: 1.5rem; font-weight: 700;">0</div>
-                        </div>
+                <div class="header-right">
+                    <!-- Search -->
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" placeholder="Search bookings..." class="search-bar" id="global-search">
                     </div>
-                    <div class="card stat-card">
-                        <div class="stat-icon" style="background: rgba(52, 211, 153, 0.1); color: #047857;">
-                            <i class="fa-solid fa-check-double"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--ink3);">Completed</div>
-                            <div id="count-completed" style="font-size: 1.5rem; font-weight: 700;">0</div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="card">
-                    <h3 style="margin-bottom: 1.5rem;">Recent Bookings</h3>
-                    <div style="overflow-x: auto;">
-                        <table class="booking-table">
-                            <thead>
-                                <tr>
-                                    <th>Customer</th>
-                                    <th>Date & Time</th>
-                                    <th>Status</th>
-                                    <th>Meeting Link</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bookings-list">
-                                <tr>
-                                    <td colspan="5" style="text-align: center; padding: 3rem; color: var(--ink4);">
-                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Loading bookings...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="header-divider"></div>
+
+                    <!-- Notification Bell -->
+                    <button class="notif-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notif-dot"></span>
+                    </button>
+
+                    <!-- Theme Pill -->
+                    <div class="theme-pill" id="theme-pill">
+                        <button onclick="setTheme('light')" id="theme-light-btn" title="Light Mode">
+                            <i class="fa-solid fa-sun"></i>
+                        </button>
+                        <button onclick="setTheme('dark')" id="theme-dark-btn" title="Dark Mode">
+                            <i class="fa-solid fa-moon"></i>
+                        </button>
+                    </div>
+
+                    <!-- Profile Avatar -->
+                    <div class="profile-avatar" id="header-avatar">
+                        <i class="fa-solid fa-user"></i>
                     </div>
                 </div>
-            </section>
+            </header>
 
-            <!-- Availability Section -->
-            <section id="availability-section" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1 style="font-family: 'Playfair Display', serif;">Availability Settings</h1>
-                </div>
-                <div class="card">
-                    <form id="availabilityForm">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <!-- ===================== CONTENT AREA ===================== -->
+            <div class="main-content" id="content-area">
+
+                <!-- ========== DASHBOARD VIEW ========== -->
+                <section id="dashboard-section" class="view-section active animate-fade-in">
+                    <!-- Welcome Banner -->
+                    <div class="welcome-banner">
+                        <div style="position: relative; z-index: 1;">
+                            <h1>Booking Dashboard</h1>
+                            <p>Monitor your appointments, manage schedule, and track booking analytics.</p>
+                        </div>
+                        <div class="welcome-banner-glow"></div>
+                    </div>
+
+                    <!-- Stat Cards -->
+                    <div class="grid-auto mb-6">
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="stat-icon" style="background: var(--info-bg); color: var(--info);">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <span class="stat-label">Upcoming</span>
+                            </div>
+                            <p class="stat-value" id="count-upcoming">0</p>
+                            <p class="stat-sub">Scheduled appointments</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="stat-icon" style="background: var(--success-bg); color: var(--success);">
+                                    <i class="fa-solid fa-check-double"></i>
+                                </div>
+                                <span class="stat-label">Completed</span>
+                            </div>
+                            <p class="stat-value" id="count-completed">0</p>
+                            <p class="stat-sub">Finished meetings</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="stat-icon" style="background: var(--purple-bg); color: var(--purple);">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </div>
+                                <span class="stat-label">Total Bookings</span>
+                            </div>
+                            <p class="stat-value" id="count-total">0</p>
+                            <p class="stat-sub">All time</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="stat-icon" style="background: var(--warning-bg); color: var(--warning);">
+                                    <i class="fa-solid fa-calendar-week"></i>
+                                </div>
+                                <span class="stat-label">This Week</span>
+                            </div>
+                            <p class="stat-value" id="count-week">0</p>
+                            <p class="stat-sub">New bookings</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings Preview -->
+                    <div class="vercel-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold" style="font-size: 0.95rem;">Recent Bookings</h3>
+                            <button class="btn-ghost" onclick="showSection('bookings', document.querySelector('[data-section=bookings]'))" style="padding: 0.3rem 0.75rem;">
+                                View All <i class="fa-solid fa-arrow-right" style="font-size: 0.7rem;"></i>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Date & Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-bookings-preview">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                            <i class="fa-solid fa-circle-notch fa-spin"></i> Loading...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========== BOOKINGS VIEW ========== -->
+                <section id="bookings-section" class="view-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="font-bold" style="font-size: 1.25rem;">All Bookings</h1>
+                    </div>
+
+                    <div class="vercel-card">
+                        <div class="overflow-x-auto">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Date & Time</th>
+                                        <th>Status</th>
+                                        <th>Meeting Link</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookings-list">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                                            <i class="fa-solid fa-circle-notch fa-spin"></i> Loading bookings...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========== CALENDAR VIEW ========== -->
+                <section id="calendar-section" class="view-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="font-bold" style="font-size: 1.25rem;">Calendar</h1>
+                        <div class="flex items-center gap-2">
+                            <button class="btn-ghost" onclick="changeCalendarMonth(-1)" style="padding: 0.4rem 0.75rem;">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <span id="calendar-month-label" class="font-semibold" style="min-width: 140px; text-align: center;"></span>
+                            <button class="btn-ghost" onclick="changeCalendarMonth(1)" style="padding: 0.4rem 0.75rem;">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="vercel-card" style="padding: 0; overflow: hidden;">
+                        <div id="calendar-container" class="calendar-grid"></div>
+                    </div>
+                </section>
+
+                <!-- ========== AVAILABILITY VIEW ========== -->
+                <section id="availability-section" class="view-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="font-bold" style="font-size: 1.25rem;">Availability Settings</h1>
+                    </div>
+                    <div class="vercel-card">
+                        <form id="availabilityForm">
+                            <div class="grid-2 mb-4">
+                                <div class="form-group">
+                                    <label class="form-label">Working Hours Start</label>
+                                    <input type="time" id="avail-start" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Working Hours End</label>
+                                    <input type="time" id="avail-end" class="form-input" required>
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label class="form-label">Working Hours Start</label>
-                                <input type="time" id="avail-start" class="form-input" required>
+                                <label class="form-label">Meeting Duration (Minutes)</label>
+                                <select id="avail-duration" class="form-input">
+                                    <option value="15">15 Minutes</option>
+                                    <option value="30">30 Minutes</option>
+                                    <option value="60">60 Minutes</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Working Days</label>
+                                <div class="day-pills">
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="monday"> Monday</label>
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="tuesday"> Tuesday</label>
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="wednesday"> Wednesday</label>
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="thursday"> Thursday</label>
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="friday"> Friday</label>
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="saturday"> Saturday</label>
+                                    <label class="day-pill"><input type="checkbox" name="workday" value="sunday"> Sunday</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary btn-lg">Save Availability</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- ========== SETTINGS VIEW ========== -->
+                <section id="settings-section" class="view-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="font-bold" style="font-size: 1.25rem;">Account Settings</h1>
+                    </div>
+                    <div class="vercel-card">
+                        <form id="settingsForm">
+                            <div class="form-group">
+                                <label class="form-label">Display Name</label>
+                                <input type="text" id="settings-name" class="form-input" placeholder="Your Name" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Working Hours End</label>
-                                <input type="time" id="avail-end" class="form-input" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Meeting Duration (Minutes)</label>
-                            <select id="avail-duration" class="form-input">
-                                <option value="15">15 Minutes</option>
-                                <option value="30">30 Minutes</option>
-                                <option value="60">60 Minutes</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Working Days</label>
-                            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="monday"> Monday
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="tuesday"> Tuesday
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="wednesday"> Wednesday
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="thursday"> Thursday
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="friday"> Friday
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="saturday"> Saturday
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                    <input type="checkbox" name="workday" value="sunday"> Sunday
-                                </label>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Save Availability</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Settings Section -->
-            <section id="settings-section" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1 style="font-family: 'Playfair Display', serif;">Account Settings</h1>
-                </div>
-                <div class="card">
-                    <form id="settingsForm">
-                        <div class="form-group">
-                            <label class="form-label">Display Name</label>
-                            <input type="text" id="settings-name" class="form-input" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Username (URL Path)</label>
-                            <div style="position: relative;">
-                                <input type="text" id="settings-username" class="form-input"
-                                    placeholder="unique-username" required>
+                                <label class="form-label">Username (URL Path)</label>
+                                <input type="text" id="settings-username" class="form-input" placeholder="unique-username" required>
                                 <div id="username-check" style="font-size: 0.75rem; margin-top: 0.25rem;"></div>
                             </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary" id="save-settings-btn">Save Changes</button>
-                    </form>
-                </div>
-            </section>
-        </main>
+                            <button type="submit" class="btn-primary btn-lg" id="save-settings-btn">Save Changes</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
 
     <!-- Meeting Link Modal -->
-    <div id="linkModal" class="modal">
-        <div class="modal-card">
-            <h3 style="margin-bottom: 1rem;">Update Meeting Link</h3>
-            <p style="color: var(--ink3); font-size: 0.9rem; margin-bottom: 1.5rem;">Paste the Google Meet, Zoom, or any
-                other meeting URL below.</p>
-            <div class="form-group">
-                <label class="form-label">Meeting URL</label>
-                <input type="url" id="meeting-url-input" class="form-input" placeholder="https://meet.google.com/..."
-                    required>
+    <div id="linkModal" class="modal-overlay">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <h3>Update Meeting Link</h3>
+                <button class="btn-ghost" onclick="closeModal()" style="padding: 0.3rem 0.6rem;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" id="saveLinkBtn">Save Link</button>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.25rem;">
+                    Paste the Google Meet, Zoom, or any other meeting URL below.
+                </p>
+                <div class="form-group">
+                    <label class="form-label">Meeting URL</label>
+                    <input type="url" id="meeting-url-input" class="form-input" placeholder="https://meet.google.com/..." required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" id="saveLinkBtn">Save Link</button>
             </div>
         </div>
     </div>
 
-    <!-- Setup Profile Modal (for existing auth users without a profile) -->
-    <div id="setupModal" class="modal">
-        <div class="modal-card">
-            <div style="font-size: 3rem; color: var(--blue); margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-            </div>
-            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 0.5rem;">Complete Your Profile</h2>
-            <p style="color: var(--ink3); font-size: 0.9rem; margin-bottom: 2rem;">You're logged in, but we need a few
-                more details to set up your booking page.</p>
-
-            <form id="setupForm" style="text-align: left;">
-                <div class="form-group">
-                    <label class="form-label">Display Name</label>
-                    <input type="text" id="setup-name" class="form-input" placeholder="Your Name" required>
+    <!-- Setup Profile Modal -->
+    <div id="setupModal" class="modal-overlay">
+        <div class="modal-panel" style="max-width: 420px;">
+            <div class="modal-body" style="text-align: center;">
+                <div style="font-size: 2.5rem; color: var(--info); margin-bottom: 1.25rem;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Choose Username (for URL)</label>
-                    <div style="position: relative;">
-                        <input type="text" id="setup-username" class="form-input" placeholder="unique-username"
-                            required>
+                <h2 class="font-bold" style="font-size: 1.15rem; margin-bottom: 0.25rem;">Complete Your Profile</h2>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                    You're logged in, but we need a few more details to set up your booking page.
+                </p>
+
+                <form id="setupForm" style="text-align: left;">
+                    <div class="form-group">
+                        <label class="form-label">Display Name</label>
+                        <input type="text" id="setup-name" class="form-input" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Choose Username (for URL)</label>
+                        <input type="text" id="setup-username" class="form-input" placeholder="unique-username" required>
                         <div id="setup-username-check" style="font-size: 0.75rem; margin-top: 0.25rem;"></div>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;" id="setup-submit-btn">Finish
-                    Setup</button>
-            </form>
+                    <button type="submit" class="btn-primary btn-full btn-lg" id="setup-submit-btn">
+                        Finish Setup
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
+    <!-- ===================== SCRIPTS ===================== -->
+
+    <!-- Theme Management -->
+    <script>
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('explyra-theme', theme);
+            updateThemePill();
+        }
+
+        function updateThemePill() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            document.getElementById('theme-light-btn')?.classList.toggle('active-theme', theme === 'light');
+            document.getElementById('theme-dark-btn')?.classList.toggle('active-theme', theme === 'dark');
+        }
+
+        updateThemePill();
+
+        // Cross-tab sync
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'explyra-theme') {
+                if (e.newValue === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+                updateThemePill();
+            }
+        });
+    </script>
+
+    <!-- Sidebar & Navigation -->
+    <script>
+        function toggleSidebar() {
+            document.getElementById('app-sidebar').classList.toggle('sidebar-open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        const pageTitles = {
+            dashboard: { icon: 'fa-chart-pie', label: 'Dashboard' },
+            bookings: { icon: 'fa-list-ul', label: 'Bookings' },
+            calendar: { icon: 'fa-calendar-days', label: 'Calendar' },
+            availability: { icon: 'fa-clock', label: 'Availability' },
+            settings: { icon: 'fa-gear', label: 'Settings' }
+        };
+
+        window.showSection = (section, navEl) => {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(s => {
+                s.classList.remove('active');
+                s.style.animation = 'none';
+            });
+            // Deactivate all nav items
+            document.querySelectorAll('.sidebar-item[data-section]').forEach(n => n.classList.remove('active'));
+
+            // Show target section
+            const sectionEl = document.getElementById(section + '-section');
+            if (sectionEl) {
+                sectionEl.classList.add('active');
+                sectionEl.style.animation = 'fadeIn 0.3s ease-out';
+            }
+
+            // Activate nav item
+            if (navEl) navEl.classList.add('active');
+
+            // Update header title
+            const info = pageTitles[section];
+            if (info) {
+                document.getElementById('page-title').innerHTML = `<i class="fa-solid ${info.icon}"></i> ${info.label}`;
+            }
+
+            // Close mobile sidebar
+            if (window.innerWidth <= 1024) {
+                document.getElementById('app-sidebar').classList.remove('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.remove('active');
+            }
+
+            // Render calendar when switching to it
+            if (section === 'calendar') renderCalendar();
+        };
+    </script>
+
+    <!-- Calendar View -->
+    <script>
+        let calendarDate = new Date();
+        let allBookingsForCalendar = [];
+
+        function changeCalendarMonth(delta) {
+            calendarDate.setMonth(calendarDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendar-container');
+            if (!container) return;
+
+            const year = calendarDate.getFullYear();
+            const month = calendarDate.getMonth();
+
+            // Update label
+            document.getElementById('calendar-month-label').textContent =
+                calendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+
+            let html = '';
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(d => {
+                html += `<div class="calendar-header-cell">${d}</div>`;
+            });
+
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-day other-month"></div>';
+            }
+
+            // Day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+
+                // Find bookings for this day
+                const dayBookings = allBookingsForCalendar.filter(b =>
+                    b.scheduledAt && b.scheduledAt.startsWith(dateStr)
+                );
+
+                let eventsHtml = '';
+                dayBookings.slice(0, 2).forEach(b => {
+                    const time = new Date(b.scheduledAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                    eventsHtml += `<div class="calendar-event">${time} ${b.customerName || ''}</div>`;
+                });
+                if (dayBookings.length > 2) {
+                    eventsHtml += `<div class="calendar-event" style="background: var(--bg-secondary); color: var(--text-secondary);">+${dayBookings.length - 2} more</div>`;
+                }
+
+                html += `
+                    <div class="calendar-day ${isToday ? 'today' : ''}">
+                        <div class="calendar-day-number">${day}</div>
+                        ${eventsHtml}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+    </script>
+
+    <!-- Search Filter -->
+    <script>
+        document.getElementById('global-search')?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#bookings-list tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    </script>
+
+    <!-- Firebase & Booking Logic (PRESERVED) -->
     <script type="module">
         import { auth, db, checkAuth, logout } from './booking.js';
         import { collection, query, where, getDocs, doc, getDoc, setDoc, updateDoc, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
@@ -393,7 +595,6 @@
                 if (snap.exists()) {
                     const data = snap.data();
                     document.getElementById('userName').innerText = data.displayName;
-                    // Updated for subdomain book.explyra.me
                     const publicUrl = 'https://book.explyra.me/' + data.username;
                     document.getElementById('userPublicUrl').innerText = '@' + data.username;
                     document.getElementById('userPublicUrl').onclick = () => window.open(publicUrl, '_blank');
@@ -418,6 +619,11 @@
 
                     document.getElementById('sidebar-loader').style.display = 'none';
                     document.getElementById('user-info').style.display = 'block';
+
+                    // Update avatar with initials
+                    const initials = data.displayName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    document.getElementById('header-avatar').textContent = initials;
+
                     return data;
                 } else {
                     console.warn("Profile not found for existing user. Showing setup modal.");
@@ -427,7 +633,7 @@
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 alert("Error loading dashboard. Please check your connection or try again.");
-                document.getElementById('sidebar-loader').innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Error';
+                document.getElementById('sidebar-loader').innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i> Error';
             }
         };
 
@@ -441,7 +647,7 @@
 
             if (username.length < 3) {
                 checkEl.innerText = 'Username too short';
-                checkEl.style.color = 'var(--ink4)';
+                checkEl.style.color = 'var(--text-secondary)';
                 return;
             }
 
@@ -458,18 +664,18 @@
                 });
 
                 if (isTaken) {
-                    checkEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Red is taken';
-                    checkEl.style.color = '#dc2626';
+                    checkEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Already taken';
+                    checkEl.style.color = 'var(--danger)';
                     saveBtn.disabled = true;
                 } else {
                     checkEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Available';
-                    checkEl.style.color = '#047857';
+                    checkEl.style.color = 'var(--success)';
                     saveBtn.disabled = false;
                 }
             }, 500);
         });
 
-        // Setup Form Handlers (identical logic to settings but for the modal)
+        // Setup Form Handlers
         document.getElementById('setup-username').addEventListener('input', (e) => {
             const username = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
             e.target.value = username;
@@ -478,7 +684,7 @@
 
             if (username.length < 3) {
                 checkEl.innerText = 'Username too short';
-                checkEl.style.color = 'var(--ink4)';
+                checkEl.style.color = 'var(--text-secondary)';
                 return;
             }
 
@@ -489,11 +695,11 @@
                 const snap = await getDocs(q);
                 if (!snap.empty) {
                     checkEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Already taken';
-                    checkEl.style.color = '#dc2626';
+                    checkEl.style.color = 'var(--danger)';
                     submitBtn.disabled = true;
                 } else {
                     checkEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Available';
-                    checkEl.style.color = '#047857';
+                    checkEl.style.color = 'var(--success)';
                     submitBtn.disabled = false;
                 }
             }, 500);
@@ -582,63 +788,107 @@
 
                 onSnapshot(q, (snapshot) => {
                     const list = document.getElementById('bookings-list');
+                    const previewList = document.getElementById('dashboard-bookings-preview');
                     list.innerHTML = '';
+                    if (previewList) previewList.innerHTML = '';
 
                     let upcoming = 0;
                     let completed = 0;
+                    let total = 0;
+                    let thisWeek = 0;
+
+                    const now = new Date();
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    weekStart.setHours(0, 0, 0, 0);
+
+                    // Collect all bookings for calendar
+                    allBookingsForCalendar = [];
 
                     if (snapshot.empty) {
-                        list.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--ink4);">No bookings found</td></tr>';
+                        list.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-secondary);">No bookings found</td></tr>';
+                        if (previewList) previewList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No bookings yet</td></tr>';
                     }
+
+                    let previewCount = 0;
 
                     snapshot.forEach((docSnap) => {
                         const b = docSnap.data();
                         const id = docSnap.id;
                         const date = new Date(b.scheduledAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 
+                        total++;
                         if (b.status === 'upcoming') upcoming++;
                         if (b.status === 'completed') completed++;
 
+                        const bookingDate = new Date(b.scheduledAt);
+                        if (bookingDate >= weekStart) thisWeek++;
+
+                        // Store for calendar
+                        allBookingsForCalendar.push(b);
+
+                        // Full bookings table row
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>
-                                <div style="font-weight: 500;">${b.customerName}</div>
-                                <div style="font-size: 0.8rem; color: var(--ink3);">${b.customerEmail}</div>
+                                <div class="font-semibold">${b.customerName}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${b.customerEmail}</div>
                             </td>
-                            <td>${date}</td>
+                            <td style="font-size: 0.85rem;">${date}</td>
                             <td><span class="status-badge status-${b.status}">${b.status}</span></td>
                             <td>
-                                ${b.meetingLink ? `<a href="${b.meetingLink}" target="_blank" style="color: var(--blue); font-size: 0.85rem;">View Link <i class="fa-solid fa-external-link"></i></a>` : '<span style="color: var(--ink4); font-size: 0.85rem;">Not added</span>'}
+                                ${b.meetingLink ? `<a href="${b.meetingLink}" target="_blank" style="color: var(--info); font-size: 0.8rem;">View Link <i class="fa-solid fa-external-link"></i></a>` : '<span style="color: var(--text-tertiary); font-size: 0.8rem;">Not added</span>'}
                             </td>
                             <td>
-                                <button class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="openLinkModal('${id}', '${b.meetingLink || ''}')">
-                                    <i class="fa-solid fa-link"></i>
-                                </button>
-                                <button class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: #dc2626;" onclick="cancelBooking('${id}')">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
+                                <div class="flex gap-2">
+                                    <button class="btn-ghost" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="openLinkModal('${id}', '${b.meetingLink || ''}')">
+                                        <i class="fa-solid fa-link"></i>
+                                    </button>
+                                    <button class="btn-ghost" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; color: var(--danger);" onclick="cancelBooking('${id}')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
                             </td>
                         `;
                         list.appendChild(tr);
+
+                        // Dashboard preview (first 5 only)
+                        if (previewList && previewCount < 5) {
+                            const ptr = document.createElement('tr');
+                            ptr.innerHTML = `
+                                <td>
+                                    <div class="font-semibold">${b.customerName}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${b.customerEmail}</div>
+                                </td>
+                                <td style="font-size: 0.85rem;">${date}</td>
+                                <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+                                <td>
+                                    <button class="btn-ghost" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="openLinkModal('${id}', '${b.meetingLink || ''}')">
+                                        <i class="fa-solid fa-link"></i>
+                                    </button>
+                                </td>
+                            `;
+                            previewList.appendChild(ptr);
+                            previewCount++;
+                        }
                     });
 
                     document.getElementById('count-upcoming').innerText = upcoming;
                     document.getElementById('count-completed').innerText = completed;
+                    document.getElementById('count-total').innerText = total;
+                    document.getElementById('count-week').innerText = thisWeek;
+
+                    // Re-render calendar if visible
+                    if (document.getElementById('calendar-section').classList.contains('active')) {
+                        renderCalendar();
+                    }
                 }, (error) => {
                     console.error("Booking listener error:", error);
-                    document.getElementById('bookings-list').innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem; color: #dc2626;">Error loading bookings: ${error.message}</td></tr>`;
+                    document.getElementById('bookings-list').innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--danger);">Error loading bookings: ${error.message}</td></tr>`;
                 });
             } catch (error) {
                 console.error("Failed to setup bookings listener:", error);
             }
-        };
-
-        // --- Section Navigation ---
-        window.showSection = (section) => {
-            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(section + '-section').style.display = 'block';
-            event.currentTarget.classList.add('active');
         };
 
         // --- Meeting Link Modal ---

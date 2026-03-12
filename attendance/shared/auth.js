@@ -124,37 +124,108 @@ function handleCompanyRegister(e) {
     const companyName = document.getElementById('reg-company-name').value.trim();
     const adminEmail = document.getElementById('reg-email').value.trim().toLowerCase();
     const adminPass = document.getElementById('reg-password').value;
+    const btn = document.getElementById('reg-btn');
 
     if (!companyName || !adminEmail || !adminPass) return alert("Please fill all details");
-
-    const dataKey = 'attendance_app_data';
-    const defaultSchema = { companies: {}, employees: {}, attendance: {}, salaries: {}, users: {} };
-    const data = getAppData(dataKey, defaultSchema);
-
-    if (!data.users) data.users = {};
-
-    if (data.users[adminEmail]) {
-        return alert("Email is already registered. Please login.");
-    }
+    if (adminPass.length < 6) return alert("Password must be at least 6 characters.");
 
     const companyId = generateId('CMP');
 
-    data.companies[companyId] = { name: companyName, registeredAt: new Date().toISOString() };
-    data.employees[companyId] = [];
-    data.attendance[companyId] = {};
-    data.salaries[companyId] = {};
+    // Firebase Registration Path
+    if (typeof window.auth !== 'undefined' && typeof window.db !== 'undefined') {
+        const originalBtnContent = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Registering...';
+            btn.disabled = true;
+        }
 
-    // Register Admin user mapping
-    data.users[adminEmail] = {
-        password: adminPass,
-        companyId: companyId,
-        role: 'Admin',
-        userId: adminEmail.split('@')[0]
-    };
+        window.auth.createUserWithEmailAndPassword(adminEmail, adminPass)
+            .then(function(userCredential) {
+                // Store company metadata in Firestore
+                return window.db.collection('companies').doc(companyId).set({
+                    name: companyName,
+                    registeredAt: new Date().toISOString(),
+                    adminEmail: adminEmail
+                }).then(function() {
+                    // Store user metadata in Firestore
+                    return window.db.collection('users').doc(userCredential.user.uid).set({
+                        email: adminEmail,
+                        name: adminEmail.split('@')[0],
+                        companyId: companyId,
+                        role: 'Admin',
+                        createdAt: new Date().toISOString()
+                    });
+                });
+            })
+            .then(function() {
+                // Also save to localStorage as backup
+                const dataKey = 'attendance_app_data';
+                const defaultSchema = { companies: {}, employees: {}, attendance: {}, salaries: {}, users: {} };
+                const data = getAppData(dataKey, defaultSchema);
+                if (!data.users) data.users = {};
+                data.companies[companyId] = { name: companyName, registeredAt: new Date().toISOString() };
+                data.employees[companyId] = [];
+                data.attendance[companyId] = {};
+                data.salaries[companyId] = {};
+                data.users[adminEmail] = {
+                    password: adminPass,
+                    companyId: companyId,
+                    role: 'Admin',
+                    userId: adminEmail.split('@')[0]
+                };
+                saveAppData(dataKey, data);
 
-    saveAppData(dataKey, data);
-    alert(`Company Registered successfully!\nYour Company ID is: ${companyId}\nPlease login now.`);
-    window.location.href = 'login.html';
+                // Sign out so user goes through login flow
+                return window.auth.signOut();
+            })
+            .then(function() {
+                alert('Company Registered successfully!\nYour Company ID is: ' + companyId + '\nPlease login now.');
+                window.location.href = 'login.html';
+            })
+            .catch(function(error) {
+                console.error("Registration Error:", error);
+                let msg = error.message;
+                if (error.code === 'auth/email-already-in-use') {
+                    msg = 'This email is already registered. Please login instead.';
+                } else if (error.code === 'auth/weak-password') {
+                    msg = 'Password is too weak. Please use at least 6 characters.';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'Please enter a valid email address.';
+                }
+                alert("Registration Error: " + msg);
+                if (btn) {
+                    btn.innerHTML = originalBtnContent;
+                    btn.disabled = false;
+                }
+            });
+    } else {
+        // Fallback: localStorage-only registration (offline mode)
+        const dataKey = 'attendance_app_data';
+        const defaultSchema = { companies: {}, employees: {}, attendance: {}, salaries: {}, users: {} };
+        const data = getAppData(dataKey, defaultSchema);
+
+        if (!data.users) data.users = {};
+
+        if (data.users[adminEmail]) {
+            return alert("Email is already registered. Please login.");
+        }
+
+        data.companies[companyId] = { name: companyName, registeredAt: new Date().toISOString() };
+        data.employees[companyId] = [];
+        data.attendance[companyId] = {};
+        data.salaries[companyId] = {};
+
+        data.users[adminEmail] = {
+            password: adminPass,
+            companyId: companyId,
+            role: 'Admin',
+            userId: adminEmail.split('@')[0]
+        };
+
+        saveAppData(dataKey, data);
+        alert('Company Registered successfully!\nYour Company ID is: ' + companyId + '\nPlease login now.');
+        window.location.href = 'login.html';
+    }
 }
 
 async function handleCompanyLogin(e) {
@@ -206,7 +277,15 @@ async function handleCompanyLogin(e) {
 
         } catch (error) {
             console.error(error);
-            alert("Login Error: " + error.message);
+            let msg = error.message;
+            if (error.code === 'auth/invalid-login-credentials' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                msg = 'Invalid email or password. Please check your credentials and try again.';
+            } else if (error.code === 'auth/too-many-requests') {
+                msg = 'Too many failed attempts. Please try again later.';
+            } else if (error.code === 'auth/invalid-email') {
+                msg = 'Please enter a valid email address.';
+            }
+            alert("Login Error: " + msg);
             btn.innerHTML = originalBtnContent;
             btn.disabled = false;
         }

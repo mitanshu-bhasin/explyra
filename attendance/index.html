@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
     <meta property="og:site_name" content="Explyra" />
@@ -9,450 +9,146 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Manager - Explyra</title>
-    <!-- Tailwind & Icons -->
+    <title>Attendance Manager | Explyra</title>
+    
+    <!-- Tailwind & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/common.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- SaaS UI Styles -->
+    <link rel="stylesheet" href="shared/saas-ui.css">
+    
     <style>
-        :root {
-            /* Light */
-            --bg: #F8F7F4;
-            --bg2: #FFFFFF;
-            --bg3: #F1EFE9;
-            --bg4: #E9E6E0;
-            --surf: #FFFFFF;
-            --bdr: #E4E1DB;
-            --bdr2: #CCC8C0;
-            --ink: #0D1117;
-            --ink2: #2A3141;
-            --ink3: #586070;
-            --ink4: #939BAC;
-            /* Accents */
-            --blue: #1546C0;
-            --blue2: #5B8AF5;
-            --blue-g: rgba(21, 70, 192, .08);
-            --blue-b: rgba(21, 70, 192, .2);
-            --teal: #047857;
-            --teal2: #34D399;
-            --teal-g: rgba(4, 120, 87, .08);
-            --teal-b: rgba(4, 120, 87, .2);
-            --amber: #B45309;
-            --amb2: #FBBF24;
-            --amb-g: rgba(180, 83, 9, .08);
-            --amb-b: rgba(180, 83, 9, .2);
-            --purp: #6D28D9;
-            --purp2: #A78BFA;
-            --purp-g: rgba(109, 40, 217, .08);
-            --purp-b: rgba(109, 40, 217, .2);
-            --rose: #BE185D;
-            --rose2: #F472B6;
-            --rose-g: rgba(190, 24, 93, .08);
-            --rose-b: rgba(190, 24, 93, .2);
-            --slate: #334155;
-            --slt2: #94A3B8;
-            --slt-g: rgba(51, 65, 85, .08);
-            --slt-b: rgba(51, 65, 85, .2);
-            /* Shadows */
-            --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
-            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
-            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
-            --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
-            --r: 8px;
-            --t: .2s ease;
+        body { font-family: 'Outfit', sans-serif; }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(0, 112, 243, 0.05), transparent),
+                        radial-gradient(circle at bottom left, rgba(0, 223, 216, 0.05), transparent);
         }
-
-        [data-theme="dark"] {
-            --bg: #080B14;
-            --bg2: #0E1220;
-            --bg3: #141928;
-            --bg4: #1B2235;
-            --surf: #141928;
-            --bdr: rgba(255, 255, 255, .07);
-            --bdr2: rgba(255, 255, 255, .14);
-            --ink: #EEF0F8;
-            --ink2: #C4CCDC;
-            --ink3: #8290A8;
-            --ink4: #4E5A70;
-            --blue: #5B8AF5;
-            --blue2: #93B4FF;
-            --blue-g: rgba(91, 138, 245, .12);
-            --blue-b: rgba(91, 138, 245, .25);
-            --teal: #34D399;
-            --teal2: #6EE7B7;
-            --teal-g: rgba(52, 211, 153, .10);
-            --teal-b: rgba(52, 211, 153, .22);
-            --amber: #FBBF24;
-            --amb2: #FDE68A;
-            --amb-g: rgba(251, 191, 36, .10);
-            --amb-b: rgba(251, 191, 36, .22);
-            --purp: #A78BFA;
-            --purp2: #C4B5FD;
-            --purp-g: rgba(167, 139, 250, .10);
-            --purp-b: rgba(167, 139, 250, .22);
-            --rose: #F472B6;
-            --rose2: #FBCFE8;
-            --rose-g: rgba(244, 114, 182, .10);
-            --rose-b: rgba(244, 114, 182, .22);
-            --slate: #94A3B8;
-            --slt2: #CBD5E1;
-            --slt-g: rgba(148, 163, 184, .10);
-            --slt-b: rgba(148, 163, 184, .22);
-            --s1: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 8px rgba(0, 0, 0, .25);
-            --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
-            --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
-            --s4: 0 24px 72px rgba(0, 0, 0, .6), 0 4px 16px rgba(0, 0, 0, .35);
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--ink);
-            transition: background 0.4s, color 0.4s;
-        }
-
-        .theme-pill {
-            display: flex;
-            align-items: center;
-            gap: .4rem;
-            background: var(--bg3);
-            border: 1px solid var(--bdr2);
-            border-radius: 100px;
-            padding: .3rem .5rem .3rem .7rem;
-            cursor: pointer;
-            transition: all var(--t)
-        }
-
-        .theme-pill:hover {
-            border-color: var(--blue)
-        }
-
-        .theme-pill-label {
-            font-size: .72rem;
-            font-weight: 600;
-            color: var(--ink3);
-            letter-spacing: .05em
-        }
-
-        .theme-pill-toggle {
-            width: 32px;
-            height: 18px;
-            border-radius: 9px;
-            background: var(--bg4);
-            position: relative;
-            transition: background .3s
-        }
-
-        [data-theme="dark"] .theme-pill-toggle {
-            background: var(--blue)
-        }
-
-        .theme-pill-toggle::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
-            transition: transform .3s cubic-bezier(.4, 0, .2, 1)
-        }
-
-        [data-theme="dark"] .theme-pill-toggle::before {
-            transform: translateX(14px)
-        }
-
-        .hero-image-animate {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        /* Override some Tailwind defaults with variables */
-        .card-custom {
-            background-color: var(--bg2);
-            border-color: var(--bdr);
-            box-shadow: var(--s2);
-        }
-
-        [data-theme="dark"] .card-custom {
-            background-color: var(--bg3);
+        .dark .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(0, 112, 243, 0.1), transparent),
+                        radial-gradient(circle at bottom left, rgba(0, 223, 216, 0.1), transparent);
         }
     </style>
-
+    
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const html = document.documentElement;
-            const pill = document.getElementById('themePill');
-            const lbl = document.getElementById('themeLabel');
-
-            const saved = localStorage.getItem('explyra-theme') || 'light';
-            html.setAttribute('data-theme', saved);
-            if (lbl) lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
-
-            if (saved === 'dark') {
-                html.classList.add('dark');
-            }
-
-            pill.addEventListener('click', () => {
-                const cur = html.getAttribute('data-theme');
-                const nxt = cur === 'light' ? 'dark' : 'light';
-
-                html.setAttribute('data-theme', nxt);
-                if (lbl) lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light';
-
-                if (nxt === 'dark') {
-                    html.classList.add('dark');
-                } else {
-                    html.classList.remove('dark');
-                }
-
-                localStorage.setItem('explyra-theme', nxt);
-            });
-        });
+        (function() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
     </script>
 </head>
 
-<body class="font-['Outfit'] min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col hero-gradient">
 
     <!-- Header -->
-    <header
-        class="h-20 bg-[var(--bg)]/80 backdrop-blur-md border-b border-[var(--bdr)] flex items-center justify-between px-6 lg:px-12 sticky top-0 z-50">
-    <meta property="og:site_name" content="Explyra" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:site" content="@explyras" />
-    <meta name="twitter:creator" content="@explyras" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <header class="v-header">
         <div class="flex items-center gap-3">
-            <div
-                class="w-10 h-10 bg-[var(--blue)] rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
-                <i class="fa-solid fa-clock"></i>
+            <div class="w-8 h-8 bg-black dark:bg-white rounded flex items-center justify-center">
+                <i class="fa-solid fa-bolt text-white dark:text-black text-sm"></i>
             </div>
-            <h1 class="text-xl font-bold tracking-tight text-[var(--ink)]">Attendance<span
-                    class="text-[var(--blue)]">Portal</span></h1>
+            <span class="font-bold text-lg tracking-tight">ATTENDANCE<span class="text-slate-400 font-medium">.OS</span></span>
         </div>
+        
         <div class="flex items-center gap-4">
-            <!-- Theme Pill (Matching Root) -->
-            <div class="theme-pill" id="themePill">
-                <span class="theme-pill-label" id="themeLabel">Light</span>
-                <div class="theme-pill-toggle"></div>
-            </div>
-
-            <a href="../index.html"
-                class="hidden sm:flex text-sm font-bold text-[var(--ink3)] hover:text-[var(--ink)] transition">Back
-                to Main</a>
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition" id="themePill">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-yellow-500"></i>
+            </button>
+            <a href="../index.html" class="text-sm font-medium text-[var(--v-accents-5)] hover:text-black dark:hover:text-white transition">Exit Portal</a>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <main class="flex-1 flex flex-col items-center p-6 text-center relative overflow-hidden" style="background: linear-gradient(rgba(248, 247, 244, 0.85), rgba(248, 247, 244, 0.98)), url('../assets/images/attendance_bg.png') center/cover no-repeat;">
-        <!-- Background Orbs (Matching Root Style) -->
-        <div
-            class="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--blue-g)] rounded-full blur-3xl pointer-events-none opacity-50">
-        </div>
-        <div
-            class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--teal-g)] rounded-full blur-3xl pointer-events-none opacity-50">
-        </div>
-
-        <div class="relative z-10 max-w-4xl mx-auto space-y-6 pt-12 pb-8">
-            <h2 class="text-5xl md:text-7xl font-black tracking-tight leading-tight text-[var(--ink)]">
-                Modern Attendance.<br>
-                <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--blue)] to-[var(--purp)]">Reimagined.</span>
-            </h2>
-            <p class="text-lg text-[var(--ink3)] max-w-2xl mx-auto leading-relaxed">
-                Effortless tracking for schools and businesses. Experience next-gen data isolation and role-based access
-                control, tailored to your organization's unique structure.
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col items-center justify-center px-6 py-20 max-w-6xl mx-auto w-full">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16 v-animate-fade-in">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-6">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> SYSTEM STATUS: OPERATIONAL
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+                Redefining <span class="text-blue-600">Attendance</span> Tracking.
+            </h1>
+            <p class="text-lg text-[var(--v-accents-5)] max-w-2xl mx-auto leading-relaxed">
+                Empower your organization with modern, SaaS-driven attendance management. High-performance dashboards for schools and businesses.
             </p>
-
-            <!-- Hero Illustration -->
-            <div class="mt-12 hero-image-animate">
-                <img src="../assets/images/attendance-hero.png" alt="Attendance Management Illustration"
-                    class="w-full max-w-2xl mx-auto rounded-3xl shadow-2xl border border-[var(--bdr)]">
-            </div>
         </div>
 
-        <!-- Modules Options -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mt-16 relative z-10 box-border">
-            <!-- Company Card -->
-            <div class="card-custom p-8 rounded-3xl border transition-all duration-300 group flex flex-col">
-                <div
-                    class="w-16 h-16 bg-[var(--blue-g)] rounded-2xl flex items-center justify-center text-[var(--blue)] text-3xl mb-6 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-building-user"></i>
+        <!-- Module Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+            
+            <!-- School Module -->
+            <div class="v-card flex flex-col group v-animate-fade-in" style="animation-delay: 0.1s">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-school-flag text-xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-3 text-[var(--ink)]">Corporate Workspace</h3>
-                <p class="text-[var(--ink3)] text-sm mb-8">
-                    Optimize your workforce. Track punches with Geo-Fencing, automate payroll with incentive
-                    calculations, and manage leave requests in one unified portal.
+                <h2 class="text-2xl font-bold mb-3">Education Center</h2>
+                <p class="text-[var(--v-accents-5)] text-sm mb-8 leading-relaxed">
+                    A specialized module for schools and colleges. Manage student rolls, teacher assignments, and academic attendance analytics.
                 </p>
-                <div class="flex flex-col gap-3 mt-auto">
-                    <a href="company/login.html"
-                        class="w-full block bg-[var(--blue)] hover:brightness-110 text-white font-bold py-3 px-6 rounded-xl transition shadow-md text-center">
-                        Company Login <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </a>
-                    <a href="company/register.html"
-                        class="w-full block border border-[var(--bdr2)] text-[var(--ink2)] hover:bg-[var(--bg3)] font-bold py-3 px-6 rounded-xl transition text-center">
-                        Register New Company
-                    </a>
+                <div class="mt-auto flex flex-col sm:flex-row gap-3">
+                    <a href="school/login.html" class="v-btn-primary flex-1 text-center">School Access</a>
+                    <a href="school/register.html" class="v-btn-secondary flex-1 text-center">New Setup</a>
                 </div>
             </div>
 
-            <!-- School Card -->
-            <div class="card-custom p-8 rounded-3xl border transition-all duration-300 group flex flex-col">
-                <div
-                    class="w-16 h-16 bg-[var(--purp-g)] rounded-2xl flex items-center justify-center text-[var(--purp)] text-3xl mb-6 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-school"></i>
+            <!-- Company Module -->
+            <div class="v-card flex flex-col group v-animate-fade-in" style="animation-delay: 0.2s">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-building-user text-xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-3 text-[var(--ink)]">Education Workspace</h3>
-                <p class="text-[var(--ink3)] text-sm mb-8">
-                    Smart classrooms demand smart tracking. Class-wise rolls, parent notification alerts, and automated
-                    holiday adjustments for accurate academic reporting.
+                <h2 class="text-2xl font-bold mb-3">Corporate Workspace</h2>
+                <p class="text-[var(--v-accents-5)] text-sm mb-8 leading-relaxed">
+                    Built for modern teams. Real-time employee check-ins, shift patterns, payroll-linked attendance, and HR insights.
                 </p>
-                <div class="flex flex-col gap-3 mt-auto">
-                    <a href="school/login.html"
-                        class="w-full block bg-[var(--purp)] hover:brightness-110 text-white font-bold py-3 px-6 rounded-xl transition shadow-md text-center">
-                        School Login <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </a>
-                    <a href="school/register.html"
-                        class="w-full block border border-[var(--bdr2)] text-[var(--ink2)] hover:bg-[var(--bg3)] font-bold py-3 px-6 rounded-xl transition text-center">
-                        Register New School
-                    </a>
+                <div class="mt-auto flex flex-col sm:flex-row gap-3">
+                    <a href="company/login.html" class="v-btn-primary flex-1 text-center">Company Login</a>
+                    <a href="company/register.html" class="v-btn-secondary flex-1 text-center">Register Firm</a>
                 </div>
+            </div>
+
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 w-full v-animate-fade-in" style="animation-delay: 0.3s">
+            <div class="text-center p-4">
+                <i class="fa-solid fa-shield-halved text-[var(--v-accents-5)] mb-3 text-lg"></i>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Bank Grade Security</h3>
+            </div>
+            <div class="text-center p-4">
+                <i class="fa-solid fa-bolt-lightning text-[var(--v-accents-5)] mb-3 text-lg"></i>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Instant Syncing</h3>
+            </div>
+            <div class="text-center p-4">
+                <i class="fa-solid fa-chart-simple text-[var(--v-accents-5)] mb-3 text-lg"></i>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Deep Analytics</h3>
+            </div>
+            <div class="text-center p-4">
+                <i class="fa-solid fa-mobile-screen-button text-[var(--v-accents-5)] mb-3 text-lg"></i>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Native PWA Support</h3>
             </div>
         </div>
 
-        <!-- Analytics & Features Section -->
-        <div class="mt-32 max-w-6xl w-full text-left relative z-10 px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h4 class="text-sm font-bold text-[var(--blue)] uppercase tracking-widest mb-4">Powerful Insights
-                    </h4>
-                    <h2 class="text-4xl font-bold mb-6 text-[var(--ink)]">Make Data-Driven Decisions with Rich Analytics
-                    </h2>
-                    <p class="text-[var(--ink2)] mb-8 leading-relaxed">
-                        Explyra Attendance isn't just a list of names. It's a powerful analytics engine that helps you
-                        understand trends, monitor punctuality, and optimize resource allocation in real-time.
-                    </p>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3">
-                            <span
-                                class="w-6 h-6 rounded-full bg-[var(--teal-g)] flex items-center justify-center text-[var(--teal)]">
-                                <i class="fa-solid fa-check text-xs"></i>
-                            </span>
-                            <span class="text-sm font-medium text-[var(--ink2)]">Automatic Salary Generation based on
-                                presence.</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span
-                                class="w-6 h-6 rounded-full bg-[var(--blue-g)] flex items-center justify-center text-[var(--blue)]">
-                                <i class="fa-solid fa-check text-xs"></i>
-                            </span>
-                            <span class="text-sm font-medium text-[var(--ink2)]">Class-wise and Employee-wise
-                                Performance Reports.</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <span
-                                class="w-6 h-6 rounded-full bg-[var(--purp-g)] flex items-center justify-center text-[var(--purp)]">
-                                <i class="fa-solid fa-check text-xs"></i>
-                            </span>
-                            <span class="text-sm font-medium text-[var(--ink2)]">Customizable Leave Policies & Holiday
-                                Calendars.</span>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <img src="../assets/images/attendance-analytics.png" alt="Analytics View"
-                        class="rounded-3xl shadow-xl border border-[var(--bdr)]">
-                </div>
-            </div>
-        </div>
-
-        <!-- System Features Highlight -->
-        <div class="mt-32 mb-24 w-full max-w-6xl relative z-10 text-left">
-            <h4 class="text-sm font-bold text-[var(--ink4)] uppercase tracking-widest text-center mb-10">Why Explyra
-                Attendance?</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <!-- Features -->
-                <div
-                    class="p-6 bg-[var(--bg2)] rounded-3xl border border-[var(--bdr)] flex flex-col gap-4 shadow-sm hover:shadow-md transition">
-                    <i class="fa-solid fa-user-check text-[var(--teal)] text-2xl"></i>
-                    <div>
-                        <p class="font-bold text-[var(--ink)]">Real-time Verification</p>
-                        <p class="text-sm text-[var(--ink3)] mt-1">Instant updates across all dashboards as soon as a
-                            punch is recorded.</p>
-                    </div>
-                </div>
-                <div
-                    class="p-6 bg-[var(--bg2)] rounded-3xl border border-[var(--bdr)] flex flex-col gap-4 shadow-sm hover:shadow-md transition">
-                    <i class="fa-solid fa-shield-halved text-[var(--rose)] text-2xl"></i>
-                    <div>
-                        <p class="font-bold text-[var(--ink)]">Privacy First</p>
-                        <p class="text-sm text-[var(--ink3)] mt-1">Dedicated databases for Schools and Companies ensure
-                            zero data leaks.</p>
-                    </div>
-                </div>
-                <div
-                    class="p-6 bg-[var(--bg2)] rounded-3xl border border-[var(--bdr)] flex flex-col gap-4 shadow-sm hover:shadow-md transition">
-                    <i class="fa-solid fa-file-export text-[var(--amber)] text-2xl"></i>
-                    <div>
-                        <p class="font-bold text-[var(--ink)]">Bulk Exports</p>
-                        <p class="text-sm text-[var(--ink3)] mt-1">Export attendance logs to Excel or CSV for external
-                            accounting & audits.</p>
-                    </div>
-                </div>
-                <div
-                    class="p-6 bg-[var(--bg2)] rounded-3xl border border-[var(--bdr)] flex flex-col gap-4 shadow-sm hover:shadow-md transition">
-                    <i class="fa-solid fa-tower-broadcast text-[var(--blue)] text-2xl"></i>
-                    <div>
-                        <p class="font-bold text-[var(--ink)]">Cloud Sync</p>
-                        <p class="text-sm text-[var(--ink3)] mt-1">Access your data from anywhere, on any device. Fully
-                            responsive UI.</p>
-                    </div>
-                </div>
-                <div
-                    class="p-6 bg-[var(--bg2)] rounded-3xl border border-[var(--bdr)] flex flex-col gap-4 shadow-sm hover:shadow-md transition">
-                    <i class="fa-solid fa-id-card text-[var(--purp)] text-2xl"></i>
-                    <div>
-                        <p class="font-bold text-[var(--ink)]">Role Based Access</p>
-                        <p class="text-sm text-[var(--ink3)] mt-1">Different views for Principals, Teachers, HRs, and
-                            Employees.</p>
-                    </div>
-                </div>
-                <div
-                    class="p-6 bg-[var(--bg2)] rounded-3xl border border-[var(--bdr)] flex flex-col gap-4 shadow-sm hover:shadow-md transition">
-                    <i class="fa-solid fa-bolt text-[var(--blue2)] text-2xl"></i>
-                    <div>
-                        <p class="font-bold text-[var(--ink)]">Fast & Lightweight</p>
-                        <p class="text-sm text-[var(--ink3)] mt-1">Built with modern JS and Firebase for ultra-low
-                            latency & reliability.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 
     <!-- Footer -->
-    <footer class="p-8 text-center text-[var(--ink4)] text-sm border-t border-[var(--bdr)]">
-        &copy; 2026 Explyra. All rights reserved. Built for modern productivity.
+    <footer class="p-12 text-center text-[var(--v-accents-4)] text-[10px] font-bold uppercase tracking-[0.2em] border-t border-[var(--v-border)]">
+        © 2026 Explyra Attendance Ecosystem — Part of the Explyra SaaS Suite
     </footer>
 
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+    </script>
 </body>
 
 </html>
