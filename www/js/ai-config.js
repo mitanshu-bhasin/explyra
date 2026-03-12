@@ -14,6 +14,7 @@ window.resolveGroqKey = window.resolveGroqKey || baseResolveGroqKey;
 const resolveGroqKey = window.resolveGroqKey;
 
 const AI_CONFIG = {
+    // Use includeConfig=false to avoid circular reference while initializing AI_CONFIG itself
     apiKey: baseResolveGroqKey(false),
     url: 'https://api.groq.com/openai/v1/chat/completions',
     model: ''
