@@ -181,14 +181,20 @@ window.submitExpense = async () => {
     const title = document.getElementById('report-title').value.trim();
     const projectCode = document.getElementById('project-code').value.trim();
     const currency = document.getElementById('currency').value;
-    const preApproved = document.getElementById('pre-approved').checked;
+    const preApproved = document.getElementById('pre-approved')?.checked || false;
     const proofUrlFile = document.getElementById('approval-proof-final-url')?.value.trim() || '';
-    const proofUrlText = document.getElementById('approval-proof-url').value.trim();
+    const proofUrlText = document.getElementById('approval-proof-url')?.value.trim() || '';
     const proofUrl = proofUrlFile || proofUrlText;
-    const notes = document.getElementById('expense-notes').value.trim();
-    const claimType = document.getElementById('claim-type').value;
+    const notes = document.getElementById('expense-notes')?.value.trim() || '';
+    const claimType = document.getElementById('claim-type')?.value || 'EXPENSE';
 
     if (!title) return window.showToast("Enter title.", "error");
+
+    if (preApproved && !proofUrl) {
+        window.showToast("Please provide approval proof (upload or link) for pre-approved activity.", "warning");
+        document.getElementById('approval-proof-url')?.focus();
+        return;
+    }
 
     const items = [];
     let total = 0;
@@ -263,10 +269,8 @@ window.toggleMode = (mode) => {
 
     const btnNew = document.getElementById('btn-new-expense');
     const btnReq = document.getElementById('btn-request-item');
-    const textNew = document.getElementById('text-new-expense');
-    const subNew = document.getElementById('sub-new-expense');
-    const textReq = document.getElementById('text-request-item');
-    const subReq = document.getElementById('sub-request-item');
+    const iconNew = btnNew ? btnNew.querySelector('i') : null;
+    const textNew = btnNew ? btnNew.querySelector('span') : null;
 
     const secClaims = document.getElementById('section-claims');
     const secTasks = document.getElementById('section-tasks');
@@ -278,9 +282,13 @@ window.toggleMode = (mode) => {
     if (mode === 'personal') {
         // Hide company-only UI
         if (statsContainer) statsContainer.classList.add('hidden');
-        if (tabsContainer) tabsContainer.classList.add('hidden');
+        if (tabsContainer) tabsContainer.classList.remove('hidden'); // Ensure tabs are visible for Personal
         if (vaultHeader) vaultHeader.classList.remove('hidden');
         if (personalAnalysis) personalAnalysis.classList.remove('hidden');
+
+        // Show Accounts tab only in personal
+        const btnF = document.getElementById('btn-view-financials');
+        if (btnF) btnF.classList.remove('hidden');
 
         // Force Claims view (where the list resides) and hide Tasks
         if (secClaims) secClaims.classList.remove('hidden');
@@ -295,44 +303,46 @@ window.toggleMode = (mode) => {
 
         // Change button labels for personal mode
         if (textNew) textNew.textContent = "Vault Entry";
-        if (subNew) subNew.textContent = "Add Personal Expense";
+        if (iconNew) iconNew.className = "fa-solid fa-vault text-xs group-hover:scale-110 transition-transform";
 
         // Change New Expense button onclick to open personal vault modal
-        if (btnNew) btnNew.setAttribute('onclick', "createPersonalVaultEntry()");
+        if (btnNew) btnNew.setAttribute('onclick', "openModal('modal-personal-create')");
 
         if (window.fetchPersonalVault) window.fetchPersonalVault();
     } else {
-        // Show company UI
+        // Show company-only UI
         if (statsContainer) statsContainer.classList.remove('hidden');
         if (tabsContainer) tabsContainer.classList.remove('hidden');
         if (vaultHeader) vaultHeader.classList.add('hidden');
         if (personalAnalysis) personalAnalysis.classList.add('hidden');
 
-        // Default back to Claims view for Company mode
+        // Hide Accounts tab
+        const btnF = document.getElementById('btn-view-financials');
+        if (btnF) btnF.classList.add('hidden');
+
+        // Restore default views
         if (secClaims) secClaims.classList.remove('hidden');
         if (secTasks) secTasks.classList.add('hidden');
 
-        // Restore both buttons
+        // Restore Action Buttons
         if (btnNew && btnReq) {
             btnNew.parentElement.classList.remove('grid-cols-1');
             btnNew.parentElement.classList.add('grid-cols-2');
             btnReq.classList.remove('hidden');
         }
 
-        // Reset Tabs Look
-        const btnClaims = document.getElementById('btn-view-claims');
-        const btnTasks = document.getElementById('btn-view-tasks');
-        if (btnClaims && btnTasks) {
-            btnClaims.classList.add('border-green-500', 'bg-white');
-            btnTasks.classList.remove('border-green-500', 'bg-white');
-            btnTasks.classList.add('border-transparent');
-        }
+        // Reset text
+        if (textNew) textNew.textContent = "New Claim";
+        if (iconNew) iconNew.className = "fa-solid fa-plus text-xs group-hover:scale-110 transition-transform";
 
-        // Reset Creation Button labels
-        if (textNew) textNew.textContent = "New Expense";
-        if (subNew) subNew.textContent = "Upload Receipt";
-        if (textReq) textReq.textContent = "Request Item";
-        if (subReq) subReq.textContent = "Software / Hardware";
+        // Reset onclick
+        if (btnNew) btnNew.setAttribute('onclick', "openCreateModal('EXPENSE')");
+
+        // Reset Tabs to Claims view
+        if (window.toggleEmpView) window.toggleEmpView('claims');
+
+        // Reset Creation Button label
+        if (textNew) textNew.textContent = "New Claim";
 
         // Reset New Expense button onclick to open company expense modal
         if (btnNew) btnNew.setAttribute('onclick', "openCreateModal('EXPENSE')");
@@ -508,7 +518,9 @@ window.handleProofUpload = async (input) => {
     const file = input.files[0];
     if (!file) return;
     const hidden = document.getElementById('approval-proof-final-url');
+    const urlInput = document.getElementById('approval-proof-url');
     const label = document.getElementById('proof-upload-label');
+    const removeBtn = document.getElementById('btn-remove-proof');
     const orig = label.innerHTML;
     label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
     try {
@@ -519,7 +531,9 @@ window.handleProofUpload = async (input) => {
         const data = await res.json();
         if (data && data.data && data.data.url) {
             hidden.value = data.data.url;
+            if (urlInput) urlInput.value = ''; // Clear manual link if file is uploaded
             label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Attached';
+            if (removeBtn) removeBtn.classList.remove('hidden');
         } else { throw new Error("Upload failed"); }
     } catch (e) {
         label.innerHTML = orig;
@@ -529,9 +543,13 @@ window.handleProofUpload = async (input) => {
 
 window.removeProof = () => {
     const hidden = document.getElementById('approval-proof-final-url');
+    const urlInput = document.getElementById('approval-proof-url');
     const label = document.getElementById('proof-upload-label');
+    const removeBtn = document.getElementById('btn-remove-proof');
     if (hidden) hidden.value = '';
-    if (label) label.innerHTML = '<i class="fa-solid fa-file-arrow-up"></i> Upload Proof';
+    if (urlInput) urlInput.value = '';
+    if (label) label.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket text-gray-400"></i><div class="flex-1"><span class="block text-[10px] font-bold text-black dark:text-white uppercase">Upload Proof</span><span class="block text-[9px] text-gray-500">PDF, JPG or PNG (Max 5MB)</span></div>';
+    if (removeBtn) removeBtn.classList.add('hidden');
 };
 
 window.loadProjects = async () => {
@@ -692,3 +710,14 @@ window.createExpenseFromAI = async (data) => {
     if (window.calculateTotal) window.calculateTotal();
     window.showToast('AI prepared your expense claim.', 'info');
 };
+
+// Initialization for Pre-Approved toggle
+document.addEventListener('change', (e) => {
+    if (e.target.id === 'pre-approved') {
+        const container = document.getElementById('pre-approved-proof-container');
+        if (container) {
+            if (e.target.checked) container.classList.remove('hidden');
+            else container.classList.add('hidden');
+        }
+    }
+});

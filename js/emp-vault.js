@@ -230,3 +230,136 @@ window.deletePersonalExpense = async (id) => {
         }
     }
 };
+// Financial Accounts Logic
+window.financialUnsub = null;
+window.financialData = [];
+
+window.openFinancialAccountModal = () => {
+    document.getElementById('modal-financial-create').classList.remove('hidden');
+    document.getElementById('fa-name').value = '';
+    document.getElementById('fa-details').value = '';
+    document.getElementById('fa-balance').value = '';
+    document.getElementById('fa-type').value = 'Bank Account';
+};
+
+window.fetchFinancialAccounts = () => {
+    if (!window.currentUser || !window.userData) return;
+
+    if (window.financialUnsub) {
+        window.financialUnsub();
+        window.financialUnsub = null;
+    }
+
+    const list = document.getElementById('financial-accounts-list');
+    if (list) list.innerHTML = '<div class="col-span-full text-center text-slate-400 py-10"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading accounts...</div>';
+
+    const db = window.db;
+    const q = query(
+        collection(db, "financial_accounts"),
+        where("uid", "==", window.currentUser.uid)
+    );
+
+    window.financialUnsub = onSnapshot(q, (snapshot) => {
+        window.financialData = [];
+        if (snapshot.empty) {
+            window.renderFinancialAccounts([]);
+            return;
+        }
+
+        snapshot.forEach(docSnap => {
+            window.financialData.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        window.renderFinancialAccounts(window.financialData);
+    });
+};
+
+window.submitFinancialAccount = async (e) => {
+    if (e) e.preventDefault();
+    const btn = document.getElementById('btn-fa-submit');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...'; btn.disabled = true; }
+
+    try {
+        const type = document.getElementById('fa-type').value;
+        const name = document.getElementById('fa-name').value.trim();
+        const details = document.getElementById('fa-details').value.trim();
+        const balance = parseFloat(document.getElementById('fa-balance').value) || 0;
+
+        if (!name || !details) throw new Error('Fill all fields.');
+
+        await addDoc(collection(window.db, "financial_accounts"), {
+            type, name, details, balance,
+            uid: window.currentUser.uid,
+            createdAt: serverTimestamp()
+        });
+
+        window.showToast("Account added successfully!", "success");
+        window.closeModal('modal-financial-create');
+    } catch (err) {
+        window.showToast(err.message, "error");
+    } finally {
+        if (btn) { btn.innerHTML = origHtml; btn.disabled = false; }
+    }
+};
+
+window.renderFinancialAccounts = (accounts) => {
+    const list = document.getElementById('financial-accounts-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (accounts.length === 0) {
+        list.innerHTML = `<div class="col-span-full text-center py-20 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+            <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <i class="fa-solid fa-building-columns text-slate-300"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">No accounts added</p>
+            <p class="text-[10px] text-slate-400 mt-1 px-4">Securely track your personal bank balance and UPI accounts here.</p>
+        </div>`;
+        return;
+    }
+
+    accounts.forEach(acc => {
+        const typeIcon = acc.type?.includes('UPI') ? 'fa-credit-card' : 'fa-building-columns';
+        const color = acc.type?.includes('UPI') ? 'text-blue-500' : 'text-slate-700 dark:text-slate-300';
+
+        const div = document.createElement('div');
+        div.className = 'vercel-card p-5 group flex flex-col justify-between hover:border-black dark:hover:border-white transition-all cursor-default relative overflow-hidden';
+        div.innerHTML = `
+            <div class="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition">
+                <button onclick="window.deleteFinancialAccount('${acc.id}')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+            </div>
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-gray-50 dark:bg-[#111] border border-[#eaeaea] dark:border-[#333] flex items-center justify-center">
+                         <i class="fa-solid ${typeIcon} ${color} text-sm"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h4 class="text-xs font-black uppercase tracking-widest truncate">${acc.name}</h4>
+                        <p class="text-[10px] text-slate-500 font-mono truncate">${acc.details}</p>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Current Balance</p>
+                    <p class="text-xl font-black text-black dark:text-white">₹${(acc.balance || 0).toLocaleString()}</p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-[#eaeaea] dark:border-[#333] flex justify-between items-center">
+                 <span class="text-[9px] font-bold text-slate-400 uppercase">${acc.type}</span>
+                 <i class="fa-solid fa-shield-halved text-gray-200 dark:text-gray-800 text-[10px]"></i>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+};
+
+window.deleteFinancialAccount = async (id) => {
+    if (await window.showInputPromise("Remove Account", "Are you sure you want to remove this account from your vault?", "", "none")) {
+        try {
+            await deleteDoc(doc(window.db, "financial_accounts", id));
+            window.showToast("Account removed", "success");
+        } catch (e) {
+            window.showToast("Error: " + e.message, "error");
+        }
+    }
+};

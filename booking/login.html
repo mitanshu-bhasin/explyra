@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
     <meta property="og:site_name" content="Explyra" />
@@ -9,140 +9,31 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Registration — Booking Suite</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <title>Login & Registration — Booking Suite | Explyra</title>
+
+    <!-- Theme FOUC prevention -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="booking.css">
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 2rem;
-            background: radial-gradient(circle at top left, var(--blue-g), transparent 40%),
-                radial-gradient(circle at bottom right, rgba(167, 139, 250, 0.05), transparent 40%);
-        }
-
-        .auth-container {
-            width: 100%;
-            max-width: 480px;
-        }
-
-        .auth-card {
-            padding: 3rem;
-            text-align: center;
-        }
-
-        .auth-logo {
-            width: 64px;
-            height: 64px;
-            background: var(--blue);
-            color: #fff;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            margin: 0 auto 2rem;
-            box-shadow: 0 10px 30px var(--blue-b);
-        }
-
-        .auth-tabs {
-            display: flex;
-            background: var(--bg3);
-            padding: 4px;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 0.8rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .auth-tab.active {
-            background: var(--surf);
-            color: var(--blue);
-            box-shadow: var(--s2);
-        }
-
-        .auth-form {
-            display: none;
-            text-align: left;
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .toast {
-            padding: 1rem 1.5rem;
-            background: var(--surf);
-            border-left: 5px solid var(--blue);
-            border-radius: 8px;
-            box-shadow: var(--s3);
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-    </style>
 </head>
 
-<body>
+<body class="auth-page">
 
     <div class="auth-container">
-        <div class="card auth-card">
+        <div class="vercel-card auth-card">
             <div class="auth-logo">
                 <i class="fa-solid fa-calendar-check"></i>
             </div>
 
-            <h2 id="form-title" style="font-family: 'Playfair Display', serif; margin-bottom: 0.5rem;">Welcome to
-                Booking</h2>
-            <p id="form-desc" style="color: var(--ink3); font-weight: 300; margin-bottom: 2rem;">Manage your schedule
-                effortlessly.</p>
+            <h2 id="form-title" class="auth-title">Welcome to Booking</h2>
+            <p id="form-desc" class="auth-desc">Manage your schedule effortlessly.</p>
 
             <div class="auth-tabs">
                 <div class="auth-tab active" onclick="switchTab('login')">Login</div>
@@ -159,7 +50,7 @@
                     <label class="form-label">Password</label>
                     <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <button type="submit" class="btn-primary btn-full btn-lg">
                     Sign In <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -180,24 +71,52 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" id="reg-password" class="form-input" placeholder="Minimum 6 characters"
-                        required>
+                    <input type="password" id="reg-password" class="form-input" placeholder="Minimum 6 characters" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <button type="submit" class="btn-primary btn-full btn-lg">
                     Create Account <i class="fa-solid fa-user-plus"></i>
                 </button>
             </form>
 
             <div id="debug-info"
-                style="margin-top: 2rem; padding: 1rem; background: #fee2e2; border: 1px solid #ef4444; border-radius: 8px; font-size: 0.75rem; text-align: left; color: #b91c1c; display: none;">
+                style="margin-top: 1.5rem; padding: 1rem; background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 8px; font-size: 0.75rem; text-align: left; color: var(--danger); display: none;">
                 <strong>Debug Info:</strong>
                 <pre id="debug-content" style="white-space: pre-wrap; margin-top: 0.5rem;"></pre>
             </div>
         </div>
+
+        <!-- Theme toggle for login page -->
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <div class="theme-pill" style="display: inline-flex;">
+                <button onclick="setTheme('light')" id="theme-light-btn" title="Light Mode">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <button onclick="setTheme('dark')" id="theme-dark-btn" title="Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div id="toast-container"></div>
+    <div class="toast-container" id="toast-container"></div>
 
+    <!-- Theme Script -->
+    <script>
+        function setTheme(theme) {
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            localStorage.setItem('explyra-theme', theme);
+            updateThemePill();
+        }
+        function updateThemePill() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            document.getElementById('theme-light-btn')?.classList.toggle('active-theme', theme === 'light');
+            document.getElementById('theme-dark-btn')?.classList.toggle('active-theme', theme === 'dark');
+        }
+        updateThemePill();
+    </script>
+
+    <!-- Auth Logic (PRESERVED) -->
     <script type="module">
         import { auth, db } from './booking.js';
         import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -224,21 +143,16 @@
         const showToast = (msg, isError = false) => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'toast';
-            if (isError) toast.style.borderLeftColor = '#ef4444';
+            toast.className = 'toast ' + (isError ? 'error' : 'success');
             toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i> ${msg}`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 4000);
         };
 
         // --- Auth Logic ---
-
-        // Handle initial auth state check (automatic redirect for already logged-in users)
         let isRedirecting = false;
         auth.onAuthStateChanged(user => {
             if (user && !isRedirecting) {
-                // We only auto-redirect if the user is visiting login.html directly
-                // and NOT currently in the middle of a registration/login submission
                 if (window.location.pathname.includes('login.html') && !sessionStorage.getItem('auth_in_progress')) {
                     window.location.href = 'dashboard.html';
                 }
@@ -256,12 +170,10 @@
             const username = document.getElementById('reg-username').value.toLowerCase().trim().replace(/[^a-z0-9-]/g, '');
 
             if (username.length < 3) return showToast("Username must be at least 3 characters", true);
-
             if (password.length < 6) return showToast("Password must be at least 6 characters", true);
 
             try {
                 showToast("Checking username...", false);
-                // Check if username is taken
                 const q = query(collection(db, "booking_profiles"), where("username", "==", username));
                 const snap = await getDocs(q);
                 if (!snap.empty) return showToast("Username is already taken", true);
@@ -271,7 +183,6 @@
                 const user = userCred.user;
 
                 showToast("Setting up profile...", false);
-                // Create profile
                 await setDoc(doc(db, "booking_profiles", user.uid), {
                     displayName: name,
                     username: username,
@@ -281,7 +192,7 @@
                         start: '09:00',
                         end: '17:00'
                     },
-                    meetingDuration: 30, // minutes
+                    meetingDuration: 30,
                     createdAt: new Date().toISOString()
                 });
 

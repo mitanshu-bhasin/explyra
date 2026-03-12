@@ -11,6 +11,9 @@ window.openProfileModal = () => {
     document.getElementById('profile-empid').value = userData.employeeId || '';
     document.getElementById('profile-phone').value = userData.phone || '';
     document.getElementById('profile-dob').value = userData.dob || '';
+    if (document.getElementById('profile-photo-url')) {
+        document.getElementById('profile-photo-url').value = userData.photoUrl || '';
+    }
     document.getElementById('modal-profile').classList.remove('hidden');
 };
 
@@ -24,18 +27,35 @@ window.submitProfile = async (e) => {
     try {
         const name = document.getElementById('profile-name').value;
         const phone = document.getElementById('profile-phone').value;
-        const dob = document.getElementById('profile-dob').value;
+        const photoUrl = document.getElementById('profile-photo-url')?.value || '';
 
         await updateDoc(doc(window.db, "users", window.userData.docId), {
-            name, phone, dob, updatedAt: serverTimestamp()
+            name, phone, photoUrl, updatedAt: serverTimestamp()
         });
 
         window.userData.name = name;
         window.userData.phone = phone;
-        window.userData.dob = dob;
+        window.userData.photoUrl = photoUrl;
 
+        // Update UI
         const nameD = document.getElementById('user-name-display');
         if (nameD) nameD.textContent = name;
+        
+        const sidebarName = document.getElementById('sidebar-user-name');
+        if (sidebarName) sidebarName.textContent = name;
+
+        // Update Avatars
+        const avatars = ['header-profile-avatar', 'sidebar-user-avatar'];
+        avatars.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (photoUrl) {
+                el.innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover ${id.includes('sidebar') ? 'rounded-full' : ''}">`;
+            } else {
+                const first = name.charAt(0).toUpperCase();
+                el.innerHTML = `<span class="text-xs font-bold ${id.includes('header') ? 'text-gray-400' : ''}">${first}</span>`;
+            }
+        });
 
         window.showToast("Profile updated successfully!", "success");
         window.closeModal('modal-profile');

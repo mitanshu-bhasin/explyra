@@ -19,6 +19,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Pricing — Explyra Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -810,7 +811,14 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            border: 1px solid var(--purp-b)
+            border: 1px solid var(--purp-b);
+            overflow: hidden;
+        }
+
+        .t-av img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .t-info {
@@ -953,7 +961,8 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--blue) 8%, transparent) 0%, transparent 70%)
+            background: radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--blue) 8%, transparent) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .cta-h {
@@ -983,6 +992,11 @@
         /* ═══════════════════════════════════════════
    FOOTER (Mirrored from index)
 ═══════════════════════════════════════════ */
+        .cta-banner .reveal {
+            position: relative;
+            z-index: 10;
+        }
+
         footer {
             background: var(--ink);
             padding: 2.2rem 5vw;
@@ -1152,11 +1166,37 @@
             }
 
             .testi-grid {
-                grid-template-columns: 1fr
+                grid-template-columns: repeat(2, 1fr)
             }
         }
 
         @media(max-width:768px) {
+            .testi-grid {
+                display: flex;
+                overflow-x: auto;
+                gap: 1.5rem;
+                padding: 1rem 1.25rem 2.5rem;
+                margin: 0 -1.25rem;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .testi-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .t-card {
+                flex: 0 0 320px;
+                scroll-snap-align: center;
+                transition: transform 0.3s ease;
+            }
+
+            .t-card:active {
+                transform: scale(0.98);
+            }
+
             .nav-links {
                 display: none
             }
@@ -1345,6 +1385,46 @@
             color: var(--blue);
             background: var(--blue-g);
             transform: translateY(-2px);
+        }
+        /* ═══════════════════════════════════════════
+   CUSTOM NOTIFICATION (TOAST)
+═══════════════════════════════════════════ */
+        .ex-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: rgba(21, 70, 192, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .ex-toast.visible {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: all;
+        }
+
+        .ex-toast i {
+            font-size: 1.2rem;
+            color: #89b4fa;
+        }
+
+        [data-theme="dark"] .ex-toast {
+            background: rgba(14, 18, 32, 0.95);
+            border: 1px solid rgba(91, 138, 245, 0.2);
         }
     </style>
 
@@ -1696,7 +1776,9 @@
                 <p class="t-text">"Explyra completely changed how our team manages resources. Integrating expenses with
                     AI tools in one dashboard saves us hours every week."</p>
                 <div class="t-auth">
-                    <div class="t-av">R</div>
+                    <div class="t-av">
+                        <img src="assets/images/rohan_gupta.png" alt="Rohan Gupta" loading="lazy">
+                    </div>
                     <div class="t-info"><span class="t-name">Rohan Gupta</span><span class="t-role">CTO, TechNova</span>
                     </div>
                 </div>
@@ -1706,7 +1788,8 @@
                 <p class="t-text">"Switching to the Growth plan was a no-brainer. The unlimited AI requests and learning
                     modules supercharged our developers perfectly."</p>
                 <div class="t-auth">
-                    <div class="t-av" style="background:var(--teal-g);color:var(--teal);border-color:var(--teal-b)">S
+                    <div class="t-av">
+                        <img src="assets/images/sarah_jenkins.png" alt="Sarah Jenkins" loading="lazy">
                     </div>
                     <div class="t-info"><span class="t-name">Sarah Jenkins</span><span class="t-role">Operations
                             Manager</span></div>
@@ -1717,7 +1800,8 @@
                 <p class="t-text">"Pristine UI and unmatched functionality. We moved from three separate SaaS tools into
                     just one Explyra instance. Couldn't be happier."</p>
                 <div class="t-auth">
-                    <div class="t-av" style="background:var(--amber-g);color:var(--amber);border-color:var(--amber-b)">A
+                    <div class="t-av">
+                        <img src="assets/images/ankit_desai.png" alt="Ankit Desai" loading="lazy">
                     </div>
                     <div class="t-info"><span class="t-name">Ankit Desai</span><span class="t-role">Founder,
                             Nexus</span></div>
@@ -1776,7 +1860,7 @@
             <h2 class="cta-h">Start managing your company<br><em>smarter with Explyra</em></h2>
             <div style="display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;margin-top:2rem">
                 <a href="admin.html" class="btn-hero btn-hero-primary">Start Free Trial</a>
-                <a href="mailto:mfskufgu@gmail.com" class="btn-hero btn-hero-sec">Book Demo</a>
+                <a href="mailto:mfskufgu@gmail.com" class="btn-hero btn-hero-sec coming-soon-trigger">Book Demo</a>
             </div>
         </div>
     </section>
@@ -1910,6 +1994,12 @@
         </div>
     </footer>
 
+    <!-- NEW NOTIFICATION TOAST -->
+    <div id="exToast" class="ex-toast">
+        <i class="fa-solid fa-sparkles"></i>
+        <span>Coming Soon! Booking system is on its way.</span>
+    </div>
+
     <script>
         /* THEME */
         const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
@@ -2000,6 +2090,25 @@
 
             closeBuyModal();
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+        });
+
+        /* COMING SOON TOAST LOGIC */
+        const toast = document.getElementById('exToast');
+        let toastTimeout;
+
+        function showComingSoon() {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toast.classList.add('visible');
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+
+        document.querySelectorAll('.coming-soon-trigger').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                showComingSoon();
+            });
         });
     </script>
 

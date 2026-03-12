@@ -55,7 +55,7 @@
     }
     </script>
 
-    <title>Admin - Explyra Expense | Explyra</title>
+    <title>Dashboard | Explyra</title>
     <script>
         (function () {
             const theme = localStorage.getItem('explyra-theme') || 'light';
@@ -78,17 +78,12 @@
                 extend: {
                     fontFamily: {
                         sans: ['Outfit', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif']
                     },
                     colors: {
                         brand: {
                             50: '#F8F7F4',
                             100: '#F1EFE9',
-                            500: '#1546C0',
-                            600: '#1546C0',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a'
+                            500: '#0070f3',
                         }
                     }
                 }
@@ -96,14 +91,250 @@
         };
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="/js/theme.js"></script>
     <script src="/js/utils.js" defer></script>
     <script src="/js/admin-logic.js" defer></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #eaeaea;
+            --accent-color: #000000;
+            --card-bg: #ffffff;
+            --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --sidebar-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --radius-md: 12px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dark {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: #1a1a1a;
+            --accent-color: #ffffff;
+            --card-bg: #0a0a0a;
+            --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            --sidebar-bg: #000000;
+            --header-bg: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Custom Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+            border: 2px solid var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Chatbot Theme Override */
+        #chatbot-toggle-btn {
+            background: var(--accent-color) !important;
+            color: var(--bg-primary) !important;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .vercel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .vercel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: var(--text-secondary);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.875rem;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .sidebar-item:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .header-glass {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .btn-vercel-primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .btn-vercel-primary:hover {
+            opacity: 0.85;
+            transform: scale(0.98);
+        }
+
+        .btn-vercel-secondary {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .btn-vercel-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+
+        .input-vercel:focus {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 1px var(--text-primary);
+        }
+
+        /* Specialized Sections */
+        .welcome-banner {
+            background: linear-gradient(to right, #111, #333);
+            color: #fff;
+            border-radius: var(--radius-md);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark .welcome-banner {
+            background: linear-gradient(to right, #000, #111);
+            border: 1px solid #333;
+        }
+
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 40%;
+            background: linear-gradient(to left, rgba(255,255,255,0.05), transparent);
+        }
+
+        /* Mobile Sidebar Logic */
+        @media (max-width: 1024px) {
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+            .sidebar-visible {
+                transform: translateX(0);
+            }
+        }
+        .input-vercel {
+            width: 100%;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-vercel:focus {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 2px var(--border-color);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #0070f3, #00dfd8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            border: 1px solid currentColor;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
     <script>
         // ImageKit Config (WARNING: Client-side usage with private key is NOT recommended for production)
         const IMAGEKIT_URL = "https://upload.imagekit.io/api/v1/files/upload"; // Standard upload endpoint
@@ -151,103 +382,84 @@
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
 
     <!-- User Modal -->
-    <div id="user-modal"
-        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-soft transition-enterprise scale-95 opacity-0 max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
-            id="user-modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100" id="user-modal-title">Add New User</h3>
-                <button onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
-                        class="fa-solid fa-times"></i></button>
+    <div id="user-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
+        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in" id="user-modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold" id="user-modal-title">Add User</h3>
+                <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i class="fa-solid fa-times"></i></button>
             </div>
             <form id="user-form" class="space-y-4">
                 <input type="hidden" id="user-doc-id">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Full Name
-                        <span class="text-red-500">*</span></label>
-                    <input type="text" id="user-name" class="input-primary" required>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="user-name" class="input-vercel h-10" required>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Email <span
-                            class="text-red-500">*</span></label>
-                    <input type="email" id="user-email" class="input-primary" required>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email <span class="text-red-500">*</span></label>
+                    <input type="email" id="user-email" class="input-vercel h-10" required>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Role <span
-                            class="text-red-500">*</span></label>
-                    <select id="user-role" class="input-primary">
-                        <option value="EMPLOYEE">Employee</option>
-                        <option value="MANAGER">Manager</option>
-                        <option value="SENIOR_MANAGER">Senior Manager</option>
-                        <option value="TREASURY">Treasury</option>
-                        <option value="ADMIN">Admin</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">MR Role (Manufacturing) <span
-                            class="text-blue-500">*</span></label>
-                    <select id="user-mr-role" class="input-primary">
-                        <option value="">None (No Access)</option>
-                        <option value="admin">Production Admin</option>
-                        <option value="manager">Floor Manager</option>
-                        <option value="operations">Operations Staff</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Manager ID
-                        (Optional)</label>
-                    <input type="text" id="user-manager-id" class="input-primary"
-                        placeholder="Employee's manager document ID">
-                </div>
-                <!-- New Fields -->
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Phone</label>
-                        <input type="tel" id="user-phone" class="input-primary" placeholder="+91 9999999999">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Role <span class="text-red-500">*</span></label>
+                        <select id="user-role" class="input-vercel h-10" required>
+                            <option value="EMPLOYEE">Employee</option>
+                            <option value="MANAGER">Manager</option>
+                            <option value="SENIOR_MANAGER">Senior Manager</option>
+                            <option value="TREASURY">Treasury</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">DOB
-                            (Optional)</label>
-                        <input type="date" id="user-dob" class="input-primary">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">MR Role</label>
+                        <select id="user-mr-role" class="input-vercel h-10">
+                            <option value="">None</option>
+                            <option value="admin">Prod Admin</option>
+                            <option value="manager">Floor Manager</option>
+                            <option value="operations">Operations</option>
+                        </select>
                     </div>
                 </div>
-                <!-- End New Fields -->
-                <div>
-                    <label
-                        class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Department</label>
-                    <input type="text" id="user-department" class="input-primary" placeholder="e.g. Engineering, Sales">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</label>
+                        <input type="tel" id="user-phone" class="input-vercel h-10" placeholder="+91 9999999999">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">DOB</label>
+                        <input type="date" id="user-dob" class="input-vercel h-10">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Employee
-                        ID</label>
-                    <input type="text" id="user-employee-id" class="input-primary" placeholder="EMP-2024-001">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
+                        <input type="text" id="user-department" class="input-vercel h-10" placeholder="e.g. Sales">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee ID</label>
+                        <input type="text" id="user-employee-id" class="input-vercel h-10" placeholder="EMP-001">
+                    </div>
                 </div>
-                <!-- Main Admin Only: Profile Pic -->
-                <div id="user-profile-pic-container" class="hidden">
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Profile
-                        Picture URL <span class="text-green-500 text-[10px]">(Main Admin Only)</span></label>
-                    <input type="url" id="user-profile-pic" class="input-primary"
-                        placeholder="https://i.postimg.cc/...">
-                    <p class="text-[10px] text-slate-400 mt-1">Paste a direct image link.</p>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manager ID</label>
+                    <input type="text" id="user-manager-id" class="input-vercel h-10" placeholder="Manager Document ID">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Monthly
-                        Budget Limit (₹)</label>
-                    <input type="number" id="user-budget-limit" class="input-primary"
-                        placeholder="Leave empty for unlimited">
-                    <p class="text-[10px] text-slate-400 mt-1">If set, user cannot exceed this amount in monthly claims.
-                    </p>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Budget Limit (₹)</label>
+                    <input type="number" id="user-budget-limit" class="input-vercel h-10" placeholder="Leave empty for unlimited">
                 </div>
-                <div class="flex gap-3 pt-4">
-                    <button type="button" onclick="closeUserModal()" class="flex-1 ghost-btn">Cancel</button>
-                    <button type="submit"
-                        class="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 rounded-lg text-sm font-semibold transition shadow-md shadow-green-200 dark:shadow-none">Save
-                        User</button>
+                <div id="user-profile-pic-container" class="space-y-1 hidden">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profile Pic URL <span class="text-green-500">(Admin)</span></label>
+                    <input type="url" id="user-profile-pic" class="input-vercel h-10" placeholder="https://i.postimg.cc/...">
+                </div>
+                
+                <div class="pt-6 flex gap-3">
+                    <button type="button" onclick="closeUserModal()" class="btn-vercel-secondary flex-1">Cancel</button>
+                    <button type="submit" class="btn-vercel-primary flex-1">Save User</button>
                 </div>
             </form>
         </div>
     </div>
+
 
     <!-- Project Modal -->
     <div id="project-modal"
@@ -535,157 +747,72 @@
     </div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full h-full flex flex-col relative overflow-y-auto overflow-x-hidden">
-        <!-- Card Container - Uses flex-1 to push footer down -->
-        <div
-            class="w-full flex-1 flex flex-col items-center justify-center p-4 py-8 md:py-16 relative z-10 transition-all duration-500">
-            <!-- Glassmorphism Card -->
-            <div class="glass-enterprise shadow-soft transition-enterprise w-full max-w-md p-6 sm:p-8 rounded-2xl">
-                <div class="text-center mb-8">
-                    <div id="login-logo-container"
-                        class="w-20 h-20 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30 overflow-hidden animate-float">
-                        <img id="login-logo-img" class="w-full h-full object-contain hidden"
-                            src="assets/images/explyra_logo.png" alt="Company Logo">
-                        <i id="login-logo-fallback" class="fa-solid fa-seedling text-3xl text-white drop-shadow-md"></i>
+    <div id="auth-screen" class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black">
+        <div class="w-full flex-1 flex flex-col items-center justify-center p-6 relative z-10">
+            <div class="vercel-card w-full max-w-sm !p-8 animate-fade-in shadow-2xl">
+                <div class="text-center mb-10">
+                    <div class="w-12 h-12 bg-black dark:bg-white rounded-lg flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-bolt text-white dark:text-black"></i>
                     </div>
-                    <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-2"
-                        id="login-company-name">Explyra <span class="gradient-text">Portal</span>
-                    </h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-[0.2em] font-bold">
-                        Authorized Personnel Only
-                    </p>
+                    <h1 class="text-2xl font-bold tracking-tight mb-2">Login to Explyra</h1>
+                    <p class="text-sm text-slate-500">Enter your credentials to access the dashboard</p>
                 </div>
 
-                <form id="login-form" class="space-y-5">
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 ml-1">Admin
-                            ID</label>
-                        <div class="relative">
-                            <i class="fa-regular fa-envelope absolute left-3.5 top-3 text-slate-400"></i>
-                            <input type="email" id="login-email" class="input-primary !pl-10"
-                                placeholder="admin@company.com" autocomplete="username" required>
-                        </div>
+                <form id="login-form" class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</label>
+                        <input type="email" id="login-email" class="input-vercel h-10" placeholder="admin@explyra.me" required>
                     </div>
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 ml-1">Password</label>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Password</label>
                         <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400"></i>
-                            <input type="password" id="login-password" class="input-primary !pl-10 pr-10"
-                                placeholder="••••••••" autocomplete="current-password" required>
-                            <button type="button" onclick="toggleLoginPassword()"
-                                class="absolute right-3 top-2.5 text-slate-400 hover:text-green-600 transition">
+                            <input type="password" id="login-password" class="input-vercel h-10 pr-10" placeholder="••••••••" required>
+                            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
                                 <i class="fa-regular fa-eye" id="login-eye-icon"></i>
                             </button>
                         </div>
-                        <div class="text-right mt-1">
-                            <button type="button" onclick="forgotPassword()"
-                                class="text-xs text-green-600 hover:text-brand-800 font-semibold hover:underline">Forgot
-                                Password?</button>
-                        </div>
                     </div>
-                    <button type="submit" id="login-btn"
-                        class="w-full btn-primary py-3 text-base shadow-xl shadow-green-500/30 bg-gradient-to-r from-green-700 to-green-700 hover:from-green-600 hover:to-green-600 border border-green-400/30 relative overflow-hidden group">
-                        <span class="relative z-10 flex items-center justify-center gap-2">Secure Login <i
-                                class="fa-solid fa-shield-halved"></i></span>
-                        <div
-                            class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                        </div>
+                    <button type="submit" id="login-btn" class="btn-vercel-primary w-full h-10 mt-2">
+                        Continue
                     </button>
+                    <div class="text-center">
+                        <button type="button" onclick="forgotPassword()" class="text-xs text-slate-500 hover:text-black font-medium">Forgot password?</button>
+                    </div>
                 </form>
 
-                <!-- Signup Form (Hidden by default) -->
-                <form id="signup-form" class="space-y-4 hidden" onsubmit="handleAccountActivation(event)">
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 ml-1">Admin
-                            Email</label>
-                        <div class="relative">
-                            <i class="fa-regular fa-envelope absolute left-3.5 top-3 text-slate-400"></i>
-                            <input type="email" id="signup-email" class="input-primary !pl-10"
-                                placeholder="admin@company.com" autocomplete="username" required>
-                        </div>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 ml-1">Create
-                            Password</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400"></i>
-                            <input type="password" id="signup-password" class="input-primary !pl-10 pr-10"
-                                placeholder="••••••••" autocomplete="new-password" required>
-                        </div>
-                    </div>
-                    <button type="submit" id="signup-btn"
-                        class="w-full btn-primary py-3 bg-gradient-to-r from-green-600 to-green-600 hover:from-green-500 hover:to-teal-500 border-green-400/30 text-white font-bold py-2.5 px-4 rounded-lg transition-all shadow-md shadow-green-200 dark:shadow-none py-3 rounded-lg transition shadow-lg transform hover:translate-y-[-1px]">
-                        <span class="relative z-10 flex items-center justify-center gap-2">Activate Account <i
-                                class="fa-solid fa-check-circle"></i></span>
-                    </button>
-                </form>
-
-                <div id="google-signin-container" class="mt-8">
-                    <button type="button" onclick="handleGoogleLogin()"
-                        class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-                            alt="Google">
+                <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+                    <button type="button" onclick="handleGoogleLogin()" class="btn-vercel-secondary w-full h-10 flex items-center justify-center gap-2">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" alt="Google">
                         Sign in with Google
                     </button>
                 </div>
 
-                <div class="mt-6 text-center border-t border-slate-100 dark:border-slate-800 pt-6">
-                    <div id="login-footer" class="space-y-4">
-                        <p class="text-[10px] text-slate-400 max-w-xs mx-auto leading-relaxed">
-                            <i class="fa-solid fa-circle-info mr-1 text-green-500"></i> New Admin?
-                        </p>
-                        <button onclick="toggleAuthMode('signup')"
-                            class="block w-full text-center text-xs text-green-600 hover:text-brand-800 font-bold hover:underline transition-colors py-2">Activate
-                            Account</button>
-                    </div>
-                    <div id="signup-footer" class="hidden space-y-4">
-                        <p class="text-[10px] text-slate-400 mb-2">Account active?</p>
-                        <button onclick="toggleAuthMode('login')"
-                            class="block w-full text-center text-xs text-green-600 hover:text-brand-800 font-bold hover:underline transition-colors py-2">Back
-                            to
-                            Login</button>
-                    </div>
+                <div class="mt-6 text-center text-xs text-slate-500">
+                    Don't have an account? <button onclick="toggleAuthMode('signup')" class="text-black dark:text-white font-semibold hover:underline">Activate</button>
                 </div>
-                <div
-                    class="flex justify-between mt-3 text-xs w-full pt-4 border-t border-slate-50 dark:border-slate-800 mb-4">
-                    <a href="index.html" onclick="localStorage.removeItem('explyra_portal_preference')"
-                        class="text-slate-400 hover:text-green-600 transition">Back to Website</a>
-                    <a href="emp.html"
-                        class="text-green-600 hover:text-brand-800 font-bold transition flex items-center gap-1">
-                        <i class="fa-solid fa-user-tie"></i> Login as Employee
-                    </a>
-                </div>
-                <div class="text-center w-full border-t border-slate-50 dark:border-slate-800">
-                    <a href="company.html"
-                        class="block w-full text-center text-xs text-green-600 hover:text-brand-800 font-bold hover:underline transition-colors mt-4">
-                        <i class="fa-solid fa-building mr-1"></i> Register New Company
-                    </a>
+            </div>
+            
+            <div class="mt-12 flex flex-col items-center gap-6 opacity-60">
+                <div class="flex items-center gap-4 grayscale group hover:grayscale-0 transition duration-500">
+                    <img src="assets/images/explyra_logo.png" class="h-4 w-auto" alt="Logo">
+                    <div class="h-4 w-[1px] bg-slate-300 dark:bg-slate-800"></div>
+                    <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Secure Portal</span>
                 </div>
             </div>
         </div>
 
         <!-- Extended Footer Section -->
-        <div
-            class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 animate-float delay-300 flex flex-col items-center gap-4 relative z-20">
+        <div class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
             <!-- Qualys SSL Labs A+ Certification Badge -->
-            <div
-                class="flex items-center gap-3 px-4 py-2 bg-slate-200/50 dark:bg-slate-800/80 backdrop-blur-md rounded-xl border border-slate-300/40 dark:border-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all group cursor-default shadow-sm transform hover:scale-105">
-                <img src="images%20(1).png" alt="Qualys SSL Labs A+ Logo"
-                    class="h-5 w-auto opacity-70 group-hover:opacity-100 transition-opacity">
-                <div class="flex flex-col text-left">
-                    <span
-                        class="text-[7px] font-extrabold text-slate-500 uppercase tracking-[0.2em] leading-none">Security
-                        Certified</span>
-                    <span class="text-[9px] font-bold text-slate-700 dark:text-slate-200">Qualys SSL Labs A+</span>
+            <div class="flex items-center gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group cursor-default shadow-sm transform hover:-translate-y-px">
+                <img src="images%20(1).png" alt="Qualys SSL Labs A+" class="h-4 w-auto opacity-50 group-hover:opacity-100 transition-opacity">
+                <div class="flex flex-col text-left border-l border-slate-200 dark:border-slate-800 pl-3">
+                    <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200">Qualys SSL Labs A+</span>
                 </div>
             </div>
 
             <!-- Footer Component -->
-            <div id="component-footer"></div>
+            <div id="component-footer" class="w-full"></div>
         </div>
     </div>
 
@@ -696,44 +823,173 @@
     </div>
 
     <!-- Dashboard Screen -->
-    <div id="dashboard-screen" class="hidden flex-1 flex h-screen bg-slate-50 dark:bg-slate-900">
+    <div id="dashboard-screen" class="hidden flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="w-64 bg-white dark:bg-black border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 z-30 lg:translate-x-0 -translate-x-full fixed lg:static inset-y-0 left-0">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 bg-black dark:bg-white rounded flex items-center justify-center">
+                        <i class="fa-solid fa-bolt text-white dark:text-black text-xs"></i>
+                    </div>
+                    <span class="font-bold text-sm tracking-tight">EXPLYRA</span>
+                </div>
+                <!-- Mobile Close Button -->
+                <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-        <!-- Sidebar Component -->
-        <div id="component-admin-sidebar" style="display:contents"></div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">Main</div>
+                <button onclick="switchTab('overview')" class="sidebar-item w-full active" data-tab="overview">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </button>
+                <button onclick="switchTab('approvals')" id="nav-approvals" class="sidebar-item w-full" data-tab="approvals">
+                    <i class="fa-solid fa-stamp"></i> Approvals
+                </button>
+                <button onclick="switchTab('my-claims')" class="sidebar-item w-full" data-tab="my-claims">
+                    <i class="fa-solid fa-receipt"></i> My Claims
+                </button>
+                <button onclick="switchTab('tasks')" id="nav-tasks" class="sidebar-item w-full hidden" data-tab="tasks">
+                    <i class="fa-solid fa-list-check"></i> Task Manager
+                </button>
+
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Administration</div>
+                <button onclick="switchTab('users')" id="nav-users" class="sidebar-item w-full hidden" data-tab="users">
+                    <i class="fa-solid fa-users"></i> User Mgmt
+                </button>
+                <button onclick="switchTab('roles')" id="nav-roles" class="sidebar-item w-full hidden" data-tab="roles">
+                    <i class="fa-solid fa-user-shield"></i> Role Mgmt
+                </button>
+                <button onclick="switchTab('projects')" id="nav-projects" class="sidebar-item w-full hidden" data-tab="projects">
+                    <i class="fa-solid fa-folder-tree"></i> Projects
+                </button>
+                <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden" data-tab="workflow">
+                    <i class="fa-solid fa-route"></i> Workflow
+                </button>
+
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics</div>
+                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden" data-tab="reports">
+                    <i class="fa-solid fa-chart-line"></i> Reports
+                </button>
+                <button onclick="switchTab('audit')" id="nav-audit" class="sidebar-item w-full hidden" data-tab="audit">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Audit Logs
+                </button>
+
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Tools & System</div>
+                <button onclick="window.location.href='crm/index.html'" id="nav-crm" class="sidebar-item w-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10">
+                    <i class="fa-solid fa-layer-group"></i> CRM
+                </button>
+                <button onclick="window.location.href='Ino software/ino.html'" id="nav-invoices" class="sidebar-item w-full hidden" data-tab="invoices">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Invoices
+                </button>
+                <button onclick="switchTab('chat')" id="nav-chat" class="sidebar-item w-full" data-tab="chat">
+                    <i class="fa-solid fa-comments"></i> Chat
+                </button>
+                <button onclick="switchTab('settings')" id="nav-settings" class="sidebar-item w-full hidden" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i> Settings
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition mb-2 cursor-pointer" onclick="openAccountCenter()">
+                    <div id="sidebar-user-avatar" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs border border-slate-300 dark:border-slate-700 overflow-hidden">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-xs font-bold truncate" id="current-user-name">Loading...</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-medium" id="current-user-role">ADMIN</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="sidebar-item w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
+                    <i class="fa-solid fa-power-off"></i> Logout
+                </button>
+            </div>
+        </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col min-w-0">
-            <header
-                class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10 shadow-sm/50">
+        <main class="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-[#0a0a0a]">
+            <!-- Top Header -->
+            <header class="h-16 header-glass flex items-center justify-between px-6 sticky top-0 z-20">
                 <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()"
-                        class="lg:hidden text-slate-500 dark:text-slate-400 hover:text-green-600 transition">
-                        <i class="fa-solid fa-bars text-xl"></i>
+                    <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black">
+                        <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h2 id="page-title" class="text-lg font-bold text-slate-800 dark:text-slate-100">Dashboard</h2>
+                    <h2 id="page-title" class="text-sm font-semibold">Dashboard</h2>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <button onclick="window.location.href='crm/index.html'"
-                        class="flex px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg text-xs font-bold items-center gap-2 transition-all shadow-md shadow-blue-500/20 border border-blue-500/50">
-                        <i class="fa-solid fa-layer-group"></i> <span class="hidden sm:inline">Launch CRM</span>
-                    </button>
-
-                    <div
-                        class="hidden md:flex px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> SYSTEM LIVE
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden sm:block">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" placeholder="Search..." class="input-vercel pl-9 h-8 w-64 bg-slate-100 dark:bg-slate-900 border-none">
                     </div>
 
-                    <button onclick="toggleTheme()"
-                        class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center border border-slate-200 dark:border-slate-600">
+                    <button onclick="openNotifList()" class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="header-notif-dot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
+                    </button>
+
+                    <button onclick="toggleTheme()" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
                         <i class="fa-solid fa-moon theme-toggle-icon"></i>
+                    </button>
+                    
+                    <button onclick="openAccountCenter()" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
+                        <img id="header-avatar-img" src="assets/images/explyra_logo.png" class="w-full h-full object-cover" alt="Profile">
                     </button>
                 </div>
             </header>
 
-            <div id="content-area" class="flex-1 overflow-y-auto p-4 md:p-8 relative">
+            <div id="content-area" class="flex-1 overflow-y-auto p-6 animate-fade-in">
+                <!-- Content will be injected here -->
             </div>
         </main>
+    <!-- Extended Modals for Notifications -->
+    <!-- Notification List Modal -->
+    <div id="modal-notif-list" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('modal-notif-list')"></div>
+        <div id="modal-notif-list-content" class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-bell text-yellow-500"></i> Notifications
+                </h3>
+                <button onclick="closeModal('modal-notif-list')" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-slate-400"></i>
+                </button>
+            </div>
+            <div id="notif-list-container" class="overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50 flex-1 min-h-[300px]">
+                <div class="text-center py-10 opacity-50"><i class="fa-solid fa-circle-notch fa-spin text-2xl"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification PDP Modal -->
+    <div id="modal-notif-pdp" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onclick="closeModal('modal-notif-pdp')"></div>
+        <div id="modal-notif-pdp-content" class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                        <i class="fa-solid fa-envelope-open text-xl"></i>
+                    </div>
+                    <button onclick="closeModal('modal-notif-pdp')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition">
+                        <i class="fa-solid fa-xmark text-slate-400"></i>
+                    </button>
+                </div>
+                <h4 id="pdp-notif-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Notification Title</h4>
+                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+                    <span id="pdp-notif-sender">Admin</span>
+                    <span>•</span>
+                    <span id="pdp-notif-date">Date</span>
+                </div>
+                <div id="pdp-notif-body" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 mb-6 min-h-[100px] whitespace-pre-wrap">
+                    Notification body goes here...
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="closeModal('modal-notif-pdp')" class="px-8 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition">Close Preview</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 
     <!-- Expense Modal -->
@@ -1234,8 +1490,7 @@
     <script>
         // Load components after DOM is ready
         document.addEventListener("DOMContentLoaded", () => {
-            loadComponent("component-admin-sidebar", "components/admin-sidebar.html");
-            loadComponent("component-admin-navbar", "components/admin-navbar.html");
+            // Sidebar and Navbar are now embedded in admin.html for better redesign control
             loadComponent("component-footer", "components/footer.html");
         });
     </script>

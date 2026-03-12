@@ -22,6 +22,12 @@
     <link rel="stylesheet" href="../shared/shared.css">
     <link rel="stylesheet" href="company.css">
 
+    <!-- Firebase SDKs (Compat version as used in main app) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/firebase-config.js" defer></script>
+
     <!-- Logic -->
     <script src="../shared/utils.js"></script>
     <script src="../shared/auth.js"></script>
@@ -119,7 +125,7 @@
                 </div>
             </div>
 
-            <button type="submit"
+            <button type="submit" id="reg-btn"
                 class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-green-600/30 flex items-center justify-center gap-2 mt-4 text-sm tracking-wide">
                 <span>Complete Registration</span>
                 <i class="fa-solid fa-arrow-right"></i>

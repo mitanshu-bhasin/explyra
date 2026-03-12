@@ -42,6 +42,8 @@ window.CrmPipeline = {
             if (window.CrmAnalytics && typeof window.CrmAnalytics.updateData === 'function') {
                 window.CrmAnalytics.updateData(this.deals);
             }
+            // Update dashboard stats
+            if (window.updateDashboardStats) window.updateDashboardStats();
         }, (error) => {
             console.error("[CRM Pipeline] Error fetching deals:", error);
         });
@@ -53,31 +55,30 @@ window.CrmPipeline = {
 
         let html = '';
         this.stages.forEach(stage => {
-            // specific colors for stages
-            let headerColor = 'text-blue-500';
-            if (stage === 'Closed-Won') headerColor = 'text-green-500';
-            if (stage === 'Closed-Lost') headerColor = 'text-red-500';
+            let headerColor = 'var(--text-secondary)';
+            if (stage === 'Closed-Won') headerColor = '#10b981';
+            if (stage === 'Closed-Lost') headerColor = '#ef4444';
+            if (stage === 'Proposal') headerColor = '#3b82f6';
+            if (stage === 'Negotiation') headerColor = '#f59e0b';
 
             html += `
-                <div class="kanban-column bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50" 
+                <div class="kanban-column" 
                      data-stage="${stage}"
                      ondrop="window.CrmPipeline.drop(event)" 
                      ondragover="window.CrmPipeline.allowDrop(event)"
                      ondragenter="window.CrmPipeline.dragEnter(event)"
                      ondragleave="window.CrmPipeline.dragLeave(event)">
                      
-                    <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700/50 flex justify-between items-center glass sticky top-0 z-10 rounded-t-16px" style="border-radius: 16px 16px 0 0;">
-                        <h3 class="font-bold uppercase tracking-wider text-xs ${headerColor}">${stage}</h3>
-                        <span class="text-xs font-bold bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full text-slate-500 shadow-sm" id="count-${stage}">0</span>
+                    <div class="px-4 py-3 flex justify-between items-center sticky top-0 z-10" style="border-bottom: 1px solid var(--border-color); border-radius: 12px 12px 0 0; background: var(--bg-secondary);">
+                        <h3 class="font-bold uppercase tracking-wider text-[11px]" style="color: ${headerColor};">${stage}</h3>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" id="count-${stage}" style="background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--border-color);">0</span>
                     </div>
                     
-                    <!-- Kanban Items Container -->
-                    <div class="flex-1 p-3 flex flex-col gap-3 overflow-y-auto custom-scrollbar" id="col-${stage}">
-                        <!-- Cards injected here -->
+                    <div class="flex-1 p-2.5 flex flex-col gap-2 overflow-y-auto" id="col-${stage}">
                     </div>
                     
-                    <div class="p-3 border-t border-slate-200 dark:border-slate-700/50">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right" id="val-${stage}">₹0</p>
+                    <div class="p-2.5" style="border-top: 1px solid var(--border-color);">
+                        <p class="text-[10px] font-bold text-right font-mono" id="val-${stage}" style="color: var(--text-secondary);">₹0</p>
                     </div>
                 </div>
             `;
@@ -122,7 +123,7 @@ window.CrmPipeline = {
             grouped[stage].forEach(deal => {
                 const card = document.createElement('div');
                 card.id = `deal-${deal.id}`;
-                card.className = "kanban-card bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm text-sm";
+                card.className = "kanban-card text-sm";
                 card.draggable = true;
 
                 // Event listeners for drag
@@ -134,19 +135,18 @@ window.CrmPipeline = {
                     if (window.openDealModal) window.openDealModal(deal);
                 });
 
-                // Color coding based on probability or amount
-                let probColor = 'text-blue-500';
-                if (deal.probability >= 80) probColor = 'text-green-500';
-                if (deal.stage === 'Closed-Lost') probColor = 'text-red-500';
+                let probColor = 'var(--text-secondary)';
+                if (deal.probability >= 80) probColor = '#10b981';
+                if (deal.stage === 'Closed-Lost') probColor = '#ef4444';
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 truncate pr-2 pointer-events-none">${deal.name}</h4>
+                        <h4 class="font-bold truncate pr-2 pointer-events-none" style="color: var(--text-primary); font-size: 0.8rem;">${deal.name}</h4>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 block pointer-events-none"><i class="fa-solid fa-building mr-1"></i> ${deal.contact}</p>
-                    <div class="flex justify-between items-center pointer-events-none border-t border-slate-100 dark:border-slate-700 pt-2 mt-2">
-                        <span class="font-mono font-bold text-slate-700 dark:text-slate-200">₹${(deal.amount || 0).toLocaleString()}</span>
-                        <span class="text-[10px] font-bold ${probColor} bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-700">${deal.probability || 0}%</span>
+                    <p class="text-xs mb-3 block pointer-events-none" style="color: var(--text-secondary);"><i class="fa-solid fa-building mr-1"></i> ${deal.contact}</p>
+                    <div class="flex justify-between items-center pointer-events-none pt-2 mt-2" style="border-top: 1px solid var(--border-color);">
+                        <span class="font-mono font-bold text-xs" style="color: var(--text-primary);">₹${(deal.amount || 0).toLocaleString()}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded" style="color: ${probColor}; background: var(--bg-secondary); border: 1px solid var(--border-color);">${deal.probability || 0}%</span>
                     </div>
                 `;
 

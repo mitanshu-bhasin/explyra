@@ -9,20 +9,27 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Dashboard - Explyra</title>
-    <!-- Tailwind & Icons -->
+    <title>Company Dashboard | Attendance.OS</title>
+    
+    <!-- Tailwind & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../../css/common.css">
-    <link rel="stylesheet" href="company.css">
-
-    <!-- Firebase SDKs (Compat version as used in main app) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- SaaS UI Styles -->
+    <link rel="stylesheet" href="../shared/saas-ui.css">
+    
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        .v-sidebar-item.active {
+            background: var(--v-accents-2);
+            color: var(--v-foreground);
+            font-weight: 600;
+        }
+        .v-sidebar-item i { width: 24px; text-align: center; margin-right: 12px; }
+    </style>
+    
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -32,10 +39,8 @@
     <script src="../shared/utils.js"></script>
     <script src="../shared/auth.js"></script>
     <script>
-        // Dashboard specific logic
         document.addEventListener('DOMContentLoaded', () => {
             initAuth('company');
-            // Will load stats after auth check finishes in auth.js
             setTimeout(loadDashboardStats, 300);
         });
 
@@ -68,10 +73,8 @@
                 sals = data.salaries[session.companyId] || {};
             }
 
-            // Total Employees
             document.getElementById('stat-total-emp').textContent = emps.length;
 
-            // Today's Attendance
             const todayStr = new Date().toISOString().split('T')[0];
             const todayAtt = att[todayStr] || {};
             let presentCount = 0;
@@ -83,12 +86,10 @@
             });
             document.getElementById('stat-present').textContent = presentCount;
 
-            // Attendance Percentage
             const pct = emps.length > 0 ? Math.round((presentCount / emps.length) * 100) : 0;
             document.getElementById('stat-att-pct').textContent = pct + '%';
 
-            // Salary Status (Current Month)
-            const monthStr = todayStr.substring(0, 7); // YYYY-MM
+            const monthStr = todayStr.substring(0, 7);
             const monthSals = sals[monthStr] || {};
             let paidAmount = 0;
             let pendingAmount = 0;
@@ -104,8 +105,8 @@
                 }
             });
 
-            document.getElementById('stat-paid').textContent = formatCurrency(paidAmount);
-            document.getElementById('stat-pending').textContent = formatCurrency(pendingAmount);
+            document.getElementById('stat-paid').textContent = '₹' + paidAmount.toLocaleString();
+            document.getElementById('stat-pending').textContent = '₹' + pendingAmount.toLocaleString();
         }
 
         function toggleTheme() {
@@ -118,176 +119,197 @@
                 localStorage.setItem('explyra-theme', 'dark');
             }
         }
-
-        // Initial theme check
-        if (localStorage.getItem('explyra-theme') === 'dark') {
-            document.documentElement.classList.add('dark');
-        }
+        
+        (function() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
     </script>
 </head>
 
-<body
-    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] h-screen overflow-hidden flex transition-colors duration-300">
+<body class="flex h-screen overflow-hidden">
 
     <!-- Sidebar -->
-    <aside
-        class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0 hidden md:flex">
-        <div class="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-700">
-            <i class="fa-solid fa-layer-group text-green-600 text-xl mr-3"></i>
-            <span class="font-bold text-lg tracking-tight">CM Workspace</span>
+    <aside class="v-sidebar shrink-0 hidden md:flex">
+        <div class="h-16 flex items-center px-6 border-b border-[var(--v-border)]">
+            <div class="w-7 h-7 bg-black dark:bg-white rounded flex items-center justify-center mr-3">
+                <i class="fa-solid fa-briefcase text-white dark:text-black text-[10px]"></i>
+            </div>
+            <span class="font-bold text-sm tracking-tight">CORP<span class="text-slate-400">.OPS</span></span>
         </div>
 
-        <div class="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/20">
-            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Active Company</p>
-            <p id="sidebar-company-name" class="font-bold text-slate-700 dark:text-slate-200 truncate">Loading...</p>
+        <div class="p-5">
+            <p class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Active Workspace</p>
+            <div class="flex items-center gap-3 p-2 rounded-lg bg-[var(--v-accents-1)] border border-[var(--v-border)]">
+                <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-xs" id="sidebar-company-initial">C</div>
+                <p id="sidebar-company-name" class="font-bold text-xs truncate">Loading Workspace...</p>
+            </div>
         </div>
 
-        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-            <a href="dashboard.html"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold transition">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
+        <nav class="flex-1 px-2 space-y-1">
+            <a href="dashboard.html" class="v-sidebar-item active">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
             </a>
-            <a href="employees.html"
-                class="hr-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-solid fa-users w-5 text-center"></i> Employees
+            <a href="employees.html" class="v-sidebar-item hr-auth">
+                <i class="fa-solid fa-users"></i> Employees
             </a>
-            <a href="attendance.html"
-                class="hr-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-regular fa-calendar-check w-5 text-center"></i> Attendance
+            <a href="attendance.html" class="v-sidebar-item hr-auth">
+                <i class="fa-regular fa-calendar-check"></i> Attendance
             </a>
-            <a href="salary.html"
-                class="admin-only flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition">
-                <i class="fa-solid fa-wallet w-5 text-center"></i> Salary & Bonus
+            <a href="salary.html" class="v-sidebar-item admin-only">
+                <i class="fa-solid fa-wallet"></i> Payroll & Bonus
             </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-200 dark:border-slate-700">
-            <div class="flex items-center gap-3 mb-4">
-                <div
-                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold">
+        <div class="p-4 border-t border-[var(--v-border)]">
+            <div class="flex items-center gap-3 mb-4 p-2">
+                <div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="overflow-hidden">
-                    <p id="sidebar-user-name" class="text-sm font-bold truncate">User</p>
-                    <p id="sidebar-user-role" class="text-[10px] font-bold uppercase text-slate-400 truncate">Role</p>
+                    <p id="sidebar-user-name" class="text-xs font-bold truncate">User</p>
+                    <p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-slate-400 truncate">Role</p>
                 </div>
             </div>
-            <button onclick="doLogout('company')"
-                class="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            <button onclick="doLogout('company')" class="w-full flex items-center justify-center gap-2 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-power-off"></i> Terminate Session
             </button>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <!-- Mobile Header -->
-        <header
-            class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shrink-0 z-10">
-    <meta property="og:site_name" content="Explyra" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:site" content="@explyras" />
-    <meta name="twitter:creator" content="@explyras" />
-    <meta name="twitter:card" content="summary_large_image" />
-            <div class="flex items-center gap-3">
-                <h1 class="text-lg font-bold">Dashboard</h1>
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <!-- Header -->
+        <header class="v-header shrink-0">
+            <div class="flex items-center gap-2">
+                <h1 class="text-sm font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Analytics Dashboard</h1>
             </div>
-            <div class="flex items-center gap-4">
-                <button onclick="toggleTheme()"
-                    class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
-                    <i class="fa-solid fa-moon dark:hidden"></i>
-                    <i class="fa-solid fa-sun hidden dark:block"></i>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="w-8 h-8 rounded-full border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition">
+                    <i class="fa-solid fa-moon dark:hidden text-xs"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-xs text-yellow-500"></i>
                 </button>
+                <div class="h-6 w-[1px] bg-[var(--v-border)] mx-1"></div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    <span class="text-[10px] font-bold text-green-700 dark:text-green-400">SECURE</span>
+                </div>
             </div>
         </header>
 
-        <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
-
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-8 h-screen pb-20">
+            
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold">Welcome back!</h2>
-                    <p class="text-slate-500 text-sm mt-1">Here is the overview for today.</p>
+                    <h2 class="text-3xl font-bold tracking-tight">Overview</h2>
+                    <p class="text-[var(--v-accents-5)] text-sm mt-1">Real-time indicators for your corporate workspace.</p>
                 </div>
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
                 <!-- Total Employees -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-                    <div
-                        class="absolute -right-6 -top-6 text-slate-50 dark:text-slate-800/50 text-7xl transition-transform group-hover:scale-110">
-                        <i class="fa-solid fa-users"></i>
+                <div class="v-card">
+                    <p class="v-stat-label">Total Personnel</p>
+                    <div class="flex items-baseline justify-between">
+                        <p class="v-stat-value" id="stat-total-emp">0</p>
+                        <i class="fa-solid fa-users text-[var(--v-accents-2)] text-2xl"></i>
                     </div>
-                    <div class="relative z-10">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Employees</p>
-                        <p class="text-4xl font-black text-slate-800 dark:text-white" id="stat-total-emp">0</p>
+                    <div class="mt-4 h-1 w-full bg-[var(--v-accents-1)] rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-600" style="width: 100%"></div>
                     </div>
                 </div>
 
                 <!-- Present Today -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-                    <div
-                        class="absolute -right-6 -top-6 text-green-50 dark:text-green-900/20 text-7xl transition-transform group-hover:scale-110">
-                        <i class="fa-solid fa-user-check"></i>
+                <div class="v-card">
+                    <p class="v-stat-label">Active Today</p>
+                    <div class="flex items-baseline justify-between">
+                        <p class="v-stat-value text-green-600" id="stat-present">0</p>
+                        <i class="fa-solid fa-user-check text-[var(--v-accents-2)] text-2xl"></i>
                     </div>
-                    <div class="relative z-10">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Present Today</p>
-                        <p class="text-4xl font-black text-green-600 dark:text-green-400" id="stat-present">0</p>
-                    </div>
-                </div>
-
-                <!-- Attendance % -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-                    <div
-                        class="absolute -right-6 -top-6 text-blue-50 dark:text-blue-900/20 text-7xl transition-transform group-hover:scale-110">
-                        <i class="fa-solid fa-percent"></i>
-                    </div>
-                    <div class="relative z-10">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Attendance Rate</p>
-                        <p class="text-4xl font-black text-blue-600 dark:text-blue-400" id="stat-att-pct">0%</p>
+                    <div class="mt-4 h-1 w-full bg-[var(--v-accents-1)] rounded-full overflow-hidden" id="stat-present-bar">
+                        <div class="h-full bg-green-500" style="width: 75%"></div>
                     </div>
                 </div>
 
-                <!-- Salaries Paid vs Pending -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group flex flex-col justify-center">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2"><i
-                            class="fa-solid fa-wallet mr-1"></i> Salary Status (Month)</p>
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-xs text-slate-500 mb-0.5">Paid</p>
-                            <p class="text-lg font-bold text-green-600 dark:text-green-400 font-mono" id="stat-paid">₹0
-                            </p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs text-slate-500 mb-0.5">Pending</p>
-                            <p class="text-lg font-bold text-amber-500 font-mono" id="stat-pending">₹0</p>
+                <!-- Rate -->
+                <div class="v-card">
+                    <p class="v-stat-label">Retention Rate</p>
+                    <div class="flex items-baseline justify-between">
+                        <p class="v-stat-value text-blue-600" id="stat-att-pct">0%</p>
+                        <i class="fa-solid fa-signal text-[var(--v-accents-2)] text-2xl"></i>
+                    </div>
+                    <div class="mt-4 flex gap-1">
+                        <div class="h-1 flex-1 bg-blue-600 rounded-full"></div>
+                        <div class="h-1 flex-1 bg-blue-600 rounded-full"></div>
+                        <div class="h-1 flex-1 bg-blue-600 rounded-full"></div>
+                        <div class="h-1 flex-1 bg-[var(--v-accents-2)] rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- Payroll Summary -->
+                <div class="v-card flex flex-col justify-between">
+                    <div>
+                        <p class="v-stat-label">Payroll (Current Month)</p>
+                        <div class="mt-3 flex gap-4">
+                            <div>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Disbursed</p>
+                                <p class="text-sm font-bold text-green-600" id="stat-paid">₹0</p>
+                            </div>
+                            <div class="w-[1px] h-full bg-[var(--v-border)]"></div>
+                            <div>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Pending</p>
+                                <p class="text-sm font-bold text-amber-500" id="stat-pending">₹0</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- System Info -->
-            <div
-                class="bg-gradient-to-r from-green-50 to-indigo-50 dark:from-slate-800/80 dark:to-slate-800 border border-green-100 dark:border-slate-700 rounded-2xl p-6 relative overflow-hidden">
-                <div class="absolute right-0 bottom-0 opacity-10 text-9xl -mr-10 -mb-10 text-green-500">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div class="relative z-10 md:w-2/3">
-                    <h3 class="text-lg font-bold mb-2 text-slate-800 dark:text-white">Workspace Isolated & Secure</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
-                        This module is strictly mapped to your Company ID. Data is logically isolated to ensure no
-                        cross-company leakage. Admin has full rights to manage salaries, while HR handles day-to-day
-                        employee and attendance management.
-                    </p>
-                    <div class="flex gap-2">
-                        <span class="badge bg-green-100 text-green-800 border-green-200">System Live</span>
-                        <span class="badge bg-blue-100 text-blue-800 border-blue-200">v1.0.0</span>
+            <!-- Dashboard Modules (Shortcuts) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="v-card !p-0 overflow-hidden group">
+                    <div class="p-6">
+                        <h3 class="font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-blue-600"></i> Attendance Ledger
+                        </h3>
+                        <p class="text-[var(--v-accents-5)] text-sm mt-1">Review and reconcile daily check-ins.</p>
                     </div>
+                    <div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition">
+                        <span class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Manage Register</span>
+                        <a href="attendance.html" class="v-btn-secondary px-3 py-1.5 text-xs">Open Ledger</a>
+                    </div>
+                </div>
+
+                <div class="v-card !p-0 overflow-hidden group">
+                    <div class="p-6">
+                        <h3 class="font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-user-group text-purple-600"></i> Employee Directory
+                        </h3>
+                        <p class="text-[var(--v-accents-5)] text-sm mt-1">Manage personnel records and access levels.</p>
+                    </div>
+                    <div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition">
+                        <span class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Directory Ops</span>
+                        <a href="employees.html" class="v-btn-secondary px-3 py-1.5 text-xs">Manage Base</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Security Notice -->
+            <div class="bg-[var(--v-accents-1)] border border-[var(--v-border)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-center">
+                <div class="w-16 h-16 rounded-full bg-white dark:bg-black flex items-center justify-center border border-[var(--v-border)] shrink-0 shadow-sm">
+                    <i class="fa-solid fa-shield-halved text-green-500 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg">Infrastructure Security</h3>
+                    <p class="text-[var(--v-accents-5)] text-sm mt-1 leading-relaxed">
+                        Your workspace is logically isolated. All data transactions are encrypted and mapped to your unique Company ID. Our zero-trust architecture ensures that your employee records and payroll data remain confidential.
+                    </p>
                 </div>
             </div>
 

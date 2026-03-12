@@ -64,13 +64,13 @@ function renderChatUserSearch(term, globalLastText = "Company wide chat", chatMe
     if (!list) return;
 
     list.innerHTML = `
-        <button onclick="window.selectChat('global')" class="w-full text-left p-3 hover:bg-white dark:hover:bg-slate-800 flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/50 transition relative">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-green-600 to-indigo-500 flex items-center justify-center text-white shrink-0 shadow-sm relative">
+        <button onclick="window.selectChat('global')" class="w-full text-left p-3 hover:bg-gray-50 dark:hover:bg-[#111] flex items-center gap-3 border-b border-[#eaeaea] dark:border-[#333] transition relative">
+            <div class="w-10 h-10 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shrink-0 relative">
                 <i class="fa-solid fa-users text-sm"></i>
                 <span id="global-unread-badge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full hidden"></span>
             </div>
             <div class="flex-1 min-w-0">
-                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100">Global Group</h4>
+                <h4 class="text-sm font-semibold tracking-tight text-black dark:text-white">Global Group</h4>
                 <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${globalLastText}</p>
             </div>
         </button>
@@ -85,19 +85,19 @@ function renderChatUserSearch(term, globalLastText = "Company wide chat", chatMe
 
         const btn = document.createElement('button');
         btn.onclick = () => window.selectChat(u.docId);
-        btn.className = "w-full text-left p-3 hover:bg-white dark:hover:bg-slate-800 flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/50 transition relative";
+        btn.className = "w-full text-left p-3 hover:bg-gray-50 dark:hover:bg-[#111] flex items-center gap-3 border-b border-[#eaeaea] dark:border-[#333] transition relative";
         btn.innerHTML = `
-            <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 font-bold flex items-center justify-center text-slate-600 dark:text-slate-200 shrink-0 shadow-sm overflow-hidden">
+            <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-[#333] font-bold flex items-center justify-center text-gray-600 dark:text-gray-200 shrink-0 overflow-hidden">
                 ${u.photoUrl ? `<img src="${u.photoUrl}" class="w-full h-full object-cover">` : initial}
             </div>
             <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-center mb-0.5">
-                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">${u.name || u.email}</h4>
-                    <span class="text-[9px] text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">${u.role || 'EMP'}</span>
+                    <h4 class="text-sm font-semibold tracking-tight text-black dark:text-white truncate pr-2">${u.name || u.email}</h4>
+                    <span class="text-[9px] text-gray-400 uppercase tracking-widest bg-gray-100 dark:bg-[#222] px-1.5 py-0.5 rounded">${u.role || 'EMP'}</span>
                 </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${lastMsg}</p>
+                <p class="text-[10px] text-gray-500 truncate">${lastMsg}</p>
             </div>
-            ${isUnread ? `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm animate-pulse"></span>` : ''}
+            ${isUnread ? `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-black dark:bg-white rounded-full"></span>` : ''}
         `;
         list.appendChild(btn);
     });
@@ -125,7 +125,7 @@ window.selectChat = (contextId) => {
         if (headerStatus) headerStatus.textContent = 'Company Chat';
         if (headerAvatar) {
             headerAvatar.innerHTML = '<i class="fa-solid fa-users text-sm"></i>';
-            headerAvatar.className = 'w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0 font-bold shadow-sm';
+            headerAvatar.className = 'w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shrink-0 font-bold';
         }
         if (callActions) callActions.classList.add('hidden');
         runChatListener('global_chat', null);
@@ -136,7 +136,7 @@ window.selectChat = (contextId) => {
             const initial = (window.currentChatUser.name || window.currentChatUser.email)[0].toUpperCase();
             if (window.currentChatUser.photoUrl) headerAvatar.innerHTML = `<img src="${window.currentChatUser.photoUrl}" class="w-full h-full object-cover">`;
             else headerAvatar.innerHTML = initial;
-            headerAvatar.className = 'w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 flex items-center justify-center shrink-0 font-bold shadow-sm overflow-hidden';
+            headerAvatar.className = 'w-8 h-8 rounded-full bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-gray-200 flex items-center justify-center shrink-0 font-bold overflow-hidden text-xs';
         }
         if (callActions) callActions.classList.remove('hidden');
 
@@ -199,19 +199,19 @@ function runChatListener(collectionName, subCollectionId) {
             div.innerHTML = `
                 <div class="flex items-end gap-2 max-w-[85%] ${isMe ? 'flex-row-reverse' : ''}">
                     ${!isMe ? (data.senderPhotoUrl ?
-                    `<img src="${data.senderPhotoUrl}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 shadow-sm border border-white dark:border-slate-800 mt-auto">` :
-                    `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 shadow-sm mt-auto border border-white dark:border-slate-800 uppercase">${(data.sender || data.email || '?')[0]}</div>`
+                    `<img src="${data.senderPhotoUrl}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 border border-white dark:border-[#111] mt-auto">` :
+                    `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-gray-200 mt-auto border border-white dark:border-[#111] uppercase">${(data.sender || data.email || '?')[0]}</div>`
                 ) : ''}
                     
-                    <div class="relative ${isMe ? 'bg-green-600 text-white font-medium shadow-md shadow-green-100' : 'bg-white dark:bg-slate-800 dark:text-slate-50 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-800'} p-3 rounded-2xl ${isMe ? 'rounded-br-none' : 'rounded-bl-none'} sm:text-sm text-xs relative overflow-hidden break-words">
-                        ${!isMe && subCollectionId === null && lastSenderId !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'text-brand-100' : 'text-slate-400 dark:text-slate-400'} mb-1">${data.sender || data.email}</p>` : ''}
+                    <div class="relative ${isMe ? 'bg-black dark:bg-white text-white dark:text-black font-medium' : 'bg-gray-100 dark:bg-[#111] dark:text-white border border-[#eaeaea] dark:border-[#333] text-black'} p-3 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} sm:text-sm text-xs relative overflow-hidden break-words">
+                        ${!isMe && subCollectionId === null && lastSenderId !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'dark:text-gray-800 text-gray-200' : 'text-gray-500'} mb-1">${data.sender || data.email}</p>` : ''}
                         <span class="leading-relaxed relative z-10 break-words">${data.text}</span>
                         <div class="flex items-center justify-end gap-1 mt-1">
-                            <div class="text-[9px] ${isMe ? 'text-brand-200' : 'text-slate-400 dark:text-slate-400'} text-right font-mono">${time}</div>
-                            ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-200' : 'text-brand-200'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
+                            <div class="text-[9px] ${isMe ? 'opacity-70' : 'text-gray-500'} text-right font-mono">${time}</div>
+                            ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-400' : 'opacity-70'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
                         </div>
                         ${canDelete ? `
-                            <button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="absolute -top-1 ${isMe ? '-left-1' : '-right-1'} w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                            <button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="absolute -top-1 ${isMe ? '-left-1' : '-right-1'} w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         ` : ''}

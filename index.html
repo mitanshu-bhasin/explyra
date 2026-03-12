@@ -738,7 +738,8 @@
             background-image: linear-gradient(var(--bdr) 1px, transparent 1px), linear-gradient(90deg, var(--bdr) 1px, transparent 1px);
             background-size: 50px 50px;
             mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
-            opacity: .5
+            opacity: .5;
+            pointer-events: none;
         }
 
         .hero-particles {
@@ -2499,7 +2500,81 @@
             font-size: 1rem;
             font-weight: 700;
             color: var(--ink);
-            margin-bottom: .4rem
+            margin-bottom: 0.4rem;
+        }
+
+        /* ═══════════════════════════════════════════
+   PRODUCT DEMO ENHANCEMENTS (INTERACTIVE)
+═══════════════════════════════════════════ */
+        .er-st, .course-st, #crm span[style*="text-transform:uppercase"], .hc-weather, .tool-item, .hc-ai-tip {
+            cursor: pointer !important;
+        }
+
+        .kpi-v, .lc-progress-fill, .hc-ai-tip span, .course-st, .er-st {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .lc-progress-fill {
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .er-st:hover, .course-st:hover {
+            filter: brightness(1.1);
+            transform: scale(1.05);
+        }
+
+        .dev-ide-preview {
+            transition: all 0.4s ease;
+        }
+
+        .hc-ai-tip:active {
+            transform: scale(0.98);
+        }
+
+        .add-expense-btn:hover {
+            color: var(--blue) !important;
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        .hc-heart-btn:active {
+            animation: heartBeat 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .certificate-badge {
+            background-size: 200% auto !important;
+        }
+
+        .dev-run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(167, 139, 250, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .crm-won-glow {
+            animation: wonGlow 1.5s ease infinite alternate;
+        }
+
+        @keyframes wonGlow {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); border-color: var(--bdr); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); border-color: #FFD700; }
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 100;
+            border-radius: 50%;
         }
 
         .sup-desc {
@@ -2776,7 +2851,8 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--blue) 8%, transparent) 0%, transparent 70%)
+            background: radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--blue) 8%, transparent) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .cta-h {
@@ -2803,6 +2879,11 @@
             max-width: 500px;
             margin: 0 auto 2.5rem;
             font-weight: 300
+        }
+
+        .cta-banner .reveal {
+            position: relative;
+            z-index: 10;
         }
 
         .cta-contacts {
@@ -3699,11 +3780,22 @@
 ═══════════════════════════════════════════ */
         /* Hide default cursor on desktop */
         @media (hover: hover) and (pointer: fine) {
-            *, *::before, *::after { cursor: none !important; }
+
+            *,
+            *::before,
+            *::after {
+                cursor: none !important;
+            }
         }
 
         /* Cursor wrapper */
-        #ex-cursor { position: fixed; top: 0; left: 0; z-index: 99999; pointer-events: none; }
+        #ex-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99999;
+            pointer-events: none;
+        }
 
         /* Inner glowing dot */
         .ex-dot {
@@ -3726,11 +3818,11 @@
             border: 1.5px solid var(--blue);
             transform: translate(-50%, -50%);
             opacity: 0.7;
-            transition: width .35s cubic-bezier(.23,1,.32,1),
-                        height .35s cubic-bezier(.23,1,.32,1),
-                        border-color .25s,
-                        background .25s,
-                        opacity .25s;
+            transition: width .35s cubic-bezier(.23, 1, .32, 1),
+                height .35s cubic-bezier(.23, 1, .32, 1),
+                border-color .25s,
+                background .25s,
+                opacity .25s;
         }
 
         /* Second subtle outer ring */
@@ -3752,6 +3844,7 @@
             background: var(--blue2, #5B8AF5);
             box-shadow: 0 0 10px 4px var(--blue2, #5B8AF5), 0 0 22px 8px color-mix(in srgb, var(--blue2, #5B8AF5) 35%, transparent);
         }
+
         #ex-cursor.is-hovering .ex-ring {
             width: 52px;
             height: 52px;
@@ -3760,6 +3853,7 @@
             background: color-mix(in srgb, var(--blue2, #5B8AF5) 8%, transparent);
             opacity: 1;
         }
+
         #ex-cursor.is-hovering .ex-ring2 {
             width: 78px;
             height: 78px;
@@ -3772,6 +3866,7 @@
             height: 5px;
             background: #fff;
         }
+
         #ex-cursor.is-clicking .ex-ring {
             width: 28px;
             height: 28px;
@@ -3784,13 +3879,67 @@
             background: var(--blue2);
             box-shadow: 0 0 8px 3px var(--blue2), 0 0 18px 6px color-mix(in srgb, var(--blue2) 45%, transparent);
         }
-        [data-theme="dark"] .ex-ring { border-color: var(--blue2); }
-        [data-theme="dark"] .ex-ring2 { border-color: color-mix(in srgb, var(--blue2) 28%, transparent); }
+
+        [data-theme="dark"] .ex-ring {
+            border-color: var(--blue2);
+        }
+
+        [data-theme="dark"] .ex-ring2 {
+            border-color: color-mix(in srgb, var(--blue2) 28%, transparent);
+        }
 
         /* Only on touch/mobile: hide the cursor elements */
-        @media (hover: none), (max-width: 1024px) {
-            #ex-cursor { display: none; }
-            *, *::before, *::after { cursor: auto !important; }
+        @media (hover: none),
+        (max-width: 1024px) {
+            #ex-cursor {
+                display: none;
+            }
+
+            *,
+            *::before,
+            *::after {
+                cursor: auto !important;
+            }
+        }
+        /* ═══════════════════════════════════════════
+   CUSTOM NOTIFICATION (TOAST)
+═══════════════════════════════════════════ */
+        .ex-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translate(-50%, 20px);
+            background: rgba(21, 70, 192, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .ex-toast.visible {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: all;
+        }
+
+        .ex-toast i {
+            font-size: 1.2rem;
+            color: #89b4fa;
+        }
+
+        [data-theme="dark"] .ex-toast {
+            background: rgba(14, 18, 32, 0.95);
+            border: 1px solid rgba(91, 138, 245, 0.2);
         }
     </style>
 </head>
@@ -3899,7 +4048,7 @@
                     <span class="theme-pill-label" id="themeLabel">Light</span>
                     <div class="theme-pill-toggle"></div>
                 </div>
-                <a href="company.html" class="btn-try">Request Access</a>
+                <a href="company.html" class="btn-try coming-soon-trigger">Request Access</a>
                 <button class="menu-btn" id="menuBtn" aria-label="Open mobile menu">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -3965,7 +4114,7 @@
                 <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
             </ul>
             <div style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--bdr)">
-                <a href="company.html" class="btn-try"
+                <a href="company.html" class="btn-try coming-soon-trigger"
                     style="display:block;text-align:center;padding:.7rem 1.2rem;border-radius:var(--r);font-size:.9rem">Request
                     Access</a>
             </div>
@@ -4200,7 +4349,7 @@
                         </div>
                     </div>
                     <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-                        <a href="company.html" class="btn-prod" style="background:var(--blue)">Request Access →</a>
+                        <a href="company.html" class="btn-prod coming-soon-trigger" style="background:var(--blue)">Request Access →</a>
                         <a href="admin.html" class="btn-prod-out"
                             style="border-color:var(--blue-b);color:var(--blue)">See
                             Demo</a>
@@ -4211,8 +4360,11 @@
                         <div class="dash-bar">
                             <div class="dash-dot" style="background:#FF5F57"></div>
                             <div class="dash-dot" style="background:#FFBE2E"></div>
-                            <div class="dash-dot" style="background:#28C840"></div><span class="dash-title">Expense
-                                Dashboard — March 2026</span>
+                            <div class="dash-dot" style="background:#28C840"></div>
+                            <span class="dash-title">Expense Dashboard — March 2026</span>
+                            <button class="add-expense-btn" id="addExpense" title="Quick Add Expense" style="margin-left:auto; color:var(--ink3); font-size:1.1rem; transition:all 0.3s;">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
                         </div>
                         <div class="dash-body">
                             <div class="dash-kpis">
@@ -4376,7 +4528,10 @@
                                     <div class="hc-temp">29°C</div>
                                     <div class="hc-cond">Partly Cloudy · Humidity 68%</div>
                                 </div>
-                                <div style="font-size:2.5rem">⛅</div>
+                                <div style="font-size:2.5rem; display:flex; align-items:center; gap:0.8rem;">
+                                    <span class="hc-heart-btn" id="logHeart" title="Log Workout" style="font-size:1.4rem; cursor:pointer; filter:drop-shadow(0 0 5px rgba(255,0,0,0.3));">❤️</span>
+                                    <span>⛅</span>
+                                </div>
                             </div>
                             <div class="hc-ai-tip">🤖 <span><strong>AI Tip:</strong> Weather is warm today — ideal for a
                                     morning run before 8 AM. Stay hydrated: drink 3–4L water. Avoid heavy meals before
@@ -4533,6 +4688,9 @@
                             <div class="lc-progress-bar">
                                 <div class="lc-progress-fill"></div>
                             </div>
+                            <div id="courseCertificate" class="certificate-badge" style="display:none; position:absolute; top:10px; right:10px; background:linear-gradient(135deg, #FFD700, #FFA500); padding:5px 10px; border-radius:100px; color:#fff; font-size:0.6rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; box-shadow:0 0 15px rgba(255,215,0,0.5); z-index:10; animation:shimmer 2s infinite linear; pointer-events:none;">
+                                🏆 Certified
+                            </div>
                         </div>
                         <div class="lc-body">
                             <div class="course-item">
@@ -4596,6 +4754,9 @@
                             <div class="dev-bar-dot" style="background:#FFBE2E"></div>
                             <div class="dev-bar-dot" style="background:#28C840"></div><span
                                 class="dev-bar-title">explyra-dev-tools</span>
+                            <button class="dev-run-btn" id="runCode" style="margin-left:auto; background:var(--purp); color:#fff; font-size:0.6rem; font-weight:700; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:100px; display:flex; align-items:center; gap:0.3rem; transition:all 0.3s;">
+                                <i class="fas fa-play"></i> Run
+                            </button>
                         </div>
                         <div class="dev-body">
                             <div class="tool-grid">
@@ -4854,7 +5015,8 @@
                     <div class="eyebrow" style="color:var(--purp); justify-content: flex-start;">Experience Explyra
                     </div>
                     <h2 class="founder-name" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Explyra Suite
-                        <em>Trailer</em></h2>
+                        <em>Trailer</em>
+                    </h2>
                     <div class="video-thumbnail" id="videoTrigger">
                         <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
                         <div class="play-overlay">
@@ -4877,7 +5039,7 @@
                 <p class="cta-sub">Join the waitlist for early access to all ten Explyra products. Be the first to
                     shape
                     what we build next.</p>
-                <a href="company.html" class="btn-hero" style="display:inline-flex">Request Early Access
+                <a href="company.html" class="btn-hero coming-soon-trigger" style="display:inline-flex">Request Early Access
                     →</a>
                 <div class="cta-contacts">
                     <a href="contact.html" class="cta-c"><span class="cta-c-icon">📞</span>
@@ -5022,6 +5184,12 @@
         </svg>
     </button>
 
+    <!-- NEW NOTIFICATION TOAST -->
+    <div id="exToast" class="ex-toast">
+        <i class="fa-solid fa-sparkles"></i>
+        <span>Coming Soon! We're preparing something amazing.</span>
+    </div>
+
     <script>
         /* THEME */
         const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
@@ -5084,6 +5252,25 @@
             if (window.scrollY > 400) { btt.classList.add('visible'); }
             else { btt.classList.remove('visible'); }
         });
+
+        /* COMING SOON TOAST LOGIC */
+        const toast = document.getElementById('exToast');
+        let toastTimeout;
+
+        function showComingSoon() {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toast.classList.add('visible');
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+
+        document.querySelectorAll('.coming-soon-trigger').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                showComingSoon();
+            });
+        });
         btt.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
@@ -5129,6 +5316,333 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && vModal.classList.contains('active')) closeFunc();
         });
+
+        /* PRODUCT DEMO INTERACTIVITY */
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Expense Dashboard
+            const expenseStatusPills = document.querySelectorAll('.expense-sec .er-st');
+            const statusCycle = [
+                { text: 'Pending', class: 'st-e' },
+                { text: 'Review', class: 'st-r' },
+                { text: 'Paid', class: 'st-p' }
+            ];
+
+            expenseStatusPills.forEach(pill => {
+                pill.style.cursor = 'pointer';
+                pill.addEventListener('click', () => {
+                    let currentIndex = statusCycle.findIndex(s => pill.textContent.trim() === s.text);
+                    let nextIndex = (currentIndex + 1) % statusCycle.length;
+                    
+                    statusCycle.forEach(s => pill.classList.remove(s.class));
+                    pill.textContent = statusCycle[nextIndex].text;
+                    pill.classList.add(statusCycle[nextIndex].class);
+                    
+                    updateExpenseKPIs();
+                });
+            });
+
+            const updateExpenseKPIs = () => {
+                const totalKpi = document.querySelector('.expense-sec .kpi-v');
+                const rowCount = document.querySelectorAll('.expense-sec .er').length;
+                if (totalKpi) {
+                    const newVal = (2.4 + (rowCount - 3) * 0.2).toFixed(1);
+                    totalKpi.textContent = `₹${newVal}L`;
+                    totalKpi.style.transform = 'scale(1.1)';
+                    setTimeout(() => totalKpi.style.transform = 'scale(1)', 200);
+                }
+            };
+
+            // 1b. Add Expense Row
+            const addExpenseBtn = document.getElementById('addExpense');
+            if (addExpenseBtn) {
+                addExpenseBtn.addEventListener('click', () => {
+                    const dashBody = document.querySelector('.expense-sec .dash-body');
+                    const newRow = document.createElement('div');
+                    newRow.className = 'er';
+                    newRow.style.opacity = '0';
+                    newRow.style.transform = 'translateY(10px)';
+                    newRow.style.transition = 'all 0.4s ease';
+                    
+                    const icons = ['✈️', '🍽️', '🛠️', '💻', '🚗'];
+                    const names = ['Server Hosting', 'Lunch meeting', 'Uber to HQ', 'Coffee break', 'API Subscription'];
+                    const randIdx = Math.floor(Math.random() * icons.length);
+                    
+                    newRow.innerHTML = `
+                        <div class="er-ic" style="background:rgba(21,70,192,0.1)">${icons[randIdx]}</div>
+                        <div>
+                            <div class="er-n">${names[randIdx]}</div>
+                            <div class="er-c">Business · Self</div>
+                        </div>
+                        <div class="er-r">
+                            <div class="er-a">₹${Math.floor(Math.random() * 5000 + 500)}</div>
+                            <div class="er-st st-e">Pending</div>
+                        </div>
+                    `;
+                    
+                    dashBody.appendChild(newRow);
+                    setTimeout(() => {
+                        newRow.style.opacity = '1';
+                        newRow.style.transform = 'translateY(0)';
+                        updateExpenseKPIs();
+                    }, 50);
+
+                    // Re-bind click listener to new pill
+                    newRow.querySelector('.er-st').addEventListener('click', function() {
+                        let currentIndex = statusCycle.findIndex(s => this.textContent.trim() === s.text);
+                        let nextIndex = (currentIndex + 1) % statusCycle.length;
+                        statusCycle.forEach(s => this.classList.remove(s.class));
+                        this.textContent = statusCycle[nextIndex].text;
+                        this.classList.add(statusCycle[nextIndex].class);
+                    });
+                });
+            }
+
+            // 2. CRM Dashboard
+            const crmBadges = document.querySelectorAll('#crm span[style*="text-transform:uppercase"]');
+            const crmCycle = [
+                { text: 'New', color: 'var(--blue)', bg: 'var(--blue-g)' },
+                { text: 'Qualified', color: 'var(--teal)', bg: 'var(--teal-g)' },
+                { text: 'Won', color: 'var(--purp)', bg: 'var(--purp-g)' }
+            ];
+
+            const createParticles = (x, y, color) => {
+                for (let i = 0; i < 15; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    p.style.left = x + 'px';
+                    p.style.top = y + 'px';
+                    p.style.width = Math.random() * 6 + 4 + 'px';
+                    p.style.height = p.style.width;
+                    p.style.background = color;
+                    p.style.boxShadow = `0 0 10px ${color}`;
+                    document.body.appendChild(p);
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * 100 + 50;
+                    const tx = Math.cos(angle) * dist;
+                    const ty = Math.sin(angle) * dist;
+                    
+                    p.animate([
+                        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                        { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                    ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(0, .9, .57, 1)' }).onfinish = () => p.remove();
+                }
+            };
+
+            crmBadges.forEach(badge => {
+                badge.style.cursor = 'pointer';
+                badge.addEventListener('click', (e) => {
+                    let currentIndex = crmCycle.findIndex(s => badge.textContent.trim() === s.text);
+                    let nextIndex = (currentIndex + 1) % crmCycle.length;
+                    
+                    badge.textContent = crmCycle[nextIndex].text;
+                    badge.style.color = crmCycle[nextIndex].color;
+                    badge.style.background = crmCycle[nextIndex].bg;
+
+                    if (badge.textContent === 'Won') {
+                        const rect = badge.getBoundingClientRect();
+                        createParticles(rect.left + rect.width/2, rect.top + rect.height/2, '#FFD700');
+                        badge.closest('.dev-card').classList.add('crm-won-glow');
+                        setTimeout(() => badge.closest('.dev-card').classList.remove('crm-won-glow'), 3000);
+                    }
+
+                    // Pipeline Refresh effect
+                    const pipeline = document.querySelector('#crm p[style*="color:var(--blue)"]');
+                    if (pipeline) {
+                        const currentVal = parseFloat(pipeline.textContent.replace('₹', '').replace('M', ''));
+                        const newVal = (currentVal + (badge.textContent === 'Won' ? 1.5 : 0.2)).toFixed(1);
+                        pipeline.textContent = `₹${newVal}M`;
+                    }
+                });
+            });
+
+            // 3. Health Card
+            const logHeartBtn = document.getElementById('logHeart');
+            if (logHeartBtn) {
+                logHeartBtn.addEventListener('click', () => {
+                    const stepsVal = document.querySelector('.hm:nth-child(1) .hm-val');
+                    const calsVal = document.querySelector('.hm:nth-child(3) .hm-val');
+                    
+                    if (stepsVal) {
+                        const cur = parseInt(stepsVal.textContent.replace(',', ''));
+                        stepsVal.textContent = (cur + 500).toLocaleString();
+                        stepsVal.style.transform = 'scale(1.2)';
+                        setTimeout(() => stepsVal.style.transform = '', 300);
+                    }
+                    if (calsVal) {
+                        const cur = parseInt(calsVal.textContent.replace(',', ''));
+                        calsVal.textContent = (cur + 40).toLocaleString();
+                        calsVal.style.transform = 'scale(1.2)';
+                        setTimeout(() => calsVal.style.transform = '', 300);
+                    }
+                });
+            }
+
+            const weatherIcon = document.getElementById('logHeart').nextElementSibling;
+            const weatherIcons = ['⛅', '☀️', '🌧️', '🌪️'];
+            const aiTips = [
+                "Weather is warm today — ideal for a morning run before 8 AM.",
+                "High UV today. Wear sunscreen and stay indoors during peak hours.",
+                "Rainy day ahead. Perfect for indoor cardio or yoga sessions.",
+                "Extreme conditions. Focus on recovery and indoor stretching."
+            ];
+
+            if (weatherIcon) {
+                weatherIcon.style.cursor = 'pointer';
+                weatherIcon.addEventListener('click', () => {
+                    const nextIdx = Math.floor(Math.random() * weatherIcons.length);
+                    weatherIcon.textContent = weatherIcons[nextIdx];
+                    
+                    const tipText = document.querySelector('.hc-ai-tip span');
+                    if (tipText) {
+                        tipText.innerHTML = `<strong>AI Tip:</strong> ${aiTips[nextIdx]}`;
+                        tipText.parentElement.style.animation = 'none';
+                        tipText.parentElement.offsetHeight; // trigger reflow
+                        tipText.parentElement.style.animation = 'fadeUp 0.5s ease both';
+                    }
+
+                    document.querySelectorAll('.hm-val').forEach(val => {
+                        val.style.color = 'var(--blue)';
+                        setTimeout(() => val.style.color = '', 500);
+                    });
+                });
+            }
+            
+            // 4. Learning Card
+            const updateLearningProgress = () => {
+                const statusPills = document.querySelectorAll('.learn-card .course-st');
+                const doneCount = document.querySelectorAll('.learn-card .cs-done').length;
+                const progressFill = document.querySelector('.lc-progress-fill');
+                const cert = document.getElementById('courseCertificate');
+                
+                if (progressFill) {
+                    const pct = (doneCount / statusPills.length) * 100;
+                    progressFill.style.width = `${pct}%`;
+                    if (pct === 100 && cert) {
+                        cert.style.display = 'block';
+                        cert.style.animation = 'fadeUp 0.5s ease both, shimmer 2s infinite linear';
+                    } else if (cert) {
+                        cert.style.display = 'none';
+                    }
+                }
+            };
+
+            const courseStatuses = document.querySelectorAll('.learn-card .course-st');
+            courseStatuses.forEach(status => {
+                status.style.cursor = 'pointer';
+                status.addEventListener('click', () => {
+                    if (status.textContent.includes('Done')) {
+                        status.textContent = '▶ In Progress';
+                        status.className = 'course-st cs-prog';
+                    } else {
+                        status.textContent = '✓ Done';
+                        status.className = 'course-st cs-done';
+                    }
+                    updateLearningProgress();
+                });
+            });
+
+            // 5. Developer Tools
+            const toolItems = document.querySelectorAll('.dev-sec .tool-item');
+            const codePreviews = {
+                "Code Minifier": `// Minifying Assets...\nconst bundle = minify(['app.js', 'style.css']);\nconsole.log("Reduced size by 64%");`,
+                "Hash Generator": `// Generating Hashes...\nconst salt = genSalt(10);\nconst hash = bcrypt.hash("secret", salt);\nconsole.log(hash);`,
+                "Password Generator": `// Secure PassGen...\nconst pwd = generate({ \n  length: 24, \n  symbols: true \n});\nconsole.log(pwd);`,
+                "Link Shortener": `// Shortening URL...\nconst short = shorten("https://explyra.me/blog/ai");\nconsole.log("explyra.me/ai-blog");`,
+                "Online IDE": `// Explyra IDE v2.0\nfunction welcome() {\n  return "Happy Coding!";\n}\nconsole.log(welcome());`
+            };
+
+            toolItems.forEach(item => {
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', () => {
+                    const toolName = item.querySelector('.tool-name').textContent;
+                    const idePreview = document.querySelector('.dev-ide-preview');
+                    if (idePreview && codePreviews[toolName]) {
+                        idePreview.innerHTML = `<span class="ide-cm">${codePreviews[toolName].split('\n').map((line, i) => `<span class="ide-ln">${i+1} </span>${line}`).join('<br>')}</span>`;
+                        
+                        toolItems.forEach(t => {
+                            t.style.borderColor = '';
+                            t.style.background = '';
+                        });
+                        item.style.borderColor = 'var(--purp)';
+                        item.style.background = 'var(--purp-g)';
+                    }
+                });
+            });
+
+            const runBtn = document.getElementById('runCode');
+            if (runBtn) {
+                runBtn.addEventListener('click', () => {
+                    const idePreview = document.querySelector('.dev-ide-preview');
+                    const originalContent = idePreview.innerHTML;
+                    
+                    idePreview.style.opacity = '0';
+                    setTimeout(() => {
+                        idePreview.innerHTML = `
+                            <div style="color:#50FA7B">> Running Explyra Dev Engine...</div>
+                            <div style="color:#F1FA8C">> Status: SUCCESS</div>
+                            <div style="color:#BD93F9">> Output: Operation completed in 24ms</div>
+                            <div style="color:#F8F8F2">> Log: Cache cleared, assets minified.</div>
+                        `;
+                        idePreview.style.opacity = '1';
+                        
+                        setTimeout(() => {
+                            idePreview.style.opacity = '0';
+                            setTimeout(() => {
+                                idePreview.innerHTML = originalContent;
+                                idePreview.style.opacity = '1';
+                            }, 500);
+                        }, 2500);
+                    }, 200);
+                });
+            }
+
+            // 6. Hero Pills Scrolling
+            const suitePills = document.querySelectorAll('.suite-pills .suite-pill');
+            suitePills.forEach(pill => {
+                pill.style.cursor = 'pointer';
+                const sectionMap = {
+                    'Expense': '#expense',
+                    'CRM': '#crm',
+                    'Health': '#health',
+                    'Learning': '#learning',
+                    'Developers': '#developers'
+                };
+                
+                pill.addEventListener('click', () => {
+                    const text = pill.textContent;
+                    for (const key in sectionMap) {
+                        if (text.includes(key)) {
+                            const target = document.querySelector(sectionMap[key]);
+                            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            break;
+                        }
+                    }
+                });
+            });
+
+            // 7. AI Strip Interactivity
+            const aiFeatures = document.querySelectorAll('.ai-strip .ai-f');
+            aiFeatures.forEach(feat => {
+                feat.addEventListener('click', () => {
+                    feat.style.transform = 'scale(1.1) translateY(-5px)';
+                    feat.style.borderColor = 'var(--purp)';
+                    feat.style.boxShadow = '0 0 20px rgba(167, 139, 250, 0.4)';
+                    
+                    const icon = feat.querySelector('.ai-f-icon');
+                    if (icon) {
+                        icon.style.transform = 'rotate(360deg)';
+                        setTimeout(() => icon.style.transform = '', 600);
+                    }
+
+                    setTimeout(() => {
+                        feat.style.transform = '';
+                        feat.style.borderColor = '';
+                        feat.style.boxShadow = '';
+                    }, 1000);
+                });
+            });
+        });
     </script>
     <script src="js/global-enhancements.js"></script>
     <!-- FUTURISTIC CURSOR -->
@@ -5139,67 +5653,67 @@
     </div>
 
     <script>
-    (function() {
-        // Only activate on non-touch desktops
-        if (window.matchMedia('(hover: none)').matches || window.innerWidth <= 1024) return;
+        (function () {
+            // Only activate on non-touch desktops
+            if (window.matchMedia('(hover: none)').matches || window.innerWidth <= 1024) return;
 
-        const cursor   = document.getElementById('ex-cursor');
-        const dot      = cursor.querySelector('.ex-dot');
-        const ring     = cursor.querySelector('.ex-ring');
-        const ring2    = cursor.querySelector('.ex-ring2');
+            const cursor = document.getElementById('ex-cursor');
+            const dot = cursor.querySelector('.ex-dot');
+            const ring = cursor.querySelector('.ex-ring');
+            const ring2 = cursor.querySelector('.ex-ring2');
 
-        // Positions
-        let mX = -200, mY = -200;   // mouse (dot follows immediately)
-        let rX = -200, rY = -200;   // ring (lag)
-        let r2X= -200, r2Y= -200;   // ring2 (more lag)
+            // Positions
+            let mX = -200, mY = -200;   // mouse (dot follows immediately)
+            let rX = -200, rY = -200;   // ring (lag)
+            let r2X = -200, r2Y = -200;   // ring2 (more lag)
 
-        // Track mouse
-        document.addEventListener('mousemove', e => {
-            mX = e.clientX; mY = e.clientY;
-        });
+            // Track mouse
+            document.addEventListener('mousemove', e => {
+                mX = e.clientX; mY = e.clientY;
+            });
 
-        // RAF loop — silky smooth lagging ring
-        function tick() {
-            // ring lags behind at 12% per frame
-            rX  += (mX - rX)  * 0.12;
-            rY  += (mY - rY)  * 0.12;
-            r2X += (mX - r2X) * 0.07;
-            r2Y += (mY - r2Y) * 0.07;
+            // RAF loop — silky smooth lagging ring
+            function tick() {
+                // ring lags behind at 12% per frame
+                rX += (mX - rX) * 0.12;
+                rY += (mY - rY) * 0.12;
+                r2X += (mX - r2X) * 0.07;
+                r2Y += (mY - r2Y) * 0.07;
 
-            dot.style.left   = mX  + 'px';
-            dot.style.top    = mY  + 'px';
-            ring.style.left  = rX  + 'px';
-            ring.style.top   = rY  + 'px';
-            ring2.style.left = r2X + 'px';
-            ring2.style.top  = r2Y + 'px';
+                dot.style.left = mX + 'px';
+                dot.style.top = mY + 'px';
+                ring.style.left = rX + 'px';
+                ring.style.top = rY + 'px';
+                ring2.style.left = r2X + 'px';
+                ring2.style.top = r2Y + 'px';
 
-            requestAnimationFrame(tick);
-        }
-        tick();
+                requestAnimationFrame(tick);
+            }
+            tick();
 
-        // Show cursor only after first move (prevents flash at 0,0)
-        document.addEventListener('mousemove', function show() {
-            cursor.style.opacity = '1';
-            document.removeEventListener('mousemove', show);
-        });
-        cursor.style.opacity = '0';
-        cursor.style.transition = 'opacity 0.3s';
+            // Show cursor only after first move (prevents flash at 0,0)
+            document.addEventListener('mousemove', function show() {
+                cursor.style.opacity = '1';
+                document.removeEventListener('mousemove', show);
+            });
+            cursor.style.opacity = '0';
+            cursor.style.transition = 'opacity 0.3s';
 
-        // Hover state
-        const hoverSelector = 'a, button, [role="button"], .ov-card, .test-card, .course-item, .tool-item, .video-thumbnail, .v-modal-close, .suite-pill, .btn-hero, .btn-hero-ghost, label, input, select, textarea, .theme-pill, .back-to-top';
-        document.querySelectorAll(hoverSelector).forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
-        });
+            // Hover state
+            const hoverSelector = 'a, button, [role="button"], .ov-card, .test-card, .course-item, .tool-item, .video-thumbnail, .v-modal-close, .suite-pill, .btn-hero, .btn-hero-ghost, label, input, select, textarea, .theme-pill, .back-to-top';
+            document.querySelectorAll(hoverSelector).forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
+            });
 
-        // Click state
-        document.addEventListener('mousedown', () => cursor.classList.add('is-clicking'));
-        document.addEventListener('mouseup',   () => cursor.classList.remove('is-clicking'));
+            // Click state
+            document.addEventListener('mousedown', () => cursor.classList.add('is-clicking'));
+            document.addEventListener('mouseup', () => cursor.classList.remove('is-clicking'));
 
-        // Hide on leave, show on enter
-        document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-        document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
-    })();
+            // Hide on leave, show on enter
+            document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+            document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+        })();
     </script>
 </body>
 

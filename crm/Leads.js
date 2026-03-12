@@ -41,6 +41,7 @@ window.CrmLeads = {
                 this.leads.push({ id: doc.id, ...doc.data() });
             });
             this.renderLeadsTable();
+            if (window.updateDashboardStats) window.updateDashboardStats();
         }, (error) => {
             // Firestore indexing might be required for the order by. If so, drop order by initially.
             if (error.code === 'failed-precondition') {
@@ -70,6 +71,7 @@ window.CrmLeads = {
                 return t2 - t1;
             });
             this.renderLeadsTable();
+            if (window.updateDashboardStats) window.updateDashboardStats();
         });
     },
 
@@ -181,10 +183,9 @@ window.CrmLeads = {
 
         const modal = document.getElementById('modal-lead');
         const content = document.getElementById('modal-lead-content');
-        modal.classList.remove('hidden');
+        modal.classList.add('show');
         setTimeout(() => {
-            content.classList.remove('scale-95', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
+            content.classList.remove('entering');
         }, 10);
     },
 
@@ -192,11 +193,10 @@ window.CrmLeads = {
         const modal = document.getElementById('modal-lead');
         const content = document.getElementById('modal-lead-content');
 
-        content.classList.remove('scale-100', 'opacity-100');
-        content.classList.add('scale-95', 'opacity-0');
+        content.classList.add('entering');
 
         setTimeout(() => {
-            modal.classList.add('hidden');
+            modal.classList.remove('show');
             document.getElementById('lead-form').reset();
             document.getElementById('lead-id').value = '';
         }, 300);

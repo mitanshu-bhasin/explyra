@@ -1,16 +1,17 @@
-d:\Expense Tracker\update-schemas.js:108
-                return \`<script type="application/ld+json">\n\${res.schema}\n</script>\`;
-                       ^
+node:internal/modules/esm/loader:442
+        throw new ERR_NETWORK_IMPORT_DISALLOWED(specifier, parentURL,
+              ^
 
-SyntaxError: Invalid or unexpected token
-    at wrapSafe (node:internal/modules/cjs/loader:1692:18)
-    at Module._compile (node:internal/modules/cjs/loader:1735:20)
+TypeError: ERR_NETWORK_IMPORT_DISALLOWED is not a constructor
+    at ModuleLoader.getModuleJobForRequire (node:internal/modules/esm/loader:442:15)
+    at #link (node:internal/modules/esm/module_job:447:34)
+    at new ModuleJobSync (node:internal/modules/esm/module_job:420:17)
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:422:11)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+    at Module._compile (node:internal/modules/cjs/loader:1743:5)
     at Object..js (node:internal/modules/cjs/loader:1893:10)
     at Module.load (node:internal/modules/cjs/loader:1481:32)
     at Module._load (node:internal/modules/cjs/loader:1300:12)
     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
-    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
-    at node:internal/main/run_main_module:33:47
 
 Node.js v24.11.1

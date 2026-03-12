@@ -481,8 +481,6 @@ onAuthStateChanged(auth, async (user) => {
                         snapshot.docChanges().forEach((change) => {
                             if (change.type === 'added') {
                                 const d = change.doc.data();
-                                // if (d.sender === userData.name) return; // Removed to allow self-notifications
-
                                 if (Notification.permission === 'granted') {
                                     const opts = {
                                         body: d.body,
@@ -497,6 +495,10 @@ onAuthStateChanged(auth, async (user) => {
                                     }
                                 }
                                 showToast(`New Message: ${d.title}`, 'info');
+                                
+                                // Toggle header bell dot
+                                const dot = document.getElementById('header-notif-dot');
+                                if (dot) dot.classList.remove('hidden');
                             }
                         });
                     });
@@ -1010,9 +1012,9 @@ window.switchTab = (tab) => {
     activeListeners.forEach(unsub => unsub());
     activeListeners = [];
 
-    document.querySelectorAll('.nav-item').forEach(el => {
+    document.querySelectorAll('.sidebar-item').forEach(el => {
         el.classList.remove('active', 'bg-slate-800', 'text-white');
-        if (el.dataset.tab === tab) el.classList.add('active', 'bg-slate-800', 'text-white');
+        if (el.dataset.tab === tab) el.classList.add('active');
     });
 
     if (tab === 'overview') renderOverview();
@@ -1110,7 +1112,7 @@ async function renderOverview() {
             const daysText = diffDays > 0 ? `Your trial ends in ${diffDays} days` : 'Your trial has ended';
 
             trialBannerHtml = `
-                <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg mb-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 fade-in">
+                <div class="welcome-banner rounded-2xl p-6 text-white shadow-xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 fade-in border border-slate-700/50">
                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full"></div>
                     <div class="absolute right-20 -bottom-10 w-32 h-32 bg-white/10 rounded-full"></div>
                     <div class="relative z-10 w-full md:w-auto">
@@ -1129,30 +1131,30 @@ async function renderOverview() {
         content.innerHTML = `
                     ${trialBannerHtml}
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden group">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-green-50 rounded-full transition-transform group-hover:scale-110"></div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative">Total Disbursed</p>
-                            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${formatCurrency(totalPaid, 'INR')}</p>
+                        <div class="vercel-card relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-green-50/50 dark:bg-green-900/10 rounded-full transition-transform group-hover:scale-110"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest relative">Total Disbursed</p>
+                            <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${formatCurrency(totalPaid, 'INR')}</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden group">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-50 rounded-full transition-transform group-hover:scale-110"></div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative">Pending Action</p>
-                            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${pending}</p>
+                        <div class="vercel-card relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-50/50 dark:bg-blue-900/10 rounded-full transition-transform group-hover:scale-110"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest relative">Pending Action</p>
+                            <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${pending}</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden group">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-50 rounded-full transition-transform group-hover:scale-110"></div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative">Rejections</p>
-                            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${rejected}</p>
+                        <div class="vercel-card relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-50/50 dark:bg-red-900/10 rounded-full transition-transform group-hover:scale-110"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest relative">Rejections</p>
+                            <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${rejected}</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden group">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-50 rounded-full transition-transform group-hover:scale-110"></div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider relative">Total Users</p>
-                            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${totalUsers}</p>
+                        <div class="vercel-card relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-50/50 dark:bg-purple-900/10 rounded-full transition-transform group-hover:scale-110"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest relative">Total Users</p>
+                            <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2 font-mono relative">${totalUsers}</p>
                         </div>
                     </div>
 
                     <!-- Project Analytics Section -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-8 fade-in">
+                    <div class="vercel-card mb-8 fade-in">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-folder-tree text-green-500"></i> Project-wise Expenditure</h3>
                             <button onclick="renderReports()" class="text-[10px] font-bold text-green-600 hover:underline">View Detailed Reports</button>
@@ -2271,57 +2273,54 @@ window.applyApprovalFilters = () => {
     }
 
     // Render List
-    list.innerHTML = `<div class="space-y-3 fade-in">
-                        ${filtered.map(d => `
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border ${d.isSpam ? 'border-red-400 bg-red-50/50 dark:bg-red-900/20' : 'border-slate-100 dark:border-slate-800'} shadow-sm hover:shadow-md transition group relative overflow-hidden flex gap-4 items-center">
-                        <div class="flex items-center justify-center pl-2">
-                             <input type="checkbox" onchange="toggleSelection('${d.id}')" class="approval-check w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-brand-500 transition cursor-pointer" ${window.selectedApprovals.has(d.id) ? 'checked' : ''}>
-                        </div>
-                        
-                        <div class="flex-1 cursor-pointer" onclick="if(!event.target.type) openExpenseModal('${d.id}')">
-                            <div class="flex justify-between items-start mb-1">
-                                <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-green-600 transition text-sm md:text-base flex items-center gap-2">
-                                        ${d.title}
-                                        ${d.isSpam ? '<span class="px-2 py-0.5 bg-red-100 text-red-600 rounded text-[10px] font-bold uppercase border border-red-200"><i class="fa-solid fa-triangle-exclamation"></i> SPAM</span>' : ''}
-                                        ${d.reviewRequested ? '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-bold uppercase border border-amber-200 animate-pulse"><i class="fa-solid fa-rotate"></i> Re-Review</span>' : ''}
-                                    </h4>
-                                    <div class="flex gap-2 mt-1 flex-wrap">
-                                        <span class="text-[10px] bg-slate-100 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-mono border border-slate-200 dark:border-slate-700">${d.projectCode || 'No-Code'}</span>
-                                        <div class="inline-flex flex-col">
-                                            <span class="text-[10px] bg-green-50 text-green-600 px-2 py-0.5 rounded-t font-bold border border-green-100 flex items-center gap-1"><i class="fa-solid fa-user-circle"></i> ${d.userName}</span>
-                                            ${d.userEmail ? `<a href="mailto:${d.userEmail}" class="text-[9px] bg-green-100 text-green-700 px-2 py-0.5 rounded-b font-mono border-x border-b border-green-200 hover:bg-green-200 transition flex items-center gap-1" title="Send Email"><i class="fa-solid fa-envelope"></i> ${d.userEmail}</a>` : ''}
-                                            ${d.userPhone ? `<a href="tel:${d.userPhone}" class="text-[9px] text-slate-500 hover:text-slate-700 ml-1" title="Call"><i class="fa-solid fa-phone"></i></a>` : ''}
+    list.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in pb-10">
+                        ${filtered.map(d => {
+                            const date = d.createdAt?.toDate ? d.createdAt.toDate() : (d.createdAt ? new Date(d.createdAt) : new Date());
+                            let statusColor = 'bg-slate-100 text-slate-600';
+                            if (d.status === 'PENDING') statusColor = 'bg-amber-50 text-amber-600 border-amber-100';
+                            else if (d.status === 'APPROVED') statusColor = 'bg-blue-50 text-blue-600 border-blue-100';
+                            else if (d.status === 'PAID') statusColor = 'bg-green-50 text-green-600 border-green-100';
+                            else if (d.status === 'REJECTED') statusColor = 'bg-red-50 text-red-600 border-red-100';
+
+                            return `
+                                <div class="bg-white dark:bg-slate-810 p-5 rounded-2xl shadow-sm border ${d.isSpam ? 'border-red-400' : 'border-slate-100 dark:border-slate-800'} hover:shadow-md transition group relative flex flex-col h-full">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-slate-400 group-hover:bg-green-50 group-hover:text-green-600 transition border border-slate-100 dark:border-slate-800">
+                                                <i class="fa-solid fa-receipt text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-0.5 line-clamp-1 group-hover:text-green-600 transition">${d.title}</h4>
+                                                <p class="text-[10px] text-slate-400 font-medium">${date.toLocaleDateString()} • ${d.projectCode || 'General'}</p>
+                                            </div>
                                         </div>
-                                        ${d.type === 'REQUEST' ? '<span class="text-[10px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded font-bold border border-purple-100 uppercase"><i class="fa-solid fa-box mr-1"></i> Request</span>' : ''}
-                                        ${d.preApproved ? '<span class="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded font-bold uppercase"><i class="fa-solid fa-check"></i> Pre-Approved</span>' : ''}
+                                        <input type="checkbox" onchange="toggleSelection('${d.id}')" class="approval-check w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500 transition cursor-pointer z-10" ${window.selectedApprovals.has(d.id) ? 'checked' : ''}>
                                     </div>
+
+                                    <div class="flex-1 space-y-3 mb-5">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] uppercase tracking-tighter font-black text-slate-400">Requestor</span>
+                                            <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 truncate max-w-[120px]">${d.userName}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] uppercase tracking-tighter font-black text-slate-400">Amount</span>
+                                            <span class="text-xs font-bold text-green-600 font-mono">₹${parseFloat(d.totalAmount).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2 pt-4 border-t border-slate-50 dark:border-slate-700/50">
+                                        <button onclick="openExpenseModal('${d.id}')" class="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 transition uppercase tracking-widest border border-slate-100 dark:border-slate-800 z-10">Review</button>
+                                        <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${statusColor}">
+                                            ${d.status.replace('_', ' ')}
+                                        </span>
+                                    </div>
+
+                                    ${d.isSpam ? `<div class="absolute top-0 right-0 p-1 bg-red-500 text-white text-[8px] font-bold px-2 rounded-bl-lg">SPAM</div>` : ''}
+                                    ${d.reviewRequested ? `<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-0.5 bg-amber-400 rounded-t-full"></div>` : ''}
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-slate-700 dark:text-slate-200 font-mono">${getSymbol(d.currency)}${d.totalAmount}</p>
-                                    <p class="text-[10px] text-slate-400 font-bold">${d.currency}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between border-t border-slate-50 dark:border-slate-700/50 pt-2 mt-2">
-                                <span class="${getStatusBadgeClass(d.status)} scale-90 origin-left">${d.status.replace('_', ' ')}</span>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] text-slate-400"><i class="fa-regular fa-calendar mr-1"></i> ${new Date(d.createdAt?.toDate ? d.createdAt.toDate() : d.createdAt).toLocaleDateString()}</span>
-                                    ${(d.approvalProof || (d.lineItems && d.lineItems.some(i => i.receiptUrl))) ? (() => {
-            // Check if any URL is insecure
-            const urls = [d.approvalProof, ...(d.lineItems?.map(i => i.receiptUrl) || [])].filter(u => u);
-            const hasInsecure = urls.some(u => !u.startsWith('https://') && !u.startsWith('blob:'));
-            return hasInsecure
-                ? '<span class="text-[9px] text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100" title="Unsecured Attachment (HTTP)"><i class="fa-solid fa-unlock-keyhole"></i> Insecure</span>'
-                : '<span class="text-[9px] text-green-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100" title="Secured Attachment (HTTPS)"><i class="fa-solid fa-lock"></i> Secure</span>';
-        })() : ''}
-                                </div>
-                            </div>
-                        </div>
-                         <div class="absolute top-0 left-0 w-1 h-full ${d.preApproved ? 'bg-green-400' : 'bg-green-500'}"></div>
-                    </div>
-                `).join('')
-        }
-            </div> `;
+                            `;
+                        }).join('')}
+                    </div>`;
 };
 
 window.toggleSelection = (id) => {
@@ -2838,40 +2837,35 @@ async function renderUserManagement() {
         const myRank = roleRank[userData.role] || 0;
 
         content.innerHTML = `
-                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in" >
-                        <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 justify-between items-center user-mgmt-header">
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">System Users <span id="user-count-badge" class="ml-2 bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full text-xs">${users.length}</span></h3>
-                            
-                            <div class="flex gap-3 w-full md:w-auto">
-                                <div class="relative flex-1 md:w-64">
-                                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                    <input type="text" id="user-search" onkeyup="handleUserSearch()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-9 pr-3 text-xs focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Search by name, email or ID...">
-                                </div>
-                                ${['ADMIN', 'HR'].includes(userData.role) ? `<button onclick="openNotificationModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-200 mr-2"><i class="fa-solid fa-bell"></i> Notify Users</button>` : ''}
-                                ${myRank > 1 ? `<button onclick="showAddUserModal()" class="btn-primary py-2 text-xs shrink-0"><i class="fa-solid fa-plus mr-1"></i> Add User</button>` : ''}
+                    <div class="fade-in space-y-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">User Management</h3>
+                                <p class="text-xs text-slate-500">Manage access levels, roles, and user accounts.</p>
+                            </div>
+                            <div class="flex gap-2 w-full md:w-auto">
+                                ${['ADMIN', 'HR'].includes(userData.role) ? `<button onclick="openNotificationModal()" class="flex-1 md:flex-none text-xs bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2.5 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2">
+                                     <i class="fa-solid fa-paper-plane"></i> Notify Users
+                                </button>` : ''}
+                                ${myRank > 1 ? `<button onclick="showAddUserModal()" class="flex-1 md:flex-none text-xs bg-slate-900 text-white px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2">
+                                     <i class="fa-solid fa-plus"></i> Add User
+                                </button>` : ''}
                             </div>
                         </div>
-                        <div class="overflow-x-auto user-mgmt-table-wrap">
-                            <table class="data-grid text-sm">
-                                <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left">Employee ID</th>
-                                        <th class="px-6 py-3 text-left">Name</th>
-                                        <th class="px-6 py-3 text-left">Email</th>
-                                        <th class="px-6 py-3 text-left">Role</th>
-                                        <th class="px-6 py-3 text-left">Department</th>
-                                        <th class="px-6 py-3 text-left">Budget</th>
-                                        <th class="px-6 py-3 text-left">Expenses</th>
-                                        <th class="px-6 py-3 text-left">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="users-table-body">
-                                    <!-- Populated by JS -->
-                                </tbody>
-                            </table>
+
+                        <div class="bg-white dark:bg-slate-810 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 items-center mb-6">
+                            <div class="relative flex-1 w-full">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                <input type="text" id="user-search" oninput="handleUserSearch()" placeholder="Search users by name, email or employee ID..." class="input-vercel pl-9 h-10 w-full bg-slate-50 dark:bg-slate-900 border-none">
+                            </div>
+                            <h3 class="hidden md:block text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Total: <span id="user-count-badge">${users.length}</span></h3>
+                        </div>
+
+                        <div id="users-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Populated by JS -->
                         </div>
                     </div>
-                        `;
+                `;
 
         renderUserRows(users);
 
@@ -2893,18 +2887,18 @@ window.handleUserSearch = () => {
 };
 
 function renderUserRows(usersList) {
-    const tbody = document.getElementById('users-table-body');
-    if (!tbody) return;
+    const container = document.getElementById('users-grid');
+    if (!container) return;
 
     if (usersList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400 italic">No users found matching your search.</td></tr>`;
+        container.innerHTML = `<div class="col-span-full p-12 text-center text-slate-400 italic">No users found matching your search.</div>`;
         return;
     }
 
     const myRank = roleRank[userData.role] || 0;
     const MAIN_ADMIN_EMAIL = 'explyra@gmail.com';
 
-    tbody.innerHTML = usersList.map(u => {
+    container.innerHTML = usersList.map(u => {
         const uRank = roleRank[u.role] || 1;
         let canEdit = myRank > uRank || userData.role === 'ADMIN';
 
@@ -2916,59 +2910,51 @@ function renderUserRows(usersList) {
         const count = expenseCountsCache[u.id] || 0;
 
         return `
-                        <tr class="border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:bg-slate-900 transition group">
-                        <td class="px-6 py-4 font-mono text-xs text-slate-500">${u.employeeId || '-'}</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-300 overflow-hidden border border-slate-200 dark:border-slate-600 flex-shrink-0">
-                                    ${u.photoUrl
-                ? `<img src="${u.photoUrl}" alt="${u.name}" class="w-full h-full object-cover">`
-                : (u.name ? u.name.charAt(0).toUpperCase() : '<i class="fa-solid fa-user"></i>')}
-                                </div>
-                                <div class="font-medium text-slate-700 dark:text-slate-200">
-                                    ${u.name || 'N/A'}
-                                    ${u.id === currentUser.uid ? '<span class="ml-2 text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded font-bold">YOU</span>' : ''}
-                                    ${u.email === MAIN_ADMIN_EMAIL ? '<span class="ml-2 text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-bold border border-purple-200"><i class="fa-solid fa-code mr-0.5"></i> DEVELOPER</span>' : ''}
-                                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition group relative overflow-hidden flex flex-col">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 group-hover:bg-green-50 group-hover:text-green-600 transition font-bold text-lg overflow-hidden border border-slate-100 dark:border-slate-700">
+                                ${u.photoUrl ? `<img src="${u.photoUrl}" class="w-full h-full object-cover">` : (u.name ? u.name[0].toUpperCase() : '?')}
                             </div>
-                        </td>
-                        <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
-                            <div>${u.email}</div>
-                            ${u.phone ? `<div class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-phone mr-1"></i>${u.phone}</div>` : ''}
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 rounded-full text-[10px] font-bold ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' :
-                u.role === 'MANAGER' ? 'bg-green-100 text-green-700' :
-                    u.role === 'SENIOR_MANAGER' ? 'bg-indigo-100 text-indigo-700' :
-                        u.role === 'TREASURY' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-slate-100 text-slate-700 dark:text-slate-200'
-            }">${u.role ? u.role.replace('_', ' ') : 'EMPLOYEE'}</span>
-                        </td>
-                        <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${u.department || '-'}</td>
-                        <td class="px-6 py-4 text-slate-500 text-xs font-mono">${u.budgetLimit ? '₹' + u.budgetLimit.toLocaleString() : 'Unlimited'}</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-xs">${count}</span>
-                                <button onclick="toggleUserExpenses('${u.id}', this)" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 transition" title="View Expenses">
-                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                                </button>
+                            <div>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-0.5 line-clamp-1">
+                                    ${u.name || 'Unnamed User'}
+                                    ${u.id === currentUser.uid ? '<span class="ml-1 text-[9px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded-full font-bold">YOU</span>' : ''}
+                                </h4>
+                                <p class="text-[10px] text-slate-400 truncate max-w-[150px] font-medium">${u.email}</p>
                             </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition duration-200">
-                                ${canEdit ? `
-                                <button onclick="editUser('${u.id}')" class="w-7 h-7 rounded bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition" title="Edit">
-                                    <i class="fa-solid fa-pen text-[10px]"></i>
-                                </button>
-                                ${u.email !== currentUser?.email ? `
-                                    <button onclick="showDeleteModal('${u.id}', '${u.name || u.email}')" class="w-7 h-7 rounded bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition" title="Delete">
-                                        <i class="fa-solid fa-trash text-[10px]"></i>
-                                    </button>
-                                ` : ''}` : '<span class="text-slate-300 text-[10px] italic">No Access</span>'}
-                            </div>
-                        </td>
-                    </tr >
-                        `}).join('');
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[9px] font-bold tracking-widest ${u.role === 'ADMIN' ? 'bg-purple-50 text-purple-600 border border-purple-100' : 'bg-slate-50 text-slate-500 border border-slate-100'} uppercase">
+                            ${(u.role || 'User').replace('_', ' ')}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-6 flex-1">
+                        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/30">
+                            <p class="text-[9px] text-slate-400 uppercase font-black tracking-tighter mb-0.5">Emp ID / Dept</p>
+                            <p class="text-[10px] font-bold text-slate-700 dark:text-slate-200 truncate">${u.employeeId || 'N/A'} • ${u.department || 'Gen'}</p>
+                        </div>
+                        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/30">
+                            <p class="text-[9px] text-slate-400 uppercase font-black tracking-tighter mb-0.5">Expenses</p>
+                            <p class="text-[10px] font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between">
+                                ₹${u.budgetLimit ? u.budgetLimit.toLocaleString() : '∞'}
+                                <span class="text-green-600">(${count})</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-700/50 gap-2">
+                        ${canEdit ? `
+                            <button onclick="editUser('${u.id}')" class="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-green-50 hover:text-green-600 transition uppercase tracking-widest border border-slate-100 dark:border-slate-700">Edit Profile</button>
+                            ${u.email !== currentUser?.email ? `
+                                <button onclick="showDeleteModal('${u.id}', '${u.name || u.email}')" class="px-3 py-1.5 text-[10px] font-bold text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition uppercase tracking-widest">Delete</button>
+                            ` : ''}
+                        ` : `
+                            <div class="flex-1 text-center py-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest italic opacity-50"><i class="fa-solid fa-lock mr-2"></i> Restricted Access</div>
+                        `}
+                    </div>
+                </div>
+                            `}).join('');
 }
 
 window.handleLogoPreview = async (input) => {
@@ -3785,52 +3771,47 @@ window.renderProjects = async () => {
         const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
         content.innerHTML = `
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
-                        <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <div class="fade-in space-y-6">
+                        <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Company Projects</h3>
-                                <p class="text-xs text-slate-400">Manage cost codes and projects.</p>
+                                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Project Management</h3>
+                                <p class="text-xs text-slate-500">Manage cost codes and active business projects.</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="exportProjectsCSV()" class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition border border-slate-200 dark:border-slate-600"><i class="fa-solid fa-download mr-1"></i> Export CSV</button>
-                                <button onclick="showProjectModal()" class="text-xs bg-slate-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-slate-800 transition"><i class="fa-solid fa-plus mr-1"></i> Add Project</button>
+                                <button onclick="exportProjectsCSV()" class="text-xs bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-download mr-1"></i> Export</button>
+                                <button onclick="showProjectModal()" class="text-xs bg-slate-900 text-white px-4 py-2 rounded-xl font-bold hover:opacity-90 transition shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add Project</button>
                             </div>
                         </div>
-                        <div class="p-0">
-                            ${projects.length === 0 ? '<div class="p-8 text-center text-slate-400 text-sm">No projects found. Add one to get started.</div>' : ''}
-                            <div class="overflow-x-auto">
-                                <table class="data-grid text-sm text-left">
-                                    <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 text-xs uppercase">
-                                        <tr>
-                                            <th class="px-6 py-3">Code</th>
-                                            <th class="px-6 py-3">Name</th>
-                                            <th class="px-6 py-3">Details</th>
-                                            <th class="px-6 py-3">Status</th>
-                                            <th class="px-6 py-3 text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                                        ${projects.map(p => `
-                                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                                                <td class="px-6 py-4 font-mono font-bold text-slate-700 dark:text-slate-200">${p.code}</td>
-                                                <td class="px-6 py-4 font-semibold">${p.name}</td>
-                                                <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate" title="${p.details || ''}">${p.details || '-'}</td>
-                                                <td class="px-6 py-4">
-                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.active !== false ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}">
-                                                        ${p.active !== false ? 'ACTIVE' : 'INACTIVE'}
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4 text-right">
-                                                    <button onclick="toggleProjectStatus('${p.id}', ${p.active !== false})" class="text-xs font-bold text-green-600 hover:underline">
-                                                        ${p.active !== false ? 'Deactivate' : 'Activate'}
-                                                    </button>
-                                                    <button onclick="deleteProject('${p.id}')" class="ml-3 text-xs font-bold text-red-600 hover:underline">Delete</button>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            ${projects.length === 0 ? '<div class="col-span-full p-12 text-center text-slate-400 text-sm bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">No projects found. Add one to get started.</div>' : ''}
+                            ${projects.map(p => `
+                                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition group relative overflow-hidden">
+                                     <div class="absolute top-0 right-0 p-3">
+                                         <span class="px-2 py-0.5 rounded text-[9px] font-bold tracking-widest ${p.active !== false ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-slate-50 text-slate-400 border border-slate-100'}">
+                                            ${p.active !== false ? 'ACTIVE' : 'INACTIVE'}
+                                         </span>
+                                     </div>
+                                     <div class="flex items-center gap-4 mb-4">
+                                         <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 group-hover:bg-green-50 group-hover:text-green-600 transition">
+                                             <i class="fa-solid fa-folder-tree"></i>
+                                         </div>
+                                         <div>
+                                             <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-0.5">${p.name}</h4>
+                                             <p class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">${p.code}</p>
+                                         </div>
+                                     </div>
+                                     <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 h-8">${p.details || 'No additional details provided for this project.'}</p>
+                                     <div class="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-700/50">
+                                         <div class="flex items-center gap-2">
+                                             <button onclick="toggleProjectStatus('${p.id}', ${p.active !== false})" class="text-[10px] font-bold ${p.active !== false ? 'text-orange-500' : 'text-green-600'} hover:underline uppercase tracking-wider">
+                                                 ${p.active !== false ? 'Deactivate' : 'Activate'}
+                                             </button>
+                                         </div>
+                                         <button onclick="deleteProject('${p.id}')" class="text-[10px] font-bold text-red-400 hover:text-red-500 hover:underline uppercase tracking-wider">Delete</button>
+                                     </div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
@@ -4439,25 +4420,45 @@ window.renderMyClaims = async () => {
 
         list.innerHTML = sortedDocs.map(doc => {
             const d = doc.data();
-            let badgeClass = 'bg-slate-100 text-slate-500 dark:text-slate-400';
-            if (typeof getStatusBadgeClass === 'function') badgeClass = getStatusBadgeClass(d.status);
+            let badgeClass = 'bg-slate-100 text-slate-500 border-slate-200';
+            if (d.status === 'PENDING') badgeClass = 'bg-amber-50 text-amber-600 border-amber-100';
+            else if (d.status === 'APPROVED') badgeClass = 'bg-blue-50 text-blue-600 border-blue-100';
+            else if (d.status === 'PAID') badgeClass = 'bg-green-50 text-green-600 border-green-100';
+            else if (d.status === 'REJECTED') badgeClass = 'bg-red-50 text-red-600 border-red-100';
+
+            const date = d.createdAt?.toDate ? d.createdAt.toDate() : new Date();
 
             return `
-                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-between items-center hover:shadow-md transition group relative">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-slate-400 font-bold group-hover:bg-green-50 group-hover:text-green-600 transition">
-                                    ${getSymbol(d.currency)}
+                        <div class="bg-white dark:bg-slate-810 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition group relative overflow-hidden flex flex-col h-full">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-slate-400 group-hover:bg-green-50 group-hover:text-green-600 transition border border-slate-100 dark:border-slate-800">
+                                        <i class="fa-solid fa-receipt text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-0.5 line-clamp-1 group-hover:text-green-600 transition">${d.title}</h4>
+                                        <p class="text-[10px] text-slate-400 font-medium">${date.toLocaleDateString()} • ${d.projectCode || 'General'}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">${d.title}</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-mono">${d.projectCode} • ${new Date(d.createdAt.toDate()).toLocaleDateString()}</p>
+                                <span class="px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${badgeClass}">
+                                    ${d.status.replace('_', ' ')}
+                                </span>
+                            </div>
+
+                            <div class="flex-1 space-y-2 mb-4">
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="text-slate-400 font-bold uppercase tracking-tight">Amount</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-200 font-mono">₹${parseFloat(d.totalAmount).toLocaleString()}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="text-slate-400 font-bold uppercase tracking-tight">Project</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-200">${d.projectCode || 'N/A'}</span>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <p class="font-bold text-slate-800 dark:text-slate-100 font-mono text-sm">${getSymbol(d.currency)}${d.totalAmount}</p>
-                                <span class="${badgeClass} inline-block mt-1">${d.status.replace('_', ' ')}</span>
-                            </div>
-                            <button onclick="openExpenseModal('${doc.id}')" class="absolute inset-0 w-full h-full opacity-0 pointer-events-auto" title="View Details"></button>
+
+                            <button onclick="openExpenseModal('${doc.id}')" class="w-full py-2 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 transition uppercase tracking-widest border border-slate-100 dark:border-slate-800">
+                                View Details
+                            </button>
                         </div>
                     `;
         }).join('');
@@ -4779,7 +4780,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 window.toggleSidebar = () => {
-    const sidebar = document.getElementById('sidebar');
+    const sidebar = document.getElementById('admin-sidebar');
     const overlay = document.getElementById('mobile-sidebar-overlay');
 
     if (sidebar.classList.contains('-translate-x-full')) {
@@ -5136,7 +5137,7 @@ const originalSwitchTab = window.switchTab;
 window.switchTab = (tab) => {
     if (originalSwitchTab) originalSwitchTab(tab);
     if (window.innerWidth < 1024) { // lg breakpoint
-        const sidebar = document.getElementById('sidebar');
+        const sidebar = document.getElementById('admin-sidebar');
         if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
             window.toggleSidebar();
         }
@@ -5340,6 +5341,83 @@ window.sendCustomNotification = async () => {
     } finally {
         btn.innerHTML = originalHTML;
         btn.disabled = false;
+    }
+};
+
+// --- Notification List & PDP ---
+window.openNotifList = async () => {
+    const modal = document.getElementById('modal-notif-list');
+    const container = document.getElementById('notif-list-container');
+    const dot = document.getElementById('header-notif-dot');
+    
+    // Hide dot when opening
+    if (dot) dot.classList.add('hidden');
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        document.getElementById('modal-notif-list-content').classList.remove('scale-95', 'opacity-0');
+        document.getElementById('modal-notif-list-content').classList.add('scale-100', 'opacity-100');
+    }, 10);
+
+    try {
+        const q = query(
+            collection(db, "notifications"),
+            where("targetUserId", "in", [userData.docId, 'ALL']),
+            orderBy("createdAt", "desc"),
+            limit(20)
+        );
+        const snap = await safeFirebaseFetch(getDocs(q));
+        
+        if (snap.empty) {
+            container.innerHTML = `
+                <div class="text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-bell-slash text-3xl mb-3 opacity-20"></i>
+                    <p class="text-sm">Inbox is clean!</p>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = snap.docs.map(docSnap => {
+            const d = docSnap.data();
+            const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString() + ' ' + d.createdAt.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+            return `
+                <div onclick="openNotificationPDP('${docSnap.id}')" class="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-green-200 dark:hover:border-green-800 transition cursor-pointer group shadow-sm">
+                    <div class="flex justify-between items-start mb-1">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm group-hover:text-green-600 transition">${d.title}</h4>
+                        <span class="text-[9px] font-mono text-slate-400">${time}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">${d.body}</p>
+                    <div class="flex items-center gap-1.5 mt-2">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">from: ${d.sender || 'Admin'}</span>
+                        ${d.type === 'CUSTOM' ? '<span class="px-1.5 py-0.5 rounded bg-green-50 dark:bg-green-900/20 text-green-600 text-[8px] font-bold uppercase tracking-widest border border-green-100 dark:border-green-800">Direct Message</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        container.innerHTML = `<div class="text-red-500 text-xs p-4">Error: ${e.message}</div>`;
+    }
+};
+
+window.openNotificationPDP = async (id) => {
+    try {
+        const snap = await getDoc(doc(db, "notifications", id));
+        if (!snap.exists()) return;
+        const d = snap.data();
+
+        document.getElementById('pdp-notif-title').textContent = d.title;
+        document.getElementById('pdp-notif-sender').textContent = d.sender || 'Admin';
+        document.getElementById('pdp-notif-date').textContent = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString() : 'Recent';
+        document.getElementById('pdp-notif-body').textContent = d.body;
+
+        const modal = document.getElementById('modal-notif-pdp');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('modal-notif-pdp-content').classList.remove('scale-95', 'opacity-0');
+            document.getElementById('modal-notif-pdp-content').classList.add('scale-100', 'opacity-100');
+        }, 10);
+    } catch (e) {
+        showToast("Error loading details.", "error");
     }
 };
 
@@ -6097,3 +6175,16 @@ if ('serviceWorker' in navigator) {
         .then(reg => console.log('Service Worker Registered'))
         .catch(err => console.error('Service Worker Error', err));
 }
+
+window.toggleSidebar = () => {
+    const sidebar = document.getElementById('admin-sidebar');
+    if (sidebar) {
+        if(sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('translate-x-0');
+        }
+    }
+};
