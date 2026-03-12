@@ -302,12 +302,12 @@
         const EMAILJS_PUBLIC_KEY = window.EMAILJS_PUBLIC_KEY
             || document.querySelector('meta[name="emailjs-public-key"]')?.content?.trim()
             || localStorage.getItem('explyra_emailjs_key')
-            || "i1GEROAXLarlKvxnp";
+            || '';
         window.addEventListener('DOMContentLoaded', () => {
-            if (window.emailjs?.init) {
+            if (window.emailjs?.init && EMAILJS_PUBLIC_KEY) {
                 emailjs.init(EMAILJS_PUBLIC_KEY);
             } else {
-                console.warn('EmailJS SDK unavailable; init skipped.');
+                console.warn('EmailJS SDK unavailable or key missing; init skipped.');
             }
         });
     </script>

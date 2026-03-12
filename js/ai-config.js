@@ -1,21 +1,19 @@
 // Explyra AI Configuration
-const baseResolveGroqKey = (includeConfig = true) => {
+const resolveGroqKey = () => {
     const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
     return (
         window.__GROQ_API_KEY ||
-        (includeConfig ? window.AI_CONFIG?.apiKey : undefined) ||
+        window.AI_CONFIG?.apiKey ||
         metaKey ||
         localStorage.getItem('explyra_groq_key') ||
         ''
     );
 };
 
-window.resolveGroqKey = window.resolveGroqKey || baseResolveGroqKey;
-const resolveGroqKey = window.resolveGroqKey;
+window.resolveGroqKey = window.resolveGroqKey || resolveGroqKey;
 
 const AI_CONFIG = {
-    // Use includeConfig=false to avoid circular reference while initializing AI_CONFIG itself
-    apiKey: baseResolveGroqKey(false),
+    apiKey: resolveGroqKey(),
     url: 'https://api.groq.com/openai/v1/chat/completions',
     model: 'moonshotai/kimi-k2-instruct-0905'
 };

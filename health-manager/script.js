@@ -61,8 +61,7 @@ const resolveGroqKey = window.resolveGroqKey || (() => {
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const AI_MODEL = "llama-3.3-70b-versatile"; 
-let groqApiKey = resolveGroqKey();
-window.setGroqApiKey = (key) => { groqApiKey = key; };
+const groqApiKey = resolveGroqKey();
 
 let currentUser = null;
 let userProfile = null;
@@ -689,8 +688,7 @@ async function fetchChatResponse(userText) {
             { role: "user", content: userText }
         ];
 
-        const groqKey = groqApiKey ?? resolveGroqKey();
-        if (!groqKey) {
+        if (!groqApiKey) {
             document.getElementById(loadingId).remove();
             appendMessage('ai', "AI coach is disabled because no API key is configured. Provide window.__GROQ_API_KEY, set window.AI_CONFIG.apiKey, add a <meta name=\"groq-api-key\"> tag, or store 'explyra_groq_key' in local storage.");
             return;
@@ -699,7 +697,7 @@ async function fetchChatResponse(userText) {
         const response = await fetch(GROQ_API_URL, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${groqKey}`,
+                "Authorization": `Bearer ${groqApiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -792,8 +790,7 @@ window.generateAIPlan = async (force = false) => {
             }
         `;
 
-        const groqKey = groqApiKey ?? resolveGroqKey();
-        if (!groqKey) {
+        if (!groqApiKey) {
             loader.classList.add('hidden');
             container.innerHTML = '<p class="text-center text-gray-500">AI plan generation is disabled: configure window.__GROQ_API_KEY, window.AI_CONFIG.apiKey, a groq-api-key meta tag, or localStorage key.</p>';
             return;
@@ -802,7 +799,7 @@ window.generateAIPlan = async (force = false) => {
         const response = await fetch(GROQ_API_URL, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${groqKey}`,
+                "Authorization": `Bearer ${groqApiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
