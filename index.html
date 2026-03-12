@@ -1090,17 +1090,27 @@
         }
 
         .hero h1 .grad {
-            background: linear-gradient(135deg, var(--blue), var(--purp));
+            background: linear-gradient(90deg, var(--blue), var(--purp), var(--teal), var(--blue));
+            background-size: 300% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text
+            background-clip: text;
+            animation: shimmerGrad 6s ease-in-out infinite
         }
 
         [data-theme="dark"] .hero h1 .grad {
-            background: linear-gradient(135deg, var(--blue2), var(--purp2));
+            background: linear-gradient(90deg, var(--blue2), var(--purp2), var(--teal2), var(--blue2));
+            background-size: 300% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text
+            background-clip: text;
+            animation: shimmerGrad 6s ease-in-out infinite
+        }
+
+        @keyframes shimmerGrad {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
         }
 
         .hero h1 em {
@@ -3941,10 +3951,151 @@
             background: rgba(14, 18, 32, 0.95);
             border: 1px solid rgba(91, 138, 245, 0.2);
         }
+
+        /* ═══════════════════════════════════════════
+   SKIP TO CONTENT (Accessibility)
+═══════════════════════════════════════════ */
+        .skip-to-content {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue);
+            color: #fff;
+            padding: .75rem 1.5rem;
+            border-radius: 0 0 var(--r) var(--r);
+            font-size: .9rem;
+            font-weight: 600;
+            z-index: 9999;
+            transition: top .3s ease;
+        }
+
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        /* ═══════════════════════════════════════════
+   IMPROVED FOCUS STYLES (Accessibility)
+═══════════════════════════════════════════ */
+        :focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ═══════════════════════════════════════════
+   SOCIAL PROOF MARQUEE
+═══════════════════════════════════════════ */
+        .sp-marquee-wrapper {
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .sp-marquee-track {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            width: max-content;
+            animation: marqueeScroll 25s linear infinite;
+        }
+
+        .sp-marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ═══════════════════════════════════════════
+   TESTIMONIALS ENHANCED
+═══════════════════════════════════════════ */
+        .test-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .test-card:hover {
+            box-shadow: 0 8px 32px rgba(21, 70, 192, 0.08), 0 0 0 1px var(--blue-b);
+            border-color: var(--blue-b);
+        }
+
+        [data-theme="dark"] .test-card:hover {
+            box-shadow: 0 8px 32px rgba(91, 138, 245, 0.12), 0 0 0 1px var(--blue-b);
+        }
+
+        .test-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .test-stars .star {
+            color: #F59E0B;
+            font-size: 1.1rem;
+            opacity: 0;
+            animation: starPop .4s ease forwards;
+        }
+
+        .test-stars .star:nth-child(1) { animation-delay: 0s; }
+        .test-stars .star:nth-child(2) { animation-delay: .08s; }
+        .test-stars .star:nth-child(3) { animation-delay: .16s; }
+        .test-stars .star:nth-child(4) { animation-delay: .24s; }
+        .test-stars .star:nth-child(5) { animation-delay: .32s; }
+
+        @keyframes starPop {
+            0% { opacity: 0; transform: scale(0) rotate(-30deg); }
+            60% { transform: scale(1.2) rotate(5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        /* ═══════════════════════════════════════════
+   CTA SECTION ANIMATED BG
+═══════════════════════════════════════════ */
+        .cta-banner {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 80% at 30% 50%, rgba(21, 70, 192, .06), transparent 70%),
+                        radial-gradient(ellipse 50% 60% at 70% 60%, rgba(109, 40, 217, .05), transparent 70%);
+            animation: ctaGlow 8s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        [data-theme="dark"] .cta-banner::before {
+            background: radial-gradient(ellipse 60% 80% at 30% 50%, rgba(91, 138, 245, .1), transparent 70%),
+                        radial-gradient(ellipse 50% 60% at 70% 60%, rgba(167, 139, 250, .08), transparent 70%);
+        }
+
+        @keyframes ctaGlow {
+            0% { opacity: .6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* ═══════════════════════════════════════════
+   HERO COUNTER ANIMATION
+═══════════════════════════════════════════ */
+        .h-stat-num {
+            transition: transform .3s ease;
+        }
+
+        .h-stat:hover .h-stat-num {
+            transform: scale(1.1);
+            color: var(--blue);
+        }
     </style>
 </head>
 
 <body>
+    <!-- SKIP TO CONTENT (Accessibility) -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
 
     <!-- HEADER & NAV -->
     <header>
@@ -4123,7 +4274,7 @@
     </header>
 
     <!-- ══ MAIN CONTENT ══ -->
-    <main>
+    <main id="main-content">
 
         <!-- ══ HERO ══ -->
         <section class="hero" aria-label="Hero">
@@ -4185,10 +4336,21 @@
         <!-- ══ POWERED BY ══ -->
         <section class="social-proof reveal">
             <p class="sp-text">Powered by</p>
-            <div class="sp-logos">
-                <div class="sp-logo"><i class="fa-brands fa-github"></i> GitHub</div>
-                <div class="sp-logo"><i class="fa-brands fa-cloudflare"></i> Cloudflare</div>
-                <div class="sp-logo"><i class="fa-brands fa-google"></i> Google</div>
+            <div class="sp-marquee-wrapper">
+                <div class="sp-marquee-track">
+                    <div class="sp-logo"><i class="fa-brands fa-github"></i> GitHub</div>
+                    <div class="sp-logo"><i class="fa-brands fa-cloudflare"></i> Cloudflare</div>
+                    <div class="sp-logo"><i class="fa-brands fa-google"></i> Google</div>
+                    <div class="sp-logo"><i class="fa-solid fa-fire"></i> Firebase</div>
+                    <div class="sp-logo"><i class="fa-brands fa-js"></i> JavaScript</div>
+                    <div class="sp-logo"><i class="fa-solid fa-shield-halved"></i> SSL</div>
+                    <div class="sp-logo"><i class="fa-brands fa-github"></i> GitHub</div>
+                    <div class="sp-logo"><i class="fa-brands fa-cloudflare"></i> Cloudflare</div>
+                    <div class="sp-logo"><i class="fa-brands fa-google"></i> Google</div>
+                    <div class="sp-logo"><i class="fa-solid fa-fire"></i> Firebase</div>
+                    <div class="sp-logo"><i class="fa-brands fa-js"></i> JavaScript</div>
+                    <div class="sp-logo"><i class="fa-solid fa-shield-halved"></i> SSL</div>
+                </div>
             </div>
         </section>
 
@@ -4879,7 +5041,7 @@
                 <h2 class="sec-h">Don't just take our word for it.</h2>
                 <div class="test-grid">
                     <div class="test-card">
-                        <div class="test-stars">★★★★★</div>
+                        <div class="test-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
                         <p class="test-quote">"Explyra Expense completely transformed how we handle corporate spending.
                             It saved us countless hours of manual work."</p>
                         <div class="test-author">
@@ -4893,7 +5055,7 @@
                         </div>
                     </div>
                     <div class="test-card">
-                        <div class="test-stars">★★★★★</div>
+                        <div class="test-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
                         <p class="test-quote">"The Health companion gives insanely accurate recommendations based on
                             live weather data. Nothing else compares."</p>
                         <div class="test-author">
@@ -4907,7 +5069,7 @@
                         </div>
                     </div>
                     <div class="test-card">
-                        <div class="test-stars">★★★★★</div>
+                        <div class="test-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
                         <p class="test-quote">"As a developer, having the Explyra Dev Tools all in one place without ads
                             is a lifesaver. Extremely fast and well-designed."</p>
                         <div class="test-author">
@@ -5005,7 +5167,7 @@
                         infrastructure. Explyra is not just a product, it's a statement: the right combination of AI,
                         design, and engineering can give teams everything they need in a single platform.</p>
                     <div class="founder-btns">
-                        <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
+                        <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer" class="founder-btn">🐙 GitHub</a>
                         <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
                         <a href="tel:+918076108584" class="founder-btn">📞 +91 8076108584</a>
                     </div>
@@ -5018,7 +5180,7 @@
                         <em>Trailer</em>
                     </h2>
                     <div class="video-thumbnail" id="videoTrigger">
-                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
+                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer" loading="lazy">
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <i class="fas fa-play"></i>
@@ -5054,7 +5216,7 @@
                             <div class="cta-c-val">explyra@gmail.com</div>
                         </div>
                     </a>
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank" class="cta-c"><span
+                    <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer" class="cta-c"><span
                             class="cta-c-icon">🐙</span>
                         <div>
                             <div class="cta-c-label">GitHub</div>
@@ -5148,17 +5310,17 @@
                 Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
                 strictly prohibited and subject to legal action.</p>
             <div class="foot-socials">
-                <a href="https://github.com/Explyra" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://x.com/explyras" target="_blank" title="X (Twitter)"><i class="fab fa-twitter"></i></a>
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)"><i class="fab fa-twitter"></i></a>
                 <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details"
-                    target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="https://www.instagram.com/explyras" target="_blank" title="Instagram"><i
+                    target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" title="Instagram"><i
                         class="fab fa-instagram"></i></a>
-                <a href="https://www.youtube.com/@explyras" target="_blank" title="YouTube"><i
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" title="YouTube"><i
                         class="fab fa-youtube"></i></a>
-                <a href="https://www.linkedin.com/company/explyra/" target="_blank" title="LinkedIn"><i
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i
                         class="fab fa-linkedin"></i></a>
-                <a href="https://www.threads.com/@explyras" target="_blank" title="Threads"><i
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" title="Threads"><i
                         class="fab fa-threads"></i></a>
             </div>
         </div>
@@ -5204,6 +5366,35 @@
         /* REVEAL */
         const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .08 });
         document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+        /* HERO STATS COUNTER ANIMATION */
+        const counterObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.h-stat-num').forEach(el => {
+                        const text = el.textContent.trim();
+                        const numMatch = text.match(/(\d+)/);
+                        if (numMatch) {
+                            const target = parseInt(numMatch[1]);
+                            const suffix = text.replace(numMatch[1], '');
+                            const prefix = text.indexOf(numMatch[1]) > 0 ? text.substring(0, text.indexOf(numMatch[1])) : '';
+                            const end = text.substring(text.indexOf(numMatch[1]) + numMatch[1].length);
+                            let current = 0;
+                            const duration = 1500;
+                            const step = Math.max(1, Math.floor(target / (duration / 16)));
+                            const timer = setInterval(() => {
+                                current = Math.min(current + step, target);
+                                el.textContent = prefix + current + end;
+                                if (current >= target) clearInterval(timer);
+                            }, 16);
+                        }
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: .3 });
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) counterObserver.observe(heroStats);
 
         /* SMOOTH SCROLL */
         document.querySelectorAll('a[href^="#"]').forEach(a => {
