@@ -3,7 +3,7 @@ const baseResolveGroqKey = (includeConfig = true) => {
     const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
     return (
         window.__GROQ_API_KEY ||
-        (includeConfig ? window.AI_CONFIG?.apiKey : '') ||
+        (includeConfig ? window.AI_CONFIG?.apiKey : undefined) ||
         metaKey ||
         localStorage.getItem('explyra_groq_key') ||
         ''

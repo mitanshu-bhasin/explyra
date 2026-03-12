@@ -689,7 +689,7 @@ async function fetchChatResponse(userText) {
             { role: "user", content: userText }
         ];
 
-        const groqKey = groqApiKey || resolveGroqKey();
+        const groqKey = groqApiKey ?? resolveGroqKey();
         if (!groqKey) {
             document.getElementById(loadingId).remove();
             appendMessage('ai', "AI coach is disabled because no API key is configured. Provide window.__GROQ_API_KEY, set window.AI_CONFIG.apiKey, add a <meta name=\"groq-api-key\"> tag, or store 'explyra_groq_key' in local storage.");
@@ -792,7 +792,7 @@ window.generateAIPlan = async (force = false) => {
             }
         `;
 
-        const groqKey = groqApiKey || resolveGroqKey();
+        const groqKey = groqApiKey ?? resolveGroqKey();
         if (!groqKey) {
             loader.classList.add('hidden');
             container.innerHTML = '<p class="text-center text-gray-500">AI plan generation is disabled: configure window.__GROQ_API_KEY, window.AI_CONFIG.apiKey, a groq-api-key meta tag, or localStorage key.</p>';
