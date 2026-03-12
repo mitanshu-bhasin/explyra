@@ -32,13 +32,13 @@ function renderOverallStatus(status) {
     banner.className = 'status-banner ' + status;
 
     const statusMap = {
-        'operational': '🟢 All Systems Operational',
-        'disruption': '🟡 Partial Service Disruption',
-        'outage': '🔴 Major Service Outage',
-        'maintenance': '🔵 Scheduled Maintenance'
+        'operational': 'All Systems Operational',
+        'disruption': 'Partial Service Disruption',
+        'outage': 'Major Service Outage',
+        'maintenance': 'Scheduled Maintenance'
     };
 
-    banner.innerText = statusMap[status] || '🟢 All Systems Operational';
+    banner.innerText = statusMap[status] || 'All Systems Operational';
 }
 
 function renderServices(groups) {

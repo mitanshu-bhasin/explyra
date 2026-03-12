@@ -372,14 +372,17 @@
             .video-thumbnail {
                 border-radius: 12px;
             }
+
             .play-btn-circle {
                 width: 50px;
                 height: 50px;
                 font-size: 1.1rem;
             }
+
             .v-modal {
                 padding: 1rem;
             }
+
             .v-modal-close {
                 top: -45px;
             }
@@ -996,7 +999,7 @@
 
         /* Testimonials */
         .testimonials {
-            padding: 6rem 5vw;
+            padding: 3.5rem 5vw;
             background: var(--bg);
             text-align: center;
         }
@@ -1045,14 +1048,22 @@
         }
 
         .test-av {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             font-size: 1.1rem;
+            overflow: hidden;
+            border: 2px solid var(--bg3);
+        }
+
+        .test-av img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .test-name {
@@ -1230,7 +1241,7 @@
    SUITE OVERVIEW CARDS
 ═══════════════════════════════════════════ */
         .overview {
-            padding: 4rem 5vw;
+            padding: 3rem 5vw;
             background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.95)), url('assets/images/overview_bg.png') center/cover no-repeat;
             border-top: 1px solid var(--bdr);
             transition: background 0.4s;
@@ -1247,7 +1258,7 @@
 
         .ov-header {
             text-align: center;
-            margin-bottom: 2.5rem
+            margin-bottom: 1.5rem
         }
 
         .eyebrow {
@@ -1274,7 +1285,7 @@
 
         .sec-h {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
             font-weight: 700;
             line-height: 1.1;
             letter-spacing: -.02em;
@@ -1286,25 +1297,25 @@
         }
 
         .sec-p {
-            font-size: .95rem;
+            font-size: .9rem;
             color: var(--ink3);
-            line-height: 1.75;
-            max-width: 520px;
-            margin: .8rem auto 0;
+            line-height: 1.65;
+            max-width: 500px;
+            margin: .6rem auto 0;
             font-weight: 300
         }
 
         .ov-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 1rem
+            gap: 0.8rem
         }
 
         .ov-card {
             background: var(--surf);
             border: 1px solid var(--bdr);
-            border-radius: 14px;
-            padding: 1.25rem;
+            border-radius: 12px;
+            padding: 1rem;
             cursor: pointer;
             transition: all .28s;
             position: relative;
@@ -1404,7 +1415,7 @@
    PRODUCT SECTIONS COMMON
 ═══════════════════════════════════════════ */
         .prod-section {
-            padding: 7rem 5vw;
+            padding: 3.5rem 5vw;
             position: relative;
             overflow: hidden
         }
@@ -1447,12 +1458,12 @@
 
         .prod-h {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-size: clamp(1.6rem, 2.5vw, 2.1rem);
             font-weight: 700;
             line-height: 1.1;
             letter-spacing: -.02em;
             color: var(--ink);
-            margin-bottom: 1rem
+            margin-bottom: 0.8rem
         }
 
         .prod-h em {
@@ -1460,18 +1471,18 @@
         }
 
         .prod-p {
-            font-size: .92rem;
+            font-size: .88rem;
             color: var(--ink3);
-            line-height: 1.8;
+            line-height: 1.7;
             font-weight: 300;
-            margin-bottom: 1.8rem
+            margin-bottom: 1.2rem
         }
 
         .feat-list {
             display: flex;
             flex-direction: column;
-            gap: .7rem;
-            margin-bottom: 2rem
+            gap: .5rem;
+            margin-bottom: 1.2rem
         }
 
         .feat-item {
@@ -2438,7 +2449,7 @@
 ═══════════════════════════════════════════ */
         .support-sec {
             background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95)), url('assets/images/support_bg.png') center/cover no-repeat;
-            padding: 7rem 5vw;
+            padding: 4rem 5vw;
             transition: background 0.4s;
         }
 
@@ -2520,7 +2531,7 @@
    FOUNDER & VIDEO SPLIT
 ═══════════════════════════════════════════ */
         .founder-strip {
-            padding: 6rem 5vw;
+            padding: 3.5rem 5vw;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 247, 244, 0.98)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
             border-top: 1px solid var(--bdr);
             position: relative;
@@ -2688,6 +2699,7 @@
                 grid-template-columns: 1fr;
                 gap: 3rem;
             }
+
             .founder-video-col {
                 padding: 1.5rem;
             }
@@ -2698,33 +2710,42 @@
                 padding: 4rem 5vw;
                 text-align: center;
             }
+
             .founder-info-top {
                 flex-direction: column;
                 text-align: center;
             }
+
             .founder-btns {
                 justify-content: center;
             }
+
             .founder-name {
                 font-size: 1.5rem;
             }
+
             .founder-bio {
                 font-size: 0.9rem;
             }
+
             .founder-video-col {
                 gap: 1rem;
                 padding: 1.2rem;
             }
+
             .video-thumbnail {
                 max-width: 100%;
                 border-radius: 12px;
             }
+
             .v-modal {
                 padding: 0;
             }
+
             .v-modal-content {
                 border-radius: 0;
             }
+
             .v-modal-close {
                 top: 15px;
                 right: 15px;
@@ -2737,7 +2758,7 @@
    CTA BANNER
 ═══════════════════════════════════════════ */
         .cta-banner {
-            padding: 6rem 5vw;
+            padding: 4rem 5vw;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -3672,6 +3693,105 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+
+        /* ═══════════════════════════════════════════
+   CUSTOM FUTURISTIC CURSOR
+═══════════════════════════════════════════ */
+        /* Hide default cursor on desktop */
+        @media (hover: hover) and (pointer: fine) {
+            *, *::before, *::after { cursor: none !important; }
+        }
+
+        /* Cursor wrapper */
+        #ex-cursor { position: fixed; top: 0; left: 0; z-index: 99999; pointer-events: none; }
+
+        /* Inner glowing dot */
+        .ex-dot {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: var(--blue);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 6px 2px var(--blue), 0 0 12px 4px color-mix(in srgb, var(--blue) 40%, transparent);
+            transition: width .2s, height .2s, background .25s, box-shadow .25s;
+        }
+
+        /* Outer trailing ring */
+        .ex-ring {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--blue);
+            transform: translate(-50%, -50%);
+            opacity: 0.7;
+            transition: width .35s cubic-bezier(.23,1,.32,1),
+                        height .35s cubic-bezier(.23,1,.32,1),
+                        border-color .25s,
+                        background .25s,
+                        opacity .25s;
+        }
+
+        /* Second subtle outer ring */
+        .ex-ring2 {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 0.5px solid color-mix(in srgb, var(--blue) 30%, transparent);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: width .5s, height .5s, opacity .4s;
+        }
+
+        /* HOVER STATE - triggered by JS */
+        #ex-cursor.is-hovering .ex-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--blue2, #5B8AF5);
+            box-shadow: 0 0 10px 4px var(--blue2, #5B8AF5), 0 0 22px 8px color-mix(in srgb, var(--blue2, #5B8AF5) 35%, transparent);
+        }
+        #ex-cursor.is-hovering .ex-ring {
+            width: 52px;
+            height: 52px;
+            border-color: var(--blue2, #5B8AF5);
+            border-width: 1px;
+            background: color-mix(in srgb, var(--blue2, #5B8AF5) 8%, transparent);
+            opacity: 1;
+        }
+        #ex-cursor.is-hovering .ex-ring2 {
+            width: 78px;
+            height: 78px;
+            opacity: 0.5;
+        }
+
+        /* CLICK STATE */
+        #ex-cursor.is-clicking .ex-dot {
+            width: 5px;
+            height: 5px;
+            background: #fff;
+        }
+        #ex-cursor.is-clicking .ex-ring {
+            width: 28px;
+            height: 28px;
+            border-color: #fff;
+            opacity: 1;
+        }
+
+        /* Dark theme tweaks */
+        [data-theme="dark"] .ex-dot {
+            background: var(--blue2);
+            box-shadow: 0 0 8px 3px var(--blue2), 0 0 18px 6px color-mix(in srgb, var(--blue2) 45%, transparent);
+        }
+        [data-theme="dark"] .ex-ring { border-color: var(--blue2); }
+        [data-theme="dark"] .ex-ring2 { border-color: color-mix(in srgb, var(--blue2) 28%, transparent); }
+
+        /* Only on touch/mobile: hide the cursor elements */
+        @media (hover: none), (max-width: 1024px) {
+            #ex-cursor { display: none; }
+            *, *::before, *::after { cursor: auto !important; }
+        }
     </style>
 </head>
 
@@ -4602,7 +4722,9 @@
                         <p class="test-quote">"Explyra Expense completely transformed how we handle corporate spending.
                             It saved us countless hours of manual work."</p>
                         <div class="test-author">
-                            <div class="test-av" style="background:var(--blue-g);color:var(--blue)">S</div>
+                            <div class="test-av" style="background:var(--blue-g);color:var(--blue)">
+                                <img src="assets/images/sarah.png" alt="Sarah Jenkins" loading="lazy">
+                            </div>
                             <div>
                                 <div class="test-name">Sarah Jenkins</div>
                                 <div class="test-role">Finance Director, TechLogix</div>
@@ -4614,7 +4736,9 @@
                         <p class="test-quote">"The Health companion gives insanely accurate recommendations based on
                             live weather data. Nothing else compares."</p>
                         <div class="test-author">
-                            <div class="test-av" style="background:var(--teal-g);color:var(--teal)">M</div>
+                            <div class="test-av" style="background:var(--teal-g);color:var(--teal)">
+                                <img src="assets/images/marcus.png" alt="Marcus Reed" loading="lazy">
+                            </div>
                             <div>
                                 <div class="test-name">Marcus Reed</div>
                                 <div class="test-role">Pro Athlete</div>
@@ -4626,7 +4750,9 @@
                         <p class="test-quote">"As a developer, having the Explyra Dev Tools all in one place without ads
                             is a lifesaver. Extremely fast and well-designed."</p>
                         <div class="test-author">
-                            <div class="test-av" style="background:var(--purp-g);color:var(--purp)">E</div>
+                            <div class="test-av" style="background:var(--purp-g);color:var(--purp)">
+                                <img src="assets/images/elena.png" alt="Elena Rostova" loading="lazy">
+                            </div>
                             <div>
                                 <div class="test-name">Elena Rostova</div>
                                 <div class="test-role">Senior Engineer</div>
@@ -4713,7 +4839,10 @@
                             <div class="founder-role">Founder & Lead Developer · Explyra</div>
                         </div>
                     </div>
-                    <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch — Firebase backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P infrastructure. Explyra is not just a product, it's a statement: the right combination of AI, design, and engineering can give teams everything they need in a single platform.</p>
+                    <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch —
+                        Firebase backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P
+                        infrastructure. Explyra is not just a product, it's a statement: the right combination of AI,
+                        design, and engineering can give teams everything they need in a single platform.</p>
                     <div class="founder-btns">
                         <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
                         <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
@@ -4722,8 +4851,10 @@
                 </div>
 
                 <div class="founder-video-col">
-                    <div class="eyebrow" style="color:var(--purp); justify-content: flex-start;">Experience Explyra</div>
-                    <h2 class="founder-name" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Explyra Suite <em>Trailer</em></h2>
+                    <div class="eyebrow" style="color:var(--purp); justify-content: flex-start;">Experience Explyra
+                    </div>
+                    <h2 class="founder-name" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Explyra Suite
+                        <em>Trailer</em></h2>
                     <div class="video-thumbnail" id="videoTrigger">
                         <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
                         <div class="play-overlay">
@@ -4732,7 +4863,8 @@
                             </div>
                         </div>
                     </div>
-                    <p class="cta-sub" style="margin-top: 0.5rem; opacity: 0.8; font-size: 0.85rem;">Witness the future of unified productivity in 120 seconds.</p>
+                    <p class="cta-sub" style="margin-top: 0.5rem; opacity: 0.8; font-size: 0.85rem;">Witness the future
+                        of unified productivity in 120 seconds.</p>
                 </div>
             </div>
         </article>
@@ -4877,7 +5009,9 @@
             <button class="v-modal-close" id="closeVideo" aria-label="Close video">
                 <i class="fas fa-times"></i>
             </button>
-            <iframe id="videoIframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe id="videoIframe"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
         </div>
     </div>
 
@@ -4997,6 +5131,76 @@
         });
     </script>
     <script src="js/global-enhancements.js"></script>
+    <!-- FUTURISTIC CURSOR -->
+    <div id="ex-cursor">
+        <div class="ex-ring2"></div>
+        <div class="ex-ring"></div>
+        <div class="ex-dot"></div>
+    </div>
+
+    <script>
+    (function() {
+        // Only activate on non-touch desktops
+        if (window.matchMedia('(hover: none)').matches || window.innerWidth <= 1024) return;
+
+        const cursor   = document.getElementById('ex-cursor');
+        const dot      = cursor.querySelector('.ex-dot');
+        const ring     = cursor.querySelector('.ex-ring');
+        const ring2    = cursor.querySelector('.ex-ring2');
+
+        // Positions
+        let mX = -200, mY = -200;   // mouse (dot follows immediately)
+        let rX = -200, rY = -200;   // ring (lag)
+        let r2X= -200, r2Y= -200;   // ring2 (more lag)
+
+        // Track mouse
+        document.addEventListener('mousemove', e => {
+            mX = e.clientX; mY = e.clientY;
+        });
+
+        // RAF loop — silky smooth lagging ring
+        function tick() {
+            // ring lags behind at 12% per frame
+            rX  += (mX - rX)  * 0.12;
+            rY  += (mY - rY)  * 0.12;
+            r2X += (mX - r2X) * 0.07;
+            r2Y += (mY - r2Y) * 0.07;
+
+            dot.style.left   = mX  + 'px';
+            dot.style.top    = mY  + 'px';
+            ring.style.left  = rX  + 'px';
+            ring.style.top   = rY  + 'px';
+            ring2.style.left = r2X + 'px';
+            ring2.style.top  = r2Y + 'px';
+
+            requestAnimationFrame(tick);
+        }
+        tick();
+
+        // Show cursor only after first move (prevents flash at 0,0)
+        document.addEventListener('mousemove', function show() {
+            cursor.style.opacity = '1';
+            document.removeEventListener('mousemove', show);
+        });
+        cursor.style.opacity = '0';
+        cursor.style.transition = 'opacity 0.3s';
+
+        // Hover state
+        const hoverSelector = 'a, button, [role="button"], .ov-card, .test-card, .course-item, .tool-item, .video-thumbnail, .v-modal-close, .suite-pill, .btn-hero, .btn-hero-ghost, label, input, select, textarea, .theme-pill, .back-to-top';
+        document.querySelectorAll(hoverSelector).forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
+        });
+
+        // Click state
+        document.addEventListener('mousedown', () => cursor.classList.add('is-clicking'));
+        document.addEventListener('mouseup',   () => cursor.classList.remove('is-clicking'));
+
+        // Hide on leave, show on enter
+        document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+    })();
+    </script>
 </body>
 
 </html>
