@@ -4343,13 +4343,13 @@
                     <div class="sp-logo"><i class="fa-brands fa-google"></i> Google</div>
                     <div class="sp-logo"><i class="fa-solid fa-fire"></i> Firebase</div>
                     <div class="sp-logo"><i class="fa-brands fa-js"></i> JavaScript</div>
-                    <div class="sp-logo"><i class="fa-solid fa-shield-halved"></i> SSL</div>
+                    <div class="sp-logo"><i class="fa-brands fa-android"></i> Android</div>
                     <div class="sp-logo"><i class="fa-brands fa-github"></i> GitHub</div>
                     <div class="sp-logo"><i class="fa-brands fa-cloudflare"></i> Cloudflare</div>
                     <div class="sp-logo"><i class="fa-brands fa-google"></i> Google</div>
                     <div class="sp-logo"><i class="fa-solid fa-fire"></i> Firebase</div>
                     <div class="sp-logo"><i class="fa-brands fa-js"></i> JavaScript</div>
-                    <div class="sp-logo"><i class="fa-solid fa-shield-halved"></i> SSL</div>
+                    <div class="sp-logo"><i class="fa-brands fa-android"></i> Android</div>
                 </div>
             </div>
         </section>
@@ -5373,18 +5373,18 @@
                 if (entry.isIntersecting) {
                     entry.target.querySelectorAll('.h-stat-num').forEach(el => {
                         const text = el.textContent.trim();
-                        const numMatch = text.match(/(\d+)/);
+                        // Skip non-numeric entries like "24/7"
+                        if (!/^\d+/.test(text) && !/\d+/.test(text)) return;
+                        const numMatch = text.match(/^(\d+)(.*)/);
                         if (numMatch) {
                             const target = parseInt(numMatch[1]);
-                            const suffix = text.replace(numMatch[1], '');
-                            const prefix = text.indexOf(numMatch[1]) > 0 ? text.substring(0, text.indexOf(numMatch[1])) : '';
-                            const end = text.substring(text.indexOf(numMatch[1]) + numMatch[1].length);
+                            const suffix = numMatch[2]; // e.g. "+", "/7", etc.
                             let current = 0;
                             const duration = 1500;
                             const step = Math.max(1, Math.floor(target / (duration / 16)));
                             const timer = setInterval(() => {
                                 current = Math.min(current + step, target);
-                                el.textContent = prefix + current + end;
+                                el.textContent = current + suffix;
                                 if (current >= target) clearInterval(timer);
                             }, 16);
                         }
