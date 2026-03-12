@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra | Developer Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">E</div>
+                <span class="logo-text">Explyra</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <li class="nav-item active" data-view="dashboard">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-view="subdomains">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    <span class="nav-text">Subdomains</span>
+                </li>
+                <li class="nav-item" data-view="dns">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <span class="nav-text">DNS Manager</span>
+                </li>
+            </nav>
+
+            <div class="sidebar-footer">
+                <li class="nav-item" id="logoutBtn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span class="nav-text">Sign Out</span>
+                </li>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Navbar -->
+            <header class="navbar">
+                <div class="flex items-center gap-2">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <div class="search-container">
+                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" placeholder="Search domains...">
+                    </div>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                        <svg id="moonIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        <svg id="sunIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </button>
+                    <div class="user-avatar" id="userInitial">U</div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="content">
+                <!-- Dashboard View -->
+                <section id="dashboardView" class="page-view active">
+                    <div class="header-section">
+                        <h1>Overview</h1>
+                        <p>Welcome back, <span id="userName">User</span>. Here's what's happening today.</p>
+                    </div>
+
+                    <div class="grid-container">
+                        <div class="card">
+                            <p class="card-title">Total Subdomains</p>
+                            <div class="card-value" id="subdomainCount">0</div>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">DNS Records</p>
+                            <div class="card-value" id="dnsRecordCount">0</div>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">Account Status</p>
+                            <div class="card-value" style="color: #22c55e; font-size: 1.5rem;">Verified</div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h2>Recent Activity</h2>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Last Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityTable">
+                                <!-- Dynamic dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Subdomains View -->
+                <section id="subdomainsView" class="page-view">
+                    <div class="header-section flex items-center justify-between">
+                        <div>
+                            <h1>Subdomains</h1>
+                            <p>Manage your domains on mitanshu.tech</p>
+                        </div>
+                        <button class="btn btn-primary" id="openCreateModal">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Create Subdomain
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subdomain</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subdomainsTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- DNS Manager View -->
+                <section id="dnsView" class="page-view">
+                    <div class="header-section">
+                        <h1>DNS Manager</h1>
+                        <p>Manage records for your sub-subdomains.</p>
+                    </div>
+
+                    <div class="card mb-6" style="margin-bottom: 2rem;">
+                        <h2 class="card-title">Add New Record</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Record Type</label>
+                                <select id="recordType">
+                                    <option value="A">A</option>
+                                    <option value="CNAME">CNAME</option>
+                                    <option value="TXT">TXT</option>
+                                    <option value="MX">MX</option>
+                                    <option value="AAAA">AAAA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" id="recordName" placeholder="e.g., api">
+                            </div>
+                            <div class="form-group">
+                                <label>Value</label>
+                                <input type="text" id="recordContent" placeholder="e.g., 1.1.1.1">
+                            </div>
+                            <div class="form-group">
+                                <label>TTL</label>
+                                <select id="recordTTL">
+                                    <option value="1">Automatic</option>
+                                    <option value="60">1 min</option>
+                                    <option value="300">5 mins</option>
+                                    <option value="3600">1 hour</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div id="dnsStatus" style="font-size: 0.875rem;"></div>
+                            <button class="btn btn-primary" id="addRecordBtn">Add Record</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <div class="flex items-center gap-4">
+                                <label style="font-size: 0.875rem; font-weight: 600;">Subdomain:</label>
+                                <select id="subdomainSelector" style="padding: 0.25rem 0.5rem;"></select>
+                            </div>
+                            <button class="btn btn-ghost" id="refreshDns">Refresh</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Content</th>
+                                    <th>TTL</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dnsRecordsTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals (Simplified for now) -->
+    <div id="createModal" class="modal-overlay hidden">
+        <div class="card" style="width: 100%; max-width: 450px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">Create Subdomain</h2>
+            <div class="form-group">
+                <label>Desired Name</label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="subdomainInput" placeholder="my-app" style="flex: 1;">
+                    <span style="font-weight: 600; color: var(--text-dim);">.mitanshu.tech</span>
+                </div>
+            </div>
+            <div id="subdomainStatus" style="font-size: 0.875rem; margin-top: 1rem;"></div>
+            <div class="mt-4 flex gap-2 justify-end">
+                <button class="btn btn-ghost" id="closeCreateModal">Cancel</button>
+                <button class="btn btn-primary" id="createSubdomainBtn">Claim Domain</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services & Scripts -->
+    <script src="../firebase/firebase.js"></script>
+    <script src="cloudflareService.js"></script>
+    <script src="validateDomain.js"></script>
+    <script src="createSubdomain.js"></script>
+    <script src="createDnsRecord.js"></script>
+    <script src="listDnsRecords.js"></script>
+    <script src="deleteDnsRecord.js"></script>
+    <script src="editDnsRecord.js"></script>
+    
+    <!-- Redesigned Logic -->
+    <script src="dashboard.js"></script>
+
+    <script>
+        // Theme Management
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            if (theme === 'light') {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+
+        // Mobile Menu
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Modal Management
+        const createModal = document.getElementById('createModal');
+        const openCreateModal = document.getElementById('openCreateModal');
+        const closeCreateModal = document.getElementById('closeCreateModal');
+
+        openCreateModal.addEventListener('click', () => createModal.classList.remove('hidden'));
+        closeCreateModal.addEventListener('click', () => createModal.classList.add('hidden'));
+
+        // View Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageViews = document.querySelectorAll('.page-view');
+
+        function navigate(viewId) {
+            navItems.forEach(item => {
+                if (item.dataset.view === viewId) item.classList.add('active');
+                else item.classList.remove('active');
+            });
+
+            pageViews.forEach(page => {
+                if (page.id === viewId + 'View') page.classList.add('active');
+                else page.classList.remove('active');
+            });
+            
+            // Re-fetch data for the view if needed
+            if (window.onNavigate) window.onNavigate(viewId);
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const viewId = item.dataset.view;
+                if (viewId) navigate(viewId);
+            });
+        });
+    </script>
+</body>
+</html>
