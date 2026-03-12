@@ -6,8 +6,8 @@
 const resolveGroqKey = () => {
     const metaKey = document.querySelector('meta[name="groq-api-key"]')?.content?.trim();
     return (
-        window.AI_CONFIG?.apiKey ||
         window.__GROQ_API_KEY ||
+        window.AI_CONFIG?.apiKey ||
         metaKey ||
         localStorage.getItem('explyra_groq_key') ||
         ''
@@ -472,7 +472,7 @@ export class AISupport {
             ];
 
             if (!GROQ_API_KEY) {
-                this.addMessage("AI assistant is disabled because no API key is configured. Please set 'explyra_groq_key' in local storage or provide window.__GROQ_API_KEY.", 'ai');
+                this.addMessage("AI assistant is disabled because no API key is configured. Provide window.__GROQ_API_KEY, set window.AI_CONFIG.apiKey, add a <meta name=\"groq-api-key\"> tag, or store 'explyra_groq_key' in local storage.", 'ai');
                 typing.style.display = 'none';
                 return;
             }
