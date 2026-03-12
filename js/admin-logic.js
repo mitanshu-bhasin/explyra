@@ -256,7 +256,7 @@ onAuthStateChanged(auth, async (user) => {
                 }
                 // ------------------------------
 
-                if (userData.role === 'pending' || !userData.companyId) {
+                if ((userData.role === 'pending' || !userData.companyId) && !['explyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                     window.location.href = 'company.html';
                     return;
                 }
@@ -424,7 +424,7 @@ onAuthStateChanged(auth, async (user) => {
                                         }
                                     }
                                     // Also refresh user list if chat modal is open to update last message/sort
-                                    if (!document.getElementById('modal-chat').classList.contains('hidden')) {
+                                    if (document.getElementById('modal-chat').classList.contains('hidden')) {
                                         if (typeof loadChatUsers === 'function') loadChatUsers();
                                     }
                                 }
@@ -2382,7 +2382,7 @@ window.handleBulkAction = async (action) => {
 
             const historyEntry = {
                 action: 'BULK_' + action,
-                by: userData.name,
+                by: userData.name + ' (Admin)',
                 role: userData.role,
                 date: new Date(),
                 comment: 'Bulk Action'
@@ -2668,6 +2668,7 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
             // Update existing user
             await updateDoc(doc(db, "users", docId), {
                 name,
+                email, // Fixed: Email was missing in update
                 role,
                 managerId: managerId || null,
                 department: department || null,
@@ -2921,7 +2922,7 @@ function renderUserRows(usersList) {
                                     ${u.name || 'Unnamed User'}
                                     ${u.id === currentUser.uid ? '<span class="ml-1 text-[9px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded-full font-bold">YOU</span>' : ''}
                                 </h4>
-                                <p class="text-[10px] text-slate-400 truncate max-w-[150px] font-medium">${u.email}</p>
+                                <p class="text-[10px] text-slate-400 truncate max-w-[150px] font-medium">${u.email || 'No Email'}</p>
                             </div>
                         </div>
                         <span class="px-2 py-0.5 rounded text-[9px] font-bold tracking-widest ${u.role === 'ADMIN' ? 'bg-purple-50 text-purple-600 border border-purple-100' : 'bg-slate-50 text-slate-500 border border-slate-100'} uppercase">
