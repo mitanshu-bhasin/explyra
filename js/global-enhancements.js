@@ -323,104 +323,119 @@
         }
         
         /* Aggressive Google Branding Removal (Top bar, tooltips, frames) */
-        .goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-tip-frame, .goog-te-banner, .VIpgJd-Zvi9fq-ahS06b-bN99Vc, iframe.goog-te-banner-frame {
+        .goog-te-banner-frame, 
+        .goog-te-banner-frame.skiptranslate, 
+        #goog-gt-tt, 
+        .goog-te-balloon-frame, 
+        .goog-te-tip-frame, 
+        .goog-te-banner, 
+        .VIpgJd-Zvi9fq-ahS06b-bN99Vc, 
+        iframe.goog-te-banner-frame,
+        .goog-te-menu-value span:nth-child(2),
+        .goog-te-menu-value span:nth-child(3),
+        .goog-te-gadget-icon,
+        .goog-te-banner-frame {
             display: none !important;
             visibility: hidden !important;
             height: 0 !important;
             width: 0 !important;
             opacity: 0 !important;
+            pointer-events: none !important;
         }
 
-        /* Google Translate Menu Styling (The "White Box" fix) */
-        .goog-te-menu-frame {
-            box-shadow: 0 16px 48px rgba(0,0,0,0.18) !important;
-            border: 1px solid var(--bdr2, #E4E1DB) !important;
-            border-radius: 16px !important;
-            overflow: hidden !important;
+        /* Force body to stay at top and not shift down */
+        body {
+            top: 0 !important;
+            position: relative !important;
         }
-        /* Dark mode trick for the iframe content */
+
+        /* 
+           THE ULTIMATE LANGUAGE DROPDOWN FIX
+           Combines iframe filtering and direct targeting for maximum compatibility.
+        */
+        iframe[class*="goog-te-menu-frame"],
+        .goog-te-menu-frame,
+        .goog-te-menu2-panel {
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3) !important;
+            border: 1px solid #ddd !important;
+            border-radius: 12px !important;
+            background-color: #000000 !important;
+            filter: invert(1) hue-rotate(180deg) brightness(1) !important;
+        }
+
+        /* Direct targeting for non-iframe versions (to ensure "everything is visible") */
+        .goog-te-menu2, .goog-te-menu2 * {
+            color: #0d1117 !important;
+            background-color: #ffffff !important;
+            font-family: 'Outfit', sans-serif !important;
+        }
+        
+        [data-theme="dark"] iframe[class*="goog-te-menu-frame"],
         [data-theme="dark"] .goog-te-menu-frame {
-            filter: invert(0.88) hue-rotate(180deg) !important;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.4) !important;
+            filter: none !important; 
+            background-color: #141928 !important;
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+        [data-theme="dark"] .goog-te-menu2, 
+        [data-theme="dark"] .goog-te-menu2 * {
+            color: #ffffff !important;
+            background-color: #141928 !important;
         }
 
+        /* SLEEK COMPACT PILL */
         .nav-translation {
             display: flex;
             align-items: center;
-            background: var(--bg3);
-            border: 1px solid var(--bdr2);
+            background: var(--bg3, #F1EFE9);
+            border: 1px solid var(--bdr2, #E4E1DB);
             border-radius: 100px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            height: 36px;
+            transition: all 0.3s ease;
+            height: 32px; /* Slightly more compact */
             position: relative;
-            overflow: hidden; 
-            padding: 0 12px;
-            margin-right: 12px; /* Increased gap for better breathing room */
+            padding: 0 8px 0 10px;
+            margin-right: 12px;
+            width: 78px; /* Fixed width for consistency */
+            flex-shrink: 0;
         }
         .nav-translation:hover { 
-            border-color: var(--blue);
-            background: var(--bg2);
-            transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            border-color: var(--blue, #1546C0);
+            background: var(--bg2, #fff);
+            transform: translateY(-1px);
         }
-        .nav-translation i { font-size: 0.95rem; color: var(--blue); pointer-events: none; margin-right: 8px; }
+        .nav-translation i { font-size: 0.8rem; color: var(--blue, #1546C0); margin-right: 5px; }
         
-        /* Make the Google element and its combo fill the whole pill */
-        #google_translate_element, .goog-te-gadget, .goog-te-combo {
-            width: 100%;
-            height: 100%;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
+        .nav-translation .nav-lang-code {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--ink, #0D1117);
+            text-transform: uppercase;
+            z-index: 1;
         }
-        .goog-te-gadget .goog-te-combo {
-            background: transparent !important;
-            border: none !important;
-            padding: 0 !important;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: transparent !important; 
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            text-align: center;
+        [data-theme="dark"] .nav-translation .nav-lang-code { color: #fff; }
+
+        /* Custom Arrow */
+        .nav-translation::after {
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.5rem;
+            color: var(--ink, #0D1117);
+            margin-left: auto;
+        }
+        [data-theme="dark"] .nav-translation::after { color: #fff; }
+
+        /* The invisible trigger */
+        #google_translate_element, .goog-te-gadget, .goog-te-combo {
             width: 100%;
             height: 100%;
             position: absolute;
             left: 0;
             top: 0;
-            z-index: 2;
+            opacity: 0 !important;
+            z-index: 5;
+            cursor: pointer;
         }
-        
-        .nav-lang-code {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--ink, #0D1117);
-            text-transform: uppercase;
-            pointer-events: none;
-            z-index: 1;
-            margin-right: 8px;
-        }
-        [data-theme="dark"] .nav-lang-code { color: #fff; }
-        
-        /* Custom arrow for the pill */
-        .nav-translation::after {
-            content: "\f078";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 0.6rem;
-            color: var(--ink, #0D1117);
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            z-index: 1;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .nav-translation:hover::after { transform: translateY(-50%) scale(1.1); font-weight: 950; }
-        [data-theme="dark"] .nav-translation::after { color: #fff; }
+        .goog-te-combo { -webkit-appearance: none; appearance: none; }
 
         @media (max-width: 1023px) {
             .mobile-translation-item {
@@ -432,6 +447,13 @@
                 gap: 12px;
             }
             .mobile-translation-item i { font-size: 1.1rem; color: var(--blue); }
+            /* Mobile invert fix */
+            .mobile-translation-item .goog-te-gadget {
+                filter: invert(1) hue-rotate(180deg);
+            }
+            [data-theme="dark"] .mobile-translation-item .goog-te-gadget {
+                filter: none;
+            }
         }
     `;
 
@@ -730,33 +752,30 @@
 
             const cleanBranding = () => {
                 // 1. Hide top bar and frames without removing them (keeps Google logic happy)
-                const iframes = document.querySelectorAll('iframe.goog-te-banner-frame, .goog-te-banner-frame, #goog-gt-tt');
-                iframes.forEach(f => {
+                const bannerFrames = document.querySelectorAll('iframe.goog-te-banner-frame, .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame');
+                bannerFrames.forEach(f => {
                     f.style.setProperty('display', 'none', 'important');
                     f.style.setProperty('visibility', 'hidden', 'important');
+                    f.style.setProperty('height', '0px', 'important');
                     f.style.setProperty('opacity', '0', 'important');
-                    f.style.setProperty('pointer-events', 'none', 'important');
                 });
+
+                // Physically remove Google's top bar classes from body
+                if (document.body.classList.contains('skiptranslate')) {
+                    document.body.classList.remove('skiptranslate');
+                }
                 document.body.style.top = '0px';
 
-                // 2. Sync the display spans and add "Show Original"
+                // 2. Sync the display spans
                 const combos = document.querySelectorAll('.goog-te-combo');
                 const codes = document.querySelectorAll('.nav-lang-code');
 
                 combos.forEach(combo => {
-                    // Ensure "Show Original" exists and is clear
-                    if (combo.options.length > 0 && combo.options[0].value === '') {
-                        if (combo.options[0].text !== 'Original' && combo.options[0].text !== 'Show Original') {
-                            combo.options[0].text = 'Show Original';
-                        }
-                    }
-
                     const selectedOpt = combo.options[combo.selectedIndex];
                     if (selectedOpt) {
                         const isOriginal = selectedOpt.value === '';
                         const fullText = selectedOpt.getAttribute('data-full-text') || selectedOpt.text;
 
-                        // Store full text for mapping
                         if (!selectedOpt.getAttribute('data-full-text') && !isOriginal) {
                             selectedOpt.setAttribute('data-full-text', selectedOpt.text);
                         }
@@ -766,13 +785,20 @@
                             code = langMap[fullText] || (fullText.length > 2 ? fullText.substring(0, 2).toUpperCase() : fullText);
                         }
 
+                        // Update the UI codes
                         codes.forEach(c => {
                             if (c.textContent !== code) c.textContent = code;
                         });
+
+                        // DYNAMIC HTML LANG UPDATE (Fixes the "Browser Translation Bar" popup)
+                        const htmlLang = code.toLowerCase();
+                        if (document.documentElement.lang !== htmlLang) {
+                            document.documentElement.lang = htmlLang;
+                        }
                     }
                 });
 
-                // 3. Hide redundant text nodes
+                // 3. Hide redundant text nodes and Google signatures
                 const gadgets = document.querySelectorAll('.goog-te-gadget');
                 gadgets.forEach(gadget => {
                     gadget.childNodes.forEach(node => {
@@ -782,7 +808,7 @@
                     });
                 });
 
-                // 4. Force body position (Google often adds top: 40px)
+                // 4. Force body position to top (Google likes to add top: 40px)
                 if (document.body.style.top !== '0px' && document.body.style.top !== '') {
                     document.body.style.setProperty('top', '0px', 'important');
                 }
