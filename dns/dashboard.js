@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         subdomainsTable: document.getElementById('subdomainsTable'),
         dnsRecordsTable: document.getElementById('dnsRecordsTable'),
         subdomainSelector: document.getElementById('subdomainSelector'),
+        addRecordSubdomainSelector: document.getElementById('addRecordSubdomainSelector'),
         logoutBtn: document.getElementById('logoutBtn'),
         createSubdomainBtn: document.getElementById('createSubdomainBtn'),
         subdomainInput: document.getElementById('subdomainInput'),
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         subdomains: [],
         currentSubdomain: null
     };
+    window.userData = userData;
 
     // 1. Auth & Data Init
     auth.onAuthStateChanged(async (user) => {
@@ -54,10 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         elements.subdomainCount.textContent = userData.subdomains.length;
         
-        // Populate Subdomain Selector for DNS Manager
-        elements.subdomainSelector.innerHTML = userData.subdomains.map(s => 
+        // Populate Subdomain Selectors for DNS Manager
+        const options = userData.subdomains.map(s => 
             `<option value="${s.subdomain}" ${s.subdomain === userData.currentSubdomain ? 'selected' : ''}>${s.subdomain}.mitanshu.tech</option>`
         ).join('') || '<option value="">No subdomains</option>';
+        
+        elements.subdomainSelector.innerHTML = options;
+        elements.addRecordSubdomainSelector.innerHTML = options;
 
         if (userData.subdomains.length > 0 && !userData.currentSubdomain) {
             userData.currentSubdomain = userData.subdomains[0].subdomain;
@@ -108,7 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${s.createdAt ? new Date(s.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
                     <td><span class="status-badge status-active">Active</span></td>
                     <td>
-                        <button class="btn btn-ghost" onclick="window.manageDns('${s.subdomain}')">Manage DNS</button>
+                        <div class="flex gap-2">
+                            <button class="btn btn-ghost" onclick="window.manageDns('${s.subdomain}')">Manage DNS</button>
+                            <button class="btn btn-ghost text-red-500" onclick="window.removeSubdomain('${s.subdomain}')">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `).join('') :
@@ -188,9 +198,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            const selectedSubdomain = elements.addRecordSubdomainSelector.value;
+            if (!selectedSubdomain) throw new Error("No subdomain selected");
+
             elements.addRecordBtn.disabled = true;
             elements.addRecordBtn.textContent = "Adding...";
-            await window.createDnsRecord(name, type, content, userData.currentSubdomain, ttl);
+            await window.createDnsRecord(name, type, content, selectedSubdomain, ttl);
             elements.dnsStatus.textContent = "Record added!";
             elements.dnsStatus.style.color = "#22c55e";
             document.getElementById('recordName').value = '';
@@ -208,8 +221,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const syncSelectors = (val) => {
+        userData.currentSubdomain = val;
+        elements.subdomainSelector.value = val;
+        elements.addRecordSubdomainSelector.value = val;
+    };
+
     elements.subdomainSelector.addEventListener('change', (e) => {
-        userData.currentSubdomain = e.target.value;
+        syncSelectors(e.target.value);
+        renderDNS();
+    });
+
+    elements.addRecordSubdomainSelector.addEventListener('change', (e) => {
+        syncSelectors(e.target.value);
         renderDNS();
     });
 
@@ -229,6 +253,31 @@ document.addEventListener('DOMContentLoaded', () => {
             await refreshUserData();
         } catch (e) {
             alert(e.message);
+        }
+    };
+
+    window.removeSubdomain = async (subdomain) => {
+        if (!confirm(`Are you sure you want to delete ${subdomain}.mitanshu.tech and ALL its DNS records? This cannot be undone.`)) return;
+        
+        try {
+            // Show loading state or similar
+            const btn = event.target.closest('button');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '...';
+
+            await window.deleteSubdomain(subdomain);
+            
+            // If we deleted the current subdomain, reset it
+            if (userData.currentSubdomain === subdomain) {
+                userData.currentSubdomain = null;
+            }
+
+            await refreshUserData();
+            alert("Subdomain deleted successfully.");
+        } catch (e) {
+            console.error("Delete Subdomain Error:", e);
+            alert("Error: " + e.message);
         }
     };
 

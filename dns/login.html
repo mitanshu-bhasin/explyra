@@ -134,6 +134,13 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // Redirect if already logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
         window.showToast = (msg, type = 'success') => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');

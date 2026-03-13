@@ -1090,41 +1090,46 @@
         }
 
         .hero h1 .grad {
-            background: linear-gradient(90deg, 
-                var(--blue) 0%, 
-                var(--purp) 25%, 
-                var(--rose) 50%, 
-                var(--teal) 75%, 
-                var(--blue) 100%
-            );
+            background: linear-gradient(90deg,
+                    var(--blue) 0%,
+                    var(--purp) 25%,
+                    var(--rose) 50%,
+                    var(--teal) 75%,
+                    var(--blue) 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: textGradientFlow 8s linear infinite;
             display: inline-block;
-            padding-bottom: 0.1em; /* Fix to prevent 'g' from clipping */
+            padding-bottom: 0.1em;
+            /* Fix to prevent 'g' from clipping */
         }
 
         [data-theme="dark"] .hero h1 .grad {
-            background: linear-gradient(90deg, 
-                var(--blue2) 0%, 
-                var(--purp2) 25%, 
-                var(--rose2) 50%, 
-                var(--teal2) 75%, 
-                var(--blue2) 100%
-            );
+            background: linear-gradient(90deg,
+                    var(--blue2) 0%,
+                    var(--purp2) 25%,
+                    var(--rose2) 50%,
+                    var(--teal2) 75%,
+                    var(--blue2) 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: textGradientFlow 8s linear infinite;
-            padding-bottom: 0.1em; /* Fix to prevent 'g' from clipping */
+            padding-bottom: 0.1em;
+            /* Fix to prevent 'g' from clipping */
         }
 
         @keyframes textGradientFlow {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
+            0% {
+                background-position: 0% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
         }
 
         .hero h1 em {
@@ -4021,6 +4026,9 @@
                         <a href="#expense" class="dropdown-item">
                             <span class="dropdown-item-icon">💼</span> Explyra Expense
                         </a>
+                        <a href="dns/index.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🌐</span> Explyra DNS
+                        </a>
                         <a href="crm/index.html" class="dropdown-item">
                             <span class="dropdown-item-icon">📈</span> Explyra CRM
                         </a>
@@ -4129,6 +4137,7 @@
                     </div>
                     <div class="mobile-submenu">
                         <a href="#expense">💼 Expense</a>
+                        <a href="dns/index.html">🌐 DNS Manager</a>
                         <a href="crm/index.html">📈 CRM</a>
                         <a href="health-manager/index.html">🏃 Health</a>
                         <a href="explyra-learning/index.html">📚 Learning</a>
@@ -5145,6 +5154,7 @@
                 <h4>Solutions <i class="fas fa-chevron-down"></i></h4>
                 <ul>
                     <li><a href="#expense">Expense Tracker</a></li>
+                    <li><a href="dns/index.html">Explyra DNS</a></li>
                     <li><a href="crm/index.html">Explyra CRM</a></li>
                     <li><a href="health-manager/index.html">Health Companion</a></li>
                     <li><a href="explyra-learning/index.html">AI Learning</a></li>
@@ -5777,4 +5787,5 @@
         })();
     </script>
 </body>
+
 </html>
