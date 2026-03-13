@@ -2,6 +2,7 @@
     /* Light Mode Tokens */
     --bg: #F8F7F4;
     --bg2: #FFFFFF;
+    --bg2-rgb: 255, 255, 255;
     --bg3: #F1EFE9;
     --bg4: #E9E6E0;
     --surf: #FFFFFF;
@@ -39,6 +40,7 @@
     /* Dark Mode Tokens */
     --bg: #080B14;
     --bg2: #0E1220;
+    --bg2-rgb: 14, 18, 32;
     --bg3: #141928;
     --bg4: #1B2235;
     --surf: #141928;

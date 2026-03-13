@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         eventsGrid.innerHTML = events.map(event => `
-            <div class="event-card reveal" data-category="${event.category}">
+            <div class="event-card reveal" data-category="${event.category}" onclick="location.href='${event.url}'" style="cursor: pointer;">
                 <div class="event-thumb">
-                    <img src="${event.thumbnail}" alt="${event.title}" loading="lazy">
+                    <img src="${event.thumbnail}" alt="${event.title}" loading="lazy" onerror="this.src='/assets/images/placeholder.png'; this.parentElement.style.background='var(--blue-g)'">
                 </div>
                 <div class="event-content">
                     <div class="event-meta">
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <h3>${event.title}</h3>
                     <p>${event.shortDescription}</p>
-                    <a href="${event.url}" class="btn-event">View Details</a>
+                    <div class="btn-event">View Details <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></div>
                 </div>
             </div>
         `).join('');
