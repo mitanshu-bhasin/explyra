@@ -423,7 +423,7 @@
         }
 
         connectGithubBtn.addEventListener('click', () => {
-            const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=repo&redirect_uri=${OAUTH_REDIRECT_URL}`;
+            const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=repo%20read:user&redirect_uri=${OAUTH_REDIRECT_URL}`;
             window.location.href = githubAuthUrl;
         });
 
@@ -515,9 +515,14 @@
 
             repoDeployStep.classList.add('hidden');
             deploymentLoadingStep.classList.remove('hidden');
-            document.getElementById('deploymentStatusTitle').textContent = 'Deploying to Vercel';
+            const statusTitle = document.getElementById('deploymentStatusTitle');
+            const statusDesc = document.getElementById('deploymentStatusDesc');
+            
+            statusTitle.textContent = 'Deploying to Vercel';
+            statusDesc.textContent = `Importing ${repoFullName}...`;
 
             try {
+                // 1. Trigger Deployment
                 const deployRes = await fetch('https://api.vercel.com/v13/deployments', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}`, 'Content-Type': 'application/json' },
@@ -527,9 +532,16 @@
                 const deployData = await deployRes.json();
                 if (deployData.error) throw new Error(deployData.error.message);
 
+                const deploymentId = deployData.id;
                 const projectId = deployData.projectId;
                 const fullDomain = `${subdomain}.mitanshu.tech`;
-                document.getElementById('deploymentStatusTitle').textContent = 'Attaching Subdomain';
+
+                // 2. Poll for Status (Building -> Ready)
+                await pollDeploymentStatus(deploymentId, statusTitle, statusDesc);
+
+                // 3. Attach Subdomain to Vercel Project
+                statusTitle.textContent = 'Configuring Domain';
+                statusDesc.textContent = `Linking ${fullDomain} to Vercel...`;
 
                 const domainRes = await fetch(`https://api.vercel.com/v9/projects/${projectId}/domains`, {
                     method: 'POST',
@@ -540,15 +552,62 @@
                 const domainData = await domainRes.json();
                 if (domainData.error) throw new Error(domainData.error.message);
 
+                // 4. Create DNS CNAME Record
+                statusTitle.textContent = 'Finalizing DNS';
+                statusDesc.textContent = `Pointing ${fullDomain} to Vercel edge...`;
+                
+                // Point subdomain CNAME to cname.vercel-dns.com
+                await window.createDnsRecord(fullDomain, 'CNAME', 'cname.vercel-dns.com', subdomain, '1');
+
+                // 5. Success
                 deploymentLoadingStep.classList.add('hidden');
                 deploySuccessStep.classList.remove('hidden');
                 visitSiteBtn.href = `https://${fullDomain}`;
             } catch (error) {
-                alert('Deployment Failed: ' + error.message);
+                console.error("[Deploy Error]", error);
+                alert('Deployment/DNS Error: ' + error.message);
                 deploymentLoadingStep.classList.add('hidden');
                 repoDeployStep.classList.remove('hidden');
             }
         });
+
+        async function pollDeploymentStatus(id, titleEl, descEl) {
+            return new Promise((resolve, reject) => {
+                const interval = setInterval(async () => {
+                    try {
+                        const res = await fetch(`https://api.vercel.com/v13/deployments/${id}`, {
+                            headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}` }
+                        });
+                        const data = await res.json();
+                        
+                        if (data.status === 'READY') {
+                            clearInterval(interval);
+                            titleEl.textContent = 'Deployment Ready!';
+                            descEl.textContent = 'Your project is successfully built and live.';
+                            resolve(data);
+                        } else if (data.status === 'ERROR' || data.status === 'CANCELED') {
+                            clearInterval(interval);
+                            titleEl.textContent = 'Deployment Failed';
+                            descEl.textContent = 'An error occurred while building your project.';
+                            reject(new Error(`Vercel deployment status: ${data.status}`));
+                        } else {
+                            // Update UI with BUILDING / INITIALIZING etc
+                            const statusMap = {
+                                'BUILDING': 'Building...',
+                                'INITIALIZING': 'Initializing...',
+                                'ANALYZING': 'Analyzing...',
+                                'UPLOADING': 'Uploading...'
+                            };
+                            titleEl.textContent = statusMap[data.status] || 'Processing...';
+                            descEl.textContent = 'Please wait while Vercel sets up your environment.';
+                        }
+                    } catch (e) {
+                        clearInterval(interval);
+                        reject(e);
+                    }
+                }, 3000);
+            });
+        }
     });
 </script>
 </body>
