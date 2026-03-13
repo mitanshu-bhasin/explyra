@@ -6,13 +6,37 @@
     <description>Latest news, feature updates, and releases from Explyra.</description>
     <language>en-us</language>
     <atom:link href="https://explyra.me/feed.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Sat, 08 Mar 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 13 Mar 2026 08:30:00 GMT</lastBuildDate>
     <copyright>Copyright 2026 Explyra</copyright>
     <image>
        <url>https://explyra.me/assets/images/explyra_logo.png</url>
        <title>Explyra</title>
        <link>https://explyra.me/</link>
     </image>
+
+    <item>
+      <title>Explyra Services Page Launched</title>
+      <link>https://explyra.me/services/index.html</link>
+      <pubDate>Fri, 13 Mar 2026 08:30:00 GMT</pubDate>
+      <description>Explore our wide range of services including Software Development, Cloud Solutions, Cybersecurity, and AI Integration.</description>
+      <guid>https://explyra.me/services/index.html</guid>
+    </item>
+
+    <item>
+      <title>Explyra Developer Summit 2026 Announced</title>
+      <link>https://explyra.me/events/details/explyra-dev-summit.html</link>
+      <pubDate>Fri, 13 Mar 2026 08:15:00 GMT</pubDate>
+      <description>Join us for the ultimate developer conference featuring deep dives into AI, Cloud, and the future of coding.</description>
+      <guid>https://explyra.me/events/details/explyra-dev-summit.html</guid>
+    </item>
+
+    <item>
+      <title>Upcoming Explyra Suite Product Launch</title>
+      <link>https://explyra.me/events/details/explyra-suite-launch.html</link>
+      <pubDate>Fri, 13 Mar 2026 08:00:00 GMT</pubDate>
+      <description>Witness the launch of the next-generation Explyra Suite, our most powerful productivity and business management tool yet.</description>
+      <guid>https://explyra.me/events/details/explyra-suite-launch.html</guid>
+    </item>
 
     <item>
       <title>Industry Solutions Hub Now Live</title>

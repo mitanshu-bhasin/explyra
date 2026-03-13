@@ -1090,17 +1090,41 @@
         }
 
         .hero h1 .grad {
-            background: linear-gradient(135deg, var(--blue), var(--purp));
+            background: linear-gradient(90deg, 
+                var(--blue) 0%, 
+                var(--purp) 25%, 
+                var(--rose) 50%, 
+                var(--teal) 75%, 
+                var(--blue) 100%
+            );
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text
+            background-clip: text;
+            animation: textGradientFlow 8s linear infinite;
+            display: inline-block;
+            padding-bottom: 0.1em; /* Fix to prevent 'g' from clipping */
         }
 
         [data-theme="dark"] .hero h1 .grad {
-            background: linear-gradient(135deg, var(--blue2), var(--purp2));
+            background: linear-gradient(90deg, 
+                var(--blue2) 0%, 
+                var(--purp2) 25%, 
+                var(--rose2) 50%, 
+                var(--teal2) 75%, 
+                var(--blue2) 100%
+            );
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text
+            background-clip: text;
+            animation: textGradientFlow 8s linear infinite;
+            padding-bottom: 0.1em; /* Fix to prevent 'g' from clipping */
+        }
+
+        @keyframes textGradientFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
 
         .hero h1 em {
@@ -4068,7 +4092,7 @@
                 <li><a href="events/index.html">Events</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="updates/index.html">Updates</a></li>
-                <li><a href="docs/index.html">Docs</a></li>
+                <li><a href="services/index.html">Services</a></li>
                 <li><a href="team.html">Team</a></li>
                 <li><a href="support.html">Help Desk</a></li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>

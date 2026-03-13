@@ -10,8 +10,37 @@
     </image:image>
     <image:image>
       <image:loc>https://explyra.me/assets/images/explyra_screenshot_1.png</image:loc>
-      <image:title>Explyra Dashboard Preview</image:title>
+      <image:title>Explyra Dashboard Preview - Management</image:title>
       <image:caption>A preview of the integrated Explyra dashboard experience.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/explyra_screenshot_2.png</image:loc>
+      <image:title>Explyra Dashboard Preview - Analytics</image:title>
+      <image:caption>Deep dive analytics and financial oversight in Explyra.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/services/index.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/services/assets/images/hero.png</image:loc>
+      <image:title>Explyra Services Portfolio</image:title>
+      <image:caption>Our comprehensive range of software and technology services.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/events/details/explyra-dev-summit.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/events/assets/thumbnails/dev-summit.png</image:loc>
+      <image:title>Explyra Developer Summit 2026</image:title>
+      <image:caption>The flagship event for the Explyra developer community.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/events/details/explyra-suite-launch.html</loc>
+    <image:image>
+      <image:loc>https://explyra.me/events/assets/thumbnails/suite-launch.png</image:loc>
+      <image:title>Explyra Suite Launch Event</image:title>
+      <image:caption>Witness the unveiling of the next-generation Explyra Suite.</image:caption>
     </image:image>
   </url>
   <url>

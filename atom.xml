@@ -4,13 +4,37 @@
   <subtitle>Latest news, feature updates, and releases from Explyra.</subtitle>
   <link href="https://explyra.me/atom.xml" rel="self" />
   <link href="https://explyra.me/" />
-  <updated>2026-03-10T10:00:00Z</updated>
+  <updated>2026-03-13T08:30:00Z</updated>
   <id>https://explyra.me/</id>
   <author>
     <name>Explyra</name>
   </author>
   <rights>Copyright 2026 Explyra</rights>
   <logo>https://explyra.me/assets/images/explyra_logo.png</logo>
+
+  <entry>
+    <title>Explyra Services Page Launched</title>
+    <link href="https://explyra.me/services/index.html" />
+    <id>https://explyra.me/services/index.html</id>
+    <updated>2026-03-13T08:30:00Z</updated>
+    <summary>Explore our wide range of services including Software Development, Cloud Solutions, Cybersecurity, and AI Integration.</summary>
+  </entry>
+
+  <entry>
+    <title>Explyra Developer Summit 2026 Announced</title>
+    <link href="https://explyra.me/events/details/explyra-dev-summit.html" />
+    <id>https://explyra.me/events/details/explyra-dev-summit.html</id>
+    <updated>2026-03-13T08:15:00Z</updated>
+    <summary>Join us for the ultimate developer conference featuring deep dives into AI, Cloud, and the future of coding.</summary>
+  </entry>
+
+  <entry>
+    <title>Upcoming Explyra Suite Product Launch</title>
+    <link href="https://explyra.me/events/details/explyra-suite-launch.html" />
+    <id>https://explyra.me/events/details/explyra-suite-launch.html</id>
+    <updated>2026-03-13T08:00:00Z</updated>
+    <summary>Witness the launch of the next-generation Explyra Suite, our most powerful productivity and business management tool yet.</summary>
+  </entry>
 
   <entry>
     <title>Industry Solutions Hub Now Live</title>
