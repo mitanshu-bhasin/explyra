@@ -226,8 +226,13 @@
                         if (choiceResult.outcome === 'accepted') {
                             console.log('User accepted the install prompt');
                         }
+                        installBanner.remove();
                     });
                 });
+                document.getElementById('dismiss-btn').addEventListener('click', () => {
+                    installBanner.remove();
+                });
+
             }, 2000);
         });
     </script>
@@ -415,7 +420,8 @@
     /* Loading spinner */
     .loading-spinner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border:3px solid var(--bdr);border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite;z-index:9999}
     @keyframes spin{to{transform:translate(-50%,-50%)rotate(360deg)}}
-</style>
+
+        nav {
             position: fixed;
             top: 0;
             left: 0;
