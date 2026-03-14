@@ -529,7 +529,12 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const repos = await response.json();
-                repoSelector.innerHTML = repos.map(repo => `<option value="${repo.full_name}">${repo.full_name}</option>`).join('');
+                
+                // Store default_branch for each repo using data attributes
+                repoSelector.innerHTML = repos.map(repo => 
+                    `<option value="${repo.full_name}" data-branch="${repo.default_branch || 'main'}">${repo.full_name}</option>`
+                ).join('');
+                
                 updateFrameworkDetection();
                 repoSelector.addEventListener('change', updateFrameworkDetection);
             } catch (error) {
@@ -578,10 +583,23 @@
 
             try {
                 // 1. Trigger Deployment
+                const selectedOption = repoSelector.options[repoSelector.selectedIndex];
+                const branchRef = selectedOption.dataset.branch || 'main'; // Default to main if missing
+
+                // Validate payload data
+                if (!repoFullName.includes('/')) throw new Error('Invalid repository format');
+
                 const deployRes = await fetch('https://api.vercel.com/v13/deployments', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: repoFullName.split('/')[1], gitSource: { type: 'github', repo: repoFullName } })
+                    body: JSON.stringify({ 
+                        name: repoFullName.split('/')[1], 
+                        gitSource: { 
+                            type: 'github', 
+                            repo: repoFullName,
+                            ref: branchRef 
+                        } 
+                    })
                 });
 
                 const deployData = await deployRes.json();
