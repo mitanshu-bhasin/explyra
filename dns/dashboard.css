@@ -625,3 +625,42 @@ input:focus, select:focus {
 }
 
 .w-full { width: 100%; }
+
+/* Custom Domains */
+.status-card {
+    transition: var(--transition);
+    text-align: center;
+    border: 1px solid var(--bdr);
+}
+
+.status-card.active {
+    border-color: var(--primary);
+    background-color: var(--bg3);
+}
+
+.status-card .opacity-50 {
+    opacity: 0.5;
+}
+
+.bg-amber-50 { background-color: #fffbeb; }
+.dark .bg-amber-900\/10 { background-color: rgba(120, 53, 15, 0.1); }
+.border-amber-200 { border-color: #fde68a; }
+.bg-green-50 { background-color: #f0fdf4; }
+.dark .bg-green-900\/10 { background-color: rgba(20, 83, 45, 0.1); }
+.border-green-200 { border-color: #bbf7d0; }
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-verified {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.text-xs { font-size: 0.75rem; }
+.break-all { word-break: break-all; }
+.font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }

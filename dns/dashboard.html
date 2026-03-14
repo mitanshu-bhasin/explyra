@@ -32,6 +32,10 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     <span class="nav-text">DNS Manager</span>
                 </li>
+                <li class="nav-item" data-view="customDomains">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    <span class="nav-text">Custom Domains</span>
+                </li>
                 <li class="nav-item" data-view="registerDomain">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span class="nav-text">New Domain</span>
@@ -304,6 +308,113 @@
                     </div>
                 </section>
 
+                <!-- Custom Domains View -->
+                <section id="customDomainsView" class="page-view">
+                    <div class="header-section">
+                        <h1>Connect Your Custom Domain</h1>
+                        <p>Use your own brand with our hosting infrastructure.</p>
+                    </div>
+
+                    <div class="card mb-6">
+                        <h2 class="card-title">Add New Domain</h2>
+                        <div class="flex gap-4">
+                            <input type="text" id="customDomainInput" placeholder="yourdomain.com" style="flex: 1;">
+                            <button class="btn btn-primary" id="addCustomDomainBtn">Add Domain</button>
+                        </div>
+                        <div id="addDomainStatus" class="mt-2 text-sm"></div>
+                    </div>
+
+                    <!-- Domain Status Tracker (Visible when a domain is selected) -->
+                    <div id="domainStatusTracker" class="hidden mb-6">
+                        <div class="grid-container" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                            <div class="card status-card p-4" id="statusPending">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">Verification</p>
+                                <p class="text-sm font-bold">Pending</p>
+                            </div>
+                            <div class="card status-card p-4" id="statusVerified">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">Ownership</p>
+                                <p class="text-sm font-bold opacity-50">Verified</p>
+                            </div>
+                            <div class="card status-card p-4" id="statusConnected">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">DNS Setup</p>
+                                <p class="text-sm font-bold opacity-50">Connected</p>
+                            </div>
+                            <div class="card status-card p-4" id="statusLive">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">Platform</p>
+                                <p class="text-sm font-bold opacity-50">Live</p>
+                            </div>
+                        </div>
+
+                        <!-- Verification Step -->
+                        <div id="verificationStep" class="card mb-6 bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30">
+                            <h2 class="card-title" style="color: #b45309;">Verify Domain Ownership</h2>
+                            <p class="text-sm text-dim mb-4">Add the following TXT record to your domain's DNS settings.</p>
+                            
+                            <div class="p-4 bg-white dark:bg-black/20 rounded-lg border border-bdr mb-4">
+                                <div class="grid grid-cols-3 gap-4 text-xs font-bold text-dim uppercase mb-2">
+                                    <div>Type</div>
+                                    <div>Name</div>
+                                    <div>Value</div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm font-mono">
+                                    <div>TXT</div>
+                                    <div>_explyra-verification</div>
+                                    <div id="verificationTokenValue" class="break-all">explyra-XXXXXX</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <button class="btn btn-primary" id="verifyDomainBtn">Verify Domain</button>
+                                <p id="verificationStatus" class="text-sm"></p>
+                            </div>
+                        </div>
+
+                        <!-- Connection Step (A/CNAME) -->
+                        <div id="connectionStep" class="hidden card mb-6 bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30">
+                            <h2 class="card-title" style="color: #15803d;">Connect DNS Records</h2>
+                            <p class="text-sm text-dim mb-4">Your domain is verified! Now point it to our servers.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="p-4 bg-white dark:bg-black/20 rounded-lg border border-bdr">
+                                    <p class="text-xs font-bold text-dim uppercase mb-2">For Root Domain (@)</p>
+                                    <div class="grid grid-cols-3 gap-4 text-sm font-mono">
+                                        <div>A</div>
+                                        <div>@</div>
+                                        <div>76.76.21.21</div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-white dark:bg-black/20 rounded-lg border border-bdr">
+                                    <p class="text-xs font-bold text-dim uppercase mb-2">For WWW Subdomain</p>
+                                    <div class="grid grid-cols-3 gap-4 text-sm font-mono">
+                                        <div>CNAME</div>
+                                        <div>www</div>
+                                        <div>cname.vercel-dns.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h2>Your Domains</h2>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>Status</th>
+                                    <th>Project</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customDomainsTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
                 <!-- New Domain View -->
                 <section id="registerDomainView" class="page-view">
                     <div class="header-section">
@@ -517,40 +628,6 @@
         const sidebar = document.getElementById('sidebar');
         menuToggle.addEventListener('click', () => {
             sidebar.classList.toggle('open');
-        });
-
-        // Modal Management
-        const createModal = document.getElementById('createModal');
-        const openCreateModal = document.getElementById('openCreateModal');
-        const closeCreateModal = document.getElementById('closeCreateModal');
-
-        openCreateModal.addEventListener('click', () => createModal.classList.remove('hidden'));
-        closeCreateModal.addEventListener('click', () => createModal.classList.add('hidden'));
-
-        // View Navigation
-        const navItems = document.querySelectorAll('.nav-item');
-        const pageViews = document.querySelectorAll('.page-view');
-
-        function navigate(viewId) {
-            navItems.forEach(item => {
-                if (item.dataset.view === viewId) item.classList.add('active');
-                else item.classList.remove('active');
-            });
-
-            pageViews.forEach(page => {
-                if (page.id === viewId + 'View') page.classList.add('active');
-                else page.classList.remove('active');
-            });
-            
-            // Re-fetch data for the view if needed
-            if (window.onNavigate) window.onNavigate(viewId);
-        }
-
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const viewId = item.dataset.view;
-                if (viewId) navigate(viewId);
-            });
         });
 
         // --- VERCEL & GITHUB DEPLOYMENT LOGIC ---
@@ -819,6 +896,9 @@
         });
 
         async function pollDeploymentStatus(id, titleEl, descEl) {
+            const startTime = Date.now();
+            const timeoutMs = 30000; // 30 seconds timeout
+
             return new Promise((resolve, reject) => {
                 const interval = setInterval(async () => {
                     try {
@@ -827,26 +907,51 @@
                         });
                         const data = await res.json();
                         
-                        if (data.status === 'READY') {
+                        // Check for timeout
+                        if (Date.now() - startTime > timeoutMs) {
                             clearInterval(interval);
-                            titleEl.textContent = 'Deployment Ready!';
-                            descEl.textContent = 'Your project is successfully built and live.';
+                            titleEl.textContent = 'Deployment Timed Out';
+                            descEl.textContent = 'Deployment timed out. Please try again.';
+                            reject(new Error('Deployment timed out. Please try again.'));
+                            return;
+                        }
+
+                        // Use readyState as primary source of truth
+                        const state = data.readyState || data.status;
+
+                        if (state === 'READY') {
+                            clearInterval(interval);
+                            titleEl.textContent = 'Deployment Ready';
+                            descEl.textContent = 'Your project is live.';
+                            // Display deployment URL if available
+                            if (data.url) {
+                                console.log("Deployment URL:", `https://${data.url}`);
+                            }
                             resolve(data);
-                        } else if (data.status === 'ERROR' || data.status === 'CANCELED') {
+                        } else if (state === 'ERROR' || state === 'CANCELED') {
                             clearInterval(interval);
+                            console.error("Vercel Deployment Error:", data);
+                            
                             titleEl.textContent = 'Deployment Failed';
-                            descEl.textContent = 'An error occurred while building your project.';
-                            reject(new Error(`Vercel deployment status: ${data.status}`));
+                            // Extract detailed error reason and code as requested
+                            const errorMessage = data.errorMessage || (data.error ? data.error.message : 'An error occurred');
+                            const errorCode = data.errorCode || (data.error ? data.error.code : 'UNKNOWN_ERROR');
+                            
+                            descEl.textContent = `Reason: ${errorMessage} (${errorCode})`;
+                            
+                            reject(new Error(errorMessage));
                         } else {
-                            // Update UI with BUILDING / INITIALIZING etc
-                            const statusMap = {
-                                'BUILDING': 'Building...',
-                                'INITIALIZING': 'Initializing...',
-                                'ANALYZING': 'Analyzing...',
-                                'UPLOADING': 'Uploading...'
+                            // Map states to exact user-friendly titles from Step 9
+                            const stateMap = {
+                                'INITIALIZING': { title: 'Initializing deployment', desc: 'Preparing environment...' },
+                                'ANALYZING': { title: 'Cloning repository', desc: 'Analyzing project...' },
+                                'UPLOADING': { title: 'Cloning repository', desc: 'Uploading source code...' },
+                                'BUILDING': { title: 'Building project', desc: 'Building your project...' }
                             };
-                            titleEl.textContent = statusMap[data.status] || 'Processing...';
-                            descEl.textContent = 'Please wait while Vercel sets up your environment.';
+
+                            const uiState = stateMap[state] || { title: 'Processing...', desc: 'Please wait while Vercel sets up your environment.' };
+                            titleEl.textContent = uiState.title;
+                            descEl.textContent = uiState.desc;
                         }
                     } catch (e) {
                         clearInterval(interval);

@@ -14,17 +14,31 @@ document.addEventListener('DOMContentLoaded', () => {
         subdomainSelector: document.getElementById('subdomainSelector'),
         addRecordSubdomainSelector: document.getElementById('addRecordSubdomainSelector'),
         logoutBtn: document.getElementById('logoutBtn'),
+        addRecordBtn: document.getElementById('addRecordBtn'),
+        dnsStatus: document.getElementById('dnsStatus'),
+        customDomainInput: document.getElementById('customDomainInput'),
+        addCustomDomainBtn: document.getElementById('addCustomDomainBtn'),
+        addDomainStatus: document.getElementById('addDomainStatus'),
+        customDomainsTable: document.getElementById('customDomainsTable'),
+        domainStatusTracker: document.getElementById('domainStatusTracker'),
+        verificationTokenValue: document.getElementById('verificationTokenValue'),
+        verifyDomainBtn: document.getElementById('verifyDomainBtn'),
+        verificationStatus: document.getElementById('verificationStatus'),
         createSubdomainBtn: document.getElementById('createSubdomainBtn'),
         subdomainInput: document.getElementById('subdomainInput'),
         subdomainStatus: document.getElementById('subdomainStatus'),
-        addRecordBtn: document.getElementById('addRecordBtn'),
-        dnsStatus: document.getElementById('dnsStatus')
+        openCreateModal: document.getElementById('openCreateModal'),
+        closeCreateModal: document.getElementById('closeCreateModal'),
+        createModal: document.getElementById('createModal'),
+        refreshDns: document.getElementById('refreshDns')
     };
 
     let userData = {
         uid: null,
         subdomains: [],
-        currentSubdomain: null
+        currentSubdomain: null,
+        customDomains: [],
+        currentCustomDomain: null
     };
     window.userData = userData;
 
@@ -56,6 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         elements.subdomainCount.textContent = userData.subdomains.length;
         
+        if (userData.subdomains.length > 0 && !userData.currentSubdomain) {
+            userData.currentSubdomain = userData.subdomains[0].subdomain;
+        }
+        
         // Populate Subdomain Selectors for DNS Manager
         const options = userData.subdomains.map(s => 
             `<option value="${s.subdomain}" ${s.subdomain === userData.currentSubdomain ? 'selected' : ''}>${s.subdomain}.mitanshu.tech</option>`
@@ -64,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.subdomainSelector.innerHTML = options;
         elements.addRecordSubdomainSelector.innerHTML = options;
 
-        if (userData.subdomains.length > 0 && !userData.currentSubdomain) {
-            userData.currentSubdomain = userData.subdomains[0].subdomain;
+        if (userData.currentSubdomain) {
+            syncSelectors(userData.currentSubdomain);
         }
 
         // Fetch DNS records count (sum of all subdomains)
@@ -78,6 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         elements.dnsRecordCount.textContent = totalRecords;
 
+        // Fetch Custom Domains
+        const customSnapshot = await db.collection("custom_domains").where("uid", "==", userData.uid).get();
+        userData.customDomains = customSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
         // Refresh currently active view
         const activeView = document.querySelector('.page-view.active').id.replace('View', '');
         renderView(activeView);
@@ -89,6 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'dashboard': renderDashboard(); break;
             case 'subdomains': renderSubdomains(); break;
             case 'dns': renderDNS(); break;
+            case 'customDomains': renderCustomDomains(); break;
+            case 'registerDomain': break; // Static view for now
         }
     };
 
@@ -115,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>
                         <div class="flex gap-2">
                             <button class="btn btn-ghost" onclick="window.manageDns('${s.subdomain}')">Manage DNS</button>
-                            <button class="btn btn-ghost text-red-500" onclick="window.removeSubdomain('${s.subdomain}')">
+                            <button class="btn btn-ghost text-red-500" onclick="window.removeSubdomain(event, '${s.subdomain}')">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -241,9 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Global Action Helpers
     window.manageDns = (subdomain) => {
-        userData.currentSubdomain = subdomain;
-        elements.subdomainSelector.value = subdomain;
+        syncSelectors(subdomain);
         document.querySelector('[data-view="dns"]').click();
+        renderDNS();
     };
 
     window.deleteRecord = async (fid, cid) => {
@@ -256,12 +283,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.removeSubdomain = async (subdomain) => {
+    window.removeSubdomain = async (event, subdomain) => {
         if (!confirm(`Are you sure you want to delete ${subdomain}.mitanshu.tech and ALL its DNS records? This cannot be undone.`)) return;
         
         try {
             // Show loading state or similar
-            const btn = event.target.closest('button');
+            const btn = event.currentTarget || event.target.closest('button');
             const originalContent = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '...';
@@ -281,12 +308,203 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const renderCustomDomains = () => {
+        elements.customDomainsTable.innerHTML = userData.customDomains.length ?
+            userData.customDomains.map(d => `
+                <tr>
+                    <td style="font-weight: 600;">${d.domain}</td>
+                    <td><span class="status-badge ${d.status === 'live' ? 'status-active' : 'status-pending'}">${d.status.toUpperCase()}</span></td>
+                    <td>Vercel</td>
+                    <td>
+                        <div class="flex gap-2">
+                            ${d.status === 'pending' ? `<button class="btn btn-ghost" onclick="window.manageCustomDomain('${d.domain}')">Verify</button>` : ''}
+                            <button class="btn btn-ghost text-red-500" onclick="window.removeCustomDomain('${d.id}')">Remove</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') :
+            '<tr><td colspan="4" style="text-align: center; color: var(--text-dim);">No custom domains connected yet.</td></tr>';
+        
+        if (userData.currentCustomDomain) {
+            updateCustomDomainStatusUI(userData.currentCustomDomain);
+        }
+    };
+
+    const updateCustomDomainStatusUI = (domainData) => {
+        elements.domainStatusTracker.classList.remove('hidden');
+        elements.verificationTokenValue.textContent = domainData.verificationToken;
+        
+        const resetStatus = () => {
+            ['statusPending', 'statusVerified', 'statusConnected', 'statusLive'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('active');
+                el.querySelector('p:last-child').classList.add('opacity-50');
+            });
+        };
+
+        resetStatus();
+        
+        const stages = ['pending', 'verified', 'connected', 'live'];
+        const currentIdx = stages.indexOf(domainData.status);
+        
+        for (let i = 0; i <= currentIdx; i++) {
+            const el = document.getElementById(`status${stages[i].charAt(0).toUpperCase() + stages[i].slice(1)}`);
+            el.classList.add('active');
+            el.querySelector('p:last-child').classList.remove('opacity-50');
+        }
+
+        document.getElementById('verificationStep').classList.toggle('hidden', domainData.status !== 'pending');
+        document.getElementById('connectionStep').classList.toggle('hidden', domainData.status === 'pending');
+    };
+
+    elements.addCustomDomainBtn.addEventListener('click', async () => {
+        const domain = elements.customDomainInput.value.trim().toLowerCase();
+        if (!domain) {
+            elements.addDomainStatus.textContent = "Please enter a domain";
+            elements.addDomainStatus.style.color = "#ef4444";
+            return;
+        }
+
+        try {
+            elements.addCustomDomainBtn.disabled = true;
+            const token = `explyra-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+            
+            const domainDoc = {
+                uid: userData.uid,
+                domain: domain,
+                verificationToken: token,
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            const docRef = await db.collection("custom_domains").add(domainDoc);
+            elements.addDomainStatus.textContent = "Domain added! Please verify ownership.";
+            elements.addDomainStatus.style.color = "#22c55e";
+            elements.customDomainInput.value = '';
+            
+            await refreshUserData();
+            window.manageCustomDomain(domain);
+        } catch (e) {
+            elements.addDomainStatus.textContent = e.message;
+            elements.addDomainStatus.style.color = "#ef4444";
+        } finally {
+            elements.addCustomDomainBtn.disabled = false;
+        }
+    });
+
+    elements.verifyDomainBtn.addEventListener('click', async () => {
+        if (!userData.currentCustomDomain) return;
+        
+        const domain = userData.currentCustomDomain.domain;
+        const expectedToken = userData.currentCustomDomain.verificationToken;
+        
+        elements.verifyDomainBtn.disabled = true;
+        elements.verificationStatus.textContent = "Verifying DNS...";
+        elements.verificationStatus.style.color = "var(--text-dim)";
+
+        try {
+            const res = await fetch(`https://dns.google/resolve?name=_explyra-verification.${domain}&type=TXT`);
+            const data = await res.json();
+            
+            const found = data.Answer?.some(ans => ans.data.includes(expectedToken));
+            
+            if (found) {
+                await db.collection("custom_domains").doc(userData.currentCustomDomain.id).update({
+                    status: 'verified'
+                });
+                elements.verificationStatus.textContent = "Verified! Domain ownership confirmed.";
+                elements.verificationStatus.style.color = "#22c55e";
+                await refreshUserData();
+                // Check for live status (automated)
+                setTimeout(() => checkLiveStatus(domain), 2000);
+            } else {
+                throw new Error("TXT record not found yet. Please wait or check your settings.");
+            }
+        } catch (e) {
+            elements.verificationStatus.textContent = e.message;
+            elements.verificationStatus.style.color = "#ef4444";
+        } finally {
+            elements.verifyDomainBtn.disabled = false;
+        }
+    });
+
+    const checkLiveStatus = async (domain) => {
+        try {
+            const res = await fetch(`https://dns.google/resolve?name=${domain}&type=A`);
+            const data = await res.json();
+            const isRootLive = data.Answer?.some(ans => ans.data === '76.76.21.21');
+            
+            if (isRootLive) {
+                const doc = userData.customDomains.find(d => d.domain === domain);
+                if (doc) {
+                    await db.collection("custom_domains").doc(doc.id).update({ status: 'live' });
+                    await refreshUserData();
+                }
+            }
+        } catch (e) { console.error(e); }
+    };
+
+    window.manageCustomDomain = (domainName) => {
+        const domainData = userData.customDomains.find(d => d.domain === domainName);
+        if (domainData) {
+            userData.currentCustomDomain = domainData;
+            renderCustomDomains();
+            document.querySelector('[data-view="customDomains"]').click();
+        }
+    };
+
+    window.removeCustomDomain = async (docId) => {
+        if (!confirm("Are you sure you want to remove this domain?")) return;
+        try {
+            await db.collection("custom_domains").doc(docId).delete();
+            if (userData.currentCustomDomain?.id === docId) {
+                userData.currentCustomDomain = null;
+                elements.domainStatusTracker.classList.add('hidden');
+            }
+            await refreshUserData();
+        } catch (e) { alert(e.message); }
+    };
+
     window.onNavigate = (viewId) => {
+        // Toggle view visibility
+        document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+        const targetView = document.getElementById(`${viewId}View`);
+        if (targetView) targetView.classList.add('active');
+
+        // Toggle nav active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.view === viewId);
+        });
+
         renderView(viewId);
     };
 
+    // Initialize Navigation & Modals
+    document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+        item.addEventListener('click', () => {
+            const viewId = item.dataset.view;
+            window.onNavigate(viewId);
+        });
+    });
+
+    if (elements.openCreateModal) {
+        elements.openCreateModal.addEventListener('click', () => {
+            elements.createModal.classList.remove('hidden');
+        });
+    }
+
+    if (elements.closeCreateModal) {
+        elements.closeCreateModal.addEventListener('click', () => {
+            elements.createModal.classList.add('hidden');
+        });
+    }
+
     const initDefaultView = () => {
         const activeNav = document.querySelector('.nav-item.active');
-        if (activeNav) renderView(activeNav.dataset.view);
+        if (activeNav) {
+            window.onNavigate(activeNav.dataset.view);
+        } else {
+            window.onNavigate('dashboard');
+        }
     };
 });
