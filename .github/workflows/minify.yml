@@ -4,6 +4,9 @@ on:
     branches:
       - main  # Jab bhi main branch pe push karoge, ye chalega
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,13 +14,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Minify Files
         run: |
           mkdir -p dist
-          # Saari files ko dist folder mein copy karo
-          cp -r * dist/ || true
-          # Ab minify-all-cli tool use karke minify karo
-          npx minify-all-cli dist
+          # Sirf zaroori files copy karo, 'dist' aur 'node_modules' ko chod kar
+          rsync -av --exclude='dist' --exclude='node_modules' --exclude='.git' --exclude='.github' . dist/
+          
+          # 'minify' tool install aur run karo
+          npm install -g minify
+          find dist -name "*.js" -o -name "*.css" -o -name "*.html" | xargs -I {} minify -o {} {}
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
