@@ -4,7 +4,8 @@
     "description": "Enterprise Expense Management System",
     "main": "index.html",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "minify index.html > dist/index.html && cp -r assets dist/ && cp nobg.png dist/ && cp mitanshu.png dist/"
     },
     "keywords": [
         "expense",
