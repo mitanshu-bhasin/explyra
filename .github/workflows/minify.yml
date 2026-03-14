@@ -11,16 +11,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Minify JS and CSS
-        uses: nizaransari/minify-all-js-css@master
-        with:
-          # Ye saari files ko minify karke original ko replace kar dega sirf runner pe
-          directory: '.' 
+      - name: Minify Files
+        run: |
+          mkdir -p dist
+          # Saari files ko dist folder mein copy karo
+          cp -r * dist/ || true
+          # Ab minify-all-cli tool use karke minify karo
+          npx minify-all-cli dist
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Vercel se token lena hoga
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: '--prod' # Direct production pe bhejega
+          vercel-args: '--prod'
+          working-directory: ./dist
