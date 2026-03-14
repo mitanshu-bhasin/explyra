@@ -40,7 +40,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: "explyra-suite" # <-- Isse apne Cloudflare project name se match karna
+          projectName: "explyra" # <-- Isse apne Cloudflare project name se match karna
           directory: "dist"
           # Optional: Agar tu chahta hai ki GitHub pe deployment ka link dikhe
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
