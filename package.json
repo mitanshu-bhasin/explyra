@@ -1,11 +1,11 @@
 {
-    "name": "explyra-expense-manager",
+    "name": "my-vanilla-project",
     "version": "1.0.0",
     "description": "Enterprise Expense Management System",
     "main": "index.html",
     "scripts": {
         "start": "npx serve .",
-        "build": "node build.js",
+        "build": "mkdir -p dist && cp -r * dist/ && minify dist/**/*.js dist/**/*.css dist/**/*.html",
         "build:sw": "npx workbox-cli generateSW workbox-config.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -27,6 +27,7 @@
         "@capacitor/assets": "^3.0.5",
         "@capacitor/cli": "^6.1.2",
         "postal-mime": "^2.7.3",
-        "wrangler": "^4.72.0"
+        "wrangler": "^4.72.0",
+        "minify": "^11.0.0"
     }
 }

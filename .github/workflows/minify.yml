@@ -1,0 +1,26 @@
+name: Minify and Deploy
+on:
+  push:
+    branches:
+      - main  # Jab bhi main branch pe push karoge, ye chalega
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Minify JS and CSS
+        uses: nizaransari/minify-all-js-css@master
+        with:
+          # Ye saari files ko minify karke original ko replace kar dega sirf runner pe
+          directory: '.' 
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Vercel se token lena hoga
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          vercel-args: '--prod' # Direct production pe bhejega
