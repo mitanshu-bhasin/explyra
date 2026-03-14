@@ -164,6 +164,7 @@
                                     <h3 id="deploymentStatusTitle" style="font-weight: 600; margin-bottom: 0.25rem;">Deploying Project</h3>
                                     <p id="deploymentStatusDesc" class="text-dim text-sm" style="color: var(--text-dim);">Please wait while we set up your production environment.</p>
                                 </div>
+                                <div id="deploymentLogs"></div>
                             </div>
 
                             <!-- Step 4: Success -->
@@ -755,7 +756,7 @@
                 const repos = await response.json();
                 
                 repoSelector.innerHTML = repos.map(repo => 
-                    `<option value="${repo.full_name}">${repo.full_name}</option>`
+                    `<option value="${repo.full_name}" data-repo-id="${repo.id}">${repo.full_name}</option>`
                 ).join('');
                 
                 updateFrameworkDetection();
@@ -793,10 +794,12 @@
 
         deployBtn.addEventListener('click', async () => {
             const repoFullName = repoSelector.value;
+            const selectedOption = repoSelector.options[repoSelector.selectedIndex];
+            const repoId = selectedOption ? selectedOption.dataset.repoId : null;
             const subdomain = deploySubdomainSelector.value;
             const token = localStorage.getItem('github_access_token');
 
-            if (!repoFullName || !subdomain) return alert('Select repo and subdomain');
+            if (!repoFullName || !repoId || !subdomain) return alert('Select repo and subdomain');
             if (!token) return alert('GitHub connection missing');
 
             repoDeployStep.classList.add('hidden');
@@ -805,7 +808,7 @@
             const statusDesc = document.getElementById('deploymentStatusDesc');
             
             try {
-                // 1. Fetch Repository Details (repoId, default_branch)
+                // 1. Fetch Repository Details (default_branch)
                 statusTitle.textContent = 'Fetching Repository Details';
                 statusDesc.textContent = `Analyzing ${repoFullName}...`;
 
@@ -814,11 +817,10 @@
                 });
                 const repoInfo = await repoRes.json();
                 
-                if (!repoInfo.id || !repoInfo.default_branch) {
-                    throw new Error('Could not retrieve repository details (ID/Branch)');
+                if (!repoInfo.default_branch) {
+                    throw new Error('Could not retrieve repository default branch');
                 }
 
-                const repoId = repoInfo.id;
                 const defaultBranch = repoInfo.default_branch;
                 const projectName = repoFullName.split('/')[1];
 
@@ -896,8 +898,43 @@
         });
 
         async function pollDeploymentStatus(id, titleEl, descEl) {
-            const startTime = Date.now();
-            const timeoutMs = 30000; // 30 seconds timeout
+            const logsContainer = document.getElementById('deploymentLogs');
+            logsContainer.innerHTML = '';
+            logsContainer.style.display = 'block';
+            
+            let lastEventId = null;
+            let isPollingLogs = true;
+
+            // Log polling helper
+            const pollLogs = async () => {
+                while (isPollingLogs) {
+                    try {
+                        const url = `https://api.vercel.com/v2/deployments/${id}/events${lastEventId ? `?since=${lastEventId}` : ''}`;
+                        const res = await fetch(url, {
+                            headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}` }
+                        });
+                        if (res.status === 200) {
+                            const events = await res.json();
+                            events.forEach(event => {
+                                if (event.text) {
+                                    const line = document.createElement('div');
+                                    line.className = 'log-line';
+                                    if (event.type === 'error') line.classList.add('log-error');
+                                    line.textContent = `[${new Date(event.created).toLocaleTimeString()}] ${event.text}`;
+                                    logsContainer.appendChild(line);
+                                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                                }
+                                lastEventId = event.created;
+                            });
+                        }
+                    } catch (e) {
+                        console.error("Log fetch error:", e);
+                    }
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+            };
+
+            pollLogs();
 
             return new Promise((resolve, reject) => {
                 const interval = setInterval(async () => {
@@ -907,54 +944,38 @@
                         });
                         const data = await res.json();
                         
-                        // Check for timeout
-                        if (Date.now() - startTime > timeoutMs) {
-                            clearInterval(interval);
-                            titleEl.textContent = 'Deployment Timed Out';
-                            descEl.textContent = 'Deployment timed out. Please try again.';
-                            reject(new Error('Deployment timed out. Please try again.'));
-                            return;
-                        }
-
-                        // Use readyState as primary source of truth
                         const state = data.readyState || data.status;
 
                         if (state === 'READY') {
                             clearInterval(interval);
+                            isPollingLogs = false;
                             titleEl.textContent = 'Deployment Ready';
                             descEl.textContent = 'Your project is live.';
-                            // Display deployment URL if available
-                            if (data.url) {
-                                console.log("Deployment URL:", `https://${data.url}`);
-                            }
                             resolve(data);
                         } else if (state === 'ERROR' || state === 'CANCELED') {
                             clearInterval(interval);
-                            console.error("Vercel Deployment Error:", data);
+                            isPollingLogs = false;
                             
-                            titleEl.textContent = 'Deployment Failed';
-                            // Extract detailed error reason and code as requested
-                            const errorMessage = data.errorMessage || (data.error ? data.error.message : 'An error occurred');
-                            const errorCode = data.errorCode || (data.error ? data.error.code : 'UNKNOWN_ERROR');
+                            const errorMessage = data.error?.message || data.errorMessage || 'An error occurred during deployment';
+                            const errorCode = data.error?.code || data.errorCode || 'DEPLOYMENT_ERROR';
                             
-                            descEl.textContent = `Reason: ${errorMessage} (${errorCode})`;
+                            titleEl.textContent = state === 'ERROR' ? 'Deployment Failed' : 'Deployment Canceled';
+                            descEl.innerHTML = `<span style="color: #ef4444;">${errorMessage} (${errorCode})</span>`;
                             
                             reject(new Error(errorMessage));
                         } else {
-                            // Map states to exact user-friendly titles from Step 9
                             const stateMap = {
-                                'INITIALIZING': { title: 'Initializing deployment', desc: 'Preparing environment...' },
-                                'ANALYZING': { title: 'Cloning repository', desc: 'Analyzing project...' },
-                                'UPLOADING': { title: 'Cloning repository', desc: 'Uploading source code...' },
-                                'BUILDING': { title: 'Building project', desc: 'Building your project...' }
+                                'BUILDING': { title: 'Building Project', desc: 'Running build scripts...' },
+                                'INITIALIZING': { title: 'Initializing', desc: 'Preparing Vercel environment...' },
+                                'ANALYZING': { title: 'Analyzing', desc: 'Detecting project configuration...' }
                             };
-
-                            const uiState = stateMap[state] || { title: 'Processing...', desc: 'Please wait while Vercel sets up your environment.' };
+                            const uiState = stateMap[state] || { title: state.charAt(0) + state.slice(1).toLowerCase(), desc: 'Processing deployment...' };
                             titleEl.textContent = uiState.title;
                             descEl.textContent = uiState.desc;
                         }
                     } catch (e) {
                         clearInterval(interval);
+                        isPollingLogs = false;
                         reject(e);
                     }
                 }, 3000);
