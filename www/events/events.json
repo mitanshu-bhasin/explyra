@@ -1,0 +1,22 @@
+[
+  {
+    "id": "explyra-dev-summit",
+    "title": "Explyra Developer Summit",
+    "date": "August 12, 2026",
+    "type": "Developer Event",
+    "shortDescription": "A virtual event where developers explore the Explyra ecosystem, APIs, integrations and real-time tools.",
+    "thumbnail": "assets/thumbnails/dev-summit.png",
+    "url": "details/explyra-dev-summit.html",
+    "category": "dev"
+  },
+  {
+    "id": "explyra-suite-launch",
+    "title": "Explyra Suite Product Launch",
+    "date": "September 5, 2026",
+    "type": "Product Launch",
+    "shortDescription": "Official launch event of the Explyra Suite featuring productivity tools, meeting platform, booking system and developer utilities.",
+    "thumbnail": "assets/thumbnails/suite-launch.png",
+    "url": "details/explyra-suite-launch.html",
+    "category": "launch"
+  }
+]

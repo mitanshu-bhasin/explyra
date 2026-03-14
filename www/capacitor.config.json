@@ -1,0 +1,6 @@
+{
+    "appId": "com.mitanshu.explyra",
+    "appName": "EXPLYRA App",
+    "webDir": "www",
+    "bundledWebRuntime": false
+}

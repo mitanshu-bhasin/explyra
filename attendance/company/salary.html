@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="en"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payroll & Bonus | Company.OS</title><script src="https://cdn.tailwindcss.com"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../shared/saas-ui.css"><style>body { font-family: 'Outfit', sans-serif; }
+        .v-sidebar-item.active {
+            background: var(--v-accents-2);
+            color: var(--v-foreground);
+            font-weight: 600;
+        }
+        .v-sidebar-item i { width: 24px; text-align: center; margin-right: 12px; }
+        
+        /* Table styling */
+        .v-table th {
+            color: var(--v-accents-5);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--v-border);
+            text-align: left;
+        }
+        .v-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--v-border);
+            color: var(--v-accents-7);
+            vertical-align: middle;
+        }
+        .v-table tr:hover td {
+            background-color: var(--v-accents-1);
+        }</style><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../../js/firebase-config.js" defer="defer"></script><script src="../shared/utils.js"></script><script src="../shared/auth.js"></script><script>let currentMonth = new Date().toISOString().substring(0, 7);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth('company');
+            const session = getSession('company_session');
+            if (session && session.role === 'Manager') {
+                document.body.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-screen bg-[var(--v-bg)] text-center p-6">
+                        <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-6">
+                            <i class="fa-solid fa-lock text-3xl"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold tracking-tight mb-2 text-[var(--v-foreground)]">Clearance Required</h1>
+                        <p class="text-[var(--v-accents-5)] mb-8 max-w-md mx-auto">Your current authorization string (HR Manager) does not permit access to financial ledger data.</p>
+                        <a href="dashboard.html" class="v-btn-primary bg-[var(--v-foreground)] text-[var(--v-bg)] border-none">Return to Dashboard</a>
+                    </div>`;
+                return;
+            }
+
+            document.getElementById('month-picker').value = currentMonth;
+            setTimeout(renderSalaries, 300);
+        });
+
+        function changeMonth(e) {
+            currentMonth = e.target.value;
+            renderSalaries();
+        }
+
+        function calculateTotal(empId) {
+            const basicStr = document.getElementById(`basic-${empId}`).dataset.value;
+            const basic = parseFloat(basicStr) || 0;
+            const incentiveInput = document.getElementById(`incentive-${empId}`);
+            let incentive = 0;
+            
+            if (incentiveInput) {
+                incentive = parseFloat(incentiveInput.value) || 0;
+            }
+            
+            const total = basic + incentive;
+            document.getElementById(`total-${empId}`).textContent = '₹' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        async function renderSalaries() {
+            const session = getSession('company_session');
+            if (!session) return;
+
+            const tbody = document.getElementById('salary-tbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center text-[var(--v-accents-4)]"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Syncing financial ledgers...</td></tr>';
+
+            let emps = [];
+            let monthSals = {};
+
+            if (typeof window.db !== 'undefined' && session.companyId) {
+                try {
+                    const empSnap = await window.db.collection('employees').where('companyId', '==', session.companyId).get();
+                    empSnap.forEach(doc => emps.push({ firebaseId: doc.id, ...doc.data() }));
+
+                    const salSnap = await window.db.collection('salaries').doc(session.companyId).get();
+                    if (salSnap.exists) {
+                        const allSals = salSnap.data();
+                        monthSals = allSals[currentMonth] || {};
+                    }
+                } catch (e) {
+                    console.error("Firestore error loading salaries", e);
+                }
+            } else {
+                const data = getAppData('attendance_app_data', {});
+                emps = data.employees[session.companyId] || [];
+
+                if (!data.salaries) data.salaries = {};
+                if (!data.salaries[session.companyId]) data.salaries[session.companyId] = {};
+                monthSals = data.salaries[session.companyId][currentMonth] || {};
+            }
+
+            tbody.innerHTML = '';
+
+            if (emps.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center"><div class="flex flex-col items-center justify-center text-[var(--v-accents-4)]"><i class="fa-solid fa-users-slash text-2xl mb-2"></i><p>No personnel records found for payroll assessment.</p></div></td></tr>`;
+            } else {
+                emps.forEach(emp => {
+                    const safeId = emp.id || emp.firebaseId;
+                    const salRecord = monthSals[safeId] || { paid: false, incentive: 0 };
+                    const isPaid = salRecord.paid;
+                    const incentiveVal = isPaid ? salRecord.incentive : (salRecord.incentive || 0);
+
+                    const el = document.createElement('tr');
+                    el.className = "transition-colors duration-150";
+
+                    let incentiveHtml = '<span class="text-[var(--v-accents-4)] text-sm">N/A</span>';
+                    
+                    if (emp.incentiveEligible) {
+                        if (isPaid) {
+                            incentiveHtml = `<span class="font-mono text-sm text-[var(--v-foreground)]">+ ₹${parseFloat(incentiveVal).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                        } else {
+                            incentiveHtml = `
+                                <div class="relative w-32">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-[var(--v-accents-4)] font-mono text-xs">+ ₹</span>
+                                    <input type="number" id="incentive-${safeId}" value="${incentiveVal}" oninput="calculateTotal('${safeId}')" class="w-full pl-7 pr-2 py-1.5 bg-[var(--v-bg)] border border-[var(--v-border)] rounded shadow-sm focus:outline-none focus:border-blue-500 transition font-mono text-sm" min="0" ${!hasAccess(['Admin'], 'company') ? 'disabled' : ''}>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    let actionHtml = '';
+                    if (isPaid) {
+                        actionHtml = `
+                            <div class="flex flex-col items-end gap-1.5">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800 flex items-center gap-1 w-fit"><i class="fa-solid fa-check text-[8px]"></i> Disbursed</span>
+                                ${hasAccess(['Admin'], 'company') ? `<button onclick="unmarkPaid('${safeId}')" class="text-[10px] text-[var(--v-accents-4)] hover:text-red-500 hover:underline tracking-wide transition">Revert Ledger</button>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        actionHtml = hasAccess(['Admin'], 'company') ? `
+                            <button onclick="markPaid('${safeId}', ${emp.salary || 0})" class="bg-[var(--v-foreground)] hover:bg-[var(--v-accents-6)] text-[var(--v-bg)] px-4 py-1.5 rounded-md text-xs font-bold shadow-sm transition border-none whitespace-nowrap">
+                                Dispatch Funds
+                            </button>
+                        ` : '<span class="text-[var(--v-accents-4)] text-xs font-bold uppercase tracking-widest">Pending Auth</span>';
+                    }
+
+                    const basicNum = parseFloat(emp.salary) || 0;
+                    const totalNum = basicNum + (emp.incentiveEligible ? parseFloat(incentiveVal) : 0);
+
+                    el.innerHTML = `
+                        <td class="font-mono text-xs text-[var(--v-accents-6)]">${safeId}</td>
+                        <td class="font-semibold text-[var(--v-foreground)]">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[10px] font-bold text-[var(--v-accents-6)]">${(emp.name || '?').charAt(0).toUpperCase()}</div>
+                                ${emp.name || ''}
+                            </div>
+                        </td>
+                        <td class="font-mono text-sm font-medium text-[var(--v-accents-7)]" id="basic-${safeId}" data-value="${basicNum}">
+                            ₹${basicNum.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                        <td>${incentiveHtml}</td>
+                        <td class="font-mono text-sm font-bold text-blue-600 dark:text-blue-400" id="total-${safeId}">
+                            ₹${totalNum.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                        <td class="admin-only text-right">${actionHtml}</td>
+                    `;
+                    tbody.appendChild(el);
+
+                    if (!isPaid && emp.incentiveEligible) {
+                        calculateTotal(safeId);
+                    }
+                });
+            }
+
+            updateUIForRole(session.role, 'company');
+        }
+
+        async function markPaid(empId, basicSalary) {
+            const session = getSession('company_session');
+
+            let incAmt = 0;
+            const incInput = document.getElementById(`incentive-${empId}`);
+            if (incInput) incAmt = parseFloat(incInput.value) || 0;
+
+            const payloadData = {
+                basic: parseFloat(basicSalary),
+                incentive: incAmt,
+                paid: true,
+                paidAt: new Date().toISOString()
+            };
+
+            const btn = event.currentTarget;
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+            btn.disabled = true;
+
+            if (typeof window.db !== 'undefined' && session.companyId) {
+                try {
+                    const salRef = window.db.collection('salaries').doc(session.companyId);
+
+                    const updateObj = {};
+                    updateObj[`${currentMonth}.${empId}`] = payloadData;
+
+                    await salRef.set(updateObj, { merge: true });
+                } catch (e) {
+                    console.error("Firestore mark paid error", e);
+                }
+            } else {
+                const data = getAppData('attendance_app_data', {});
+
+                if (!data.salaries) data.salaries = {};
+                if (!data.salaries[session.companyId]) data.salaries[session.companyId] = {};
+                if (!data.salaries[session.companyId][currentMonth]) data.salaries[session.companyId][currentMonth] = {};
+
+                data.salaries[session.companyId][currentMonth][empId] = payloadData;
+                saveAppData('attendance_app_data', data);
+            }
+
+            renderSalaries();
+        }
+
+        async function unmarkPaid(empId) {
+            if(!confirm('Revert payment ledger for this employee? This will re-enable variable component editing.')) return;
+            
+            const session = getSession('company_session');
+
+            const btn = event.currentTarget;
+            btn.innerHTML = `Reverting...`;
+            btn.style.pointerEvents = 'none';
+
+            if (typeof window.db !== 'undefined' && session.companyId) {
+                try {
+                    const salRef = window.db.collection('salaries').doc(session.companyId);
+
+                    const updateObj = {};
+                    updateObj[`${currentMonth}.${empId}.paid`] = false;
+                    updateObj[`${currentMonth}.${empId}.paidAt`] = firebase.firestore.FieldValue.delete();
+
+                    await salRef.set(updateObj, { merge: true });
+                } catch (e) {
+                    console.error("Firestore unmark paid error", e);
+                }
+            } else {
+                const data = getAppData('attendance_app_data', {});
+
+                if (data.salaries && data.salaries[session.companyId] && data.salaries[session.companyId][currentMonth]) {
+                    if (data.salaries[session.companyId][currentMonth][empId]) {
+                        data.salaries[session.companyId][currentMonth][empId].paid = false;
+                        delete data.salaries[session.companyId][currentMonth][empId].paidAt;
+                    }
+                }
+
+                saveAppData('attendance_app_data', data);
+            }
+
+            renderSalaries();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+        
+        (function() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();</script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body class="flex h-screen overflow-hidden"><aside class="v-sidebar shrink-0 hidden md:flex border-r border-[var(--v-border)] z-40 relative"><div class="h-16 flex items-center px-6 border-b border-[var(--v-border)]"><div class="w-7 h-7 bg-[var(--v-foreground)] rounded flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-briefcase text-[var(--v-bg)] text-[10px]"></i></div><span class="font-bold text-sm tracking-tight">CORP<span class="text-[var(--v-accents-4)]">.OPS</span></span></div><div class="p-5"><p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] mb-2 tracking-widest">Active Workspace</p><div class="flex items-center gap-3 p-2 rounded-md bg-[var(--v-bg)] border border-[var(--v-border)] shadow-sm"><div class="w-7 h-7 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-xs" id="sidebar-company-initial">C</div><p id="sidebar-company-name" class="font-bold text-xs truncate">Loading Workspace...</p></div></div><nav class="flex-1 px-3 space-y-1"><a href="dashboard.html" class="v-sidebar-item"><i class="fa-solid fa-chart-pie opacity-70"></i> Dashboard </a><a href="employees.html" class="v-sidebar-item hr-auth"><i class="fa-solid fa-users opacity-70"></i> Directory </a><a href="attendance.html" class="v-sidebar-item hr-auth"><i class="fa-regular fa-calendar-check opacity-70"></i> Attendance </a><a href="salary.html" class="v-sidebar-item active admin-only"><i class="fa-solid fa-wallet text-blue-500"></i> Payroll & Bonus</a></nav><div class="p-4 border-t border-[var(--v-border)]"><div class="flex items-center gap-3 mb-4 p-2"><div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs border border-[var(--v-border)]"><i class="fa-solid fa-user"></i></div><div class="overflow-hidden"><p id="sidebar-user-name" class="text-xs font-bold truncate">User</p><p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-[var(--v-accents-5)] truncate">Role</p></div></div><button onclick="doLogout('company')" class="w-full flex items-center justify-center gap-2 py-2.5 text-[var(--v-accents-6)] hover:bg-[var(--v-accents-2)] hover:text-red-500 rounded-md text-xs font-bold transition border border-transparent hover:border-red-200"><i class="fa-solid fa-power-off"></i> Terminate Session</button></div></aside><main class="flex-1 flex flex-col h-screen overflow-hidden bg-[var(--v-accents-1)]"><header class="v-header shrink-0 z-30 relative bg-[var(--v-bg)] border-b border-[var(--v-border)]"><div class="flex items-center gap-3"><h1 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Financial Ledgers</h1><div class="hidden sm:block h-4 w-[1px] bg-[var(--v-border)]"></div><span class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-key text-[8px]"></i> Admin Level Protocol</span></div><div class="flex items-center gap-3"><button onclick="toggleTheme()" class="w-8 h-8 rounded border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition shadow-sm bg-[var(--v-bg)]"><i class="fa-solid fa-moon dark:hidden text-[11px] text-[var(--v-accents-5)]"></i> <i class="fa-solid fa-sun hidden dark:block text-[11px] text-[var(--v-accents-5)] hover:text-yellow-500"></i></button></div></header><div class="flex-1 overflow-y-auto p-4 md:p-8 relative selection:bg-blue-100 selection:text-blue-900 custom-scrollbar"><div class="max-w-6xl mx-auto space-y-6 pb-12"><div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4"><div><h2 class="text-2xl md:text-3xl font-bold tracking-tight">Financial Operations</h2><p class="text-[var(--v-accents-5)] text-sm mt-1 max-w-lg leading-relaxed">Approve base compensation scaling, inject performance variables, and orchestrate final fund dispatch.</p></div></div><div class="v-card !p-0 overflow-hidden shadow-sm border-[var(--v-border)] flex flex-col"><div class="border-b border-[var(--v-border)] bg-[var(--v-bg)] flex flex-col md:flex-row md:items-center justify-between"><div class="flex items-center bg-[var(--v-bg)] border-r border-b md:border-b-0 border-[var(--v-border)]"><div class="px-4 text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-5)] flex items-center gap-1.5 h-full whitespace-nowrap bg-[var(--v-accents-1)]"><i class="fa-regular fa-calendar-days text-[var(--v-foreground)]"></i> Assessment Cycle</div><input type="month" id="month-picker" onchange="changeMonth(event)" class="px-4 py-3 bg-transparent focus:outline-none text-sm font-mono font-medium text-[var(--v-foreground)] cursor-pointer w-[140px]"></div><div class="p-3 md:px-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--v-accents-4)]"><i class="fa-solid fa-circle-info text-blue-500"></i> Disbursed funds are locked</div></div><div class="overflow-x-auto flex-1 bg-[var(--v-bg)]"><table class="w-full v-table whitespace-nowrap"><thead class="bg-[var(--v-bg)] sticky top-0 shadow-sm z-10"><tr><th>Registry ID</th><th>Recipient Matrix</th><th>Contract Base</th><th>Variable Comp <span class="text-[10px] bg-[var(--v-border)] px-1 py-0.5 rounded text-[var(--v-accents-5)] ml-1">Editable</span></th><th>Net Dispatch Forecast</th><th class="w-32 text-right admin-only">Status / Operator Action</th></tr></thead><tbody id="salary-tbody" class="text-sm"></tbody></table></div><div class="px-5 py-3 border-t border-[var(--v-border)] bg-[var(--v-accents-1)] flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div><p class="text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Ledger Sync: Authorized</p></div><i class="fa-solid fa-money-check-dollar text-[var(--v-accents-3)] text-xl"></i></div></div></div></div></main></body></html>

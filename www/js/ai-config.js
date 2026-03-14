@@ -1,0 +1,1 @@
+const AI_CONFIG={apiKey:"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",url:"https://api.groq.com/openai/v1/chat/completions",model:""};window.GROQ_API_KEY=AI_CONFIG.apiKey;window.AI_CONFIG=AI_CONFIG;

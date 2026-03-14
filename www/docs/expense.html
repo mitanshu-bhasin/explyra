@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Expense Manager Documentation | Finance & Budgeting</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><style>.doc-layout {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar a {
+            color: var(--ink3);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--t);
+        }
+
+        .sidebar a:hover {
+            color: var(--blue);
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.8rem;
+        }
+
+        .content {
+            flex: 1;
+            max-width: 800px;
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: var(--ink);
+        }
+
+        .content p {
+            margin-bottom: 1.2rem;
+            color: var(--ink2);
+            font-size: 1.05rem;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: var(--s3);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg3);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--bdr);
+        }
+
+        [data-theme="dark"] .feature-card {
+            background: var(--bg4);
+        }
+
+        .feature-card i {
+            font-size: 1.5rem;
+            color: var(--blue);
+            margin-bottom: 1rem;
+            display: block;
+        }</style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><nav><a href="index.html" class="nav-logo"><div style="width: 34px; height: 34px; background: var(--blue); border-radius: 9px; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><span style="font-family: 'Playfair Display', serif; color: var(--ink);">Expense Manager Docs</span></a><div style="display: flex; gap: 1rem; align-items: center;"><a href="index.html" style="font-size: 0.85rem; font-weight: 500; color: var(--ink2);">Docs Hub</a> <button id="themeToggle" style="background: var(--bg3); padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Toggle Theme</button></div></nav><main class="container"><img src="../assets/images/docs_expense_hero.png" alt="Expense Manager" class="hero-img"><div class="doc-layout"><aside class="sidebar"><ul><li><a href="#overview" class="active">Overview</a></li><li><a href="#smart-cat">Smart Categorization</a></li><li><a href="#receipt-ocr">Receipt OCR</a></li><li><a href="#approvals">Approval Workflows</a></li><li><a href="#exports">Advanced Export</a></li></ul></aside><article class="content"><section id="overview"><h2>Finance with Foresight</h2><p>Explyra's Expense Manager is a powerful tool designed for individuals and teams to gain full control over their financial health. From daily coffee runs to major corporate procurement, every transaction is tracked with precision.</p><div class="feature-grid"><div class="feature-card"><i class="fas fa-bolt"></i><h4>Rapid Entry</h4><p>Log expenses in under 5 seconds with our streamlined mobile-first interface.</p></div><div class="feature-card"><i class="fas fa-chart-pie"></i><h4>Visual Analytics</h4><p>Beautiful charts and graphs that break down your spending by category and time.</p></div><div class="feature-card"><i class="fas fa-shield-alt"></i><h4>Bank-Level Security</h4><p>All financial data is encrypted with 256-bit AES protection.</p></div></div></section><section id="smart-cat"><h2>Smart Categorization</h2><p>Tired of manually assigning categories to every transaction? Explyra's AI engine learns from your spending habits to automatically sort your expenses.</p><div class="alert alert-info"><i class="fas fa-lightbulb"></i><div><strong>AI Learning:</strong> The more you use the platform, the more accurate the categorization becomes. It can even predict tax-deductible expenses!</div></div><h3>Auto-Tagging Rules</h3><p>Create custom rules based on merchant name, amount, or keyword. For example, any transaction from "Uber" can be automatically tagged as "Transport".</p></section><section id="receipt-ocr"><h2>Receipt OCR & Scanning</h2><p>Eliminate paper clutter. Use the Explyra mobile app to snap a photo of any receipt, and our OCR (Optical Character Recognition) engine will extract the details instantly.</p><div class="step-card"><h4><i class="fas fa-camera"></i> Capture & Extract</h4><p>Our engine extracts the Merchant Name, Date, Total Amount, and even Tax amounts with 99% accuracy across 40+ languages.</p></div><div class="step-card"><h4><i class="fas fa-link"></i> Digital Proof</h4><p>Scanned receipts are permanently attached to the expense entry, meeting most international tax audit requirements.</p></div></section><section id="approvals"><h2>Approval Workflows</h2><p>For organizations, Explyra provides robust approval hierarchies to manage employee reimbursements and corporate spending.</p><ul><li><strong>Multi-Level Approval:</strong> Set up workflows where an expense must be approved by a Manager and then an Accountant.</li><li><strong>Spending Limits:</strong> Automatically flag or block expenses that exceed pre-defined budget limits for specific departments.</li><li><strong>Instant Notifications:</strong> Employees get notified via Slack, Email, or Push when their expense is approved or rejected.</li></ul></section><section id="exports"><h2>Advanced Export & Integration</h2><p>Moving data out of Explyra is just as easy as putting it in. Custom-build your exports to match your accounting software's requirements.</p><div class="alert alert-warning"><i class="fas fa-file-export"></i><div><strong>ERP Ready:</strong> Export formats are available for SAP, Oracle, QuickBooks, and Xero.</div></div><h3>Custom Templates</h3><p>Use our template builder to choose which columns to include in your CSV/PDF exports. Reorder columns, change headers, and apply filters to get exactly what you need for tax season.</p></section><section id="faq"><h2>Frequently Asked Questions</h2><div class="faq-item"><h4>What happens if I lose my phone?</h4><p>Your data is synced to the cloud in real-time. Simply log in from any other device to access your full financial history.</p></div><div class="faq-item"><h4>Are there limits on receipt uploads?</h4><p>Standard accounts include 1GB of receipt storage, while Enterprise accounts offer unlimited storage for all your digital proofs.</p></div></section></article></div></main><footer><p>&copy; 2026 Explyra Finance. Smart money, simple tools.</p><div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;"><a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a> <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details" target="_blank" rel="noopener noreferrer">Facebook</a> <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a> <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a> <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a> <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a> <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a></div></footer><script>const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', savedTheme);
+
+        // Scroll-spy logic
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });</script></body></html>

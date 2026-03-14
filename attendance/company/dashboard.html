@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Company Dashboard | Attendance.OS</title><script src="https://cdn.tailwindcss.com"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../shared/saas-ui.css"><style>body { font-family: 'Outfit', sans-serif; }
+        .v-sidebar-item.active {
+            background: var(--v-accents-2);
+            color: var(--v-foreground);
+            font-weight: 600;
+        }
+        .v-sidebar-item i { width: 24px; text-align: center; margin-right: 12px; }</style><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../../js/firebase-config.js" defer="defer"></script><script src="../shared/utils.js"></script><script src="../shared/auth.js"></script><script>document.addEventListener('DOMContentLoaded', () => {
+            initAuth('company');
+            setTimeout(loadDashboardStats, 300);
+        });
+
+        async function loadDashboardStats() {
+            const session = getSession('company_session');
+            if (!session) return;
+
+            let emps = [];
+            let att = {};
+            let sals = {};
+
+            if (typeof window.db !== 'undefined' && session.companyId) {
+                try {
+                    const empSnap = await window.db.collection('employees').where('companyId', '==', session.companyId).get();
+                    empSnap.forEach(doc => emps.push({ firebaseId: doc.id, ...doc.data() }));
+
+                    const attSnap = await window.db.collection('attendance').doc(session.companyId).get();
+                    if (attSnap.exists) att = attSnap.data();
+
+                    const salSnap = await window.db.collection('salaries').doc(session.companyId).get();
+                    if (salSnap.exists) sals = salSnap.data();
+
+                } catch (e) {
+                    console.error("Firestore error loading dashboard stats", e);
+                }
+            } else {
+                const data = getAppData('attendance_app_data', {});
+                emps = data.employees[session.companyId] || [];
+                att = data.attendance[session.companyId] || {};
+                sals = data.salaries[session.companyId] || {};
+            }
+
+            document.getElementById('stat-total-emp').textContent = emps.length;
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayAtt = att[todayStr] || {};
+            let presentCount = 0;
+            emps.forEach(e => {
+                const safeId = e.id || e.firebaseId;
+                if (todayAtt[safeId] === 'Present' || todayAtt[safeId] === 'Half Day') {
+                    presentCount++;
+                }
+            });
+            document.getElementById('stat-present').textContent = presentCount;
+
+            const pct = emps.length > 0 ? Math.round((presentCount / emps.length) * 100) : 0;
+            document.getElementById('stat-att-pct').textContent = pct + '%';
+
+            const monthStr = todayStr.substring(0, 7);
+            const monthSals = sals[monthStr] || {};
+            let paidAmount = 0;
+            let pendingAmount = 0;
+
+            emps.forEach(e => {
+                const safeId = e.id || e.firebaseId;
+                const salData = monthSals[safeId];
+                const expected = parseFloat(e.salary) || 0;
+                if (salData && salData.paid) {
+                    paidAmount += expected + (parseFloat(salData.incentive) || 0);
+                } else {
+                    pendingAmount += expected;
+                }
+            });
+
+            document.getElementById('stat-paid').textContent = '₹' + paidAmount.toLocaleString();
+            document.getElementById('stat-pending').textContent = '₹' + pendingAmount.toLocaleString();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+        
+        (function() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();</script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body class="flex h-screen overflow-hidden"><aside class="v-sidebar shrink-0 hidden md:flex"><div class="h-16 flex items-center px-6 border-b border-[var(--v-border)]"><div class="w-7 h-7 bg-black dark:bg-white rounded flex items-center justify-center mr-3"><i class="fa-solid fa-briefcase text-white dark:text-black text-[10px]"></i></div><span class="font-bold text-sm tracking-tight">CORP<span class="text-slate-400">.OPS</span></span></div><div class="p-5"><p class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Active Workspace</p><div class="flex items-center gap-3 p-2 rounded-lg bg-[var(--v-accents-1)] border border-[var(--v-border)]"><div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-xs" id="sidebar-company-initial">C</div><p id="sidebar-company-name" class="font-bold text-xs truncate">Loading Workspace...</p></div></div><nav class="flex-1 px-2 space-y-1"><a href="dashboard.html" class="v-sidebar-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard </a><a href="employees.html" class="v-sidebar-item hr-auth"><i class="fa-solid fa-users"></i> Employees </a><a href="attendance.html" class="v-sidebar-item hr-auth"><i class="fa-regular fa-calendar-check"></i> Attendance </a><a href="salary.html" class="v-sidebar-item admin-only"><i class="fa-solid fa-wallet"></i> Payroll & Bonus</a></nav><div class="p-4 border-t border-[var(--v-border)]"><div class="flex items-center gap-3 mb-4 p-2"><div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs"><i class="fa-solid fa-user"></i></div><div class="overflow-hidden"><p id="sidebar-user-name" class="text-xs font-bold truncate">User</p><p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-slate-400 truncate">Role</p></div></div><button onclick="doLogout('company')" class="w-full flex items-center justify-center gap-2 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-power-off"></i> Terminate Session</button></div></aside><main class="flex-1 flex flex-col h-screen overflow-hidden"><header class="v-header shrink-0"><div class="flex items-center gap-2"><h1 class="text-sm font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Analytics Dashboard</h1></div><div class="flex items-center gap-3"><button onclick="toggleTheme()" class="w-8 h-8 rounded-full border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition"><i class="fa-solid fa-moon dark:hidden text-xs"></i> <i class="fa-solid fa-sun hidden dark:block text-xs text-yellow-500"></i></button><div class="h-6 w-[1px] bg-[var(--v-border)] mx-1"></div><div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800"><span class="w-2 h-2 rounded-full bg-green-500"></span> <span class="text-[10px] font-bold text-green-700 dark:text-green-400">SECURE</span></div></div></header><div class="flex-1 overflow-y-auto p-8 space-y-8 h-screen pb-20"><div class="flex items-center justify-between"><div><h2 class="text-3xl font-bold tracking-tight">Overview</h2><p class="text-[var(--v-accents-5)] text-sm mt-1">Real-time indicators for your corporate workspace.</p></div></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"><div class="v-card"><p class="v-stat-label">Total Personnel</p><div class="flex items-baseline justify-between"><p class="v-stat-value" id="stat-total-emp">0</p><i class="fa-solid fa-users text-[var(--v-accents-2)] text-2xl"></i></div><div class="mt-4 h-1 w-full bg-[var(--v-accents-1)] rounded-full overflow-hidden"><div class="h-full bg-blue-600" style="width: 100%"></div></div></div><div class="v-card"><p class="v-stat-label">Active Today</p><div class="flex items-baseline justify-between"><p class="v-stat-value text-green-600" id="stat-present">0</p><i class="fa-solid fa-user-check text-[var(--v-accents-2)] text-2xl"></i></div><div class="mt-4 h-1 w-full bg-[var(--v-accents-1)] rounded-full overflow-hidden" id="stat-present-bar"><div class="h-full bg-green-500" style="width: 75%"></div></div></div><div class="v-card"><p class="v-stat-label">Retention Rate</p><div class="flex items-baseline justify-between"><p class="v-stat-value text-blue-600" id="stat-att-pct">0%</p><i class="fa-solid fa-signal text-[var(--v-accents-2)] text-2xl"></i></div><div class="mt-4 flex gap-1"><div class="h-1 flex-1 bg-blue-600 rounded-full"></div><div class="h-1 flex-1 bg-blue-600 rounded-full"></div><div class="h-1 flex-1 bg-blue-600 rounded-full"></div><div class="h-1 flex-1 bg-[var(--v-accents-2)] rounded-full"></div></div></div><div class="v-card flex flex-col justify-between"><div><p class="v-stat-label">Payroll (Current Month)</p><div class="mt-3 flex gap-4"><div><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Disbursed</p><p class="text-sm font-bold text-green-600" id="stat-paid">₹0</p></div><div class="w-[1px] h-full bg-[var(--v-border)]"></div><div><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Pending</p><p class="text-sm font-bold text-amber-500" id="stat-pending">₹0</p></div></div></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="v-card !p-0 overflow-hidden group"><div class="p-6"><h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-calendar-days text-blue-600"></i> Attendance Ledger</h3><p class="text-[var(--v-accents-5)] text-sm mt-1">Review and reconcile daily check-ins.</p></div><div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition"><span class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Manage Register</span> <a href="attendance.html" class="v-btn-secondary px-3 py-1.5 text-xs">Open Ledger</a></div></div><div class="v-card !p-0 overflow-hidden group"><div class="p-6"><h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-user-group text-purple-600"></i> Employee Directory</h3><p class="text-[var(--v-accents-5)] text-sm mt-1">Manage personnel records and access levels.</p></div><div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition"><span class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Directory Ops</span> <a href="employees.html" class="v-btn-secondary px-3 py-1.5 text-xs">Manage Base</a></div></div></div><div class="bg-[var(--v-accents-1)] border border-[var(--v-border)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-center"><div class="w-16 h-16 rounded-full bg-white dark:bg-black flex items-center justify-center border border-[var(--v-border)] shrink-0 shadow-sm"><i class="fa-solid fa-shield-halved text-green-500 text-2xl"></i></div><div><h3 class="font-bold text-lg">Infrastructure Security</h3><p class="text-[var(--v-accents-5)] text-sm mt-1 leading-relaxed">Your workspace is logically isolated. All data transactions are encrypted and mapped to your unique Company ID. Our zero-trust architecture ensures that your employee records and payroll data remain confidential.</p></div></div></div></main></body></html>

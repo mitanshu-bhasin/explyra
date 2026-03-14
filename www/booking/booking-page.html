@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Book a Meeting — Booking Suite</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="booking.css"><style>body {
+            background: var(--bg);
+            padding: 3rem 1rem;
+        }
+
+        .booking-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .booking-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-sidebar {
+            padding: 2.5rem;
+            text-align: center;
+            height: fit-content;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            background: var(--blue-g);
+            color: var(--blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .date-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .date-btn {
+            padding: 1rem 0.5rem;
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--surf);
+        }
+
+        .date-btn:hover,
+        .date-btn.active {
+            border-color: var(--blue);
+            background: var(--blue-g);
+            color: var(--blue);
+        }
+
+        .slot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .slot-btn {
+            padding: 0.8rem;
+            border: 1px solid var(--blue);
+            color: var(--blue);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .slot-btn:hover,
+        .slot-btn.active {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .confirmation-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--surf);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .confirmation-overlay.active {
+            display: flex;
+        }</style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><div class="booking-container"><div class="booking-layout"><div class="card profile-sidebar"><div class="profile-pic"><i class="fa-solid fa-user"></i></div><h2 id="ownerName" style="font-family: 'Playfair Display', serif; margin-bottom: 0.5rem;">Loading...</h2><p id="meetingDuration" style="color: var(--ink3); font-size: 0.9rem; margin-bottom: 2rem;"><i class="fa-solid fa-clock"></i> -- min meeting</p><div style="text-align: left; font-size: 0.85rem; color: var(--ink3); margin-bottom: 2rem;">Select a date and time to schedule your meeting.</div><div style="border-top: 1px solid var(--bdr); margin-top: 1.5rem; padding-top: 1.5rem;"><a href="track.html" style="color: var(--blue); text-decoration: none; font-size: 0.85rem; font-weight: 500;"><i class="fa-solid fa-magnifying-glass"></i> Track Your Booking</a></div></div><div class="card"><div id="selection-view"><h3 style="margin-bottom: 1.5rem;">Select Date</h3><div id="dates-container" class="date-picker"></div><h3 style="margin-bottom: 1.5rem;">Select Time</h3><div id="slots-container" class="slot-grid"><div style="grid-column: 1/-1; color: var(--ink4); font-style: italic;">Select a date first</div></div></div><div id="details-view" style="display: none;"><button class="btn btn-ghost" style="margin-bottom: 1.5rem; padding: 0.4rem 0.8rem;" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Change Time</button><h3 style="margin-bottom: 1.5rem;">Enter Your Details</h3><form id="bookingForm"><div class="form-group"><label class="form-label">Full Name</label> <input type="text" id="cust-name" class="form-input" placeholder="Your Name" required></div><div class="form-group"><label class="form-label">Email Address</label> <input type="email" id="cust-email" class="form-input" placeholder="you@example.com" required></div><div class="form-group"><label class="form-label">Message (Optional)</label> <textarea id="cust-message" class="form-input" style="height: 100px; resize: none;" placeholder="Anything you'd like to share?"></textarea></div><div style="background: var(--bg3); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;"><div style="font-size: 0.85rem; color: var(--ink3);">Meeting with <span id="summary-owner">...</span></div><div style="font-weight: 600;" id="summary-time">...</div></div><button type="submit" class="btn btn-primary" style="width: 100%;">Confirm Booking</button></form></div></div></div></div><div id="successOverlay" class="confirmation-overlay"><div style="font-size: 4rem; color: #10b981; margin-bottom: 1.5rem;"><i class="fa-solid fa-circle-check"></i></div><h1 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">Booking Confirmed!</h1><p style="color: var(--ink3); max-width: 400px; margin-bottom: 2rem;">Your meeting has been scheduled. A confirmation email placeholder has been sent.</p><div style="background: var(--bg); padding: 1.5rem 3rem; border-radius: 12px; border: 1px dashed var(--blue);"><div style="font-size: 0.85rem; color: var(--ink3); margin-bottom: 0.5rem;">Your Booking Code</div><div id="bookingCode" style="font-size: 2rem; font-weight: 800; color: var(--blue); letter-spacing: 2px;">BOOK-XXXXX</div></div></div><div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;"><button class="btn btn-ghost" onclick="window.location.reload()">Book Another</button> <a href="track.html" class="btn btn-primary" style="text-decoration: none;">Track Now</a></div><script type="module">import { db, saveBooking, getProfileByUsername } from './booking.js';
+        import { generateSlots, getAvailableDates } from './calendar.js';
+        import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let username = urlParams.get('u');
+
+        // Fallback: extract from path if clean URL is used
+        if (!username) {
+            const pathParts = window.location.pathname.split('/').filter(p => p);
+            // If hosted on a subdomain (book.explyra.me/username), username is the first segment
+            // If hosted on a subfolder (explyra.me/booking/username), username is the second segment
+
+            if (pathParts.length > 0) {
+                if (pathParts[0] === 'booking' && pathParts[1]) {
+                    username = pathParts[1].replace('.html', '');
+                } else if (pathParts[0] !== 'booking') {
+                    username = pathParts[0].replace('.html', '');
+                }
+
+                // Check if it's a reserved filename
+                if (['dashboard', 'login', 'track', 'index', 'booking-page'].includes(username)) {
+                    username = null;
+                }
+            }
+        }
+
+        let profile = null;
+        let selectedDate = null;
+        let selectedSlot = null;
+
+        if (!username) {
+            document.body.innerHTML = '<div style="text-align:center; padding:5rem;"><h1>Invalid Booking URL</h1><p>Please check the link and try again.</p></div>';
+        } else {
+            initPage();
+        }
+
+        async function initPage() {
+            profile = await getProfileByUsername(username);
+            if (!profile) {
+                document.body.innerHTML = '<div style="text-align:center; padding:5rem;"><h1>User Not Found</h1><p>This booking page does not exist.</p></div>';
+                return;
+            }
+
+            document.getElementById('ownerName').innerText = profile.displayName;
+            document.getElementById('summary-owner').innerText = profile.displayName;
+            document.getElementById('meetingDuration').innerHTML = `<i class="fa-solid fa-clock"></i> ${profile.meetingDuration} min meeting`;
+
+            renderDates();
+        }
+
+        function renderDates() {
+            const container = document.getElementById('dates-container');
+            const dates = getAvailableDates(profile.availableSlots.days);
+
+            dates.forEach(dateStr => {
+                const date = new Date(dateStr);
+                const btn = document.createElement('div');
+                btn.className = 'date-btn';
+                btn.innerHTML = `
+                    <div style="font-size: 0.75rem; color: var(--ink3); text-transform: uppercase;">${date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                    <div style="font-size: 1.2rem; font-weight: 700;">${date.getDate()}</div>
+                    <div style="font-size: 0.75rem; color: var(--ink3);">${date.toLocaleDateString('en-US', { month: 'short' })}</div>
+                `;
+                btn.onclick = () => selectDate(dateStr, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        async function selectDate(date, element) {
+            selectedDate = date;
+            document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+
+            // Fetch existing bookings for this date to block slots
+            const q = query(
+                collection(db, "bookings"),
+                where("userId", "==", profile.id),
+                where("status", "==", "upcoming")
+            );
+            const snap = await getDocs(q);
+            const bookedTimes = [];
+            snap.forEach(d => {
+                const b = d.data();
+                if (b.scheduledAt.startsWith(date)) {
+                    bookedTimes.push(b.scheduledAt);
+                }
+            });
+
+            renderSlots(bookedTimes);
+        }
+
+        function renderSlots(bookedTimes) {
+            const container = document.getElementById('slots-container');
+            container.innerHTML = '';
+
+            const slots = generateSlots(
+                profile.availableSlots.start,
+                profile.availableSlots.end,
+                profile.meetingDuration,
+                bookedTimes
+            );
+
+            if (slots.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; color: var(--ink4); font-style: italic;">No available slots for this day</div>';
+                return;
+            }
+
+            slots.forEach(time => {
+                const btn = document.createElement('button');
+                btn.className = 'slot-btn';
+                btn.innerText = time;
+                btn.onclick = () => selectSlot(time);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectSlot(time) {
+            selectedSlot = time;
+            document.getElementById('selection-view').style.display = 'none';
+            document.getElementById('details-view').style.display = 'block';
+
+            const fullTime = new Date(selectedDate + 'T' + selectedSlot).toLocaleString([], {
+                weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit'
+            });
+            document.getElementById('summary-time').innerText = fullTime;
+        }
+
+        window.goBack = () => {
+            document.getElementById('selection-view').style.display = 'block';
+            document.getElementById('details-view').style.display = 'none';
+        };
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Confirming...';
+
+            const bookingData = {
+                userId: profile.id,
+                ownerName: profile.displayName,
+                customerName: document.getElementById('cust-name').value,
+                customerEmail: document.getElementById('cust-email').value,
+                customerMessage: document.getElementById('cust-message').value,
+                scheduledAt: selectedDate + 'T' + selectedSlot,
+                duration: profile.meetingDuration,
+                meetingLink: '' // To be updated by owner later
+            };
+
+            try {
+                const code = await saveBooking(bookingData);
+                document.getElementById('bookingCode').innerText = code;
+                document.getElementById('successOverlay').classList.add('active');
+
+                // Placeholder for notification
+                console.log(`Notification: New booking created for ${profile.displayName} with ${bookingData.customerName} at ${bookingData.scheduledAt}. Code: ${code}`);
+
+            } catch (error) {
+                console.error("Booking error:", error);
+                alert("Failed to create booking. Please try again.");
+                btn.disabled = false;
+                btn.innerText = 'Confirm Booking';
+            }
+        });</script></body></html>

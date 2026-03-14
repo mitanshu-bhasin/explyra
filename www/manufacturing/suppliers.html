@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Suppliers — Manufacturing</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../js/firebase-config.js"></script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><div class="sidebar"></div><main class="main-content"><header class="reveal"><div><h1>Supplier <span class="grad">Management</span></h1><p style="color: var(--text-muted);">Manage vendor relationships and material procurement.</p></div><button class="btn btn-primary"><i class="fas fa-plus"></i> Add Supplier</button></header><section class="stat-grid reveal"><div class="glass-card"><div class="stat-label">Verified Suppliers</div><div class="stat-value" id="totalSuppliers">0</div></div><div class="glass-card"><div class="stat-label">Avg. Lead Time</div><div class="stat-value">3.4 Days</div></div><div class="glass-card"><div class="stat-label">Quality Score</div><div class="stat-value" style="color: var(--success);">98.2%</div></div></section><section class="glass-card reveal"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;"><h3>Active Vendors</h3><div style="display: flex; gap: 10px;"><input type="text" placeholder="Search suppliers..." class="btn" style="padding: 0.5rem 1rem; width: 250px; text-align: left;"></div></div><div class="table-container"><table id="suppliersTable"><thead><tr><th>Supplier Name</th><th>Contact</th><th>Materials Supplied</th><th>Delivery Time</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div></section></main><script src="js/data-handler.js"></script><script src="js/main.js"></script><script>document.addEventListener('DOMContentLoaded', async () => {
+            const data = await DataHandler.fetchData('suppliers');
+            
+            document.getElementById('totalSuppliers').textContent = data.length;
+
+            const tableBody = document.querySelector('#suppliersTable tbody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.contact}</td>
+                    <td><span style="font-size: 0.8rem; background: var(--bg4); padding: 2px 8px; border-radius: 4px;">${item.materials}</span></td>
+                    <td>${item.deliveryTime}</td>
+                    <td>
+                        <div style="color: #F59E0B;">
+                            ${Array(Math.floor(item.rating)).fill('<i class="fas fa-star"></i>').join('')}
+                            <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 5px;">${item.rating}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-active">Active</span></td>
+                    <td>
+                        <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('Message feature coming soon!', 'info')"><i class="fas fa-envelope"></i></button>
+                        <button class="btn" style="padding: 5px 10px; color: var(--danger);" onclick="deleteItem('suppliers', 'name', '${item.name}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        });</script></body></html>

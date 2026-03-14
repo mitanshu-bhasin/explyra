@@ -1,0 +1,57 @@
+{
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "1; mode=block"
+                },
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "Referrer-Policy",
+                    "value": "strict-origin-when-cross-origin"
+                },
+                {
+                    "key": "Strict-Transport-Security",
+                    "value": "max-age=31536000; includeSubDomains; preload"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "no-cache, no-store, must-revalidate"
+                }
+            ]
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/booking/:username",
+            "destination": "/booking/booking-page.html?u=:username"
+        },
+        {
+            "source": "/mailbox",
+            "destination": "/email-app/src/index.html"
+        },
+        {
+            "source": "/mail",
+            "destination": "/email-app/src/index.html"
+        }
+    ],
+    "redirects": [
+        {
+            "source": "/firestore.rules",
+            "destination": "/404.html",
+            "statusCode": 404
+        }
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "outputDirectory": "."
+}

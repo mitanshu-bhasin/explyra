@@ -1,0 +1,1 @@
+const validateDomain=(domain,userSubdomain)=>{if(!userSubdomain)return false;const rootSubdomain=`${userSubdomain}.mitanshu.tech`;if(domain===rootSubdomain)return true;if(domain.endsWith(`.${rootSubdomain}`))return true;return false};window.validateDomain=validateDomain;

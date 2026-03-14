@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to CSV Converter - Online Data Export Tool | Explyra</title>
+    <meta name="description"
+        content="Convert JSON arrays and objects to CSV format instantly. Free online JSON to CSV converter for developers and data analysts. Secure and client-side processing.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}
+</script>
+</head>
+
+<body>
+
+    <header>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / Data Tools / JSON to CSV
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">JSON to CSV Converter</h1>
+                <p class="tool-desc">Paste your JSON array or object to generate a comma-separated values (CSV) text.
+                </p>
+            </div>
+
+            <div class="input-group">
+                <label for="input">Input JSON</label>
+                <textarea id="input" placeholder="[{"id":1, "name":"John"}, {"id":2, "name":"Jane"}]"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="convertBtn" class="btn btn-primary">Convert to CSV</button>
+                <button id="copyBtn" class="btn btn-secondary">Copy CSV</button>
+                <button id="downloadBtn" class="btn btn-secondary">Download CSV</button>
+            </div>
+
+            <div class="input-group">
+                <label for="output">Generated CSV</label>
+                <textarea id="output" readonly placeholder="CSV output will appear here..."></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const convertBtn = document.getElementById('convertBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        function jsonToCSV(json) {
+            const arr = typeof json !== 'object' ? JSON.parse(json) : json;
+            if (!Array.isArray(arr) || arr.length === 0) return "";
+
+            const replacer = (key, value) => value === null ? '' : value;
+            const header = Object.keys(arr[0]);
+            let csv = arr.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+            csv.unshift(header.join(','));
+            return csv.join('\r\n');
+        }
+
+        convertBtn.addEventListener('click', () => {
+            const jsonText = input.value.trim();
+            if (!jsonText) return;
+            try {
+                output.value = jsonToCSV(jsonText);
+            } catch (e) {
+                output.value = "Error: Invalid JSON format. Please provide a JSON array of objects.";
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy CSV', 2000);
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const blob = new Blob([output.value], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.csv';
+            a.click();
+        });
+    </script>
+</body>
+
+</html>

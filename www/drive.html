@@ -1,0 +1,404 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Explyra Link Generator | Google Drive</title><script src="https://cdn.tailwindcss.com"></script><script src="js/theme.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><script>tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    },
+                    colors: {
+                        slate: {
+                            50: '#F8F7F4',   // light bg -> Explyra --bg
+                            100: '#F1EFE9',  // light bg3 -> Explyra --bg3
+                            200: '#E4E1DB',  // light border -> Explyra --bdr
+                            300: '#CCC8C0',  // dark border light
+                            400: '#939BAC',  // muted text
+                            500: '#8290A8',  // dark muted text
+                            600: '#586070',  // secondary text
+                            700: '#0D1117',  // root text
+                            800: '#141928',  // Explyra --surf (Dark)
+                            900: '#080B14'   // Explyra --bg (Dark)
+                        },
+                        green: {
+                            50: '#eef2ff',
+                            100: 'rgba(21,70,192,0.08)',
+                            200: '#93B4FF',
+                            300: '#5B8AF5',
+                            400: '#5B8AF5', // Dark mode blue
+                            500: '#1546C0', // Light mode blue
+                            600: '#1546C0',
+                            700: '#113A9F',
+                            800: '#0C2B7A',
+                            900: '#051234'
+                        },
+                        brand: {
+                            50: '#F8F7F4',
+                            100: '#F1EFE9',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#1546C0',
+                            600: '#1546C0',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        },
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }</script><link rel="stylesheet" href="css/common.css"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me",
+  "logo": "https://explyra.me/assets/images/explyra_logo.png",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ],
+  "@id": "https://explyra.me/#organization"
+}</script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Explyra Expense",
+  "url": "https://explyra.me",
+  "publisher": {
+    "@id": "https://explyra.me/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://explyra.me/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}</script></head><body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans overflow-x-hidden"><div class="fixed inset-0 hero-pattern pointer-events-none"></div><div class="fixed top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none animate-blob"></div><div class="fixed bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] bg-amber-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none animate-blob"></div><nav class="sticky top-0 z-50 glass-effect border-b border-white/50 shadow-sm transition-all duration-300"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex items-center justify-between h-16"><a href="index.html" class="flex items-center gap-3 group"><div class="w-8 h-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-brand-600 shadow-lg group-hover:scale-110 transition-transform"><i class="fa-brands fa-google-drive"></i></div><div><span class="font-bold text-lg tracking-tight">Explyra <span class="text-brand-600">Drive</span></span></div></a><div class="flex items-center gap-4"><a href="index.html" class="text-sm font-medium text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 transition hidden sm:inline-block">Back to Home</a><button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-moon dark:hidden"></i> <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i></button></div></div></div></nav><main class="flex-grow flex flex-col items-center p-4 relative z-10 w-full max-w-4xl mx-auto gap-8 mt-6 mb-12"><div id="main-card" class="glass-effect w-full max-w-md rounded-2xl p-6 sm:p-8 shadow-xl transition-all duration-300"><div id="step-connect" class="text-center space-y-6"><div class="w-16 h-16 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto text-green-600 dark:text-green-400 text-3xl mb-4 shadow-sm border border-green-100 dark:border-green-800"><i class="fa-solid fa-cloud-arrow-up"></i></div><div><h2 class="text-2xl font-bold mb-2">Upload to Drive</h2><p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed px-2">Connect with Google to securely upload files and get an instant shareable link.</p></div><button id="btn-connect" class="w-full py-3.5 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm group hover:border-brand-500 dark:hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400"><img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5 group-hover:scale-110 transition-transform"> <span>Sign in with Google</span></button><div id="auth-status" class="text-xs text-slate-400 h-4"></div></div><div id="step-upload" class="hidden text-center space-y-6 animate-fade-in"><div class="flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700 backdrop-blur-sm"><div class="flex items-center gap-3 overflow-hidden"><img id="user-avatar" class="w-9 h-9 rounded-full border border-slate-200 shrink-0"><div class="text-left overflow-hidden"><p id="user-name" class="text-sm font-bold truncate text-slate-700 dark:text-slate-200"></p><p id="user-email" class="text-[10px] text-slate-500 truncate"></p></div></div><button id="btn-logout" class="text-slate-400 hover:text-red-500 text-xs font-bold px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition shrink-0" title="Sign Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button></div><div class="relative group cursor-pointer" onclick="document.getElementById('file-input').click()"><div class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-8 hover:border-brand-500 dark:hover:border-brand-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 group-hover:shadow-md"><div class="text-slate-400 group-hover:text-brand-500 text-4xl mb-4 transition-colors"><i class="fa-solid fa-cloud-arrow-up"></i></div><p class="font-bold text-slate-700 dark:text-slate-200 text-sm mb-1">Click to Upload</p><p class="text-xs text-slate-400">Any file type (Max 10MB recommended)</p></div><input type="file" id="file-input" class="hidden" onchange="handleFileSelect(this)"></div></div><div id="step-progress" class="hidden text-center space-y-6 animate-fade-in py-4"><div class="relative w-16 h-16 mx-auto mb-4"><svg class="animate-spin w-full h-full text-brand-200 dark:text-slate-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="text-brand-600"></path></svg><div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-brand-600 dark:text-brand-400" id="progress-text">0%</div></div><div><h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">Uploading...</h3><p class="text-xs text-slate-500">Please do not close this window</p></div><div class="w-full bg-slate-100 dark:bg-slate-700/50 rounded-full h-2 overflow-hidden"><div id="progress-bar" class="bg-brand-600 h-2 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(37,99,235,0.5)]" style="width: 0%"></div></div><p id="progress-eta" class="text-[10px] text-slate-400 font-medium font-mono h-4"></p></div><div id="step-result" class="hidden text-center space-y-6 animate-fade-in"><div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto text-emerald-500 text-3xl mb-4 shadow-sm border border-emerald-100 dark:border-emerald-800"><i class="fa-solid fa-check"></i></div><div><h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Link Generated!</h2><p class="text-xs text-slate-500 dark:text-slate-400 px-4">Your file is now public and ready to share.<br>Anyone with the link can view it.</p></div><div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 break-all text-left relative group hover:border-brand-300 dark:hover:border-brand-700 transition-colors shadow-inner"><div class="flex items-center justify-between mb-2"><p class="text-[10px] uppercase font-bold text-slate-400">Shareable Link</p><span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 font-bold">Public</span></div><p id="result-link" class="text-sm font-mono text-brand-600 dark:text-brand-400 pr-8 line-clamp-3 select-all cursor-text"></p><button onclick="copyLink()" class="absolute top-8 right-2 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Copy to Clipboard"><i class="fa-regular fa-copy"></i></button><div id="copy-feedback" class="absolute top-2 right-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded shadow-sm opacity-0 transition-opacity pointer-events-none border border-emerald-100">Copied!</div></div><button onclick="resetUI()" class="w-full py-3 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition flex items-center justify-center gap-2 border border-transparent hover:border-slate-200 dark:hover:border-slate-700"><i class="fa-solid fa-arrow-rotate-left"></i> Upload Another File</button></div></div><div id="recent-links-container" class="w-full max-w-md hidden animate-fade-in"><div class="flex items-center justify-between mb-4 px-2"><h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> Recent Links</h3><button onclick="window.clearRecentLinks()" class="text-[10px] bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 transition">Clear All</button></div><div id="recent-links-list" class="space-y-3 pb-8"></div></div></main><footer class="text-center py-6 text-xs text-slate-400 font-medium relative z-10 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm mt-auto w-full flex flex-col items-center gap-4"><div class="flex items-center gap-3 px-3 py-1.5 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg border border-slate-300/50 dark:border-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors group cursor-default"><img src="images (1).png" alt="Qualys SSL Labs A+ Logo" class="h-5 w-auto opacity-70 group-hover:opacity-100 transition-opacity"><div class="flex flex-col text-left"><span class="text-[7px] font-extrabold text-slate-500 uppercase tracking-widest leading-none">Security Certified</span> <span class="text-[9px] font-bold text-slate-700 dark:text-slate-300">Qualys SSL Labs A+</span></div></div><p>Powered by Google Drive API &bull; Explyra Systems</p><div class="foot-socials-wrapper" style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136, 136, 136, 0.2); padding-top: 20px;"><p style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">Follow Us</p><div class="foot-socials" style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center;"><a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> </a><a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details" target="_blank" rel="noopener noreferrer" title="Facebook" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg> </a><a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" title="Instagram" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"/></svg> </a><a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" title="YouTube" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"/></svg> </a><a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" title="LinkedIn" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> </a><a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" title="Threads" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.28 12.3c-.023-.5-.224-.954-.575-1.282-.35-.328-.823-.512-1.323-.512-.5 0-.974.184-1.324.512-.35.328-.552.782-.575 1.282h3.797zm-.05-1.785c.616.143 1.158.465 1.583.94l1.248-1.127c-.6-.71-1.378-1.23-2.26-1.51-.882-.28-1.84-.316-2.738-.106-2.115.485-3.69 2.3-3.69 4.49 0 2.515 2.036 4.5 4.55 4.5 1.528 0 2.923-.74 3.794-1.954l-1.386-1.026c-.66.924-1.72 1.48-2.85 1.48-1.683 0-3.05-1.32-3.05-2.95 0-1.65 1.34-3 3-3 .67 0 1.31.22 1.83.62l-1.19 1.48h-1.6v1.5h3.69v-1.343l1.05-1.3Z"/></svg> </a><a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub" style="color: var(--text-2, #888); transition: color 0.2s;" onmouseover="this.style.color='#1546C0'" onmouseout="this.style.color='var(--text-2, #888)'"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg></a></div></div></footer><script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9",
+            measurementId: "G-TFBZ5GZ22C"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // CRITICAL: Request Drive Scope
+        provider.addScope('https://www.googleapis.com/auth/drive.file');
+
+        // Elements
+        const steps = {
+            connect: document.getElementById('step-connect'),
+            upload: document.getElementById('step-upload'),
+            progress: document.getElementById('step-progress'),
+            result: document.getElementById('step-result')
+        };
+        const elAuthStatus = document.getElementById('auth-status');
+
+        // State
+        let accessToken = localStorage.getItem('explyra_drive_token') || null;
+        let tokenExpiry = localStorage.getItem('explyra_drive_token_expiry') || 0;
+        let uploadStartTime = 0;
+        let cachedUser = null;
+
+        try {
+            if (localStorage.getItem('explyra_drive_user')) {
+                cachedUser = JSON.parse(localStorage.getItem('explyra_drive_user'));
+            }
+        } catch (e) { }
+
+        // Clear expired token
+        if (accessToken && Date.now() > parseInt(tokenExpiry)) {
+            accessToken = null;
+            cachedUser = null;
+            localStorage.removeItem('explyra_drive_token');
+            localStorage.removeItem('explyra_drive_token_expiry');
+            localStorage.removeItem('explyra_drive_user');
+        }
+
+        // Instant visual update if token in cache
+        if (accessToken && cachedUser) {
+            document.addEventListener("DOMContentLoaded", () => {
+                updateUserUI(cachedUser);
+                showStep('upload');
+            });
+        }
+
+        // --- AUTH ---
+        document.getElementById('btn-connect').onclick = async () => {
+            try {
+                elAuthStatus.textContent = "Connecting to Google...";
+                const result = await signInWithPopup(auth, provider);
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                accessToken = credential.accessToken;
+
+                // Cache token for 55 minutes
+                localStorage.setItem('explyra_drive_token', accessToken);
+                localStorage.setItem('explyra_drive_token_expiry', (Date.now() + 55 * 60 * 1000).toString());
+
+                // Cache user profile
+                localStorage.setItem('explyra_drive_user', JSON.stringify({
+                    displayName: result.user.displayName,
+                    email: result.user.email,
+                    photoURL: result.user.photoURL
+                }));
+
+                // If we have a user and token, show upload UI
+                updateUserUI(result.user);
+                showStep('upload');
+            } catch (error) {
+                console.error(error);
+                elAuthStatus.textContent = "Error: " + error.message;
+            }
+        };
+
+        document.getElementById('btn-logout').onclick = () => {
+            signOut(auth).then(() => {
+                localStorage.removeItem('explyra_drive_token');
+                localStorage.removeItem('explyra_drive_token_expiry');
+                localStorage.removeItem('explyra_drive_user');
+                location.reload();
+            });
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (accessToken) {
+                    updateUserUI(user);
+                    showStep('upload');
+                } else {
+                    elAuthStatus.textContent = "Session expired. Please sign in again.";
+                    showStep('connect');
+                }
+            } else {
+                showStep('connect');
+            }
+            loadRecentLinks();
+        });
+
+        function updateUserUI(user) {
+            document.getElementById('user-name').textContent = user.displayName;
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('user-avatar').src = user.photoURL;
+        }
+
+        // --- UPLOAD LOGIC ---
+        window.handleFileSelect = async (input) => {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+
+            showStep('progress');
+            uploadStartTime = Date.now();
+
+            try {
+                // 1. Initial Resumable Upload Request (Metadata)
+                const metadata = {
+                    name: file.name,
+                    mimeType: file.type
+                };
+
+                const form = new FormData();
+                form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                form.append('file', file);
+
+                const xhr = new XMLHttpRequest();
+                // We ask for id, webViewLink
+                xhr.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,webContentLink');
+                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        document.getElementById('progress-bar').style.width = percent + '%';
+                        document.getElementById('progress-text').textContent = percent + '%';
+
+                        // Estimate Time
+                        const timeElapsed = (Date.now() - uploadStartTime) / 1000;
+                        const uploadSpeed = e.loaded / timeElapsed;
+                        const remainingBytes = e.total - e.loaded;
+                        const secondsRemaining = remainingBytes / uploadSpeed;
+
+                        if (secondsRemaining > 0 && isFinite(secondsRemaining)) {
+                            document.getElementById('progress-eta').textContent = `Est. Time: ${Math.ceil(secondsRemaining)}s`;
+                        } else {
+                            document.getElementById('progress-eta').textContent = 'Finalizing...';
+                        }
+                    }
+                };
+
+                xhr.onload = async () => {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        const fileId = response.id;
+                        let link = response.webViewLink;
+
+                        // 2. Make Public
+                        try {
+                            await makePublic(fileId);
+                        } catch (permError) {
+                            console.error("Permission Error:", permError);
+                            alert("File uploaded, but failed to make public: " + permError.message);
+                        }
+
+                        document.getElementById('result-link').textContent = link;
+                        saveRecentLink(file.name, link);
+                        showStep('result');
+                    } else if (xhr.status === 401) {
+                        alert('Session expired. Please sign in again.');
+                        localStorage.removeItem('explyra_drive_token');
+                        localStorage.removeItem('explyra_drive_token_expiry');
+                        localStorage.removeItem('explyra_drive_user');
+                        signOut(auth).then(() => location.reload());
+                    } else {
+                        alert('Upload failed: ' + xhr.responseText);
+                        showStep('upload');
+                    }
+                };
+
+                xhr.onerror = () => {
+                    alert('Network error during upload');
+                    showStep('upload');
+                };
+
+                xhr.send(form);
+
+            } catch (error) {
+                alert("Error: " + error.message);
+                showStep('upload');
+            }
+
+            input.value = ''; // Reset
+        };
+
+        async function makePublic(fileId) {
+            console.log('Making public:', fileId);
+            const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    role: 'reader',
+                    type: 'anyone'
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                console.error('Permission API Error:', err);
+                throw new Error(err.error?.message || 'Failed to set permissions');
+            }
+            return res.json();
+        }
+
+        // --- RECENT LINKS ---
+        function saveRecentLink(name, url) {
+            let links = JSON.parse(localStorage.getItem('explyra_recent_links') || '[]');
+            links.unshift({ name, url, date: new Date().toISOString() });
+            if (links.length > 5) links = links.slice(0, 5);
+            localStorage.setItem('explyra_recent_links', JSON.stringify(links));
+            loadRecentLinks();
+        }
+
+        window.clearRecentLinks = () => {
+            // Simple clear without confirm for speed if user just clicks
+            localStorage.removeItem('explyra_recent_links');
+            loadRecentLinks();
+        };
+
+        function loadRecentLinks() {
+            const container = document.getElementById('recent-links-container');
+            const list = document.getElementById('recent-links-list');
+            const links = JSON.parse(localStorage.getItem('explyra_recent_links') || '[]');
+
+            if (links.length > 0) {
+                container.classList.remove('hidden');
+                list.innerHTML = links.map(link => `
+                    <div class="glass-effect p-3 rounded-xl flex items-center justify-between text-left group hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors border border-slate-100 dark:border-slate-700/50 shadow-sm">
+                        <div class="truncate pr-3 flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <i class="fa-regular fa-file-lines text-slate-400 text-xs shrink-0"></i>
+                                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">${link.name}</p>
+                            </div>
+                            <a href="${link.url}" target="_blank" class="text-[10px] text-brand-500 hover:underline truncate block w-full opacity-75 hover:opacity-100">${link.url}</a>
+                        </div>
+                        <button onclick="navigator.clipboard.writeText('${link.url}')" class="shrink-0 text-slate-400 hover:text-brand-500 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="Copy Link">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // --- UTILS ---
+        function showStep(stepId) {
+            Object.values(steps).forEach(s => s.classList.add('hidden'));
+            steps[stepId].classList.remove('hidden');
+        }
+
+        window.copyLink = () => {
+            const link = document.getElementById('result-link').textContent;
+            navigator.clipboard.writeText(link);
+            const fb = document.getElementById('copy-feedback');
+            fb.classList.remove('opacity-0');
+            setTimeout(() => fb.classList.add('opacity-0'), 2000);
+        };
+
+        window.resetUI = () => {
+            showStep('upload');
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('progress-eta').textContent = '';
+        };
+
+        // Theme Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }</script><script type="module">import { AISupport } from './js/ai-support.js';
+
+        const initChatAfterDelay = () => {
+            setTimeout(() => {
+                new AISupport({
+                    name: 'Visitor',
+                    role: 'Guest',
+                    email: 'guest@explyra.org',
+                    department: 'Link Generator'
+                });
+            }, 5000);
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initChatAfterDelay);
+        } else {
+            initChatAfterDelay();
+        }</script></body></html>

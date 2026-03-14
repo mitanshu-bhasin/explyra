@@ -1,0 +1,149 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Explyra Developer Summit 2026</title><meta name="description" content="Join the Explyra Developer Summit 2026. Explore APIs, integrations, and real-time tools with the Explyra engineering team."><meta property="og:title" content="Explyra Developer Summit 2026"><meta property="og:type" content="event"><meta property="og:image" content="../assets/thumbnails/dev-summit.png"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../style.css"><style>.hero-banner {
+            height: 70vh;
+            min-height: 500px;
+            background: linear-gradient(rgba(8,11,20,0.6), var(--bg)), url('../assets/thumbnails/dev-summit.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 5vw;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            padding: 5rem 5vw;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .event-info h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 1.5rem; line-height: 1.1; }
+        .event-meta-large { display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 3rem; color: var(--ink2); font-weight: 500; justify-content: center; }
+        .event-meta-large span { display: flex; align-items: center; gap: 0.5rem; background: var(--bg2); padding: 0.8rem 1.2rem; border-radius: 100px; border: 1px solid var(--bdr); }
+        .event-meta-large i { color: var(--blue); }
+        .section-title { font-size: 1.8rem; margin: 4rem 0 2rem; border-left: 5px solid var(--blue); padding-left: 1.5rem; color: var(--ink); }
+        
+        /* New Workshop Tracks */
+        .tracks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .track-card { background: var(--bg2); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--bdr); transition: var(--t); }
+        .track-card:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: var(--s2); }
+        .track-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--blue-g); color: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 1.2rem; }
+
+        .speaker-card { display: flex; align-items: center; gap: 1.5rem; background: var(--bg2); padding: 1.5rem; border-radius: 20px; margin-bottom: 1.5rem; border: 1px solid var(--bdr); transition: var(--t); }
+        .speaker-card:hover { transform: translateY(-4px); box-shadow: var(--s2); border-color: var(--blue); }
+        .speaker-img { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg, var(--blue), var(--blue2)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 1.2rem; }
+        
+        .agenda-item { display: flex; gap: 2.5rem; margin-bottom: 2rem; position: relative; padding-left: 2rem; }
+        .agenda-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--bdr2); }
+        .agenda-item::after { content: ''; position: absolute; left: -4px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px var(--blue-g); }
+        .agenda-time { font-weight: 700; color: var(--blue); min-width: 90px; font-size: 1.1rem; }
+
+        /* FAQ Styling */
+        .faq-item { margin-bottom: 1.5rem; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 16px; padding: 1.5rem; }
+        .faq-q { font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.8rem; }
+        .faq-q i { color: var(--blue); font-size: 0.9rem; }
+        .faq-a { color: var(--ink3); font-size: 0.95rem; line-height: 1.6; }
+
+        .sidebar-card { background: var(--bg2); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--bdr); position: sticky; top: 120px; box-shadow: var(--s3); }
+        .btn-register { 
+            display: block; 
+            width: 100%; 
+            padding: 1.3rem; 
+            background: linear-gradient(135deg, var(--blue), var(--blue2)); 
+            color: #fff; 
+            text-align: center; 
+            border-radius: 16px; 
+            font-weight: 700; 
+            margin-bottom: 1.5rem; 
+            box-shadow: 0 10px 25px var(--blue-b); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+        }
+        .btn-register:hover { 
+            transform: translateY(-5px); 
+            filter: brightness(1.1); 
+            box-shadow: 0 18px 35px var(--blue-b);
+        }
+        .btn-share { 
+            display: block; 
+            width: 100%; 
+            padding: 1.1rem; 
+            background: var(--bg);
+            border: 1px solid var(--bdr); 
+            color: var(--ink2);
+            text-align: center; 
+            border-radius: 16px; 
+            font-weight: 600; 
+            transition: all 0.3s; 
+            cursor: pointer;
+        }
+        .btn-share:hover { border-color: var(--blue); color: var(--blue); }
+
+        @media (max-width: 950px) { 
+            .detail-grid { grid-template-columns: 1fr; } 
+            .hero-banner { height: 50vh; }
+            .event-info h1 { font-size: 2.8rem; }
+        }</style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><nav><div class="nav-logo"><a href="../../index.html" class="nav-logo"><div class="nav-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></div><span class="nav-logo-text">Explyra</span></a></div><ul class="nav-links"><li><a href="../../index.html">Home</a></li><li><a href="../index.html">Events</a></li><li><a href="../../team.html">Company</a></li></ul><div class="nav-right"><div class="theme-pill" id="themePill"><span class="theme-pill-label" id="themeLabel">Dark</span><div class="theme-pill-toggle"></div></div></div></nav><div class="hero-banner"><div class="hero-content reveal"><span class="event-type" style="margin-bottom: 2rem; display: inline-block;">Developer Event</span><h1 style="color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,0.5);">Explyra Developer <span class="grad">Summit</span></h1><div class="event-meta-large" style="margin-top: 3rem;"><span><i class="far fa-calendar"></i> August 12, 2026</span> <span><i class="far fa-clock"></i> 10:00 AM EST</span> <span><i class="fas fa-video"></i> Virtual</span></div></div></div><main class="detail-grid"><div class="event-info reveal"><p class="hero-desc" style="text-align: left; margin: 0; color: var(--ink2); font-size: 1.15rem; line-height: 1.8;">Beyond the standard API documentation. Join the core engineering team for a deep dive into the Explyra ecosystem. Learn how to build high-performance integrations, leverage our real-time synchronization tools, and customize the productivity suite for your organization's unique needs.</p><h2 class="section-title">Workshop Tracks</h2><div class="tracks-grid"><div class="track-card"><div class="track-icon"><i class="fas fa-code-branch"></i></div><h4 style="color: var(--ink);">API Foundations</h4><p style="font-size: 0.85rem; color: var(--ink3);">Mastering RESTful endpoints, Auth patterns, and rate management strategies.</p></div><div class="track-card"><div class="track-icon"><i class="fas fa-sync"></i></div><h4 style="color: var(--ink);">Real-time Sync</h4><p style="font-size: 0.85rem; color: var(--ink3);">Implementing WebSockets and delta-updates for low-latency live experiences.</p></div><div class="track-card"><div class="track-icon"><i class="fas fa-puzzle-piece"></i></div><h4 style="color: var(--ink);">Custom UI Blocks</h4><p style="font-size: 0.85rem; color: var(--ink3);">Building reusable widgets that embed directly into the Explyra dashboard.</p></div></div><h2 class="section-title">Key Speakers</h2><div class="speaker-card"><div class="speaker-img">AB</div><div><h4 style="margin: 0; color: var(--ink); font-size: 1.1rem;">Arjun Sharma</h4><p style="margin: 0; font-size: 0.85rem; color: var(--ink3);">Chief Technology Officer @ Explyra</p></div></div><div class="speaker-card"><div class="speaker-img">SM</div><div><h4 style="margin: 0; color: var(--ink); font-size: 1.1rem;">Sarah Miller</h4><p style="margin: 0; font-size: 0.85rem; color: var(--ink3);">Lead Ecosystem Architect</p></div></div><div class="speaker-card"><div class="speaker-img">KV</div><div><h4 style="margin: 0; color: var(--ink); font-size: 1.1rem;">Karan Verma</h4><p style="margin: 0; font-size: 0.85rem; color: var(--ink3);">Senior Security Engineer</p></div></div><h2 class="section-title">Event Agenda</h2><div class="agenda-item"><div class="agenda-time">10:00 AM</div><div><h4 style="margin: 0; color: var(--ink);">Opening Keynote</h4><p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Arjun Sharma discusses the next 5 years of the Explyra developer ecosystem.</p></div></div><div class="agenda-item"><div class="agenda-time">11:30 AM</div><div><h4 style="margin: 0; color: var(--ink);">Webhooks 2.0</h4><p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">A deep dive into serverless triggers and event-driven architectures.</p></div></div><div class="agenda-item"><div class="agenda-time">12:30 PM</div><div><h4 style="margin: 0; color: var(--ink);">Interactive Lunch Break</h4><p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Networking sessions and virtual breakout rooms with the team.</p></div></div><div class="agenda-item"><div class="agenda-time">02:00 PM</div><div><h4 style="margin: 0; color: var(--ink);">Security Deep Dive</h4><p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Encryption standards, multi-tenant safety, and audit logs.</p></div></div><div class="agenda-item"><div class="agenda-time">03:30 PM</div><div><h4 style="margin: 0; color: var(--ink);">Closing Q&A</h4><p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Open floor with all speakers and engineering leads.</p></div></div><h2 class="section-title">Frequently Asked Questions</h2><div class="faq-item"><div class="faq-q"><i class="fas fa-question-circle"></i> Is this event free for everyone?</div><div class="faq-a">Yes, the Developer Summit is completely free to attend virtualy. We believe in empowering our community of builders.</div></div><div class="faq-item"><div class="faq-q"><i class="fas fa-question-circle"></i> Will the sessions be recorded?</div><div class="faq-a">Absolutely. All registrants will receive access to high-definition recordings and slide decks within 48 hours after the event.</div></div><div class="faq-item"><div class="faq-q"><i class="fas fa-question-circle"></i> Do I need any special software?</div><div class="faq-a">Just a modern web browser. We will be using the Explyra Meet platform for all sessions, which requires no downloads.</div></div></div><aside class="sidebar reveal"><div class="sidebar-card"><h3 style="margin-bottom: 1.5rem; color: var(--ink);">Join the Summit</h3><button class="btn-register">Register Now — Free</button> <button class="btn-share" id="btnShare"><i class="fas fa-share-alt"></i> Share Event</button><div style="margin-top: 2rem; padding: 1.5rem; background: var(--blue-g); border-radius: 16px; border: 1px solid var(--blue-b);"><h5 style="margin: 0 0 0.5rem; color: var(--blue);">What's Included:</h5><ul style="margin: 0; padding-left: 1.2rem; font-size: 0.8rem; color: var(--ink2); line-height: 1.6;"><li>Full access to all 5 tracks</li><li>Digital certificate of attendance</li><li>Early access to API v3 docs</li><li>Private Slack channel invite</li></ul></div><p style="font-size: 0.75rem; text-align: center; margin-top: 1.5rem; color: var(--ink4);">Registrations close August 10, 2026</p></div></aside></main><footer style="padding: 80px 5vw; border-top: 1px solid var(--bdr); text-align: center; background: var(--bg2);"><p style="color: var(--ink4); font-size: 0.9rem;">© 2026 Explyra · Built with ♥ by Mitanshu Bhasin · All rights reserved.</p><div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;"><a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a> <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details" target="_blank" rel="noopener noreferrer">Facebook</a> <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a> <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a> <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a> <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a> <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a></div></footer><script>document.addEventListener('DOMContentLoaded', () => {
+            const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
+            const saved = localStorage.getItem('explyra-theme') || 'dark';
+            
+            const updateTheme = (theme) => {
+                html.setAttribute('data-theme', theme);
+                if(lbl) lbl.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+                localStorage.setItem('explyra-theme', theme);
+            };
+
+            updateTheme(saved);
+
+            if(pill) pill.addEventListener('click', () => {
+                const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
+                updateTheme(nxt);
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+            }, 100);
+
+            const btnShare = document.getElementById('btnShare');
+            if(btnShare) {
+                btnShare.addEventListener('click', async () => {
+                    const shareData = {
+                        title: 'Explyra Developer Summit 2026',
+                        text: 'Join me at the Explyra Developer Summit!',
+                        url: window.location.href
+                    };
+                    if (navigator.share) {
+                        try { await navigator.share(shareData); } catch (err) { }
+                    } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        const originalText = btnShare.innerHTML;
+                        btnShare.innerHTML = '<i class="fas fa-check"></i> Link Copied!';
+                        setTimeout(() => btnShare.innerHTML = originalText, 2000);
+                    }
+                });
+            }
+        });</script></body></html>

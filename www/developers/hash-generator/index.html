@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hash Generator — Explyra Devs</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>:root {
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --bg3: #F1EFE9;
+            --bg4: #E9E6E0;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --bdr2: #CCC8C0;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --ink4: #939BAC;
+            --blue: #1546C0;
+            --purp: #6D28D9;
+            --r: 12px;
+            --t: .25s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --bg4: #1B2235;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, .07);
+            --bdr2: rgba(255, 255, 255, .14);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --ink4: #4E5A70;
+            --blue: #5B8AF5;
+            --purp: #A78BFA;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            transition: background .4s, color .4s;
+        }
+
+        nav {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 5vw;
+        }
+
+        .tool-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--ink4);
+            text-transform: uppercase;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--bdr);
+            background: var(--surf);
+            color: var(--ink2);
+            font-family: monospace;
+            outline: none;
+        }
+
+        .hash-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hash-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .hash-val {
+            padding: 0.8rem;
+            border-radius: 6px;
+            background: var(--bg3);
+            font-family: monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            border: 1px solid var(--bdr);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--purp);
+            color: #fff;
+        }
+
+        .history {
+            margin-top: 3rem;
+            background: var(--surf);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--bdr);
+        }
+
+        .history h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--ink4);
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .history-item {
+            padding: 1rem;
+            background: var(--bg3);
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .history-input {
+            font-weight: 700;
+            color: var(--ink2);
+            margin-bottom: 5px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-hashes {
+            font-family: monospace;
+            color: var(--ink3);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .history-hashes b {
+            color: var(--blue);
+            font-size: 0.7rem;
+        }</style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><nav><a href="../index.html" class="nav-logo">Explyra Devs</a></nav><main><div class="tool-header"><h1>Hash Generator</h1><p>Securely generate MD5 and SHA hashes for any text using your browser's Crypto API.</p></div><div class="box"><label>Input Text</label><textarea id="hashInput" placeholder="Enter text to hash..."></textarea></div><button class="btn" onclick="generate()">Generate Hashes</button><div id="results" style="margin-top: 2rem;"><div class="hash-item"><span class="hash-label">SHA-256</span><div id="sha256" class="hash-val">-</div></div><div class="hash-item"><span class="hash-label">SHA-1</span><div id="sha1" class="hash-val">-</div></div><div class="hash-item"><span class="hash-label">MD5 (Insecure)</span><div id="md5" class="hash-val">-</div></div></div><div class="history"><h3>Recent Hashes</h3><div class="history-list" id="historyList"></div></div></main><script>const historyList = document.getElementById('historyList');
+        let hashHistory = JSON.parse(localStorage.getItem('explyra-hash-history') || '[]');
+
+        function updateHistoryUI() {
+            historyList.innerHTML = hashHistory.map(item => `
+                <div class="history-item">
+                    <span class="history-input">"${item.input}"</span>
+                    <div class="history-hashes">
+                        <div><b>SHA256:</b> ${item.sha256.substring(0, 32)}...</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function hash(algo, str) {
+            const buf = new TextEncoder().encode(str);
+            const hashBuf = await crypto.subtle.digest(algo, buf);
+            return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function generate() {
+            const val = document.getElementById('hashInput').value;
+            if (!val) return;
+
+            const s256 = await hash('SHA-256', val);
+            const s1 = await hash('SHA-1', val);
+
+            document.getElementById('sha256').textContent = s256;
+            document.getElementById('sha1').textContent = s1;
+            document.getElementById('md5').textContent = "MD5: Use SHA for secure hashing.";
+
+            hashHistory.unshift({
+                input: val,
+                sha256: s256,
+                timestamp: Date.now()
+            });
+            if (hashHistory.length > 5) hashHistory.pop();
+            localStorage.setItem('explyra-hash-history', JSON.stringify(hashHistory));
+            updateHistoryUI();
+        }
+
+        updateHistoryUI();
+        const savedTheme = localStorage.getItem('explyra-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);</script></body></html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sitemap.xml Generator - Free Online XML Creator | Explyra</title><meta name="description" content="Quickly generate XML sitemaps for your website. Paste your list of URLs and get a search-engine ready sitemap.xml file. 100% free and client-side."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span></a></header><main class="container"><nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);"><a href="../../index.html">Developers</a> / Web Tools / Sitemap.xml Generator</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">Sitemap.xml Generator</h1><p class="tool-desc">Paste your website URLs (one per line) to generate a sitemap for search engines.</p></div><div class="input-group"><label for="urls">Internal URLs</label> <textarea id="urls" style="min-height: 150px;" placeholder="https://example.com/&#10;https://example.com/about&#10;https://example.com/pricing"></textarea></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;"><div class="input-group"><label for="priority">Global Priority</label> <select id="priority"><option value="1.0">1.0 (High)</option><option value="0.8" selected="selected">0.8 (Standard)</option><option value="0.5">0.5 (Low)</option></select></div><div class="input-group"><label for="freq">Change Frequency</label> <select id="freq"><option value="always">Always</option><option value="hourly">Hourly</option><option value="daily" selected="selected">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></div></div><div class="btn-row"><button id="genBtn" class="btn btn-primary">Generate Sitemap</button> <button id="copyBtn" class="btn btn-secondary">Copy XML</button> <button id="downloadBtn" class="btn btn-secondary">Download XML</button></div><div class="input-group"><label for="output">Generated Sitemap.xml</label> <textarea id="output" readonly="readonly" style="min-height: 200px; font-size: 0.85rem;"></textarea></div></div></main><script>const genBtn = document.getElementById('genBtn');
+        const output = document.getElementById('output');
+        const copyBtn = document.getElementById('copyBtn');
+
+        genBtn.addEventListener('click', () => {
+            const lines = document.getElementById('urls').value.split('\n');
+            const freq = document.getElementById('freq').value;
+            const priority = document.getElementById('priority').value;
+            const date = new Date().toISOString().split('T')[0];
+
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+            lines.forEach(url => {
+                if (url.trim()) {
+                    xml += `  <url>\n    <loc>${url.trim()}</loc>\n    <lastmod>${date}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${priority}</priority>\n  </url>\n`;
+                }
+            });
+
+            xml += `</urlset>`;
+            output.value = xml;
+        });
+
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy XML', 2000);
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const blob = new Blob([output.value], { type: 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sitemap.xml';
+            a.click();
+        });</script></body></html>

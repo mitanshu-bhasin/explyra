@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration — Booking Suite | Explyra</title>
+
+    <!-- Theme FOUC prevention -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="booking.css">
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}
+</script>
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-container">
+        <div class="vercel-card auth-card">
+            <div class="auth-logo">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+
+            <h2 id="form-title" class="auth-title">Welcome to Booking</h2>
+            <p id="form-desc" class="auth-desc">Manage your schedule effortlessly.</p>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchTab('login')">Login</div>
+                <div class="auth-tab" onclick="switchTab('register')">Register</div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full btn-lg">
+                    Sign In <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" id="reg-name" class="form-input" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Choose Username (for URL)</label>
+                    <input type="text" id="reg-username" class="form-input" placeholder="unique-username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="Minimum 6 characters" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full btn-lg">
+                    Create Account <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div id="debug-info"
+                style="margin-top: 1.5rem; padding: 1rem; background: var(--danger-bg); border: 1px solid var(--danger); border-radius: 8px; font-size: 0.75rem; text-align: left; color: var(--danger); display: none;">
+                <strong>Debug Info:</strong>
+                <pre id="debug-content" style="white-space: pre-wrap; margin-top: 0.5rem;"></pre>
+            </div>
+        </div>
+
+        <!-- Theme toggle for login page -->
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <div class="theme-pill" style="display: inline-flex;">
+                <button onclick="setTheme('light')" id="theme-light-btn" title="Light Mode">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <button onclick="setTheme('dark')" id="theme-dark-btn" title="Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Theme Script -->
+    <script>
+        function setTheme(theme) {
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            localStorage.setItem('explyra-theme', theme);
+            updateThemePill();
+        }
+        function updateThemePill() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            document.getElementById('theme-light-btn')?.classList.toggle('active-theme', theme === 'light');
+            document.getElementById('theme-dark-btn')?.classList.toggle('active-theme', theme === 'dark');
+        }
+        updateThemePill();
+    </script>
+
+    <!-- Auth Logic (PRESERVED) -->
+    <script type="module">
+        import { auth, db } from './booking.js';
+        import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // --- UI Logic ---
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('form-title').innerText = "Welcome Back";
+                document.getElementById('form-desc').innerText = "Sign in to manage your bookings.";
+            } else {
+                document.querySelector('.auth-tab:nth-child(2)').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+                document.getElementById('form-title').innerText = "Get Started";
+                document.getElementById('form-desc').innerText = "Create your public booking page in seconds.";
+            }
+        };
+
+        const showToast = (msg, isError = false) => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + (isError ? 'error' : 'success');
+            toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        };
+
+        // --- Auth Logic ---
+        let isRedirecting = false;
+        auth.onAuthStateChanged(user => {
+            if (user && !isRedirecting) {
+                if (window.location.pathname.includes('login.html') && !sessionStorage.getItem('auth_in_progress')) {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        });
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            isRedirecting = true;
+            sessionStorage.setItem('auth_in_progress', 'true');
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const name = document.getElementById('reg-name').value.trim();
+            const username = document.getElementById('reg-username').value.toLowerCase().trim().replace(/[^a-z0-9-]/g, '');
+
+            if (username.length < 3) return showToast("Username must be at least 3 characters", true);
+            if (password.length < 6) return showToast("Password must be at least 6 characters", true);
+
+            try {
+                showToast("Checking username...", false);
+                const q = query(collection(db, "booking_profiles"), where("username", "==", username));
+                const snap = await getDocs(q);
+                if (!snap.empty) return showToast("Username is already taken", true);
+
+                showToast("Creating account...", false);
+                const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCred.user;
+
+                showToast("Setting up profile...", false);
+                await setDoc(doc(db, "booking_profiles", user.uid), {
+                    displayName: name,
+                    username: username,
+                    email: email,
+                    availableSlots: {
+                        days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+                        start: '09:00',
+                        end: '17:00'
+                    },
+                    meetingDuration: 30,
+                    createdAt: new Date().toISOString()
+                });
+
+                showToast("Account created successfully!");
+                setTimeout(() => {
+                    sessionStorage.removeItem('auth_in_progress');
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Registration error:", error);
+                document.getElementById('debug-info').style.display = 'block';
+                document.getElementById('debug-content').innerText = error.code + ": " + error.message;
+                showToast(error.message, true);
+                sessionStorage.removeItem('auth_in_progress');
+                isRedirecting = false;
+            }
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            isRedirecting = true;
+            sessionStorage.setItem('auth_in_progress', 'true');
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showToast("Login successful!");
+                setTimeout(() => {
+                    sessionStorage.removeItem('auth_in_progress');
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } catch (error) {
+                showToast("Invalid email or password", true);
+                sessionStorage.removeItem('auth_in_progress');
+                isRedirecting = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

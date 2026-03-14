@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="en"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Insights | Edu.OS</title><script src="https://cdn.tailwindcss.com"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><link rel="stylesheet" href="../shared/saas-ui.css"><style>body { font-family: 'Outfit', sans-serif; }
+        .v-sidebar-item.active {
+            background: var(--v-accents-2);
+            color: var(--v-foreground);
+            font-weight: 600;
+        }
+        .v-sidebar-item i { width: 24px; text-align: center; margin-right: 12px; }
+        
+        /* Custom chart container styles */
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }</style><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../../js/firebase-config.js" defer="defer"></script><script src="../shared/utils.js"></script><script src="../shared/auth.js"></script><script>document.addEventListener('DOMContentLoaded', () => {
+            initAuth('school');
+
+            if (hasAccess(['Student'], 'school')) {
+                document.body.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-screen bg-[var(--v-bg)] text-center p-6">
+                        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-600 border border-red-100 mb-6 shadow-sm">
+                            <i class="fa-solid fa-lock text-2xl"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold tracking-tight mb-2 text-[var(--v-foreground)]">Clearance Required</h1>
+                        <p class="text-[var(--v-accents-5)] mb-8 max-w-md mx-auto">Analytics matrix is restricted to administrative and faculty personnel.</p>
+                        <a href="dashboard.html" class="v-btn-primary bg-[var(--v-foreground)] text-[var(--v-bg)] border-none">Return to Hub</a>
+                    </div>`;
+                return;
+            }
+
+            // Sync theme changes with charts
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        renderAllCharts();
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
+
+            setTimeout(renderAllCharts, 300);
+        });
+
+        // Simple chart instantiation helper (replaces shared/charts.js)
+        let activeCharts = {};
+        function renderChartSaaS(canvasId, type, dataConfig, optionsConfig = {}) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            
+            if (activeCharts[canvasId]) {
+                activeCharts[canvasId].destroy();
+            }
+            
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = isDark ? '#888888' : '#888888';
+            
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            font: { size: 11, weight: '600' },
+                            boxWidth: 12,
+                            boxHeight: 12,
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#111111' : '#ffffff',
+                        titleColor: isDark ? '#ffffff' : '#000000',
+                        bodyColor: isDark ? '#a0a0a0' : '#666666',
+                        borderColor: isDark ? '#333333' : '#eaeaeb',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12, weight: '500' },
+                        padding: 12,
+                        boxPadding: 6
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor, drawBorder: false },
+                        ticks: { color: textColor, font: { size: 11, weight: '600' } },
+                        border: { display: false }
+                    },
+                    y: {
+                        grid: { color: gridColor, drawBorder: false },
+                        ticks: { color: textColor, font: { size: 11, weight: '600' }, padding: 10 },
+                        border: { display: false }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            };
+
+            const mergedOptions = { ...baseOptions };
+            if (optionsConfig.scales) {
+                mergedOptions.scales.y = { ...mergedOptions.scales.y, ...optionsConfig.scales.y };
+            }
+
+            activeCharts[canvasId] = new Chart(ctx, {
+                type: type,
+                data: dataConfig,
+                options: mergedOptions
+            });
+        }
+
+        async function calculateClassAverages() {
+            const session = getSession('school_session');
+            if (!session) return { labels: [], data: [] };
+
+            let students = [];
+            let attendance = {};
+            let cal = {};
+
+            if (typeof window.db !== 'undefined' && session.schoolId) {
+                try {
+                    const stuSnap = await window.db.collection('students').where('schoolId', '==', session.schoolId).get();
+                    stuSnap.forEach(doc => students.push({ firebaseId: doc.id, ...doc.data() }));
+
+                    const attSnap = await window.db.collection('school_attendance').doc(session.schoolId).get();
+                    if (attSnap.exists) attendance = attSnap.data();
+
+                    const calSnap = await window.db.collection('school_calendar').doc(session.schoolId).get();
+                    if (calSnap.exists) cal = calSnap.data();
+                } catch (e) { console.error("Firestore analytics error", e); }
+            } else {
+                const data = getAppData('school_attendance_data', {});
+                students = data.students?.[session.schoolId] || [];
+                attendance = data.attendance?.[session.schoolId] || {};
+                cal = data.calendar?.[session.schoolId] || {};
+            }
+
+            const classStats = {};
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currYearMonth = currentDate.substring(0, 7);
+
+            // Init buckets
+            students.forEach(s => {
+                const cls = `Grade ${s.stuClass}`;
+                if (!classStats[cls]) classStats[cls] = { totalStudents: 0, possibleDays: 0, presentHits: 0 };
+                classStats[cls].totalStudents++;
+            });
+
+            // Calculate hits
+            Object.keys(attendance).forEach(dateStr => {
+                if (dateStr.startsWith(currYearMonth)) {
+                    if (cal[dateStr] === 'Holiday') return;
+
+                    const dayRecords = attendance[dateStr];
+
+                    students.forEach(s => {
+                        const safeId = s.id || s.firebaseId;
+                        const cls = `Grade ${s.stuClass}`;
+                        
+                        if (classStats[cls]) {
+                            classStats[cls].possibleDays++;
+                            if (dayRecords[safeId] === 'Present') {
+                                classStats[cls].presentHits++;
+                            }
+                        }
+                    });
+                }
+            });
+
+            const labels = [];
+            const dataPts = [];
+
+            Object.keys(classStats).sort((a,b) => {
+                const numA = parseInt(a.replace('Grade ',''));
+                const numB = parseInt(b.replace('Grade ',''));
+                return numA - numB;
+            }).forEach(cls => {
+                labels.push(cls);
+                const stats = classStats[cls];
+                if (stats.possibleDays === 0) {
+                    dataPts.push(0);
+                } else {
+                    dataPts.push(((stats.presentHits / stats.possibleDays) * 100).toFixed(1));
+                }
+            });
+
+            return { labels, data: dataPts };
+        }
+
+        function getMonthlyTrend() {
+            // Mock trend data
+            return {
+                labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                data: [88.5, 92.1, 94.5, 88.2, 95.1, 91.0]
+            };
+        }
+
+        async function renderAllCharts() {
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            // SaaS Color Palette
+            const primaryColor = isDark ? '#ededed' : '#171717';
+            const primaryBg = isDark ? 'rgba(237, 237, 237, 0.1)' : 'rgba(23, 23, 23, 0.05)';
+            const accentColor = '#3b82f6'; // Blue
+            const accentBg = 'rgba(59, 130, 246, 0.1)';
+
+            // 1. Class-wise Averages (Bar)
+            const classData = await calculateClassAverages();
+            
+            if (classData.labels.length > 0) {
+                document.getElementById('chart-container-1').innerHTML = '<canvas id="classAverageChart"></canvas>';
+                
+                renderChartSaaS('classAverageChart', 'bar', {
+                    labels: classData.labels,
+                    datasets: [{
+                        label: 'Active Yield (Current Month)',
+                        data: classData.data,
+                        backgroundColor: primaryBg,
+                        borderColor: primaryColor,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        hoverBackgroundColor: primaryColor,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
+                    }]
+                }, {
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            ticks: { callback: function(value) { return value + '%' } }
+                        } 
+                    }
+                });
+            } else {
+                document.getElementById('chart-container-1').innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-[var(--v-accents-4)]">
+                        <i class="fa-solid fa-chart-simple text-3xl mb-3"></i>
+                        <p class="text-xs font-bold uppercase tracking-widest">Insufficient Data</p>
+                    </div>`;
+            }
+
+            // 2. Trend Line
+            const trendData = getMonthlyTrend();
+            renderChartSaaS('trendChart', 'line', {
+                labels: trendData.labels,
+                datasets: [{
+                    label: 'Global Institutional Average %',
+                    data: trendData.data,
+                    backgroundColor: accentBg,
+                    borderColor: accentColor,
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: accentColor,
+                    pointBorderColor: isDark ? '#000' : '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            }, {
+                scales: { 
+                    y: { 
+                        min: 60, 
+                        max: 100,
+                        ticks: { callback: function(value) { return value + '%' } }
+                    } 
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('explyra-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('explyra-theme', 'dark');
+            }
+        }
+        
+        (function() {
+            const theme = localStorage.getItem('explyra-theme') || 'light';
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();</script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body class="flex h-screen overflow-hidden bg-[var(--v-bg)]"><aside class="v-sidebar shrink-0 hidden md:flex border-r border-[var(--v-border)] z-40 relative"><div class="h-16 flex items-center px-6 border-b border-[var(--v-border)]"><div class="w-7 h-7 bg-indigo-600 rounded flex items-center justify-center mr-3 shadow-inner text-white text-[10px]"><i class="fa-solid fa-graduation-cap"></i></div><span class="font-bold text-sm tracking-tight">EDU<span class="text-[var(--v-accents-4)]">.OS</span></span></div><div class="p-5"><p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] mb-2 tracking-widest">Active Institution</p><div class="flex items-center gap-3 p-2 rounded-md bg-[var(--v-bg)] border border-[var(--v-border)] shadow-sm"><div class="w-7 h-7 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs" id="sidebar-org-initial">S</div><p id="sidebar-org-name" class="font-bold text-xs truncate">Loading Setup...</p></div></div><nav class="flex-1 px-3 space-y-1"><a href="dashboard.html" class="v-sidebar-item"><i class="fa-solid fa-chart-pie opacity-70"></i> Hub</a><div class="pt-4 pb-1"><p class="px-3 text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Directories</p></div><a href="teachers.html" class="v-sidebar-item principal-only"><i class="fa-solid fa-chalkboard-user opacity-70"></i> Faculty </a><a href="students.html" class="v-sidebar-item"><i class="fa-solid fa-users opacity-70"></i> Students</a><div class="pt-4 pb-1"><p class="px-3 text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-4)]">Operations</p></div><a href="attendance.html" class="v-sidebar-item teacher-auth"><i class="fa-regular fa-calendar-check opacity-70"></i> Roll Call </a><a href="analytics.html" class="v-sidebar-item active teacher-auth"><i class="fa-solid fa-chart-line text-[var(--v-foreground)]"></i> Insights</a></nav><div class="p-4 border-t border-[var(--v-border)]"><div class="flex items-center gap-3 mb-4 p-2"><div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs border border-[var(--v-border)]"><i class="fa-solid fa-user"></i></div><div class="overflow-hidden"><p id="sidebar-user-name" class="text-xs font-bold truncate">User</p><p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-[var(--v-accents-5)] truncate">Role</p></div></div><button onclick="doLogout('school')" class="w-full flex items-center justify-center gap-2 py-2.5 text-[var(--v-accents-6)] hover:bg-[var(--v-accents-2)] hover:text-red-500 rounded-md text-xs font-bold transition border border-transparent hover:border-red-200"><i class="fa-solid fa-power-off"></i> Sign Out</button></div></aside><main class="flex-1 flex flex-col h-screen overflow-hidden bg-[var(--v-accents-1)]"><header class="v-header shrink-0 z-30 relative bg-[var(--v-bg)] border-b border-[var(--v-border)]"><div class="flex items-center gap-3"><h1 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Operations / Insights</h1></div><div class="flex items-center gap-4"><button onclick="toggleTheme()" class="w-8 h-8 rounded border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition shadow-sm bg-[var(--v-bg)]"><i class="fa-solid fa-moon dark:hidden text-[11px] text-[var(--v-accents-5)]"></i> <i class="fa-solid fa-sun hidden dark:block text-[11px] text-[var(--v-accents-5)] hover:text-yellow-500"></i></button></div></header><div class="flex-1 overflow-y-auto p-4 md:p-8 relative custom-scrollbar"><div class="max-w-7xl mx-auto space-y-6 lg:space-y-8 pb-12"><div class="flex items-center justify-between"><div><h2 class="text-2xl md:text-3xl font-bold tracking-tight">System Analytics</h2><p class="text-[var(--v-accents-5)] text-sm mt-1 max-w-lg leading-relaxed">Visualize institutional presence patterns and long-term cohort behavior.</p></div><button onclick="renderAllCharts()" class="w-10 h-10 rounded border border-[var(--v-border)] bg-[var(--v-bg)] flex items-center justify-center text-[var(--v-accents-5)] hover:bg-[var(--v-accents-2)] hover:text-[var(--v-foreground)] transition shadow-sm" title="Refresh Data"><i class="fa-solid fa-rotate-right text-xs"></i></button></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="v-card border-[var(--v-border)] shadow-sm"><div class="flex items-center gap-3 mb-6"><div class="w-8 h-8 rounded bg-[var(--v-accents-1)] border border-[var(--v-border)] flex items-center justify-center text-[var(--v-foreground)]"><i class="fa-solid fa-chart-column text-[10px]"></i></div><div><h3 class="text-sm font-bold tracking-tight text-[var(--v-foreground)]">Cohort Averages</h3><p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] tracking-widest mt-0.5">Current Operating Month</p></div></div><div id="chart-container-1" class="chart-wrapper"><canvas id="classAverageChart"></canvas></div></div><div class="v-card border-[var(--v-border)] shadow-sm"><div class="flex items-center gap-3 mb-6"><div class="w-8 h-8 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 flex items-center justify-center text-blue-600"><i class="fa-solid fa-chart-line text-[10px]"></i></div><div><h3 class="text-sm font-bold tracking-tight text-[var(--v-foreground)]">Historical Metrics</h3><p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] tracking-widest mt-0.5">6-Month Institutional Trend</p></div></div><div class="chart-wrapper"><canvas id="trendChart"></canvas></div></div></div><div class="mt-8 flex items-center justify-center gap-2"><i class="fa-solid fa-circle-info text-[10px] text-[var(--v-accents-4)]"></i><p class="text-[10px] text-[var(--v-accents-5)] uppercase font-bold tracking-widest">System note: Authorized halts and holidays are inherently excluded from analytic calculations.</p></div></div></div></main></body></html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>User Agent Parser - Browser & Device Info | Explyra</title><meta name="description" content="Instantly parse and analyze browser user agent strings. Get detailed information about the browser, operating system, and device. Free online developer tool."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css"><style>.ua-display {
+            background: var(--bg3);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            word-break: break-all;
+            border: 1px solid var(--bdr);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .info-card h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink4);
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            font-weight: 600;
+            color: var(--blue);
+            font-size: 1.1rem;
+        }</style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span></a></header><main class="container"><nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);"><a href="../../index.html">Developers</a> / Testing Tools / User Agent Parser</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">User Agent Parser</h1><p class="tool-desc">Analyze your current browser's user agent string or paste one to inspect.</p></div><div class="ua-display" id="uaDisplay"></div><div class="info-grid"><div class="info-card"><h3>Browser</h3><p id="browser">Detecting...</p></div><div class="info-card"><h3>Version</h3><p id="version">Detecting...</p></div><div class="info-card"><h3>OS</h3><p id="os">Detecting...</p></div><div class="info-card"><h3>Platform</h3><p id="platform">Detecting...</p></div></div><div class="input-group" style="margin-top: 30px;"><label>Custom User Agent (optional)</label> <textarea id="customUa" style="min-height: 80px;" placeholder="Paste a user agent string here to analyze it..."></textarea></div><div class="btn-row"><button id="parseBtn" class="btn btn-primary">Parse User Agent</button></div></div></main><script>function parseUA(ua) {
+            document.getElementById('uaDisplay').textContent = ua;
+            let browser = "Unknown";
+            let version = "Unknown";
+            let os = "Unknown";
+            let platform = navigator.platform;
+
+            if (ua.indexOf("Firefox") > -1) browser = "Firefox";
+            else if (ua.indexOf("SamsungBrowser") > -1) browser = "Samsung Browser";
+            else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) browser = "Opera";
+            else if (ua.indexOf("Trident") > -1) browser = "Internet Explorer";
+            else if (ua.indexOf("Edge") > -1 || ua.indexOf("Edg") > -1) browser = "Edge";
+            else if (ua.indexOf("Chrome") > -1) browser = "Chrome";
+            else if (ua.indexOf("Safari") > -1) browser = "Safari";
+
+            if (ua.indexOf("Windows") > -1) os = "Windows";
+            else if (ua.indexOf("Mac") > -1) os = "macOS";
+            else if (ua.indexOf("Android") > -1) os = "Android";
+            else if (ua.indexOf("iPhone") > -1 || ua.indexOf("iPad") > -1) os = "iOS";
+            else if (ua.indexOf("Linux") > -1) os = "Linux";
+
+            document.getElementById('browser').textContent = browser;
+            document.getElementById('os').textContent = os;
+            document.getElementById('platform').textContent = platform;
+
+            const verMatch = ua.match(/(?:Version|Chrome|Firefox|Edg|Safari|OPR)\/(\d+(\.\d+)?)/);
+            if (verMatch) document.getElementById('version').textContent = verMatch[1];
+        }
+
+        document.getElementById('parseBtn').addEventListener('click', () => {
+            const input = document.getElementById('customUa').value.trim();
+            if (input) parseUA(input);
+        });
+
+        parseUA(navigator.userAgent);</script></body></html>

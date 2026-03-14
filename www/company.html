@@ -1,0 +1,413 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TFBZ5GZ22C');</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create Company — Explyra Suite</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>:root {
+            /* Light */
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --blue: #1546C0;
+            --blue-g: rgba(21, 70, 192, 0.08);
+            --blue-b: rgba(21, 70, 192, 0.2);
+            --r: 8px;
+            --t: 0.2s ease;
+            --s2: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, 0.07);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --blue: #5B8AF5;
+            --blue-g: rgba(91, 138, 245, 0.12);
+            --s2: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--s2);
+        }
+
+        .auth-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+        }
+
+        .auth-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-desc {
+            font-size: 0.95rem;
+            color: var(--ink3);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--ink2);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all var(--t);
+        }
+
+        .form-input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px var(--blue-g);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--blue);
+            color: #fff;
+            padding: 0.9rem;
+            border-radius: var(--r);
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all var(--t);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .small-text {
+            font-size: 0.75rem;
+            color: var(--ink3);
+            text-align: center;
+            margin-top: 1rem;
+            display: block;
+        }
+
+        /* Toast Styles */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: var(--s2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s forwards;
+        }
+
+        .toast.success {
+            background: #10B981;
+        }
+
+        .toast.error {
+            background: #EF4444;
+        }
+
+        .toast.info {
+            background: #3B82F6;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loader inside full screen */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
+        }</style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><div class="loading-overlay" id="loadingOverlay"><i class="fa-solid fa-circle-notch fa-spin text-3xl" style="color:var(--blue); font-size: 2rem;"></i><p style="margin-top: 1rem; font-weight: 600; color: var(--ink2);">Verifying Access...</p></div><div class="auth-container" id="mainContainer" style="opacity: 0; transition: opacity 0.4s;"><div class="auth-logo"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><h1 class="auth-title">Create Your Company</h1><p class="auth-desc">Set up your company workspace in Explyra.</p><form id="companyForm"><div class="form-grid"><div class="form-group full"><label class="form-label">Company Name *</label> <input type="text" id="cmpName" class="form-input" required placeholder="Acme Startup"></div><div class="form-group full"><label class="form-label">Company Domain (optional)</label> <input type="text" id="cmpDomain" class="form-input" placeholder="acme.com"></div><div class="form-group"><label class="form-label">Industry</label> <select id="cmpIndustry" class="form-input" required><option value="" disabled="disabled" selected="selected">Select...</option><option value="Technology">Technology</option><option value="Finance">Finance</option><option value="Healthcare">Healthcare</option><option value="Education">Education</option><option value="Retail">Retail</option><option value="Other">Other</option></select></div><div class="form-group"><label class="form-label">Company Size</label> <select id="cmpSize" class="form-input" required><option value="" disabled="disabled" selected="selected">Select...</option><option value="0-50">0 - 50 employees</option><option value="50-100">50 - 100 employees</option><option value="100-500">100 - 500 employees</option><option value="500+">500+ employees</option></select></div><div class="form-group"><label class="form-label">Country</label> <input type="text" id="cmpCountry" class="form-input" required placeholder="India"></div><div class="form-group"><label class="form-label">Company Logo URL (optional)</label> <input type="url" id="cmpLogo" class="form-input" placeholder="https://..."></div></div><button type="submit" class="btn-submit" id="submitBtn">Create Company <i class="fa-solid fa-building"></i></button> <span class="small-text">You can change these settings later.</span></form></div><div id="toast-container"></div><script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
+        let userDocId = null; // Track actual Firestore doc ID (may differ from UID for legacy users)
+
+        window.showToast = (msg, type = 'success') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        };
+
+        function showForm() {
+            document.getElementById('loadingOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('mainContainer').style.opacity = '1';
+            }, 500);
+        }
+
+        // Check Auth State on Load
+        let authHandled = false;
+
+        // Safety Timeout: If auth check hangs for more than 5s, show the form
+        const safetyTimeout = setTimeout(() => {
+            if (!authHandled) {
+                console.warn("[Auth] Safety timeout triggered. Showing form.");
+                showForm();
+            }
+        }, 5000);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (authHandled) return;
+
+            if (user) {
+                currentUser = user;
+                console.log("[Auth] User detected:", user.email);
+
+                try {
+                    // 1. Try direct lookup by UID
+                    let userDocSnap = await getDoc(doc(db, "users", user.uid));
+                    let userDocData = userDocSnap.exists() ? userDocSnap.data() : null;
+
+                    // 2. Fallback: query by email (for legacy users)
+                    if (!userDocData && user.email) {
+                        console.log("[Auth] UID lookup failed, trying email query...");
+                        const q = query(collection(db, "users"), where("email", "==", user.email));
+                        const snap = await getDocs(q);
+                        if (!snap.empty) {
+                            userDocSnap = snap.docs[0];
+                            userDocData = userDocSnap.data();
+                        }
+                    }
+
+                    if (userDocData) {
+                        userDocId = userDocSnap.id;
+                        if (userDocData.companyId) {
+                            showToast("You already belong to a company. Redirecting...", "info");
+                            setTimeout(() => window.location.href = 'admin.html', 1500);
+                            return;
+                        }
+                    }
+
+                    // No company found or no record - show the form
+                    authHandled = true;
+                    clearTimeout(safetyTimeout);
+                    showForm();
+                } catch (err) {
+                    console.error("[Auth] Error checking user record:", err);
+                    authHandled = true;
+                    clearTimeout(safetyTimeout);
+                    showForm();
+                }
+            } else {
+                authHandled = true;
+                clearTimeout(safetyTimeout);
+                window.location.href = 'signup.html';
+            }
+        });
+
+        // Generate ID helper
+        const generateId = (prefix) => prefix + '_' + Math.random().toString(36).substr(2, 9);
+
+        document.getElementById('companyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const name = document.getElementById('cmpName').value.trim();
+            const domain = document.getElementById('cmpDomain').value.trim();
+            const size = document.getElementById('cmpSize').value;
+            const industry = document.getElementById('cmpIndustry').value;
+            const country = document.getElementById('cmpCountry').value.trim();
+            const logo = document.getElementById('cmpLogo').value.trim();
+            const btn = document.getElementById('submitBtn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating Workspace...';
+
+            try {
+                const companyId = generateId('cmp');
+
+                // 14 Days Trial
+                const trialEnd = new Date();
+                trialEnd.setDate(trialEnd.getDate() + 14);
+
+                // 1. Create Company Document
+                await setDoc(doc(db, "companies", companyId), {
+                    companyId: companyId,
+                    name: name,
+                    domain: domain,
+                    size: size,
+                    industry: industry,
+                    country: country,
+                    logo: logo,
+                    plan: 'trial',
+                    trialEndsAt: trialEnd,
+                    ownerId: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+
+                // 2. Update User Document (Make them Owner & linking company)
+                const docPath = userDocId || currentUser.uid;
+                await updateDoc(doc(db, "users", docPath), {
+                    role: 'ADMIN', // Owner/Admin permissions
+                    companyId: companyId,
+                    updatedAt: serverTimestamp()
+                });
+
+                // 3. Create Company Member Record for clean multi-tenant mapping
+                const memberId = generateId('mem');
+                await setDoc(doc(db, "companyMembers", memberId), {
+                    memberId: memberId,
+                    companyId: companyId,
+                    userId: currentUser.uid,
+                    role: 'ADMIN',
+                    joinedAt: serverTimestamp()
+                });
+
+                showToast('Workspace created successfully! Redirecting...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Creation error:", error);
+                showToast(error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Create Company <i class="fa-solid fa-building"></i>';
+            }
+        });</script><script src="js/global-enhancements.js"></script></body></html>

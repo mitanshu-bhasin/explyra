@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CSV to JSON Converter - Online Data Transformation | Explyra</title><meta name="description" content="Convert CSV files and text to JSON format instantly. Simple, fast, and secure online CSV to JSON converter. No server-side processing, data stays in your browser."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span></a></header><main class="container"><nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);"><a href="../../index.html">Developers</a> / Data Tools / CSV to JSON</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">CSV to JSON Converter</h1><p class="tool-desc">Paste your CSV data (including headers) to convert it into a JSON array.</p></div><div class="input-group"><label for="input">Input CSV</label> <textarea id="input" placeholder="id,name,email&#10;1,John Doe,john@example.com&#10;2,Jane Smith,jane@example.com"></textarea></div><div class="btn-row"><button id="convertBtn" class="btn btn-primary">Convert to JSON</button> <button id="copyBtn" class="btn btn-secondary">Copy JSON</button> <button id="clearBtn" class="btn btn-secondary">Clear</button></div><div class="input-group"><label for="output">Generated JSON</label> <textarea id="output" readonly="readonly" placeholder="JSON output will appear here..." style="font-family: monospace; font-size: 0.85rem;"></textarea></div></div></main><script>const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const convertBtn = document.getElementById('convertBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        function csvToJSON(csv) {
+            const lines = csv.trim().split('\n');
+            if (lines.length < 2) return "[]";
+
+            const headers = lines[0].split(',').map(h => h.trim());
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const obj = {};
+                const currentline = lines[i].split(',');
+
+                headers.forEach((header, index) => {
+                    obj[header] = currentline[index] ? currentline[index].trim() : "";
+                });
+                result.push(obj);
+            }
+            return JSON.stringify(result, null, 2);
+        }
+
+        convertBtn.addEventListener('click', () => {
+            const csv = input.value.trim();
+            if (!csv) return;
+            try {
+                output.value = csvToJSON(csv);
+            } catch (e) {
+                output.value = "Error: Invalid CSV format.";
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy JSON', 2000);
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            input.value = '';
+            output.value = '';
+        });</script></body></html>

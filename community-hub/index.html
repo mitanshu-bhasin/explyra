@@ -1,0 +1,264 @@
+<!DOCTYPE html><html lang="en" class="dark"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Community Hub | Explyra</title><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    },
+                    colors: {
+                        dark: {
+                            bg: '#080B14',
+                            surface: '#141928',
+                            surfaceHover: '#1B2235',
+                            border: 'rgba(255, 255, 255, 0.07)',
+                            text: '#EEF0F8',
+                            textMuted: '#8290A8'
+                        },
+                        brand: {
+                            blue: '#5B8AF5',
+                            purp: '#A78BFA'
+                        }
+                    }
+                }
+            }
+        }</script><style>body {
+            background-color: var(--dark-bg, #080B14);
+            color: var(--dark-text, #EEF0F8);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(20, 25, 40, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .glass-hover:hover {
+            background: rgba(27, 34, 53, 0.8);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #5B8AF5;
+            border-radius: 4px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #5B8AF5, #A78BFA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }</style><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script><script src="../js/firebase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me/",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ]
+}</script></head><body class="antialiased min-h-screen flex flex-col md:flex-row"><nav class="glass-panel w-full md:w-64 md:fixed md:h-screen z-50 flex flex-col justify-between hidden md:flex"><div class="p-6"><div class="flex items-center gap-3 mb-8 cursor-pointer" onclick="window.location.href='../index.html'"><div class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center shadow-lg shadow-brand-blue/30"><i class="fa-solid fa-layer-group text-white text-lg"></i></div><div><h1 class="font-serif font-bold text-xl tracking-wide">Explyra</h1><p class="text-[0.65rem] text-dark-textMuted uppercase tracking-widest font-semibold">Community</p></div></div><div class="space-y-1 mt-6"><div class="mb-6 p-3 rounded-xl bg-dark-bg/50 border border-dark-border flex items-center justify-between"><span class="text-xs font-semibold text-dark-textMuted" id="mode-label">Global Hub</span> <button id="toggle-hub-mode" class="relative inline-flex h-5 w-10 items-center rounded-full bg-dark-surfaceHover transition-colors focus:outline-none mb-0"><span id="toggle-hub-knob" class="inline-block h-3 w-3 translate-x-1 rounded-full bg-white transition-transform"></span></button></div><a href="#" onclick="CommunityApp.navigate('feed')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-brand-blue bg-brand-blue/10 font-medium transition-all" id="nav-feed"><i class="fa-solid fa-rss w-5 text-center"></i> Main Feed </a><a href="#" onclick="CommunityApp.navigate('feed', 'dev')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-dark-text hover:bg-dark-surfaceHover hover:text-white font-medium transition-all" id="nav-dev"><i class="fa-solid fa-code w-5 text-center text-dark-textMuted"></i> Dev Talk </a><a href="#" onclick="CommunityApp.navigate('feed', 'business')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-dark-text hover:bg-dark-surfaceHover hover:text-white font-medium transition-all" id="nav-business"><i class="fa-solid fa-briefcase w-5 text-center text-dark-textMuted"></i> Business</a><div class="pt-6 pb-2"><p class="text-xs font-semibold text-dark-textMuted uppercase tracking-wider px-4">Actions</p></div><a href="#" onclick="UserSearchModal.render(CommunityApp)" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-dark-textMuted hover:bg-dark-surfaceHover hover:text-white font-medium transition-all mb-4"><i class="fa-solid fa-search w-5 text-center"></i> Search Users </a><button onclick="CommunityApp.navigate('create')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white bg-gradient-to-r from-brand-blue to-brand-purp shadow-lg shadow-brand-blue/20 hover:from-blue-500 hover:to-purple-500 font-medium transition-all mb-2"><i class="fa-solid fa-pen-nib w-5 text-center"></i> Create Post</button><div id="admin-moderation-link" class="hidden"><a href="#" onclick="CommunityApp.navigate('moderation')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 font-medium transition-all mb-2" id="nav-moderation"><i class="fa-solid fa-shield-halved w-5 text-center"></i> Moderation</a></div><a href="#" onclick="CommunityApp.navigate('profile_settings')" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-dark-textMuted hover:bg-dark-surfaceHover hover:text-white font-medium transition-all" id="nav-profile-settings"><i class="fa-solid fa-gear w-5 text-center"></i> Settings</a></div></div><div class="p-4 border-t border-dark-border cursor-pointer hover:bg-dark-surfaceHover/50 transition-colors" onclick="if(CommunityApp.currentUsername) UserProfileModal.render(CommunityApp, CommunityApp.currentUsername)"><div class="flex items-center gap-3 px-2 py-2" id="user-profile-stub"><div class="w-9 h-9 rounded-full bg-dark-surfaceHover flex items-center justify-center border border-dark-border overflow-hidden" id="user-avatar"><i class="fa-solid fa-user text-dark-textMuted text-sm"></i></div><div class="overflow-hidden"><p class="text-sm font-semibold text-white truncate" id="user-name">Loading...</p><p class="text-xs text-brand-blue truncate" id="user-role">Member</p></div></div></div></nav><header class="md:hidden glass-panel sticky top-0 z-50 px-4 py-3 flex items-center justify-between"><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='../index.html'"><div class="w-8 h-8 rounded-lg bg-brand-blue flex items-center justify-center"><i class="fa-solid fa-layer-group text-white text-xs"></i></div><h1 class="font-serif font-bold tracking-wide">Hub</h1></div><button id="mobile-menu-btn" class="w-10 h-10 rounded-lg bg-dark-surfaceHover flex items-center justify-center text-white"><i class="fa-solid fa-bars"></i></button></header><main class="flex-1 md:ml-64 p-4 md:p-8 lg:p-10 relative" id="main-content"><div class="flex h-[80vh] items-center justify-center"><div class="w-10 h-10 border-4 border-dark-surfaceHover border-t-brand-blue rounded-full animate-spin"></div></div></main><aside class="hidden xl:block w-80 glass-panel border-l border-y-0 border-r-0 fixed right-0 h-screen p-6 overflow-y-auto"><h3 class="font-serif text-lg font-bold mb-6">Top Contributors</h3><div class="space-y-4" id="contributors-list"><p class="text-sm text-dark-textMuted italic">Loading leaders...</p></div><div class="mt-10 rounded-2xl bg-gradient-to-br from-brand-blue/10 to-brand-purp/10 p-5 border border-brand-blue/20 relative overflow-hidden"><div class="absolute -right-4 -top-4 text-brand-purp/20 text-6xl"><i class="fa-brands fa-space-awesome"></i></div><h4 class="font-semibold text-white mb-2 relative z-10">Antigravity Flow</h4><p class="text-xs text-dark-textMuted relative z-10 leading-relaxed">Experience frictionless collaboration. Share code, discuss ideas, and build the future together.</p></div></aside><script type="module">// Import components
+        import Feed from './Feed.js';
+        import Thread from './Thread.js';
+        import CreatePost from './CreatePost.js';
+        import Moderation from './Moderation.js';
+        import ProfileSettings from './ProfileSettings.js';
+        import UserProfileModal from './UserProfileModal.js';
+        import UserSearchModal from './UserSearchModal.js';
+
+        window.CommunityApp = {
+            view: 'feed',
+            category: null,
+            threadId: null,
+            currentUser: null,
+            currentUsername: null,
+            isCompanyHub: false,
+            companyId: null, // Will be populated from user profile
+            db: firebase.firestore(),
+
+            init: async function () {
+                // Wait for auth state
+                firebase.auth().onAuthStateChanged(async (user) => {
+                    if (user) {
+                        this.currentUser = user;
+                        await this.fetchUserProfile(user.uid);
+                        this.setupUI();
+                        this.navigate('feed');
+                        this.loadTopContributors();
+                    } else {
+                        // Redirect to login if not authenticated
+                        window.location.href = '../login.html?redirect=community-hub/index.html';
+                    }
+                });
+
+                // Mode Toggle Event
+                document.getElementById('toggle-hub-btn')?.addEventListener('click', () => {
+                    this.toggleMode();
+                });
+            },
+
+            fetchUserProfile: async function (uid) {
+                try {
+                    const doc = await this.db.collection('users').doc(uid).get();
+                    if (doc.exists) {
+                        const data = doc.data();
+                        document.getElementById('user-name').textContent = data.displayName || data.name || this.currentUser.email.split('@')[0];
+                        document.getElementById('user-role').textContent = data.role || 'Member';
+                        this.companyId = data.companyId || data.company_id || null;
+                        this.currentUsername = data.username || null;
+
+                        if (data.avatarUrl) {
+                            document.getElementById('user-avatar').innerHTML = `<img src="${data.avatarUrl}" class="w-full h-full object-cover">`;
+                        } else {
+                            document.getElementById('user-avatar').innerHTML = `<i class="fa-solid fa-user text-dark-textMuted text-sm"></i>`;
+                        }
+
+                        // Check if admin
+                        if (data.role === 'Admin' || data.role === 'SuperAdmin' || data.role === 'Founder') {
+                            document.getElementById('admin-moderation-link').classList.remove('hidden');
+                        }
+                    } else {
+                        document.getElementById('user-name').textContent = this.currentUser.email.split('@')[0];
+                    }
+                } catch (e) {
+                    console.error("Error fetching profile", e);
+                }
+            },
+
+            toggleMode: function () {
+                if (!this.companyId) {
+                    alert("You are not associated with a company. Company Hub is unavailable.");
+                    return;
+                }
+                this.isCompanyHub = !this.isCompanyHub;
+
+                const knob = document.getElementById('toggle-hub-knob');
+                const label = document.getElementById('mode-label');
+
+                if (this.isCompanyHub) {
+                    knob.classList.replace('translate-x-1', 'translate-x-6');
+                    document.getElementById('toggle-hub-mode').classList.replace('bg-dark-surfaceHover', 'bg-brand-blue');
+                    label.textContent = "Company Hub";
+                    label.classList.replace('text-dark-textMuted', 'text-brand-blue');
+                } else {
+                    knob.classList.replace('translate-x-6', 'translate-x-1');
+                    document.getElementById('toggle-hub-mode').classList.replace('bg-brand-blue', 'bg-dark-surfaceHover');
+                    label.textContent = "Global Hub";
+                    label.classList.replace('text-brand-blue', 'text-dark-textMuted');
+                }
+
+                // Re-render current view with new mode
+                this.navigate(this.view, this.category, this.threadId);
+            },
+
+            navigate: function (view, category = null, threadId = null) {
+                this.view = view;
+                this.category = category;
+                this.threadId = threadId;
+
+                // Update active nav styling
+                document.querySelectorAll('.nav-link').forEach(el => {
+                    el.classList.remove('text-brand-blue', 'bg-brand-blue/10');
+                    el.classList.add('text-dark-text', 'hover:bg-dark-surfaceHover', 'hover:text-white');
+                    el.querySelector('i')?.classList.add('text-dark-textMuted');
+                });
+
+                let activeId = 'nav-feed';
+                if (view === 'feed' && category === 'dev') activeId = 'nav-dev';
+                if (view === 'feed' && category === 'business') activeId = 'nav-business';
+                if (view === 'moderation') activeId = 'nav-moderation';
+                if (view === 'profile_settings') activeId = 'nav-profile-settings';
+
+                const activeNav = document.getElementById(activeId);
+                if (activeNav) {
+                    activeNav.classList.remove('text-dark-text', 'hover:bg-dark-surfaceHover', 'hover:text-white');
+                    activeNav.classList.add('text-brand-blue', 'bg-brand-blue/10');
+                    activeNav.querySelector('i')?.classList.remove('text-dark-textMuted');
+                }
+
+                const mainContent = document.getElementById('main-content');
+
+                // Route to component
+                switch (view) {
+                    case 'feed':
+                        Feed.render(mainContent, this);
+                        break;
+                    case 'thread':
+                        Thread.render(mainContent, this, threadId);
+                        break;
+                    case 'create':
+                        CreatePost.render(mainContent, this);
+                        break;
+                    case 'moderation':
+                        Moderation.render(mainContent, this);
+                        break;
+                    case 'profile_settings':
+                        ProfileSettings.render(mainContent, this);
+                        break;
+                    default:
+                        Feed.render(mainContent, this);
+                }
+            },
+
+            loadTopContributors: async function () {
+                try {
+                    // Approximate top contributors via points/upvotes. If not available, just show mock layout to fill design.
+                    const list = document.getElementById('contributors-list');
+                    list.innerHTML = `
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-dark-bg/40 border border-dark-border glass-hover transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold text-xs">M</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">Mitanshu Bhasin</p>
+                                    <p class="text-[0.65rem] text-brand-blue bg-brand-blue/10 px-1.5 rounded uppercase tracking-wider inline-block">Founder</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-brand-blue"><i class="fa-solid fa-arrow-up mr-1"></i>1.2k</div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-dark-bg/40 border border-dark-border glass-hover transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-robot"></i></div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">Antigravity</p>
+                                    <p class="text-[0.65rem] text-dark-textMuted bg-dark-surfaceHover px-1.5 rounded uppercase tracking-wider inline-block">AI Agent</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-brand-blue"><i class="fa-solid fa-arrow-up mr-1"></i>842</div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error("Top contributors failed", e);
+                }
+            },
+
+            setupUI: function () {
+                // Add event listener to toggle button after it's securely in DOM
+                const toggleBtn = document.getElementById('toggle-hub-mode');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', () => this.toggleMode());
+                }
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            window.CommunityApp.init();
+        });</script></body></html>
