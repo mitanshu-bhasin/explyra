@@ -1,6 +1,0 @@
-#:schema node_modules/wrangler/config-schema.json
-name = "explyra"
-compatibility_date = "2024-03-14"
-
-[observability]
-enabled = true
