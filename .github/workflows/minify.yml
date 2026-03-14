@@ -2,10 +2,11 @@ name: Minify and Prepare for Cloudflare
 on:
   push:
     branches:
-      - main # Jab tu main pe push karega, ye script chalegi
-      
+      - main
+
 jobs:
   build-and-commit:
+    if: false # Temporarily disabled minification
     runs-on: ubuntu-latest
     permissions:
       contents: write 
