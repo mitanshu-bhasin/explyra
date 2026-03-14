@@ -71,36 +71,55 @@
     <script src="../shared/auth.js"></script>
     <script>
         let currentEditId = null;
+        let cachedEmployees = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             initAuth('company');
+            
+            // Sync company name to sidebar top
+            const session = getSession('company_session');
+            if (session && session.companyId) {
+                const companyName = session.companyId.replace(/_/g, ' ').toUpperCase();
+                const companyEl = document.getElementById('sidebar-brand-name');
+                if (companyEl) {
+                    const parts = companyName.split(' ');
+                    if (parts.length > 1) {
+                        companyEl.innerHTML = `${parts[0]}<span class="text-[var(--v-accents-4)]">.${parts[1]}</span>`;
+                    } else {
+                        companyEl.innerHTML = companyName;
+                    }
+                }
+            }
+
             setTimeout(renderEmployees, 300);
         });
-
-        let cachedEmployees = [];
 
         async function renderEmployees() {
             const session = getSession('company_session');
             if (!session) return;
 
             const tbody = document.getElementById('employee-tbody');
-            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center text-[var(--v-accents-4)]"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Syncing personnel records...</td></tr>';
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="7" class="py-12 text-center text-[var(--v-accents-4)]"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Accessing personnel repository...</td></tr>';
 
             let emps = [];
 
             if (typeof window.db !== 'undefined' && session.companyId) {
                 try {
-                    const snapshot = await window.db.collection('employees').where('companyId', '==', session.companyId).get();
+                    const snapshot = await window.db.collection('users').where('companyId', '==', session.companyId).get();
                     snapshot.forEach(doc => {
                         emps.push({ firebaseId: doc.id, ...doc.data() });
                     });
                 } catch (e) {
-                    console.error("Firestore error loading employees", e);
+                    console.error("Firestore error loading personnel", e);
                 }
             } else {
                 const data = getAppData('attendance_app_data', {});
-                emps = data.employees[session.companyId] || [];
+                emps = data.employees ? (data.employees[session.companyId] || []) : [];
             }
+
+            // Fallback: If emp is null, treat as empty
+            emps = emps.filter(e => e !== null);
 
             cachedEmployees = emps;
             tbody.innerHTML = '';
@@ -111,14 +130,18 @@
                 emps.forEach(emp => {
                     const el = document.createElement('tr');
                     el.className = "transition-colors duration-150";
-                    const safeId = emp.id || emp.firebaseId;
+                    const safeId = emp.employeeId || emp.id || emp.firebaseId;
+                    const roleBadge = emp.role ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700 uppercase font-bold ml-2">${emp.role.replace('_', ' ')}</span>` : '';
                     
                     el.innerHTML = `
                         <td class="font-mono text-xs text-[var(--v-accents-6)]">${safeId}</td>
                         <td class="font-semibold text-[var(--v-foreground)]">
                             <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[10px] font-bold text-[var(--v-accents-6)] ${(emp.name || '?').charAt(0).toLowerCase() === 'z' ? 'bg-red-100 text-red-600' : ''}">${(emp.name || '?').charAt(0).toUpperCase()}</div>
-                                ${emp.name || ''}
+                                <div class="w-7 h-7 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[10px] font-bold text-[var(--v-accents-6)] ${(emp.name || '?').charAt(0).toLowerCase() === 'z' ? 'bg-red-100 text-red-600' : ''}">${(emp.name || '?').charAt(0).toUpperCase()}</div>
+                                <div class="flex flex-col">
+                                    <div class="flex items-center">${emp.name || ''} ${roleBadge}</div>
+                                    <div class="text-[10px] font-normal text-[var(--v-accents-4)]">${emp.email || ''}</div>
+                                </div>
                             </div>
                         </td>
                         <td class="text-sm">${emp.department || '<span class="text-[var(--v-accents-3)]">Unassigned</span>'}</td>
@@ -126,7 +149,7 @@
                         <td class="text-sm font-mono font-medium">₹${(emp.salary || 0).toLocaleString()}</td>
                         <td><span class="badge ${emp.incentiveEligible ? 'badge-present' : 'badge-absent'}">${emp.incentiveEligible ? 'Eligible' : 'Ineligible'}</span></td>
                         <td class="hr-auth">
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 text-right justify-end">
                                 <button onclick="editEmployee('${safeId}')" class="w-7 h-7 rounded border border-[var(--v-border)] hover:bg-[var(--v-accents-2)] text-[var(--v-accents-6)] hover:text-[var(--v-foreground)] transition"><i class="fa-solid fa-pen text-[10px]"></i></button>
                                 <button onclick="deleteEmployee('${safeId}', '${emp.firebaseId || ''}')" class="w-7 h-7 rounded border border-red-200 hover:bg-red-50 hover:border-red-300 text-red-500 transition"><i class="fa-solid fa-trash text-[10px]"></i></button>
                             </div>
@@ -162,11 +185,13 @@
             submitBtn.disabled = true;
 
             const empData = {
-                id: document.getElementById('emp-id').value.trim(),
+                employeeId: document.getElementById('emp-id').value.trim(),
                 name: document.getElementById('emp-name').value.trim(),
+                email: document.getElementById('emp-email').value.trim(),
+                role: document.getElementById('emp-role')?.value || 'EMPLOYEE',
                 department: document.getElementById('emp-dept').value.trim(),
                 joiningDate: document.getElementById('emp-date').value,
-                salary: parseFloat(document.getElementById('emp-salary').value),
+                salary: parseFloat(document.getElementById('emp-salary').value) || 0,
                 incentiveEligible: document.getElementById('emp-incentive').checked,
                 companyId: session.companyId,
                 updatedAt: new Date().toISOString()
@@ -175,24 +200,15 @@
             if (typeof window.db !== 'undefined' && session.companyId) {
                 try {
                     let docRef;
-                    const empCollection = window.db.collection('employees');
+                    const empCollection = window.db.collection('users');
 
                     if (currentEditId) {
-                        const existingEmp = cachedEmployees.find(x => x.id === currentEditId || x.firebaseId === currentEditId);
+                        const existingEmp = cachedEmployees.find(x => x.employeeId === currentEditId || x.id === currentEditId || x.firebaseId === currentEditId);
 
                         if (existingEmp && existingEmp.firebaseId) {
                             docRef = empCollection.doc(existingEmp.firebaseId);
                         } else {
-                            if (empData.id !== currentEditId) {
-                                const collisionCheck = await empCollection.where('companyId', '==', session.companyId).where('id', '==', empData.id).get();
-                                if (!collisionCheck.empty) {
-                                    alert("Employee ID already exists!");
-                                    submitBtn.innerHTML = originalText;
-                                    submitBtn.disabled = false;
-                                    return;
-                                }
-                            }
-                            const q = await empCollection.where('companyId', '==', session.companyId).where('id', '==', currentEditId).get();
+                            const q = await empCollection.where('companyId', '==', session.companyId).where('employeeId', '==', currentEditId).get();
                             if (!q.empty) {
                                 docRef = q.docs[0].ref;
                             } else {
@@ -200,7 +216,7 @@
                             }
                         }
                     } else {
-                        const collisionCheck = await empCollection.where('companyId', '==', session.companyId).where('id', '==', empData.id).get();
+                        const collisionCheck = await empCollection.where('companyId', '==', session.companyId).where('employeeId', '==', empData.employeeId).get();
                         if (!collisionCheck.empty) {
                             alert("Employee ID already exists in this workspace!");
                             submitBtn.innerHTML = originalText;
@@ -218,25 +234,18 @@
                 }
             } else {
                 const data = getAppData('attendance_app_data', {});
-                const emps = data.employees[session.companyId] || [];
+                if (!data.employees) data.employees = {};
+                if (!data.employees[session.companyId]) data.employees[session.companyId] = [];
+                const emps = data.employees[session.companyId];
 
                 if (currentEditId) {
-                    const idx = emps.findIndex(x => x.id === currentEditId);
+                    const idx = emps.findIndex(x => x.employeeId === currentEditId || x.id === currentEditId);
                     if (idx !== -1) {
-                        if (empData.id !== currentEditId && emps.some(x => x.id === empData.id)) {
-                            submitBtn.innerHTML = originalText; submitBtn.disabled = false;
-                            return alert("Employee ID already exists!");
-                        }
                         emps[idx] = empData;
                     }
                 } else {
-                    if (emps.some(x => x.id === empData.id)) {
-                        submitBtn.innerHTML = originalText; submitBtn.disabled = false;
-                        return alert("Employee ID already exists!");
-                    }
                     emps.push(empData);
                 }
-
                 saveAppData('attendance_app_data', data);
             }
 
@@ -247,12 +256,16 @@
         }
 
         function editEmployee(id) {
-            const emp = cachedEmployees.find(x => x.id === id || x.firebaseId === id);
+            const emp = cachedEmployees.find(x => x.employeeId === id || x.id === id || x.firebaseId === id);
             if (!emp) return;
 
-            currentEditId = emp.id || emp.firebaseId;
-            document.getElementById('emp-id').value = emp.id || '';
+            currentEditId = emp.employeeId || emp.id || emp.firebaseId;
+            document.getElementById('emp-id').value = emp.employeeId || emp.id || '';
             document.getElementById('emp-name').value = emp.name || '';
+            if (document.getElementById('emp-email')) document.getElementById('emp-email').value = emp.email || '';
+            if (document.getElementById('emp-role')) {
+                document.getElementById('emp-role').value = emp.role || 'EMPLOYEE';
+            }
             document.getElementById('emp-dept').value = emp.department || '';
             document.getElementById('emp-date').value = emp.joiningDate || '';
             document.getElementById('emp-salary').value = emp.salary || 0;
@@ -269,13 +282,16 @@
 
             if (typeof window.db !== 'undefined' && session.companyId) {
                 try {
-                    const empCollection = window.db.collection('employees');
+                    const empCollection = window.db.collection('users');
                     if (firebaseId) {
                         await empCollection.doc(firebaseId).delete();
                     } else {
-                        const q = await empCollection.where('companyId', '==', session.companyId).where('id', '==', id).get();
-                        if (!q.empty) {
-                            await q.docs[0].ref.delete();
+                        const q1 = await empCollection.where('companyId', '==', session.companyId).where('employeeId', '==', id).get();
+                        if (!q1.empty) {
+                            await q1.docs[0].ref.delete();
+                        } else {
+                            const q2 = await empCollection.where('companyId', '==', session.companyId).where('id', '==', id).get();
+                            if (!q2.empty) await q2.docs[0].ref.delete();
                         }
                     }
                 } catch (e) {
@@ -283,8 +299,10 @@
                 }
             } else {
                 const data = getAppData('attendance_app_data', {});
-                data.employees[session.companyId] = data.employees[session.companyId].filter(x => x.id !== id);
-                saveAppData('attendance_app_data', data);
+                if (data.employees && data.employees[session.companyId]) {
+                    data.employees[session.companyId] = data.employees[session.companyId].filter(x => (x.employeeId !== id && x.id !== id));
+                    saveAppData('attendance_app_data', data);
+                }
             }
             renderEmployees();
         }
@@ -305,22 +323,35 @@
             if (theme === 'dark') document.documentElement.classList.add('dark');
         })();
     </script>
-
-    <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Explyra",
-  "url": "https://explyra.me/",
+  "name": "IPEC Consulting",
+  "url": "https://explyra.me",
+  "logo": "https://explyra.me/assets/images/explyra_logo.png",
   "sameAs": [
-    "https://x.com/explyras",
-    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
-    "https://www.instagram.com/explyras",
-    "https://www.youtube.com/@explyras",
-    "https://www.linkedin.com/company/explyra/",
-    "https://www.threads.com/@explyras",
-    "https://github.com/Explyra"
-  ]
+    "https://ipecconsulting.org/",
+    "https://www.linkedin.com/company/ipec-consulting/",
+    "https://twitter.com/ipecconsulting"
+  ],
+  "@id": "https://explyra.me/#organization"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "IPEC Expense Manager",
+  "url": "https://explyra.me",
+  "publisher": {
+    "@id": "https://explyra.me/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://explyra.me/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
 }
 </script>
 </head>
@@ -349,6 +380,20 @@
                         <div class="col-span-2 sm:col-span-1">
                             <label class="block text-[10px] font-bold text-[var(--v-accents-5)] tracking-widest mb-1.5 uppercase">Full Legal Name</label>
                             <input type="text" id="emp-name" class="w-full px-3 py-2 bg-[var(--v-bg)] border border-[var(--v-border)] rounded-md focus:outline-none focus:border-blue-500 transition text-sm shadow-sm" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="col-span-2 sm:col-span-1">
+                            <label class="block text-[10px] font-bold text-[var(--v-accents-5)] tracking-widest mb-1.5 uppercase">Email Address</label>
+                            <input type="email" id="emp-email" class="w-full px-3 py-2 bg-[var(--v-bg)] border border-[var(--v-border)] rounded-md focus:outline-none focus:border-blue-500 transition text-sm shadow-sm" placeholder="john@example.com" required>
+                        </div>
+                        
+                        <div class="col-span-2 sm:col-span-1">
+                            <label class="block text-[10px] font-bold text-[var(--v-accents-5)] tracking-widest mb-1.5 uppercase">System Role</label>
+                            <select id="emp-role" class="w-full px-3 py-2 bg-[var(--v-bg)] border border-[var(--v-border)] rounded-md focus:outline-none focus:border-blue-500 transition text-sm shadow-sm" required>
+                                <option value="EMPLOYEE">Employee (Default)</option>
+                                <option value="HR">HR Manager</option>
+                                <option value="ADMIN">System Admin</option>
+                            </select>
                         </div>
                         
                         <div class="col-span-2 sm:col-span-1">
@@ -396,7 +441,7 @@
             <div class="w-7 h-7 bg-[var(--v-foreground)] rounded flex items-center justify-center mr-3 shadow-inner">
                 <i class="fa-solid fa-briefcase text-[var(--v-bg)] text-[10px]"></i>
             </div>
-            <span class="font-bold text-sm tracking-tight">CORP<span class="text-[var(--v-accents-4)]">.OPS</span></span>
+            <span id="sidebar-brand-name" class="font-bold text-sm tracking-tight text-[var(--v-foreground)]">CORP<span class="text-[var(--v-accents-4)]">.OPS</span></span>
         </div>
 
         <div class="p-5">
@@ -419,6 +464,9 @@
             </a>
             <a href="salary.html" class="v-sidebar-item admin-only">
                 <i class="fa-solid fa-wallet opacity-70"></i> Payroll & Bonus
+            </a>
+            <a href="ai-agent.html" class="v-sidebar-item">
+                <i class="fa-solid fa-robot opacity-70"></i> AI Agent
             </a>
         </nav>
 
@@ -459,13 +507,13 @@
         </header>
 
         <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative selection:bg-blue-100 selection:text-blue-900 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative custom-scrollbar">
             
             <div class="max-w-6xl mx-auto space-y-6">
                 <!-- Top Section -->
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Employees</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-[var(--v-foreground)]">Employees</h2>
                         <p class="text-[var(--v-accents-5)] text-sm mt-1 max-w-lg leading-relaxed">View and manage workspace personnel. Automated syncing with payroll systems active.</p>
                     </div>
                     <button onclick="openModal()" class="v-btn-primary shadow-sm flex items-center gap-2 justify-center bg-[var(--v-foreground)] text-[var(--v-bg)] hover:bg-[var(--v-accents-6)] border-none shrink-0 py-2 md:py-2.5">
@@ -482,7 +530,7 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-[var(--v-accents-4)] group-focus-within:text-blue-500 transition-colors">
                                 <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
                             </span>
-                            <input type="text" placeholder="Search by registry ID or alias..." class="w-full pl-8 pr-3 py-1.5 bg-[var(--v-bg)] border border-transparent focus:border-[var(--v-border)] rounded outline-none text-sm transition-all focus:shadow-sm font-mono placeholder:font-sans">
+                            <input type="text" id="emp-search" placeholder="Search by registry ID or alias..." class="w-full pl-8 pr-3 py-1.5 bg-[var(--v-bg)] border border-transparent focus:border-[var(--v-border)] rounded outline-none text-sm transition-all focus:shadow-sm font-mono placeholder:font-sans">
                         </div>
                         <div class="hidden md:flex items-center gap-2 text-[var(--v-accents-4)] text-[10px] font-medium uppercase tracking-widest">
                             <i class="fa-solid fa-filter"></i> Filters Active
@@ -508,15 +556,6 @@
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Pagination Footer -->
-                    <div class="px-4 py-3 border-t border-[var(--v-border)] bg-[var(--v-bg)] flex items-center justify-between">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-[var(--v-accents-4)]" id="record-count">End of records</p>
-                        <div class="flex items-center gap-1">
-                            <button class="w-7 h-7 rounded flex items-center justify-center text-[var(--v-accents-4)] hover:bg-[var(--v-accents-1)] hover:text-[var(--v-foreground)] disabled:opacity-30 transition" disabled><i class="fa-solid fa-arrow-left text-[10px]"></i></button>
-                            <button class="w-7 h-7 rounded flex items-center justify-center text-[var(--v-accents-4)] hover:bg-[var(--v-accents-1)] hover:text-[var(--v-foreground)] disabled:opacity-30 transition" disabled><i class="fa-solid fa-arrow-right text-[10px]"></i></button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -524,5 +563,4 @@
     </main>
 
 </body>
-
 </html>

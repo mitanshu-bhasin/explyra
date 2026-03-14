@@ -2853,14 +2853,15 @@
     </div>
 
     <!-- FIREBASE & LOGIC -->
+    <script src="../js/env.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDoc, getDocs, onSnapshot, query, orderBy, where, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CONFIG (Explyra SaaS) ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: "ENV_MISSING",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",
             storageBucket: "explyras.firebasestorage.app",

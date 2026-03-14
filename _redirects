@@ -5,3 +5,4 @@
 
 # Redirects
 /firestore.rules /404.html 404
+/sw.js /sw.js 200

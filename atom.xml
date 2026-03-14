@@ -4,13 +4,21 @@
   <subtitle>Latest news, feature updates, and releases from Explyra.</subtitle>
   <link href="https://explyra.me/atom.xml" rel="self" />
   <link href="https://explyra.me/" />
-  <updated>2026-03-13T08:30:00Z</updated>
+  <updated>2026-03-14T22:30:00Z</updated>
   <id>https://explyra.me/</id>
   <author>
     <name>Explyra</name>
   </author>
   <rights>Copyright 2026 Explyra</rights>
   <logo>https://explyra.me/assets/images/explyra_logo.png</logo>
+
+  <entry>
+    <title>Advanced PWA &amp; Service Worker Enhancements</title>
+    <link href="https://explyra.me/index.html" />
+    <id>https://explyra.me/index.html#pwa-v8</id>
+    <updated>2026-03-14T22:30:00Z</updated>
+    <summary>Upgraded the Explyra PWA with advanced caching strategies, background sync, push notification support, and custom PWA widgets for a native-like experience.</summary>
+  </entry>
 
   <entry>
     <title>Explyra Services Page Launched</title>

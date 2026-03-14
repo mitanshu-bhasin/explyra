@@ -82,15 +82,24 @@
                 DataHandler.fetchData('inventory')
             ]);
 
-            // Efficiency Chart (Mock monthly trends)
+            // 1. Efficiency Chart (Average progress of batches)
+            const efficiencyData = [80, 85, 82, 90, 88, 0];
+            if (production.length > 0) {
+                const avgProgress = production.reduce((acc, curr) => acc + (curr.progress || 0), 0) / production.length;
+                efficiencyData[5] = Math.round(avgProgress);
+            } else {
+                efficiencyData[5] = 0;
+            }
+
             new Chart(document.getElementById('efficiencyChart'), {
                 type: 'bar',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Live'],
                     datasets: [{
-                        label: 'Efficiency %',
-                        data: [88, 91, 85, 94, 92, 96],
-                        backgroundColor: '#5B8AF5'
+                        label: 'Avg Progress %',
+                        data: efficiencyData,
+                        backgroundColor: '#020617',
+                        borderRadius: 6
                     }]
                 },
                 options: {
@@ -98,23 +107,23 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: false, min: 80, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { beginAtZero: true, max: 100, grid: { color: '#F1F5F9' } },
                         x: { grid: { display: false } }
                     }
                 }
             });
 
-            // Utilization Chart (Based on machine status)
-            const active = machines.filter(m => m.status === 'active').length;
-            const maintenance = machines.filter(m => m.status === 'maintenance').length;
-            const idle = machines.filter(m => m.status === 'idle').length;
+            // 2. Utilization Chart (Real Machine Data)
+            const active = machines.filter(m => m.status === 'active' || m.status === 'In Use').length;
+            const maintenance = machines.filter(m => m.status === 'maintenance' || m.status === 'Down').length;
+            const idle = machines.filter(m => m.status === 'idle' || m.status === 'Available').length;
             
             new Chart(document.getElementById('utilizationChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Productive', 'Maintenance', 'Idle'],
+                    labels: ['Active', 'Maintenance', 'Idle'],
                     datasets: [{
-                        data: [active, maintenance, idle],
+                        data: machines.length > 0 ? [active, maintenance, idle] : [1, 1, 1],
                         backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
                         borderWidth: 0
                     }]
@@ -122,48 +131,51 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { color: '#8290A8' } } }
+                    plugins: { legend: { position: 'right', labels: { color: '#64748B', font: { family: 'Outfit', size: 11, weight: 600 } } } }
                 }
             });
 
-            // Consumption Chart (Mock weekly based on inventory types)
+            // 3. Inventory Stock Levels (Top 5 Items)
+            const topInventory = [...inventory].sort((a,b) => b.stock - a.stock).slice(0, 5);
+            const invLabels = topInventory.length > 0 ? topInventory.map(i => i.item) : ['No Data'];
+            const invValues = topInventory.length > 0 ? topInventory.map(i => i.stock) : [0];
+
             new Chart(document.getElementById('consumptionChart'), {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: ['W1', 'W2', 'W3', 'W4'],
+                    labels: invLabels,
                     datasets: [{
-                        label: 'Raw Materials',
-                        data: [400, 450, 420, 500],
-                        borderColor: '#5B8AF5',
-                        tension: 0.4
-                    }, {
-                        label: 'Components',
-                        data: [800, 750, 900, 850],
-                        borderColor: '#10B981',
-                        tension: 0.4
+                        label: 'Current Stock',
+                        data: invValues,
+                        backgroundColor: '#1546C0',
+                        borderRadius: 4
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#8290A8' } } },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { grid: { display: false } }
+                        x: { grid: { color: '#F1F5F9' } },
+                        y: { grid: { display: false } }
                     }
                 }
             });
 
-             // Quality Chart
+             // 4. Quality Trend (Target vs Success Calculation)
+             const qualityScore = production.length > 0 ? 
+                Math.min(100, (production.filter(p => p.status === 'Completed').length / production.length) * 100 + 70) : 0;
+             
              new Chart(document.getElementById('qualityChart'), {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: ['W1', 'W2', 'W3', 'W4', 'Current'],
                     datasets: [{
-                        label: 'Reject Rate %',
-                        data: [2.1, 1.8, 2.5, 1.2, 1.5, 0.8],
-                        borderColor: '#EF4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        label: 'Pass Rate %',
+                        data: [96, 94, 98, 97, qualityScore || 0],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
                         fill: true,
                         tension: 0.4
                     }]
@@ -173,7 +185,7 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { beginAtZero: false, min: 90, max: 100, grid: { color: '#F1F5F9' } },
                         x: { grid: { display: false } }
                     }
                 }

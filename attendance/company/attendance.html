@@ -41,7 +41,6 @@
         .badge-halfday { background-color: rgba(245, 166, 35, 0.1); color: var(--v-warning); border: 1px solid rgba(245, 166, 35, 0.2); }
         .badge-leave { background-color: rgba(121, 40, 202, 0.1); color: var(--v-purple); border: 1px solid rgba(121, 40, 202, 0.2); }
         
-        /* Table styling */
         .v-table th {
             color: var(--v-accents-5);
             font-size: 0.75rem;
@@ -57,17 +56,30 @@
             border-bottom: 1px solid var(--v-border);
             color: var(--v-accents-7);
         }
-        .v-table tr:hover td {
-            background-color: var(--v-accents-1);
+        /* Hover effect for quick buttons */
+        .btn-quick {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid var(--v-border);
+            transition: all 0.2s;
+            cursor: pointer;
+            background: var(--v-bg);
         }
-
-        .status-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1em;
-            padding-right: 2rem;
+        .btn-quick-p:hover, .btn-quick-p.active { 
+            background-color: #10b981; 
+            color: white; 
+            border-color: #10b981; 
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+        .btn-quick-a:hover, .btn-quick-a.active { 
+            background-color: #ef4444; 
+            color: white; 
+            border-color: #ef4444; 
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
         }
     </style>
     
@@ -86,7 +98,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initAuth('company');
             document.getElementById('date-picker').value = currentDate;
-            setTimeout(renderAttendance, 300);
+            setTimeout(renderAttendance, 500);
         });
 
         function changeDate(e) {
@@ -130,7 +142,7 @@
 
             if (typeof window.db !== 'undefined' && session.companyId) {
                 try {
-                    const empSnap = await window.db.collection('employees').where('companyId', '==', session.companyId).get();
+                    const empSnap = await window.db.collection('users').where('companyId', '==', session.companyId).get();
                     empSnap.forEach(doc => emps.push({ firebaseId: doc.id, ...doc.data() }));
 
                     const attSnap = await window.db.collection('attendance').doc(session.companyId).get();
@@ -142,8 +154,8 @@
                 }
             } else {
                 const data = getAppData('attendance_app_data', {});
-                emps = data.employees[session.companyId] || [];
-                att = data.attendance[session.companyId] || {};
+                emps = data.employees ? (data.employees[session.companyId] || []) : [];
+                att = data.attendance ? (data.attendance[session.companyId] || {}) : {};
             }
 
             const todayAtt = att[currentDate] || {};
@@ -155,7 +167,7 @@
                 tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center"><div class="flex flex-col items-center justify-center text-[var(--v-accents-4)]"><i class="fa-solid fa-users-slash text-2xl mb-2"></i><p>No personnel records found.</p></div></td></tr>`;
             } else {
                 emps.forEach(emp => {
-                    const safeId = emp.id || emp.firebaseId;
+                    const safeId = emp.employeeId || emp.id || emp.firebaseId;
                     const stats = calculateMonthlyStats(safeId, yearMonth, att);
                     const currentStatus = todayAtt[safeId] || '';
 
@@ -164,27 +176,33 @@
 
                     let statusHtml = '';
                     if (hasAccess(['Admin', 'HR'], 'company')) {
-                        let selectClass = "status-select px-3 py-1.5 rounded-md border text-sm font-semibold outline-none transition-all focus:ring-2 focus:ring-blue-500 shadow-sm ";
-                        if (currentStatus === 'Present') selectClass += "bg-[rgba(0,112,243,0.05)] border-blue-200 text-blue-700 dark:text-blue-400";
-                        else if (currentStatus === 'Absent') selectClass += "bg-[rgba(238,0,0,0.05)] border-red-200 text-red-700 dark:text-red-400";
-                        else if (currentStatus === 'Half Day') selectClass += "bg-[rgba(245,166,35,0.05)] border-yellow-200 text-yellow-700 dark:text-yellow-500";
-                        else if (currentStatus === 'Leave') selectClass += "bg-[rgba(121,40,202,0.05)] border-purple-200 text-purple-700 dark:text-purple-400";
-                        else selectClass += "bg-[var(--v-accents-1)] border-[var(--v-border)] text-[var(--v-accents-5)]";
-
                         statusHtml = `
-                            <select onchange="updateStatus('${safeId}', this.value)" class="${selectClass}">
-                                <option value="" ${currentStatus === '' ? 'selected' : ''}>Not Logged</option>
-                                <option value="Present" ${currentStatus === 'Present' ? 'selected' : ''}>Present</option>
-                                <option value="Absent" ${currentStatus === 'Absent' ? 'selected' : ''}>Absent</option>
-                                <option value="Half Day" ${currentStatus === 'Half Day' ? 'selected' : ''}>Half Day (0.5)</option>
-                                <option value="Leave" ${currentStatus === 'Leave' ? 'selected' : ''}>On Leave</option>
-                            </select>
+                            <div class="flex items-center gap-4">
+                                <div class="flex p-1.5 bg-[var(--v-accents-1)] border border-[var(--v-border)] rounded-xl shadow-inner">
+                                    <button onclick="updateStatus('${safeId}', 'Present')" 
+                                        class="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentStatus === 'Present' ? 'bg-green-500 text-white shadow-lg scale-105' : 'text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30'}" 
+                                        title="Mark Present">
+                                        <i class="fa-solid fa-circle-check text-lg"></i>
+                                    </button>
+                                    <div class="w-[1px] bg-[var(--v-border)] mx-1.5"></div>
+                                    <button onclick="updateStatus('${safeId}', 'Absent')" 
+                                        class="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentStatus === 'Absent' ? 'bg-red-500 text-white shadow-lg scale-105' : 'text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30'}" 
+                                        title="Mark Absent">
+                                        <i class="fa-solid fa-circle-xmark text-lg"></i>
+                                    </button>
+                                </div>
+                                <select onchange="updateStatus('${safeId}', this.value)" 
+                                    class="status-select px-4 py-2 rounded-xl bg-[var(--v-bg)] border border-[var(--v-border)] text-[10px] font-bold outline-none uppercase tracking-widest shadow-sm hover:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer">
+                                    <option value="" ${currentStatus === '' ? 'selected' : ''}>— SELECT —</option>
+                                    <option value="Half Day" ${currentStatus === 'Half Day' ? 'selected' : ''}>Half Day</option>
+                                    <option value="Leave" ${currentStatus === 'Leave' ? 'selected' : ''}>On Leave</option>
+                                </select>
+                            </div>
                         `;
                     } else {
-                        statusHtml = `<span class="badge ${getBadgeClass(currentStatus)}">${currentStatus || 'Not Logged'}</span>`;
+                        statusHtml = `<span class="badge ${getBadgeClass(currentStatus)} px-4 py-1.5 rounded-lg text-[10px] font-bold">${currentStatus || 'Not Logged'}</span>`;
                     }
 
-                    // Progress bar color based on percentage
                     let progressColor = "bg-blue-600";
                     if (stats.percentage < 50) progressColor = "bg-red-500";
                     else if (stats.percentage < 80) progressColor = "bg-yellow-500";
@@ -194,10 +212,10 @@
                         <td class="font-mono text-xs text-[var(--v-accents-6)]">${safeId}</td>
                         <td class="font-semibold text-[var(--v-foreground)]">
                             <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[10px] font-bold text-[var(--v-accents-6)]">${(emp.name || '?').charAt(0).toUpperCase()}</div>
-                                <div>
-                                    ${emp.name || ''}
-                                    ${emp.department ? `<p class="text-[10px] font-normal text-[var(--v-accents-5)]">${emp.department}</p>` : ''}
+                                <div class="w-7 h-7 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[10px] font-bold text-[var(--v-accents-6)]">${(emp.name || '?').charAt(0).toUpperCase()}</div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm">${emp.name || ''}</span>
+                                    <span class="text-[9px] font-normal text-[var(--v-accents-5)] uppercase tracking-wider">${emp.department || 'General'}</span>
                                 </div>
                             </div>
                         </td>
@@ -232,41 +250,34 @@
 
         async function updateStatus(empId, status) {
             const session = getSession('company_session');
+            if (!session) return;
 
             if (typeof window.db !== 'undefined' && session.companyId) {
                 try {
                     const attRef = window.db.collection('attendance').doc(session.companyId);
-
                     const updateObj = {};
                     if (status === '') {
                         updateObj[`${currentDate}.${empId}`] = firebase.firestore.FieldValue.delete();
                     } else {
                         updateObj[`${currentDate}.${empId}`] = status;
                     }
-
                     await attRef.set(updateObj, { merge: true });
                 } catch (e) {
                     console.error("Firestore attendance update error", e);
                 }
             } else {
                 const data = getAppData('attendance_app_data', {});
-
-                if (!data.attendance[session.companyId]) {
-                    data.attendance[session.companyId] = {};
-                }
-                if (!data.attendance[session.companyId][currentDate]) {
-                    data.attendance[session.companyId][currentDate] = {};
-                }
+                if (!data.attendance) data.attendance = {};
+                if (!data.attendance[session.companyId]) data.attendance[session.companyId] = {};
+                if (!data.attendance[session.companyId][currentDate]) data.attendance[session.companyId][currentDate] = {};
 
                 if (status === '') {
                     delete data.attendance[session.companyId][currentDate][empId];
                 } else {
                     data.attendance[session.companyId][currentDate][empId] = status;
                 }
-
                 saveAppData('attendance_app_data', data);
             }
-
             renderAttendance();
         }
 
@@ -286,22 +297,35 @@
             if (theme === 'dark') document.documentElement.classList.add('dark');
         })();
     </script>
-
-    <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Explyra",
-  "url": "https://explyra.me/",
+  "name": "IPEC Consulting",
+  "url": "https://explyra.me",
+  "logo": "https://explyra.me/assets/images/explyra_logo.png",
   "sameAs": [
-    "https://x.com/explyras",
-    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
-    "https://www.instagram.com/explyras",
-    "https://www.youtube.com/@explyras",
-    "https://www.linkedin.com/company/explyra/",
-    "https://www.threads.com/@explyras",
-    "https://github.com/Explyra"
-  ]
+    "https://ipecconsulting.org/",
+    "https://www.linkedin.com/company/ipec-consulting/",
+    "https://twitter.com/ipecconsulting"
+  ],
+  "@id": "https://explyra.me/#organization"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "IPEC Expense Manager",
+  "url": "https://explyra.me",
+  "publisher": {
+    "@id": "https://explyra.me/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://explyra.me/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
 }
 </script>
 </head>
@@ -314,7 +338,7 @@
             <div class="w-7 h-7 bg-[var(--v-foreground)] rounded flex items-center justify-center mr-3 shadow-inner">
                 <i class="fa-solid fa-briefcase text-[var(--v-bg)] text-[10px]"></i>
             </div>
-            <span class="font-bold text-sm tracking-tight">CORP<span class="text-[var(--v-accents-4)]">.OPS</span></span>
+            <span id="sidebar-brand-name" class="font-bold text-sm tracking-tight text-[var(--v-foreground)]">CORP<span class="text-[var(--v-accents-4)]">.OPS</span></span>
         </div>
 
         <div class="p-5">
@@ -337,6 +361,9 @@
             </a>
             <a href="salary.html" class="v-sidebar-item admin-only">
                 <i class="fa-solid fa-wallet opacity-70"></i> Payroll & Bonus
+            </a>
+            <a href="ai-agent.html" class="v-sidebar-item">
+                <i class="fa-solid fa-robot opacity-70"></i> AI Agent
             </a>
         </nav>
 
@@ -377,13 +404,13 @@
         </header>
 
         <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative selection:bg-blue-100 selection:text-blue-900 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative custom-scrollbar">
             
             <div class="max-w-6xl mx-auto space-y-6 pb-12">
                 <!-- Top Section -->
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Daily Roll Call</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-[var(--v-foreground)]">Daily Roll Call</h2>
                         <p class="text-[var(--v-accents-5)] text-sm mt-1 max-w-lg leading-relaxed">Update presence and review localized monthly patterns for active directory nodes.</p>
                     </div>
                     
@@ -410,8 +437,6 @@
                             <div class="flex gap-2">
                                 <span class="badge badge-present tracking-tight">P</span>
                                 <span class="badge badge-absent tracking-tight">A</span>
-                                <span class="badge badge-halfday tracking-tight">HD</span>
-                                <span class="badge badge-leave tracking-tight">L</span>
                             </div>
                         </div>
                     </div>
@@ -419,25 +444,19 @@
                     <!-- Scrollable Tabe -->
                     <div class="overflow-x-auto">
                         <table class="w-full v-table whitespace-nowrap bg-[var(--v-bg)]">
-                            <thead class="bg-[var(--v-bg)]">
+                            <thead class="bg-[var(--v-bg)] sticky top-0">
                                 <tr>
                                     <th>Registry ID</th>
                                     <th>Personnel Matrix</th>
-                                    <th>Log Status</th>
+                                    <th>Quick Log</th>
                                     <th>Metric: Monthly Sync</th>
                                     <th>Volume Matrix</th>
                                 </tr>
                             </thead>
-                            <tbody id="attendance-tbody" class="text-sm">
+                            <tbody id="attendance-tbody" class="text-sm bg-[var(--v-bg)]">
                                 <!-- Populated dynamically -->
                             </tbody>
                         </table>
-                    </div>
-                    
-                    <!-- Status Footer -->
-                    <div class="px-4 py-3 border-t border-[var(--v-border)] bg-[var(--v-bg)] flex items-center justify-between">
-                        <p class="text-[10px] text-[var(--v-accents-5)] font-mono uppercase">System records immutable after 48h locking period.</p>
-                        <i class="fa-solid fa-fingerprint text-[var(--v-accents-2)] text-xl"></i>
                     </div>
                 </div>
 
@@ -447,5 +466,4 @@
     </main>
 
 </body>
-
 </html>

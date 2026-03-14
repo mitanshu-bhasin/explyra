@@ -634,30 +634,6 @@
                         Changes</button>
                     <span id="profile-saved-msg"
                         style="font-size:.82rem; color:var(--teal); font-weight:600; display:none;">✓ Saved!</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="scripts/learning-core.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
-            authDomain: "explyras.firebaseapp.com",
-            projectId: "explyras",
-            storageBucket: "explyras.firebasestorage.app",
-            messagingSenderId: "411853553644",
-            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
-        };
-
-        const app = initializeApp(firebaseConfig, 'learning');
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, user => {
-            if (user) {
                 showDashboard(user);
             } else {
                 document.getElementById('login-gate').style.display = 'flex';

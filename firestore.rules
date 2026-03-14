@@ -8,67 +8,100 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isCompanyMember(companyId) {
+      return isSignedIn() && getUserData().companyId == companyId;
+    }
+
+    function isCompanyAdmin(companyId) {
+      return isCompanyMember(companyId) && getUserData().role in ['ADMIN', 'SUPER_ADMIN'];
+    }
+
     // ─── Users Collection ──────────────────────────────────────────────────────
     match /users/{userId} {
+      // Users can read any user profile if signed in (for search/collaboration)
       allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+      // Only the user themselves or an admin can create/update profiles
+      allow create: if isSignedIn() && (request.auth.uid == userId || getUserData().role == 'ADMIN');
+      allow update: if isSignedIn() && (request.auth.uid == userId || getUserData().role == 'ADMIN');
+      allow delete: if isSignedIn() && getUserData().role == 'ADMIN';
     }
 
     // ─── Companies Collection ──────────────────────────────────────────────────
     match /companies/{companyId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if false;
+      allow update: if isCompanyAdmin(companyId);
+      allow delete: if false; // Deletion restricted
 
-      // Allow access to subcollections (inventory, invoices, customers, etc) if user belongs to this company
+      // Company subcollections (inventory, invoices, customers, etc)
       match /{subcollection}/{docId} {
-        allow read, write: if isSignedIn() && 
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId == companyId;
+        allow read, write: if isCompanyMember(companyId);
       }
     }
 
     // ─── Company Members Collection ────────────────────────────────────────────
     match /companyMembers/{memberId} {
-      allow read, write: if isSignedIn();
+      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
+      allow write: if isSignedIn() && (
+        (resource == null && request.resource.data.userId == request.auth.uid) || 
+        isCompanyAdmin(resource.data.companyId)
+      );
     }
 
     // ─── Expenses Collection ───────────────────────────────────────────────────
     match /expenses/{expenseId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn()
-                    && request.resource.data.keys().hasAny(['totalAmount', 'createdAt'])
-                    && request.resource.data.totalAmount >= 0;
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
+      allow create: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
+      allow update, delete: if isSignedIn() && (
+        resource.data.createdBy == request.auth.uid || 
+        isCompanyAdmin(resource.data.companyId)
+      );
     }
 
     // ─── Projects Collection ───────────────────────────────────────────────────
     match /projects/{projectId} {
-      allow read, write: if isSignedIn();
+      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
+      allow write: if isSignedIn() && isCompanyAdmin(resource.data.companyId);
     }
 
     // ─── Tasks Collection ──────────────────────────────────────────────────────
     match /tasks/{taskId} {
-      allow read, write: if isSignedIn();
+      allow read: if isSignedIn() && (
+        resource.data.assignedTo == request.auth.uid || 
+        resource.data.assignedBy == request.auth.uid || 
+        isCompanyAdmin(resource.data.companyId)
+      );
+      allow write: if isSignedIn() && (
+        request.resource.data.assignedBy == request.auth.uid || 
+        isCompanyAdmin(request.resource.data.companyId)
+      );
     }
 
     // ─── CRM Collections ───────────────────────────────────────────────────────
     match /crm_deals/{dealId} {
       allow read, write: if isSignedIn() && (
-        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+        (resource != null && isCompanyMember(resource.data.companyId)) ||
+        (resource == null && isCompanyMember(request.resource.data.companyId))
       );
     }
     match /crm_leads/{leadId} {
       allow read, write: if isSignedIn() && (
-        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+        (resource != null && isCompanyMember(resource.data.companyId)) ||
+        (resource == null && isCompanyMember(request.resource.data.companyId))
       );
     }
     match /crm_contacts/{contactId} {
       allow read, write: if isSignedIn() && (
-        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+        (resource != null && isCompanyMember(resource.data.companyId)) ||
+        (resource == null && isCompanyMember(request.resource.data.companyId))
       );
     }
 
@@ -81,91 +114,80 @@ service cloud.firestore {
     // ─── Settings (Global/Branding) ────────────────────────────────────────────
     match /settings/{docId} {
       allow read: if isSignedIn();
-      allow write: if isSignedIn();
+      allow write: if isSignedIn() && getUserData().role in ['ADMIN', 'SUPER_ADMIN'];
     }
 
     // ─── Chats & Global Chat ───────────────────────────────────────────────────
     match /chats/{chatId} {
       allow read, write: if isSignedIn() && (
-        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+        (resource != null && isCompanyMember(resource.data.companyId)) ||
+        (resource == null && isCompanyMember(request.resource.data.companyId))
       );
       
       match /messages/{msgId} {
-         allow read, write: if isSignedIn();
+         allow read: if isSignedIn();
+         allow create: if isSignedIn();
       }
     }
 
     match /global_chat/{messageId} {
       allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
       allow create: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
-      allow update: if isSignedIn() && isCompanyAdmin(resource.data.companyId);
+      allow update: if isCompanyAdmin(resource.data.companyId);
     }
 
     // ─── Calling Signaling ─────────────────────────────────────────────────────
     match /calls/{callId} {
       allow read, write: if isSignedIn() && (
-        resource == null || resource.data.companyId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId
+        (resource != null && (resource.data.caller == request.auth.uid || resource.data.receiver == request.auth.uid)) ||
+        (resource == null && request.resource.data.caller == request.auth.uid)
       );
-      
-      match /{subCollection=**} {
-         allow read, write: if isSignedIn();
-      }
     }
 
     // ─── Workflow & Audit Collections ──────────────────────────────────────────
     match /audit_logs/{logId} {
-      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
-      allow write: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
+      allow read: if isCompanyAdmin(resource.data.companyId);
+      allow create: if isSignedIn(); // System generated logs
     }
 
     // ─── Retired Professionals Marketplace ─────────────────────────────────────
-
-    // Users (expert/client profiles)
     match /retired_users/{userId} {
       allow read: if isSignedIn();
-      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow create, update: if isOwner(userId);
       allow delete: if false;
     }
 
-    // Expert profiles (public read, owner write)
     match /retired_experts/{expertId} {
-      allow read: if true; // Public for SEO
-      allow create, update: if isSignedIn() && request.auth.uid == expertId;
-      allow delete: if isSignedIn();
+      allow read: if true; 
+      allow create, update: if isOwner(expertId);
+      allow delete: if isOwner(expertId) || getUserData().role == 'ADMIN';
     }
 
-    // Bookings
     match /retired_bookings/{bookingId} {
-      allow read: if isSignedIn();
+      allow read: if isSignedIn() && (resource.data.clientId == request.auth.uid || resource.data.expertId == request.auth.uid);
       allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if false;
+      allow update: if isSignedIn() && (resource.data.clientId == request.auth.uid || resource.data.expertId == request.auth.uid);
     }
 
-    // Reviews (public read)
     match /retired_reviews/{reviewId} {
       allow read: if true;
       allow create: if isSignedIn();
       allow update, delete: if false;
     }
 
-    // Knowledge posts (public read)
     match /retired_posts/{postId} {
       allow read: if true;
       allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource.data.authorId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+      allow update, delete: if isOwner(resource.data.authorId);
     }
 
-    // Chat rooms
     match /retired_chats/{chatId} {
-      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participants;
       allow create: if isSignedIn();
-      allow update: if isSignedIn() && request.auth.uid in resource.data.participants;
-
-      // Messages in chat
+      
       match /messages/{msgId} {
-        allow read, write: if isSignedIn();
+        allow read: if isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/retired_chats/$(chatId)).data.participants;
+        allow create: if isSignedIn();
       }
     }
 

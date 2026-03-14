@@ -80,6 +80,7 @@
     <link rel="stylesheet" href="../css/admin-styles.css">
 
     <!-- Global App Config -->
+    <script src="../js/env.js"></script>
     <script src="../js/firebase-config.js" defer></script>
     <script src="../js/theme.js" defer></script>
     <script src="../js/utils.js" defer></script>
@@ -630,6 +631,7 @@
   ]
 }
 </script>
+    <link rel="stylesheet" href="crm-ai-support.css">
 </head>
 
 <body class="h-screen flex flex-col overflow-hidden transition-colors duration-300">
@@ -675,6 +677,9 @@
                 </button>
                 <button onclick="switchCrmTab('analytics')" class="sidebar-item crm-nav-item" data-tab="analytics">
                     <i class="fa-solid fa-chart-line"></i> Analytics
+                </button>
+                <button onclick="switchCrmTab('ai')" class="sidebar-item crm-nav-item" data-tab="ai">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Intelligence
                 </button>
 
                 <div class="section-label mt-6">System</div>
@@ -965,6 +970,13 @@
                     </div>
                 </div>
 
+                <!-- ========== AI AGENT VIEW ========== -->
+                <div id="view-ai" class="crm-view hidden animate-fade-in h-full flex flex-col p-0">
+                    <div id="crm-ai-tab-container" class="flex-1 w-full max-w-6xl mx-auto h-full flex flex-col">
+                        <!-- AI content will be moved here -->
+                    </div>
+                </div>
+
                 <!-- ========== SETTINGS VIEW ========== -->
                 <div id="view-settings" class="crm-view hidden animate-fade-in max-w-2xl">
                     <h2 class="text-lg font-bold mb-4" style="color: var(--text-primary);">Settings</h2>
@@ -1225,7 +1237,7 @@
             overlay.classList.toggle('active');
         }
     </script>
-
+    <script src="crm-ai-support.js" defer></script>
 </body>
 
 </html>

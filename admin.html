@@ -56,6 +56,8 @@
     </script>
 
     <title>Dashboard | Explyra</title>
+    <!-- Environment Config -->
+    <script src="js/env.js"></script>
     <script>
         (function () {
             const theme = localStorage.getItem('explyra-theme') || 'light';
@@ -94,9 +96,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="/js/theme.js"></script>
-    <script src="/js/utils.js" defer></script>
-    <script src="/js/admin-logic.js" defer></script>
+    <script src="js/theme.js"></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/admin-logic.js" defer></script>
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -336,11 +338,10 @@
         }
     </style>
     <script>
-        // ImageKit Config (WARNING: Client-side usage with private key is NOT recommended for production)
-        const IMAGEKIT_URL = "https://upload.imagekit.io/api/v1/files/upload"; // Standard upload endpoint
-        const IMAGEKIT_PUBLIC_KEY = "public_A7ZHxCiIBfl/fxzXlk1tXUUR+B4=";
-        const IMAGEKIT_PRIVATE_KEY = "private_m7Ie0ZXD/4WpBlly116odVbWhhM="; // DANGER: Exposed in client code
-        // Ideally, generate signature on backend. Using directly as per user request.
+        // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
+        const IMAGEKIT_URL = window.EXPLYRA_CONFIG?.imagekit?.url || "https://upload.imagekit.io/api/v1/files/upload";
+        const IMAGEKIT_PUBLIC_KEY = window.EXPLYRA_CONFIG?.imagekit?.publicKey || "ENV_MISSING";
+        const IMAGEKIT_PRIVATE_KEY = window.EXPLYRA_CONFIG?.imagekit?.privateKey || "ENV_MISSING";
     </script>
     <script type="module">
         import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
@@ -438,6 +439,20 @@
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee ID</label>
                         <input type="text" id="user-employee-id" class="input-vercel h-10" placeholder="EMP-001">
                     </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Joining Date</label>
+                        <input type="date" id="user-joining-date" class="input-vercel h-10">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Salary (₹)</label>
+                        <input type="number" id="user-salary" class="input-vercel h-10" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                    <input type="checkbox" id="user-incentive" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                    <label for="user-incentive" class="text-xs font-bold text-slate-600 dark:text-slate-300">Eligible for Incentives / Variable Pay</label>
                 </div>
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manager ID</label>
@@ -754,7 +769,7 @@
                     <div class="w-12 h-12 bg-black dark:bg-white rounded-lg flex items-center justify-center mx-auto mb-6">
                         <i class="fa-solid fa-bolt text-white dark:text-black"></i>
                     </div>
-                    <h1 class="text-2xl font-bold tracking-tight mb-2">Login to Explyra</h1>
+                    <h1 class="text-2xl font-bold tracking-tight mb-2" id="login-company-name">Login to Explyra</h1>
                     <p class="text-sm text-slate-500">Enter your credentials to access the dashboard</p>
                 </div>
 
@@ -780,15 +795,29 @@
                     </div>
                 </form>
 
-                <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
-                    <button type="button" onclick="handleGoogleLogin()" class="btn-vercel-secondary w-full h-10 flex items-center justify-center gap-2">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" alt="Google">
-                        Sign in with Google
+                <!-- Signup Form (Activation) -->
+                <form id="signup-form" class="space-y-4 hidden" onsubmit="handleAccountActivation(event)">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Corporate Email</label>
+                        <input type="email" id="signup-email" class="input-vercel h-10" placeholder="admin@company.com" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Create Password</label>
+                        <input type="password" id="signup-password" class="input-vercel h-10" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" id="signup-btn" class="btn-vercel-primary w-full h-10 mt-2">
+                        Activate Account
                     </button>
+                </form>
+
+                <div id="google-signin-container" class="hidden"></div>
+
+                <div id="login-footer" class="mt-6 text-center text-xs text-slate-500">
+                    Don't have an account? <button onclick="toggleAuthMode('signup')" class="text-black dark:text-white font-semibold hover:underline">Activate</button>
                 </div>
 
-                <div class="mt-6 text-center text-xs text-slate-500">
-                    Don't have an account? <button onclick="toggleAuthMode('signup')" class="text-black dark:text-white font-semibold hover:underline">Activate</button>
+                <div id="signup-footer" class="mt-6 text-center text-xs text-slate-500 hidden">
+                    Already have an account? <button onclick="toggleAuthMode('login')" class="text-black dark:text-white font-semibold hover:underline">Login</button>
                 </div>
                 <div class="mt-2 text-center text-xs text-slate-500">
                     Want to use for your business? <a href="company.html" class="text-black dark:text-white font-semibold hover:underline">Create Company</a>
@@ -834,7 +863,7 @@
                     <div class="w-6 h-6 bg-black dark:bg-white rounded flex items-center justify-center">
                         <i class="fa-solid fa-bolt text-white dark:text-black text-xs"></i>
                     </div>
-                    <span class="font-bold text-sm tracking-tight">EXPLYRA</span>
+                    <span class="font-bold text-sm tracking-tight" id="sidebar-company-name">EXPLYRA <span class="text-green-500">PORTAL</span></span>
                 </div>
                 <!-- Mobile Close Button -->
                 <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black transition-colors">
@@ -861,6 +890,12 @@
                 <button onclick="switchTab('users')" id="nav-users" class="sidebar-item w-full hidden" data-tab="users">
                     <i class="fa-solid fa-users"></i> User Mgmt
                 </button>
+                <button onclick="window.navigateToAttendance()" id="nav-attendance" class="sidebar-item w-full">
+                    <i class="fa-solid fa-calendar-check"></i> Attendance
+                </button>
+                <button onclick="window.navigateToSalary()" id="nav-salary" class="sidebar-item w-full">
+                    <i class="fa-solid fa-money-check-dollar"></i> Payroll
+                </button>
                 <button onclick="switchTab('roles')" id="nav-roles" class="sidebar-item w-full hidden" data-tab="roles">
                     <i class="fa-solid fa-user-shield"></i> Role Mgmt
                 </button>
@@ -877,6 +912,9 @@
                 </button>
                 <button onclick="switchTab('audit')" id="nav-audit" class="sidebar-item w-full hidden" data-tab="audit">
                     <i class="fa-solid fa-clock-rotate-left"></i> Audit Logs
+                </button>
+                <button onclick="window.navigateToAI()" id="nav-ai" class="sidebar-item w-full">
+                    <i class="fa-solid fa-robot"></i> AI Agent
                 </button>
 
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Tools & System</div>

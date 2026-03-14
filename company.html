@@ -23,12 +23,8 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Core Firebase loaded via modular SDK in script below -->
-
     <style>
         :root {
-            /* Light */
             --bg: #F8F7F4;
             --bg2: #FFFFFF;
             --surf: #FFFFFF;
@@ -55,14 +51,6 @@
             --blue: #5B8AF5;
             --blue-g: rgba(91, 138, 245, 0.12);
             --s2: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
@@ -196,7 +184,6 @@
             display: block;
         }
 
-        /* Toast Styles */
         #toast-container {
             position: fixed;
             bottom: 20px;
@@ -220,31 +207,15 @@
             animation: slideIn 0.3s forwards;
         }
 
-        .toast.success {
-            background: #10B981;
-        }
-
-        .toast.error {
-            background: #EF4444;
-        }
-
-        .toast.info {
-            background: #3B82F6;
-        }
+        .toast.success { background: #10B981; }
+        .toast.error { background: #EF4444; }
+        .toast.info { background: #3B82F6; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Loader inside full screen */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -257,28 +228,40 @@
             transition: opacity 0.5s;
         }
     </style>
-
-    <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Explyra",
-  "url": "https://explyra.me/",
+  "name": "IPEC Consulting",
+  "url": "https://explyra.me",
+  "logo": "https://explyra.me/assets/images/explyra_logo.png",
   "sameAs": [
-    "https://x.com/explyras",
-    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
-    "https://www.instagram.com/explyras",
-    "https://www.youtube.com/@explyras",
-    "https://www.linkedin.com/company/explyra/",
-    "https://www.threads.com/@explyras",
-    "https://github.com/Explyra"
-  ]
+    "https://ipecconsulting.org/",
+    "https://www.linkedin.com/company/ipec-consulting/",
+    "https://twitter.com/ipecconsulting"
+  ],
+  "@id": "https://explyra.me/#organization"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "IPEC Expense Manager",
+  "url": "https://explyra.me",
+  "publisher": {
+    "@id": "https://explyra.me/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://explyra.me/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
 }
 </script>
 </head>
 
 <body>
-
     <div class="loading-overlay" id="loadingOverlay">
         <i class="fa-solid fa-circle-notch fa-spin text-3xl" style="color:var(--blue); font-size: 2rem;"></i>
         <p style="margin-top: 1rem; font-weight: 600; color: var(--ink2);">Verifying Access...</p>
@@ -301,12 +284,10 @@
                     <label class="form-label">Company Name *</label>
                     <input type="text" id="cmpName" class="form-input" required placeholder="Acme Startup">
                 </div>
-
                 <div class="form-group full">
                     <label class="form-label">Company Domain (optional)</label>
                     <input type="text" id="cmpDomain" class="form-input" placeholder="acme.com">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Industry</label>
                     <select id="cmpIndustry" class="form-input" required>
@@ -319,7 +300,6 @@
                         <option value="Other">Other</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Company Size</label>
                     <select id="cmpSize" class="form-input" required>
@@ -330,18 +310,15 @@
                         <option value="500+">500+ employees</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Country</label>
                     <input type="text" id="cmpCountry" class="form-input" required placeholder="India">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Company Logo URL (optional)</label>
                     <input type="url" id="cmpLogo" class="form-input" placeholder="https://...">
                 </div>
             </div>
-
             <button type="submit" class="btn-submit" id="submitBtn">
                 Create Company <i class="fa-solid fa-building"></i>
             </button>
@@ -351,13 +328,14 @@
 
     <div id="toast-container"></div>
 
+    <script src="js/env.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: "ENV_MISSING",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",
             storageBucket: "explyras.firebasestorage.app",
@@ -369,7 +347,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let currentUser = null;
-        let userDocId = null; // Track actual Firestore doc ID (may differ from UID for legacy users)
+        let userDocId = null;
 
         window.showToast = (msg, type = 'success') => {
             const container = document.getElementById('toast-container');
@@ -388,10 +366,7 @@
             }, 500);
         }
 
-        // Check Auth State on Load
         let authHandled = false;
-
-        // Safety Timeout: If auth check hangs for more than 5s, show the form
         const safetyTimeout = setTimeout(() => {
             if (!authHandled) {
                 console.warn("[Auth] Safety timeout triggered. Showing form.");
@@ -401,19 +376,13 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (authHandled) return;
-
             if (user) {
                 currentUser = user;
-                console.log("[Auth] User detected:", user.email);
-
                 try {
-                    // 1. Try direct lookup by UID
                     let userDocSnap = await getDoc(doc(db, "users", user.uid));
                     let userDocData = userDocSnap.exists() ? userDocSnap.data() : null;
 
-                    // 2. Fallback: query by email (for legacy users)
                     if (!userDocData && user.email) {
-                        console.log("[Auth] UID lookup failed, trying email query...");
                         const q = query(collection(db, "users"), where("email", "==", user.email));
                         const snap = await getDocs(q);
                         if (!snap.empty) {
@@ -430,8 +399,6 @@
                             return;
                         }
                     }
-
-                    // No company found or no record - show the form
                     authHandled = true;
                     clearTimeout(safetyTimeout);
                     showForm();
@@ -448,7 +415,6 @@
             }
         });
 
-        // Generate ID helper
         const generateId = (prefix) => prefix + '_' + Math.random().toString(36).substr(2, 9);
 
         document.getElementById('companyForm').addEventListener('submit', async (e) => {
@@ -468,12 +434,9 @@
 
             try {
                 const companyId = generateId('cmp');
-
-                // 14 Days Trial
                 const trialEnd = new Date();
                 trialEnd.setDate(trialEnd.getDate() + 14);
 
-                // 1. Create Company Document
                 await setDoc(doc(db, "companies", companyId), {
                     companyId: companyId,
                     name: name,
@@ -488,15 +451,13 @@
                     createdAt: serverTimestamp()
                 });
 
-                // 2. Update User Document (Make them Owner & linking company)
                 const docPath = userDocId || currentUser.uid;
                 await updateDoc(doc(db, "users", docPath), {
-                    role: 'ADMIN', // Owner/Admin permissions
+                    role: 'ADMIN',
                     companyId: companyId,
                     updatedAt: serverTimestamp()
                 });
 
-                // 3. Create Company Member Record for clean multi-tenant mapping
                 const memberId = generateId('mem');
                 await setDoc(doc(db, "companyMembers", memberId), {
                     memberId: memberId,
@@ -507,10 +468,7 @@
                 });
 
                 showToast('Workspace created successfully! Redirecting...', 'success');
-
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1500);
+                setTimeout(() => { window.location.href = 'admin.html'; }, 1500);
 
             } catch (error) {
                 console.error("Creation error:", error);
@@ -522,5 +480,4 @@
     </script>
     <script src="js/global-enhancements.js"></script>
 </body>
-
 </html>

@@ -250,6 +250,28 @@ window.handleGoogleLogin = async () => {
     }
 };
 
+window.toggleAuthMode = (mode) => {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginFooter = document.getElementById('login-footer');
+    const signupFooter = document.getElementById('signup-footer');
+    const googleBtn = document.getElementById('google-signin-container');
+
+    if (mode === 'signup') {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        loginFooter.classList.add('hidden');
+        signupFooter.classList.remove('hidden');
+        if (googleBtn) googleBtn.classList.add('hidden');
+    } else {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        loginFooter.classList.remove('hidden');
+        signupFooter.classList.add('hidden');
+        if (googleBtn) googleBtn.classList.remove('hidden');
+    }
+};
+
 window.handleAccountActivation = async (e) => {
     e.preventDefault();
     const email = document.getElementById('signup-email').value;

@@ -13,8 +13,14 @@
                 "height": 512
             },
             "sameAs": [
-                "https://twitter.com/explyra",
-                "https://www.linkedin.com/company/explyra"
+                "https://x.com/explyras",
+                "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+                "https://www.instagram.com/explyras",
+                "https://www.youtube.com/@explyras",
+                "https://www.linkedin.com/company/explyra/",
+                "https://www.threads.com/@explyras",
+                "https://github.com/Explyra",
+                "https://ipecconsulting.org/"
             ]
         },
         {
@@ -25,6 +31,11 @@
             "description": "Explyra is the ultimate modern platform for developers and teams. Streamline your workflow with our advanced suite of developer utilities, health manager, and business tools.",
             "publisher": {
                 "@id": "https://explyra.me/#organization"
+            },
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://explyra.me/search.html?q={search_term_string}",
+                "query-input": "required name=search_term_string"
             }
         },
         {

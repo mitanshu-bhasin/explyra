@@ -1,4 +1,5 @@
 # ── Environment Variables ────────────────────────
+.env
 js/env.js
 
 # ── IDE / Editor ─────────────────────────────────

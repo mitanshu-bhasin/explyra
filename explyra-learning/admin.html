@@ -127,6 +127,88 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+
+        /* Firebase Login Gateway Styles */
+        #admin-auth-gateway {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--surf);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--bdr);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .auth-card i.logo-icon {
+            font-size: 3rem;
+            color: var(--blue);
+            margin-bottom: 1.5rem;
+            display: block;
+            font-style: normal;
+        }
+
+        .auth-card h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-card p {
+            color: var(--ink3);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--ink2);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--bdr);
+            background: var(--bg);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue);
+        }
+
+        .auth-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        #admin-content {
+            display: none;
+        }
     </style>
 
     <script type="application/ld+json">
@@ -149,7 +231,32 @@
 </head>
 
 <body>
-    <div class="admin-layout">
+    <!-- Admin Auth Gateway -->
+    <div id="admin-auth-gateway">
+        <div class="auth-card">
+            <i class="logo-icon">E</i>
+            <h1>Admin Login</h1>
+            <p>Access restricted to authorized personnel only.</p>
+            
+            <div id="auth-error-msg" class="auth-error">Invalid credentials or unauthorized access.</div>
+            
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="admin-email" placeholder="admin@explyra.me" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="admin-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="admin-login-btn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    Sign In to Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="admin-layout" id="admin-content">
         <aside class="admin-sidebar">
             <h2><i>E</i> Admin Panel</h2>
             <ul class="admin-nav">
@@ -157,6 +264,7 @@
                 <li><a href="#" onclick="switchTab('students')">Manage Students</a></li>
                 <li><a href="#" onclick="switchTab('certs')">Recent Certificates</a></li>
                 <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--bdr);">
+                <li><a href="#" id="admin-logout-btn" style="color: var(--rose);">Logout Admin</a></li>
                 <li><a href="index.html">Back to Site</a></li>
             </ul>
         </aside>
@@ -199,7 +307,6 @@
                             </tr>
                         </thead>
                         <tbody id="student-table-body">
-                            <!-- Mock student data -->
                             <tr>
                                 <td>Mitanshu Bhasin</td>
                                 <td>3</td>
@@ -234,45 +341,150 @@
                 <textarea id="c-desc" rows="3" placeholder="Course summary..."></textarea>
             </div>
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveCourse()">Save
-                    Course</button>
-                <button class="btn btn-outline" style="flex:1; justify-content:center;"
-                    onclick="hideModal('course-modal')">Cancel</button>
+                <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveCourse()">Save Course</button>
+                <button class="btn btn-outline" style="flex:1; justify-content:center;" onclick="hideModal('course-modal')">Cancel</button>
             </div>
         </div>
     </div>
 
     <script src="scripts/learning-core.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCourseTable();
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+        const auth = getAuth(app);
+
+        const gateway = document.getElementById('admin-auth-gateway');
+        const content = document.getElementById('admin-content');
+        const loginForm = document.getElementById('adminLoginForm');
+        const errorMsg = document.getElementById('auth-error-msg');
+        const loginBtn = document.getElementById('admin-login-btn');
+
+        // Check Auth State
+        onAuthStateChanged(auth, user => {
+            if (user && user.email === 'explyras@gmail.com') {
+                gateway.style.display = 'none';
+                content.style.display = 'grid';
+                if (typeof renderCourseTable === 'function') renderCourseTable();
+            } else {
+                gateway.style.display = 'flex';
+                content.style.display = 'none';
+                if (user) {
+                    signOut(auth);
+                    showError("Unauthorized account. Access denied.");
+                }
+            }
         });
 
-        function switchTab(tab) {
+        // Handle Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value.trim();
+            const password = document.getElementById('admin-password').value;
+
+            if (email !== 'explyras@gmail.com') {
+                showError("This portal is only for explyras@gmail.com");
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = 'Verifying...';
+            errorMsg.style.display = 'none';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                console.error(error);
+                showError("Invalid password or login error.");
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Sign In to Dashboard';
+            }
+        });
+
+        // Handle Logout
+        document.getElementById('admin-logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                window.location.reload();
+            });
+        });
+
+        function showError(msg) {
+            errorMsg.innerText = msg;
+            errorMsg.style.display = 'block';
+        }
+
+        // Expose functions for existing script context
+        window.switchTab = (tab) => {
             document.querySelectorAll('main > div').forEach(div => div.style.display = 'none');
             document.getElementById(tab + '-tab').style.display = 'block';
             document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
+            if (event) event.currentTarget.classList.add('active');
+        };
 
-        function renderCourseTable() {
+        window.renderCourseTable = () => {
+            if (typeof ExplyraLearning === 'undefined') return;
             const courses = ExplyraLearning.Courses.getAll();
             const body = document.getElementById('course-table-body');
-            body.innerHTML = courses.map(c => `
-                <tr>
-                    <td><strong>${c.title}</strong></td>
-                    <td><span class="course-badge">${c.badge}</span></td>
-                    <td>${c.lessons.length}</td>
-                    <td>
-                        <span class="action-btn" onclick="editCourse('${c.id}')">Edit</span>
-                        <span class="action-btn delete" onclick="deleteCourse('${c.id}')">Delete</span>
-                    </td>
-                </tr>
-            `).join('');
+            if (body) {
+                body.innerHTML = courses.map(c => `
+                    <tr>
+                        <td><strong>${c.title}</strong></td>
+                        <td><span class="course-badge">${c.badge}</span></td>
+                        <td>${c.lessons.length}</td>
+                        <td>
+                            <span class="action-btn" onclick="editCourse('${c.id}')">Edit</span>
+                            <span class="action-btn delete" onclick="deleteCourse('${c.id}')">Delete</span>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        };
+    </script>
+    <script>
+        let currentEditId = null;
+
+        function showModal(id, mode = 'add') {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            
+            if (mode === 'add') {
+                currentEditId = null;
+                document.getElementById('modal-title').innerText = 'Add New Course';
+                document.getElementById('c-title').value = '';
+                document.getElementById('c-badge').value = '';
+                document.getElementById('c-desc').value = '';
+            } else {
+                document.getElementById('modal-title').innerText = 'Edit Course';
+            }
         }
 
-        function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+        function hideModal(id) { 
+            document.getElementById(id).style.display = 'none'; 
+            currentEditId = null;
+        }
+
+        function editCourse(id) {
+            const course = ExplyraLearning.Courses.getById(id);
+            if (!course) return;
+
+            currentEditId = id;
+            document.getElementById('c-title').value = course.title;
+            document.getElementById('c-badge').value = course.badge;
+            document.getElementById('c-desc').value = course.desc;
+            
+            showModal('course-modal', 'edit');
+        }
 
         function saveCourse() {
             const title = document.getElementById('c-title').value;
@@ -281,16 +493,28 @@
 
             if (!title) return;
 
-            const courses = ExplyraLearning.Courses.getAll();
-            const newCourse = {
-                id: title.toLowerCase().replace(/ /g, '-'),
-                title, badge, desc,
-                lessons: [], quiz: []
-            };
+            let courses = ExplyraLearning.Courses.getAll();
+            
+            if (currentEditId) {
+                // Update existing
+                const index = courses.findIndex(c => c.id === currentEditId);
+                if (index !== -1) {
+                    courses[index].title = title;
+                    courses[index].badge = badge;
+                    courses[index].desc = desc;
+                }
+            } else {
+                // Add new
+                const newCourse = {
+                    id: title.toLowerCase().replace(/ /g, '-'),
+                    title, badge, desc,
+                    lessons: [], quiz: []
+                };
+                courses.push(newCourse);
+            }
 
-            courses.push(newCourse);
             localStorage.setItem('explyra_courses', JSON.stringify(courses));
-            renderCourseTable();
+            if (typeof renderCourseTable === 'function') renderCourseTable();
             hideModal('course-modal');
         }
 
@@ -298,7 +522,7 @@
             if (confirm('Delete this course?')) {
                 const courses = ExplyraLearning.Courses.getAll().filter(c => c.id !== id);
                 localStorage.setItem('explyra_courses', JSON.stringify(courses));
-                renderCourseTable();
+                if (typeof renderCourseTable === 'function') renderCourseTable();
             }
         }
     </script>

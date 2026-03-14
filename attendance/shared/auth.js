@@ -29,21 +29,27 @@ function initAuth(moduleType, isLoginPage = false) {
                 if (userRoleEl) userRoleEl.textContent = session.role || 'Role';
 
                 const orgNameEl = document.getElementById('sidebar-org-name') || document.getElementById('sidebar-company-name');
+                const brandNameEl = document.getElementById('sidebar-brand-name');
 
-                if (orgNameEl) {
+                if (orgNameEl || brandNameEl) {
                     if (typeof window.db !== 'undefined' && session.companyId) {
                         try {
-                            // Try to get company name from Firebase if it's setup like the main app
                             const compRef = window.db.collection('companies').doc(session.companyId);
                             const snap = await compRef.get();
                             if (snap.exists && snap.data().name) {
-                                orgNameEl.textContent = snap.data().name;
+                                const name = snap.data().name;
+                                if (orgNameEl) orgNameEl.textContent = name;
+                                if (brandNameEl) brandNameEl.textContent = name.toUpperCase();
                             } else {
-                                orgNameEl.textContent = session.companyId;
+                                const fallback = session.companyId;
+                                if (orgNameEl) orgNameEl.textContent = fallback;
+                                if (brandNameEl) brandNameEl.textContent = fallback.toUpperCase();
                             }
                         } catch (e) {
                             console.error("Firestore sidebar err:", e);
-                            orgNameEl.textContent = session.companyId;
+                            const fallback = session.companyId;
+                            if (orgNameEl) orgNameEl.textContent = fallback;
+                            if (brandNameEl) brandNameEl.textContent = fallback.toUpperCase();
                         }
                     } else {
                         // Fallback logic

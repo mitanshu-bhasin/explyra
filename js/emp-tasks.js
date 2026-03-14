@@ -12,10 +12,11 @@ window.fetchEmpTasks = () => {
     if (list) list.innerHTML = '<div class="text-center text-slate-400 mt-4"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading tasks...</div>';
 
     const db = window.db;
+    // Fetch all tasks where the user is assignee OR creator
     const q = query(
         collection(db, "tasks"),
         where("assignedTo", "==", window.userData.email),
-        limit(50)
+        limit(100)
     );
 
     onSnapshot(q, (snapshot) => {
@@ -60,9 +61,18 @@ window.filterEmpTasks = () => {
     if (!list || !window.empTasksData) return;
 
     const search = (document.getElementById('emp-task-search')?.value || '').toLowerCase();
+    const mode = window.currentMode || 'company';
 
     const filtered = window.empTasksData.filter(t => {
-        return (t.title + (t.description || '')).toLowerCase().includes(search);
+        const matchesSearch = (t.title + (t.description || '')).toLowerCase().includes(search);
+        
+        if (mode === 'personal') {
+            // Personal tasks are those created by the user where type is PERSONAL
+            return matchesSearch && t.type === 'PERSONAL' && t.assignedBy === window.userData.email;
+        } else {
+            // Company tasks are those where type is not PERSONAL or it's assigned to them by someone else
+            return matchesSearch && t.type !== 'PERSONAL';
+        }
     });
 
     if (filtered.length === 0) {
@@ -125,11 +135,14 @@ window.handleEmpCreateTask = async (e) => {
 
         if (!title || !assignee || !dueDate) throw new Error('Missing required fields');
 
+        const isPersonal = window.currentMode === 'personal';
+
         await addDoc(collection(window.db, "tasks"), {
-            companyId: window.companyId,
+            companyId: isPersonal ? null : window.companyId,
+            type: isPersonal ? 'PERSONAL' : 'COMPANY',
             title,
             description: desc,
-            assignedTo: assignee,
+            assignedTo: isPersonal ? window.userData.email : assignee,
             assignedBy: window.userData.email,
             status: 'PENDING',
             dueDate,
@@ -153,20 +166,32 @@ window.openEmpTaskModal = async () => {
 
     // Load users for assignee
     const select = document.getElementById('emp-task-assignee');
-    if (select) {
-        select.innerHTML = '<option value="">Loading...</option>';
-        try {
-            const q = query(collection(window.db, "users"), where("companyId", "==", window.companyId), where("status", "==", "ACTIVE"));
-            const snap = await getDocs(q);
-            let options = '<option value="">Select Employee...</option>';
-            snap.forEach(d => {
-                const u = d.data();
-                options += `<option value="${u.email}">${u.name || u.email} (${(u.role || 'EMPLOYEE').replace('_', ' ')})</option>`;
-            });
-            select.innerHTML = options;
-            if (window.userData.email) select.value = window.userData.email;
-        } catch (e) {
-            select.innerHTML = '<option value="">Failed to load</option>';
+    const isPersonal = window.currentMode === 'personal';
+    const creatorGroup = document.getElementById('task-assignee-group');
+
+    if (isPersonal) {
+        if (creatorGroup) creatorGroup.classList.add('hidden');
+        if (select) {
+            select.innerHTML = `<option value="${window.userData.email}">${window.userData.name} (Me)</option>`;
+            select.value = window.userData.email;
+        }
+    } else {
+        if (creatorGroup) creatorGroup.classList.remove('hidden');
+        if (select) {
+            select.innerHTML = '<option value="">Loading...</option>';
+            try {
+                const q = query(collection(window.db, "users"), where("companyId", "==", window.companyId), where("status", "==", "ACTIVE"));
+                const snap = await getDocs(q);
+                let options = '<option value="">Select Employee...</option>';
+                snap.forEach(d => {
+                    const u = d.data();
+                    options += `<option value="${u.email}">${u.name || u.email} (${(u.role || 'EMPLOYEE').replace('_', ' ')})</option>`;
+                });
+                select.innerHTML = options;
+                if (window.userData.email) select.value = window.userData.email;
+            } catch (e) {
+                select.innerHTML = '<option value="">Failed to load</option>';
+            }
         }
     }
 };

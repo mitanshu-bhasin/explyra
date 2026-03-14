@@ -1,44 +1,71 @@
 class DataHandler {
-    static async fetchData(fileName) {
-        try {
-            // Check localStorage first
-            const localData = localStorage.getItem(`mfg_${fileName}`);
-            if (localData) return JSON.parse(localData);
-
-            // Fallback to JSON and initialize localStorage
-            const response = await fetch(`./data/${fileName}.json`);
-            if (!response.ok) throw new Error(`Could not fetch ${fileName}`);
-            const data = await response.json();
-            localStorage.setItem(`mfg_${fileName}`, JSON.stringify(data));
-            return data;
-        } catch (error) {
-            console.error(error);
-            return [];
-        }
+    static get db() {
+        return window.db; // From firebase-config.js
     }
 
-    static async saveData(fileName, data) {
-        localStorage.setItem(`mfg_${fileName}`, JSON.stringify(data));
-        // Dispatch event for reactive updates in same-page components if needed
-        window.dispatchEvent(new CustomEvent('mfg-data-updated', { detail: { fileName } }));
+    static async fetchData(fileName) {
+        if (!window.companyId) {
+            console.warn("Waiting for company context...");
+            return [];
+        }
+
+        try {
+            // Check cache for instant load
+            const cacheKey = `mfg_${fileName}_${window.companyId}`;
+            const cached = localStorage.getItem(cacheKey);
+            
+            // Background fetch from Firestore
+            const snapshot = await this.db.collection(`mfg_${fileName}`)
+                .where('companyId', '==', window.companyId)
+                .get();
+            
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Update cache
+            localStorage.setItem(cacheKey, JSON.stringify(data));
+            return data;
+        } catch (error) {
+            console.error(`Error fetching ${fileName}:`, error);
+            const cacheKey = `mfg_${fileName}_${window.companyId}`;
+            return JSON.parse(localStorage.getItem(cacheKey) || '[]');
+        }
     }
 
     static async addItem(fileName, item) {
-        const data = await this.fetchData(fileName);
-        data.push(item);
-        await this.saveData(fileName, data);
-        return data;
+        if (!window.companyId) throw new Error("Unauthorized: No company context");
+
+        const dataToSave = {
+            ...item,
+            companyId: window.companyId,
+            createdAt: new Date().toISOString()
+        };
+
+        const docRef = await this.db.collection(`mfg_${fileName}`).add(dataToSave);
+        
+        // Update local cache manually for reactivity
+        const cacheKey = `mfg_${fileName}_${window.companyId}`;
+        const currentData = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+        currentData.push({ id: docRef.id, ...dataToSave });
+        localStorage.setItem(cacheKey, JSON.stringify(currentData));
+
+        window.dispatchEvent(new CustomEvent('mfg-data-updated', { detail: { fileName } }));
+        return docRef.id;
     }
 
-    static async deleteItem(fileName, key, value) {
-        let data = await this.fetchData(fileName);
-        const originalLength = data.length;
-        data = data.filter(item => String(item[key]) !== String(value));
-        if (data.length < originalLength) {
-            await this.saveData(fileName, data);
+    static async deleteItem(fileName, id) {
+        try {
+            await this.db.collection(`mfg_${fileName}`).doc(id).delete();
+            
+            const cacheKey = `mfg_${fileName}_${window.companyId}`;
+            let currentData = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+            currentData = currentData.filter(item => item.id !== id);
+            localStorage.setItem(cacheKey, JSON.stringify(currentData));
+            
             return true;
+        } catch (error) {
+            console.error("Delete error:", error);
+            return false;
         }
-        return false;
     }
 
     static async getDashboardStats() {
@@ -74,10 +101,9 @@ class DataHandler {
     }
 
     static async getProductionChartData() {
-        // Simulating daily production data based on current production JS
         return {
             labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            data: [650, 780, 720, 840, 910, 500, 420] // In a real app, this would be historical from Firestore
+            data: [0, 0, 0, 0, 0, 0, 0] 
         };
     }
 
@@ -86,7 +112,7 @@ class DataHandler {
         const available = inventory.filter(i => i.quantity >= i.reorderLevel).length;
         const low = inventory.filter(i => i.quantity < i.reorderLevel).length;
         
-        return [available, 10, low]; // Available, Reserved (mock), Low
+        return [available, 0, low]; // Available, Reserved, Low
     }
 
     static formatCurrency(value) {

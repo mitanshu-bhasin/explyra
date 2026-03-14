@@ -143,10 +143,10 @@
                     datasets: [{
                         label: 'Production Output',
                         data: chartData.data,
-                        borderColor: '#5B8AF5',
+                        borderColor: '#1546C0',
                         tension: 0.4,
                         fill: true,
-                        backgroundColor: 'rgba(91, 138, 245, 0.1)'
+                        backgroundColor: 'rgba(21, 70, 192, 0.05)'
                     }]
                 },
                 options: {
@@ -154,7 +154,7 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
                         x: { grid: { display: false } }
                     }
                 }
@@ -167,14 +167,14 @@
                     labels: ['Available', 'Reserverd', 'Low Stock'],
                     datasets: [{
                         data: invChartData,
-                        backgroundColor: ['#10B981', '#5B8AF5', '#EF4444'],
+                        backgroundColor: ['#10B981', '#1546C0', '#EF4444'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#8290A8' } } }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#64748B', font: { family: 'Outfit' } } } }
                 }
             });
         });

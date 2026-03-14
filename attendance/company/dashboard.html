@@ -41,7 +41,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             initAuth('company');
-            setTimeout(loadDashboardStats, 300);
+            setTimeout(loadDashboardStats, 500);
         });
 
         async function loadDashboardStats() {
@@ -54,7 +54,7 @@
 
             if (typeof window.db !== 'undefined' && session.companyId) {
                 try {
-                    const empSnap = await window.db.collection('employees').where('companyId', '==', session.companyId).get();
+                    const empSnap = await window.db.collection('users').where('companyId', '==', session.companyId).get();
                     empSnap.forEach(doc => emps.push({ firebaseId: doc.id, ...doc.data() }));
 
                     const attSnap = await window.db.collection('attendance').doc(session.companyId).get();
@@ -68,9 +68,9 @@
                 }
             } else {
                 const data = getAppData('attendance_app_data', {});
-                emps = data.employees[session.companyId] || [];
-                att = data.attendance[session.companyId] || {};
-                sals = data.salaries[session.companyId] || {};
+                emps = data.employees ? (data.employees[session.companyId] || []) : [];
+                att = data.attendance ? (data.attendance[session.companyId] || {}) : {};
+                sals = data.salaries ? (data.salaries[session.companyId] || {}) : {};
             }
 
             document.getElementById('stat-total-emp').textContent = emps.length;
@@ -79,7 +79,7 @@
             const todayAtt = att[todayStr] || {};
             let presentCount = 0;
             emps.forEach(e => {
-                const safeId = e.id || e.firebaseId;
+                const safeId = e.employeeId || e.id || e.firebaseId;
                 if (todayAtt[safeId] === 'Present' || todayAtt[safeId] === 'Half Day') {
                     presentCount++;
                 }
@@ -95,7 +95,7 @@
             let pendingAmount = 0;
 
             emps.forEach(e => {
-                const safeId = e.id || e.firebaseId;
+                const safeId = e.employeeId || e.id || e.firebaseId;
                 const salData = monthSals[safeId];
                 const expected = parseFloat(e.salary) || 0;
                 if (salData && salData.paid) {
@@ -105,8 +105,8 @@
                 }
             });
 
-            document.getElementById('stat-paid').textContent = '₹' + paidAmount.toLocaleString();
-            document.getElementById('stat-pending').textContent = '₹' + pendingAmount.toLocaleString();
+            document.getElementById('stat-paid').textContent = '₹' + paidAmount.toLocaleString('en-IN');
+            document.getElementById('stat-pending').textContent = '₹' + pendingAmount.toLocaleString('en-IN');
         }
 
         function toggleTheme() {
@@ -125,40 +125,53 @@
             if (theme === 'dark') document.documentElement.classList.add('dark');
         })();
     </script>
-
-    <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Explyra",
-  "url": "https://explyra.me/",
+  "name": "IPEC Consulting",
+  "url": "https://explyra.me",
+  "logo": "https://explyra.me/assets/images/explyra_logo.png",
   "sameAs": [
-    "https://x.com/explyras",
-    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
-    "https://www.instagram.com/explyras",
-    "https://www.youtube.com/@explyras",
-    "https://www.linkedin.com/company/explyra/",
-    "https://www.threads.com/@explyras",
-    "https://github.com/Explyra"
-  ]
+    "https://ipecconsulting.org/",
+    "https://www.linkedin.com/company/ipec-consulting/",
+    "https://twitter.com/ipecconsulting"
+  ],
+  "@id": "https://explyra.me/#organization"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "IPEC Expense Manager",
+  "url": "https://explyra.me",
+  "publisher": {
+    "@id": "https://explyra.me/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://explyra.me/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
 }
 </script>
 </head>
 
-<body class="flex h-screen overflow-hidden">
+<body class="flex h-screen overflow-hidden bg-[var(--v-bg)] text-[var(--v-foreground)]">
 
     <!-- Sidebar -->
-    <aside class="v-sidebar shrink-0 hidden md:flex">
+    <aside class="v-sidebar shrink-0 hidden md:flex border-r border-[var(--v-border)]">
         <div class="h-16 flex items-center px-6 border-b border-[var(--v-border)]">
-            <div class="w-7 h-7 bg-black dark:bg-white rounded flex items-center justify-center mr-3">
-                <i class="fa-solid fa-briefcase text-white dark:text-black text-[10px]"></i>
+            <div class="w-7 h-7 bg-[var(--v-foreground)] rounded flex items-center justify-center mr-3 shadow-inner">
+                <i class="fa-solid fa-briefcase text-[var(--v-bg)] text-[10px]"></i>
             </div>
-            <span class="font-bold text-sm tracking-tight">CORP<span class="text-slate-400">.OPS</span></span>
+            <span id="sidebar-brand-name" class="font-bold text-sm tracking-tight text-[var(--v-foreground)] uppercase">CORP.OPS</span>
         </div>
 
         <div class="p-5">
-            <p class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Active Workspace</p>
-            <div class="flex items-center gap-3 p-2 rounded-lg bg-[var(--v-accents-1)] border border-[var(--v-border)]">
+            <p class="text-[10px] uppercase font-bold text-[var(--v-accents-5)] mb-2 tracking-widest">Active Workspace</p>
+            <div class="flex items-center gap-3 p-2 rounded-lg bg-[var(--v-accents-1)] border border-[var(--v-border)] shadow-sm">
                 <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-xs" id="sidebar-company-initial">C</div>
                 <p id="sidebar-company-name" class="font-bold text-xs truncate">Loading Workspace...</p>
             </div>
@@ -166,168 +179,152 @@
 
         <nav class="flex-1 px-2 space-y-1">
             <a href="dashboard.html" class="v-sidebar-item active">
-                <i class="fa-solid fa-chart-pie"></i> Dashboard
+                <i class="fa-solid fa-chart-pie opacity-70"></i> Dashboard
             </a>
             <a href="employees.html" class="v-sidebar-item hr-auth">
-                <i class="fa-solid fa-users"></i> Employees
+                <i class="fa-solid fa-users opacity-70"></i> Directory
             </a>
             <a href="attendance.html" class="v-sidebar-item hr-auth">
-                <i class="fa-regular fa-calendar-check"></i> Attendance
+                <i class="fa-regular fa-calendar-check opacity-70"></i> Attendance
             </a>
             <a href="salary.html" class="v-sidebar-item admin-only">
-                <i class="fa-solid fa-wallet"></i> Payroll & Bonus
+                <i class="fa-solid fa-wallet opacity-70"></i> Payroll & Bonus
+            </a>
+            <a href="ai-agent.html" class="v-sidebar-item">
+                <i class="fa-solid fa-robot opacity-70"></i> AI Agent
             </a>
         </nav>
 
         <div class="p-4 border-t border-[var(--v-border)]">
             <div class="flex items-center gap-3 mb-4 p-2">
-                <div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs">
+                <div class="w-8 h-8 rounded-full bg-[var(--v-accents-2)] flex items-center justify-center text-[var(--v-accents-5)] text-xs border border-[var(--v-border)]">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="overflow-hidden">
-                    <p id="sidebar-user-name" class="text-xs font-bold truncate">User</p>
-                    <p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-slate-400 truncate">Role</p>
+                    <p id="sidebar-user-name" class="text-xs font-bold truncate text-[var(--v-foreground)]">User</p>
+                    <p id="sidebar-user-role" class="text-[9px] font-bold uppercase text-[var(--v-accents-5)] truncate">Role</p>
                 </div>
             </div>
-            <button onclick="doLogout('company')" class="w-full flex items-center justify-center gap-2 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition">
+            <button onclick="doLogout('company')" class="w-full flex items-center justify-center gap-2 py-2.5 text-[var(--v-accents-6)] hover:bg-[var(--v-accents-2)] hover:text-red-500 rounded-md text-xs font-bold transition border border-transparent hover:border-red-200">
                 <i class="fa-solid fa-power-off"></i> Terminate Session
             </button>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[var(--v-accents-1)]">
         
         <!-- Header -->
-        <header class="v-header shrink-0">
-            <div class="flex items-center gap-2">
-                <h1 class="text-sm font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Analytics Dashboard</h1>
+        <header class="v-header shrink-0 z-30 relative bg-[var(--v-bg)] border-b border-[var(--v-border)]">
+            <div class="flex items-center gap-3">
+                <h1 class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Analytics Dashboard</h1>
+                <div class="hidden sm:block h-3 w-[1px] bg-[var(--v-border)]"></div>
+                <div class="flex items-center gap-1.5 text-[10px] font-bold text-green-600 dark:text-green-400 opacity-80">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    SECURE OPS ACTIVE
+                </div>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="w-8 h-8 rounded-full border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition">
-                    <i class="fa-solid fa-moon dark:hidden text-xs"></i>
-                    <i class="fa-solid fa-sun hidden dark:block text-xs text-yellow-500"></i>
+                <button onclick="toggleTheme()" class="w-8 h-8 rounded border border-[var(--v-border)] flex items-center justify-center hover:bg-[var(--v-accents-1)] transition shadow-sm bg-[var(--v-bg)]">
+                    <i class="fa-solid fa-moon dark:hidden text-[11px] text-[var(--v-accents-5)]"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-[11px] text-[var(--v-accents-5)] hover:text-yellow-500"></i>
                 </button>
-                <div class="h-6 w-[1px] bg-[var(--v-border)] mx-1"></div>
-                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800">
-                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                    <span class="text-[10px] font-bold text-green-700 dark:text-green-400">SECURE</span>
-                </div>
             </div>
         </header>
 
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-8 space-y-8 h-screen pb-20">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 custom-scrollbar pb-16">
             
-            <div class="flex items-center justify-between">
+            <div class="max-w-6xl mx-auto space-y-8">
                 <div>
-                    <h2 class="text-3xl font-bold tracking-tight">Overview</h2>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--v-foreground)]">Overview</h2>
                     <p class="text-[var(--v-accents-5)] text-sm mt-1">Real-time indicators for your corporate workspace.</p>
                 </div>
-            </div>
 
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <!-- Total Employees -->
-                <div class="v-card">
-                    <p class="v-stat-label">Total Personnel</p>
-                    <div class="flex items-baseline justify-between">
-                        <p class="v-stat-value" id="stat-total-emp">0</p>
-                        <i class="fa-solid fa-users text-[var(--v-accents-2)] text-2xl"></i>
-                    </div>
-                    <div class="mt-4 h-1 w-full bg-[var(--v-accents-1)] rounded-full overflow-hidden">
-                        <div class="h-full bg-blue-600" style="width: 100%"></div>
-                    </div>
-                </div>
-
-                <!-- Present Today -->
-                <div class="v-card">
-                    <p class="v-stat-label">Active Today</p>
-                    <div class="flex items-baseline justify-between">
-                        <p class="v-stat-value text-green-600" id="stat-present">0</p>
-                        <i class="fa-solid fa-user-check text-[var(--v-accents-2)] text-2xl"></i>
-                    </div>
-                    <div class="mt-4 h-1 w-full bg-[var(--v-accents-1)] rounded-full overflow-hidden" id="stat-present-bar">
-                        <div class="h-full bg-green-500" style="width: 75%"></div>
-                    </div>
-                </div>
-
-                <!-- Rate -->
-                <div class="v-card">
-                    <p class="v-stat-label">Retention Rate</p>
-                    <div class="flex items-baseline justify-between">
-                        <p class="v-stat-value text-blue-600" id="stat-att-pct">0%</p>
-                        <i class="fa-solid fa-signal text-[var(--v-accents-2)] text-2xl"></i>
-                    </div>
-                    <div class="mt-4 flex gap-1">
-                        <div class="h-1 flex-1 bg-blue-600 rounded-full"></div>
-                        <div class="h-1 flex-1 bg-blue-600 rounded-full"></div>
-                        <div class="h-1 flex-1 bg-blue-600 rounded-full"></div>
-                        <div class="h-1 flex-1 bg-[var(--v-accents-2)] rounded-full"></div>
-                    </div>
-                </div>
-
-                <!-- Payroll Summary -->
-                <div class="v-card flex flex-col justify-between">
-                    <div>
-                        <p class="v-stat-label">Payroll (Current Month)</p>
-                        <div class="mt-3 flex gap-4">
-                            <div>
-                                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Disbursed</p>
-                                <p class="text-sm font-bold text-green-600" id="stat-paid">₹0</p>
-                            </div>
-                            <div class="w-[1px] h-full bg-[var(--v-border)]"></div>
-                            <div>
-                                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Pending</p>
-                                <p class="text-sm font-bold text-amber-500" id="stat-pending">₹0</p>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="v-card shadow-sm border-[var(--v-border)] bg-[var(--v-bg)]">
+                        <p class="v-stat-label">Total Personnel</p>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <p class="v-stat-value text-[var(--v-foreground)]" id="stat-total-emp">0</p>
+                            <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                                <i class="fa-solid fa-users text-sm"></i>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Dashboard Modules (Shortcuts) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="v-card !p-0 overflow-hidden group">
-                    <div class="p-6">
-                        <h3 class="font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-days text-blue-600"></i> Attendance Ledger
-                        </h3>
-                        <p class="text-[var(--v-accents-5)] text-sm mt-1">Review and reconcile daily check-ins.</p>
+                    <div class="v-card shadow-sm border-[var(--v-border)] bg-[var(--v-bg)]">
+                        <p class="v-stat-label">Active Today</p>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <p class="v-stat-value text-green-600" id="stat-present">0</p>
+                            <div class="w-8 h-8 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-user-check text-sm"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition">
-                        <span class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Manage Register</span>
-                        <a href="attendance.html" class="v-btn-secondary px-3 py-1.5 text-xs">Open Ledger</a>
+
+                    <div class="v-card shadow-sm border-[var(--v-border)] bg-[var(--v-bg)]">
+                        <p class="v-stat-label">Attendance Rate</p>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <p class="v-stat-value text-blue-600" id="stat-att-pct">0%</p>
+                            <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                                <i class="fa-solid fa-chart-line text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="v-card shadow-sm border-[var(--v-border)] bg-[var(--v-bg)]">
+                        <p class="v-stat-label">Disbursed (Month)</p>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <p class="v-stat-value text-amber-600" id="stat-paid">₹0</p>
+                            <div class="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600">
+                                <i class="fa-solid fa-wallet text-sm"></i>
+                            </div>
+                        </div>
+                        <p class="text-[9px] font-bold text-[var(--v-accents-4)] mt-2 uppercase tracking-widest">Pending: <span id="stat-pending">₹0</span></p>
                     </div>
                 </div>
 
-                <div class="v-card !p-0 overflow-hidden group">
-                    <div class="p-6">
-                        <h3 class="font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-user-group text-purple-600"></i> Employee Directory
-                        </h3>
-                        <p class="text-[var(--v-accents-5)] text-sm mt-1">Manage personnel records and access levels.</p>
+                <!-- Shortcuts -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="v-card !p-0 overflow-hidden group shadow-sm bg-[var(--v-bg)] border-[var(--v-border)]">
+                        <div class="p-6">
+                            <h3 class="font-bold flex items-center gap-2 text-[var(--v-foreground)]">
+                                <i class="fa-solid fa-calendar-days text-blue-600"></i> Attendance Ledger
+                            </h3>
+                            <p class="text-[var(--v-accents-5)] text-sm mt-1">Review and reconcile daily check-ins across the entire workspace directory.</p>
+                        </div>
+                        <div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Ops: Live Feed</span>
+                            <a href="attendance.html" class="px-4 py-1.5 rounded-md bg-[var(--v-foreground)] text-[var(--v-bg)] text-[10px] font-bold uppercase tracking-widest shadow-sm hover:opacity-90 transition">Open Register</a>
+                        </div>
                     </div>
-                    <div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition">
-                        <span class="text-xs font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Directory Ops</span>
-                        <a href="employees.html" class="v-btn-secondary px-3 py-1.5 text-xs">Manage Base</a>
+
+                    <div class="v-card !p-0 overflow-hidden group shadow-sm bg-[var(--v-bg)] border-[var(--v-border)]">
+                        <div class="p-6">
+                            <h3 class="font-bold flex items-center gap-2 text-[var(--v-foreground)]">
+                                <i class="fa-solid fa-user-group text-blue-500"></i> Personnel Directory
+                            </h3>
+                            <p class="text-[var(--v-accents-5)] text-sm mt-1">Manage core employee data, access levels, and organizational hierarchy settings.</p>
+                        </div>
+                        <div class="bg-[var(--v-accents-1)] p-4 flex justify-between items-center border-t border-[var(--v-border)] group-hover:bg-[var(--v-accents-2)] transition">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--v-accents-5)]">Ops: Management</span>
+                            <a href="employees.html" class="px-4 py-1.5 rounded-md bg-[var(--v-foreground)] text-[var(--v-bg)] text-[10px] font-bold uppercase tracking-widest shadow-sm hover:opacity-90 transition">Open Directory</a>
+                        </div>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- Security Notice -->
-            <div class="bg-[var(--v-accents-1)] border border-[var(--v-border)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-center">
-                <div class="w-16 h-16 rounded-full bg-white dark:bg-black flex items-center justify-center border border-[var(--v-border)] shrink-0 shadow-sm">
-                    <i class="fa-solid fa-shield-halved text-green-500 text-2xl"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg">Infrastructure Security</h3>
-                    <p class="text-[var(--v-accents-5)] text-sm mt-1 leading-relaxed">
-                        Your workspace is logically isolated. All data transactions are encrypted and mapped to your unique Company ID. Our zero-trust architecture ensures that your employee records and payroll data remain confidential.
-                    </p>
+                <!-- Security Notice -->
+                <div class="bg-[var(--v-bg)] border border-[var(--v-border)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-center shadow-sm">
+                    <div class="w-16 h-16 rounded-2xl bg-[var(--v-accents-1)] flex items-center justify-center border border-[var(--v-border)] shrink-0 shadow-inner">
+                        <i class="fa-solid fa-shield-halved text-blue-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-[var(--v-foreground)]">Enterprise Grade Security</h3>
+                        <p class="text-[var(--v-accents-5)] text-sm mt-1 leading-relaxed">
+                            Your workspace is logically isolated. All data transactions are encrypted and mapped to your unique Company ID. Our zero-trust architecture ensures that your employee records and payroll data remain strictly confidential.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -335,5 +332,4 @@
     </main>
 
 </body>
-
 </html>

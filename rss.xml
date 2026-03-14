@@ -6,13 +6,21 @@
     <description>Latest news, feature updates, and releases from Explyra.</description>
     <language>en-us</language>
     <atom:link href="https://explyra.me/rss.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Fri, 13 Mar 2026 08:30:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 14 Mar 2026 22:30:00 GMT</lastBuildDate>
     <copyright>Copyright 2026 Explyra</copyright>
     <image>
        <url>https://explyra.me/assets/images/explyra_logo.png</url>
        <title>Explyra</title>
        <link>https://explyra.me/</link>
     </image>
+
+    <item>
+      <title>Advanced PWA &amp; Service Worker Enhancements</title>
+      <link>https://explyra.me/index.html</link>
+      <pubDate>Sat, 14 Mar 2026 22:30:00 GMT</pubDate>
+      <description>Upgraded the Explyra PWA with advanced caching strategies, background sync, push notification support, and custom PWA widgets for a native-like experience.</description>
+      <guid>https://explyra.me/index.html#pwa-v8</guid>
+    </item>
 
     <item>
       <title>Explyra Services Page Launched</title>

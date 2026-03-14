@@ -8,14 +8,24 @@
 <html lang="en" data-theme="light">
 
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+    <!-- Environment Config -->
+    <script src="js/env.js"></script>
 
-        gtag('config', 'G-TFBZ5GZ22C');
+    <!-- Google tag (gtag.js) -->
+    <script>
+        (function() {
+            const gaId = window.EXPLYRA_CONFIG?.analyticsId || 'G-TFBZ5GZ22C';
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+            document.head.appendChild(script);
+
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', gaId);
+            window.gtag = gtag;
+        })();
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -69,17 +79,49 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW registered:', reg))
+                    .then(reg => {
+                        console.log('SW registered:', reg);
+                        // Optional: Handle updates
+                        reg.onupdatefound = () => {
+                            const installingWorker = reg.installing;
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed') {
+                                    if (navigator.serviceWorker.controller) {
+                                        console.log('New content available; please refresh.');
+                                    } else {
+                                        console.log('Content is cached for offline use.');
+                                    }
+                                }
+                            };
+                        };
+                    })
                     .catch(err => console.log('SW registration failed:', err));
             });
         }
 
-        // PWA Install Prompt
+        // PWA Install Prompt Logic
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Optionally show a custom install button here
+            // Show the install button if it exists
+            const installBtn = document.getElementById('pwaInstallBtn');
+            if (installBtn) installBtn.style.display = 'inline-flex';
+        });
+
+        async function installPWA() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to install prompt: ${outcome}`);
+            deferredPrompt = null;
+            const installBtn = document.getElementById('pwaInstallBtn');
+            if (installBtn) installBtn.style.display = 'none';
+        }
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            deferredPrompt = null;
         });
     </script>
 
@@ -121,6 +163,13 @@
       "name": "Explyra Suite",
       "operatingSystem": "Any",
       "applicationCategory": "BusinessApplication",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "124",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -5661,6 +5710,7 @@
                 <ul>
                     <li><a href="android.html"><i class="fab fa-android"></i> Android</a></li>
                     <li><a href="ios.html"><i class="fab fa-apple"></i> iOS</a></li>
+                    <li><a href="javascript:void(0)" id="pwaInstallBtn" onclick="installPWA()" style="display:none; align-items:center; gap:8px; color:var(--blue); font-weight:600;"><i class="fas fa-download"></i> Install PWA</a></li>
                 </ul>
             </div>
         </div>

@@ -1,2 +1,10 @@
 /*
-  Cache-Control: public, max-age=0, must-revalidate
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Cache-Control: no-cache, no-store, must-revalidate
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
+  Content-Security-Policy: upgrade-insecure-requests; frame-ancestors 'none';
+  X-Permitted-Cross-Domain-Policies: none
