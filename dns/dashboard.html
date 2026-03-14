@@ -32,6 +32,10 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     <span class="nav-text">DNS Manager</span>
                 </li>
+                <li class="nav-item" data-view="registerDomain">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="nav-text">New Domain</span>
+                </li>
             </nav>
 
             <div class="sidebar-footer">
@@ -297,6 +301,149 @@
                                 <!-- Dynamic -->
                             </tbody>
                         </table>
+                    </div>
+                </section>
+
+                <!-- New Domain View -->
+                <section id="registerDomainView" class="page-view">
+                    <div class="header-section">
+                        <h1>Register a New Domain</h1>
+                        <p>Follow these steps to secure your unique identity on the web.</p>
+                    </div>
+
+                    <div class="card mb-6">
+                        <h2 class="card-title">How to Buy a Domain</h2>
+                        <div class="steps-container">
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <p class="step-title">Choose a Registrar</p>
+                                    <p class="text-dim text-sm">Select a trusted domain registrar from our list below or use your favorite platform.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <p class="step-title">Search Domain</p>
+                                    <p class="text-dim text-sm">Use the registrar's search tool to find your preferred name and extension (.com, .io, etc).</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <p class="step-title">Complete Purchase</p>
+                                    <p class="text-dim text-sm">Add to cart, review pricing (watch for renewal rates), and complete the checkout process.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <p class="step-title">Privacy Protection</p>
+                                    <p class="text-dim text-sm">Ensure WHOIS privacy protection is enabled to hide your personal contact information.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <p class="step-title">Connect to Explyra</p>
+                                    <p class="text-dim text-sm">Once purchased, use our DNS Manager to point your domain here using A or CNAME records.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 class="card-title" style="margin-top: 2.5rem;">Popular Domain Registrars</h2>
+                    <div class="registrar-grid">
+                        <!-- Cloudflare -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">CF</div>
+                            <div class="registrar-info">
+                                <h3>Cloudflare Registrar</h3>
+                                <p class="text-dim text-sm">Cheapest domain renewals and world-class strong DNS integration.</p>
+                                <a href="https://www.cloudflare.com/products/registrar/" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Namecheap -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">NC</div>
+                            <div class="registrar-info">
+                                <h3>Namecheap</h3>
+                                <p class="text-dim text-sm">Beginner friendly and affordable domains with great support.</p>
+                                <a href="https://www.namecheap.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- GoDaddy -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">GD</div>
+                            <div class="registrar-info">
+                                <h3>GoDaddy</h3>
+                                <p class="text-dim text-sm">Widely used global registrar with extensive service offerings.</p>
+                                <a href="https://www.godaddy.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Google Domains -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">GG</div>
+                            <div class="registrar-info">
+                                <h3>Google Domains</h3>
+                                <p class="text-dim text-sm">Simple interface and seamless integration with Google services.</p>
+                                <a href="https://domains.google" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Porkbun -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">PB</div>
+                            <div class="registrar-info">
+                                <h3>Porkbun</h3>
+                                <p class="text-dim text-sm">Low cost domains and free WHOIS privacy forever.</p>
+                                <a href="https://porkbun.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Dynadot -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">DD</div>
+                            <div class="registrar-info">
+                                <h3>Dynadot</h3>
+                                <p class="text-dim text-sm">Robust tools for bulk domain management and auctions.</p>
+                                <a href="https://dynadot.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Hover -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">HV</div>
+                            <div class="registrar-info">
+                                <h3>Hover</h3>
+                                <p class="text-dim text-sm">Clean, simple UI focused purely on domain names.</p>
+                                <a href="https://hover.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- IONOS -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">IO</div>
+                            <div class="registrar-info">
+                                <h3>IONOS</h3>
+                                <p class="text-dim text-sm">Business domains and robust hosting bundles for professional use.</p>
+                                <a href="https://www.ionos.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Bluehost -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">BH</div>
+                            <div class="registrar-info">
+                                <h3>Bluehost Domains</h3>
+                                <p class="text-dim text-sm">Highly recommended for WordPress users and startups.</p>
+                                <a href="https://www.bluehost.com/domains" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Hostinger -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">HI</div>
+                            <div class="registrar-info">
+                                <h3>Hostinger</h3>
+                                <p class="text-dim text-sm">Extremely cheap domains optimized for startups and developers.</p>
+                                <a href="https://www.hostinger.com/domains" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -602,7 +749,20 @@
                 statusTitle.textContent = 'Deploying to Vercel';
                 statusDesc.textContent = `Importing ${repoFullName} (${defaultBranch})...`;
 
-                const deployRes = await fetch('https://api.vercel.com/v13/deployments', {
+                // Validation before deployment
+                const projectSettings = {
+                    framework: null,
+                    buildCommand: null,
+                    installCommand: null,
+                    outputDirectory: null,
+                    rootDirectory: null
+                };
+
+                if (!repoFullName || !repoId || !defaultBranch || !projectSettings) {
+                    throw new Error('Missing required deployment information (Repo/ID/Branch/Settings)');
+                }
+
+                const deployRes = await fetch('https://api.vercel.com/v13/deployments?skipAutoDetectionConfirmation=1', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -612,7 +772,8 @@
                             repo: repoFullName,
                             repoId: repoId,
                             ref: defaultBranch 
-                        } 
+                        },
+                        projectSettings: projectSettings
                     })
                 });
 
