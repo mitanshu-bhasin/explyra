@@ -1,0 +1,9 @@
+name = "explyra-mailbox-worker"
+main = "index.js"
+compatibility_date = "2024-03-11"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# WEBHOOK_SECRET is set via cloudflare dashboard
+WEB_URL = "https://explyra.me"
+

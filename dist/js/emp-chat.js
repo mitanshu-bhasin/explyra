@@ -1,0 +1,289 @@
+// js/emp-chat.js
+import { collection, query, where, getDocs, doc, onSnapshot, serverTimestamp, orderBy, limit, addDoc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+let activeChatUnsub = null;
+let chatUsers = [];
+window.currentChatContext = 'global'; // 'global' or 'userDocId'
+window.currentChatUser = null;
+
+window.openChatModal = async () => {
+    document.getElementById('modal-chat').classList.remove('hidden');
+    document.getElementById('chat-main-area').classList.remove('translate-x-0'); // reset mobile view
+    document.getElementById('chat-main-area').classList.add('translate-x-full');
+    await fetchChatUsers();
+    window.selectChat('global'); // default
+};
+
+window.hideMobileChatArea = () => {
+    document.getElementById('chat-main-area').classList.remove('translate-x-0');
+    document.getElementById('chat-main-area').classList.add('translate-x-full');
+};
+
+async function fetchChatUsers() {
+    if (!window.userData || !window.userData.docId || !window.companyId) return;
+
+    try {
+        const db = window.db;
+        // Fetch users from same companyId
+        const qUsers = query(collection(db, "users"), where("companyId", "==", window.companyId));
+        const snap = await getDocs(qUsers);
+        const allUsers = snap.docs.map(d => ({ docId: d.id, ...d.data() })).filter(u => u.docId !== window.userData.docId);
+
+        // Fetch chats for sorting and last message
+        const chatsSnap = await getDocs(query(collection(db, "chats"), where("users", "array-contains", window.userData.docId)));
+        const chatMeta = {};
+        chatsSnap.forEach(docSnap => {
+            const data = docSnap.data();
+            const otherUser = data.users.find(id => id !== window.userData.docId);
+            if (otherUser) chatMeta[otherUser] = data;
+        });
+
+        // Get Global Chat last message
+        const globalChatSnap = await getDocs(query(collection(db, "global_chat"), where("companyId", "==", window.companyId), orderBy("createdAt", "desc"), limit(1)));
+        const globalLast = globalChatSnap.empty ? "Company wide chat" : globalChatSnap.docs[0].data().text;
+
+        // Sort users by activity
+        chatUsers = allUsers.sort((a, b) => {
+            const timeA = chatMeta[a.docId]?.lastMessageAt?.toMillis() || 0;
+            const timeB = chatMeta[b.docId]?.lastMessageAt?.toMillis() || 0;
+            return timeB - timeA;
+        });
+
+        renderChatUserSearch('', globalLast, chatMeta);
+    } catch (e) {
+        console.error("Failed to load chat users:", e);
+    }
+}
+
+window.fetchChatUsers = fetchChatUsers; // Export for external use
+
+window.filterChatUsers = (term) => renderChatUserSearch(term.toLowerCase());
+
+function renderChatUserSearch(term, globalLastText = "Company wide chat", chatMeta = {}) {
+    const list = document.getElementById('chat-user-list');
+    if (!list) return;
+
+    list.innerHTML = `
+        <button onclick="window.selectChat('global')" class="w-full text-left p-3 hover:bg-gray-50 dark:hover:bg-[#111] flex items-center gap-3 border-b border-[#eaeaea] dark:border-[#333] transition relative">
+            <div class="w-10 h-10 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shrink-0 relative">
+                <i class="fa-solid fa-users text-sm"></i>
+                <span id="global-unread-badge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full hidden"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-semibold tracking-tight text-black dark:text-white">Global Group</h4>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${globalLastText}</p>
+            </div>
+        </button>
+    `;
+
+    const filtered = chatUsers.filter(u => (u.name || u.email || '').toLowerCase().includes(term));
+
+    filtered.forEach(u => {
+        const initial = (u.name || u.email || '?').charAt(0).toUpperCase();
+        const lastMsg = chatMeta[u.docId]?.lastMessage || u.email;
+        const isUnread = chatMeta[u.docId]?.lastSender && chatMeta[u.docId]?.lastSender !== window.userData.docId && !chatMeta[u.docId]?.read;
+
+        const btn = document.createElement('button');
+        btn.onclick = () => window.selectChat(u.docId);
+        btn.className = "w-full text-left p-3 hover:bg-gray-50 dark:hover:bg-[#111] flex items-center gap-3 border-b border-[#eaeaea] dark:border-[#333] transition relative";
+        btn.innerHTML = `
+            <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-[#333] font-bold flex items-center justify-center text-gray-600 dark:text-gray-200 shrink-0 overflow-hidden">
+                ${u.photoUrl ? `<img src="${u.photoUrl}" class="w-full h-full object-cover">` : initial}
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center mb-0.5">
+                    <h4 class="text-sm font-semibold tracking-tight text-black dark:text-white truncate pr-2">${u.name || u.email}</h4>
+                    <span class="text-[9px] text-gray-400 uppercase tracking-widest bg-gray-100 dark:bg-[#222] px-1.5 py-0.5 rounded">${u.role || 'EMP'}</span>
+                </div>
+                <p class="text-[10px] text-gray-500 truncate">${lastMsg}</p>
+            </div>
+            ${isUnread ? `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-black dark:bg-white rounded-full"></span>` : ''}
+        `;
+        list.appendChild(btn);
+    });
+}
+
+window.selectChat = (contextId) => {
+    window.currentChatContext = contextId;
+    window.currentChatUser = contextId === 'global' ? null : chatUsers.find(u => u.docId === contextId);
+
+    // UI Update Left Sidebar (Mobile Shift)
+    const mainArea = document.getElementById('chat-main-area');
+    if (mainArea) {
+        mainArea.classList.remove('translate-x-full');
+        mainArea.classList.add('translate-x-0');
+    }
+
+    // Header Update
+    const headerName = document.getElementById('active-chat-name');
+    const headerStatus = document.getElementById('active-chat-status');
+    const headerAvatar = document.getElementById('active-chat-avatar');
+    const callActions = document.getElementById('chat-call-actions');
+
+    if (contextId === 'global') {
+        if (headerName) headerName.textContent = 'Global Group';
+        if (headerStatus) headerStatus.textContent = 'Company Chat';
+        if (headerAvatar) {
+            headerAvatar.innerHTML = '<i class="fa-solid fa-users text-sm"></i>';
+            headerAvatar.className = 'w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shrink-0 font-bold';
+        }
+        if (callActions) callActions.classList.add('hidden');
+        runChatListener('global_chat', null);
+    } else {
+        if (headerName) headerName.textContent = window.currentChatUser.name || window.currentChatUser.email;
+        if (headerStatus) headerStatus.textContent = window.currentChatUser.email;
+        if (headerAvatar) {
+            const initial = (window.currentChatUser.name || window.currentChatUser.email)[0].toUpperCase();
+            if (window.currentChatUser.photoUrl) headerAvatar.innerHTML = `<img src="${window.currentChatUser.photoUrl}" class="w-full h-full object-cover">`;
+            else headerAvatar.innerHTML = initial;
+            headerAvatar.className = 'w-8 h-8 rounded-full bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-gray-200 flex items-center justify-center shrink-0 font-bold overflow-hidden text-xs';
+        }
+        if (callActions) callActions.classList.remove('hidden');
+
+        const combinedId = window.userData.docId < window.currentChatUser.docId ?
+            `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
+            `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
+
+        runChatListener('chats', combinedId);
+    }
+};
+
+function runChatListener(collectionName, subCollectionId) {
+    if (activeChatUnsub) activeChatUnsub();
+
+    const db = window.db;
+    const container = document.getElementById('chat-messages-emp');
+    if (container) container.innerHTML = '<div class="flex justify-center mt-20"><i class="fa-solid fa-circle-notch fa-spin text-slate-300 dark:text-slate-600 text-2xl"></i></div>';
+
+    let q;
+    if (subCollectionId) {
+        // 1-on-1 Chat
+        q = query(collection(db, "chats", subCollectionId, "messages"), orderBy("createdAt", "asc"), limit(100));
+    } else {
+        // Global Chat - Filtered by CompanyId
+        q = query(collection(db, "global_chat"), where("companyId", "==", window.companyId), orderBy("createdAt", "asc"), limit(100));
+    }
+
+    activeChatUnsub = onSnapshot(q, (snapshot) => {
+        if (!container) return;
+
+        if (snapshot.empty) {
+            container.innerHTML = '<div class="text-center text-slate-400 mt-20 text-xs"><p>No messages yet. Start the conversation!</p></div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        let lastSenderId = null;
+
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const isMe = data.email === window.userData.email;
+            const time = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...';
+            const msgId = docSnap.id;
+
+            // Mark as read if receiving and not read
+            if (!isMe && !data.read) {
+                const path = subCollectionId ? `chats/${subCollectionId}/messages/${msgId}` : `global_chat/${msgId}`;
+                updateDoc(doc(db, path), { read: true }).catch(() => { });
+                // Update chat doc if private
+                if (subCollectionId) {
+                    updateDoc(doc(db, "chats", subCollectionId), { read: true }).catch(() => { });
+                }
+            }
+
+            const canDelete = isMe && data.createdAt && (Date.now() - data.createdAt.toMillis() < 60000);
+
+            const div = document.createElement('div');
+            div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} drop-in w-full max-w-full group`;
+
+            div.innerHTML = `
+                <div class="flex items-end gap-2 max-w-[85%] ${isMe ? 'flex-row-reverse' : ''}">
+                    ${!isMe ? (data.senderPhotoUrl ?
+                    `<img src="${data.senderPhotoUrl}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 border border-white dark:border-[#111] mt-auto">` :
+                    `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-gray-200 mt-auto border border-white dark:border-[#111] uppercase">${(data.sender || data.email || '?')[0]}</div>`
+                ) : ''}
+                    
+                    <div class="relative ${isMe ? 'bg-black dark:bg-white text-white dark:text-black font-medium' : 'bg-gray-100 dark:bg-[#111] dark:text-white border border-[#eaeaea] dark:border-[#333] text-black'} p-3 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} sm:text-sm text-xs relative overflow-hidden break-words">
+                        ${!isMe && subCollectionId === null && lastSenderId !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'dark:text-gray-800 text-gray-200' : 'text-gray-500'} mb-1">${data.sender || data.email}</p>` : ''}
+                        <span class="leading-relaxed relative z-10 break-words">${data.text}</span>
+                        <div class="flex items-center justify-end gap-1 mt-1">
+                            <div class="text-[9px] ${isMe ? 'opacity-70' : 'text-gray-500'} text-right font-mono">${time}</div>
+                            ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-400' : 'opacity-70'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
+                        </div>
+                        ${canDelete ? `
+                            <button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="absolute -top-1 ${isMe ? '-left-1' : '-right-1'} w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            lastSenderId = data.email;
+        });
+
+        // Keep scroll at bottom
+        setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
+    });
+}
+
+window.sendChatMessage = async (e) => {
+    if (e) e.preventDefault();
+    const input = document.getElementById('chat-input-emp');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+
+    try {
+        const db = window.db;
+        const messageData = {
+            text,
+            sender: (window.userData.name || window.userData.email || 'Employee'),
+            senderPhotoUrl: (window.userData.photoUrl || ''),
+            email: (window.userData.email || ''),
+            role: (window.userData.role || 'USER'),
+            read: false,
+            createdAt: serverTimestamp(),
+            companyId: window.companyId // INJECT COMPANY ID!
+        };
+
+        if (window.currentChatContext === 'global') {
+            await addDoc(collection(db, "global_chat"), messageData);
+        } else {
+            const combinedId = window.userData.docId < window.currentChatUser.docId ?
+                `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
+                `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
+
+            const chatMetaUpdate = {
+                lastMessage: text,
+                lastMessageAt: serverTimestamp(),
+                lastSender: window.userData.docId || 'system',
+                read: false,
+                users: [window.userData.docId, window.currentChatUser.docId],
+                companyId: window.companyId // ALSO INJECT IN CHAT META
+            };
+
+            await setDoc(doc(db, "chats", combinedId), chatMetaUpdate, { merge: true });
+            await addDoc(collection(db, "chats", combinedId, "messages"), messageData);
+        }
+
+        const container = document.getElementById('chat-messages-emp');
+        if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
+    } catch (e) {
+        console.error("Chat Error:", e);
+        window.showToast("Failed to send: " + e.message, "error");
+    }
+};
+
+window.deleteChatMessage = async (msgId, subCollectionId) => {
+    if (!confirm("Delete this message?")) return;
+    try {
+        const db = window.db;
+        const path = subCollectionId && subCollectionId !== 'null' ? `chats/${subCollectionId}/messages/${msgId}` : `global_chat/${msgId}`;
+        await deleteDoc(doc(db, path));
+        window.showToast("Message deleted", "info");
+    } catch (e) {
+        window.showToast("Failed to delete: " + e.message, "error");
+    }
+};
