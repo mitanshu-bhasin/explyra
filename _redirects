@@ -1,0 +1,7 @@
+# Rewrites
+/booking/:username /booking/booking-page.html?u=:username 200
+/mailbox /email-app/src/index.html 200
+/mail /email-app/src/index.html 200
+
+# Redirects
+/firestore.rules /404.html 404
