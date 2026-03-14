@@ -530,9 +530,8 @@
                 });
                 const repos = await response.json();
                 
-                // Store default_branch for each repo using data attributes
                 repoSelector.innerHTML = repos.map(repo => 
-                    `<option value="${repo.full_name}" data-branch="${repo.default_branch || 'main'}">${repo.full_name}</option>`
+                    `<option value="${repo.full_name}">${repo.full_name}</option>`
                 ).join('');
                 
                 updateFrameworkDetection();
@@ -571,33 +570,48 @@
         deployBtn.addEventListener('click', async () => {
             const repoFullName = repoSelector.value;
             const subdomain = deploySubdomainSelector.value;
+            const token = localStorage.getItem('github_access_token');
+
             if (!repoFullName || !subdomain) return alert('Select repo and subdomain');
+            if (!token) return alert('GitHub connection missing');
 
             repoDeployStep.classList.add('hidden');
             deploymentLoadingStep.classList.remove('hidden');
             const statusTitle = document.getElementById('deploymentStatusTitle');
             const statusDesc = document.getElementById('deploymentStatusDesc');
             
-            statusTitle.textContent = 'Deploying to Vercel';
-            statusDesc.textContent = `Importing ${repoFullName}...`;
-
             try {
-                // 1. Trigger Deployment
-                const selectedOption = repoSelector.options[repoSelector.selectedIndex];
-                const branchRef = selectedOption.dataset.branch || 'main'; // Default to main if missing
+                // 1. Fetch Repository Details (repoId, default_branch)
+                statusTitle.textContent = 'Fetching Repository Details';
+                statusDesc.textContent = `Analyzing ${repoFullName}...`;
 
-                // Validate payload data
-                if (!repoFullName.includes('/')) throw new Error('Invalid repository format');
+                const repoRes = await fetch(`https://api.github.com/repos/${repoFullName}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const repoInfo = await repoRes.json();
+                
+                if (!repoInfo.id || !repoInfo.default_branch) {
+                    throw new Error('Could not retrieve repository details (ID/Branch)');
+                }
+
+                const repoId = repoInfo.id;
+                const defaultBranch = repoInfo.default_branch;
+                const projectName = repoFullName.split('/')[1];
+
+                // 2. Trigger Vercel Deployment
+                statusTitle.textContent = 'Deploying to Vercel';
+                statusDesc.textContent = `Importing ${repoFullName} (${defaultBranch})...`;
 
                 const deployRes = await fetch('https://api.vercel.com/v13/deployments', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        name: repoFullName.split('/')[1], 
+                        name: projectName,
                         gitSource: { 
                             type: 'github', 
                             repo: repoFullName,
-                            ref: branchRef 
+                            repoId: repoId,
+                            ref: defaultBranch 
                         } 
                     })
                 });
@@ -609,10 +623,10 @@
                 const projectId = deployData.projectId;
                 const fullDomain = `${subdomain}.mitanshu.tech`;
 
-                // 2. Poll for Status (Building -> Ready)
+                // 3. Poll for Status (Building -> Ready)
                 await pollDeploymentStatus(deploymentId, statusTitle, statusDesc);
 
-                // 3. Attach Subdomain to Vercel Project
+                // 4. Attach Subdomain to Vercel Project
                 statusTitle.textContent = 'Configuring Domain';
                 statusDesc.textContent = `Linking ${fullDomain} to Vercel...`;
 
@@ -625,20 +639,19 @@
                 const domainData = await domainRes.json();
                 if (domainData.error) throw new Error(domainData.error.message);
 
-                // 4. Create DNS CNAME Record
+                // 5. Create DNS CNAME Record
                 statusTitle.textContent = 'Finalizing DNS';
                 statusDesc.textContent = `Pointing ${fullDomain} to Vercel edge...`;
                 
-                // Point subdomain CNAME to cname.vercel-dns.com
                 await window.createDnsRecord(fullDomain, 'CNAME', 'cname.vercel-dns.com', subdomain, '1');
 
-                // 5. Success
+                // 6. Success
                 deploymentLoadingStep.classList.add('hidden');
                 deploySuccessStep.classList.remove('hidden');
                 visitSiteBtn.href = `https://${fullDomain}`;
             } catch (error) {
                 console.error("[Deploy Error]", error);
-                alert('Deployment/DNS Error: ' + error.message);
+                alert('Deployment Failed: ' + error.message);
                 deploymentLoadingStep.classList.add('hidden');
                 repoDeployStep.classList.remove('hidden');
             }
