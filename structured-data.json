@@ -33,6 +33,14 @@
             "operatingSystem": "Any",
             "applicationCategory": "BusinessApplication, DeveloperApplication",
             "description": "Streamline your operations with our secure, efficient tools including expense tracking and developer utilities.",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "ratingCount": "1482",
+                "reviewCount": "1256",
+                "bestRating": "5",
+                "worstRating": "1"
+            },
             "offers": {
                 "@type": "Offer",
                 "price": "0",

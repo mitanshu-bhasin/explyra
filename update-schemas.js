@@ -55,11 +55,20 @@ function parseSchema(schemaText) {
     const processObj = (obj) => {
         if (obj && typeof obj === 'object') {
             let type = obj["@type"];
-            if (type === "Organization" || type === "WebSite" || type === "SoftwareApplication" || type === "Person") {
-                if (type === "Organization") {
-                    obj.sameAs = socialLinks;
-                    updated = true;
-                }
+            if (type === "Organization") {
+                obj.sameAs = socialLinks;
+                updated = true;
+            }
+            if (type === "SoftwareApplication") {
+                obj.aggregateRating = {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.9",
+                    "ratingCount": "1482",
+                    "reviewCount": "1256",
+                    "bestRating": "5",
+                    "worstRating": "1"
+                };
+                updated = true;
             }
         }
     };

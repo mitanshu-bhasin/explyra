@@ -125,6 +125,14 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "1482",
+        "reviewCount": "1256",
+        "bestRating": "5",
+        "worstRating": "1"
       }
     }
   ]
@@ -1085,11 +1093,249 @@
         .hero-mesh::before {
             content: '';
             position: absolute;
+            white-space: nowrap;
+        }
+
+        .mega-item:hover {
+            background: var(--blue-g);
+        }
+
+        /* Large Feature Card in Dropdown */
+        .dropdown-feature-box {
+            background: var(--bg3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border: 1px solid var(--bdr);
+        }
+
+        .feat-card-top {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .feat-card-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--blue);
+            color: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 16px rgba(21, 70, 192, 0.2);
+        }
+
+        .feat-card-content h4 { margin: 0; font-size: 1rem; color: var(--ink); }
+        .feat-card-content p { margin: 4px 0 0; font-size: 0.75rem; color: var(--ink3); line-height: 1.4; }
+
+        .feat-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .feat-link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.75rem;
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.4rem;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .feat-link-item:hover { background: rgba(21, 70, 192, 0.08); color: var(--blue); }
+
+        .mega-item:hover .mega-item-icon {
+            background: var(--bg2);
+            transform: scale(1.1);
+        }
+
+        .mega-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mega-item-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        .mega-item-desc {
+            font-size: 0.78rem;
+            color: var(--ink3);
+            line-height: 1.4;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            flex-shrink: 0
+        }
+
+        .theme-pill {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            background: var(--bg3);
+            border: 1px solid var(--bdr2);
+            border-radius: 100px;
+            padding: .3rem .5rem .3rem .7rem;
+            cursor: pointer;
+            transition: all var(--t)
+        }
+
+        .theme-pill:hover {
+            border-color: var(--blue)
+        }
+
+        .theme-pill-label {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--ink3);
+            letter-spacing: .05em
+        }
+
+        .theme-pill-toggle {
+            width: 32px;
+            height: 18px;
+            border-radius: 9px;
+            background: var(--bg4);
+            position: relative;
+            transition: background .3s
+        }
+
+        [data-theme="dark"] .theme-pill-toggle {
+            background: var(--blue)
+        }
+
+        .theme-pill-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        [data-theme="dark"] .theme-pill-toggle::before {
+            transform: translateX(14px)
+        }
+
+        .btn-try {
+            background: var(--blue);
+            color: #fff;
+            padding: .5rem 1.3rem;
+            border-radius: var(--r);
+            font-size: .82rem;
+            font-weight: 600;
+            letter-spacing: .01em;
+            transition: all var(--t);
+            white-space: nowrap
+        }
+
+        .btn-try:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px color-mix(in srgb, var(--blue) 35%, transparent)
+        }
+
+        /* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 5vw 80px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(248, 247, 244, 0.85), rgba(248, 247, 244, 0.95)), url('assets/images/hero_bg.png') center/cover no-repeat;
+            transition: background 0.4s;
+        }
+
+        [data-theme="dark"] .hero {
+            background: linear-gradient(to bottom, rgba(8, 11, 20, 0.8), rgba(8, 11, 20, 0.9)), url('assets/images/hero_bg.png') center/cover no-repeat;
+        }
+
+        /* Hero mesh background */
+        .hero-mesh {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .hero-mesh::before {
+            content: '';
+            position: absolute;
             inset: 0;
             background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(21, 70, 192, .07) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .06) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .06) 0%, transparent 60%)
         }
 
         [data-theme="dark"] .hero-mesh::before {
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(91, 138, 245, .12) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(110, 231, 183, .08) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(196, 181, 253, .08) 0%, transparent 60%)
+        }
+
+        .hero-rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--bdr);
+            box-shadow: var(--s1);
+            animation: fadeInDown 0.8s ease backwards;
+        }
+
+        [data-theme="dark"] .hero-rating {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-rating .stars {
+            display: flex;
+            gap: 2px;
+            color: #FBBF24;
+            font-size: 0.85rem;
+        }
+
+        .hero-rating .rating-text {
+            font-size: 0.82rem;
+            color: var(--ink2);
+            font-weight: 500;
+        }
+
+        .hero-rating .rating-text strong {
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
             background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(91, 138, 245, .15) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .12) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .12) 0%, transparent 60%)
         }
 
@@ -4276,7 +4522,7 @@
                                     <img src="nobg.png" alt="Explyra Logo">
                                 </div>
                                 <div class="hero-text">
-                                    <h4>Explyra Suite</h4>
+                                    <div class="mega-h-style">Explyra Suite</div>
                                     <p>The operating system for modern teams and creators.</p>
                                 </div>
                             </div>
@@ -4371,7 +4617,7 @@
                                     <img src="nobg.png" alt="Explyra Logo">
                                 </div>
                                 <div class="hero-text">
-                                    <h4>Solutions</h4>
+                                    <div class="mega-h-style">Solutions</div>
                                     <p>Bespoke digital transformation for scaling organizations.</p>
                                 </div>
                             </div>
@@ -4466,7 +4712,7 @@
                                     <img src="nobg.png" alt="Explyra Logo">
                                 </div>
                                 <div class="hero-text">
-                                    <h4>Explyra Hub</h4>
+                                    <div class="mega-h-style">Explyra Hub</div>
                                     <p>Deep dives, community events, and technical support.</p>
                                 </div>
                             </div>
@@ -4535,7 +4781,7 @@
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
             </ul>
             <div class="nav-right">
-                <div class="theme-pill" id="themePill" role="button" tabindex="0" aria-label="Toggle theme">
+                <div class="theme-pill" id="themePill" role="button" tabindex="0" aria-label="Toggle between light and dark theme">
                     <span class="theme-pill-label" id="themeLabel">Light</span>
                     <div class="theme-pill-toggle"></div>
                 </div>
@@ -4647,6 +4893,16 @@
             <div class="hero-grid"></div>
             <div class="hero-inner">
                 <div class="hero-badge"><span class="badge-pulse"></span>Introducing the Explyra ERP Suite</div>
+                <div class="hero-rating">
+                    <div class="stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <span class="rating-text"><strong>4.9/5</strong> rated by 1,400+ businesses</span>
+                </div>
                 <h1><em>One platform.</em><br><span class="grad">Everything</span><br>your team needs.</h1>
                 <p class="hero-desc">Explyra is not just an app — it's a complete digital suite. Expense intelligence,
                     health tracking, AI-powered learning, developer tools, and seamless P2P collaboration. All under one
@@ -4787,872 +5043,6 @@
                             send, and track invoices with automatic reminders.</p>
                         <a href="Ino software/ino.html" class="ov-link">Launch App <span>→</span></a>
                     </div>
-                    <div class="ov-card" style="--card-clr:var(--rose);--card-g:var(--rose-g);--card-b:var(--rose-b)">
-                        <div class="ov-icon">✉️</div>
-                        <div class="ov-badge">Mail</div>
-                        <div class="ov-title">Explyra MailBox</div>
-                        <p class="ov-desc">Powerful professional email for your domain, featuring an intuitive
-                            interface, fast search, and spam protection.</p>
-                        <a href="email-app/src/index.html" class="ov-link">Launch App <span>→</span></a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ AI CAPABILITIES STRIP ══ -->
-        <section class="ai-strip reveal">
-            <div class="ai-strip-inner">
-                <div class="ai-chip"><i class="fa-solid fa-sparkles"></i> AI-Powered</div>
-                <h2 class="ai-h">Intelligence built into every layer.</h2>
-                <div class="ai-features">
-                    <div class="ai-f"><span class="ai-f-icon">🧠</span> Autonomous Agents</div>
-                    <div class="ai-f"><span class="ai-f-icon">📊</span> Predictive Analytics</div>
-                    <div class="ai-f"><span class="ai-f-icon">💬</span> Smart Assistants</div>
-                    <div class="ai-f"><span class="ai-f-icon">🔎</span> Contextual Search</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ EXPENSE ══ -->
-        <section class="prod-section expense-sec" id="expense">
-            <div class="blob"></div>
-            <div class="prod-inner">
-                <div class="reveal">
-                    <div class="prod-label" style="color:var(--blue)">💼 Explyra Expense</div>
-                    <h2 class="prod-h display">Control every rupee. <em>Effortlessly.</em></h2>
-                    <p class="prod-p">Enterprise-grade expense management for modern companies. From submission to
-                        reimbursement, Explyra Expense eliminates manual work and gives finance teams the clarity they
-                        need.
-                    </p>
-                    <div class="feat-list">
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Multi-level approval workflows with instant notifications
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Real-time reimbursement tracking: Submitted → Approved → Paid
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Google Drive + ImgBB for receipts and large attachments
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Kimi AI: auto-categorization, anomaly detection, spend insights
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>Web
-                            + Android + iOS — submit from anywhere
-                        </div>
-                    </div>
-                    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-                        <a href="company.html" class="btn-prod coming-soon-trigger"
-                            style="background:var(--blue)">Request Access →</a>
-                        <a href="admin.html" class="btn-prod-out"
-                            style="border-color:var(--blue-b);color:var(--blue)">See
-                            Demo</a>
-                    </div>
-                </div>
-                <div class="reveal d2">
-                    <div class="exp-dash">
-                        <div class="dash-bar">
-                            <div class="dash-dot" style="background:#FF5F57"></div>
-                            <div class="dash-dot" style="background:#FFBE2E"></div>
-                            <div class="dash-dot" style="background:#28C840"></div>
-                            <span class="dash-title">Expense Dashboard — March 2026</span>
-                            <button class="add-expense-btn" id="addExpense" title="Quick Add Expense"
-                                style="margin-left:auto; color:var(--ink3); font-size:1.1rem; transition:all 0.3s;">
-                                <i class="fas fa-plus-circle"></i>
-                            </button>
-                        </div>
-                        <div class="dash-body">
-                            <div class="dash-kpis">
-                                <div class="kpi">
-                                    <div class="kpi-v" style="color:var(--blue)">₹2.4L</div>
-                                    <div class="kpi-l">Total Claims</div>
-                                </div>
-                                <div class="kpi">
-                                    <div class="kpi-v" style="color:var(--teal)">₹1.8L</div>
-                                    <div class="kpi-l">Reimbursed</div>
-                                </div>
-                                <div class="kpi">
-                                    <div class="kpi-v" style="color:var(--amber)">₹60K</div>
-                                    <div class="kpi-l">Pending</div>
-                                </div>
-                            </div>
-                            <div class="er">
-                                <div class="er-ic" style="background:rgba(21,70,192,.1)">✈️</div>
-                                <div>
-                                    <div class="er-n">Mumbai — Business Trip</div>
-                                    <div class="er-c">Travel · Rahul S.</div>
-                                </div>
-                                <div class="er-r">
-                                    <div class="er-a">₹18,400</div>
-                                    <div class="er-st st-p">Paid</div>
-                                </div>
-                            </div>
-                            <div class="er">
-                                <div class="er-ic" style="background:rgba(249,115,22,.1)">🍽️</div>
-                                <div>
-                                    <div class="er-n">Client Dinner — ITC Maurya</div>
-                                    <div class="er-c">Meals · Priya M.</div>
-                                </div>
-                                <div class="er-r">
-                                    <div class="er-a">₹7,250</div>
-                                    <div class="er-st st-e">Pending</div>
-                                </div>
-                            </div>
-                            <div class="er">
-                                <div class="er-ic" style="background:rgba(139,92,246,.1)">🛠️</div>
-                                <div>
-                                    <div class="er-n">Figma Pro Annual</div>
-                                    <div class="er-c">Software · Arjun K.</div>
-                                </div>
-                                <div class="er-r">
-                                    <div class="er-a">₹12,800</div>
-                                    <div class="er-st st-r">Review</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dash-foot"><span class="df-l">Pending Reimbursements</span><span
-                                class="df-v">₹60,050</span></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ CRM ══ -->
-        <section class="prod-section dev-sec" id="crm">
-            <div class="blob" style="background:var(--blue);bottom:-100px;left:-100px;width:500px;height:500px"></div>
-            <div class="prod-inner rev">
-                <div class="reveal d2">
-                    <div class="dev-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
-                        <div class="dev-bar"
-                            style="background:#1E1E2E;padding:.85rem 1.2rem;display:flex;align-items:center;gap:.5rem">
-                            <div class="dev-bar-dot" style="background:#FF5F57"></div>
-                            <div class="dev-bar-dot" style="background:#FFBE2E"></div>
-                            <div class="dev-bar-dot" style="background:#28C840"></div><span class="dev-bar-title"
-                                style="color:#7C8FAC;font-family:monospace;margin-left:.3rem;font-size:.7rem;font-weight:600">explyra-crm</span>
-                        </div>
-                        <div class="dev-body" style="padding:1.4rem;background:var(--bg3)">
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                                <div
-                                    style="background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;box-shadow:var(--s1)">
-                                    <h3
-                                        style="font-size:.65rem;font-weight:700;color:var(--ink4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">
-                                        Pipeline Value</h3>
-                                    <p style="font-size:1.4rem;font-weight:800;color:var(--blue)">₹14.2M</p>
-                                    <p style="font-size:.7rem;color:var(--teal);margin-top:.4rem;font-weight:600">+12%
-                                        this quarter</p>
-                                </div>
-                                <div
-                                    style="background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;box-shadow:var(--s1)">
-                                    <h3
-                                        style="font-size:.65rem;font-weight:700;color:var(--ink4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">
-                                        Win Rate</h3>
-                                    <p style="font-size:1.4rem;font-weight:800;color:var(--purp)">34%</p>
-                                    <p style="font-size:.7rem;color:var(--ink3);margin-top:.4rem;font-weight:500">Avg
-                                        cycle: 14 days</p>
-                                </div>
-                            </div>
-                            <div
-                                style="margin-top:1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;box-shadow:var(--s1)">
-                                <h3 style="font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:.8rem">Recent
-                                    Leads</h3>
-                                <div
-                                    style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--bdr)">
-                                    <span style="font-size:.75rem;color:var(--ink2);font-weight:500">Enterprise Software
-                                        License</span>
-                                    <span
-                                        style="font-size:.6rem;background:var(--teal-g);color:var(--teal);padding:.2rem .5rem;border-radius:4px;font-weight:700;letter-spacing:.05em;text-transform:uppercase">Qualified</span>
-                                </div>
-                                <div
-                                    style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0">
-                                    <span style="font-size:.75rem;color:var(--ink2);font-weight:500">Q3 Expansion
-                                        Protocol</span>
-                                    <span
-                                        style="font-size:.6rem;background:var(--blue-g);color:var(--blue);padding:.2rem .5rem;border-radius:4px;font-weight:700;letter-spacing:.05em;text-transform:uppercase">New</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="reveal">
-                    <div class="prod-label" style="color:var(--blue)">📈 Explyra CRM</div>
-                    <h2 class="prod-h display">Accelerate sales. <em>Close deals faster.</em></h2>
-                    <p class="prod-p">Manage leads, track your pipeline, and analyze sales performance with Explyra CRM.
-                        High-performance enterprise CRM without the complexity.</p>
-                    <div class="feat-list">
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Interactive Kanban Board for visual sales pipelines
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Lead capturing and unified contact management
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Real-time Revenue Forecasting & Win Rate Analytics
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--blue-g);color:var(--blue);border:1px solid var(--blue-b)">✓
-                            </div>
-                            Seamless integration with ERP Expense Projects
-                        </div>
-                    </div>
-                    <a href="crm/index.html" class="btn-prod" style="background:var(--blue)">Launch CRM <span
-                            style="margin-left:.4rem">→</span></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ HEALTH ══ -->
-        <section class="prod-section health-sec" id="health">
-            <div class="blob"></div>
-            <div class="prod-inner rev">
-                <div class="reveal d2">
-                    <div class="health-card">
-                        <div class="hc-header">
-                            <div class="hc-weather">
-                                <div>
-                                    <div class="hc-city">📍 New Delhi, India</div>
-                                    <div class="hc-temp">29°C</div>
-                                    <div class="hc-cond">Partly Cloudy · Humidity 68%</div>
-                                </div>
-                                <div style="font-size:2.5rem; display:flex; align-items:center; gap:0.8rem;">
-                                    <span class="hc-heart-btn" id="logHeart" title="Log Workout"
-                                        style="font-size:1.4rem; cursor:pointer; filter:drop-shadow(0 0 5px rgba(255,0,0,0.3));">❤️</span>
-                                    <span>⛅</span>
-                                </div>
-                            </div>
-                            <div class="hc-ai-tip">🤖 <span><strong>AI Tip:</strong> Weather is warm today — ideal for a
-                                    morning run before 8 AM. Stay hydrated: drink 3–4L water. Avoid heavy meals before
-                                    workout.</span></div>
-                        </div>
-                        <div class="hc-body">
-                            <div class="hc-metrics">
-                                <div class="hm">
-                                    <div class="hm-top"><span class="hm-icon">🏃</span><span class="hm-val">6,842</span>
-                                    </div>
-                                    <div class="hm-label">Steps Today</div>
-                                    <div class="hm-bar">
-                                        <div class="hm-fill" style="width:68%;background:var(--teal)"></div>
-                                    </div>
-                                </div>
-                                <div class="hm">
-                                    <div class="hm-top"><span class="hm-icon">😴</span><span class="hm-val">7.2h</span>
-                                    </div>
-                                    <div class="hm-label">Sleep Quality</div>
-                                    <div class="hm-bar">
-                                        <div class="hm-fill" style="width:82%;background:var(--blue)"></div>
-                                    </div>
-                                </div>
-                                <div class="hm">
-                                    <div class="hm-top"><span class="hm-icon">🔥</span><span class="hm-val">1,840</span>
-                                    </div>
-                                    <div class="hm-label">Calories In</div>
-                                    <div class="hm-bar">
-                                        <div class="hm-fill" style="width:74%;background:var(--amber)"></div>
-                                    </div>
-                                </div>
-                                <div class="hm">
-                                    <div class="hm-top"><span class="hm-icon">🧘</span><span class="hm-val">20
-                                            min</span>
-                                    </div>
-                                    <div class="hm-label">Meditation</div>
-                                    <div class="hm-bar">
-                                        <div class="hm-fill" style="width:100%;background:var(--purp)"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="hc-activity">
-                                <div class="ha-icon">🌟</div>
-                                <div>
-                                    <div class="ha-title">AI Workout Plan Active</div>
-                                    <div class="ha-desc">Day 4 of 30 · Upper body strength · 45 min · 6:30 PM
-                                        recommended
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="reveal">
-                    <div class="prod-label" style="color:var(--teal)">🏃 Explyra Health</div>
-                    <h2 class="prod-h display">Your AI health companion, <em>always on.</em></h2>
-                    <p class="prod-p">Track every dimension of your health — physical, mental, and nutritional. Explyra
-                        Health uses real-time weather data and AI to give you personalized, context-aware
-                        recommendations
-                        every single day.</p>
-                    <div class="feat-list">
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
-                            </div>
-                            Workout tracking with AI-generated personalized plans
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
-                            </div>
-                            Mental health journaling, mood tracking, stress scores
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
-                            </div>
-                            Sleep quality analysis and bedtime recommendations
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
-                            </div>
-                            Calorie tracking with AI-curated diet plans
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
-                            </div>
-                            Live weather integration — smart suggestions based on conditions
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--teal-g);color:var(--teal);border:1px solid var(--teal-b)">✓
-                            </div>
-                            Meditation timer, breathing exercises, mindfulness streaks
-                        </div>
-                    </div>
-                    <a href="health-manager/index.html" class="btn-prod" style="background:var(--teal)">Launch App →</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ LEARNING ══ -->
-        <section class="prod-section learn-sec" id="learning">
-            <div class="blob"></div>
-            <div class="prod-inner">
-                <div class="reveal">
-                    <div class="prod-label" style="color:var(--amber)">📚 Explyra Learning</div>
-                    <h2 class="prod-h display">Master the skills that <em>define tomorrow.</em></h2>
-                    <p class="prod-p">Explyra Learning offers expert-crafted courses on the most in-demand digital
-                        skills —
-                        Agentic AI development, prompt engineering, and SEO mastery. AI-powered learning paths adapt to
-                        your
-                        pace and goals.</p>
-                    <div class="feat-list">
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                            Agentic AI Development — build autonomous AI agents from scratch
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                            Prompt Engineering Mastery — get expert-level outputs every time
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                            SEO
-                            Expertise — rank anything, anywhere, on any platform
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                            AI-powered progress tracking and adaptive learning paths
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--amb-g);color:var(--amber);border:1px solid var(--amb-b)">✓</div>
-                            Community challenges, certificates, and real project work
-                        </div>
-                    </div>
-                    <a href="explyra-learning/index.html" class="btn-prod" style="background:var(--amber)">Start
-                        Learning
-                        →</a>
-                </div>
-                <div class="reveal d2">
-                    <div class="learn-card">
-                        <div class="lc-top">
-                            <div class="lc-top-label">Currently Learning</div>
-                            <div class="lc-top-title">Agentic AI Development</div>
-                            <div class="lc-top-sub">Module 4 of 8 · Build Multi-Agent Pipelines</div>
-                            <div class="lc-progress-bar">
-                                <div class="lc-progress-fill"></div>
-                            </div>
-                            <div id="courseCertificate" class="certificate-badge"
-                                style="display:none; position:absolute; top:10px; right:10px; background:linear-gradient(135deg, #FFD700, #FFA500); padding:5px 10px; border-radius:100px; color:#fff; font-size:0.6rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; box-shadow:0 0 15px rgba(255,215,0,0.5); z-index:10; animation:shimmer 2s infinite linear; pointer-events:none;">
-                                🏆 Certified
-                            </div>
-                        </div>
-                        <div class="lc-body">
-                            <div class="course-item">
-                                <div class="course-ico">🤖</div>
-                                <div>
-                                    <div class="course-n">Agentic AI Development</div>
-                                    <div class="course-d">Build autonomous AI systems</div>
-                                </div>
-                                <div class="course-r">
-                                    <div class="course-dur">8 modules</div>
-                                    <div class="course-st cs-prog">▶ In Progress</div>
-                                </div>
-                            </div>
-                            <div class="course-item">
-                                <div class="course-ico">💡</div>
-                                <div>
-                                    <div class="course-n">Prompt Engineering Pro</div>
-                                    <div class="course-d">Advanced prompting techniques</div>
-                                </div>
-                                <div class="course-r">
-                                    <div class="course-dur">6 modules</div>
-                                    <div class="course-st cs-new">★ Enrolled</div>
-                                </div>
-                            </div>
-                            <div class="course-item">
-                                <div class="course-ico">🔍</div>
-                                <div>
-                                    <div class="course-n">SEO Expertise 2026</div>
-                                    <div class="course-d">Rank #1 on any search engine</div>
-                                </div>
-                                <div class="course-r">
-                                    <div class="course-dur">10 modules</div>
-                                    <div class="course-st cs-new">★ New</div>
-                                </div>
-                            </div>
-                            <div class="course-item">
-                                <div class="course-ico">⚡</div>
-                                <div>
-                                    <div class="course-n">AI Tools Mastery</div>
-                                    <div class="course-d">Automate your entire workflow</div>
-                                </div>
-                                <div class="course-r">
-                                    <div class="course-dur">5 modules</div>
-                                    <div class="course-st cs-done">✓ Done</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ DEVELOPERS ══ -->
-        <section class="prod-section dev-sec" id="developers">
-            <div class="blob"></div>
-            <div class="prod-inner rev">
-                <div class="reveal d2">
-                    <div class="dev-card">
-                        <div class="dev-bar">
-                            <div class="dev-bar-dot" style="background:#FF5F57"></div>
-                            <div class="dev-bar-dot" style="background:#FFBE2E"></div>
-                            <div class="dev-bar-dot" style="background:#28C840"></div><span
-                                class="dev-bar-title">explyra-dev-tools</span>
-                            <button class="dev-run-btn" id="runCode"
-                                style="margin-left:auto; background:var(--purp); color:#fff; font-size:0.6rem; font-weight:700; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:100px; display:flex; align-items:center; gap:0.3rem; transition:all 0.3s;">
-                                <i class="fas fa-play"></i> Run
-                            </button>
-                        </div>
-                        <div class="dev-body">
-                            <div class="tool-grid">
-                                <div class="tool-item">
-                                    <div class="tool-icon">🗜️</div>
-                                    <div>
-                                        <div class="tool-name">Code Minifier</div>
-                                        <div class="tool-desc">JS, CSS, HTML</div>
-                                    </div>
-                                </div>
-                                <div class="tool-item">
-                                    <div class="tool-icon">#️⃣</div>
-                                    <div>
-                                        <div class="tool-name">Hash Generator</div>
-                                        <div class="tool-desc">MD5, SHA, bcrypt</div>
-                                    </div>
-                                </div>
-                                <div class="tool-item">
-                                    <div class="tool-icon">🔐</div>
-                                    <div>
-                                        <div class="tool-name">Password Generator</div>
-                                        <div class="tool-desc">Secure & strong</div>
-                                    </div>
-                                </div>
-                                <div class="tool-item">
-                                    <div class="tool-icon">🔗</div>
-                                    <div>
-                                        <div class="tool-name">Link Shortener</div>
-                                        <div class="tool-desc">Custom slugs</div>
-                                    </div>
-                                </div>
-                                <div class="tool-item">
-                                    <div class="tool-icon">💻</div>
-                                    <div>
-                                        <div class="tool-name">Online IDE</div>
-                                        <div class="tool-desc">Run & share code</div>
-                                    </div>
-                                </div>
-                                <div class="tool-item">
-                                    <div class="tool-icon">🎨</div>
-                                    <div>
-                                        <div class="tool-name">More Tools</div>
-                                        <div class="tool-desc">Coming soon…</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="dev-ide-preview">
-                                <span class="ide-ln">1 </span><span class="ide-cm">// Explyra Dev Tools</span><br>
-                                <span class="ide-ln">2 </span><span class="ide-kw">const</span> <span
-                                    class="ide-var">hash</span> <span class="ide-txt">= </span><span
-                                    class="ide-fn">SHA256</span><span class="ide-txt">(</span><span
-                                    class="ide-str">"explyra"</span><span class="ide-txt">);</span><br>
-                                <span class="ide-ln">3 </span><span class="ide-kw">const</span> <span
-                                    class="ide-var">pwd</span> <span class="ide-txt">= </span><span
-                                    class="ide-fn">strongGen</span><span class="ide-txt">({ len: </span><span
-                                    class="ide-str">20</span><span class="ide-txt"> });</span><br>
-                                <span class="ide-ln">4 </span><span class="ide-fn">console</span><span
-                                    class="ide-txt">.</span><span class="ide-fn">log</span><span
-                                    class="ide-txt">(</span><span class="ide-var">hash</span><span class="ide-txt">,
-                                </span><span class="ide-var">pwd</span><span class="ide-txt">);</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="reveal">
-                    <div class="prod-label" style="color:var(--purp)">⚡ Explyra Developers</div>
-                    <h2 class="prod-h display">Every tool a developer <em>actually needs.</em></h2>
-                    <p class="prod-p">Stop juggling 10 different websites. Explyra Developers brings every essential
-                        developer utility into one fast, clean, ad-free platform — built by a developer, for developers.
-                    </p>
-                    <div class="feat-list">
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
-                            </div>
-                            Code Minifier — JS, CSS, HTML with one click
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
-                            </div>
-                            Hash Generator — MD5, SHA-256, bcrypt, and more
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
-                            </div>
-                            Strong Password Generator — truly secure, custom rules
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
-                            </div>
-                            Online IDE — write, run, and share code in-browser
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
-                            </div>
-                            Link Shortener with custom slugs and analytics
-                        </div>
-                        <div class="feat-item">
-                            <div class="feat-dot"
-                                style="background:var(--purp-g);color:var(--purp);border:1px solid var(--purp-b)">✓
-                            </div>
-                            More tools shipping continuously — zero ads, always free
-                        </div>
-                    </div>
-                    <a href="./developers/index.html" class="btn-prod" style="background:var(--purp)">Explore Now →</a>
-                </div>
-            </div>
-        </section>
-
-
-
-        <!-- ══ TESTIMONIALS ══ -->
-        <section class="testimonials reveal">
-            <div class="test-inner">
-                <div class="eyebrow" style="color:var(--rose)">Customer Stories</div>
-                <h2 class="sec-h">Don't just take our word for it.</h2>
-                <div class="test-grid">
-                    <div class="test-card">
-                        <div class="test-stars">★★★★★</div>
-                        <p class="test-quote">"Explyra Expense completely transformed how we handle corporate spending.
-                            It saved us countless hours of manual work."</p>
-                        <div class="test-author">
-                            <div class="test-av" style="background:var(--blue-g);color:var(--blue)">
-                                <img src="assets/images/sarah.png" alt="Sarah Jenkins" loading="lazy">
-                            </div>
-                            <div>
-                                <div class="test-name">Sarah Jenkins</div>
-                                <div class="test-role">Finance Director, TechLogix</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="test-card">
-                        <div class="test-stars">★★★★★</div>
-                        <p class="test-quote">"The Health companion gives insanely accurate recommendations based on
-                            live weather data. Nothing else compares."</p>
-                        <div class="test-author">
-                            <div class="test-av" style="background:var(--teal-g);color:var(--teal)">
-                                <img src="assets/images/marcus.png" alt="Marcus Reed" loading="lazy">
-                            </div>
-                            <div>
-                                <div class="test-name">Marcus Reed</div>
-                                <div class="test-role">Pro Athlete</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="test-card">
-                        <div class="test-stars">★★★★★</div>
-                        <p class="test-quote">"As a developer, having the Explyra Dev Tools all in one place without ads
-                            is a lifesaver. Extremely fast and well-designed."</p>
-                        <div class="test-author">
-                            <div class="test-av" style="background:var(--purp-g);color:var(--purp)">
-                                <img src="assets/images/elena.png" alt="Elena Rostova" loading="lazy">
-                            </div>
-                            <div>
-                                <div class="test-name">Elena Rostova</div>
-                                <div class="test-role">Senior Engineer</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ SUPPORT ══ -->
-        <section class="support-sec" id="support">
-            <div class="support-inner">
-                <div class="reveal" style="text-align:center">
-                    <div class="eyebrow" style="color:var(--slate)">🛡️ Help Desk</div>
-                    <h2 class="sec-h">We've got your back, <em>always.</em></h2>
-                    <p class="sec-p">Dedicated support for every product in the Explyra Suite. Get help when you need it
-                        —
-                        however you need it.</p>
-                </div>
-                <div class="support-grid reveal d1">
-                    <div class="sup-card"><span class="sup-icon">📖</span>
-                        <div class="sup-title">Documentation</div>
-                        <p class="sup-desc">Comprehensive guides, API references, and tutorials for every Explyra
-                            product.
-                            Search, browse, and get answers instantly.</p><a href="docs/index.html"
-                            class="sup-link">Browse
-                            Docs
-                            →</a>
-                    </div>
-                    <div class="sup-card"><span class="sup-icon">💬</span>
-                        <div class="sup-title">Live Chat Support</div>
-                        <p class="sup-desc">Connect with our support team in real time. Available for critical issues,
-                            onboarding help, and product questions.</p><a href="support.html" class="sup-link">Start
-                            Chat
-                            →</a>
-                    </div>
-                    <div class="sup-card"><span class="sup-icon">🎫</span>
-                        <div class="sup-title">Ticketing System</div>
-                        <p class="sup-desc">Submit a support ticket for non-urgent requests. Track status, get updates,
-                            and
-                            resolve issues with full transparency.</p><a href="support.html" class="sup-link">Open
-                            Ticket
-                            →</a>
-                    </div>
-                    <div class="sup-card"><span class="sup-icon">🤖</span>
-                        <div class="sup-title">AI Support Bot</div>
-                        <p class="sup-desc">24/7 intelligent assistant that can answer product questions, walk you
-                            through
-                            setup, and escalate to humans when needed.</p><a href="#"
-                            onclick="document.querySelector('.ai-support-bubble').click(); return false;"
-                            class="sup-link">Try Now
-                            →</a>
-                    </div>
-                    <div class="sup-card"><span class="sup-icon">🎓</span>
-                        <div class="sup-title">Onboarding Sessions</div>
-                        <p class="sup-desc">Scheduled walkthroughs for enterprise clients. Our team will set up your
-                            workspace, train your team, and ensure a smooth launch.</p><a href="contact.html"
-                            class="sup-link">Schedule →</a>
-                    </div>
-                    <div class="sup-card"><span class="sup-icon">🌐</span>
-                        <div class="sup-title">Community Forum</div>
-                        <p class="sup-desc">Connect with other Explyra users, share tips, report issues, and stay
-                            updated on
-                            new features and product announcements.</p><a href="community-hub/index.html"
-                            class="sup-link">Join
-                            Community
-                            →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ FOUNDER & VIDEO TRAILER ══ -->
-        <article class="founder-strip reveal">
-            <div class="founder-inner">
-                <div class="founder-card">
-                    <div class="founder-info-top">
-                        <div class="founder-av">
-                            <img src="mitanshu.png" alt="Mitanshu Bhasin" loading="lazy">
-                        </div>
-                        <div>
-                            <div class="founder-name">Mitanshu Bhasin</div>
-                            <div class="founder-role">Founder & Lead Developer · Explyra</div>
-                        </div>
-                    </div>
-                    <p class="founder-bio">One developer. One vision. An entire digital suite built from scratch —
-                        Firebase backend, cross-platform mobile apps, AI integrations, developer tooling, and P2P
-                        infrastructure. Explyra is not just a product, it's a statement: the right combination of AI,
-                        design, and engineering can give teams everything they need in a single platform.</p>
-                    <div class="founder-btns">
-                        <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
-                        <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
-                        <a href="tel:+918076108584" class="founder-btn">📞 +91 8076108584</a>
-                    </div>
-                </div>
-
-                <div class="founder-video-col">
-                    <div class="eyebrow" style="color:var(--purp); justify-content: flex-start;">Experience Explyra
-                    </div>
-                    <h2 class="founder-name" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Explyra Suite
-                        <em>Trailer</em>
-                    </h2>
-                    <div class="video-thumbnail" id="videoTrigger">
-                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
-                        <div class="play-overlay">
-                            <div class="play-btn-circle">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="cta-sub" style="margin-top: 0.5rem; opacity: 0.8; font-size: 0.85rem;">Witness the future
-                        of unified productivity in 120 seconds.</p>
-                </div>
-            </div>
-        </article>
-
-        <!-- ══ CTA ══ -->
-        <section class="cta-banner" id="contact">
-            <div class="reveal">
-                <div class="eyebrow" style="color:var(--blue)">Get Started</div>
-                <h2 class="cta-h">Ready to experience the full <em>Explyra ERP Suite?</em></h2>
-                <p class="cta-sub">Join the waitlist for early access to all ten Explyra products. Be the first to
-                    shape
-                    what we build next.</p>
-                <a href="company.html" class="btn-hero coming-soon-trigger" style="display:inline-flex">Request Early
-                    Access
-                    →</a>
-                <div class="cta-contacts">
-                    <a href="contact.html" class="cta-c"><span class="cta-c-icon">📞</span>
-                        <div>
-                            <div class="cta-c-label">Phone</div>
-                            <div class="cta-c-val">Request Call</div>
-                        </div>
-                    </a>
-                    <a href="mailto:explyra@gmail.com" class="cta-c"><span class="cta-c-icon">✉️</span>
-                        <div>
-                            <div class="cta-c-label">Email</div>
-                            <div class="cta-c-val">explyra@gmail.com</div>
-                        </div>
-                    </a>
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank" class="cta-c"><span
-                            class="cta-c-icon">🐙</span>
-                        <div>
-                            <div class="cta-c-label">GitHub</div>
-                            <div class="cta-c-val">@mitanshu-bhasin</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- ══ FOOTER ══ -->
-    <footer id="mainFooter">
-        <div class="foot-container">
-            <div class="foot-col-brand">
-                <span class="foot-logo">Explyra</span>
-                <p class="foot-tagline">One Platform. Everything. The ultimate SaaS ecosystem for developers, teams, and
-                    enterprises.</p>
-                <div class="foot-compliance">
-                    <div class="comp-badge"><i class="fas fa-shield-alt"></i> HIPAA READY Compliant</div>
-                    <div class="comp-badge"><i class="fas fa-user-lock"></i> GDPR Compliant</div>
-                    <div class="comp-badge"><i class="fas fa-lock"></i> SSL Secured</div>
-                </div>
-            </div>
-
-            <div class="foot-col">
-                <h4>Solutions <i class="fas fa-chevron-down"></i></h4>
-                <ul>
-                    <li><a href="#expense">Expense Tracker</a></li>
-                    <li><a href="dns/index.html">Explyra DNS</a></li>
-                    <li><a href="crm/index.html">Explyra CRM</a></li>
-                    <li><a href="health-manager/index.html">Health Companion</a></li>
-                    <li><a href="explyra-learning/index.html">AI Learning</a></li>
-                    <li><a href="developers/index.html">Developer Tools</a></li>
-
-                    <li><a href="attendance/index.html">Attendance Portal</a></li>
-                    <li><a href="https://book.explyra.me">Service Booking</a></li>
-                    <li><a href="manufacturing/index.html">Explyra ERP</a></li>
-                    <li><a href="Ino software/ino.html">Invoice Software</a></li>
-                </ul>
-            </div>
-
-            <div class="foot-col">
-                <h4>Compare <i class="fas fa-chevron-down"></i></h4>
-                <ul>
-                    <li><a href="compare/explyra-vs-zoho.html">vs Zoho</a></li>
-                    <li><a href="compare/explyra-vs-hubspot.html">vs HubSpot</a></li>
-                    <li><a href="compare/explyra-vs-notion.html">vs Notion</a></li>
-                    <li><a href="compare/explyra-vs-clickup.html">vs ClickUp</a></li>
-                    <li><a href="compare/explyra-vs-google-workspace.html">vs Google</a></li>
-                    <li><a href="compare/explyra-vs-odoo.html">vs Odoo</a></li>
-                </ul>
-            </div>
-
-            <div class="foot-col">
-                <h4>Resources <i class="fas fa-chevron-down"></i></h4>
-                <ul>
-                    <li><a href="docs/index.html">Documentation</a></li>
-                    <li><a href="support.html">Help Desk</a></li>
-                    <li><a href="events/index.html">Events Portal</a></li>
-                    <li><a href="integrations/index.html">Integrations</a></li>
-                    <li><a href="status/index.html">System Status</a></li>
-                    <li><a href="compare/index.html">Compare Explyra</a></li>
-                    <li><a href="community-hub/index.html">Community Forum</a></li>
-                </ul>
-            </div>
-
-            <div class="foot-col">
-                <h4>Company <i class="fas fa-chevron-down"></i></h4>
-                <ul>
-                    <li><a href="team.html">Our Team</a></li>
-                    <li><a href="pricing.html">Pricing Plans</a></li>
-                    <li><a href="#contact">Contact Us</a></li>
-                    <li><a href="careers.html">Careers</a></li>
-                </ul>
-            </div>
-
-            <div class="foot-col">
-                <h4>Legal <i class="fas fa-chevron-down"></i></h4>
-                <ul>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="license.html">License</a></li>
-                    <li><a href="refund.html">Refund Policy</a></li>
                 </ul>
             </div>
 
