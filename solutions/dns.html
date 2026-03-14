@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra Solutions | DNS & Mini Hosting Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/docs/style.css">
+    <style>
+        :root {
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --surf: #FFFFFF;
+            --ink: #0D1117;
+            --blue: #1546C0;
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --surf: #141928;
+            --ink: #EEF0F8;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .hero-dns {
+            padding: 120px 5vw 80px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(21, 70, 192, 0.05), rgba(21, 70, 192, 0.1));
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .sol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 5vw;
+        }
+
+        .sol-card {
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            padding: 2.5rem;
+            border-radius: 16px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sol-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(21, 70, 192, 0.1);
+            border-color: var(--blue);
+        }
+
+        .btn-main {
+            background: var(--blue);
+            color: #fff;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        .btn-main:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <div style="width: 32px; height: 32px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-cloud-upload-alt" style="color: #fff; font-size: 0.8rem;"></i>
+            </div>
+            <span style="font-family: 'Playfair Display', serif; font-weight: 700; color: var(--ink);">Explyra Solutions</span>
+        </a>
+    </nav>
+
+    <header class="hero-dns">
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 1.5rem;">Mini Hosting. <br>Maximum Impact.</h1>
+        <p style="font-size: 1.25rem; color: var(--ink3); max-width: 700px; margin: 0 auto;">Build, deploy, and scale your web applications with integrated DNS and edge-focused static hosting.</p>
+    </header>
+
+    <main class="container">
+        <div class="sol-grid">
+            <div class="sol-card">
+                <i class="fas fa-network-wired" style="font-size: 2rem; color: var(--blue); margin-bottom: 1.5rem;"></i>
+                <h3>Developer DNS</h3>
+                <p>An authoritative DNS network designed for speed. Managed via a clean dashboard or programmable API for dynamic infrastructure.</p>
+            </div>
+            <div class="sol-card">
+                <i class="fas fa-code-branch" style="font-size: 2rem; color: #7c3aed; margin-bottom: 1.5rem;"></i>
+                <h3>Git-Powered Deploys</h3>
+                <p>Connect your GitHub account and let our builders handle the rest. Every push triggers an automatic update to your global edge assets.</p>
+            </div>
+            <div class="sol-card">
+                <i class="fas fa-shield-alt" style="font-size: 2rem; color: #10b981; margin-bottom: 1.5rem;"></i>
+                <h3>Edge Security</h3>
+                <p>Built-in SSL, DDoS protection, and global Anycast routing included with every project. Secure by default, no configuration needed.</p>
+            </div>
+        </div>
+
+        <section style="text-align: center; padding: 6rem 5vw; background: var(--bg3); border-radius: 30px; margin: 0 5vw 4rem;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; margin-bottom: 1.5rem;">Ready to launch?</h2>
+            <p style="margin-bottom: 2.5rem; color: var(--ink3); font-size: 1.1rem;">Explore the technical documentation to get started with your first deployment.</p>
+            <a href="/docs/dns.html" class="btn-main">View Technical Docs</a>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 3rem; border-top: 1px solid var(--bdr);">
+        <p>&copy; 2026 Explyra Hosting Platform. Precision Engineered Infrastructure.</p>
+    </footer>
+
+    <script>
+        // Apply theme from localStorage, default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</body>
+
+</html>

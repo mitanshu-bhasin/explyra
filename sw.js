@@ -182,6 +182,49 @@ self.addEventListener('notificationclick', (event) => {
     );
 });
 
+// ── BACKGROUND SYNC ────────────────────────────────────────
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'sync-expenses') {
+        event.waitUntil(syncExpenses());
+    }
+});
+
+async function syncExpenses() {
+    console.log('[SW] Syncing expenses...');
+    // Implementation for background sync logic
+}
+
+// ── PWA WIDGETS ────────────────────────────────────────────
+self.addEventListener('widgetinstall', (event) => {
+    console.log('[SW] Widget installed:', event.widget.tag);
+    event.waitUntil(updateWidget(event.widget));
+});
+
+self.addEventListener('widgetuninstall', (event) => {
+    console.log('[SW] Widget uninstalled:', event.widget.tag);
+});
+
+self.addEventListener('widgetresume', (event) => {
+    console.log('[SW] Widget resumed:', event.widget.tag);
+    event.waitUntil(updateWidget(event.widget));
+});
+
+self.addEventListener('widgetclick', (event) => {
+    if (event.action === 'refresh') {
+        event.waitUntil(updateWidget(event.widget));
+    }
+});
+
+async function updateWidget(widget) {
+    const template = await fetch('expense-summary.json').then(r => r.json());
+    const data = await fetch('expense-data.json').then(r => r.json());
+    
+    await self.widgets.updateByTag(widget.tag, {
+        template: JSON.stringify(template),
+        data: JSON.stringify(data)
+    });
+}
+
 // ── PERIODIC BACKGROUND SYNC (if supported) ─────────────────
 self.addEventListener('periodicsync', (event) => {
     if (event.tag === 'update-cache') {
