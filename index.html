@@ -488,7 +488,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 300;
+            z-index: 2000;
             height: 64px;
             display: flex;
             align-items: center;
@@ -561,12 +561,8 @@
         }
 
         /* Dropdown & Mega Menu Fix */
-        header nav {
-            position: relative; /* Anchor for absolute wide dropdowns */
-        }
-
         .nav-item-dropdown {
-            position: static; /* Allow dropdown to use nav width */
+            position: static; /* Let mega-menu center relative to the navbar */
             display: flex;
             align-items: center;
             height: 100%;
@@ -590,26 +586,100 @@
             transform: rotate(180deg);
         }
 
+        .nav-item-dropdown {
+            position: static; /* Let mega-menu center relative to the navbar */
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-item-dropdown:hover {
+            z-index: 100;
+        }
+
+        /* Hover Bridge on the trigger ensures mouse can reach the menu without it closing */
+        .dropdown-trigger {
+            position: relative;
+        }
+
+        .dropdown-trigger::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: transparent;
+            z-index: 5;
+            display: none;
+        }
+
+        .nav-item-dropdown:hover .dropdown-trigger::after {
+            display: block;
+        }
+
         .dropdown-content {
             position: absolute;
             top: 100%;
             left: 50%;
-            transform: translateX(-50%) translateY(20px);
+            transform: translateX(-50%) translateY(10px); /* Smaller gap for better reach */
             background: var(--bg2);
             border: 1px solid var(--bdr);
             border-radius: 20px;
             width: min(96vw, 1150px);
-            padding: 3rem;
+            padding: 2.5rem;
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            /* Hover Intent fix: Opening delay to prevent accidental neighbor trigger */
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+            transition-delay: 0s;
             z-index: 1000;
             pointer-events: none;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 3rem;
+            gap: 2.5rem;
             backdrop-filter: blur(20px);
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Clear any potential blue highlights from scrollbars or items */
+        .dropdown-content::-webkit-scrollbar {
+            width: 6px;
+            height: 0px !important; /* Force hide horizontal bar */
+        }
+        
+        .dropdown-content::-webkit-scrollbar-thumb {
+            background-color: var(--blue);
+            border-radius: 10px;
+        }
+
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid var(--bg2);
+            filter: drop-shadow(0 -1px 1px var(--bdr));
+        }
+
+        [data-theme="dark"] .dropdown-content::before {
+            border-bottom-color: rgba(15, 20, 35, 0.98);
+        }
+
+        /* Products dropdown arrow position */
+        .nav-item-dropdown:nth-of-type(1) .dropdown-content::before {
+            left: 17.2%; 
+        }
+
+        /* Solutions dropdown arrow position */
+        .nav-item-dropdown:nth-of-type(2) .dropdown-content::before {
+            left: 24.2%;
         }
 
         [data-theme="dark"] .dropdown-content {
@@ -623,6 +693,8 @@
             visibility: visible;
             transform: translateX(-50%) translateY(0);
             pointer-events: all;
+            /* Delay opening slightly so accidental passthrough doesn't switch menus */
+            transition-delay: 0.15s;
         }
 
         .mega-column {
@@ -3126,7 +3198,7 @@
             max-width: 1250px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1.5fr repeat(5, 1fr);
+            grid-template-columns: 1.5fr repeat(6, 1fr);
             gap: 2rem;
         }
 
@@ -4111,7 +4183,7 @@
 
     <!-- HEADER & NAV -->
     <header>
-        <nav aria-label="Main Navigation">
+        <nav class="main-nav" aria-label="Main Navigation">
             <a href="#" class="nav-logo">
                 <div class="nav-logo-icon">
                     <svg viewBox="0 0 24 24">
@@ -5430,6 +5502,14 @@
                     <li><a href="terms.html">Terms of Service</a></li>
                     <li><a href="license.html">License</a></li>
                     <li><a href="refund.html">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Download <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="#"><i class="fab fa-android"></i> Android</a></li>
+                    <li><a href="#"><i class="fab fa-apple"></i> iOS</a></li>
                 </ul>
             </div>
         </div>

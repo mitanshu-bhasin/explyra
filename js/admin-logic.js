@@ -256,7 +256,7 @@ onAuthStateChanged(auth, async (user) => {
                 }
                 // ------------------------------
 
-                if ((userData.role === 'pending' || !userData.companyId) && !['explyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
+                if (!userData.companyId && !['explyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                     window.location.href = 'company.html';
                     return;
                 }
