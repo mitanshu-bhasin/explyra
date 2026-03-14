@@ -1,0 +1,13 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "explyra"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-03-14"
+
+[observability]
+enabled = true
+
+[build]
+command = "npm run build"
+
+[[env.production.vars]]
+# Production specific variables go here
