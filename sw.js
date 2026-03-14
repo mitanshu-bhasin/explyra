@@ -1,7 +1,7 @@
 // Explyra Suite PWA Service Worker v6
 // Strategies: Network-first for navigations, Stale-while-revalidate for assets, Cache-first for CDNs
 
-const CACHE_NAME = 'explyra-consulting-cache-v6';
+const CACHE_NAME = 'explyra-consulting-cache-v7';
 const OFFLINE_URL = './offline.html';
 
 // Core app shell to precache (local files only — no CDN URLs that may fail)

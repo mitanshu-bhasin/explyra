@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TFBZ5GZ22C');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpdesk Admin — Explyra</title>
+    <meta name="description" content="Explyra internal helpdesk admin panel for managing support tickets.">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Explyra",
+  "url": "https://explyra.me",
+  "logo": "https://explyra.me/assets/images/explyra_logo.png",
+  "sameAs": [
+    "https://x.com/explyras",
+    "https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details",
+    "https://www.instagram.com/explyras",
+    "https://www.youtube.com/@explyras",
+    "https://www.linkedin.com/company/explyra/",
+    "https://www.threads.com/@explyras",
+    "https://github.com/Explyra"
+  ],
+  "@id": "https://explyra.me/#organization"
+}
+</script>
+
+    <style>
+        /* ═══════════════════════════════════════════
+           DESIGN TOKENS (Explyra System)
+        ═══════════════════════════════════════════ */
+        :root {
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --bg3: #F1EFE9;
+            --bg4: #E9E6E0;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --bdr2: #CCC8C0;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --ink4: #939BAC;
+            --blue: #1546C0;
+            --blue2: #5B8AF5;
+            --blue-g: rgba(21, 70, 192, .08);
+            --blue-b: rgba(21, 70, 192, .2);
+            --teal: #047857;
+            --teal2: #34D399;
+            --teal-g: rgba(4, 120, 87, .08);
+            --teal-b: rgba(4, 120, 87, .2);
+            --amber: #B45309;
+            --amb2: #FBBF24;
+            --amb-g: rgba(180, 83, 9, .08);
+            --amb-b: rgba(180, 83, 9, .2);
+            --purp: #6D28D9;
+            --purp2: #A78BFA;
+            --purp-g: rgba(109, 40, 217, .08);
+            --purp-b: rgba(109, 40, 217, .2);
+            --rose: #BE185D;
+            --rose2: #F472B6;
+            --rose-g: rgba(190, 24, 93, .08);
+            --rose-b: rgba(190, 24, 93, .2);
+            --slate: #334155;
+            --slt2: #94A3B8;
+            --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
+            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
+            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
+            --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
+            --r: 8px;
+            --t: .2s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --bg4: #1B2235;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, .07);
+            --bdr2: rgba(255, 255, 255, .14);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --ink4: #4E5A70;
+            --blue: #5B8AF5;
+            --blue2: #93B4FF;
+            --blue-g: rgba(91, 138, 245, .12);
+            --blue-b: rgba(91, 138, 245, .25);
+            --teal: #34D399;
+            --teal2: #6EE7B7;
+            --teal-g: rgba(52, 211, 153, .10);
+            --teal-b: rgba(52, 211, 153, .22);
+            --amber: #FBBF24;
+            --amb-g: rgba(251, 191, 36, .10);
+            --amb-b: rgba(251, 191, 36, .22);
+            --purp: #A78BFA;
+            --purp2: #C4B5FD;
+            --purp-g: rgba(167, 139, 250, .10);
+            --purp-b: rgba(167, 139, 250, .22);
+            --rose: #F472B6;
+            --rose-g: rgba(244, 114, 182, .10);
+            --rose-b: rgba(244, 114, 182, .22);
+            --slate: #94A3B8;
+            --s1: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 8px rgba(0, 0, 0, .25);
+            --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
+            --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
+            --s4: 0 24px 72px rgba(0, 0, 0, .6), 0 4px 16px rgba(0, 0, 0, .35);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESET & BASE
+        ═══════════════════════════════════════════ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+            line-height: 1.65;
+            overflow-x: hidden;
+            transition: background .4s, color .4s;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           AUTH SCREEN
+        ═══════════════════════════════════════════ */
+        .auth-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            padding: 1rem;
+            transition: opacity .4s, visibility .4s;
+        }
+
+        .auth-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none
+        }
+
+        .auth-mesh {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(21, 70, 192, .07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .06) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .06) 0%, transparent 60%);
+        }
+
+        [data-theme="dark"] .auth-mesh {
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(91, 138, 245, .15) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .12) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .12) 0%, transparent 60%);
+        }
+
+        .auth-card {
+            position: relative;
+            z-index: 1;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--s3);
+            animation: fadeUp .6s ease both;
+        }
+
+        [data-theme="dark"] .auth-card {
+            background: var(--bg3)
+        }
+
+        .auth-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: var(--blue-g);
+            border: 1px solid var(--blue-b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 1.6rem;
+            color: var(--blue);
+        }
+
+        .auth-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            text-align: center;
+            margin-bottom: .3rem;
+        }
+
+        .auth-subtitle {
+            font-size: .82rem;
+            color: var(--ink4);
+            text-align: center;
+            margin-bottom: 1.8rem;
+            font-weight: 500;
+            letter-spacing: .04em
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem
+        }
+
+        .auth-label {
+            font-size: .7rem;
+            font-weight: 700;
+            color: var(--ink4);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: .3rem
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: .8rem 1rem;
+            border-radius: var(--r);
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-size: .9rem;
+            outline: none;
+            transition: all var(--t);
+        }
+
+        .auth-input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px var(--blue-g)
+        }
+
+        .auth-input::placeholder {
+            color: var(--ink4)
+        }
+
+        [data-theme="dark"] .auth-input {
+            background: var(--bg4);
+            border-color: var(--bdr2)
+        }
+
+        .btn-auth {
+            width: 100%;
+            background: var(--blue);
+            color: #fff;
+            padding: .85rem;
+            border-radius: var(--r);
+            font-size: .9rem;
+            font-weight: 600;
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+        }
+
+        .btn-auth:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px color-mix(in srgb, var(--blue) 35%, transparent)
+        }
+
+        .btn-auth:active {
+            transform: scale(.98)
+        }
+
+        .auth-error {
+            display: none;
+            padding: .75rem 1rem;
+            border-radius: var(--r);
+            background: var(--rose-g);
+            border: 1px solid var(--rose-b);
+            color: var(--rose);
+            font-size: .82rem;
+            font-weight: 600;
+            text-align: center;
+            margin-top: .5rem;
+        }
+
+        .auth-error.show {
+            display: block
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem
+        }
+
+        .auth-footer a {
+            font-size: .78rem;
+            color: var(--ink4);
+            transition: color var(--t)
+        }
+
+        .auth-footer a:hover {
+            color: var(--blue)
+        }
+
+        /* ═══════════════════════════════════════════
+           DASHBOARD LAYOUT
+        ═══════════════════════════════════════════ */
+        .dashboard {
+            display: none;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        .dashboard.show {
+            display: flex
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--bg2);
+            border-right: 1px solid var(--bdr);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: background .4s, border-color .4s;
+        }
+
+        [data-theme="dark"] .sidebar {
+            background: var(--bg2)
+        }
+
+        .sidebar-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--bdr);
+            gap: .5rem;
+        }
+
+        .sidebar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink)
+        }
+
+        .sidebar-badge {
+            font-size: .58rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: .15rem .5rem;
+            border-radius: 4px;
+            background: var(--blue-g);
+            color: var(--blue);
+            border: 1px solid var(--blue-b);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: .8rem;
+            display: flex;
+            flex-direction: column;
+            gap: .3rem
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            padding: .7rem 1rem;
+            border-radius: var(--r);
+            font-size: .84rem;
+            font-weight: 500;
+            color: var(--ink3);
+            transition: all var(--t);
+        }
+
+        .sidebar-link:hover {
+            background: var(--bg3);
+            color: var(--ink)
+        }
+
+        .sidebar-link.active {
+            background: var(--blue-g);
+            color: var(--blue);
+            font-weight: 600;
+            border: 1px solid var(--blue-b);
+        }
+
+        .sidebar-link i {
+            width: 20px;
+            text-align: center;
+            font-size: .9rem
+        }
+
+        /* Header */
+        .dash-header {
+            height: 64px;
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            box-shadow: var(--s1);
+            transition: background .4s, border-color .4s;
+        }
+
+        [data-theme="dark"] .dash-header {
+            background: var(--bg3)
+        }
+
+        .dash-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ink)
+        }
+
+        .dash-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem
+        }
+
+        .theme-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--r);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            color: var(--ink3);
+            transition: all var(--t);
+            font-size: .9rem;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue)
+        }
+
+        .notif-btn {
+            position: relative
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--rose);
+        }
+
+        .admin-pill {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .3rem .8rem;
+            border-radius: 100px;
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+        }
+
+        .admin-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--blue-g);
+            border: 1px solid var(--blue-b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue);
+            font-size: .72rem;
+            font-weight: 700;
+        }
+
+        .admin-name {
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--ink2)
+        }
+
+        .btn-logout {
+            padding: .35rem .7rem;
+            border-radius: 6px;
+            background: var(--rose-g);
+            border: 1px solid var(--rose-b);
+            color: var(--rose);
+            font-size: .72rem;
+            font-weight: 700;
+            transition: all var(--t);
+        }
+
+        .btn-logout:hover {
+            background: var(--rose);
+            color: #fff
+        }
+
+        /* Main Content */
+        .dash-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        .dash-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--s1);
+        }
+
+        [data-theme="dark"] .filter-bar {
+            background: var(--bg3)
+        }
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: .8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink4);
+            font-size: .85rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: .6rem .8rem .6rem 2.2rem;
+            border-radius: var(--r);
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-size: .84rem;
+            outline: none;
+            transition: all var(--t);
+        }
+
+        .search-input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px var(--blue-g)
+        }
+
+        [data-theme="dark"] .search-input {
+            background: var(--bg4);
+            border-color: var(--bdr2)
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: .5rem;
+            align-items: center
+        }
+
+        .filter-select {
+            padding: .5rem .8rem;
+            border-radius: var(--r);
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+            font-family: 'Outfit', sans-serif;
+            font-size: .82rem;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: all var(--t);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23586070' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right .8rem center;
+            padding-right: 2rem;
+        }
+
+        .filter-select:focus {
+            border-color: var(--blue)
+        }
+
+        [data-theme="dark"] .filter-select {
+            background: var(--bg4);
+            border-color: var(--bdr2)
+        }
+
+        .btn-filter {
+            padding: .5rem 1rem;
+            border-radius: var(--r);
+            background: var(--blue);
+            color: #fff;
+            font-size: .82rem;
+            font-weight: 600;
+            transition: all var(--t);
+        }
+
+        .btn-filter:hover {
+            filter: brightness(1.1)
+        }
+
+        /* Ticket Table */
+        .ticket-table-wrap {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            box-shadow: var(--s2);
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .ticket-table-wrap {
+            background: var(--bg3)
+        }
+
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left
+        }
+
+        .ticket-table thead {
+            background: var(--bg3);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        [data-theme="dark"] .ticket-table thead {
+            background: var(--bg4)
+        }
+
+        .ticket-table th {
+            padding: .9rem 1.2rem;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ink4);
+        }
+
+        .ticket-table td {
+            padding: .85rem 1.2rem;
+            font-size: .84rem;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .ticket-table tbody tr {
+            transition: background var(--t)
+        }
+
+        .ticket-table tbody tr:hover {
+            background: var(--blue-g)
+        }
+
+        .ticket-table tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        /* Status & priority badges (table) */
+        .t-status {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .25rem .6rem;
+            border-radius: 100px;
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .t-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor
+        }
+
+        .ts-open {
+            background: var(--amb-g);
+            color: var(--amber);
+            border: 1px solid var(--amb-b)
+        }
+
+        .ts-progress {
+            background: var(--teal-g);
+            color: var(--teal);
+            border: 1px solid var(--teal-b)
+        }
+
+        .ts-closed {
+            background: var(--bg4);
+            color: var(--ink4);
+            border: 1px solid var(--bdr2)
+        }
+
+        .t-priority {
+            font-size: .68rem;
+            font-weight: 700;
+            padding: .2rem .5rem;
+            border-radius: 4px;
+        }
+
+        .tp-high {
+            background: var(--rose-g);
+            color: var(--rose)
+        }
+
+        .tp-med {
+            background: var(--amb-g);
+            color: var(--amber)
+        }
+
+        .tp-low {
+            background: var(--teal-g);
+            color: var(--teal)
+        }
+
+        .t-id {
+            font-family: monospace;
+            font-size: .78rem;
+            color: var(--ink4)
+        }
+
+        .t-name {
+            font-weight: 600;
+            color: var(--ink)
+        }
+
+        .t-email {
+            font-size: .75rem;
+            color: var(--ink4);
+            margin-top: .1rem
+        }
+
+        .t-date {
+            font-size: .78rem;
+            color: var(--ink4);
+            white-space: nowrap
+        }
+
+        .btn-view {
+            padding: .4rem .8rem;
+            border-radius: 6px;
+            background: var(--blue-g);
+            border: 1px solid var(--blue-b);
+            color: var(--blue);
+            font-size: .78rem;
+            font-weight: 600;
+            transition: all var(--t);
+        }
+
+        .btn-view:hover {
+            background: var(--blue);
+            color: #fff
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .8rem 1.2rem;
+            border-top: 1px solid var(--bdr);
+            font-size: .75rem;
+            color: var(--ink4);
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: .3rem
+        }
+
+        .pg-btn {
+            padding: .3rem .6rem;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--ink4);
+            font-size: .75rem;
+            font-weight: 500;
+            transition: all var(--t);
+        }
+
+        .pg-btn:hover {
+            background: var(--bg3)
+        }
+
+        .pg-btn.active {
+            background: var(--blue-g);
+            color: var(--blue);
+            font-weight: 700
+        }
+
+        /* Empty / loading state */
+        .table-empty {
+            padding: 3rem;
+            text-align: center;
+            color: var(--ink4);
+            font-size: .9rem;
+        }
+
+        .table-empty i {
+            font-size: 2rem;
+            margin-bottom: .5rem;
+            display: block;
+            animation: spin 1s linear infinite
+        }
+
+        /* ═══════════════════════════════════════════
+           TICKET DETAIL MODAL
+        ═══════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            backdrop-filter: blur(8px);
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.show {
+            display: flex
+        }
+
+        .modal-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 20px;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: var(--s4);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(.95);
+            opacity: 0;
+            transition: all .3s;
+        }
+
+        .modal-overlay.show .modal-card {
+            transform: scale(1);
+            opacity: 1
+        }
+
+        [data-theme="dark"] .modal-card {
+            background: var(--bg3)
+        }
+
+        .modal-top {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg3);
+        }
+
+        [data-theme="dark"] .modal-top {
+            background: var(--bg4)
+        }
+
+        .modal-top-title {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .btn-close-modal {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink4);
+            transition: all var(--t);
+        }
+
+        .btn-close-modal:hover {
+            background: var(--rose-g);
+            color: var(--rose)
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem
+        }
+
+        .user-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--purp-g);
+            border: 1px solid var(--purp-b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purp);
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            flex: 1
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: var(--ink);
+            font-size: .95rem
+        }
+
+        .user-email {
+            font-size: .78rem;
+            color: var(--ink4)
+        }
+
+        .user-category {
+            font-size: .78rem;
+            color: var(--blue);
+            font-weight: 600;
+            margin-top: .2rem
+        }
+
+        .user-right {
+            text-align: right
+        }
+
+        .user-date {
+            font-size: .75rem;
+            color: var(--ink4)
+        }
+
+        .modal-message {
+            padding: 1rem;
+            border-radius: var(--r);
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            font-size: .88rem;
+            color: var(--ink2);
+            line-height: 1.7;
+        }
+
+        .action-section {
+            border-top: 1px solid var(--bdr);
+            padding-top: 1rem
+        }
+
+        .action-label {
+            font-size: .68rem;
+            font-weight: 700;
+            color: var(--ink4);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: .6rem
+        }
+
+        .action-btns {
+            display: flex;
+            gap: .5rem
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: .6rem;
+            border-radius: var(--r);
+            text-align: center;
+            font-size: .82rem;
+            font-weight: 600;
+            transition: all var(--t);
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+            background: var(--bg3);
+        }
+
+        .btn-action:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--blue-g)
+        }
+
+        .btn-action.progress {
+            background: var(--teal-g);
+            color: var(--teal);
+            border-color: var(--teal-b)
+        }
+
+        .btn-action.progress:hover {
+            background: var(--teal);
+            color: #fff
+        }
+
+        .btn-action.close-ticket {
+            background: var(--rose-g);
+            color: var(--rose);
+            border-color: var(--rose-b)
+        }
+
+        .btn-action.close-ticket:hover {
+            background: var(--rose);
+            color: #fff
+        }
+
+        .note-textarea {
+            width: 100%;
+            padding: .75rem 1rem;
+            border-radius: var(--r);
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-size: .85rem;
+            outline: none;
+            resize: vertical;
+            min-height: 60px;
+            transition: all var(--t);
+        }
+
+        .note-textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px var(--blue-g)
+        }
+
+        [data-theme="dark"] .note-textarea {
+            background: var(--bg4);
+            border-color: var(--bdr2)
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--bdr);
+            display: flex;
+            justify-content: flex-end;
+            gap: .8rem;
+            background: var(--bg3);
+        }
+
+        [data-theme="dark"] .modal-footer {
+            background: var(--bg4)
+        }
+
+        .btn-cancel {
+            padding: .55rem 1.2rem;
+            border-radius: var(--r);
+            color: var(--ink3);
+            font-size: .84rem;
+            font-weight: 600;
+            transition: color var(--t);
+        }
+
+        .btn-cancel:hover {
+            color: var(--ink)
+        }
+
+        .btn-save {
+            padding: .55rem 1.5rem;
+            border-radius: var(--r);
+            background: var(--blue);
+            color: #fff;
+            font-size: .84rem;
+            font-weight: 600;
+            transition: all var(--t);
+        }
+
+        .btn-save:hover {
+            filter: brightness(1.08)
+        }
+
+        .btn-save:active {
+            transform: scale(.98)
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch
+            }
+
+            .search-box {
+                width: 100%
+            }
+
+            .filter-actions {
+                flex-wrap: wrap
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ══ AUTH SCREEN ══ -->
+    <div class="auth-screen" id="auth-screen">
+        <div class="auth-mesh"></div>
+        <div class="auth-card">
+            <div class="auth-icon"><i class="fa-solid fa-headset"></i></div>
+            <div class="auth-title">Helpdesk Admin</div>
+            <div class="auth-subtitle">RESTRICTED ACCESS</div>
+
+            <form class="auth-form" id="login-form">
+                <div>
+                    <div class="auth-label">Email</div>
+                    <input type="email" class="auth-input" id="login-email" placeholder="admin@example.com" required>
+                </div>
+                <div>
+                    <div class="auth-label">Password</div>
+                    <input type="password" class="auth-input" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-auth" id="login-btn">
+                    <span>Secure Login</span>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </button>
+            </form>
+            <div class="auth-error" id="login-error"></div>
+            <div class="auth-footer">
+                <a href="admin.html">← Back to Public Admin</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="dashboard" id="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-logo">Helpdesk</span>
+                <span class="sidebar-badge">Admin</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="sidebar-link">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to Dashboard</span>
+                </a>
+                <a href="#" class="sidebar-link active">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Active Tickets</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Knowledge Base</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Area -->
+        <div class="dash-main">
+            <!-- Header -->
+            <header class="dash-header">
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+                <div class="dash-title">Support Ticket Management</div>
+                <div class="dash-actions">
+                    <button class="theme-btn" id="dashThemeBtn">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="theme-btn notif-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notif-dot"></span>
+                    </button>
+                    <div class="admin-pill">
+                        <div class="admin-avatar">A</div>
+                        <span class="admin-name">Administrator</span>
+                    </div>
+                    <button class="btn-logout" onclick="window.logoutHelpdesk()">Logout</button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dash-content">
+                <!-- Filter -->
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" class="search-input" placeholder="Search tickets…">
+                    </div>
+                    <div class="filter-actions">
+                        <select class="filter-select">
+                            <option>All Statuses</option>
+                            <option>Open</option>
+                            <option>In Progress</option>
+                            <option>Closed</option>
+                        </select>
+                        <button class="btn-filter">
+                            <i class="fa-solid fa-filter" style="margin-right:.3rem"></i> Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="ticket-table-wrap">
+                    <div style="overflow-x:auto">
+                        <table class="ticket-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Ticket ID</th>
+                                    <th>Requester</th>
+                                    <th>Company</th>
+                                    <th>Category</th>
+                                    <th>Priority</th>
+                                    <th>Date</th>
+                                    <th style="text-align:right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticketTableBody">
+                                <tr>
+                                    <td colspan="8" class="table-empty">
+                                        <i class="fa-solid fa-circle-notch"></i>
+                                        <p>Loading Tickets…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <span>Showing tickets</span>
+                        <div class="pagination-btns">
+                            <button class="pg-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="pg-btn active">1</button>
+                            <button class="pg-btn">2</button>
+                            <button class="pg-btn">3</button>
+                            <button class="pg-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TICKET DETAIL MODAL ══ -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="modal-card">
+            <div class="modal-top">
+                <div class="modal-top-title">
+                    <span class="t-status ts-open" id="modalStatus">OPEN</span>
+                    Ticket #<span id="modalId">UNKNOWN</span>
+                </div>
+                <button class="btn-close-modal"
+                    onclick="document.getElementById('ticketModal').classList.remove('show')">
+                    <i class="fa-solid fa-xmark" style="font-size:1.1rem"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- User Info -->
+                <div class="user-info">
+                    <div class="user-avatar">U</div>
+                    <div class="user-details">
+                        <div class="user-name" id="modalName">User Name</div>
+                        <div class="user-email" id="modalEmail">user@example.com</div>
+                        <div class="user-category" id="modalCategory">Category</div>
+                    </div>
+                    <div class="user-right">
+                        <div class="user-date" id="modalDate">Jan 01, 2026</div>
+                        <span class="t-priority tp-high" id="modalPriority"
+                            style="margin-top:.3rem;display:inline-block">HIGH</span>
+                    </div>
+                </div>
+
+                <!-- Message -->
+                <div class="modal-message" id="modalMessage">Loading description…</div>
+
+                <!-- Status Actions -->
+                <div class="action-section">
+                    <div class="action-label">Update Status</div>
+                    <div class="action-btns">
+                        <button class="btn-action" onclick="updateTicketStatus('Open')">Mark Open</button>
+                        <button class="btn-action progress" onclick="updateTicketStatus('In Progress')">In
+                            Progress</button>
+                        <button class="btn-action close-ticket" onclick="updateTicketStatus('Closed')">Close
+                            Ticket</button>
+                    </div>
+                </div>
+
+                <!-- Admin Note -->
+                <div>
+                    <div class="action-label">Internal Note</div>
+                    <textarea class="note-textarea" placeholder="Add a private note for admins…"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel"
+                    onclick="document.getElementById('ticketModal').classList.remove('show')">Cancel</button>
+                <button class="btn-save">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SCRIPTS ══ -->
+    <script>
+        /* THEME */
+        const html = document.documentElement;
+        const saved = localStorage.getItem('explyra-theme') || 'light';
+        html.setAttribute('data-theme', saved);
+
+        function toggleTheme() {
+            const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', nxt);
+            localStorage.setItem('explyra-theme', nxt);
+        }
+
+        document.getElementById('dashThemeBtn')?.addEventListener('click', toggleTheme);
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const allowedEmail = "explyra@gmail.com";
+        let isTicketsLoaded = false;
+        let unsubscribeTickets = null;
+
+        // Auth
+        const authScreen = document.getElementById('auth-screen');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (user.email === allowedEmail) {
+                    authScreen.classList.add('hidden');
+                    dashboard.classList.add('show');
+                    if (!isTicketsLoaded) { loadTickets(); isTicketsLoaded = true; }
+                } else {
+                    signOut(auth);
+                    showError("Unauthorized: Access Restricted to " + allowedEmail);
+                }
+            } else {
+                authScreen.classList.remove('hidden');
+                dashboard.classList.remove('show');
+                isTicketsLoaded = false;
+                if (unsubscribeTickets) unsubscribeTickets();
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+
+            if (email !== allowedEmail) { showError("Unauthorized email address."); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (err) {
+                showError("Invalid email or password.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>Secure Login</span><i class="fa-solid fa-shield-halved"></i>';
+            }
+        });
+
+        function showError(msg) {
+            loginError.textContent = msg;
+            loginError.classList.add('show');
+        }
+
+        window.logoutHelpdesk = () => signOut(auth);
+
+        // Tickets
+        function loadTickets() {
+            const q = query(collection(db, "support_tickets"), orderBy("createdAt", "desc"));
+            let currentTicketId = null;
+
+            unsubscribeTickets = onSnapshot(q, (snapshot) => {
+                const tbody = document.getElementById('ticketTableBody');
+                tbody.innerHTML = '';
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="table-empty">No support tickets found.</td></tr>';
+                    return;
+                }
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const statusClass = getStatusClass(data.status);
+                    const priorityClass = getPriorityClass(data.priority);
+                    const dateStr = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
+
+                    const row = `
+                    <tr>
+                        <td><span class="t-status ${statusClass}">${data.status || 'Open'}</span></td>
+                        <td><span class="t-id">#${id.slice(0, 6).toUpperCase()}</span></td>
+                        <td>
+                            <div class="t-name">${data.name}</div>
+                            <div class="t-email">${data.email}</div>
+                        </td>
+                        <td style="font-size:.82rem;color:var(--ink2)">${data.company || '—'}</td>
+                        <td style="color:var(--ink2)">${data.category}</td>
+                        <td><span class="t-priority ${priorityClass}">${data.priority}</span></td>
+                        <td><span class="t-date">${dateStr}</span></td>
+                        <td style="text-align:right">
+                            <button class="btn-view" onclick="window.viewTicket('${id}')">
+                                <i class="fa-solid fa-eye" style="margin-right:.3rem"></i> View
+                            </button>
+                        </td>
+                    </tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                    window[`ticket_${id}`] = data;
+                });
+            });
+
+            function getStatusClass(status) {
+                switch (status) {
+                    case 'Open': return 'ts-open';
+                    case 'In Progress': return 'ts-progress';
+                    case 'Closed': return 'ts-closed';
+                    default: return 'ts-open';
+                }
+            }
+
+            function getPriorityClass(p) {
+                switch (p) {
+                    case 'High': return 'tp-high';
+                    case 'Medium': return 'tp-med';
+                    case 'Low': return 'tp-low';
+                    default: return 'tp-med';
+                }
+            }
+
+            window.viewTicket = (id) => {
+                const data = window[`ticket_${id}`];
+                currentTicketId = id;
+                if (!data) return;
+
+                document.getElementById('modalId').innerText = id.slice(0, 6).toUpperCase();
+                document.getElementById('modalName').innerText = data.name;
+                document.getElementById('modalEmail').innerText = data.email;
+                document.getElementById('modalCategory').innerText = data.category;
+                document.getElementById('modalMessage').innerText = data.message;
+                document.getElementById('modalStatus').innerText = data.status || 'OPEN';
+                document.getElementById('modalPriority').innerText = data.priority;
+
+                // Status badge color
+                const statusEl = document.getElementById('modalStatus');
+                statusEl.className = 't-status ' + getStatusClass(data.status);
+
+                // Priority badge color
+                const pEl = document.getElementById('modalPriority');
+                pEl.className = 't-priority ' + getPriorityClass(data.priority);
+
+                document.getElementById('ticketModal').classList.add('show');
+            };
+
+            window.updateTicketStatus = async (newStatus) => {
+                if (!currentTicketId) return;
+                try {
+                    const docRef = doc(db, "support_tickets", currentTicketId);
+                    await updateDoc(docRef, { status: newStatus, updatedAt: new Date() });
+                    document.getElementById('ticketModal').classList.remove('show');
+                } catch (e) {
+                    console.error("Error updating ticket", e);
+                    alert("Failed to update status");
+                }
+            };
+        }
+    </script>
+
+    <!-- AI Support Chat -->
+    <script type="module">
+        import { AISupport } from './js/ai-support.js';
+        setTimeout(() => {
+            new AISupport({ name: 'Visitor', role: 'Guest', department: 'Help Desk' });
+        }, 5000);
+    </script>
+</body>
+
+</html>

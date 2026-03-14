@@ -78,12 +78,14 @@
     
     <!-- Apple PWA Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Explyra" />
     
     <!-- Preload critical resources -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" />
     <link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" crossorigin />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <link rel="preload" as="font" type="font/woff2" crossorigin="" href="https://fonts.gstatic.com/s/outfit/v11/QGYvz_MVcBeNP4NJuktE.woff2" />
     
     <!-- DNS prefetch for external resources -->
@@ -322,30 +324,47 @@
     .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--blue-g);color:var(--blue);padding:0.5rem 1rem;border-radius:100px;font-size:0.85rem;font-weight:600;margin-bottom:2rem;animation:fadeInUp 0.8s ease-out}
     
     .hero-rating {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 6px 16px;
+        border-radius: 100px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
+
+    [data-theme="dark"] .hero-rating {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .stars {
         display: flex;
         gap: 2px;
         color: #FFB800;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        filter: drop-shadow(0 0 5px rgba(255, 184, 0, 0.3));
     }
 
     .rating-text {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
         color: var(--ink);
+        letter-spacing: 0.01em;
     }
 
     .rating-count {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: var(--ink3);
-        margin-left: 4px;
+        margin-left: 2px;
+        font-weight: 500;
+        opacity: 0.8;
     }
     .hero-title{font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;color:var(--ink);margin-bottom:1.5rem;font-family:'Playfair Display',serif;animation:fadeInUp 0.8s ease-out 0.2s both}
     .hero-subtitle{font-size:clamp(1.1rem,2vw,1.4rem);color:var(--ink3);line-height:1.6;margin-bottom:2.5rem;max-width:600px;animation:fadeInUp 0.8s ease-out 0.4s both}
