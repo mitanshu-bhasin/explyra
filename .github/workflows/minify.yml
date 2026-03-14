@@ -2,32 +2,43 @@ name: Minify and Deploy
 on:
   push:
     branches:
-      - main  # Jab bhi main branch pe push karoge, ye chalega
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      - main # Jab bhi main branch pe push hoga, ye chalega
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Minify Files
+      - name: Prepare dist folder and copy files
         run: |
           mkdir -p dist
-          # Sirf zaroori files copy karo, 'dist' aur 'node_modules' ko chod kar
-          rsync -av --exclude='dist' --exclude='node_modules' --exclude='.git' --exclude='.github' . dist/
+          # rsync use karke sab copy karenge, par .git aur dist ko ignore marenge (infinite loop bachane ke liye)
+          rsync -a --exclude='.git' --exclude='.github' --exclude='dist' . dist/
+
+      - name: Install Minifiers
+        run: |
+          # Ye 3 best tools hain sirf specific files ke liye
+          npm install -g terser clean-css-cli html-minifier
+
+      - name: Minify JS, CSS, and HTML strictly
+        run: |
+          # 1. Sirf JS files dhundo aur minify karo
+          find dist -type f -name "*.js" -exec terser {} -o {} \;
           
-          # 'minify' tool install aur run karo
-          npm install -g minify
-          find dist -name "*.js" -o -name "*.css" -o -name "*.html" | xargs -I {} minify -o {} {}
+          # 2. Sirf CSS files dhundo aur minify karo
+          find dist -type f -name "*.css" -exec cleancss -o {} {} \;
+          
+          # 3. Sirf HTML files dhundo aur minify karo
+          find dist -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --minify-css true --minify-js true {} -o {} \;
+          
+          echo "✅ Minification complete! MP4/PNG safe hain."
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
@@ -36,4 +47,4 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
           vercel-args: '--prod'
-          working-directory: ./dist
+          working-directory: ./dist # Vercel ko bol rahe hain ki sirf dist folder live kare
