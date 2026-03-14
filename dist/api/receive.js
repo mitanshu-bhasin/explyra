@@ -11,8 +11,9 @@ module.exports = async (req, res) => {
     const { from, to, subject, body } = req.body;
 
     // Hardcoded Firebase config
-    const PROJECT_ID = 'explyras';
-    const API_KEY = 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0';
+    // Environment variables
+    const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'explyras';
+    const API_KEY = process.env.FIREBASE_API_KEY || 'ENV_MISSING';
 
     // Write to Firestore "emails" collection using REST API
     const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/emails?key=${API_KEY}`;

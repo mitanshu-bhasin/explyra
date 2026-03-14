@@ -10,9 +10,41 @@ export class AISupport {
     constructor(userContext = {}, containerId = null) {
         this.userContext = userContext || {};
         this.containerId = containerId;
-        this.chatHistory = []; // Standard OpenAI format: [{role: 'user'|'assistant', content: '...'}]
+        this.storageKey = `explyra_ai_history_${this.userContext.companyId || 'global'}`;
+        this.chatHistory = this.loadHistory();
         this.isOpen = false;
         this.init();
+    }
+
+    loadHistory() {
+        try {
+            const saved = localStorage.getItem(this.storageKey);
+            return saved ? JSON.parse(saved) : [];
+        } catch (e) {
+            console.error("Error loading chat history", e);
+            return [];
+        }
+    }
+
+    saveHistory() {
+        try {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.chatHistory));
+        } catch (e) {
+            console.error("Error saving chat history", e);
+        }
+    }
+
+    clearHistory() {
+        if (confirm("Start a new conversation? Current history will be wiped.")) {
+            this.chatHistory = [];
+            localStorage.removeItem(this.storageKey);
+            const msgs = this.chatWindow.querySelector('#ai-messages');
+            msgs.innerHTML = `
+                <div class="ai-message ai">
+                    Hello <strong>${this.userContext.name || 'User'}</strong>! I've started a fresh session. How can I assist you today?
+                </div>
+            `;
+        }
     }
 
     init() {
@@ -22,6 +54,16 @@ export class AISupport {
             this.embedInContainer();
         } else {
             this.addToBody();
+        }
+
+        // Render saved history
+        if (this.chatHistory.length > 0) {
+            this.chatHistory.forEach(msg => {
+                const cleanContent = msg.content.replace(/\[COMMAND:.*?\]/g, '').trim();
+                if (cleanContent) {
+                    this.addMessage(cleanContent, msg.role === 'assistant' ? 'ai' : 'user');
+                }
+            });
         }
     }
 
@@ -274,15 +316,20 @@ export class AISupport {
                     <i class="fa-solid fa-sparkles"></i>
                     <span style="font-weight: 700;">Explyra AI Assistant</span>
                 </div>
-                <button id="ai-close-btn" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 16px;">
-                    <i class="fa-solid fa-times"></i>
-                </button>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button onclick="window.aiAssistant.clearHistory()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;" title="New Chat">
+                        <i class="fa-solid fa-plus mr-1"></i> New Chat
+                    </button>
+                    <button id="ai-close-btn" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 16px;">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
             </div>
             <div class="ai-messages" id="ai-messages">
                 <div class="ai-message ai">
-                    Hello <strong>${this.userContext.name || this.userContext.displayName || 'User'}</strong>! I'm your Explyra AI Assistant. 
+                    Hello <strong>${this.userContext.name || 'User'}</strong>! I'm your Explyra AI Assistant. 
                     I'm developed and trained by <strong>Mitanshu Bhasin</strong>.
-                    I can help you with expense policies, company info, health tracking, navigating the suite, or analyzing your data.
+                    I can help you with workspace analysis, attendance logs, and payroll audits.
                 </div>
             </div>
             <div class="typing-indicator" id="ai-typing">
@@ -291,9 +338,10 @@ export class AISupport {
                 <div class="typing-dot"></div>
             </div>
             <div style="padding: 8px; display: flex; gap: 8px; overflow-x: auto; background: var(--ai-bg-secondary, #f8fafc); border-top: 1px solid var(--ai-border, #f1f5f9);">
-                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('policy')">Expense Policy?</button>
-                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('about')">About Explyra?</button>
-                <button class="ai-quick-btn green" onclick="window.triggerAIAction('analyze')">Analyze Spending</button>
+                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('tasks')">Tasks</button>
+                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('attendance')">Attendance</button>
+                <button class="ai-quick-btn blue" onclick="window.triggerAIAction('employees')">Employees</button>
+                <button class="ai-quick-btn green" onclick="window.triggerAIAction('payroll')">Payroll</button>
             </div>
             <div class="ai-input-area">
                 <input type="text" class="ai-input" placeholder="Ask me anything..." id="ai-input">
@@ -329,9 +377,10 @@ export class AISupport {
 
         // Global trigger handler
         window.triggerAIAction = (action) => {
-            if (action === 'policy') this.processQuery("What is the expense policy for Explyra?");
-            if (action === 'about') this.processQuery("Tell me about Explyra and its founders.");
-            if (action === 'analyze') this.processQuery("Analyze my current dashboard data and give me insights.");
+            if (action === 'tasks') this.processQuery("Can you show me the current tasks and their status?");
+            if (action === 'attendance') this.processQuery("Give me a summary of today's attendance.");
+            if (action === 'employees') this.processQuery("How many employees are currently active and in which departments?");
+            if (action === 'payroll') this.processQuery("Summarize the payroll status for the current month.");
         };
     }
 
@@ -387,7 +436,7 @@ export class AISupport {
         const messagesEl = this.chatWindow.querySelector('#ai-messages');
 
         // RATE LIMIT CHECK
-        const RATE_LIMIT = 10;
+        const RATE_LIMIT = 5;
         const TIME_FRAME = 60000;
         const now = Date.now();
 
@@ -412,46 +461,35 @@ export class AISupport {
 
         try {
             const systemPrompt = `
-                Company: Explyra (SaaS Suite — One Platform. Everything.)
-                Founders: Mitanshu Bhasin.
-                Mission: Providing a complete digital suite for teams: Expense intelligence, Health tracking, AI-powered Learning, Developer tools, and P2P Collaboration.
+                Company: Explyra Admin Portal
+                Developed by: Mitanshu Bhasin.
                 
-                Product Details (Explyra Suite):
-                1. Explyra Expense: Enterprise-grade expense management with AI automation and multi-level approvals.
-                2. Explyra Health: Personal AI health companion with weather-aware recommendations for workouts, sleep, and mental wellness.
-                3. Explyra Learning: Expert-curated courses on Agentic AI, Prompt Engineering, and SEO.
-                4. Explyra Developers: Utility toolkit (minifiers, generators, IDE, link shortener).
-                5. Explyra Utility: AI chatbot + P2P suite (file transfer, video calls, remote access).
-                6. Support Centre: 24/7 documentation and assistance.
+                Scope of Intelligence:
+                You are a specialized AI assistant for the Explyra Admin Portal. Your primary focus is to:
+                1. Analyze Task data and management.
+                2. Provide insights into Attendance patterns and logs.
+                3. Manage and retrieve Employee directory information.
+                4. Process and summarize Payroll and financial data.
+                5. Discuss business terms and operational metrics related to the Explyra ecosystem.
+
+                Constraints:
+                - Do NOT provide information outside the scope of Explyra Admin Portal (e.g., general news, unrelated coding, etc.) unless it's strictly business-related.
+                - Focus on data-driven insights using the provided user context.
 
                 Current User Context:
                 - Name: ${this.userContext.name || 'Visitor'}
                 - Role: ${this.userContext.role || 'Guest'}
                 - Email: ${this.userContext.email || 'N/A'}
                 - Department: ${this.userContext.department || 'General'}
-                
-                You are developed and trained by Mitanshu Bhasin.
+                - Company ID: ${this.userContext.companyId || 'N/A'}
 
-                You have access to the user's dashboard data:
-                - Admin Dashboard Stats: ${JSON.stringify(this.userContext.dashboardData?.stats || 'No admin stats yet')}
-                - Admin Trend Info: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 'No trend data yet')}
-                - Employee Summary: ${JSON.stringify(this.userContext.dashboardData?.summary || 'No emp summary yet')}
-                - Recent Expenses/Claims: ${JSON.stringify(this.userContext.dashboardData?.expenses || 'No expense list yet')}
+                Dashboard Context:
+                - Admin Stats: ${JSON.stringify(this.userContext.dashboardData?.stats || 'Loading...')}
+                - Attendance Summary: ${JSON.stringify(this.userContext.dashboardData?.attendance || 'No attendance data yet')}
+                - Employee Directory: ${JSON.stringify(this.userContext.dashboardData?.employees || 'No employee data yet')}
+                - Payroll Data: ${JSON.stringify(this.userContext.dashboardData?.payroll || 'No payroll data yet')}
                 
-                Dashboard Context Rule: If data is "No ... yet", explain that data is still loading or they need to visit the dashboard tab first.
-                
-                Be helpful, professional, and concise. Use **bold** for key terms. Respond in the language user speaks to you (English, Hindi, or Hinglish).
-
-                
-                **EXPENSE CREATION CAPABILITY**:
-                If user wants to "create" an expense, collect:
-                1. Project Code
-                2. Category
-                3. Amount
-                4. Description
-                
-                Once you have all 4, add: [COMMAND:CREATE_EXPENSE:{"projectCode":"...", "category":"...", "amount":..., "description":"..."}]
-                Default currency: INR.
+                Be professional, concise, and helpful. Use **bold** for metrics. Respond in English or Hinglish as per user preference.
             `;
 
             const messages = [
@@ -508,6 +546,8 @@ export class AISupport {
                 this.chatHistory.push({ role: "assistant", content: reply });
 
                 if (this.chatHistory.length > 20) this.chatHistory = this.chatHistory.slice(-20);
+
+                this.saveHistory();
 
             } else {
                 this.addMessage("I'm sorry, I couldn't process that request right now.", 'ai');

@@ -258,11 +258,20 @@ window.submitExpense = async () => {
     }
 };
 
+window.openModeSelector = () => {
+    const viewDashboard = document.getElementById('main-view-dashboard');
+    if (viewDashboard && viewDashboard.classList.contains('hidden')) {
+        window.toggleMainView('dashboard');
+    }
+    window.toggleMode('personal');
+};
+
 window.toggleMode = (mode) => {
     window.currentMode = mode;
 
     // UI Elements
     const statsContainer = document.getElementById('stats-container');
+    const personalStatsContainer = document.getElementById('personal-stats-container');
     const tabsContainer = document.getElementById('tabs-container');
     const vaultHeader = document.getElementById('personal-vault-header');
     const personalAnalysis = document.getElementById('personal-analysis');
@@ -280,9 +289,10 @@ window.toggleMode = (mode) => {
     if (list) list.innerHTML = '';
 
     if (mode === 'personal') {
-        // Hide company-only UI
+        // Show personal UI
         if (statsContainer) statsContainer.classList.add('hidden');
-        if (tabsContainer) tabsContainer.classList.remove('hidden'); // Ensure tabs are visible for Personal
+        if (personalStatsContainer) personalStatsContainer.classList.remove('hidden');
+        if (tabsContainer) tabsContainer.classList.remove('hidden');
         if (vaultHeader) vaultHeader.classList.remove('hidden');
         if (personalAnalysis) personalAnalysis.classList.remove('hidden');
 
@@ -290,28 +300,24 @@ window.toggleMode = (mode) => {
         const btnF = document.getElementById('btn-view-financials');
         if (btnF) btnF.classList.remove('hidden');
 
-        // Force Claims view (where the list resides) and hide Tasks
+        // Force Claims view
         if (secClaims) secClaims.classList.remove('hidden');
         if (secTasks) secTasks.classList.add('hidden');
 
-        // Hide "Request Item" button and make "Vault Entry" full width
-        if (btnNew && btnReq) {
-            btnNew.parentElement.classList.remove('grid-cols-2');
-            btnNew.parentElement.classList.add('grid-cols-1');
-            btnReq.classList.add('hidden');
-        }
-
-        // Change button labels for personal mode
-        if (textNew) textNew.textContent = "Vault Entry";
-        if (iconNew) iconNew.className = "fa-solid fa-vault text-xs group-hover:scale-110 transition-transform";
-
-        // Change New Expense button onclick to open personal vault modal
-        if (btnNew) btnNew.setAttribute('onclick', "openModal('modal-personal-create')");
+        // Hide company-specific action buttons (using new personal stats buttons instead)
+        if (btnNew) btnNew.parentElement.classList.add('hidden');
 
         if (window.fetchPersonalVault) window.fetchPersonalVault();
+        if (window.fetchFinancialAccounts) window.fetchFinancialAccounts();
+        if (window.filterEmpTasks) window.filterEmpTasks();
+        
+        // Update top-right mode selector
+        const modeSel = document.getElementById('mode-selector');
+        if (modeSel) modeSel.value = 'personal';
     } else {
-        // Show company-only UI
+        // Show company UI
         if (statsContainer) statsContainer.classList.remove('hidden');
+        if (personalStatsContainer) personalStatsContainer.classList.add('hidden');
         if (tabsContainer) tabsContainer.classList.remove('hidden');
         if (vaultHeader) vaultHeader.classList.add('hidden');
         if (personalAnalysis) personalAnalysis.classList.add('hidden');
@@ -324,30 +330,20 @@ window.toggleMode = (mode) => {
         if (secClaims) secClaims.classList.remove('hidden');
         if (secTasks) secTasks.classList.add('hidden');
 
-        // Restore Action Buttons
+        // Show company action buttons
+        if (btnNew) btnNew.parentElement.classList.remove('hidden');
         if (btnNew && btnReq) {
             btnNew.parentElement.classList.remove('grid-cols-1');
             btnNew.parentElement.classList.add('grid-cols-2');
             btnReq.classList.remove('hidden');
         }
 
-        // Reset text
-        if (textNew) textNew.textContent = "New Claim";
-        if (iconNew) iconNew.className = "fa-solid fa-plus text-xs group-hover:scale-110 transition-transform";
-
-        // Reset onclick
-        if (btnNew) btnNew.setAttribute('onclick', "openCreateModal('EXPENSE')");
-
-        // Reset Tabs to Claims view
-        if (window.toggleEmpView) window.toggleEmpView('claims');
-
-        // Reset Creation Button label
-        if (textNew) textNew.textContent = "New Claim";
-
-        // Reset New Expense button onclick to open company expense modal
-        if (btnNew) btnNew.setAttribute('onclick', "openCreateModal('EXPENSE')");
+        // Reset sidebar mode selector if it exists
+        const modeSel = document.getElementById('mode-selector');
+        if (modeSel) modeSel.value = 'company';
 
         window.fetchExpenses();
+        if (window.filterEmpTasks) window.filterEmpTasks();
     }
 };
 

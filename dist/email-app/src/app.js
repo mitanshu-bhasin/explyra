@@ -6,7 +6,9 @@ import {
   getAuth,
   onAuthStateChanged,
   signOut,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import {
   getFirestore,
@@ -119,6 +121,51 @@ $('email-login-form').onsubmit = async (e) => {
 };
 
 $('logout-btn').onclick = () => signOut(auth);
+
+// UI Toggles
+$('show-signup-btn').onclick = () => {
+  $('login-form-container').classList.add('hidden');
+  $('signup-form-container').classList.remove('hidden');
+};
+
+$('show-login-btn').onclick = () => {
+  $('signup-form-container').classList.add('hidden');
+  $('login-form-container').classList.remove('hidden');
+};
+
+// Signup Logic
+$('email-signup-form').onsubmit = async (e) => {
+  e.preventDefault();
+  const name = $('signup-name').value.trim();
+  const personalEmail = $('signup-personal-email').value.trim();
+  const prefix = $('signup-prefix').value.trim();
+  const pass = $('signup-password').value;
+  
+  if (!prefix || !pass) return showToast('Fill all required fields', 'error');
+  
+  const email = `${prefix}@explyra.me`;
+  
+  try {
+    showToast('Creating account...', 'success');
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    
+    // Update Profile
+    await updateProfile(cred.user, { displayName: name });
+    
+    // Save to users collection
+    await setDoc(doc(db, 'users', email), {
+      displayName: name,
+      personalEmail: personalEmail,
+      forwarding: true,
+      createdAt: new Date().toISOString()
+    }, { merge: true });
+    
+    showToast('Account created successfully!');
+  } catch (err) {
+    console.error('Signup Error:', err);
+    showToast(err.message, 'error');
+  }
+};
 
 // ============================
 // 📊 Load Data
@@ -512,24 +559,51 @@ document.addEventListener('click', () => {
 });
 
 $('send-btn').onclick = async () => {
-  const to = $('compose-to').value;
-  const sub = $('compose-subject').value;
+  const to = $('compose-to').value.trim();
+  const sub = $('compose-subject').value.trim();
   if (!to || !sub) return showToast('Fill all fields', 'error');
   
   const signature = $('settings-signature').value ? `<br><br>--<br>${$('settings-signature').value}` : '';
-  
-  await addDoc(collection(db, 'emails'), {
-    from: currentUser.email,
-    to, 
-    subject: sub, 
-    htmlBody: quill.root.innerHTML + signature, 
-    timestamp: new Date().toISOString(), 
-    read: true, 
-    folder: 'sent'
-  });
-  
-  $('compose-modal').classList.add('hidden');
-  showToast('Email Sent');
+  const htmlContent = quill.root.innerHTML + signature;
+
+  const btn = $('send-btn');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const response = await fetch('/api/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${await auth.currentUser.getIdToken()}`
+      },
+      body: JSON.stringify({
+        to,
+        subject: sub,
+        htmlBody: htmlContent,
+        from: `${currentUser.displayName || currentUser.email.split('@')[0]} <${currentUser.email}>`
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showToast('Email Sent Successfully!');
+      $('compose-modal').classList.add('hidden');
+      if (quill) quill.setText('');
+      $('compose-to').value = '';
+      $('compose-subject').value = '';
+    } else {
+      throw new Error(result.error || 'Failed to send email');
+    }
+  } catch (error) {
+    console.error('Send Error:', error);
+    showToast(error.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 };
 
 $('discard-btn').onclick = () => $('compose-modal').classList.add('hidden');

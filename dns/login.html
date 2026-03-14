@@ -75,9 +75,9 @@
         }
         .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-g); }
 
-        .btn-primary { width: 100%; padding: 0.8rem; background: var(--ink); color: var(--bg); border: none; border-radius: var(--r); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity var(--t); margin-top: 1rem; }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-submit { width: 100%; padding: 0.8rem; background: var(--ink); color: var(--bg); border: none; border-radius: var(--r); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity var(--t); margin-top: 1rem; }
+        .btn-submit:hover { opacity: 0.9; }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .auth-footer { margin-top: 2rem; font-size: 0.9rem; color: var(--ink3); }
         .auth-footer a { color: var(--ink); font-weight: 600; text-decoration: none; }
@@ -136,11 +136,14 @@
     </div>
     <div id="toast-container"></div>
 
+    <script src="../js/env.js"></script>
     <script type="module">
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-        const firebaseConfig = {
+        // Use centralized config from env.js
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
             apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",

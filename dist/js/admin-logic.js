@@ -5,8 +5,8 @@ import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstat
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 import { AISupport } from './ai-support.js';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+    apiKey: "ENV_MISSING",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",
@@ -208,7 +208,7 @@ onAuthStateChanged(auth, async (user) => {
             // Fetch full user profile - Primary lookup by UID, fallback to Email
             let userDocSnap = await safeFirebaseFetch(getDoc(doc(db, "users", user.uid)));
             let snap = { empty: true, docs: [] };
-            
+
             if (userDocSnap.exists()) {
                 snap = { empty: false, docs: [userDocSnap] };
             } else {
@@ -495,7 +495,7 @@ onAuthStateChanged(auth, async (user) => {
                                     }
                                 }
                                 showToast(`New Message: ${d.title}`, 'info');
-                                
+
                                 // Toggle header bell dot
                                 const dot = document.getElementById('header-notif-dot');
                                 if (dot) dot.classList.remove('hidden');
@@ -714,7 +714,7 @@ window.handleGoogleLogin = async () => {
         // 1. Fetch user by UID first, fallback to email
         let userDocSnap = await safeFirebaseFetch(getDoc(doc(db, "users", user.uid)));
         let snap = { empty: true, docs: [] };
-        
+
         if (userDocSnap.exists()) {
             snap = { empty: false, docs: [userDocSnap] };
         } else {
@@ -1043,17 +1043,21 @@ async function renderOverview() {
         const usersQuery = companyId ? query(collection(db, "users"), where("companyId", "==", companyId)) : collection(db, "users");
         const projectsQuery = companyId ? query(collection(db, "projects"), where("companyId", "==", companyId)) : collection(db, "projects");
 
-        const [expensesSnap, usersSnap, projectsSnap, companySnap] = await Promise.all([
+        const [expensesSnap, usersSnap, projectsSnap, companySnap, attendanceSnap, salarySnap] = await Promise.all([
             getDocs(expensesQuery),
             getDocs(usersQuery),
             getDocs(projectsQuery),
-            companyId ? getDoc(doc(db, "companies", companyId)) : Promise.resolve({ exists: () => false })
+            companyId ? getDoc(doc(db, "companies", companyId)) : Promise.resolve({ exists: () => false }),
+            companyId ? getDoc(doc(db, "attendance", companyId)) : Promise.resolve({ exists: () => false }),
+            companyId ? getDoc(doc(db, "salaries", companyId)) : Promise.resolve({ exists: () => false })
         ]);
 
         let companyData = companySnap.exists() ? companySnap.data() : null;
         let expenses = expensesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
         const users = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
         const projects = projectsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const attendance = attendanceSnap.exists() ? attendanceSnap.data() : {};
+        const salaries = salarySnap.exists() ? salarySnap.data() : {};
         const projectsMap = Object.fromEntries(projects.map(p => [p.code, p.name]));
 
         // Aggregation: Project Wise
@@ -1098,7 +1102,10 @@ async function renderOverview() {
         lastDashboardContext = {
             stats: { totalPaid, pending, rejected, totalUsers, totalExpenses },
             projectStats,
-            monthlyTrend: monthlyData
+            monthlyTrend: monthlyData,
+            attendance,
+            salaries,
+            employees: users.map(u => ({ id: u.docId || u.id, name: u.name, role: u.role, department: u.department }))
         };
 
         if (aiAssistant) aiAssistant.updateContext({ dashboardData: lastDashboardContext });
@@ -2275,14 +2282,14 @@ window.applyApprovalFilters = () => {
     // Render List
     list.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in pb-10">
                         ${filtered.map(d => {
-                            const date = d.createdAt?.toDate ? d.createdAt.toDate() : (d.createdAt ? new Date(d.createdAt) : new Date());
-                            let statusColor = 'bg-slate-100 text-slate-600';
-                            if (d.status === 'PENDING') statusColor = 'bg-amber-50 text-amber-600 border-amber-100';
-                            else if (d.status === 'APPROVED') statusColor = 'bg-blue-50 text-blue-600 border-blue-100';
-                            else if (d.status === 'PAID') statusColor = 'bg-green-50 text-green-600 border-green-100';
-                            else if (d.status === 'REJECTED') statusColor = 'bg-red-50 text-red-600 border-red-100';
+        const date = d.createdAt?.toDate ? d.createdAt.toDate() : (d.createdAt ? new Date(d.createdAt) : new Date());
+        let statusColor = 'bg-slate-100 text-slate-600';
+        if (d.status === 'PENDING') statusColor = 'bg-amber-50 text-amber-600 border-amber-100';
+        else if (d.status === 'APPROVED') statusColor = 'bg-blue-50 text-blue-600 border-blue-100';
+        else if (d.status === 'PAID') statusColor = 'bg-green-50 text-green-600 border-green-100';
+        else if (d.status === 'REJECTED') statusColor = 'bg-red-50 text-red-600 border-red-100';
 
-                            return `
+        return `
                                 <div class="bg-white dark:bg-slate-810 p-5 rounded-2xl shadow-sm border ${d.isSpam ? 'border-red-400' : 'border-slate-100 dark:border-slate-800'} hover:shadow-md transition group relative flex flex-col h-full">
                                     <div class="flex items-start justify-between mb-4">
                                         <div class="flex items-center gap-3">
@@ -2319,7 +2326,7 @@ window.applyApprovalFilters = () => {
                                     ${d.reviewRequested ? `<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-0.5 bg-amber-400 rounded-t-full"></div>` : ''}
                                 </div>
                             `;
-                        }).join('')}
+    }).join('')}
                     </div>`;
 };
 
@@ -2489,9 +2496,11 @@ window.showAddUserModal = async () => {
     document.getElementById('user-dob').value = '';
     document.getElementById('user-manager-id').value = '';
     document.getElementById('user-department').value = '';
-    document.getElementById('user-employee-id').value = '';
     document.getElementById('user-budget-limit').value = '';
     document.getElementById('user-mr-role').value = '';
+    document.getElementById('user-joining-date').value = '';
+    document.getElementById('user-salary').value = '';
+    document.getElementById('user-incentive').checked = false;
 
     // Profile Pic Logic
     const picContainer = document.getElementById('user-profile-pic-container');
@@ -2534,6 +2543,9 @@ window.editUser = async (id) => {
     document.getElementById('user-employee-id').value = user.employeeId || '';
     document.getElementById('user-budget-limit').value = user.budgetLimit || '';
     document.getElementById('user-mr-role').value = user.mrRole || '';
+    document.getElementById('user-joining-date').value = user.joiningDate || '';
+    document.getElementById('user-salary').value = user.salary || '';
+    document.getElementById('user-incentive').checked = user.incentiveEligible || false;
 
     // Profile Pic
     if (MAIN_ADMIN_EMAILS.includes(userData.email)) {
@@ -2656,6 +2668,9 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
     const employeeId = document.getElementById('user-employee-id').value.trim();
     const budgetLimit = document.getElementById('user-budget-limit').value;
     const mrRole = document.getElementById('user-mr-role').value;
+    const joiningDate = document.getElementById('user-joining-date').value;
+    const salary = document.getElementById('user-salary').value;
+    const incentiveEligible = document.getElementById('user-incentive').checked;
     const photoUrl = document.getElementById('user-profile-pic').value.trim();
 
     if (!name || !email) {
@@ -2677,6 +2692,9 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
                 phone: phone || null,
                 dob: dob || null,
                 mrRole: mrRole || null,
+                joiningDate: joiningDate || null,
+                salary: salary ? parseFloat(salary) : null,
+                incentiveEligible: incentiveEligible || false,
                 photoUrl: photoUrl || null,
                 updatedAt: serverTimestamp()
             });
@@ -2721,6 +2739,9 @@ document.getElementById('user-form').addEventListener('submit', async (e) => {
                 phone: phone || null,
                 dob: dob || null,
                 mrRole: mrRole || null,
+                joiningDate: joiningDate || null,
+                salary: salary ? parseFloat(salary) : null,
+                incentiveEligible: incentiveEligible || false,
                 photoUrl: photoUrl || null,
                 createdAt: serverTimestamp()
             });
@@ -5350,7 +5371,7 @@ window.openNotifList = async () => {
     const modal = document.getElementById('modal-notif-list');
     const container = document.getElementById('notif-list-container');
     const dot = document.getElementById('header-notif-dot');
-    
+
     // Hide dot when opening
     if (dot) dot.classList.add('hidden');
 
@@ -5368,7 +5389,7 @@ window.openNotifList = async () => {
             limit(20)
         );
         const snap = await safeFirebaseFetch(getDocs(q));
-        
+
         if (snap.empty) {
             container.innerHTML = `
                 <div class="text-center py-12 text-slate-400">
@@ -5380,7 +5401,7 @@ window.openNotifList = async () => {
 
         container.innerHTML = snap.docs.map(docSnap => {
             const d = docSnap.data();
-            const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString() + ' ' + d.createdAt.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+            const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString() + ' ' + d.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
             return `
                 <div onclick="openNotificationPDP('${docSnap.id}')" class="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-green-200 dark:hover:border-green-800 transition cursor-pointer group shadow-sm">
                     <div class="flex justify-between items-start mb-1">
@@ -6180,7 +6201,7 @@ if ('serviceWorker' in navigator) {
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('admin-sidebar');
     if (sidebar) {
-        if(sidebar.classList.contains('-translate-x-full')) {
+        if (sidebar.classList.contains('-translate-x-full')) {
             sidebar.classList.remove('-translate-x-full');
             sidebar.classList.add('translate-x-0');
         } else {
@@ -6188,4 +6209,37 @@ window.toggleSidebar = () => {
             sidebar.classList.remove('translate-x-0');
         }
     }
+};
+
+window.navigateToAttendance = () => {
+    if (userData) {
+        localStorage.setItem('company_session', JSON.stringify({
+            companyId: userData.companyId,
+            role: userData.role === 'ADMIN' ? 'Admin' : userData.role === 'HR' ? 'HR' : 'Manager',
+            userId: userData.name || userData.email.split('@')[0]
+        }));
+    }
+    window.location.href = 'attendance/company/attendance.html';
+};
+
+window.navigateToSalary = () => {
+    if (userData) {
+        localStorage.setItem('company_session', JSON.stringify({
+            companyId: userData.companyId,
+            role: userData.role === 'ADMIN' ? 'Admin' : userData.role === 'HR' ? 'HR' : 'Manager',
+            userId: userData.name || userData.email.split('@')[0]
+        }));
+    }
+    window.location.href = 'attendance/company/salary.html';
+};
+
+window.navigateToAI = () => {
+    if (userData) {
+        localStorage.setItem('company_session', JSON.stringify({
+            companyId: userData.companyId,
+            role: userData.role === 'ADMIN' ? 'Admin' : userData.role === 'HR' ? 'HR' : 'Manager',
+            userId: userData.name || userData.email.split('@')[0]
+        }));
+    }
+    window.location.href = 'attendance/company/ai-agent.html';
 };

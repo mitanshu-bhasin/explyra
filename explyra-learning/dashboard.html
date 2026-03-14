@@ -629,11 +629,37 @@
                     </div>
                 </div>
                 <div style="margin-top:1.5rem; display:flex; gap:1rem; align-items:center;">
-                    <button id="save-profile-btn" onclick="saveProfile()"
+                    <button id="save-profile-btn" onclick="window.saveProfile()"
                         style="padding:.7rem 1.8rem; border-radius:8px; background:var(--blue); color:#fff; font-size:.85rem; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:.2s ease;">Save
                         Changes</button>
                     <span id="profile-saved-msg"
                         style="font-size:.82rem; color:var(--teal); font-weight:600; display:none;">✓ Saved!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../js/env.js"></script>
+    <script src="scripts/learning-core.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: window.EXPLYRA_CONFIG?.firebase?.apiKey || "ENV_MISSING",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig, 'learning');
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
                 showDashboard(user);
             } else {
                 document.getElementById('login-gate').style.display = 'flex';

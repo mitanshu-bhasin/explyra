@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { auth } from './_lib/firebase.js';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_frUajX2k_7oWbz3faKEkzYcH4hfJetQnw');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();

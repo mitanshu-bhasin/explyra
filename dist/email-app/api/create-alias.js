@@ -1,8 +1,8 @@
 import { auth, db } from './_lib/firebase.js';
 
 const CF_API = 'https://api.cloudflare.com/client/v4';
-const CF_TOKEN = process.env.CLOUDFLARE_TOKEN || 'YgjDGPr4Kt2A2lnTVI71vaJqDPs70LAue9c1ZGMK';
-const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID || '17279e3699e4721a9952206ddbe8b1ee';
+const CF_TOKEN = process.env.CLOUDFLARE_TOKEN;
+const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID;
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 
 export default async function handler(req, res) {

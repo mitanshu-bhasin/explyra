@@ -321,13 +321,14 @@
 
     <div id="toast-container"></div>
 
+    <script src="js/env.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: "ENV_MISSING",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",
             storageBucket: "explyras.firebasestorage.app",

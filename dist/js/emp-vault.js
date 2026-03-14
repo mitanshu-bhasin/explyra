@@ -59,6 +59,17 @@ window.updatePersonalStats = (used) => {
     if (el) el.textContent = `₹${used.toLocaleString()}`;
 };
 
+window.calculateTotalBalance = () => {
+    let total = 0;
+    if (window.financialData && window.financialData.length > 0) {
+        window.financialData.forEach(acc => {
+            total += parseFloat(acc.balance) || 0;
+        });
+    }
+    const el = document.getElementById('stat-vault-balance');
+    if (el) el.textContent = `₹${total.toLocaleString()}`;
+};
+
 window.renderPersonalList = (items) => {
     const list = document.getElementById('expenses-list');
     if (!list) return;
@@ -271,6 +282,7 @@ window.fetchFinancialAccounts = () => {
         });
 
         window.renderFinancialAccounts(window.financialData);
+        window.calculateTotalBalance();
     });
 };
 

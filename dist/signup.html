@@ -316,19 +316,20 @@
         </form>
 
         <div class="auth-footer">
-            Already have an account? <a href="emp.html">Sign In</a>
+            Already have an account? <a href="login.html">Sign In</a>
         </div>
     </div>
 
     <div id="toast-container"></div>
 
+    <script src="js/env.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: "ENV_MISSING",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",
             storageBucket: "explyras.firebasestorage.app",
