@@ -512,22 +512,19 @@
         }
 
         .nav-logo-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 9px;
-            background: var(--blue);
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
-            justify-content: center
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .nav-logo-icon svg {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2.2;
-            stroke-linecap: round
+        .nav-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .nav-logo-text {
@@ -541,7 +538,8 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 1.8rem;
+            justify-content: center; /* Center links group */
+            gap: 2.2rem; /* Increased gap for balance */
             list-style: none;
             flex: 1;
         }
@@ -606,8 +604,8 @@
             content: '';
             position: absolute;
             bottom: -20px;
-            left: 0;
-            width: 100%;
+            left: -5%;
+            width: 110%; /* Slightly wider to prevent corner misses */
             height: 30px;
             background: transparent;
             z-index: 5;
@@ -622,28 +620,126 @@
             position: absolute;
             top: 100%;
             left: 50%;
-            transform: translateX(-50%) translateY(10px); /* Smaller gap for better reach */
+            transform: translateX(-50%) translateY(10px);
             background: var(--bg2);
             border: 1px solid var(--bdr);
-            border-radius: 20px;
-            width: min(96vw, 1150px);
-            padding: 2.5rem;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            width: min(96vw, 840px); /* Slightly wider for side-by-side */
+            padding: 0;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
             opacity: 0;
             visibility: hidden;
-            /* Hover Intent fix: Opening delay to prevent accidental neighbor trigger */
             transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
             transition-delay: 0s;
             z-index: 1000;
             pointer-events: none;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-            backdrop-filter: blur(20px);
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
-            overflow-x: hidden;
+            display: flex; /* Side-by-side flex */
+            backdrop-filter: blur(24px);
+            overflow: hidden;
         }
+
+        /* Notion Side-Banner Layout */
+        .dropdown-hero {
+            width: 280px;
+            padding: 1.5rem;
+            background: var(--bg3);
+            border-right: 1px solid var(--bdr);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .hero-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .hero-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--bg2); /* Lighter bg for the logo box */
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px; /* Breathable space for logo */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .hero-text h4 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+        .hero-text p { margin: 6px 0 0; font-size: 0.8rem; color: var(--ink3); line-height: 1.4; }
+
+        .hero-side-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--bdr);
+        }
+
+        .side-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .side-link:hover { background: var(--bg2); color: var(--blue); }
+        .side-link i { font-size: 0.9rem; color: var(--blue); width: 18px; text-align: center; }
+
+        .dropdown-main-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 1.5rem;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .dropdown-footer {
+            border-top: 1px solid var(--bdr);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(var(--bg3-rgb), 0.5);
+        }
+
+        .footer-action {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.78rem;
+            color: var(--ink);
+            text-decoration: none;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .footer-action:hover { color: var(--blue); }
+        .footer-action span { color: var(--blue); font-weight: 700; }
 
         /* Clear any potential blue highlights from scrollbars or items */
         .dropdown-content::-webkit-scrollbar {
@@ -654,6 +750,17 @@
         .dropdown-content::-webkit-scrollbar-thumb {
             background-color: var(--blue);
             border-radius: 10px;
+        }
+
+        /* Adjust container horizontal offsets for centered triggers */
+        .nav-item-dropdown:nth-of-type(1) .dropdown-content {
+            left: 50%; 
+        }
+        .nav-item-dropdown:nth-of-type(2) .dropdown-content {
+            left: 50%; 
+        }
+        .nav-item-dropdown:nth-of-type(3) .dropdown-content {
+            left: 50%; 
         }
 
         .dropdown-content::before {
@@ -668,22 +775,45 @@
             filter: drop-shadow(0 -1px 1px var(--bdr));
         }
 
+        /* Dropdown arrow positions - centered for all mega menus */
+        .nav-item-dropdown:nth-of-type(1) .dropdown-content::before,
+        .nav-item-dropdown:nth-of-type(2) .dropdown-content::before,
+        .nav-item-dropdown:nth-of-type(3) .dropdown-content::before {
+            left: 50%; 
+        }
+
         [data-theme="dark"] .dropdown-content::before {
             border-bottom-color: rgba(15, 20, 35, 0.98);
         }
 
-        /* Products dropdown arrow position */
+        /* Adjust container horizontal offsets for first two dropdows to avoid 'gap' */
+        .nav-item-dropdown:nth-of-type(1) .dropdown-content {
+            left: 42%; 
+        }
+        .nav-item-dropdown:nth-of-type(2) .dropdown-content {
+            left: 48%; 
+        }
+
+        /* Products dropdown arrow position - shifted to match new container alignment */
         .nav-item-dropdown:nth-of-type(1) .dropdown-content::before {
-            left: 17.2%; 
+            left: 31%; 
         }
 
-        /* Solutions dropdown arrow position */
+        /* Solutions dropdown arrow position - shifted to match new container alignment */
         .nav-item-dropdown:nth-of-type(2) .dropdown-content::before {
-            left: 24.2%;
+            left: 36%;
         }
 
+        /* Resources dropdown (3rd) container and arrow alignment */
+        .nav-item-dropdown:nth-of-type(3) .dropdown-content {
+            left: 55%; 
+        }
+        .nav-item-dropdown:nth-of-type(3) .dropdown-content::before {
+            left: 45%;
+        }
+        
         [data-theme="dark"] .dropdown-content {
-            background: rgba(15, 20, 35, 0.98);
+            background: rgba(18, 22, 38, 0.98);
             border-color: rgba(255, 255, 255, 0.08);
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
         }
@@ -700,54 +830,126 @@
         .mega-column {
             display: flex;
             flex-direction: column;
-            gap: 1.8rem;
+            gap: 1.25rem;
         }
 
         .mega-column-h {
-            font-size: 0.7rem;
+            font-size: 0.62rem;
             font-weight: 800;
-            color: var(--blue);
+            color: var(--ink3);
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
             margin-bottom: 0.4rem;
             display: block;
-            opacity: 0.8;
+            padding-left: 0.75rem;
+            opacity: 0.7;
         }
 
         .mega-items {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 0.15rem;
         }
 
         .mega-item {
             display: flex;
-            align-items: flex-start;
-            gap: 1.2rem;
-            padding: 0.8rem 1rem;
-            border-radius: 12px;
-            transition: all 0.25s ease;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.45rem 0.75rem;
+            border-radius: 8px;
+            transition: background 0.2s;
             text-decoration: none;
             color: inherit;
         }
 
         .mega-item:hover {
             background: var(--blue-g);
-            transform: translateX(5px);
         }
 
         .mega-item-icon {
-            font-size: 1.5rem;
-            width: 44px;
-            height: 44px;
+            font-size: 1.1rem;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--bg3);
-            border-radius: 10px;
+            border-radius: 8px;
             flex-shrink: 0;
             transition: all 0.3s ease;
         }
+
+        .mega-item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink);
+            display: block;
+        }
+
+        .mega-item-desc {
+            font-size: 0.7rem;
+            color: var(--ink3);
+            display: block;
+            white-space: nowrap;
+        }
+
+        .mega-item:hover {
+            background: var(--blue-g);
+        }
+
+        /* Large Feature Card in Dropdown */
+        .dropdown-feature-box {
+            background: var(--bg3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border: 1px solid var(--bdr);
+        }
+
+        .feat-card-top {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .feat-card-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--blue);
+            color: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 16px rgba(21, 70, 192, 0.2);
+        }
+
+        .feat-card-content h4 { margin: 0; font-size: 1rem; color: var(--ink); }
+        .feat-card-content p { margin: 4px 0 0; font-size: 0.75rem; color: var(--ink3); line-height: 1.4; }
+
+        .feat-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .feat-link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.75rem;
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.4rem;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .feat-link-item:hover { background: rgba(21, 70, 192, 0.08); color: var(--blue); }
 
         .mega-item:hover .mega-item-icon {
             background: var(--bg2);
@@ -1353,10 +1555,10 @@
             background: transparent;
             color: var(--ink2);
             padding: .9rem 2rem;
+            border: 1.5px solid var(--bdr2);
             border-radius: var(--r);
             font-size: .95rem;
             font-weight: 500;
-            border: 1.5px solid var(--bdr2);
             transition: all .25s
         }
 
@@ -4009,132 +4211,6 @@
             stroke-linejoin: round;
         }
 
-        /* ═══════════════════════════════════════════
-   CUSTOM FUTURISTIC CURSOR
-═══════════════════════════════════════════ */
-        /* Hide default cursor on desktop */
-        @media (hover: hover) and (pointer: fine) {
-
-            *,
-            *::before,
-            *::after {
-                cursor: none !important;
-            }
-        }
-
-        /* Cursor wrapper */
-        #ex-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 99999;
-            pointer-events: none;
-        }
-
-        /* Inner glowing dot */
-        .ex-dot {
-            position: absolute;
-            width: 7px;
-            height: 7px;
-            background: var(--blue);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 6px 2px var(--blue), 0 0 12px 4px color-mix(in srgb, var(--blue) 40%, transparent);
-            transition: width .2s, height .2s, background .25s, box-shadow .25s;
-        }
-
-        /* Outer trailing ring */
-        .ex-ring {
-            position: absolute;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 1.5px solid var(--blue);
-            transform: translate(-50%, -50%);
-            opacity: 0.7;
-            transition: width .35s cubic-bezier(.23, 1, .32, 1),
-                height .35s cubic-bezier(.23, 1, .32, 1),
-                border-color .25s,
-                background .25s,
-                opacity .25s;
-        }
-
-        /* Second subtle outer ring */
-        .ex-ring2 {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 0.5px solid color-mix(in srgb, var(--blue) 30%, transparent);
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: width .5s, height .5s, opacity .4s;
-        }
-
-        /* HOVER STATE - triggered by JS */
-        #ex-cursor.is-hovering .ex-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--blue2, #5B8AF5);
-            box-shadow: 0 0 10px 4px var(--blue2, #5B8AF5), 0 0 22px 8px color-mix(in srgb, var(--blue2, #5B8AF5) 35%, transparent);
-        }
-
-        #ex-cursor.is-hovering .ex-ring {
-            width: 52px;
-            height: 52px;
-            border-color: var(--blue2, #5B8AF5);
-            border-width: 1px;
-            background: color-mix(in srgb, var(--blue2, #5B8AF5) 8%, transparent);
-            opacity: 1;
-        }
-
-        #ex-cursor.is-hovering .ex-ring2 {
-            width: 78px;
-            height: 78px;
-            opacity: 0.5;
-        }
-
-        /* CLICK STATE */
-        #ex-cursor.is-clicking .ex-dot {
-            width: 5px;
-            height: 5px;
-            background: #fff;
-        }
-
-        #ex-cursor.is-clicking .ex-ring {
-            width: 28px;
-            height: 28px;
-            border-color: #fff;
-            opacity: 1;
-        }
-
-        /* Dark theme tweaks */
-        [data-theme="dark"] .ex-dot {
-            background: var(--blue2);
-            box-shadow: 0 0 8px 3px var(--blue2), 0 0 18px 6px color-mix(in srgb, var(--blue2) 45%, transparent);
-        }
-
-        [data-theme="dark"] .ex-ring {
-            border-color: var(--blue2);
-        }
-
-        [data-theme="dark"] .ex-ring2 {
-            border-color: color-mix(in srgb, var(--blue2) 28%, transparent);
-        }
-
-        /* Only on touch/mobile: hide the cursor elements */
-        @media (hover: none),
-        (max-width: 1024px) {
-            #ex-cursor {
-                display: none;
-            }
-
-            *,
-            *::before,
-            *::after {
-                cursor: auto !important;
-            }
-        }
 
         /* ═══════════════════════════════════════════
    CUSTOM NOTIFICATION (TOAST)
@@ -4186,11 +4262,7 @@
         <nav class="main-nav" aria-label="Main Navigation">
             <a href="#" class="nav-logo">
                 <div class="nav-logo-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                        <path d="M2 17l10 5 10-5" />
-                        <path d="M2 12l10 5 10-5" />
-                    </svg>
+                    <img src="nobg.png" alt="Explyra">
                 </div>
                 <span class="nav-logo-text">Explyra</span>
             </a>
@@ -4198,89 +4270,94 @@
                 <li class="nav-item-dropdown">
                     <a href="#" class="dropdown-trigger">Products <i class="fa-solid fa-chevron-down"></i></a>
                     <div class="dropdown-content mega-menu">
-                        <div class="mega-column">
-                            <span class="mega-column-h">Business & Finance</span>
-                            <div class="mega-items">
-                                <a href="#expense" class="mega-item">
-                                    <span class="mega-item-icon">💼</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra Expense</span>
-                                        <span class="mega-item-desc">Smart expense tracking for teams</span>
-                                    </div>
-                                </a>
-                                <a href="crm/index.html" class="mega-item">
-                                    <span class="mega-item-icon">📈</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra CRM</span>
-                                        <span class="mega-item-desc">Lead & pipeline management</span>
-                                    </div>
-                                </a>
-                                <a href="Ino software/ino.html" class="mega-item">
-                                    <span class="mega-item-icon">📄</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Invoice Software</span>
-                                        <span class="mega-item-desc">Professional billing & tax prep</span>
-                                    </div>
-                                </a>
+                        <div class="dropdown-hero">
+                            <div class="hero-main">
+                                <div class="hero-logo">
+                                    <img src="nobg.png" alt="Explyra Logo">
+                                </div>
+                                <div class="hero-text">
+                                    <h4>Explyra Suite</h4>
+                                    <p>The operating system for modern teams and creators.</p>
+                                </div>
+                            </div>
+                            <div class="hero-side-items">
+                                <a href="dns/index.html" class="side-link"><i class="fa-solid fa-globe"></i> DNS Manager</a>
+                                <a href="email-app/src/index.html" class="side-link"><i class="fa-solid fa-envelope"></i> MailBox Ecosystem</a>
+                                <a href="manufacturing/index.html" class="side-link"><i class="fa-solid fa-industry"></i> Explyra ERP</a>
                             </div>
                         </div>
-                        <div class="mega-column">
-                            <span class="mega-column-h">Productivity & Health</span>
-                            <div class="mega-items">
-                                <a href="health-manager/index.html" class="mega-item">
-                                    <span class="mega-item-icon">🏃</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra Health</span>
-                                        <span class="mega-item-desc">AI health companion & insights</span>
+                        <div class="dropdown-main-zone">
+                            <div class="dropdown-body">
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Business</span>
+                                    <div class="mega-items">
+                                        <a href="#expense" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">💼</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Expense</span>
+                                                <span class="mega-item-desc">Smart tracking</span>
+                                            </div>
+                                        </a>
+                                        <a href="crm/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📈</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">CRM</span>
+                                                <span class="mega-item-desc">Pipeline tool</span>
+                                            </div>
+                                        </a>
+                                        <a href="Ino software/ino.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📄</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Invoice</span>
+                                                <span class="mega-item-desc">Billing v2</span>
+                                            </div>
+                                        </a>
+                                        <a href="attendance/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">✅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Attendance</span>
+                                                <span class="mega-item-desc">Geofenced check-in</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                </a>
-                                <a href="attendance/index.html" class="mega-item">
-                                    <span class="mega-item-icon">✅</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Attendance</span>
-                                        <span class="mega-item-desc">Geofenced check-ins & logs</span>
+                                </div>
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Utilities</span>
+                                    <div class="mega-items">
+                                        <a href="health-manager/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(0,128,128,0.1); color:var(--teal);">🏃</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Health</span>
+                                                <span class="mega-item-desc">AI companion</span>
+                                            </div>
+                                        </a>
+                                        <a href="https://book.explyra.me" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Booking</span>
+                                                <span class="mega-item-desc">Auto-scheduling</span>
+                                            </div>
+                                        </a>
+                                        <a href="explyra-learning/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(255,191,0,0.1); color:var(--amber);">📚</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Learning</span>
+                                                <span class="mega-item-desc">Master future skills</span>
+                                            </div>
+                                        </a>
+                                        <a href="#developers" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(128,0,128,0.1); color:var(--purp);">⚡</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Developers</span>
+                                                <span class="mega-item-desc">Utils & APIs</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                </a>
-                                <a href="https://book.explyra.me" class="mega-item">
-                                    <span class="mega-item-icon">📅</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Booking</span>
-                                        <span class="mega-item-desc">Automated scheduling system</span>
-                                    </div>
-                                </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mega-column">
-                            <span class="mega-column-h">Dev & Learning</span>
-                            <div class="mega-items">
-                                <a href="dns/index.html" class="mega-item">
-                                    <span class="mega-item-icon">🌐</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra DNS</span>
-                                        <span class="mega-item-desc">Fast, secure DNS management</span>
-                                    </div>
-                                </a>
-                                <a href="explyra-learning/index.html" class="mega-item">
-                                    <span class="mega-item-icon">📚</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra Learning</span>
-                                        <span class="mega-item-desc">Master the skills of tomorrow</span>
-                                    </div>
-                                </a>
-                                <a href="#developers" class="mega-item">
-                                    <span class="mega-item-icon">⚡</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra Developers</span>
-                                        <span class="mega-item-desc">Essential developer utilities</span>
-                                    </div>
-                                </a>
-                                <a href="email-app/src/index.html" class="mega-item">
-                                    <span class="mega-item-icon">✉️</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Explyra MailBox</span>
-                                        <span class="mega-item-desc">Professional internal ecosystem</span>
-                                    </div>
-                                </a>
+                            <div class="dropdown-footer">
+                                <a href="updates/index.html" class="footer-action"><span>New:</span> Explyra AI meeting v1.0 &rarr;</a>
+                                <a href="admin.html" class="footer-action"><i class="fa-solid fa-shield-halved"></i> Admin Portal</a>
                             </div>
                         </div>
                     </div>
@@ -4288,113 +4365,172 @@
                 <li class="nav-item-dropdown">
                     <a href="solutions/index.html" class="dropdown-trigger">Solutions <i class="fa-solid fa-chevron-down"></i></a>
                     <div class="dropdown-content mega-menu">
-                        <div class="mega-column">
-                            <span class="mega-column-h">Management</span>
-                            <div class="mega-items">
-                                <a href="solutions/expense-manager.html" class="mega-item">
-                                    <span class="mega-item-icon">💼</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Expense Manager</span>
-                                        <span class="mega-item-desc">For enterprise finance teams</span>
-                                    </div>
-                                </a>
-                                <a href="solutions/invoice-software.html" class="mega-item">
-                                    <span class="mega-item-icon">📄</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Invoice Software</span>
-                                        <span class="mega-item-desc">For small business owners</span>
-                                    </div>
-                                </a>
-                                <a href="solutions/booking-system.html" class="mega-item">
-                                    <span class="mega-item-icon">📅</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Booking System</span>
-                                        <span class="mega-item-desc">For service-based providers</span>
-                                    </div>
-                                </a>
-                                <a href="solutions/attendance-system.html" class="mega-item">
-                                    <span class="mega-item-icon">✅</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Attendance System</span>
-                                        <span class="mega-item-desc">For HR & modern schools</span>
-                                    </div>
-                                </a>
+                        <div class="dropdown-hero">
+                            <div class="hero-main">
+                                <div class="hero-logo">
+                                    <img src="nobg.png" alt="Explyra Logo">
+                                </div>
+                                <div class="hero-text">
+                                    <h4>Solutions</h4>
+                                    <p>Bespoke digital transformation for scaling organizations.</p>
+                                </div>
+                            </div>
+                            <div class="hero-side-items">
+                                <a href="solutions/suite.html" class="side-link"><i class="fa-solid fa-layer-group"></i> Full Suite Access</a>
+                                <a href="solutions/custom.html" class="side-link"><i class="fa-solid fa-code-merge"></i> Custom Integration</a>
+                                <a href="solutions/utilities.html" class="side-link"><i class="fa-solid fa-wrench"></i> Infrastructure Utils</a>
                             </div>
                         </div>
-                        <div class="mega-column">
-                            <span class="mega-column-h">Platform</span>
-                            <div class="mega-items">
-                                <a href="solutions/crm.html" class="mega-item">
-                                    <span class="mega-item-icon">📈</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">CRM</span>
-                                        <span class="mega-item-desc">For high-performance sales</span>
+                        <div class="dropdown-main-zone">
+                            <div class="dropdown-body">
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Internal Systems</span>
+                                    <div class="mega-items">
+                                        <a href="solutions/expense-manager.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">💼</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Expense Admin</span>
+                                                <span class="mega-item-desc">Finance operations</span>
+                                            </div>
+                                        </a>
+                                        <a href="solutions/attendance-system.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">✅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Attendance Hub</span>
+                                                <span class="mega-item-desc">HR & Security</span>
+                                            </div>
+                                        </a>
+                                        <a href="solutions/manufacturing.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🏭</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Manufacturing</span>
+                                                <span class="mega-item-desc">Supply chain ERP</span>
+                                            </div>
+                                        </a>
+                                        <a href="solutions/health.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(0,128,128,0.1);">🏃</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Corporate Health</span>
+                                                <span class="mega-item-desc">Wellness suite</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                </a>
-                                <a href="solutions/health.html" class="mega-item">
-                                    <span class="mega-item-icon">🏃</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Health</span>
-                                        <span class="mega-item-desc">For insurance & welfare teams</span>
+                                </div>
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Infrastructure</span>
+                                    <div class="mega-items">
+                                        <a href="solutions/crm.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📈</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Enterprise CRM</span>
+                                                <span class="mega-item-desc">Sales & Ops v2</span>
+                                            </div>
+                                        </a>
+                                        <a href="solutions/booking-system.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Booking Hub</span>
+                                                <span class="mega-item-desc">Service providers</span>
+                                            </div>
+                                        </a>
+                                        <a href="solutions/dns.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🌐</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Global DNS</span>
+                                                <span class="mega-item-desc">Edge infrastructure</span>
+                                            </div>
+                                        </a>
+                                        <a href="solutions/developers.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(128,0,128,0.1);">⚡</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Dev Cloud</span>
+                                                <span class="mega-item-desc">Custom APIs</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                </a>
-                                <a href="solutions/developers.html" class="mega-item">
-                                    <span class="mega-item-icon">⚡</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Developers</span>
-                                        <span class="mega-item-desc">For rapidly scaling tech startups</span>
-                                    </div>
-                                </a>
-                                <a href="solutions/learning.html" class="mega-item">
-                                    <span class="mega-item-icon">📚</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Learning</span>
-                                        <span class="mega-item-desc">For L&D departments</span>
-                                    </div>
-                                </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mega-column">
-                            <span class="mega-column-h">Specialized</span>
-                            <div class="mega-items">
-                                <a href="solutions/utilities.html" class="mega-item">
-                                    <span class="mega-item-icon">🔗</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Utilities</span>
-                                        <span class="mega-item-desc">Essential general purpose tools</span>
-                                    </div>
-                                </a>
-                                <a href="solutions/manufacturing.html" class="mega-item">
-                                    <span class="mega-item-icon">🏭</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Manufacturing</span>
-                                        <span class="mega-item-desc">For factory floor & supply chain</span>
-                                    </div>
-                                </a>
-                                <a href="email-app/src/index.html" class="mega-item">
-                                    <span class="mega-item-icon">✉️</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Custom MailBox</span>
-                                        <span class="mega-item-desc">Proprietary internal mail hub</span>
-                                    </div>
-                                </a>
-                                <a href="solutions/suite.html" class="mega-item">
-                                    <span class="mega-item-icon">🌐</span>
-                                    <div class="mega-item-info">
-                                        <span class="mega-item-title">Suite</span>
-                                        <span class="mega-item-desc">The complete Explyra ecosystem</span>
-                                    </div>
-                                </a>
+                            <div class="dropdown-footer">
+                                <a href="contact.html" class="footer-action"><span>Talk to Sales:</span> Scaling with Explyra &rarr;</a>
+                                <a href="solutions/learning.html" class="footer-action"><i class="fa-solid fa-graduation-cap"></i> Training Portal</a>
                             </div>
                         </div>
                     </div>
                 </li>
-                <li><a href="events/index.html">Events</a></li>
-                <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="updates/index.html">Updates</a></li>
-                <li><a href="services/index.html">Services</a></li>
-                <li><a href="team.html">Team</a></li>
-                <li><a href="support.html">Help Desk</a></li>
+                <li class="nav-item-dropdown">
+                    <a href="#" class="dropdown-trigger">Resources <i class="fa-solid fa-chevron-down"></i></a>
+                    <div class="dropdown-content mega-menu">
+                        <div class="dropdown-hero">
+                            <div class="hero-main">
+                                <div class="hero-logo">
+                                    <img src="nobg.png" alt="Explyra Logo">
+                                </div>
+                                <div class="hero-text">
+                                    <h4>Explyra Hub</h4>
+                                    <p>Deep dives, community events, and technical support.</p>
+                                </div>
+                            </div>
+                            <div class="hero-side-items">
+                                <a href="docs/index.html" class="side-link"><i class="fa-solid fa-book"></i> Documentation</a>
+                                <a href="compare/index.html" class="side-link"><i class="fa-solid fa-scale-balanced"></i> Comparisons</a>
+                                <a href="status/index.html" class="side-link"><i class="fa-solid fa-signal"></i> System Status</a>
+                            </div>
+                        </div>
+                        <div class="dropdown-main-zone">
+                            <div class="dropdown-body">
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Ecosystem</span>
+                                    <div class="mega-items">
+                                        <a href="events/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Events</span>
+                                                <span class="mega-item-desc">Community meetups</span>
+                                            </div>
+                                        </a>
+                                        <a href="updates/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📢</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Updates</span>
+                                                <span class="mega-item-desc">What's new in Explyra</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Company</span>
+                                    <div class="mega-items">
+                                        <a href="pricing.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">💰</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Pricing</span>
+                                                <span class="mega-item-desc">Flexible plans for teams</span>
+                                            </div>
+                                        </a>
+                                        <a href="support.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🎧</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Help Desk</span>
+                                                <span class="mega-item-desc">24/7 technical support</span>
+                                            </div>
+                                        </a>
+                                        <a href="team.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🤝</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Our Team</span>
+                                                <span class="mega-item-desc">Meet the engineers</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-footer">
+                                <a href="community-hub/index.html" class="footer-action"><span>Join Discord:</span> Explyra Dev Community &rarr;</a>
+                                <a href="careers.html" class="footer-action"><i class="fa-solid fa-briefcase"></i> Careers</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
             </ul>
@@ -4418,7 +4554,12 @@
         <!-- MOBILE MENU -->
         <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile Navigation">
             <div class="mobile-menu-header">
-                <span class="nav-logo-text">Explyra</span>
+                <div class="nav-logo" style="gap:0.6rem">
+                    <div class="nav-logo-icon" style="width:24px; height:24px;">
+                        <img src="nobg.png" alt="Explyra">
+                    </div>
+                    <span class="nav-logo-text">Explyra</span>
+                </div>
                 <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close mobile menu">&times;</button>
             </div>
             <ul class="mobile-nav-links">
@@ -4461,10 +4602,20 @@
                     </div>
                 </li>
                 <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="updates/index.html">Updates</a></li>
-                <li><a href="docs/index.html">Docs</a></li>
-                <li><a href="team.html">Team</a></li>
-                <li><a href="support.html">Help Desk</a></li>
+                <li class="mobile-has-submenu">
+                    <div class="mobile-submenu-trigger">
+                        <a href="#">Resources</a>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-submenu">
+                        <a href="events/index.html">📅 Events</a>
+                        <a href="updates/index.html">📢 Updates</a>
+                        <a href="support.html">🎧 Help Desk</a>
+                        <a href="team.html">🤝 Our Team</a>
+                        <a href="docs/index.html">📚 Documentation</a>
+                        <a href="status/index.html">📊 Status</a>
+                    </div>
+                </li>
                 <li><a href="donation.html" style="color:var(--teal);font-weight:700;">💚 Donate</a></li>
                 <li><a href="contact.html" style="color:var(--blue);font-weight:700;">✉️ Contact</a></li>
                 <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
@@ -5508,8 +5659,8 @@
             <div class="foot-col">
                 <h4>Download <i class="fas fa-chevron-down"></i></h4>
                 <ul>
-                    <li><a href="#"><i class="fab fa-android"></i> Android</a></li>
-                    <li><a href="#"><i class="fab fa-apple"></i> iOS</a></li>
+                    <li><a href="android.html"><i class="fab fa-android"></i> Android</a></li>
+                    <li><a href="ios.html"><i class="fab fa-apple"></i> iOS</a></li>
                 </ul>
             </div>
         </div>
@@ -6144,76 +6295,6 @@
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
-        })();
-    </script>
-    <!-- FUTURISTIC CURSOR -->
-    <div id="ex-cursor">
-        <div class="ex-ring2"></div>
-        <div class="ex-ring"></div>
-        <div class="ex-dot"></div>
-    </div>
-
-    <script>
-        (function () {
-            // Only activate on non-touch desktops
-            if (window.matchMedia('(hover: none)').matches || window.innerWidth <= 1024) return;
-
-            const cursor = document.getElementById('ex-cursor');
-            const dot = cursor.querySelector('.ex-dot');
-            const ring = cursor.querySelector('.ex-ring');
-            const ring2 = cursor.querySelector('.ex-ring2');
-
-            // Positions
-            let mX = -200, mY = -200;   // mouse (dot follows immediately)
-            let rX = -200, rY = -200;   // ring (lag)
-            let r2X = -200, r2Y = -200;   // ring2 (more lag)
-
-            // Track mouse
-            document.addEventListener('mousemove', e => {
-                mX = e.clientX; mY = e.clientY;
-            });
-
-            // RAF loop — silky smooth lagging ring
-            function tick() {
-                // ring lags behind at 12% per frame
-                rX += (mX - rX) * 0.12;
-                rY += (mY - rY) * 0.12;
-                r2X += (mX - r2X) * 0.07;
-                r2Y += (mY - r2Y) * 0.07;
-
-                dot.style.left = mX + 'px';
-                dot.style.top = mY + 'px';
-                ring.style.left = rX + 'px';
-                ring.style.top = rY + 'px';
-                ring2.style.left = r2X + 'px';
-                ring2.style.top = r2Y + 'px';
-
-                requestAnimationFrame(tick);
-            }
-            tick();
-
-            // Show cursor only after first move (prevents flash at 0,0)
-            document.addEventListener('mousemove', function show() {
-                cursor.style.opacity = '1';
-                document.removeEventListener('mousemove', show);
-            });
-            cursor.style.opacity = '0';
-            cursor.style.transition = 'opacity 0.3s';
-
-            // Hover state
-            const hoverSelector = 'a, button, [role="button"], .ov-card, .test-card, .course-item, .tool-item, .video-thumbnail, .v-modal-close, .suite-pill, .btn-hero, .btn-hero-ghost, label, input, select, textarea, .theme-pill, .back-to-top';
-            document.querySelectorAll(hoverSelector).forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
-            });
-
-            // Click state
-            document.addEventListener('mousedown', () => cursor.classList.add('is-clicking'));
-            document.addEventListener('mouseup', () => cursor.classList.remove('is-clicking'));
-
-            // Hide on leave, show on enter
-            document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-            document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
         })();
     </script>
 </body>

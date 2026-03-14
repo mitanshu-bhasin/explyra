@@ -390,30 +390,28 @@
             border: 1px solid var(--bdr2, #E4E1DB);
             border-radius: 100px;
             transition: all 0.3s ease;
-            height: 32px; /* Slightly more compact */
+            height: 32px;
             position: relative;
             padding: 0 8px 0 10px;
             margin-right: 12px;
-            width: 78px; /* Fixed width for consistency */
+            width: 78px;
             flex-shrink: 0;
+            cursor: pointer;
         }
         .nav-translation:hover { 
             border-color: var(--blue, #1546C0);
             background: var(--bg2, #fff);
-            transform: translateY(-1px);
+            z-index: 1000;
         }
         .nav-translation i { font-size: 0.8rem; color: var(--blue, #1546C0); margin-right: 5px; }
-        
         .nav-translation .nav-lang-code {
             font-size: 0.72rem;
             font-weight: 800;
             color: var(--ink, #0D1117);
             text-transform: uppercase;
-            z-index: 1;
         }
         [data-theme="dark"] .nav-translation .nav-lang-code { color: #fff; }
 
-        /* Custom Arrow */
         .nav-translation::after {
             content: "\f078";
             font-family: "Font Awesome 6 Free";
@@ -421,23 +419,132 @@
             font-size: 0.5rem;
             color: var(--ink, #0D1117);
             margin-left: auto;
+            transition: transform 0.3s;
         }
         [data-theme="dark"] .nav-translation::after { color: #fff; }
+        .nav-translation:hover::after { transform: rotate(180deg); }
 
-        /* The invisible trigger */
-        #google_translate_element, .goog-te-gadget, .goog-te-combo {
-            width: 100%;
-            height: 100%;
+        /* Categorized Language Mega Dropdown */
+        .lang-dropdown-content {
             position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0 !important;
-            z-index: 5;
-            cursor: pointer;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 720px;
+            background: var(--bg2, #fff);
+            border: 1px solid var(--bdr, #E4E1DB);
+            border-radius: 12px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+            display: flex; /* Side-banner flex */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 2000;
+            pointer-events: none;
+            overflow: hidden;
         }
-        .goog-te-combo { -webkit-appearance: none; appearance: none; }
+
+        .lang-side-banner {
+            width: 200px;
+            padding: 1.5rem;
+            background: var(--bg3, #F1EFE9);
+            border-right: 1px solid var(--bdr, #E4E1DB);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .lang-side-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .lang-side-title i { font-size: 1.8rem; color: var(--blue, #1546C0); }
+        .lang-side-title h4 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--ink); }
+        .lang-side-title p { margin: 0; font-size: 0.75rem; color: var(--ink3); line-height: 1.4; }
+
+        .lang-main-zone {
+            flex: 1;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        [data-theme="dark"] .lang-dropdown-content {
+            background: #141928;
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+        }
+        [data-theme="dark"] .lang-side-banner { background: rgba(255,255,255,0.02); }
+
+        .nav-translation:hover .lang-dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: all;
+            transition-delay: 0.15s;
+        }
+
+        /* Hover Bridge for stability */
+        .nav-translation::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            right: 0;
+            width: 100%;
+            height: 30px;
+            background: transparent;
+            display: none;
+        }
+        .nav-translation:hover::before { display: block; }
+
+        .lang-col h5 {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--blue, #1546C0);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.8rem;
+            opacity: 0.8;
+        }
+        .lang-list { display: flex; flex-direction: column; gap: 4px; }
+        .lang-item {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            color: var(--ink, #0D1117);
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        [data-theme="dark"] .lang-item { color: #EEF0F8; }
+        .lang-item:hover {
+            background: var(--blue-g, rgba(21,70,192,0.06));
+            color: var(--blue, #1546C0);
+            padding-left: 14px;
+        }
+        [data-theme="dark"] .lang-item:hover {
+            background: rgba(91, 138, 245, 0.1);
+            color: #fff;
+        }
+        .lang-item.active {
+            background: var(--blue, #1546C0);
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .lang-item-code {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            font-weight: 700;
+        }
 
         @media (max-width: 1023px) {
+            .lang-dropdown-content { display: none !important; }
             .mobile-translation-item {
                 padding: 1.2rem 1.5rem;
                 border-top: 1px solid var(--bdr);
@@ -445,15 +552,9 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
+                position: relative;
             }
             .mobile-translation-item i { font-size: 1.1rem; color: var(--blue); }
-            /* Mobile invert fix */
-            .mobile-translation-item .goog-te-gadget {
-                filter: invert(1) hue-rotate(180deg);
-            }
-            [data-theme="dark"] .mobile-translation-item .goog-te-gadget {
-                filter: none;
-            }
         }
     `;
 
@@ -711,11 +812,66 @@
             translateDiv.innerHTML = `
                 <i class="fa-solid fa-globe"></i>
                 <span class="nav-lang-code">EN</span>
-                <div id="google_translate_element"></div>
+                <div class="lang-dropdown-content">
+                    <div class="lang-side-banner">
+                        <div class="lang-side-title">
+                            <i class="fa-solid fa-earth-asia"></i>
+                            <h4>Select Language</h4>
+                            <p>Translate Explyra Suite into your preferred language instantly.</p>
+                        </div>
+                        <div style="margin-top:auto; font-size:0.65rem; color:var(--ink3); opacity:0.6;">
+                            Powered by Google Neural Machine Translation.
+                        </div>
+                    </div>
+                    <div class="lang-main-zone">
+                        <div class="lang-col">
+                            <h5>Popular & Indian</h5>
+                            <div class="lang-list">
+                                <div class="lang-item" data-lang="en">English <span class="lang-item-code">EN</span></div>
+                                <div class="lang-item" data-lang="hi">Hindi <span class="lang-item-code">HI</span></div>
+                                <div class="lang-item" data-lang="bn">Bengali <span class="lang-item-code">BN</span></div>
+                                <div class="lang-item" data-lang="mr">Marathi <span class="lang-item-code">MR</span></div>
+                                <div class="lang-item" data-lang="ta">Tamil <span class="lang-item-code">TA</span></div>
+                                <div class="lang-item" data-lang="gu">Gujarati <span class="lang-item-code">GU</span></div>
+                            </div>
+                        </div>
+                        <div class="lang-col">
+                            <h5>Global Markets</h5>
+                            <div class="lang-list">
+                                <div class="lang-item" data-lang="es">Spanish <span class="lang-item-code">ES</span></div>
+                                <div class="lang-item" data-lang="fr">French <span class="lang-item-code">FR</span></div>
+                                <div class="lang-item" data-lang="ar">Arabic <span class="lang-item-code">AR</span></div>
+                                <div class="lang-item" data-lang="zh-CN">Chinese <span class="lang-item-code">CN</span></div>
+                                <div class="lang-item" data-lang="ja">Japanese <span class="lang-item-code">JP</span></div>
+                                <div class="lang-item" data-lang="ru">Russian <span class="lang-item-code">RU</span></div>
+                                <div class="lang-item" data-lang="de">German <span class="lang-item-code">DE</span></div>
+                                <div class="lang-item" data-lang="ko">Korean <span class="lang-item-code">KR</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="google_translate_element" style="display:none !important"></div>
             `;
             const themePill = desktopNavRight.querySelector('.theme-pill');
             if (themePill) desktopNavRight.insertBefore(translateDiv, themePill);
             else desktopNavRight.insertAdjacentElement('afterbegin', translateDiv);
+
+            // Desktop selection logic
+            translateDiv.addEventListener('click', (e) => {
+                const item = e.target.closest('.lang-item');
+                if (item) {
+                    const langCode = item.getAttribute('data-lang');
+                    const combo = document.querySelector('.goog-te-combo');
+                    if (combo) {
+                        combo.value = langCode;
+                        combo.dispatchEvent(new Event('change'));
+                        
+                        // Update UI
+                        document.querySelectorAll('.lang-item').forEach(li => li.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                }
+            });
         }
 
         if (mobileNavLinks) {
