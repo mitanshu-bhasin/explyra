@@ -1,46 +1,36 @@
-name: Minify and Deploy to Cloudflare
+name: Minify and Prepare for Cloudflare
 on:
   push:
     branches:
-      - main
+      - main # Jab tu main pe push karega, ye script chalegi
 
 jobs:
-  build-and-deploy:
+  build-and-commit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Prepare dist folder and copy files
+      - name: Prepare dist folder
         run: |
           mkdir -p dist
           rsync -a --exclude='.git' --exclude='.github' --exclude='dist' . dist/
 
       - name: Install Minifiers
-        run: |
-          npm install -g terser clean-css-cli html-minifier
+        run: npm install -g terser clean-css-cli html-minifier
 
-      - name: Minify JS, CSS, and HTML
+      - name: Minify (Ignoring booking & status)
         run: |
-          # JS Minify
-          find dist -type f -name "*.js" -exec terser {} -o {} \;
-          # CSS Minify
-          find dist -type f -name "*.css" -exec cleancss -o {} {} \;
-          # HTML Minify
-          find dist -type f -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments --minify-css true --minify-js true {} -o {} \;
-          echo "✅ Minification complete!"
+          find dist -type d \( -path dist/booking -o -path dist/status \) -prune -o -name "*.js" -exec terser {} -o {} \;
+          find dist -type d \( -path dist/booking -o -path dist/status \) -prune -o -name "*.css" -exec cleancss -o {} {} \;
+          find dist -type d \( -path dist/booking -o -path dist/status \) -prune -o -name "*.html" -exec html-minifier --collapse-whitespace --remove-comments {} -o {} \;
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Push Minified Code to Production Branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: "explyra" # <-- Isse apne Cloudflare project name se match karna
-          directory: "dist"
-          # Optional: Agar tu chahta hai ki GitHub pe deployment ka link dikhe
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: production # Is branch ko Cloudflare se link karenge
+          commit_message: "🚀 Optimized for Cloudflare [skip ci]"
