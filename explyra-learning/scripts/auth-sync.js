@@ -9,7 +9,7 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: "ENV_MISSING",
+    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

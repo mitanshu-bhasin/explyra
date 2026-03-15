@@ -32,7 +32,7 @@ function sync() {
 
     const config = {
         firebase: {
-            apiKey: env.FIREBASE_API_KEY || "ENV_MISSING",
+            apiKey: env.FIREBASE_API_KEY || "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
             authDomain: env.FIREBASE_AUTH_DOMAIN || "explyras.firebaseapp.com",
             projectId: env.FIREBASE_PROJECT_ID || "explyras",
             storageBucket: env.FIREBASE_STORAGE_BUCKET || "explyras.firebasestorage.app",
@@ -50,12 +50,12 @@ function sync() {
             // NOTE: Cloudflare Token and Resend Key are secrets
         },
         imagekit: {
-            publicKey: env.IMAGEKIT_PUBLIC_KEY || "",
+            publicKey: env.IMAGEKIT_PUBLIC_KEY || "public_A7ZHxCiIBfl/fxzXlk1tXUUR+B4=",
             url: env.IMAGEKIT_URL || "https://upload.imagekit.io/api/v1/files/upload"
             // NOTE: ImageKit Private Key is secret
         },
         emailjs: {
-            publicKey: env.EMAILJS_PUBLIC_KEY || ""
+            publicKey: env.EMAILJS_PUBLIC_KEY || "i1GEROAXLarlKvxnp"
         }
     };
 

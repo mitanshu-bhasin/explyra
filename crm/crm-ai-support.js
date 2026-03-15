@@ -3,7 +3,7 @@
  * Specialized for lead analysis, pipeline management, and data-driven insights.
  */
 (function() {
-    const GROQ_API_KEY = window.EXPLYRA_CONFIG?.ai?.apiKey || 'ENV_MISSING';
+    const GROQ_API_KEY = window.EXPLYRA_CONFIG?.ai?.apiKey || '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';
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const MODEL = 'llama-3.3-70b-versatile';
 

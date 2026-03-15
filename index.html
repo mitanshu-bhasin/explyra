@@ -6185,7 +6185,10 @@
                 <i class="fas fa-times"></i>
             </button>
             <iframe id="videoIframe"
+                title="YouTube video player"
+                frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen></iframe>
         </div>
     </div>
@@ -6309,7 +6312,7 @@
         if (vTrigger) {
             vTrigger.addEventListener('click', () => {
                 vModal.classList.add('active');
-                vIframe.src = "https://www.youtube.com/embed/7Ti-C171jyw?si=fDb5xG1iwX0zHjDR&autoplay=1";
+                vIframe.src = "https://www.youtube-nocookie.com/embed/7Ti-C171jyw?si=u6VmlzFJlZCGs3uP&autoplay=1";
                 document.body.style.overflow = 'hidden';
             });
         }
