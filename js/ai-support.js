@@ -143,10 +143,10 @@ export class AISupport {
                 box-shadow: 0 15px 35px rgba(30, 142, 62, 0.5);
             }
             .ai-chat-window {
-                position: fixed !important;
-                bottom: 100px !important;
-                right: 24px !important;
-                left: auto !important;
+                position: fixed;
+                bottom: 100px;
+                right: 24px;
+                left: auto;
                 width: 400px;
                 height: 620px;
                 max-height: 80vh;
@@ -433,27 +433,30 @@ export class AISupport {
             input.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
         }, 0);
 
-        // Direct-execute quick actions — no AI roundtrip!
-        window.triggerAIAction = (action) => {
-            const directMap = {
-                'approvals': { cmd: 'SWITCH_TAB', payload: {tab:'approvals'}, reply: 'Switching to Approvals! ⏳' },
-                'reports':   { cmd: 'SWITCH_TAB', payload: {tab:'reports'}, reply: 'Opening Reports! 📊' },
-                'users':     { cmd: 'SWITCH_TAB', payload: {tab:'users'}, reply: 'Showing Users! 👥' },
-                'tasks':     { cmd: 'SWITCH_TAB', payload: {tab:'tasks'}, reply: 'Opening Tasks! 📋' },
-                'overview':  { cmd: 'SWITCH_TAB', payload: {tab:'overview'}, reply: 'Going to Overview! 🏠' },
-                'theme':     { cmd: 'TOGGLE_THEME', payload: {}, reply: 'Theme toggled! 🌓' },
-                'insights':  null // This one needs the LLM for analysis
+            // Direct-execute quick actions — no AI roundtrip!
+            const oldAction = window.triggerAIAction;
+            window.triggerAIAction = (action) => {
+                const directMap = {
+                    'approvals': { cmd: 'SWITCH_TAB', payload: { tab: 'approvals' }, reply: 'Switching to Approvals! ⏳' },
+                    'reports': { cmd: 'SWITCH_TAB', payload: { tab: 'reports' }, reply: 'Opening Reports! 📊' },
+                    'users': { cmd: 'SWITCH_TAB', payload: { tab: 'users' }, reply: 'Showing Users! 👥' },
+                    'tasks': { cmd: 'SWITCH_TAB', payload: { tab: 'tasks' }, reply: 'Opening Tasks! 📋' },
+                    'overview': { cmd: 'SWITCH_TAB', payload: { tab: 'overview' }, reply: 'Going to Overview! 🏠' },
+                    'theme': { cmd: 'TOGGLE_THEME', payload: {}, reply: 'Theme toggled! 🌓' },
+                    'insights': null // This one needs the LLM for analysis
+                };
+                const direct = directMap[action];
+                if (direct) {
+                    this.addMessage(`▶️ ${action.charAt(0).toUpperCase() + action.slice(1)}`, 'user');
+                    this.addMessage(direct.reply, 'ai');
+                    this.handleCommand(direct.cmd, direct.payload);
+                } else if (typeof oldAction === 'function') {
+                    oldAction(action);
+                } else {
+                    // Fall back to LLM for insights/complex queries
+                    this.processQuery(`Analyze the dashboard data and give me actionable admin insights — pending claims, spending trends, user activity.`);
+                }
             };
-            const direct = directMap[action];
-            if (direct) {
-                this.addMessage(`▶️ ${action.charAt(0).toUpperCase() + action.slice(1)}`, 'user');
-                this.addMessage(direct.reply, 'ai');
-                this.handleCommand(direct.cmd, direct.payload);
-            } else {
-                // Fall back to LLM for insights/complex queries
-                this.processQuery(`Analyze the dashboard data and give me actionable admin insights — pending claims, spending trends, user activity.`);
-            }
-        };
     }
 
     _buildAdminCommandPalette() {
@@ -534,12 +537,18 @@ export class AISupport {
             this.chatWindow.style.bottom = 'auto';
             this.chatWindow.style.right = 'auto';
             this.chatWindow.style.width = '100%';
-            this.chatWindow.style.height = '500px';
+            this.chatWindow.style.height = '100%';
             this.chatWindow.style.boxShadow = 'none';
             this.chatWindow.style.transform = 'none';
             this.chatWindow.style.opacity = '1';
             this.chatWindow.style.pointerEvents = 'all';
             this.chatWindow.classList.add('open');
+            this.isOpen = true; // MUST set to true when embedded
+            
+            // Hide close button if embedded to prevent user from closing it permanently
+            const closeBtn = this.chatWindow.querySelector('#ai-close-btn');
+            if (closeBtn) closeBtn.style.display = 'none';
+            
             container.appendChild(this.chatWindow);
         }
     }

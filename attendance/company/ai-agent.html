@@ -111,30 +111,8 @@
             if (action === 'attendance') window.aiAssistant.processQuery("Analyze recent attendance patterns for our workspace.");
             if (action === 'payroll') window.aiAssistant.processQuery("Review our payroll commitments and pending disbursements.");
         };
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.setItem('explyra-theme', 'light');
-            } else {
-                html.classList.add('dark');
-                localStorage.setItem('explyra-theme', 'dark');
-            }
-        }
-        
-        (function() {
-            const theme = localStorage.getItem('explyra-theme') || 'light';
-            if (theme === 'dark') document.documentElement.classList.add('dark');
-        })();
     </script>
-
-
-
-    
-    
-    
-        <meta name="description" content="Use Ai agent on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <meta name="description" content="Use Ai agent on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
 
     
     <script type="application/ld+json">
