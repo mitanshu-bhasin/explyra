@@ -4,6 +4,8 @@ import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 import { AISupport } from './ai-support.js';
+import { handleAIChatRequest } from './chat-ai-helper.js';
+
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
     apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
@@ -5151,6 +5153,14 @@ window.sendChatMessage = async (e) => {
 
         const container = document.getElementById('chat-messages');
         if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
+
+        // --- @ai Trigger ---
+        if (text.toLowerCase().includes('@ai')) {
+            setTimeout(() => {
+                handleAIChatRequest(db, userData, userData.companyId, currentChatId, currentChatUser);
+            }, 1000);
+        }
+
     } catch (err) {
         showToast("Failed to send: " + err.message, 'error');
     }

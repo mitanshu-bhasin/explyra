@@ -1,5 +1,7 @@
 // js/emp-chat.js
 import { collection, query, where, getDocs, doc, onSnapshot, serverTimestamp, orderBy, limit, addDoc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { handleAIChatRequest } from './chat-ai-helper.js';
+
 
 let activeChatUnsub = null;
 let chatUsers = [];
@@ -270,6 +272,14 @@ window.sendChatMessage = async (e) => {
 
         const container = document.getElementById('chat-messages-emp');
         if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
+
+        // --- @ai Trigger ---
+        if (text.toLowerCase().includes('@ai')) {
+            setTimeout(() => {
+                handleAIChatRequest(db, window.userData, window.companyId, window.currentChatContext, window.currentChatUser);
+            }, 1000);
+        }
+
     } catch (e) {
         console.error("Chat Error:", e);
         window.showToast("Failed to send: " + e.message, "error");
