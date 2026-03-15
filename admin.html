@@ -334,6 +334,217 @@
         .animate-fade-in {
             animation: fadeIn 0.4s ease-out forwards;
         }
+
+        /* ═══════════ NEW FEATURES ═══════════ */
+
+        /* Welcome Banner */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .welcome-hero {
+            background: linear-gradient(-45deg, #000, #111, #1a1a2e, #16213e);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            border-radius: var(--radius-md);
+            padding: 2rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .dark .welcome-hero {
+            background: linear-gradient(-45deg, #000, #0a0a0a, #0d1117, #010409);
+            border: 1px solid #222;
+        }
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .welcome-hero .stat-pill {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 999px;
+            padding: 0.35rem 0.85rem;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            animation: countUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        .welcome-hero .stat-pill:nth-child(2) { animation-delay: 0.1s; }
+        .welcome-hero .stat-pill:nth-child(3) { animation-delay: 0.2s; }
+
+        /* Command Palette */
+        .cmd-palette-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 15vh;
+        }
+        .cmd-palette-backdrop.open { display: flex; }
+        .cmd-palette {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 560px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.15s ease-out;
+        }
+        .cmd-palette input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem 1.25rem;
+            font-size: 15px;
+            font-family: 'Outfit', sans-serif;
+            outline: none;
+        }
+        .cmd-palette input::placeholder { color: var(--text-secondary); }
+        .cmd-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .cmd-item:hover, .cmd-item.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        .cmd-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+        .cmd-item .cmd-shortcut {
+            margin-left: auto;
+            font-size: 10px;
+            font-family: 'Outfit', monospace;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        /* Activity Feed */
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .activity-item {
+            animation: slideInRight 0.3s ease forwards;
+            opacity: 0;
+        }
+        .activity-item:nth-child(1) { animation-delay: 0s; }
+        .activity-item:nth-child(2) { animation-delay: 0.05s; }
+        .activity-item:nth-child(3) { animation-delay: 0.1s; }
+        .activity-item:nth-child(4) { animation-delay: 0.15s; }
+        .activity-item:nth-child(5) { animation-delay: 0.2s; }
+
+        /* Breadcrumb */
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 0 0 4px 0;
+        }
+        .breadcrumb-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .breadcrumb-nav a:hover { color: var(--text-primary); }
+        .breadcrumb-nav .bc-sep {
+            font-size: 10px;
+            opacity: 0.4;
+        }
+        .breadcrumb-nav .bc-current {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* System Health Pill */
+        @keyframes healthPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+            50% { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+        }
+        .health-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: healthPulse 2s ease-in-out infinite;
+        }
+        .health-dot.offline {
+            background: #ef4444;
+            animation: none;
+        }
+
+        /* Export Toolbar */
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .export-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        /* Sidebar Collapse */
+        .sidebar-collapsed { width: 64px !important; }
+        .sidebar-collapsed .sidebar-label,
+        .sidebar-collapsed .sidebar-section-title,
+        .sidebar-collapsed .sidebar-footer-info,
+        .sidebar-collapsed .sidebar-header-text { display: none; }
+        .sidebar-collapsed .sidebar-item { justify-content: center; padding: 0.75rem; }
+        .sidebar-collapsed .sidebar-item i { margin: 0; }
+        .sidebar-btn-collapse { transition: transform 0.2s; }
+        .sidebar-collapsed .sidebar-btn-collapse { transform: rotate(180deg); }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
@@ -1058,16 +1269,34 @@
                     <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h2 id="page-title" class="text-sm font-semibold">Dashboard</h2>
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="breadcrumb-nav hidden sm:flex" id="admin-breadcrumb">
+                        <a href="#" onclick="switchTab('overview'); return false;">Home</a>
+                        <i class="fa-solid fa-chevron-right bc-sep"></i>
+                        <span class="bc-current" id="breadcrumb-current">Dashboard</span>
+                    </nav>
+                    <h2 id="page-title" class="text-sm font-semibold sm:hidden">Dashboard</h2>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div class="relative hidden sm:block">
-                        <i
-                            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" placeholder="Search..."
-                            class="input-vercel pl-9 h-8 w-64 bg-slate-100 dark:bg-slate-900 border-none">
+                <div class="flex items-center gap-3">
+                    <!-- System Health Indicator -->
+                    <div id="system-health" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 cursor-default" title="System Status">
+                        <div class="health-dot" id="health-dot"></div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider" id="health-text">Online</span>
                     </div>
+
+                    <!-- Search / Cmd Palette Trigger -->
+                    <!-- Mobile Search Icon -->
+                    <button onclick="openCommandPalette()" class="sm:hidden p-2 text-slate-500 hover:text-slate-800 dark:hover:text-slate-100 transition">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <!-- Desktop Search Button -->
+                    <button onclick="openCommandPalette()" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-400 text-xs">
+                        <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+                        <span class="font-medium">Search...</span>
+                        <kbd class="ml-2 px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[9px] font-bold text-slate-500">⌘K</kbd>
+                    </button>
+
 
                     <button onclick="openNotifList()"
                         class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
@@ -1090,6 +1319,8 @@
             </header>
 
             <div id="content-area" class="flex-1 overflow-y-auto p-6 animate-fade-in">
+                <!-- Welcome Hero Banner (injected by JS on overview tab) -->
+                <div id="welcome-hero-container"></div>
                 <!-- Content will be injected here -->
             </div>
         </main>
@@ -2107,6 +2338,323 @@
         window.selectAdminLanguage = (lang) => {
             triggerGoogleTranslate(lang);
         };
+    </script>
+
+    <!-- ═══════════ COMMAND PALETTE ═══════════ -->
+    <div class="cmd-palette-backdrop" id="cmd-palette">
+        <div class="cmd-palette">
+            <div style="position:relative">
+                <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:13px"></i>
+                <input type="text" id="cmd-input" placeholder="Type a command or search..." style="padding-left:40px" autocomplete="off">
+            </div>
+            <div id="cmd-results" style="max-height:320px;overflow-y:auto;padding:6px 0">
+                <div class="cmd-item" onclick="cmdAction('overview')">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard Overview</span>
+                    <span class="cmd-shortcut">1</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('approvals')">
+                    <i class="fa-solid fa-stamp"></i> <span>Approvals</span>
+                    <span class="cmd-shortcut">2</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('my-claims')">
+                    <i class="fa-solid fa-receipt"></i> <span>My Claims</span>
+                    <span class="cmd-shortcut">3</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('users')">
+                    <i class="fa-solid fa-users"></i> <span>User Management</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('projects')">
+                    <i class="fa-solid fa-folder-tree"></i> <span>Projects</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('reports')">
+                    <i class="fa-solid fa-chart-line"></i> <span>Reports & Analytics</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('audit')">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit Logs</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('settings')">
+                    <i class="fa-solid fa-sliders"></i> <span>Settings</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('chat')">
+                    <i class="fa-solid fa-comments"></i> <span>Open Chat</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('theme')">
+                    <i class="fa-solid fa-moon"></i> <span>Toggle Dark Mode</span>
+                    <span class="cmd-shortcut">T</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('notif')">
+                    <i class="fa-solid fa-bell"></i> <span>View Notifications</span>
+                    <span class="cmd-shortcut">N</span>
+                </div>
+            </div>
+            <div style="padding:8px 16px;border-top:1px solid var(--border-color);display:flex;gap:12px;align-items:center">
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:600"><kbd style="padding:1px 5px;border:1px solid var(--border-color);border-radius:3px;font-size:9px;background:var(--bg-secondary)">↑↓</kbd> Navigate</span>
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:600"><kbd style="padding:1px 5px;border:1px solid var(--border-color);border-radius:3px;font-size:9px;background:var(--bg-secondary)">↵</kbd> Select</span>
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:600"><kbd style="padding:1px 5px;border:1px solid var(--border-color);border-radius:3px;font-size:9px;background:var(--bg-secondary)">Esc</kbd> Close</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ NEW FEATURES JS ═══════════ -->
+    <script>
+    (function() {
+
+        // ── Helper: Time Ago ──
+        function getTimeAgo(date) {
+            if (!date) return 'Recently';
+            const now = new Date();
+            const past = date instanceof Date ? date : (date.toDate ? date.toDate() : new Date(date));
+            const diff = Math.floor((now - past) / 1000);
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        // ── Welcome Hero Banner ──
+        function renderWelcomeHero() {
+            const container = document.getElementById('welcome-hero-container');
+            if (!container) return;
+            const hour = new Date().getHours();
+            let greeting = 'Good Evening';
+            let icon = 'fa-moon';
+            if (hour < 12) { greeting = 'Good Morning'; icon = 'fa-sun'; }
+            else if (hour < 17) { greeting = 'Good Afternoon'; icon = 'fa-cloud-sun'; }
+            const name = document.getElementById('current-user-name')?.textContent?.trim() || 'Admin';
+            const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            
+            // Get real data if available
+            const data = window.adminDashboardData || { pending: 0, totalUsers: 0, approvedToday: 0 };
+
+            container.innerHTML = `
+                <div class="welcome-hero mb-8" style="animation: floatIn 0.6s ease forwards">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <i class="fa-solid ${icon}" style="color:rgba(255,255,255,0.5);font-size:14px"></i>
+                                <span style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:0.1em">${dateStr}</span>
+                            </div>
+                            <h2 style="color:#fff;font-size:24px;font-weight:800;margin:0;letter-spacing:-0.5px">${greeting}, <span style="background:linear-gradient(to right,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${name.split(' ')[0]}</span></h2>
+                            <p style="color:rgba(255,255,255,0.45);font-size:13px;margin-top:6px;font-weight:400">Here's your admin overview for today.</p>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <div class="stat-pill"><i class="fa-solid fa-stamp" style="margin-right:4px"></i> <span id="hero-pending-count">${data.pending}</span> Pending</div>
+                            <div class="stat-pill"><i class="fa-solid fa-users" style="margin-right:4px"></i> <span id="hero-user-count">${data.totalUsers}</span> Users</div>
+                            <div class="stat-pill"><i class="fa-solid fa-check-circle" style="margin-right:4px;color:#34d399"></i> <span id="hero-approved-today">${data.approvedToday}</span> Approved Today</div>
+                        </div>
+                    </div>
+                    <!-- Export Toolbar -->
+                    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="export-btn" onclick="exportAdminCSV()" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                        <button class="export-btn" onclick="exportAdminPDF()" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">
+                            <i class="fa-solid fa-file-pdf"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+                <!-- Activity Feed -->
+                <div class="vercel-card mb-8" style="padding:0;overflow:hidden">
+                    <div style="padding:14px 20px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <div style="width:28px;height:28px;border-radius:8px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center">
+                                <i class="fa-solid fa-bolt" style="font-size:11px;color:var(--text-secondary)"></i>
+                            </div>
+                            <span style="font-size:12px;font-weight:700;color:var(--text-primary)">Recent Activity</span>
+                        </div>
+                        <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em">Live</span>
+                    </div>
+                    <div id="admin-activity-feed" style="padding:12px 20px;min-height:100px">
+                        <div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:12px">
+                            <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:6px"></i> Loading activity...
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Populate
+            populateActivityFeed();
+        }
+
+        function populateActivityFeed() {
+            const feed = document.getElementById('admin-activity-feed');
+            if (!feed) return;
+            
+            const data = window.adminDashboardData || {};
+            const expenses = data.recentExpenses || [];
+
+            if (expenses.length === 0) {
+                feed.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:12px">No recent activity.</div>`;
+                return;
+            }
+
+            feed.innerHTML = expenses.map((e, i) => {
+                let icon = 'fa-receipt';
+                let color = '#3b82f6';
+                let badge = 'Claim';
+                
+                if (e.status === 'PAID') { icon = 'fa-stamp'; color = '#22c55e'; badge = 'Approved'; }
+                else if (e.status === 'REJECTED') { icon = 'fa-xmark'; color = '#ef4444'; badge = 'Rejected'; }
+                else if (e.status.includes('MANAGER')) { badge = 'Manager'; color = '#f59e0b'; }
+
+                const ts = e.createdAt?.toDate ? e.createdAt.toDate() : new Date(e.createdAt || 0);
+
+                return `
+                    <div class="activity-item" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color);animation-delay:${i*0.06}s">
+                        <div style="width:32px;height:32px;border-radius:8px;background:${color}15;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="fa-solid ${icon}" style="font-size:12px;color:${color}"></i>
+                        </div>
+                        <div style="flex:1;min-width:0">
+                            <p style="font-size:12px;font-weight:600;color:var(--text-primary);margin:0">${e.title}</p>
+                            <p style="font-size:10px;color:var(--text-secondary);margin:2px 0 0">${e.employeeName || e.userName || 'Employee'} • ${getTimeAgo(ts)}</p>
+                        </div>
+                        <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;padding:2px 8px;border-radius:999px;background:${color}15;color:${color};border:1px solid ${color}30;white-space:nowrap">${badge}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Global refresh hook for admin-logic.js
+        window.refreshNewAdminUI = function() {
+            renderWelcomeHero();
+        };
+
+        // ── Command Palette ──
+        window.openCommandPalette = function() {
+            const el = document.getElementById('cmd-palette');
+            el.classList.add('open');
+            const input = document.getElementById('cmd-input');
+            input.value = '';
+            input.focus();
+            filterCmdItems('');
+        };
+        window.closeCommandPalette = function() {
+            document.getElementById('cmd-palette').classList.remove('open');
+        };
+        window.cmdAction = function(action) {
+            closeCommandPalette();
+            if (action === 'theme') { if (typeof toggleTheme === 'function') toggleTheme(); return; }
+            if (action === 'notif') { if (typeof openNotifList === 'function') openNotifList(); return; }
+            if (typeof switchTab === 'function') switchTab(action);
+        };
+        function filterCmdItems(query) {
+            const items = document.querySelectorAll('#cmd-results .cmd-item');
+            const q = query.toLowerCase();
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(q) ? '' : 'none';
+            });
+        }
+        // Keyboard listeners
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openCommandPalette();
+            }
+            if (e.key === 'Escape') {
+                closeCommandPalette();
+            }
+        });
+        document.getElementById('cmd-palette')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('cmd-palette-backdrop')) closeCommandPalette();
+        });
+        document.getElementById('cmd-input')?.addEventListener('input', (e) => {
+            filterCmdItems(e.target.value);
+        });
+
+        // ── Breadcrumb Updater ──
+        const origSwitchTab = window.switchTab;
+        if (typeof origSwitchTab === 'function') {
+            window.switchTab = function(tab) {
+                origSwitchTab(tab);
+                updateBreadcrumb(tab);
+            };
+        }
+        window.updateBreadcrumb = function(tab) {
+            const names = {
+                'overview': 'Dashboard', 'approvals': 'Approvals', 'my-claims': 'My Claims',
+                'tasks': 'Task Manager', 'users': 'User Management', 'roles': 'Role Management',
+                'projects': 'Projects', 'workflow': 'Workflow', 'reports': 'Reports',
+                'audit': 'Audit Logs', 'settings': 'Settings', 'chat': 'Chat'
+            };
+            const el = document.getElementById('breadcrumb-current');
+            const title = document.getElementById('page-title');
+            if (el) el.textContent = names[tab] || tab;
+            if (title) title.textContent = names[tab] || tab;
+        };
+
+        // ── System Health Monitor ──
+        function checkHealth() {
+            const dot = document.getElementById('health-dot');
+            const text = document.getElementById('health-text');
+            if (!dot || !text) return;
+            if (navigator.onLine) {
+                dot.classList.remove('offline');
+                text.textContent = 'Online';
+            } else {
+                dot.classList.add('offline');
+                text.textContent = 'Offline';
+            }
+        }
+        window.addEventListener('online', checkHealth);
+        window.addEventListener('offline', checkHealth);
+        checkHealth();
+
+        // ── Export Functions ──
+        window.exportAdminCSV = function() {
+            if (typeof showToast === 'function') showToast('Preparing CSV export...', 'info');
+            // Gather visible table data from content-area
+            const rows = document.querySelectorAll('#content-area table tr');
+            if (!rows.length) {
+                if (typeof showToast === 'function') showToast('No table data to export', 'error');
+                return;
+            }
+            let csv = '';
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td, th');
+                const line = Array.from(cells).map(c => '"' + c.textContent.trim().replace(/"/g, '""') + '"').join(',');
+                csv += line + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'explyra-admin-export-' + new Date().toISOString().slice(0,10) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            if (typeof showToast === 'function') showToast('CSV downloaded!', 'success');
+        };
+        window.exportAdminPDF = function() {
+            if (typeof showToast === 'function') showToast('Generating PDF...', 'info');
+            const content = document.getElementById('content-area');
+            if (!content) return;
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set({
+                    margin: 10,
+                    filename: 'explyra-admin-report-' + new Date().toISOString().slice(0,10) + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                }).from(content).save().then(() => {
+                    if (typeof showToast === 'function') showToast('PDF downloaded!', 'success');
+                });
+            } else {
+                if (typeof showToast === 'function') showToast('PDF library not loaded', 'error');
+            }
+        };
+
+        // ── Render hero on tab switch to overview ──
+        const observer = new MutationObserver(() => {
+            const container = document.getElementById('welcome-hero-container');
+            if (container && !container.children.length) {
+                setTimeout(renderWelcomeHero, 300);
+            }
+        });
+        const contentArea = document.getElementById('content-area');
+        if (contentArea) observer.observe(contentArea, { childList: true });
+
+        // Initial render
+        window.addEventListener('load', () => setTimeout(renderWelcomeHero, 1500));
+    })();
     </script>
 </body>
 

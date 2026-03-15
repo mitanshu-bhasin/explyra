@@ -1108,6 +1108,19 @@ async function renderOverview() {
             employees: users.map(u => ({ id: u.docId || u.id, name: u.name, role: u.role, department: u.department }))
         };
 
+        // Export data for new UI features
+        window.adminDashboardData = {
+            pending,
+            totalUsers,
+            approvedToday: expenses.filter(e => {
+                if (e.status !== 'PAID') return false;
+                const paidDate = e.updatedAt?.toDate ? e.updatedAt.toDate() : new Date(e.updatedAt || 0);
+                return paidDate.toDateString() === new Date().toDateString();
+            }).length,
+            recentExpenses: expenses.slice(0, 5)
+        };
+        if (typeof window.refreshNewAdminUI === 'function') window.refreshNewAdminUI();
+
         if (aiAssistant) aiAssistant.updateContext({ dashboardData: lastDashboardContext });
 
         let trialBannerHtml = '';
