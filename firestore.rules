@@ -3,6 +3,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Explyra Directories - Business Submissions
+    match /business_submissions/{submissionId} {
+      allow read: if true; // Public can view approved listings
+      allow create: if request.auth != null; // Authenticated users can submit
+      allow update, delete: if request.auth != null && 
+        (get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'MASTER_ADMIN');
+    }
+
     // ─── Helper Functions ──────────────────────────────────────────────────────
     function isSignedIn() {
       return request.auth != null;

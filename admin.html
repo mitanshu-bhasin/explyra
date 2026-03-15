@@ -17,7 +17,8 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
     <link rel="apple-touch-icon" href="assets/images/explyra_logo.png">
-    <meta name="description" content="Use Admin on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <meta name="description"
+        content="Use Admin on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
     <meta name="keywords" content="Explyra, Admin, Expense Approval, Dashboard, Management, Mitanshu Bhasin">
     <meta name="author" content="Mitanshu Bhasin, Explyra">
     <link rel="canonical" href="https://explyra.me/admin.html">
@@ -37,7 +38,7 @@
     <meta name="twitter:image" content="https://explyra.me/assets/images/explyra_logo.png">
 
     <!-- Schema.org JSON-LD -->
-    
+
 
     <title>Admin — Free Explyra Suite Tool | Fast & Secure</title>
     <!-- Environment Config -->
@@ -77,7 +78,8 @@
         };
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="js/theme.js"></script>
@@ -251,7 +253,7 @@
             right: 0;
             bottom: 0;
             width: 40%;
-            background: linear-gradient(to left, rgba(255,255,255,0.05), transparent);
+            background: linear-gradient(to left, rgba(255, 255, 255, 0.05), transparent);
         }
 
         /* Mobile Sidebar Logic */
@@ -259,10 +261,12 @@
             .sidebar-hidden {
                 transform: translateX(-100%);
             }
+
             .sidebar-visible {
                 transform: translateX(0);
             }
         }
+
         .input-vercel {
             width: 100%;
             background-color: var(--bg-primary);
@@ -284,13 +288,16 @@
         ::-webkit-scrollbar {
             width: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-secondary);
         }
@@ -313,8 +320,15 @@
 
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in {
@@ -360,11 +374,11 @@
     <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
 
 
-    
-    
-    
-    
-    
+
+
+
+
+
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -421,25 +435,30 @@
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
 
     <!-- User Modal -->
-    <div id="user-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
+    <div id="user-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
         <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in" id="user-modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold" id="user-modal-title">Add User</h3>
-                <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i class="fa-solid fa-times"></i></button>
+                <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i
+                        class="fa-solid fa-times"></i></button>
             </div>
             <form id="user-form" class="space-y-4">
                 <input type="hidden" id="user-doc-id">
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name <span class="text-red-500">*</span></label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name <span
+                            class="text-red-500">*</span></label>
                     <input type="text" id="user-name" class="input-vercel h-10" required>
                 </div>
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email <span class="text-red-500">*</span></label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email <span
+                            class="text-red-500">*</span></label>
                     <input type="email" id="user-email" class="input-vercel h-10" required>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Role <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Role <span
+                                class="text-red-500">*</span></label>
                         <select id="user-role" class="input-vercel h-10" required>
                             <option value="EMPLOYEE">Employee</option>
                             <option value="MANAGER">Manager</option>
@@ -449,7 +468,8 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">MR Role</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">MR
+                            Role</label>
                         <select id="user-mr-role" class="input-vercel h-10">
                             <option value="">None</option>
                             <option value="admin">Prod Admin</option>
@@ -460,7 +480,8 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</label>
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</label>
                         <input type="tel" id="user-phone" class="input-vercel h-10" placeholder="+91 9999999999">
                     </div>
                     <div class="space-y-1">
@@ -470,41 +491,53 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
                         <input type="text" id="user-department" class="input-vercel h-10" placeholder="e.g. Sales">
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee ID</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee
+                            ID</label>
                         <input type="text" id="user-employee-id" class="input-vercel h-10" placeholder="EMP-001">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Joining Date</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Joining
+                            Date</label>
                         <input type="date" id="user-joining-date" class="input-vercel h-10">
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Salary (₹)</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly
+                            Salary (₹)</label>
                         <input type="number" id="user-salary" class="input-vercel h-10" placeholder="0.00">
                     </div>
                 </div>
-                <div class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                    <input type="checkbox" id="user-incentive" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
-                    <label for="user-incentive" class="text-xs font-bold text-slate-600 dark:text-slate-300">Eligible for Incentives / Variable Pay</label>
+                <div
+                    class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                    <input type="checkbox" id="user-incentive"
+                        class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                    <label for="user-incentive" class="text-xs font-bold text-slate-600 dark:text-slate-300">Eligible
+                        for Incentives / Variable Pay</label>
                 </div>
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manager ID</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manager
+                        ID</label>
                     <input type="text" id="user-manager-id" class="input-vercel h-10" placeholder="Manager Document ID">
                 </div>
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Budget Limit (₹)</label>
-                    <input type="number" id="user-budget-limit" class="input-vercel h-10" placeholder="Leave empty for unlimited">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Budget Limit
+                        (₹)</label>
+                    <input type="number" id="user-budget-limit" class="input-vercel h-10"
+                        placeholder="Leave empty for unlimited">
                 </div>
                 <div id="user-profile-pic-container" class="space-y-1 hidden">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profile Pic URL <span class="text-green-500">(Admin)</span></label>
-                    <input type="url" id="user-profile-pic" class="input-vercel h-10" placeholder="https://i.postimg.cc/...">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profile Pic URL
+                        <span class="text-green-500">(Admin)</span></label>
+                    <input type="url" id="user-profile-pic" class="input-vercel h-10"
+                        placeholder="https://i.postimg.cc/...">
                 </div>
-                
+
                 <div class="pt-6 flex gap-3">
                     <button type="button" onclick="closeUserModal()" class="btn-vercel-secondary flex-1">Cancel</button>
                     <button type="submit" class="btn-vercel-primary flex-1">Save User</button>
@@ -800,11 +833,13 @@
     </div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black">
+    <div id="auth-screen"
+        class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black">
         <div class="w-full flex-1 flex flex-col items-center justify-center p-6 relative z-10">
             <div class="vercel-card w-full max-w-sm !p-8 animate-fade-in shadow-2xl">
                 <div class="text-center mb-10">
-                    <div class="w-12 h-12 bg-black dark:bg-white rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <div
+                        class="w-12 h-12 bg-black dark:bg-white rounded-lg flex items-center justify-center mx-auto mb-6">
                         <i class="fa-solid fa-bolt text-white dark:text-black"></i>
                     </div>
                     <h1 class="text-2xl font-bold tracking-tight mb-2" id="login-company-name">Login to Explyra</h1>
@@ -814,13 +849,16 @@
                 <form id="login-form" class="space-y-4">
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</label>
-                        <input type="email" id="login-email" class="input-vercel h-10" placeholder="admin@explyra.me" required>
+                        <input type="email" id="login-email" class="input-vercel h-10" placeholder="admin@explyra.me"
+                            required>
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Password</label>
                         <div class="relative">
-                            <input type="password" id="login-password" class="input-vercel h-10 pr-10" placeholder="••••••••" required>
-                            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
+                            <input type="password" id="login-password" class="input-vercel h-10 pr-10"
+                                placeholder="••••••••" required>
+                            <button type="button" onclick="toggleLoginPassword()"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
                                 <i class="fa-regular fa-eye" id="login-eye-icon"></i>
                             </button>
                         </div>
@@ -829,19 +867,24 @@
                         Continue
                     </button>
                     <div class="text-center">
-                        <button type="button" onclick="forgotPassword()" class="text-xs text-slate-500 hover:text-black font-medium">Forgot password?</button>
+                        <button type="button" onclick="forgotPassword()"
+                            class="text-xs text-slate-500 hover:text-black font-medium">Forgot password?</button>
                     </div>
                 </form>
 
                 <!-- Signup Form (Activation) -->
                 <form id="signup-form" class="space-y-4 hidden" onsubmit="handleAccountActivation(event)">
                     <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Corporate Email</label>
-                        <input type="email" id="signup-email" class="input-vercel h-10" placeholder="admin@company.com" required>
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Corporate
+                            Email</label>
+                        <input type="email" id="signup-email" class="input-vercel h-10" placeholder="admin@company.com"
+                            required>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Create Password</label>
-                        <input type="password" id="signup-password" class="input-vercel h-10" placeholder="••••••••" required>
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Create
+                            Password</label>
+                        <input type="password" id="signup-password" class="input-vercel h-10" placeholder="••••••••"
+                            required>
                     </div>
                     <button type="submit" id="signup-btn" class="btn-vercel-primary w-full h-10 mt-2">
                         Activate Account
@@ -851,17 +894,20 @@
                 <div id="google-signin-container" class="hidden"></div>
 
                 <div id="login-footer" class="mt-6 text-center text-xs text-slate-500">
-                    Don't have an account? <button onclick="toggleAuthMode('signup')" class="text-black dark:text-white font-semibold hover:underline">Activate</button>
+                    Don't have an account? <button onclick="toggleAuthMode('signup')"
+                        class="text-black dark:text-white font-semibold hover:underline">Activate</button>
                 </div>
 
                 <div id="signup-footer" class="mt-6 text-center text-xs text-slate-500 hidden">
-                    Already have an account? <button onclick="toggleAuthMode('login')" class="text-black dark:text-white font-semibold hover:underline">Login</button>
+                    Already have an account? <button onclick="toggleAuthMode('login')"
+                        class="text-black dark:text-white font-semibold hover:underline">Login</button>
                 </div>
                 <div class="mt-2 text-center text-xs text-slate-500">
-                    Want to use for your business? <a href="company.html" class="text-black dark:text-white font-semibold hover:underline">Create Company</a>
+                    Want to use for your business? <a href="company.html"
+                        class="text-black dark:text-white font-semibold hover:underline">Create Company</a>
                 </div>
             </div>
-            
+
             <div class="mt-12 flex flex-col items-center gap-6 opacity-60">
                 <div class="flex items-center gap-4 grayscale group hover:grayscale-0 transition duration-500">
                     <img src="assets/images/explyra_logo.png" class="h-4 w-auto" alt="Logo">
@@ -872,10 +918,13 @@
         </div>
 
         <!-- Extended Footer Section -->
-        <div class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
+        <div
+            class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
             <!-- Qualys SSL Labs A+ Certification Badge -->
-            <div class="flex items-center gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group cursor-default shadow-sm transform hover:-translate-y-px">
-                <img src="images%20(1).png" alt="Qualys SSL Labs A+" class="h-4 w-auto opacity-50 group-hover:opacity-100 transition-opacity">
+            <div
+                class="flex items-center gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group cursor-default shadow-sm transform hover:-translate-y-px">
+                <img src="images%20(1).png" alt="Qualys SSL Labs A+"
+                    class="h-4 w-auto opacity-50 group-hover:opacity-100 transition-opacity">
                 <div class="flex flex-col text-left border-l border-slate-200 dark:border-slate-800 pl-3">
                     <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200">Qualys SSL Labs A+</span>
                 </div>
@@ -895,13 +944,15 @@
     <!-- Dashboard Screen -->
     <div id="dashboard-screen" class="hidden flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside id="admin-sidebar" class="w-64 bg-white dark:bg-black border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 z-30 lg:translate-x-0 -translate-x-full fixed lg:static inset-y-0 left-0">
+        <aside id="admin-sidebar"
+            class="w-64 bg-white dark:bg-black border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 z-30 lg:translate-x-0 -translate-x-full fixed lg:static inset-y-0 left-0">
             <div class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
                 <div class="flex items-center gap-2">
                     <div class="w-6 h-6 bg-black dark:bg-white rounded flex items-center justify-center">
                         <i class="fa-solid fa-bolt text-white dark:text-black text-xs"></i>
                     </div>
-                    <span class="font-bold text-sm tracking-tight" id="sidebar-company-name">EXPLYRA <span class="text-green-500">PORTAL</span></span>
+                    <span class="font-bold text-sm tracking-tight" id="sidebar-company-name">EXPLYRA <span
+                            class="text-green-500">PORTAL</span></span>
                 </div>
                 <!-- Mobile Close Button -->
                 <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black transition-colors">
@@ -914,7 +965,8 @@
                 <button onclick="switchTab('overview')" class="sidebar-item w-full active" data-tab="overview">
                     <i class="fa-solid fa-chart-pie"></i> Dashboard
                 </button>
-                <button onclick="switchTab('approvals')" id="nav-approvals" class="sidebar-item w-full" data-tab="approvals">
+                <button onclick="switchTab('approvals')" id="nav-approvals" class="sidebar-item w-full"
+                    data-tab="approvals">
                     <i class="fa-solid fa-stamp"></i> Approvals
                 </button>
                 <button onclick="switchTab('my-claims')" class="sidebar-item w-full" data-tab="my-claims">
@@ -924,7 +976,8 @@
                     <i class="fa-solid fa-list-check"></i> Task Manager
                 </button>
 
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Administration</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">
+                    Administration</div>
                 <button onclick="switchTab('users')" id="nav-users" class="sidebar-item w-full hidden" data-tab="users">
                     <i class="fa-solid fa-users"></i> User Mgmt
                 </button>
@@ -937,15 +990,19 @@
                 <button onclick="switchTab('roles')" id="nav-roles" class="sidebar-item w-full hidden" data-tab="roles">
                     <i class="fa-solid fa-user-shield"></i> Role Mgmt
                 </button>
-                <button onclick="switchTab('projects')" id="nav-projects" class="sidebar-item w-full hidden" data-tab="projects">
+                <button onclick="switchTab('projects')" id="nav-projects" class="sidebar-item w-full hidden"
+                    data-tab="projects">
                     <i class="fa-solid fa-folder-tree"></i> Projects
                 </button>
-                <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden" data-tab="workflow">
+                <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden"
+                    data-tab="workflow">
                     <i class="fa-solid fa-route"></i> Workflow
                 </button>
 
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics</div>
-                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden" data-tab="reports">
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics
+                </div>
+                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden"
+                    data-tab="reports">
                     <i class="fa-solid fa-chart-line"></i> Reports
                 </button>
                 <button onclick="switchTab('audit')" id="nav-audit" class="sidebar-item w-full hidden" data-tab="audit">
@@ -955,24 +1012,30 @@
                     <i class="fa-solid fa-robot"></i> AI Agent
                 </button>
 
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Tools & System</div>
-                <button onclick="window.location.href='crm/index.html'" id="nav-crm" class="sidebar-item w-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10">
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Tools &
+                    System</div>
+                <button onclick="window.location.href='crm/index.html'" id="nav-crm"
+                    class="sidebar-item w-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10">
                     <i class="fa-solid fa-layer-group"></i> CRM
                 </button>
-                <button onclick="window.location.href='Ino software/ino.html'" id="nav-invoices" class="sidebar-item w-full hidden" data-tab="invoices">
+                <button onclick="window.location.href='Ino software/ino.html'" id="nav-invoices"
+                    class="sidebar-item w-full hidden" data-tab="invoices">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Invoices
                 </button>
                 <button onclick="switchTab('chat')" id="nav-chat" class="sidebar-item w-full" data-tab="chat">
                     <i class="fa-solid fa-comments"></i> Chat
                 </button>
-                <button onclick="switchTab('settings')" id="nav-settings" class="sidebar-item w-full hidden" data-tab="settings">
+                <button onclick="switchTab('settings')" id="nav-settings" class="sidebar-item w-full hidden"
+                    data-tab="settings">
                     <i class="fa-solid fa-sliders"></i> Settings
                 </button>
             </nav>
 
             <div class="p-4 border-t border-slate-200 dark:border-slate-800">
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition mb-2 cursor-pointer" onclick="openAccountCenter()">
-                    <div id="sidebar-user-avatar" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs border border-slate-300 dark:border-slate-700 overflow-hidden">
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition mb-2 cursor-pointer"
+                    onclick="openAccountCenter()">
+                    <div id="sidebar-user-avatar"
+                        class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs border border-slate-300 dark:border-slate-700 overflow-hidden">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div class="flex-1 overflow-hidden">
@@ -980,7 +1043,8 @@
                         <p class="text-[10px] text-slate-500 uppercase font-medium" id="current-user-role">ADMIN</p>
                     </div>
                 </div>
-                <button onclick="logout()" class="sidebar-item w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
+                <button onclick="logout()"
+                    class="sidebar-item w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
                     <i class="fa-solid fa-power-off"></i> Logout
                 </button>
             </div>
@@ -999,21 +1063,28 @@
 
                 <div class="flex items-center gap-4">
                     <div class="relative hidden sm:block">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" placeholder="Search..." class="input-vercel pl-9 h-8 w-64 bg-slate-100 dark:bg-slate-900 border-none">
+                        <i
+                            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" placeholder="Search..."
+                            class="input-vercel pl-9 h-8 w-64 bg-slate-100 dark:bg-slate-900 border-none">
                     </div>
 
-                    <button onclick="openNotifList()" class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
+                    <button onclick="openNotifList()"
+                        class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
                         <i class="fa-solid fa-bell"></i>
-                        <span id="header-notif-dot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
+                        <span id="header-notif-dot"
+                            class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
                     </button>
 
-                    <button onclick="toggleTheme()" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
+                    <button onclick="toggleTheme()"
+                        class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
                         <i class="fa-solid fa-moon theme-toggle-icon"></i>
                     </button>
-                    
-                    <button onclick="openAccountCenter()" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
-                        <img id="header-avatar-img" src="assets/images/explyra_logo.png" class="w-full h-full object-cover" alt="Profile">
+
+                    <button onclick="openAccountCenter()"
+                        class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
+                        <img id="header-avatar-img" src="assets/images/explyra_logo.png"
+                            class="w-full h-full object-cover" alt="Profile">
                     </button>
                 </div>
             </header>
@@ -1022,53 +1093,68 @@
                 <!-- Content will be injected here -->
             </div>
         </main>
-    <!-- Extended Modals for Notifications -->
-    <!-- Notification List Modal -->
-    <div id="modal-notif-list" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('modal-notif-list')"></div>
-        <div id="modal-notif-list-content" class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden flex flex-col max-h-[80vh]">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-bell text-yellow-500"></i> Notifications
-                </h3>
-                <button onclick="closeModal('modal-notif-list')" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition">
-                    <i class="fa-solid fa-xmark text-slate-400"></i>
-                </button>
+        <!-- Extended Modals for Notifications -->
+        <!-- Notification List Modal -->
+        <div id="modal-notif-list" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('modal-notif-list')">
             </div>
-            <div id="notif-list-container" class="overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50 flex-1 min-h-[300px]">
-                <div class="text-center py-10 opacity-50"><i class="fa-solid fa-circle-notch fa-spin text-2xl"></i></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification PDP Modal -->
-    <div id="modal-notif-pdp" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onclick="closeModal('modal-notif-pdp')"></div>
-        <div id="modal-notif-pdp-content" class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
-                        <i class="fa-solid fa-envelope-open text-xl"></i>
-                    </div>
-                    <button onclick="closeModal('modal-notif-pdp')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition">
+            <div id="modal-notif-list-content"
+                class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden flex flex-col max-h-[80vh]">
+                <div
+                    class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800">
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-yellow-500"></i> Notifications
+                    </h3>
+                    <button onclick="closeModal('modal-notif-list')"
+                        class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition">
                         <i class="fa-solid fa-xmark text-slate-400"></i>
                     </button>
                 </div>
-                <h4 id="pdp-notif-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Notification Title</h4>
-                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
-                    <span id="pdp-notif-sender">Admin</span>
-                    <span>•</span>
-                    <span id="pdp-notif-date">Date</span>
-                </div>
-                <div id="pdp-notif-body" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 mb-6 min-h-[100px] whitespace-pre-wrap">
-                    Notification body goes here...
-                </div>
-                <div class="flex justify-end">
-                    <button onclick="closeModal('modal-notif-pdp')" class="px-8 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition">Close Preview</button>
+                <div id="notif-list-container"
+                    class="overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50 flex-1 min-h-[300px]">
+                    <div class="text-center py-10 opacity-50"><i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Notification PDP Modal -->
+        <div id="modal-notif-pdp" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onclick="closeModal('modal-notif-pdp')">
+            </div>
+            <div id="modal-notif-pdp-content"
+                class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-envelope-open text-xl"></i>
+                        </div>
+                        <button onclick="closeModal('modal-notif-pdp')"
+                            class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition">
+                            <i class="fa-solid fa-xmark text-slate-400"></i>
+                        </button>
+                    </div>
+                    <h4 id="pdp-notif-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+                        Notification Title</h4>
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+                        <span id="pdp-notif-sender">Admin</span>
+                        <span>•</span>
+                        <span id="pdp-notif-date">Date</span>
+                    </div>
+                    <div id="pdp-notif-body"
+                        class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 mb-6 min-h-[100px] whitespace-pre-wrap">
+                        Notification body goes here...
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="closeModal('modal-notif-pdp')"
+                            class="px-8 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition">Close
+                            Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Expense Modal -->
