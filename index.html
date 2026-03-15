@@ -31,9 +31,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <!-- Primary Meta Tags -->
     <title>Explyra | The Unified SaaS Ecosystem for Teams & Enterprises</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/shared.css">
     <meta name="title" content="Explyra | The Unified SaaS Ecosystem for Teams & Enterprises" />
     <meta name="description"
         content="Manage expenses, CRM, health, AI learning, and developer tools in one unified workspace. Explyra is the ultimate productivity suite for the modern digital era—built for teams, enterprises, and independent developers." />
@@ -434,7 +434,7 @@
     }
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
 
     <!-- Preload Fonts & Base Styles -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1425,12 +1425,12 @@
             padding: 100px 5vw 80px;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(to bottom, rgba(248, 247, 244, 0.85), rgba(248, 247, 244, 0.95)), url('assets/images/hero_bg.png') center/cover no-repeat;
+            background: linear-gradient(135deg, rgba(248, 247, 244, 0.92) 0%, rgba(235, 240, 255, 0.88) 40%, rgba(240, 248, 245, 0.88) 70%, rgba(248, 247, 244, 0.95) 100%);
             transition: background 0.4s;
         }
 
         [data-theme="dark"] .hero {
-            background: linear-gradient(to bottom, rgba(8, 11, 20, 0.8), rgba(8, 11, 20, 0.9)), url('assets/images/hero_bg.png') center/cover no-repeat;
+            background: linear-gradient(135deg, rgba(8, 11, 20, 0.95) 0%, rgba(15, 20, 50, 0.92) 40%, rgba(10, 25, 30, 0.92) 70%, rgba(8, 11, 20, 0.98) 100%);
         }
 
         /* Hero mesh background */
@@ -1445,11 +1445,11 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(21, 70, 192, .07) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .06) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .06) 0%, transparent 60%)
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(21, 70, 192, .10) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .08) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .08) 0%, transparent 60%)
         }
 
         [data-theme="dark"] .hero-mesh::before {
-            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(91, 138, 245, .15) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .12) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .12) 0%, transparent 60%)
+            background: radial-gradient(ellipse 70% 60% at 20% 40%, rgba(91, 138, 245, .18) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(52, 211, 153, .14) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 60% 80%, rgba(167, 139, 250, .14) 0%, transparent 60%)
         }
 
         .hero-grid {
@@ -2083,7 +2083,7 @@
             border-radius: 12px;
             padding: 1rem;
             cursor: pointer;
-            transition: all .28s;
+            transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
             position: relative;
             overflow: hidden
         }
@@ -5106,10 +5106,10 @@
                 <a href="company.html" class="btn-hero coming-soon-trigger"
                     style="width:100%; justify-content:center; text-decoration:none;">Request Access</a>
                 <div class="mobile-socials">
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://x.com/explyra" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="https://instagram.com/explyra" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="mailto:explyra@gmail.com"><i class="fas fa-envelope"></i></a>
+                    <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/explyra" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
+                    <a href="https://instagram.com/explyra" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="mailto:explyra@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
@@ -5178,7 +5178,7 @@
         </section>
 
         <!-- ══ POWERED BY ══ -->
-        <section class="social-proof reveal">
+        <section class="social-proof reveal" aria-label="Technology Partners">
             <p class="sp-text">Powered by</p>
             <div class="sp-logos">
                 <div class="sp-logo"><i class="fa-brands fa-github"></i> GitHub</div>
@@ -5188,7 +5188,7 @@
         </section>
 
         <!-- ══ SUITE OVERVIEW ══ -->
-        <section class="overview" id="overview">
+        <section class="overview" id="overview" aria-label="Product Suite Overview">
             <div class="overview-inner">
                 <div class="ov-header reveal">
                     <div class="eyebrow">The Explyra ERP Suite</div>
@@ -5287,7 +5287,7 @@
         </section>
 
         <!-- ══ AI CAPABILITIES STRIP ══ -->
-        <section class="ai-strip reveal">
+        <section class="ai-strip reveal" aria-label="AI Capabilities">
             <div class="ai-strip-inner">
                 <div class="ai-chip"><i class="fa-solid fa-sparkles"></i> AI-Powered</div>
                 <h2 class="ai-h">Intelligence built into every layer.</h2>
@@ -5301,7 +5301,7 @@
         </section>
 
         <!-- ══ EXPENSE ══ -->
-        <section class="prod-section expense-sec" id="expense">
+        <section class="prod-section expense-sec" id="expense" aria-label="Expense Tracker">
             <div class="blob"></div>
             <div class="prod-inner">
                 <div class="reveal">
@@ -5420,7 +5420,7 @@
         </section>
 
         <!-- ══ CRM ══ -->
-        <section class="prod-section dev-sec" id="crm">
+        <section class="prod-section dev-sec" id="crm" aria-label="CRM Dashboard">
             <div class="blob" style="background:var(--blue);bottom:-100px;left:-100px;width:500px;height:500px"></div>
             <div class="prod-inner rev">
                 <div class="reveal d2">
@@ -5513,7 +5513,7 @@
         </section>
 
         <!-- ══ HEALTH ══ -->
-        <section class="prod-section health-sec" id="health">
+        <section class="prod-section health-sec" id="health" aria-label="Health Manager">
             <div class="blob"></div>
             <div class="prod-inner rev">
                 <div class="reveal d2">
@@ -5634,7 +5634,7 @@
         </section>
 
         <!-- ══ LEARNING ══ -->
-        <section class="prod-section learn-sec" id="learning">
+        <section class="prod-section learn-sec" id="learning" aria-label="AI Learning Platform">
             <div class="blob"></div>
             <div class="prod-inner">
                 <div class="reveal">
@@ -5743,7 +5743,7 @@
         </section>
 
         <!-- ══ DEVELOPERS ══ -->
-        <section class="prod-section dev-sec" id="developers">
+        <section class="prod-section dev-sec" id="developers" aria-label="Developer Tools">
             <div class="blob"></div>
             <div class="prod-inner rev">
                 <div class="reveal d2">
@@ -5873,7 +5873,7 @@
 
 
         <!-- ══ TESTIMONIALS ══ -->
-        <section class="testimonials reveal">
+        <section class="testimonials reveal" aria-label="Customer Testimonials">
             <div class="test-inner">
                 <div class="eyebrow" style="color:var(--rose)">Customer Stories</div>
                 <h2 class="sec-h">Don't just take our word for it.</h2>
@@ -5925,7 +5925,7 @@
         </section>
 
         <!-- ══ SUPPORT ══ -->
-        <section class="support-sec" id="support">
+        <section class="support-sec" id="support" aria-label="Support">
             <div class="support-inner">
                 <div class="reveal" style="text-align:center">
                     <div class="eyebrow" style="color:var(--slate)">🛡️ Help Desk</div>
@@ -6018,7 +6018,7 @@
                         <em>Trailer</em>
                     </h2>
                     <div class="video-thumbnail" id="videoTrigger">
-                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
+                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer" loading="lazy">
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <i class="fas fa-play"></i>
@@ -6032,7 +6032,7 @@
         </article>
 
         <!-- ══ CTA ══ -->
-        <section class="cta-banner" id="contact">
+        <section class="cta-banner" id="contact" aria-label="Contact Us">
             <div class="reveal">
                 <div class="eyebrow" style="color:var(--blue)">Get Started</div>
                 <h2 class="cta-h">Ready to experience the full <em>Explyra ERP Suite?</em></h2>
@@ -6068,7 +6068,7 @@
     </main>
 
     <!-- ══ FOOTER ══ -->
-    <footer id="mainFooter">
+    <footer id="mainFooter" role="contentinfo" aria-label="Site Footer">
         <div class="foot-container">
             <div class="foot-col-brand">
                 <span class="foot-logo">Explyra</span>
@@ -6161,17 +6161,17 @@
                 Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
                 strictly prohibited and subject to legal action.</p>
             <div class="foot-socials">
-                <a href="https://github.com/Explyra" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://x.com/explyras" target="_blank" title="X (Twitter)"><i class="fab fa-twitter"></i></a>
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)"><i class="fab fa-twitter"></i></a>
                 <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details"
-                    target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="https://www.instagram.com/explyras" target="_blank" title="Instagram"><i
+                    target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" title="Instagram"><i
                         class="fab fa-instagram"></i></a>
-                <a href="https://www.youtube.com/@explyras" target="_blank" title="YouTube"><i
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" title="YouTube"><i
                         class="fab fa-youtube"></i></a>
-                <a href="https://www.linkedin.com/company/explyra/" target="_blank" title="LinkedIn"><i
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i
                         class="fab fa-linkedin"></i></a>
-                <a href="https://www.threads.com/@explyras" target="_blank" title="Threads"><i
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" title="Threads"><i
                         class="fab fa-threads"></i></a>
             </div>
         </div>
@@ -6787,6 +6787,7 @@
             });
         })();
     </script>
+    <script src="js/shared.js" defer></script>
 </body>
 
 </html>
