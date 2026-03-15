@@ -21,6 +21,8 @@
     <title>Contact Explyra — Technical Sales & Enterprise Inquiries</title>
     <meta name="description" content="Contact the Explyra team for business partnerships, enterprise licensing, or technical inquiries. We're here to help you scale your workflow.">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/shared.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -693,58 +695,8 @@
         }
 
         /* ═══════════════════════════════════════════
-   FOOTER
+   FOOTER — styles are in css/shared.css
 ═══════════════════════════════════════════ */
-        footer {
-            padding: 2rem 5vw;
-            border-top: 1px solid var(--bdr);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem
-        }
-
-        .foot-left {
-            display: flex;
-            align-items: center;
-            gap: .7rem
-        }
-
-        .foot-logo {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--ink)
-        }
-
-        .foot-tagline {
-            font-size: .72rem;
-            color: var(--ink4);
-            font-weight: 300
-        }
-
-        .foot-copy {
-            font-size: .7rem;
-            color: var(--ink4);
-            font-weight: 300
-        }
-
-        .foot-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .8rem
-        }
-
-        .foot-links a {
-            font-size: .72rem;
-            color: var(--ink3);
-            transition: color var(--t)
-        }
-
-        .foot-links a:hover {
-            color: var(--ink)
-        }
 
         /* ═══════════════════════════════════════════
    RESPONSIVE
@@ -768,11 +720,6 @@
         @media(max-width:640px) {
             .contact-form-card {
                 padding: 1.5rem
-            }
-
-            footer {
-                flex-direction: column;
-                align-items: flex-start
             }
         }
 
@@ -920,14 +867,14 @@
     <div class="menu-overlay" id="menuOverlay"></div>
 
     <!-- ══ CONTACT SECTION ══ -->
-    <section class="contact-wrap">
+    <section class="contact-wrap" aria-label="Contact Form">
         <div class="contact-mesh"></div>
         <div class="contact-grid-bg"></div>
         <div class="contact-inner">
 
             <!-- Left: Image + info -->
             <div class="contact-img-side reveal">
-                <img src="assets/contact_us_hero.png" alt="Contact Explyra — Communication and Support Illustration" />
+                <img src="assets/contact_us_hero.png" alt="Contact Explyra — Communication and Support Illustration" loading="lazy" />
                 <div class="contact-img-caption">
                     <h2>Let's build something <em>together.</em></h2>
                     <p>Whether you have a question, a partnership idea, or just want to say hi — we'd love to hear from
@@ -1007,45 +954,115 @@
     </section>
 
     <!-- ══ FOOTER ══ -->
-    <footer>
-        <div class="foot-left">
-            <span class="foot-logo">Explyra</span>
-            <span class="foot-tagline">One Platform. Everything.</span>
+    <footer id="mainFooter" role="contentinfo" aria-label="Site Footer">
+        <div class="foot-container">
+            <div class="foot-col-brand">
+                <span class="foot-logo">Explyra</span>
+                <p class="foot-tagline">One Platform. Everything. The ultimate SaaS ecosystem for developers, teams, and
+                    enterprises.</p>
+                <div class="foot-compliance">
+                    <div class="comp-badge"><i class="fas fa-shield-alt"></i> HIPAA READY Compliant</div>
+                    <div class="comp-badge"><i class="fas fa-user-lock"></i> GDPR Compliant</div>
+                    <div class="comp-badge"><i class="fas fa-lock"></i> SSL Secured</div>
+                </div>
+            </div>
+
+            <div class="foot-col">
+                <h4>Solutions <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="index.html#expense">Expense Tracker</a></li>
+                    <li><a href="dns/index.html">Explyra DNS</a></li>
+                    <li><a href="crm/index.html">Explyra CRM</a></li>
+                    <li><a href="health-manager/index.html">Health Companion</a></li>
+                    <li><a href="explyra-learning/index.html">AI Learning</a></li>
+                    <li><a href="developers/index.html">Developer Tools</a></li>
+                    <li><a href="attendance/index.html">Attendance Portal</a></li>
+                    <li><a href="https://book.explyra.me">Service Booking</a></li>
+                    <li><a href="manufacturing/index.html">Explyra ERP</a></li>
+                    <li><a href="Ino software/ino.html">Invoice Software</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Compare <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="compare/explyra-vs-zoho.html">vs Zoho</a></li>
+                    <li><a href="compare/explyra-vs-hubspot.html">vs HubSpot</a></li>
+                    <li><a href="compare/explyra-vs-notion.html">vs Notion</a></li>
+                    <li><a href="compare/explyra-vs-clickup.html">vs ClickUp</a></li>
+                    <li><a href="compare/explyra-vs-google-workspace.html">vs Google</a></li>
+                    <li><a href="compare/explyra-vs-odoo.html">vs Odoo</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Resources <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="docs/index.html">Documentation</a></li>
+                    <li><a href="support.html">Help Desk</a></li>
+                    <li><a href="events/index.html">Events Portal</a></li>
+                    <li><a href="integrations/index.html">Integrations</a></li>
+                    <li><a href="status/index.html">System Status</a></li>
+                    <li><a href="compare/index.html">Compare Explyra</a></li>
+                    <li><a href="community-hub/index.html">Community Forum</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Company <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="team.html">Our Team</a></li>
+                    <li><a href="pricing.html">Pricing Plans</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Legal <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="refund.html">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Download <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="android.html"><i class="fab fa-android"></i> Android</a></li>
+                    <li><a href="ios.html"><i class="fab fa-apple"></i> iOS</a></li>
+                </ul>
+            </div>
         </div>
-        <p class="foot-copy">© 2026 Explyra · Founded by Mitanshu Bhasin · All rights reserved.</p>
-        <div class="foot-links">
-            <a href="index.html#expense">Expense</a>
-            <a href="health-manager/index.html">Health</a>
-            <a href="explyra-learning/index.html">Learning</a>
-            <a href="developers/index.html">Developers</a>
-            <a href="Utilites/index.html">Utility</a>
-            <a href="index.html#support">Support</a>
-            <a href="team.html">Team</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="contact.html">Contact</a>
-            <a href="donation.html">Donate</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms</a>
-            <a href="license.html">License</a>
-            <a href="refund.html">Refund Policy</a>
-        </div>
-        <div class="foot-socials-wrapper"
-            style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136,136,136,0.2); padding-top: 20px; width:100%">
-            <p
-                style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">
-                Follow Us</p>
-            <div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;">
-            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
-            <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a>
-            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a>
-            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://ipecconsulting.org/" target="_blank" rel="noopener noreferrer">IPEC Consulting</a>
-        </div>
+
+        <div class="foot-bottom">
+            <p class="foot-copy">© 2026 Explyra · Built with ♥ by Mitanshu Bhasin · All rights reserved.</p>
+            <p style="font-size:0.7rem; opacity:0.7; margin-top:0.4rem; letter-spacing:0.02em;">Software and Design
+                Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
+                strictly prohibited and subject to legal action.</p>
+            <div class="foot-socials">
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" title="X (Twitter)"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61584891033070&sk=directory_personal_details"
+                    target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" title="Instagram"><i
+                        class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" title="YouTube"><i
+                        class="fab fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i
+                        class="fab fa-linkedin"></i></a>
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" title="Threads"><i
+                        class="fab fa-threads"></i></a>
+            </div>
         </div>
     </footer>
+
+    <!-- BACK TO TOP -->
+    <button class="back-to-top" id="backToTop" aria-label="Scroll to top">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
 
     <!-- Firebase SDK (compat) -->
     <script src="js/env.js"></script>
@@ -1066,36 +1083,6 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        /* THEME */
-        const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
-        const saved = localStorage.getItem('explyra-theme') || 'light';
-        html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
-        pill.addEventListener('click', () => {
-            const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', nxt); lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light';
-            localStorage.setItem('explyra-theme', nxt);
-        });
-
-        /* REVEAL */
-        const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .08 });
-        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-        /* MOBILE MENU */
-        const menuBtn = document.getElementById('menuBtn');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const menuOverlay = document.getElementById('menuOverlay');
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
-        function toggleMenu() {
-            mobileMenu.classList.toggle('open');
-            menuOverlay.classList.toggle('open');
-            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
-        }
-        if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
-        if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
-        if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
-        mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
 
         /* TOAST */
         function showToast(msg, type) {
@@ -1148,6 +1135,7 @@
             }
         });
     </script>
+    <script src="js/shared.js" defer></script>
 </body>
 
 </html>
