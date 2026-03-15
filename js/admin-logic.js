@@ -6,7 +6,7 @@ import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/fireb
 import { AISupport } from './ai-support.js';
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: "ENV_MISSING",
+    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",
