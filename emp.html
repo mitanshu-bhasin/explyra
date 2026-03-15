@@ -1553,10 +1553,16 @@
 
                         <div id="line-items-container" class="space-y-4"></div>
 
-                        <button type="button" onclick="addLineItem()"
-                            class="w-full py-4 border border-dashed border-[#eaeaea] dark:border-[#333] rounded-md text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-all">
-                            <i class="fa-solid fa-plus-circle mr-2 text-xs"></i> Add Another Expense Item
-                        </button>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button type="button" onclick="addLineItem()"
+                                class="flex-1 py-4 border border-dashed border-[#eaeaea] dark:border-[#333] rounded-md text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-all">
+                                <i class="fa-solid fa-plus-circle mr-2 text-xs"></i> Add Expense Item
+                            </button>
+                            <label class="flex-1 py-4 border border-dashed border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-md text-[10px] font-bold uppercase tracking-widest text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-2 text-xs"></i> Auto-Scan Receipt (AI)
+                                <input type="file" accept="image/*" class="hidden" onchange="window.scanReceiptAI(this)">
+                            </label>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1980,6 +1986,7 @@
     <script type="module" src="js/emp-chat.js"></script>
     <script type="module" src="js/emp-calls.js"></script>
     <script type="module" src="js/emp-auth.js"></script>
+    <script type="module" src="js/ai-receipt.js"></script>
 
 
 

@@ -899,14 +899,44 @@ Monthly Trend: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 
 
     _cmdAssignTask(payload) {
         if (typeof window.switchTab === 'function') window.switchTab('tasks');
-        setTimeout(() => {
-            const addBtn = document.querySelector('[onclick*="openAddTask"]') || document.querySelector('[onclick*="addTask"]') || document.querySelector('button[title="Add Task"]');
-            if (addBtn) addBtn.click();
-            setTimeout(() => {
-                const titleInput = document.getElementById('task-title');
-                if (titleInput && payload.title) titleInput.value = payload.title;
-            }, 300);
+        
+        let attempts = 0;
+        const fillTaskForm = setInterval(() => {
+            const titleInput = document.getElementById('task-title');
+            if (titleInput) {
+                clearInterval(fillTaskForm);
+                if (payload.title) titleInput.value = payload.title;
+
+                const descInput = document.getElementById('task-desc');
+                if (descInput && payload.description) descInput.value = payload.description;
+
+                const assigneeSelect = document.getElementById('task-assignee');
+                if (assigneeSelect && payload.assignee) {
+                    for (let opt of assigneeSelect.options) {
+                       if (opt.text.toLowerCase().includes(payload.assignee.toLowerCase()) || 
+                           opt.value.toLowerCase().includes(payload.assignee.toLowerCase())) {
+                           assigneeSelect.value = opt.value;
+                           break;
+                       }
+                    }
+                }
+
+                // If due date provided add it, else default to tomorrow
+                const dueDateInput = document.getElementById('task-due-date');
+                if (dueDateInput) {
+                    if (payload.dueDate) {
+                        dueDateInput.value = payload.dueDate;
+                    } else {
+                        const tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        dueDateInput.value = tomorrow.toISOString().split('T')[0];
+                    }
+                }
+            }
+            attempts++;
+            if (attempts > 20) clearInterval(fillTaskForm); // Timeout after 10s
         }, 500);
+
         this.showActionBadge('fa-clipboard-list', `Action: Creating task "${payload.title || 'New Task'}"`, '#22c55e');
     }
 

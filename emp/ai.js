@@ -620,19 +620,25 @@ ${JSON.stringify(tasksSummary)}
             window.openCreateModal('EXPENSE');
             // Pre-fill form after modal opens
             setTimeout(() => {
-                const titleEl = document.getElementById('expense-title');
-                const amountEl = document.getElementById('expense-amount') || document.getElementById('line-amount');
-                const descEl = document.getElementById('expense-description') || document.getElementById('line-description');
-                const catEl = document.getElementById('line-category');
+                const container = document.getElementById('line-items-container');
+                if (container && container.children.length > 0) {
+                    const firstRow = container.children[0];
+                    const descEl = firstRow.querySelector('.item-desc');
+                    const amountEl = firstRow.querySelector('.item-amount');
+                    const catEl = firstRow.querySelector('.item-category');
 
-                if (titleEl && payload.title) titleEl.value = payload.title;
-                if (amountEl && payload.amount) amountEl.value = payload.amount;
-                if (descEl && payload.description) descEl.value = payload.description;
-                if (catEl && payload.category) {
-                    for (let opt of catEl.options) {
-                        if (opt.value.toLowerCase().includes(payload.category.toLowerCase())) {
-                            catEl.value = opt.value;
-                            break;
+                    if (descEl && (payload.description || payload.title)) descEl.value = payload.description || payload.title;
+                    if (amountEl && payload.amount) {
+                        amountEl.value = payload.amount;
+                        if (typeof calculateTotal === 'function') calculateTotal();
+                        else if (window.calculateTotal) window.calculateTotal();
+                    }
+                    if (catEl && payload.category) {
+                        for (let opt of catEl.options) {
+                            if (opt.value.toLowerCase().includes(payload.category.toLowerCase())) {
+                                catEl.value = opt.value;
+                                break;
+                            }
                         }
                     }
                 }
