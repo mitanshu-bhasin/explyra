@@ -1,0 +1,545 @@
+/* shared.css - Shared styles for Explyra marketing pages */
+
+/* ============================================================
+   1. DESIGN TOKENS (CSS Custom Properties)
+   ============================================================ */
+:root {
+    --bg: #F8F7F4;
+    --bg2: #FFFFFF;
+    --bg3: #F1EFE9;
+    --bg4: #E9E6E0;
+    --surf: #FFFFFF;
+    --bdr: #E4E1DB;
+    --bdr2: #CCC8C0;
+    --ink: #0D1117;
+    --ink2: #2A3141;
+    --ink3: #586070;
+    --ink4: #939BAC;
+    --blue: #1546C0;
+    --blue2: #5B8AF5;
+    --blue-g: rgba(21, 70, 192, .08);
+    --blue-b: rgba(21, 70, 192, .2);
+    --teal: #047857;
+    --teal2: #34D399;
+    --teal-g: rgba(4, 120, 87, .08);
+    --teal-b: rgba(4, 120, 87, .2);
+    --amber: #B45309;
+    --amb2: #FBBF24;
+    --amb-g: rgba(180, 83, 9, .08);
+    --amb-b: rgba(180, 83, 9, .2);
+    --purp: #6D28D9;
+    --purp2: #A78BFA;
+    --purp-g: rgba(109, 40, 217, .08);
+    --purp-b: rgba(109, 40, 217, .2);
+    --rose: #BE185D;
+    --rose2: #F472B6;
+    --rose-g: rgba(190, 24, 93, .08);
+    --rose-b: rgba(190, 24, 93, .2);
+    --slate: #334155;
+    --slt2: #94A3B8;
+    --slt-g: rgba(51, 65, 85, .08);
+    --slt-b: rgba(51, 65, 85, .2);
+    --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
+    --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
+    --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
+    --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
+    --r: 8px;
+    --t: .2s ease;
+}
+
+[data-theme="dark"] {
+    --bg: #080B14;
+    --bg2: #0E1220;
+    --bg3: #141928;
+    --bg4: #1B2235;
+    --surf: #141928;
+    --bdr: rgba(255, 255, 255, .07);
+    --bdr2: rgba(255, 255, 255, .14);
+    --ink: #EEF0F8;
+    --ink2: #C4CCDC;
+    --ink3: #8290A8;
+    --ink4: #4E5A70;
+    --blue: #5B8AF5;
+    --blue2: #93B4FF;
+    --blue-g: rgba(91, 138, 245, .1);
+    --blue-b: rgba(91, 138, 245, .2);
+    --teal: #34D399;
+    --teal2: #6EE7B7;
+    --teal-g: rgba(52, 211, 153, .1);
+    --teal-b: rgba(52, 211, 153, .2);
+    --amber: #FBBF24;
+    --amb2: #FDE68A;
+    --amb-g: rgba(251, 191, 36, .1);
+    --amb-b: rgba(251, 191, 36, .2);
+    --purp: #A78BFA;
+    --purp2: #C4B5FD;
+    --purp-g: rgba(167, 139, 250, .1);
+    --purp-b: rgba(167, 139, 250, .2);
+    --rose: #F472B6;
+    --rose2: #FBCFE8;
+    --rose-g: rgba(244, 114, 182, .1);
+    --rose-b: rgba(244, 114, 182, .2);
+    --slate: #94A3B8;
+    --slt2: #CBD5E1;
+    --slt-g: rgba(148, 163, 184, .1);
+    --slt-b: rgba(148, 163, 184, .2);
+    --s1: 0 1px 3px rgba(0, 0, 0, .2), 0 1px 8px rgba(0, 0, 0, .15);
+    --s2: 0 4px 16px rgba(0, 0, 0, .25), 0 1px 4px rgba(0, 0, 0, .15);
+    --s3: 0 12px 40px rgba(0, 0, 0, .3), 0 2px 8px rgba(0, 0, 0, .2);
+    --s4: 0 24px 72px rgba(0, 0, 0, .4), 0 4px 16px rgba(0, 0, 0, .2);
+}
+
+/* ============================================================
+   2. BASE RESET & TYPOGRAPHY
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blue) var(--bg3);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--blue);
+    border-radius: 100px;
+    border: 2px solid var(--bg3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--blue2);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg2);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    border-color: var(--bg2);
+}
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.65;
+    overflow-x: hidden;
+    transition: background .4s, color .4s;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+/* ============================================================
+   3. SCROLL REVEAL ANIMATION
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+.d1 { transition-delay: .1s }
+.d2 { transition-delay: .2s }
+.d3 { transition-delay: .3s }
+.d4 { transition-delay: .4s }
+
+/* ============================================================
+   4. BACK-TO-TOP BUTTON
+   ============================================================ */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .3s ease, transform .3s ease, background .2s;
+    z-index: 1500;
+    box-shadow: var(--s2);
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    transform: none;
+}
+
+.back-to-top:hover {
+    background: var(--purp);
+    transform: translateY(-2px);
+}
+
+.back-to-top svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ============================================================
+   5. FOOTER
+   ============================================================ */
+footer {
+    background: linear-gradient(to bottom, rgba(13, 17, 23, 0.92), rgba(13, 17, 23, 0.98)),
+                url('../assets/images/footer_bg.png') center/cover no-repeat;
+    color: #fff;
+    padding: 4rem 5vw 3rem;
+    border-top: 1px solid var(--bdr);
+    position: relative;
+}
+
+[data-theme="dark"] footer {
+    background: linear-gradient(to bottom, rgba(8, 11, 20, 0.95), rgba(8, 11, 20, 0.98)),
+                url('../assets/images/footer_bg.png') center/cover no-repeat;
+}
+
+.foot-container {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr repeat(6, 1fr);
+    gap: 2rem;
+}
+
+/* Brand column */
+.foot-col-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.foot-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .03em;
+}
+
+.foot-tagline {
+    font-size: .85rem;
+    color: rgba(255, 255, 255, .5);
+    line-height: 1.6;
+}
+
+/* Compliance badges */
+.foot-compliance {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem;
+}
+
+.comp-badge {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .4rem .8rem;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 6px;
+    font-size: .62rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .7);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+
+.comp-badge i {
+    font-size: .8rem;
+    color: var(--blue2);
+}
+
+/* Footer columns */
+.foot-col h4 {
+    font-size: .85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.foot-col h4 i {
+    display: none;
+}
+
+.foot-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+
+.foot-col a {
+    font-size: .85rem;
+    color: rgba(255, 255, 255, .5);
+    transition: all .2s;
+    display: inline-block;
+}
+
+.foot-col a:hover {
+    color: var(--blue2);
+    transform: translateX(3px);
+}
+
+/* Footer bottom */
+.foot-bottom {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, .05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.foot-copy {
+    font-size: .8rem;
+    color: rgba(255, 255, 255, .4);
+}
+
+/* Social links */
+.foot-socials {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.foot-socials a {
+    color: rgba(255, 255, 255, .4);
+    font-size: 1.1rem;
+    transition: all .2s;
+}
+
+.foot-socials a:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   6. TOAST NOTIFICATIONS
+   ============================================================ */
+.ex-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: .88rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity .3s, transform .3s;
+    z-index: 9999;
+    pointer-events: none;
+    box-shadow: var(--s3);
+}
+
+.ex-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   7. SHARED BUTTON STYLES
+   ============================================================ */
+.btn-hero {
+    background: var(--blue);
+    color: #fff;
+    padding: .9rem 2.2rem;
+    border-radius: var(--r);
+    font-size: .95rem;
+    font-weight: 600;
+    transition: all .25s;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.btn-hero:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px color-mix(in srgb, var(--blue) 35%, transparent);
+}
+
+.btn-hero-ghost {
+    background: transparent;
+    color: var(--ink2);
+    padding: .9rem 2rem;
+    border: 1.5px solid var(--bdr2);
+    border-radius: var(--r);
+    font-size: .95rem;
+    font-weight: 500;
+    transition: all .25s;
+}
+
+.btn-hero-ghost:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: var(--blue-g);
+}
+
+/* ============================================================
+   8. SECTION COMMON STYLES
+   ============================================================ */
+.eyebrow {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+}
+
+.sec-h {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    color: var(--ink);
+}
+
+.sec-h em {
+    font-style: italic;
+}
+
+.sec-p {
+    font-size: .9rem;
+    color: var(--ink3);
+    line-height: 1.65;
+    max-width: 500px;
+    margin: .6rem auto 0;
+    font-weight: 300;
+}
+
+/* ============================================================
+   9. RESPONSIVE BREAKPOINTS
+   ============================================================ */
+
+/* --- Tablet (≤1024px) --- */
+@media (max-width: 1024px) {
+    .foot-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* --- Mobile (≤640px) --- */
+@media (max-width: 640px) {
+    .foot-container {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .foot-col-brand {
+        margin-bottom: 2rem;
+    }
+
+    /* Footer accordion */
+    .foot-col {
+        border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    .foot-col h4 {
+        margin-bottom: 0;
+        padding: 1.2rem 0;
+        cursor: pointer;
+    }
+
+    .foot-col h4 i {
+        display: block;
+        transition: transform .3s;
+        font-size: .7rem;
+        opacity: .5;
+    }
+
+    .foot-col.active h4 i {
+        transform: rotate(180deg);
+    }
+
+    .foot-col ul {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height .3s ease-out;
+    }
+
+    .foot-col.active ul {
+        max-height: 500px;
+        padding-bottom: 1.5rem;
+    }
+
+    .foot-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .foot-links {
+        gap: 1rem;
+    }
+}
