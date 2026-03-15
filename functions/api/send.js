@@ -19,7 +19,7 @@ export async function onRequest(context) {
 
   try {
     const body = await request.json();
-    const { to, cc, bcc, subject, htmlBody, textBody, from, originalMessageId } = body;
+    const { to, cc, bcc, subject, htmlBody, textBody, fromEmail, senderName, from, originalMessageId } = body;
 
     if (!to || !subject) {
       return new Response(JSON.stringify({ error: 'Missing "to" or "subject"' }), { status: 400, headers });
@@ -33,11 +33,15 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ error: 'RESEND_API_KEY is not configured' }), { status: 500, headers });
     }
 
-    const fromAddress = from || env.DEFAULT_FROM_EMAIL || 'Explyra <noreply@explyra.me>';
+    // Construct Resend From address
+    let resendFrom = from || env.DEFAULT_FROM_EMAIL || 'Explyra <noreply@explyra.me>';
+    if (fromEmail) {
+      resendFrom = senderName ? `${senderName} <${fromEmail}>` : fromEmail;
+    }
 
     // Prepare Resend Payload
     const resendPayload = {
-      from: fromAddress,
+      from: resendFrom,
       to: Array.isArray(to) ? to : [to],
       subject,
       html: htmlBody || `<p>${textBody || ''}</p>`,
@@ -80,7 +84,7 @@ export async function onRequest(context) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               fields: {
-                from: { stringValue: fromAddress },
+                from: { stringValue: fromEmail || resendFrom },
                 to: { stringValue: Array.isArray(to) ? to.join(', ') : to },
                 subject: { stringValue: subject },
                 htmlBody: { stringValue: htmlBody || '' },
@@ -94,7 +98,6 @@ export async function onRequest(context) {
         }
       } catch (dbError) {
         console.error('Failed to log email to Firestore:', dbError);
-        // We don't fail the request if logging fails, but the email was sent
       }
 
       return new Response(JSON.stringify({ success: true, id: resendData.id }), { status: 200, headers });

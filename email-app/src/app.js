@@ -582,7 +582,8 @@ $('send-btn').onclick = async () => {
         to,
         subject: sub,
         htmlBody: htmlContent,
-        from: `${currentUser.displayName || currentUser.email.split('@')[0]} <${currentUser.email}>`
+        fromEmail: currentUser.email,
+        senderName: currentUser.displayName || currentUser.email.split('@')[0]
       })
     });
 
