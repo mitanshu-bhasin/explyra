@@ -152,7 +152,7 @@ window.handleChatAttachmentSelect = async (inputElement, targetInputId) => {
     }
 
     if (!window.GDriveService.isConnected()) {
-        const connect = confirm("Google Drive is not connected. Connect now to send attachments?");
+        const connect = await confirm("Google Drive is not connected. Connect now to send attachments?");
         if (connect) {
             window.GDriveService.authenticate(() => {
                 // Retry after connect
@@ -230,12 +230,95 @@ window.parseChatLinks = (text) => {
     // Then convert markdown links [text](url) to HTML links
     safeText = safeText.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
         const safeUrl = url.replace(/"/g, '&quot;');
+        
+        // Detection for media types (check URL first, then label)
+        const getExt = (str) => str.split('.').pop().split(/[?#]/)[0].toLowerCase();
+        let extension = getExt(url);
+        // If URL doesn't have it (common for GDrive), check label
+        if (extension.length > 4 || url.includes('/file/d/')) {
+            extension = getExt(label);
+        }
+
+        const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension);
+        const isVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(extension);
+
         // Also if it's an image attachment link
         if (label.includes('📎 Attachment:')) {
-            return `<a href="${safeUrl}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 mt-1 bg-brand-50/20 text-brand-600 dark:text-brand-300 dark:bg-black/20 hover:bg-brand-50 dark:hover:bg-black/40 rounded-lg text-xs font-bold transition border border-brand-100 dark:border-white/10" style="text-decoration: none;"><i class="fa-solid fa-file-arrow-down"></i> ${label.replace('📎 Attachment: ', '')}</a>`;
+            const fileName = label.replace('📎 Attachment: ', '');
+            let previewHtml = '';
+            
+            if (isImage) {
+                // For images, we try to show a small preview if it's a direct-ish link, 
+                // but since it's GDrive webViewLink, we'll just show the attachment box.
+                // If we want actual preview from Drive, we'd need more complex logic.
+                previewHtml = `<div class="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 max-w-xs shadow-sm"><img src="${safeUrl.replace('/view', '/thumbnail?sz=w600')}" class="w-full h-auto block" alt="${fileName}" onerror="this.parentElement.style.display='none'"></div>`;
+            } else if (isVideo) {
+                 // Video preview from Drive is tricky without the ID, but we can try basic placeholder or link
+                 previewHtml = `<div class="mt-2 p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                    <i class="fa-solid fa-video text-2xl text-slate-400"></i>
+                    <div class="text-[10px] text-slate-500 font-medium">Video preview available at Drive link</div>
+                 </div>`;
+            }
+
+            return `
+                <div class="flex flex-col gap-1 my-2">
+                    <a href="${safeUrl}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50/20 text-brand-600 dark:text-brand-300 dark:bg-black/20 hover:bg-brand-50 dark:hover:bg-black/40 rounded-lg text-xs font-bold transition border border-brand-100 dark:border-white/10" style="text-decoration: none;">
+                        <i class="fa-solid fa-file-arrow-down"></i> ${fileName}
+                    </a>
+                    ${previewHtml}
+                </div>`;
         }
+        
+        if (isImage) {
+            return `<div class="mt-1"><img src="${safeUrl}" class="max-w-full rounded-lg border border-slate-200 dark:border-white/10 shadow-sm" alt="Image" onerror="this.outerHTML='<a href=&quot;${safeUrl}&quot; target=&quot;_blank&quot;>${label}</a>'"><br><a href="${safeUrl}" target="_blank" class="text-[10px] opacity-70 underline">Open Original</a></div>`;
+        }
+        
         return `<a href="${safeUrl}" target="_blank" class="underline hover:opacity-80 transition">${label}</a>`;
     });
 
     return safeText;
 };
+
+// Global Google Drive UI Update helper
+window.updateGDriveUI = () => {
+    const isConnected = window.GDriveService && window.GDriveService.isConnected();
+    
+    // IDs to check for
+    const statusTextIds = ['gdrive-status-text', 'emp-gdrive-status-text'];
+    const connectBtnIds = ['btn-gdrive-connect', 'btn-emp-gdrive-connect'];
+    
+    statusTextIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = isConnected ? 'Connected' : 'Not connected';
+            el.className = isConnected ? 'text-[9px] text-green-500 font-bold' : 'text-[9px] text-slate-500 font-medium';
+        }
+    });
+    
+    connectBtnIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            if (isConnected) {
+                el.innerHTML = '<i class="fa-solid fa-check-circle"></i> Connected';
+                el.classList.add('bg-green-50', 'dark:bg-green-900/20', 'text-green-600', 'dark:text-green-400', 'border-green-200', 'dark:border-green-800/30');
+                el.classList.remove('text-slate-700', 'dark:text-slate-300');
+            } else {
+                el.innerHTML = '<i class="fa-solid fa-link"></i> Connect';
+                el.classList.remove('bg-green-50', 'dark:bg-green-900/20', 'text-green-600', 'dark:text-green-400', 'border-green-200', 'dark:border-green-800/30');
+                el.classList.add('text-slate-700', 'dark:text-slate-300');
+            }
+        }
+    });
+};
+
+// Listen for connection events globally
+window.addEventListener('gdrive-connected', window.updateGDriveUI);
+window.addEventListener('gdrive-disconnected', window.updateGDriveUI);
+
+// Check status on load
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial check
+    setTimeout(() => {
+        if (window.updateGDriveUI) window.updateGDriveUI();
+    }, 1000);
+});

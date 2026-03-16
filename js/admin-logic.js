@@ -215,7 +215,17 @@ onAuthStateChanged(auth, async (user) => {
                 snap = { empty: false, docs: [userDocSnap] };
             } else {
                 const q = query(collection(db, "users"), where("email", "==", user.email));
-                snap = await safeFirebaseFetch(getDocs(q));
+                const querySnap = await safeFirebaseFetch(getDocs(q));
+                if (!querySnap.empty) {
+                    // If multiple records, prioritize ADMIN/MANAGER for this portal
+                    const sortedDocs = querySnap.docs.sort((a, b) => {
+                        const roles = ['ADMIN', 'MANAGER', 'FINANCE_MANAGER'];
+                        const aIsAdmin = roles.includes(a.data().role) ? 0 : 1;
+                        const bIsAdmin = roles.includes(b.data().role) ? 0 : 1;
+                        return aIsAdmin - bIsAdmin;
+                    });
+                    snap = { empty: false, docs: sortedDocs };
+                }
             }
 
             if (snap.empty) {
@@ -721,7 +731,16 @@ window.handleGoogleLogin = async () => {
             snap = { empty: false, docs: [userDocSnap] };
         } else {
             const q = query(collection(db, "users"), where("email", "==", user.email));
-            snap = await safeFirebaseFetch(getDocs(q));
+            const querySnap = await safeFirebaseFetch(getDocs(q));
+            if (!querySnap.empty) {
+                const sortedDocs = querySnap.docs.sort((a, b) => {
+                    const roles = ['ADMIN', 'MANAGER', 'FINANCE_MANAGER'];
+                    const aIsAdmin = roles.includes(a.data().role) ? 0 : 1;
+                    const bIsAdmin = roles.includes(b.data().role) ? 0 : 1;
+                    return aIsAdmin - bIsAdmin;
+                });
+                snap = { empty: false, docs: sortedDocs };
+            }
         }
 
         if (snap.empty) {
@@ -1041,9 +1060,19 @@ async function renderOverview() {
     try {
         const companyId = userData.companyId;
 
-        const expensesQuery = companyId ? query(collection(db, "expenses"), where("companyId", "==", companyId)) : collection(db, "expenses");
-        const usersQuery = companyId ? query(collection(db, "users"), where("companyId", "==", companyId)) : collection(db, "users");
-        const projectsQuery = companyId ? query(collection(db, "projects"), where("companyId", "==", companyId)) : collection(db, "projects");
+        // Correctly scope queries based on admin level
+        let expensesQuery, usersQuery, projectsQuery;
+
+        if (companyId === 'GLOBAL') {
+            expensesQuery = collection(db, "expenses");
+            usersQuery = collection(db, "users");
+            projectsQuery = collection(db, "projects");
+        } else {
+            const scopeId = companyId || 'N/A';
+            expensesQuery = query(collection(db, "expenses"), where("companyId", "==", scopeId));
+            usersQuery = query(collection(db, "users"), where("companyId", "==", scopeId));
+            projectsQuery = query(collection(db, "projects"), where("companyId", "==", scopeId));
+        }
 
         const [expensesSnap, usersSnap, projectsSnap, companySnap, attendanceSnap, salarySnap] = await Promise.all([
             getDocs(expensesQuery),
@@ -1428,7 +1457,13 @@ async function renderAuditLogs(forceRefresh = true) {
         content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
         try {
-            const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"))));
+            let expensesQuery;
+            if (userData.companyId === 'GLOBAL') {
+                expensesQuery = query(collection(db, "expenses"), orderBy("createdAt", "desc"));
+            } else {
+                expensesQuery = query(collection(db, "expenses"), where("companyId", "==", userData.companyId || 'N/A'), orderBy("createdAt", "desc"));
+            }
+            const expensesSnap = await safeFirebaseFetch(getDocs(expensesQuery));
             const auditLogs = [];
 
             expensesSnap.forEach(doc => {
@@ -1714,12 +1749,18 @@ async function renderTasks() {
     const today = new Date().toISOString().split('T')[0];
     const dueInput = document.getElementById('task-due-date');
     if (dueInput) dueInput.min = today;
-
     try {
-        // Fetch tasks (ADMIN sees all for their company, others see only what they assigned for their company)
-        let q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId));
-        if (userData.role !== 'ADMIN') {
-            q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId), where("assignedBy", "==", userData.email));
+        // Fetch tasks
+        let q;
+        if (userData.companyId === 'GLOBAL') {
+            q = collection(db, "tasks");
+        } else {
+            const scopeId = userData.companyId || 'N/A';
+            if (userData.role === 'ADMIN') {
+                q = query(collection(db, "tasks"), where("companyId", "==", scopeId));
+            } else {
+                q = query(collection(db, "tasks"), where("companyId", "==", scopeId), where("assignedBy", "==", userData.email));
+            }
         }
 
         // Remove server-side orderBy to avoid index issues. We sort in JS.
@@ -2859,13 +2900,25 @@ async function renderUserManagement() {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
+        let uQ;
+        if (userData.companyId === 'GLOBAL') {
+            uQ = collection(db, "users");
+        } else {
+            uQ = query(collection(db, "users"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const usersSnap = await safeFirebaseFetch(getDocs(uQ));
         const users = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         globalUsersCache = users; // Update cache
 
         // Get expense counts for each user
         expenseCountsCache = {};
-        const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId))));
+        let exQ;
+        if (userData.companyId === 'GLOBAL') {
+            exQ = collection(db, "expenses");
+        } else {
+            exQ = query(collection(db, "expenses"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const expensesSnap = await safeFirebaseFetch(getDocs(exQ));
         expensesSnap.forEach(doc => {
             const data = doc.data();
             expenseCountsCache[data.userId] = (expenseCountsCache[data.userId] || 0) + 1;
@@ -3804,7 +3857,13 @@ window.renderProjects = async () => {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const snap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", userData.companyId))));
+        let pQ;
+        if (userData.companyId === 'GLOBAL') {
+            pQ = collection(db, "projects");
+        } else {
+            pQ = query(collection(db, "projects"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const snap = await safeFirebaseFetch(getDocs(pQ));
         const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
         content.innerHTML = `
@@ -4904,12 +4963,18 @@ async function loadChatUsers() {
     if (!list) return;
 
     try {
-        // Fetch all users
-        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
+        // Fetch users
+        let uQ;
+        if (userData.companyId === 'GLOBAL') {
+            uQ = collection(db, "users");
+        } else {
+            uQ = query(collection(db, "users"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const usersSnap = await safeFirebaseFetch(getDocs(uQ));
         const users = usersSnap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
 
         // Fetch chats for sorting and last message
-        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats")), where("users", "array-contains", userData.docId)));
+        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats"), where("users", "array-contains", userData.docId))));
         const chatMeta = {};
         chatsSnap.forEach(docSnap => {
             const data = docSnap.data();

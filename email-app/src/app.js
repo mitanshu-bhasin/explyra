@@ -8,7 +8,9 @@ import {
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  updateProfile
+  updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import {
   getFirestore,
@@ -56,6 +58,24 @@ let currentFolder = 'inbox';
 let currentSection = 'mail'; 
 let quill = null;
 let currentMonth = new Date();
+let googleAccessToken = null;
+
+// ============================
+// 💾 Local Cache Logic
+// ============================
+
+function saveToCache(type, data) {
+    if (!currentUser) return;
+    const key = `explyra_${currentUser.email}_${type}`;
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function loadFromCache(type) {
+    if (!currentUser) return [];
+    const key = `explyra_${currentUser.email}_${type}`;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : [];
+}
 
 // ============================
 // 📧 MIME & Email Parsing
@@ -103,15 +123,73 @@ onAuthStateChanged(auth, (user) => {
     
     $('user-name').textContent = user.displayName || user.email;
     $('user-email').textContent = user.email;
-    $('user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=0b57d0&color=fff&bold=true`;
+    $('user-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=0b57d0&color=fff&bold=true`;
     
+    // Auto-detect if user signed in with Google and has a token
+    const isGoogle = user.providerData.some(p => p.providerId === 'google.com');
+    if (isGoogle) {
+       googleAccessToken = sessionStorage.getItem('google_access_token');
+       updateGoogleUI(true);
+    } else {
+       updateGoogleUI(false);
+    }
+
+    // Load cached emails immediately
+    const cached = loadFromCache('gmail_emails');
+    if (cached.length > 0) {
+        allEmails = [...allEmails, ...cached];
+        renderEmails();
+    }
+
     initListeners();
     loadSettings();
   } else {
     $('login-screen').classList.remove('hidden');
     $('dashboard').classList.add('hidden');
+    googleAccessToken = null;
+    sessionStorage.removeItem('google_access_token');
   }
 });
+
+function updateGoogleUI(connected) {
+    const btn = $('settings-google-connect-btn');
+    const text = $('google-status-text');
+    if (!btn || !text) return;
+
+    if (connected) {
+        text.textContent = 'Connected';
+        btn.classList.add('bg-emerald-50');
+        btn.classList.add('text-emerald-600');
+        btn.classList.add('border-emerald-200');
+        btn.onclick = () => {
+             googleAccessToken = null;
+             sessionStorage.removeItem('google_access_token');
+             updateGoogleUI(false);
+             showToast('Google disconnected');
+        };
+    } else {
+        text.textContent = 'Connect Google';
+        btn.classList.remove('bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
+        btn.onclick = () => $('google-signin-btn').click();
+    }
+}
+
+$('google-signin-btn').onclick = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/gmail.readonly');
+    provider.addScope('https://www.googleapis.com/auth/gmail.send');
+    
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        googleAccessToken = credential.accessToken;
+        sessionStorage.setItem('google_access_token', googleAccessToken);
+        showToast('Signed in with Google');
+    } catch (error) {
+        console.error('Google Signin Error:', error);
+        showToast(error.message, 'error');
+    }
+};
 
 $('email-login-form').onsubmit = async (e) => {
   e.preventDefault();
@@ -182,6 +260,11 @@ function initListeners() {
   onSnapshot(qTo, (snap) => syncEmails(snap));
   onSnapshot(qFrom, (snap) => syncEmails(snap));
 
+  // If Google User, also fetch from Gmail API
+  if (currentUser.email.endsWith('@gmail.com') && googleAccessToken) {
+      fetchGmailRecent();
+  }
+
   // Contacts
   const qContacts = query(collection(db, 'users', currentUser.email, 'contacts'));
   onSnapshot(qContacts, (snap) => {
@@ -221,6 +304,71 @@ function syncEmails(snap) {
     }
   });
   renderEmails();
+}
+
+async function fetchGmailRecent() {
+    if (!googleAccessToken) return;
+    try {
+        // Fetch Inbox (30) and Sent (30)
+        const [inboxResp, sentResp] = await Promise.all([
+            fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=label:inbox', {
+                headers: { 'Authorization': `Bearer ${googleAccessToken}` }
+            }),
+            fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=label:sent', {
+                headers: { 'Authorization': `Bearer ${googleAccessToken}` }
+            })
+        ]);
+
+        const inboxData = await inboxResp.json();
+        const sentData = await sentResp.json();
+        
+        let allMsgs = [...(inboxData.messages || []), ...(sentData.messages || [])];
+        
+        // Remove duplicates if any
+        allMsgs = Array.from(new Set(allMsgs.map(m => m.id))).map(id => allMsgs.find(m => m.id === id));
+
+        if (allMsgs.length > 0) {
+            const fetchPromises = allMsgs.map(async (msg) => {
+                const detailResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
+                    headers: { 'Authorization': `Bearer ${googleAccessToken}` }
+                });
+                const detail = await detailResp.json();
+                
+                const getHeader = (name) => detail.payload.headers.find(h => h.name === name)?.value;
+                const isSent = detail.labelIds.includes('SENT');
+
+                return {
+                    id: detail.id,
+                    subject: getHeader('Subject'),
+                    from: getHeader('From'),
+                    to: getHeader('To'),
+                    body: detail.snippet + '...',
+                    timestamp: new Date(parseInt(detail.internalDate)).toISOString(),
+                    folder: isSent ? 'sent' : 'inbox',
+                    read: !detail.labelIds.includes('UNREAD'),
+                    isGmail: true
+                };
+            });
+
+            const gmailEmails = await Promise.all(fetchPromises);
+            
+            // Merge into allEmails
+            gmailEmails.forEach(email => {
+                const idx = allEmails.findIndex(e => e.id === email.id);
+                if (idx !== -1) allEmails[idx] = email;
+                else allEmails.push(email);
+            });
+
+            // Save only Gmail emails to cache to avoid mixing with Firebase ones
+            const onlyGmail = allEmails.filter(e => e.isGmail);
+            saveToCache('gmail_emails', onlyGmail);
+            
+            renderEmails();
+            updateGoogleUI(true);
+        }
+    } catch (error) {
+        console.error('Fetch Gmail Error:', error);
+    }
 }
 
 // ============================
@@ -299,7 +447,9 @@ window.openEmail = (id) => {
   $('meta-date').textContent = email.timestamp;
   $('meta-subject').textContent = email.subject;
 
-  if (email.body?.includes('<') && email.body?.includes('>')) {
+  if (email.isGmail && googleAccessToken) {
+    fetchGmailDetail(email.id);
+  } else if (email.body?.includes('<') && email.body?.includes('>')) {
     $('email-frame').classList.remove('hidden');
     $('email-text-fallback').classList.add('hidden');
     $('email-frame').srcdoc = `<html><body style="font-family: sans-serif; font-size: 14px; color: #3c4043;">${DOMPurify.sanitize(email.body)}</body></html>`;
@@ -312,8 +462,51 @@ window.openEmail = (id) => {
   detailPanel.classList.remove('hidden');
   detailPanel.classList.add('flex');
   
-  if (!email.read) setDoc(doc(db, 'emails', email.id), { read: true }, { merge: true });
+  if (!email.read) {
+      if (email.isGmail && googleAccessToken) {
+          fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${email.id}/modify`, {
+              method: 'POST',
+              headers: { 
+                  'Authorization': `Bearer ${googleAccessToken}`,
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ removeLabelIds: ['UNREAD'] })
+          });
+      }
+      setDoc(doc(db, 'emails', email.id), { read: true }, { merge: true });
+  }
 };
+
+async function fetchGmailDetail(id) {
+    try {
+        const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}`, {
+            headers: { 'Authorization': `Bearer ${googleAccessToken}` }
+        });
+        const detail = await response.json();
+        
+        let body = "";
+        const parts = detail.payload.parts || [detail.payload];
+        const htmlPart = parts.find(p => p.mimeType === 'text/html') || parts.find(p => p.mimeType === 'text/plain');
+        
+        if (htmlPart && htmlPart.body?.data) {
+            body = atob(htmlPart.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+        } else if (detail.payload.body?.data) {
+            body = atob(detail.payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+        }
+
+        if (body.includes('<') && body.includes('>')) {
+            $('email-frame').classList.remove('hidden');
+            $('email-text-fallback').classList.add('hidden');
+            $('email-frame').srcdoc = `<html><body style="font-family: sans-serif; font-size: 14px; color: #3c4043;">${DOMPurify.sanitize(body)}</body></html>`;
+        } else {
+            $('email-frame').classList.add('hidden');
+            $('email-text-fallback').classList.remove('hidden');
+            $('email-text-fallback').textContent = body || '';
+        }
+    } catch (err) {
+        console.error('Gmail Detail Error:', err);
+    }
+}
 
 window.toggleStar = async (e, id) => {
   e.stopPropagation();
@@ -494,12 +687,40 @@ document.querySelectorAll('#sidebar-nav-items .sidebar-item').forEach(item => {
 });
 
 // ============================
-// 📝 Compose
-// ============================
-
-// ============================
 // 📝 Compose & Actions
 // ============================
+
+function initComposeListeners() {
+    const composeBtn = $('compose-btn');
+    if (composeBtn) {
+        composeBtn.onclick = () => {
+            console.log('Opening compose modal...');
+            const modal = $('compose-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                $('compose-to').value = '';
+                $('compose-subject').value = '';
+                $('contact-dropdown')?.classList.add('hidden');
+                if (quill) quill.setText('');
+            }
+        };
+    }
+
+    const replyBtn = $('reply-btn');
+    if (replyBtn) {
+        replyBtn.onclick = () => {
+            const from = $('detail-from').textContent;
+            const sub = $('detail-subject').textContent;
+            $('compose-modal')?.classList.remove('hidden');
+            if ($('compose-to')) $('compose-to').value = from.match(/<([^>]*)>/)?.[1] || from;
+            if ($('compose-subject')) $('compose-subject').value = sub.startsWith('Re:') ? sub : `Re: ${sub}`;
+            if (quill) quill.setContents([{ insert: '\n\n\n--- Original Message ---\n' }]);
+        };
+    }
+}
+
+// Call initially
+initComposeListeners();
 
 if (typeof Quill !== 'undefined' && !quill) {
   quill = new Quill('#editor-container', { 
@@ -508,24 +729,6 @@ if (typeof Quill !== 'undefined' && !quill) {
     modules: { toolbar: [['bold', 'italic'], ['link', 'image']] } 
   });
 }
-
-$('compose-btn').onclick = () => {
-  $('compose-modal').classList.remove('hidden');
-  $('compose-to').value = '';
-  $('compose-subject').value = '';
-  $('contact-dropdown').classList.add('hidden');
-  if (quill) quill.setText('');
-};
-
-// Reply & Forward
-$('reply-btn').onclick = () => {
-  const from = $('detail-from').textContent;
-  const sub = $('detail-subject').textContent;
-  $('compose-modal').classList.remove('hidden');
-  $('compose-to').value = from.match(/<([^>]*)>/)?.[1] || from;
-  $('compose-subject').value = sub.startsWith('Re:') ? sub : `Re: ${sub}`;
-  if (quill) quill.setContents([{ insert: '\n\n\n--- Original Message ---\n' }]);
-};
 
 $('forward-btn').onclick = () => {
   const sub = $('detail-subject').textContent;
@@ -572,31 +775,65 @@ $('send-btn').onclick = async () => {
   btn.textContent = 'Sending...';
 
   try {
-    const response = await fetch('/api/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await auth.currentUser.getIdToken()}`
-      },
-      body: JSON.stringify({
-        to,
-        subject: sub,
-        htmlBody: htmlContent,
-        fromEmail: currentUser.email,
-        senderName: currentUser.displayName || currentUser.email.split('@')[0]
-      })
-    });
+    if (currentUser.email.endsWith('@gmail.com') && googleAccessToken) {
+        // Send via Gmail API
+        const rawMessage = [
+            `To: ${to}`,
+            `Subject: ${sub}`,
+            'Content-Type: text/html; charset=utf-8',
+            '',
+            htmlContent
+        ].join('\r\n');
+        
+        const encoded = btoa(unescape(encodeURIComponent(rawMessage)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
 
-    const result = await response.json();
-
-    if (result.success) {
-      showToast('Email Sent Successfully!');
-      $('compose-modal').classList.add('hidden');
-      if (quill) quill.setText('');
-      $('compose-to').value = '';
-      $('compose-subject').value = '';
+        await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${googleAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ raw: encoded })
+        });
+        
+        showToast('Gmail Sent Successfully!');
+        $('compose-modal').classList.add('hidden');
+        if (quill) quill.setText('');
+        $('compose-to').value = '';
+        $('compose-subject').value = '';
+        
+        // Refresh to show the sent email
+        setTimeout(() => fetchGmailRecent(), 1500);
     } else {
-      throw new Error(result.error || 'Failed to send email');
+        const response = await fetch('/api/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await auth.currentUser.getIdToken()}`
+            },
+            body: JSON.stringify({
+                to,
+                subject: sub,
+                htmlBody: htmlContent,
+                fromEmail: currentUser.email,
+                senderName: currentUser.displayName || currentUser.email.split('@')[0]
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('Email Sent Successfully!');
+            $('compose-modal').classList.add('hidden');
+            if (quill) quill.setText('');
+            $('compose-to').value = '';
+            $('compose-subject').value = '';
+        } else {
+            throw new Error(result.error || 'Failed to send email');
+        }
     }
   } catch (error) {
     console.error('Send Error:', error);
@@ -609,6 +846,63 @@ $('send-btn').onclick = async () => {
 
 $('discard-btn').onclick = () => $('compose-modal').classList.add('hidden');
 $('close-compose').onclick = () => $('compose-modal').classList.add('hidden');
+
+// Attachment Handling
+if ($('attach-btn')) {
+    $('attach-btn').onclick = () => $('attach-input').click();
+}
+
+if ($('attach-input')) {
+    $('attach-input').onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!window.GDriveService) {
+            return showToast("Drive Service not loaded", "error");
+        }
+
+        const handleUpload = async () => {
+            try {
+                showToast(`Uploading ${file.name}...`, 'info');
+                const result = await window.GDriveService.uploadFile(file);
+                console.log('Upload result:', result);
+                
+                if (result && result.url) {
+                    const previewHtml = `
+                        <div style="margin: 10px 0; padding: 12px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; gap: 12px; background: #f9f9f9; max-width: 300px;">
+                            <div style="width: 40px; height: 40px; background: #000; color: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">FILE</div>
+                            <div style="flex: 1; min-width: 0;">
+                                <p style="margin: 0; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${result.name}</p>
+                                <a href="${result.url}" target="_blank" style="font-size: 11px; color: #0070f3; text-decoration: none;">View Attachment</a>
+                            </div>
+                        </div>
+                        <p><br></p>
+                    `;
+                    
+                    const range = quill.getSelection();
+                    if (range) {
+                        quill.clipboard.dangerouslyPasteHTML(range.index, previewHtml);
+                    } else {
+                        quill.clipboard.dangerouslyPasteHTML(quill.getLength(), previewHtml);
+                    }
+                    showToast('Attachment linked successfully!');
+                }
+            } catch (err) {
+                console.error('Attachment Error:', err);
+                showToast(err.message, 'error');
+            } finally {
+                e.target.value = ''; 
+            }
+        };
+
+        if (window.GDriveService.isConnected()) {
+            handleUpload();
+        } else {
+            showToast('Connecting to Google Drive...', 'info');
+            window.GDriveService.authenticate(handleUpload);
+        }
+    };
+}
 
 // ============================
 // 🛠 Helpers & UI Utils

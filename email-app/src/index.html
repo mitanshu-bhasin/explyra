@@ -20,6 +20,10 @@
   <!-- DOMPurify for HTML sanitization -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
+  <!-- Environment & Drive Services -->
+  <script src="../../js/env.js"></script>
+  <script src="../../js/gdrive-service.js" defer></script>
+
   <link rel="stylesheet" href="gmail.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -164,6 +168,15 @@
         <p class="login-toggle-text">
           New here? <button id="show-signup-btn">Create Account</button>
         </p>
+
+        <div class="login-divider">
+          <span>or</span>
+        </div>
+
+        <button id="google-signin-btn" class="btn-google">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+          Sign in with Google
+        </button>
       </div>
 
       <!-- Signup Form -->
@@ -527,6 +540,22 @@
             </div>
           </div>
         </section>
+
+        <!-- Integrations -->
+        <section class="settings-section">
+          <h4 class="settings-section-title">Integrations</h4>
+          <div class="space-y-4">
+            <div class="settings-toggle-row">
+              <div class="settings-toggle-label">
+                <p>Google Workspace</p>
+                <p>Connect Drive & Gmail for full integration</p>
+              </div>
+              <button id="settings-google-connect-btn" class="btn-secondary" style="min-width: 120px;">
+                <span id="google-status-text">Disconnected</span>
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
       <div class="modal-footer">
         <button id="save-settings-btn" class="btn-primary">Save Changes</button>
@@ -591,7 +620,13 @@
         <div id="editor-container" class="compose-editor" style="height:250px;"></div>
       </div>
       <div class="compose-footer">
-        <button id="send-btn" class="compose-send-btn">Send</button>
+        <div class="flex items-center gap-2">
+          <button id="send-btn" class="compose-send-btn">Send</button>
+          <button id="attach-btn" class="compose-attach-btn" title="Attach file from Drive">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32a1.5 1.5 0 01-2.121-2.121l10.94-10.94"/></svg>
+          </button>
+          <input type="file" id="attach-input" class="hidden">
+        </div>
         <button id="discard-btn" class="compose-discard-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79"/></svg></button>
       </div>
     </div>
