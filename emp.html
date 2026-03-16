@@ -1243,10 +1243,13 @@
                         <div
                             class="p-4 sm:p-5 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-white dark:bg-black">
                             <h3 class="font-bold tracking-tight text-black dark:text-white">Conversations</h3>
-                            <button onclick="fetchChatUsers()"
-                                class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center">
-                                <i class="fa-solid fa-arrows-rotate text-xs"></i>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="window.openCreateGroupModal()" class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center" title="Create Group"><i class="fa-solid fa-plus"></i></button>
+                                <button onclick="fetchChatUsers()"
+                                    class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center">
+                                    <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                                </button>
+                            </div>
                         </div>
                         <div
                             class="p-3 border-b border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black shrink-0 relative">
@@ -1313,8 +1316,19 @@
                                 <i class="fa-solid fa-paperclip"></i>
                             </button>
 
-                            <input type="text" id="chat-input-emp" class="input-geist flex-1 text-sm py-2 px-3"
-                                placeholder="Type your message..." autocomplete="off">
+                             <!-- Location Button -->
+                            <button type="button" onclick="sendLocationMessage()"
+                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-blue-500 flex items-center justify-center transition shadow-sm shrink-0" title="Share Current Location">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </button>
+
+                            <div class="flex-1 relative">
+                                <input type="text" id="chat-input-emp" class="input-geist w-full text-sm py-2 px-3"
+                                    placeholder="Type a message or @mention..." autocomplete="off">
+                                
+                                <!-- Mentions Dropdown -->
+                                <div id="mentions-dropdown-emp" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-[#eaeaea] dark:border-[#333] rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar"></div>
+                            </div>
                             <button type="submit" class="btn-geist-primary px-5 py-2 shrink-0">
                                 Send
                             </button>
@@ -2029,7 +2043,6 @@
         <div
             class="bg-white dark:bg-slate-800 w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl overflow-hidden relative animate-[scale_0.2s_ease-out] flex flex-col md:flex-row">
 
-            <!-- Chat Sidebar -->
             <div id="chat-sidebar"
                 class="w-full md:w-80 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full z-10">
                 <div
@@ -2037,10 +2050,13 @@
                     <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                         <i class="fa-solid fa-comments text-green-600"></i> Chats
                     </h3>
-                    <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
-                        class="md:hidden w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 transition flex items-center justify-center">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.openCreateGroupModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 transition flex items-center justify-center" title="Create Group"><i class="fa-solid fa-plus"></i></button>
+                        <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
+                            class="md:hidden w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 transition flex items-center justify-center">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="p-3 shrink-0">
@@ -2802,6 +2818,52 @@
         if (dashMain) dashObs.observe(dashMain, { childList: true, subtree: false });
     })();
     </script>
+    </script>
+    
+    <!-- P2P Video Call Modal -->
+    <div id="modal-video-call" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
+        <div class="absolute top-4 right-4 flex gap-2">
+            <button onclick="window.leaveVideoCall()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i class="fa-solid fa-phone-slash ml-1"></i></button>
+        </div>
+        <div class="flex-1 min-h-0 flex flex-col gap-4 items-center justify-center p-4">
+            <!-- Grid for remote videos -->
+            <div id="video-grid" class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory hide-scroll flex-nowrap md:justify-center">
+            </div>
+        </div>
+        <!-- Local Video and Controls -->
+        <div class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
+            <div class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
+                <video id="local-video" playsinline autoplay muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+                <div class="absolute bottom-1 left-1 bg-black/50 text-[10px] text-white px-1.5 py-0.5 rounded">You</div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="btn-toggle-audio" onclick="window.toggleAudio()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-microphone"></i></button>
+                <button id="btn-toggle-video" onclick="window.toggleVideo()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-video"></i></button>
+                <button id="btn-screen-share" onclick="window.toggleScreenShare()" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg" title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
+                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()" class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg" title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
+            </div>
+            <div class="w-32 md:w-48 hidden md:block"></div>
+        </div>
+    </div>
+
+    <!-- Add Member to Call Modal -->
+    <div id="modal-add-member-call" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Add Member to Call</h3>
+                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-4 max-h-[60vh] overflow-y-auto" id="call-member-list">
+                <!-- User list populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- P2P Dependencies -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="js/emp-p2p.js" type="module"></script>
 </body>
 
 </html>

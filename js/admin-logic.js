@@ -4902,6 +4902,7 @@ async function renderChat() {
                     <div class="w-full md:w-1/3 md:max-w-[300px] border-r border-slate-100 dark:border-slate-700 flex flex-col z-10" id="chat-sidebar">
                         <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
                             <h3 class="font-bold text-slate-800 dark:text-slate-100">Chats</h3>
+                            <button onclick="window.openCreateGroupModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 transition flex items-center justify-center cursor-pointer" title="Create Group"><i class="fa-solid fa-plus"></i></button>
                         </div>
                         <div id="chat-user-list" class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
                              <div class="flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500"></i></div>
@@ -4941,11 +4942,23 @@ async function renderChat() {
                             
                             <!-- Attachment Button -->
                             <button type="button" onclick="document.getElementById('chat-file').click()"
-                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file from Google Drive">
+                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file">
                                 <i class="fa-solid fa-paperclip"></i>
                             </button>
 
-                            <input type="text" id="chat-input" class="input-primary flex-1 bg-white dark:bg-slate-800 text-sm" placeholder="Type a message..." autocomplete="off">
+                            <!-- Location Sharing Button -->
+                            <button type="button" onclick="sendLocationMessage()"
+                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-blue-500 dark:text-blue-400 flex items-center justify-center transition shadow-sm shrink-0" title="Share Location">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </button>
+
+                            <div class="flex-1 relative">
+                                <input type="text" id="chat-input" class="w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700 px-3 bg-white dark:bg-slate-800 text-sm outline-none focus:border-green-500" placeholder="Type a message or @mention..." autocomplete="off">
+                                
+                                <!-- Mentions Dropdown -->
+                                <div id="mentions-dropdown" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar"></div>
+                            </div>
+                            
                             <button type="submit" class="bg-green-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-2 rounded-lg font-bold transition shadow-sm flex items-center justify-center min-w-[60px] shrink-0">
                                 <i class="fa-solid fa-paper-plane"></i>
                             </button>
@@ -4956,6 +4969,71 @@ async function renderChat() {
 
     loadChatUsers();
     selectChat(null);
+
+    // Mentions Setup
+    setTimeout(() => {
+        const input = document.getElementById('chat-input');
+        const dropdown = document.getElementById('mentions-dropdown');
+        if (!input || !dropdown) return;
+
+        input.addEventListener('input', (e) => {
+            const val = input.value;
+            const cursorStart = input.selectionStart;
+            const textBeforeCursor = val.slice(0, cursorStart);
+            const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+
+            if (match) {
+                const queryStr = match[1].toLowerCase();
+                const users = window.adminChatUsers || [];
+                const filtered = users.filter(u => 
+                    (u.name && u.name.toLowerCase().includes(queryStr)) || 
+                    (u.email && u.email.toLowerCase().includes(queryStr))
+                ).slice(0, 5);
+
+                if (filtered.length > 0) {
+                    dropdown.innerHTML = filtered.map(u => `
+                        <div onclick="insertMention('${u.name || '*'}')" class="p-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded cursor-pointer flex items-center gap-2 transition">
+                            <div class="w-5 h-5 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[10px] font-bold uppercase">${(u.name || u.email)[0]}</div>
+                            <span class="truncate">${u.name || u.email}</span>
+                        </div>
+                    `).join('');
+                    dropdown.classList.remove('hidden');
+                    dropdown.classList.add('flex');
+                } else {
+                    dropdown.classList.add('hidden');
+                    dropdown.classList.remove('flex');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('flex');
+            }
+        });
+
+        window.insertMention = (name) => {
+            if (name === '*') return;
+            // sanitize name for mention
+            const validName = name.replace(/[^a-zA-Z0-9_]/g, '');
+            const val = input.value;
+            const cursorStart = input.selectionStart;
+            const textBeforeCursor = val.slice(0, cursorStart);
+            const textAfterCursor = val.slice(cursorStart);
+            
+            const replaced = textBeforeCursor.replace(/@([a-zA-Z0-9_]*)$/, '@' + validName + ' ');
+            input.value = replaced + textAfterCursor;
+            
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('flex');
+            input.focus();
+        };
+
+        // Hide when clicking outside
+        document.addEventListener('click', (ev) => {
+            if (!dropdown.contains(ev.target) && ev.target !== input) {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('flex');
+            }
+        });
+    }, 500);
 }
 
 async function loadChatUsers() {
@@ -4973,13 +5051,20 @@ async function loadChatUsers() {
         const usersSnap = await safeFirebaseFetch(getDocs(uQ));
         const users = usersSnap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
 
-        // Fetch chats for sorting and last message
-        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats"), where("users", "array-contains", userData.docId))));
+        // Fetch chat metadata for 1-on-1
         const chatMeta = {};
+        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats"), where("users", "array-contains", userData.docId))));
         chatsSnap.forEach(docSnap => {
             const data = docSnap.data();
-            const otherUser = (data.users || []).find(id => id !== userData.docId);
+            const otherUser = data.users.find(id => id !== userData.docId);
             if (otherUser) chatMeta[otherUser] = data;
+        });
+
+        // Fetch group chats
+        const groupChatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "group_chats"), where("users", "array-contains", userData.docId))));
+        const groupsMeta = {};
+        groupChatsSnap.forEach(docSnap => {
+            groupsMeta[docSnap.id] = { docId: docSnap.id, ...docSnap.data(), isGroup: true };
         });
 
         // Get Global Chat last message
@@ -4993,43 +5078,71 @@ async function loadChatUsers() {
             return timeB - timeA;
         });
 
+        window.adminChatUsers = sortedUsers;
+
+        window.adminGroupChats = Object.values(groupsMeta).sort((a, b) => {
+            const timeA = a.lastMessageAt?.toMillis() || 0;
+            const timeB = b.lastMessageAt?.toMillis() || 0;
+            return timeB - timeA;
+        });
+
         let html = `
-                    <div onclick="selectChat(null)" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 bg-green-50 dark:bg-brand-900/20 relative" id="chat-tgt-global">
+                    <div onclick="selectChat('global_chat')" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 bg-green-50 dark:bg-brand-900/20 relative" id="chat-tgt-global_chat">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-green-600 to-indigo-500 flex items-center justify-center text-white shrink-0 shadow-sm relative">
                             <i class="fa-solid fa-users text-xs"></i>
                         </div>
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Global Group</p>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${globalLast}</p>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-6">Global Group</h4>
+                            <p class="text-[10px] text-slate-500 truncate">${globalLast}</p>
                         </div>
-                        <span id="global-unread-dot" class="absolute right-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm animate-pulse hidden"></span>
                     </div>
                 `;
 
+        window.adminGroupChats.forEach(g => {
+            const lastMsg = g.lastMessage || 'No messages';
+            const safeJson = JSON.stringify(g).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+            html += `
+                <div onclick="selectChat(JSON.parse('${safeJson}'))" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-group_${g.docId}">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0 object-cover border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
+                        <i class="fa-solid fa-user-group text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center mb-0.5">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">${g.name}</h4>
+                            <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">GROUP</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 truncate ${g.read === false ? 'font-bold text-black dark:text-white' : ''}">${lastMsg}</p>
+                    </div>
+                </div>
+            `;
+        });
+
         sortedUsers.forEach(u => {
-            const initial = u.name ? u.name[0].toUpperCase() : '?';
-            const lastMsg = chatMeta[u.docId]?.lastMessage || (u.role || 'User').replace('_', ' ');
+            const initial = (u.name || u.email || '?').charAt(0).toUpperCase();
+            const lastMsg = chatMeta[u.docId]?.lastMessage || u.email;
+            let unreadDot = '';
+            if (chatMeta[u.docId]?.lastSender && chatMeta[u.docId]?.lastSender !== userData.docId && !chatMeta[u.docId]?.read) {
+                unreadDot = `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>`;
+            }
+
             const safeJson = JSON.stringify(u).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-
-            // Unread dot logic: check if last sender wasn't me and if we have metadata for it
-            // For now, we'll use a simple 'lastSender' check. 
-            // To be really accurate, we'd need a lastRead timestamp per user in each chat.
-            const isUnread = chatMeta[u.docId]?.lastSender && chatMeta[u.docId]?.lastSender !== userData.docId && !chatMeta[u.docId]?.read;
-
             html += `
                         <div onclick="selectChat(JSON.parse('${safeJson}'))" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-${u.docId}">
-                            ${u.photoUrl ?
-                    `<img src="${u.photoUrl}" class="w-10 h-10 rounded-full object-cover shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">` :
-                    `<div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 flex items-center justify-center font-bold text-sm shrink-0 uppercase shadow-sm">${initial}</div>`
-                }
-                            <div class="flex-1 overflow-hidden">
-                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">${u.name || 'User'}</p>
-                                <p class="text-[10px] text-slate-500 truncate">${lastMsg}</p>
+                            <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 font-bold flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0 object-cover border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden text-xs">
+                                ${u.photoUrl ? `<img src="${u.photoUrl}" class="w-full h-full object-cover">` : initial}
                             </div>
-                            ${isUnread ? `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm animate-pulse"></span>` : ''}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">${u.name || u.email}</h4>
+                                    <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">${u.role}</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 truncate ${unreadDot ? 'font-bold text-slate-800 dark:text-slate-200' : ''}">${lastMsg}</p>
+                            </div>
+                            ${unreadDot}
                         </div>
                     `;
         });
+        
         list.innerHTML = html;
         updateActiveChatHighlight();
     } catch (e) {
@@ -5039,8 +5152,28 @@ async function loadChatUsers() {
 }
 
 window.selectChat = (userObj) => {
-    currentChatUser = userObj;
-    currentChatId = userObj ? getOneOnOneChatId(userData.docId, userObj.docId) : 'global_chat';
+    if (typeof userObj === 'string') {
+        if (userObj === 'global_chat') {
+            currentChatUser = null;
+            currentChatId = 'global_chat';
+        } else if (userObj.startsWith('group_')) {
+            const gId = userObj.replace('group_', '');
+            currentChatUser = window.adminGroupChats ? window.adminGroupChats.find(g => g.docId === gId) : null;
+            currentChatId = userObj;
+        } else {
+            currentChatUser = window.adminChatUsers ? window.adminChatUsers.find(u => u.docId === userObj) : null;
+            currentChatId = getOneOnOneChatId(userData.docId, userObj);
+        }
+    } else {
+        currentChatUser = userObj;
+        if (userObj && userObj.isGroup) {
+            currentChatId = 'group_' + userObj.docId;
+        } else if (userObj) {
+            currentChatId = getOneOnOneChatId(userData.docId, userObj.docId);
+        } else {
+            currentChatId = 'global_chat';
+        }
+    }
 
     const nameEl = document.getElementById('active-chat-name');
     const statusEl = document.getElementById('active-chat-status');
@@ -5048,13 +5181,13 @@ window.selectChat = (userObj) => {
     const callsEl = document.getElementById('chat-cal-actions');
     const chatMain = document.getElementById('chat-main-area');
 
-    if (userObj) {
-        nameEl.textContent = userObj.name || 'Unknown User';
-        statusEl.textContent = (userObj.role || 'User').replace('_', ' ');
-        if (userObj.photoUrl) {
-            avatarEl.innerHTML = `<img src="${userObj.photoUrl}" class="w-full h-full object-cover">`;
+    if (currentChatUser) {
+        nameEl.textContent = currentChatUser.name || currentChatUser.email || 'Unknown User';
+        statusEl.textContent = (currentChatUser.isGroup ? 'Group' : (currentChatUser.role || 'User').replace('_', ' '));
+        if (currentChatUser.photoUrl) {
+            avatarEl.innerHTML = `<img src="${currentChatUser.photoUrl}" class="w-full h-full object-cover">`;
         } else {
-            avatarEl.innerHTML = userObj.name ? userObj.name[0].toUpperCase() : '?';
+            avatarEl.innerHTML = currentChatUser.name ? currentChatUser.name[0].toUpperCase() : '?';
         }
         avatarEl.className = 'w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 flex items-center justify-center font-bold shrink-0 overflow-hidden shadow-sm';
         callsEl.classList.remove('hidden');
@@ -5065,7 +5198,6 @@ window.selectChat = (userObj) => {
         avatarEl.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm';
         callsEl.classList.add('hidden');
     }
-
     // Mobile Navigation: Slide Chat Main Area over sidebar
     if (chatMain) {
         chatMain.classList.remove('translate-x-full');
@@ -5088,6 +5220,97 @@ window.hideMobileChatArea = () => {
         chatMain.classList.remove('translate-x-0');
         chatMain.classList.add('translate-x-full');
     }
+};
+
+window.openCreateGroupModal = () => {
+    const list = window.adminChatUsers || [];
+    const userOptions = list.map(u => `
+        <label class="flex items-center gap-3 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer transition">
+            <input type="checkbox" value="${u.docId}" class="group-user-checkbox w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate text-slate-800 dark:text-slate-100">${u.name || u.email}</p>
+                <p class="text-[10px] text-slate-500 truncate">${u.role || 'EMP'}</p>
+            </div>
+        </label>
+    `).join('');
+
+    const modalHtml = `
+        <div id="create-group-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 animate-scale-up">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Create New Group</h3>
+                    <button onclick="document.getElementById('create-group-modal').remove()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="p-4 flex-1 overflow-y-auto space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Group Name</label>
+                        <input type="text" id="group-name-input" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-green-500 transition" placeholder="e.g. Project Alpha">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Select Members</label>
+                        <div class="space-y-1 max-h-60 overflow-y-auto border border-slate-100 dark:border-slate-800 rounded-xl p-2 bg-white dark:bg-slate-900 custom-scrollbar">
+                            ${userOptions}
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+                    <button onclick="document.getElementById('create-group-modal').remove()" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition">Cancel</button>
+                    <button onclick="window.confirmCreateGroup()" class="px-6 py-2 bg-green-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-200 dark:shadow-none hover:scale-95 transition">Create Group</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+};
+
+window.confirmCreateGroup = async () => {
+    const nameInput = document.getElementById('group-name-input').value.trim();
+    if (!nameInput) return showToast("Enter group name", "error");
+
+    const checkboxes = document.querySelectorAll('.group-user-checkbox:checked');
+    const selectedUsers = Array.from(checkboxes).map(cb => cb.value);
+    if (selectedUsers.length === 0) return showToast("Select members", "error");
+
+    selectedUsers.push(userData.docId);
+
+    try {
+        const groupRef = await addDoc(collection(db, "group_chats"), {
+            name: nameInput,
+            companyId: userData.companyId,
+            admin: userData.docId,
+            users: selectedUsers,
+            createdAt: serverTimestamp(),
+            lastMessage: "Group created",
+            lastMessageAt: serverTimestamp()
+        });
+        document.getElementById('create-group-modal').remove();
+        showToast("Group created!", "success");
+        loadChatUsers();
+        selectChat({ docId: groupRef.id, name: nameInput, isGroup: true, users: selectedUsers });
+    } catch (e) {
+        console.error(e);
+        showToast("Failed to create group", "error");
+    }
+};
+
+window.sendLocationMessage = () => {
+    if (!navigator.geolocation) return showToast("Geolocation not supported", "error");
+    
+    showToast("Getting location...", "info");
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        const msg = `📍 Shared Location: ${mapUrl}`;
+        
+        // Simulating message send
+        const input = document.getElementById('chat-input');
+        if (input) {
+            input.value = msg;
+            document.querySelector('#chat-main-area form').dispatchEvent(new Event('submit'));
+        }
+    }, (err) => {
+        showToast("Location access denied", "error");
+    });
 };
 
 function getOneOnOneChatId(uid1, uid2) {
@@ -5148,27 +5371,38 @@ function loadMessages() {
                 const canDelete = isMe && data.createdAt && (Date.now() - data.createdAt.toMillis() < 60000);
 
                 const div = document.createElement('div');
-                div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} group`;
+                div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} drop-in w-full max-w-full group`;
+
+                // Process mentions and logic
+                let processedText = data.text || '';
+                if (processedText) {
+                    // simple mention string replace styling
+                    processedText = processedText.replace(/(@[A-Za-z0-9_]+)/g, '<span class="text-green-500 font-bold bg-green-50 dark:bg-green-900/20 px-1 rounded mx-0.5">$1</span>');
+                    // process locations
+                    processedText = processedText.replace(/\[MAP:([-0-9.]+),([-0-9.]+)\]/g, '<a href="https://www.google.com/maps/search/?api=1&query=$1,$2" target="_blank" class="block mt-1 bg-slate-100 dark:bg-slate-800 p-2 rounded flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition"><i class="fa-solid fa-map-location-dot text-blue-500"></i><span class="text-xs text-blue-600 dark:text-blue-400 font-bold">View Shared Location</span></a>');
+                }
 
                 div.innerHTML = `
-                            <div class="flex items-end gap-2 max-w-[85%] ${isMe ? 'flex-row-reverse' : ''}">
-                                 ${!isMe ? (data.senderPhotoUrl ?
-                        `<img src="${data.senderPhotoUrl}" class="w-8 h-8 rounded-full object-cover shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">` :
-                        `<div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 bg-slate-400 uppercase shadow-sm sm:flex hidden">${data.sender ? data.sender[0] : '?'}</div>`
+                            <div class="flex items-end gap-2 max-w-[85%] sm:max-w-[75%] ${isMe ? 'flex-row-reverse' : ''}">
+                                ${!isMe ? (data.senderPhotoUrl ?
+                        `<img src="${data.senderPhotoUrl}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 border border-white dark:border-slate-800 mt-auto">` :
+                        `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 mt-auto border border-white dark:border-slate-800 uppercase">${(data.sender || data.email || '?')[0]}</div>`
                     ) : ''}
-                                     <div class="relative ${isMe ? 'bg-green-600 text-white font-medium' : 'bg-white dark:bg-slate-800 dark:text-slate-50 border border-slate-100 dark:border-slate-700 shadow-sm text-slate-900'} p-3 rounded-2xl ${isMe ? 'rounded-br-none' : 'rounded-bl-none'} shadow-sm">
-                                        ${!isMe && lastUser !== data.email && currentChatId === 'global_chat' ? `<p class="text-[9px] font-bold ${isMe ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'} mb-1">${data.sender || data.email}</p>` : ''}
-                                        <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">${window.parseChatLinks ? window.parseChatLinks(data.text) : data.text}</p>
-                                        <div class="flex items-center justify-end gap-1 mt-1">
-                                        <p class="text-[9px] ${isMe ? 'text-brand-100' : 'text-slate-400 dark:text-slate-500'} font-mono">${time}</p>
-                                        ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-300' : 'text-brand-200'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
+                                
+                                <div class="relative ${isMe ? 'bg-black dark:bg-white text-white dark:text-black font-medium text-left' : 'bg-slate-100 dark:bg-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 text-slate-800'} p-3 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} text-xs sm:text-sm shadow-sm relative overflow-hidden break-words">
+                                    ${!isMe && window.currentChatContext === 'global' && lastUser !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'opacity-80' : 'text-green-600 dark:text-green-400'} mb-1">${data.sender || data.email}</p>` : ''}
+                                    ${!isMe && window.currentChatContext && window.currentChatContext.startsWith('group_') && lastUser !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'opacity-80' : 'text-blue-600 dark:text-blue-400'} mb-1">${data.sender || data.email}</p>` : ''}
+                                    <span class="leading-relaxed relative z-10 break-words whitespace-pre-wrap">${window.parseChatLinks ? window.parseChatLinks(processedText) : processedText}</span>
+                                    <div class="flex items-center justify-end gap-1 mt-1 opacity-60 mix-blend-luminosity">
+                                        <div class="text-[9px] text-right font-mono">${time}</div>
+                                        ${isMe ? `<span class="text-[10px] ml-1"><i class="fa-solid fa-check-double"></i></span>` : ''}
                                     </div>
                                     ${canDelete ? `
                                         <button onclick="deleteChatMessage('${msgId}')" class="absolute -top-2 ${isMe ? '-left-2' : '-right-2'} w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     ` : ''}
-                                 </div>
+                                </div>
                             </div>
                         `;
                 container.appendChild(div);
@@ -5239,6 +5473,38 @@ window.sendChatMessage = async (e) => {
     } catch (err) {
         showToast("Failed to send: " + err.message, 'error');
     }
+};
+
+window.sendLocationMessage = () => {
+    if (!navigator.geolocation) {
+        showToast("Geolocation is not supported by your browser", "error");
+        return;
+    }
+
+    const btnHtml = document.querySelector('button[onclick="sendLocationMessage()"]');
+    if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const locationText = `Here is my current location:\n[MAP:${lat},${lng}]`;
+            
+            // Re-use sendChatMessage flow seamlessly
+            const input = document.getElementById('chat-input');
+            const originalVal = input.value;
+            input.value = locationText;
+            window.sendChatMessage({ preventDefault: () => {} });
+            input.value = originalVal; // Restore draft if any
+
+            if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-location-dot"></i>';
+        },
+        (error) => {
+            console.error(error);
+            showToast("Unable to retrieve location", "error");
+            if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-location-dot"></i>';
+        }
+    );
 };
 
 window.deleteChatMessage = async (msgId) => {
