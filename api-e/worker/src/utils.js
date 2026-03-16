@@ -153,6 +153,14 @@ export async function kvPut(namespace, key, value, opts = {}) {
   await namespace.put(key, JSON.stringify(value), opts);
 }
 
+export async function kvList(namespace, prefix) {
+  return await namespace.list({ prefix });
+}
+
+export async function kvDelete(namespace, key) {
+  await namespace.delete(key);
+}
+
 // --- Error Helpers ---
 
 export function errorResponse(error, message, status = 400) {

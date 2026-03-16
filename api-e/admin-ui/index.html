@@ -184,10 +184,10 @@
                 <!-- Main Action -->
                 <div class="md:col-span-2 space-y-6">
                     <div class="vercel-card p-8">
-                        <h2 class="text-2xl font-bold mb-2">Generate API Key</h2>
-                        <p class="text-brand-gray text-sm mb-8">Create a new key for production or staging environments.</p>
+                        <h2 class="text-2xl font-bold mb-2">Manage API Keys</h2>
+                        <p class="text-brand-gray text-sm mb-8">Generate, restrict, or delete keys for your services.</p>
                         
-                        <div class="flex gap-4">
+                        <div class="flex gap-4 mb-8">
                             <div class="flex-1">
                                 <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Key Label</label>
                                 <input type="text" id="key-label" class="input-vercel" placeholder="Mobile App v1">
@@ -196,6 +196,28 @@
                                 <button onclick="createKey()" class="btn-primary h-[44px] !w-auto px-6">Generate</button>
                             </div>
                         </div>
+
+                        <div class="border-t border-brand-border pt-6">
+                            <h3 class="text-sm font-bold uppercase text-brand-gray mb-4">Key History</h3>
+                            <div id="keys-list" class="space-y-3">
+                                <p class="text-xs text-brand-gray italic">Loading keys...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expense Tester -->
+                    <div class="vercel-card p-8">
+                        <h2 class="text-xl font-bold mb-2">Quick Expense Test</h2>
+                        <p class="text-brand-gray text-sm mb-6">Test the live API by creating a real expense entry.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" id="test-amount" class="input-vercel" placeholder="Amount (e.g. 50)">
+                            <select id="test-category" class="input-vercel">
+                                <option value="Travel">Travel</option>
+                                <option value="Meals">Meals</option>
+                                <option value="Software">Software</option>
+                            </select>
+                        </div>
+                        <button onclick="testCreateExpense()" class="btn-secondary w-full mt-4">Create Expense</button>
                     </div>
 
                     <!-- Result Panel -->
@@ -277,6 +299,7 @@
                 if (res.ok) {
                     session = data;
                     localStorage.setItem('explyra_api_session', JSON.stringify(data));
+                    localStorage.setItem('explyra_admin_email', email);
                     enterDashboard(email);
                 } else {
                     alert(data.message || "Login failed");
@@ -290,6 +313,71 @@
             document.getElementById('nav-user').classList.remove('hidden');
             document.getElementById('user-display').innerText = email;
             document.getElementById('dash-id').innerText = email;
+            loadKeys();
+        }
+
+        async function loadKeys() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/list-api-keys`, {
+                    headers: { 'Authorization': `Bearer ${session.token}` }
+                });
+                const data = await res.json();
+                renderKeys(data.keys);
+            } catch (e) { console.error("Failed to load keys", e); }
+        }
+
+        function renderKeys(keys) {
+            const list = document.getElementById('keys-list');
+            if (!keys || keys.length === 0) {
+                list.innerHTML = '<p class="text-xs text-brand-gray">No keys generated yet.</p>';
+                return;
+            }
+
+            list.innerHTML = keys.map(k => `
+                <div class="flex items-center justify-between p-3 rounded-lg border border-brand-border bg-black/40">
+                    <div class="flex-1 min-w-0 pr-4">
+                        <p class="text-xs font-bold text-white truncate">${k.label}</p>
+                        <p class="text-[10px] font-mono text-brand-gray mt-1">${k.key}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleKey('${k.key}', ${!k.revoked})" class="text-[10px] px-2 py-1 rounded border ${k.revoked ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-green-500/10 text-green-500 border-green-500/20'}">
+                            ${k.revoked ? 'Restricted' : 'Active'}
+                        </button>
+                        <button onclick="deleteKey('${k.key}')" class="text-[10px] text-brand-gray hover:text-red-500 transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleKey(apiKey, revoked) {
+            try {
+                const res = await fetch(`${API_BASE}/admin/update-api-key-status`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.token}`
+                    },
+                    body: JSON.stringify({ api_key: apiKey, revoked })
+                });
+                if (res.ok) loadKeys();
+            } catch (e) { alert(e.message); }
+        }
+
+        async function deleteKey(apiKey) {
+            if (!confirm("Are you sure? This action is permanent.")) return;
+            try {
+                const res = await fetch(`${API_BASE}/admin/delete-api-key`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.token}`
+                    },
+                    body: JSON.stringify({ api_key: apiKey })
+                });
+                if (res.ok) loadKeys();
+            } catch (e) { alert(e.message); }
         }
 
         async function createKey() {
@@ -305,11 +393,43 @@
                 });
                 const data = await res.json();
                 showResult(data);
+                loadKeys();
+            } catch (e) { alert(e.message); }
+        }
+
+        async function testCreateExpense() {
+            const amount = document.getElementById('test-amount').value;
+            const category = document.getElementById('test-category').value;
+            
+            // Get the first active key to test with
+            const keysRes = await fetch(`${API_BASE}/admin/list-api-keys`, {
+                headers: { 'Authorization': `Bearer ${session.token}` }
+            });
+            const keysData = await keysRes.json();
+            const activeKey = keysData.keys.find(k => !k.revoked);
+
+            if (!activeKey) {
+                alert("Please generate an active API key first!");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/v1/expenses`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-api-key': activeKey.key
+                    },
+                    body: JSON.stringify({ amount, category, note: "User test via Admin UI" })
+                });
+                const data = await res.json();
+                showResult(data);
             } catch (e) { alert(e.message); }
         }
 
         function logout() {
             localStorage.removeItem('explyra_api_session');
+            localStorage.removeItem('explyra_admin_email');
             location.reload();
         }
 
@@ -320,9 +440,10 @@
 
         window.onload = () => {
             const saved = localStorage.getItem('explyra_api_session');
-            if (saved) {
+            const email = localStorage.getItem('explyra_admin_email');
+            if (saved && email) {
                 session = JSON.parse(saved);
-                enterDashboard("Previous Session");
+                enterDashboard(email);
             }
         }
     </script>

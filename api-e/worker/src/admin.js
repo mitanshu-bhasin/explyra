@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword, signJWT, kvGet, kvPut, randomKey, jsonResponse, errorResponse } from './utils.js';
+import { hashPassword, verifyPassword, signJWT, kvGet, kvPut, randomKey, jsonResponse, errorResponse, kvList } from './utils.js';
 
 /**
  * Register a new company
@@ -81,7 +81,70 @@ export async function createApiKey(request, env, decoded) {
   };
 
   await kvPut(env.EXPLYRA_API_KEYS, `key:${apiKey}`, keyMetadata);
+  // Store a reference for listing: list:company_id:api_key
+  await env.EXPLYRA_API_KEYS.put(`list:${companyId}:${apiKey}`, JSON.stringify(keyMetadata));
+
   return jsonResponse({ api_key: apiKey, message: "API key created" });
+}
+
+/**
+ * List API Keys for a company
+ */
+export async function listApiKeys(request, env, decoded) {
+  const companyId = decoded.company_id;
+  const list = await env.EXPLYRA_API_KEYS.list({ prefix: `list:${companyId}:` });
+  
+  const keys = [];
+  for (const item of list.keys) {
+    const val = await env.EXPLYRA_API_KEYS.get(item.name);
+    if (val) {
+      const metadata = JSON.parse(val);
+      // Extracts the key from the name "list:cmp_id:exp_..."
+      const keyStr = item.name.split(':').pop();
+      keys.push({ key: keyStr, ...metadata });
+    }
+  }
+  
+  return jsonResponse({ keys });
+}
+
+/**
+ * Toggle API Key Status (Restrict/Unrestrict)
+ */
+export async function updateApiKeyStatus(request, env, decoded) {
+  const body = await request.json();
+  const { api_key, revoked } = body; // revoked is boolean
+  const companyId = decoded.company_id;
+
+  const keyData = await kvGet(env.EXPLYRA_API_KEYS, `key:${api_key}`);
+  if (!keyData || keyData.company_id !== companyId) {
+    return errorResponse("not_found", "API key not found", 404);
+  }
+
+  keyData.revoked = revoked;
+  await kvPut(env.EXPLYRA_API_KEYS, `key:${api_key}`, keyData);
+  await env.EXPLYRA_API_KEYS.put(`list:${companyId}:${api_key}`, JSON.stringify(keyData));
+
+  return jsonResponse({ message: `API key ${revoked ? 'restricted' : 'unrestricted'}` });
+}
+
+/**
+ * Delete an API Key
+ */
+export async function deleteApiKey(request, env, decoded) {
+  const body = await request.json();
+  const { api_key } = body;
+  const companyId = decoded.company_id;
+
+  const keyData = await kvGet(env.EXPLYRA_API_KEYS, `key:${api_key}`);
+  if (!keyData || keyData.company_id !== companyId) {
+    return errorResponse("not_found", "API key not found", 404);
+  }
+
+  await env.EXPLYRA_API_KEYS.delete(`key:${api_key}`);
+  await env.EXPLYRA_API_KEYS.delete(`list:${companyId}:${api_key}`);
+
+  return jsonResponse({ message: "API key deleted permanently" });
 }
 
 /**

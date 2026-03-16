@@ -1,5 +1,5 @@
 import { verifyJWT, errorResponse, jsonResponse } from './utils.js';
-import { registerCompany, loginAdmin, createApiKey, revokeApiKey } from './admin.js';
+import { registerCompany, loginAdmin, createApiKey, revokeApiKey, listApiKeys, updateApiKeyStatus, deleteApiKey } from './admin.js';
 import { validateRequest, handlePing, handleExpenses } from './public.js';
 import { handleBillingWebhook } from './billingWebhook.js';
 
@@ -45,6 +45,15 @@ export default {
         }
         if (path === "/admin/revoke-api-key" && request.method === "POST") {
           return await revokeApiKey(request, env, decoded);
+        }
+        if (path === "/admin/list-api-keys" && request.method === "GET") {
+          return await listApiKeys(request, env, decoded);
+        }
+        if (path === "/admin/update-api-key-status" && request.method === "POST") {
+          return await updateApiKeyStatus(request, env, decoded);
+        }
+        if (path === "/admin/delete-api-key" && request.method === "POST") {
+          return await deleteApiKey(request, env, decoded);
         }
       }
 

@@ -64,13 +64,27 @@ Use your `api_key` in the header of any request to `/v1/`:
 
 **Example: Check Status (Ping)**
 ```bash
-curl -H "x-api-key: exp_YOUR_GENERATED_KEY" \
-     https://explyra-api-e.mitanshu-bhasin.workers.dev/v1/ping
+curl -H "x-api-key: exp_0229dc541966e1bfaeb66276d4a20dcfff49121abe289859" \
+     https://explyra-api-e.mfskufgu.workers.dev/v1/ping
+```
+
+**Example: Get Expenses (CRUD stub)**
+```bash
+curl -H "x-api-key: exp_0229dc541966e1bfaeb66276d4a20dcfff49121abe289859" \
+     https://explyra-api-e.mfskufgu.workers.dev/v1/expenses
 ```
 
 ---
 
-## 📝 Editing & Maintenance
+## 🌐 Custom Domain (explyra.me)
+If you want to use `api.explyra.me` instead of the workers.dev URL:
+1. Add this to your `wrangler.toml`:
+   ```toml
+   routes = [
+     { pattern = "api.explyra.me/*", custom_domain = true }
+   ]
+   ```
+2. Run `npm run deploy`. Cloudflare will automatically handle the DNS and SSL.
 
 ### To update the Worker:
 1. Edit files in `api-e/worker/src/`.
