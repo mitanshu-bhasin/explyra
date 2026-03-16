@@ -1,8 +1,8 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp, Listing } from "@/context/AppContext"
 import { PackageOpen, Wrench, Search, Filter, Plus, X, ArrowUpDown } from "lucide-react"
 
 const allCategories = [
@@ -21,14 +21,14 @@ export default function Marketplace() {
 
   // Filter logic
   const filtered = listings
-    .filter(l => tab === "all" || l.type === tab)
-    .filter(l => selectedCategory === "All" || l.category === selectedCategory)
-    .filter(l => {
+    .filter((l: Listing) => tab === "all" || l.type === tab)
+    .filter((l: Listing) => selectedCategory === "All" || l.category === selectedCategory)
+    .filter((l: Listing) => {
       if (!searchQuery.trim()) return true
       const q = searchQuery.toLowerCase()
       return l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.category.toLowerCase().includes(q)
     })
-    .sort((a, b) => sortBy === "newest"
+    .sort((a: Listing, b: Listing) => sortBy === "newest"
       ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
@@ -68,7 +68,7 @@ export default function Marketplace() {
           <input
             type="text"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
             placeholder="Search by title, description, or category..."
             className="w-full h-10 pl-9 pr-4 rounded-lg border border-border bg-surface text-sm focus:outline-none focus:border-primary"
           />
@@ -84,7 +84,7 @@ export default function Marketplace() {
         <Button
           variant="outline"
           className="gap-2"
-          onClick={() => setSortBy(s => s === "newest" ? "oldest" : "newest")}
+          onClick={() => setSortBy((s: "newest" | "oldest") => s === "newest" ? "oldest" : "newest")}
         >
           <ArrowUpDown className="w-4 h-4" />
           <span className="hidden sm:inline">{sortBy === "newest" ? "Newest" : "Oldest"}</span>
@@ -123,7 +123,7 @@ export default function Marketplace() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filtered.map(listing => (
+          {filtered.map((listing: Listing) => (
             <Link key={listing.id} to={`/marketplace/${listing.id}`}>
               <Card className="hover:-translate-y-1 transition-all duration-300 hover:shadow-float cursor-pointer h-full flex flex-col">
                 {/* Thumbnail */}
@@ -133,7 +133,7 @@ export default function Marketplace() {
                       src={listing.thumbnail}
                       alt={listing.title}
                       className="w-full h-full object-cover"
-                      onError={e => { e.currentTarget.style.display = "none" }}
+                      onError={(e: React.SyntheticEvent<HTMLImageElement>) => { e.currentTarget.style.display = "none" }}
                     />
                   ) : (
                     listing.type === "product"
