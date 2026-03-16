@@ -111,7 +111,56 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem("explyra_skill_user", JSON.stringify(user))
   }, [user])
-  const [listings, setListings] = useState<Listing[]>([])
+  const [listings, setListings] = useState<Listing[]>([
+    {
+      id: "1",
+      title: "Premium Next.js SaaS Boilerplate",
+      description: "A complete, production-ready SaaS template with authentication, database integration, and Stripe payments. Perfect for launching your next big idea.",
+      price: "$49",
+      type: "product",
+      category: "SaaS Template",
+      thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop",
+      createdAt: new Date().toISOString(),
+      owner: "mitanshu",
+      requested: false
+    },
+    {
+      id: "2",
+      title: "UI/UX Design Review",
+      description: "Professional audit of your application's user interface and experience. Get actionable feedback on how to improve conversion and usability.",
+      price: "$120/hour",
+      type: "service",
+      category: "UI/UX Design",
+      thumbnail: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?w=800&auto=format&fit=crop",
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+      owner: "arivera",
+      requested: false
+    },
+    {
+      id: "3",
+      title: "Custom AI Agent Integration",
+      description: "Expert integration of LLMs (GPT-4, Claude) into your existing workflows. Build intelligent automation for customer support or data analysis.",
+      price: "Custom",
+      type: "service",
+      category: "AI & ML",
+      thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop",
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      owner: "schen_design",
+      requested: false
+    },
+    {
+      id: "4",
+      title: "Minimalist Icon Pack (200+ Icons)",
+      description: "High-quality SVG icons for modern web apps. Hand-crafted, pixel-perfect, and fully customizable for your brand.",
+      price: "Free",
+      type: "product",
+      category: "Graphic Design",
+      thumbnail: "https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?w=800&auto=format&fit=crop",
+      createdAt: new Date(Date.now() - 172800000).toISOString(),
+      owner: "mitanshu",
+      requested: false
+    }
+  ])
   const [posts, setPosts] = useState<Post[]>([
     {
       id: "1",
@@ -143,16 +192,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       owner: user.username || user.name || "You",
       requested: false,
     }
-    setListings((prev) => [newListing, ...prev])
+    setListings((prev: Listing[]) => [newListing, ...prev])
   }
 
   const removeListing = (id: string) => {
-    setListings((prev) => prev.filter((l) => l.id !== id))
+    setListings((prev: Listing[]) => prev.filter((l: Listing) => l.id !== id))
   }
 
   const toggleRequest = (id: string) => {
-    setListings((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, requested: !l.requested } : l))
+    setListings((prev: Listing[]) =>
+      prev.map((l: Listing) => (l.id === id ? { ...l, requested: !l.requested } : l))
     )
   }
 
@@ -167,15 +216,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       likes: 0,
       comments: 0,
     }
-    setPosts(prev => [newPost, ...prev])
+    setPosts((prev: Post[]) => [newPost, ...prev])
   }
 
   const deletePost = (id: string) => {
-    setPosts(prev => prev.filter(p => p.id !== id))
+    setPosts((prev: Post[]) => prev.filter((p: Post) => p.id !== id))
   }
 
   const toggleLikePost = (id: string) => {
-    setPosts(prev => prev.map(p => {
+    setPosts((prev: Post[]) => prev.map((p: Post) => {
       if (p.id === id) {
         return {
           ...p,
