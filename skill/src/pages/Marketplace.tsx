@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
@@ -20,7 +20,7 @@ const containerVariants = {
       staggerChildren: 0.05
     }
   }
-}
+} as const
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -32,7 +32,7 @@ const itemVariants = {
       stiffness: 100
     }
   }
-}
+} as const
 
 export default function Marketplace() {
   const { listings } = useApp()
@@ -56,8 +56,21 @@ export default function Marketplace() {
       : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
 
+  const [now, setNow] = useState(0)
+  
+  useEffect(() => {
+    // Using setTimeout to avoid cascading renders warning and satisfy purity rules
+    const timer = setTimeout(() => {
+      setNow(Date.now())
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
+
   const isRecent = (date: string) => {
-    const diff = Date.now() - new Date(date).getTime()
+    if (now === 0) return false
+    const parsedDate = new Date(date).getTime()
+    if (isNaN(parsedDate)) return false
+    const diff = now - parsedDate
     return diff < 1000 * 60 * 60 * 24 * 2 // 2 days
   }
 
@@ -289,4 +302,3 @@ export default function Marketplace() {
     </div>
   )
 }
-

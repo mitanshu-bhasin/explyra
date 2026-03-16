@@ -10,6 +10,8 @@
 <head>
     <!-- Environment Config -->
     <script src="js/env.js"></script>
+    <script src="js/ai-config.js"></script>
+    <link rel="stylesheet" href="css/ai-assistant.css">
 
     <!-- Google tag (gtag.js) -->
     <script>
@@ -4623,10 +4625,10 @@
         .back-to-top {
             position: fixed;
             bottom: 2rem;
-            right: 2rem;
+            right: 94px;
             z-index: 200;
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             border-radius: 14px;
             background: var(--blue);
             color: #fff;
@@ -4655,13 +4657,20 @@
         }
 
         .back-to-top svg {
-            width: 22px;
-            height: 22px;
+            width: 18px;
+            height: 18px;
             fill: none;
             stroke: #fff;
             stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
+        }
+
+        @media (max-width: 480px) {
+            .back-to-top {
+                right: 76px;
+                bottom: 20px;
+            }
         }
 
 
@@ -4748,14 +4757,19 @@
         }
 
         @keyframes marquee-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
         [data-theme="dark"] .running-text-wrapper {
             background: var(--bg2);
             border-color: var(--bdr2);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .running-text-wrapper::before,
@@ -4793,15 +4807,16 @@
                 padding: 0 1rem;
                 gap: 1rem;
             }
+
             .running-text-wrapper {
                 padding: 0.25rem 0;
             }
+
             .running-text-wrapper::before,
             .running-text-wrapper::after {
                 width: 25px;
             }
         }
-
     </style>
 </head>
 
@@ -6174,19 +6189,19 @@
     <div class="running-text-wrapper">
         <div class="running-text-content">
             <div class="running-text-item">
-                TRUSTED BY TEAMS WORLDWIDE <i class="fas fa-circle"></i> 
-                AI-POWERED PRODUCTIVITY <i class="fas fa-circle"></i> 
-                REAL-TIME SPEND INSIGHTS <i class="fas fa-circle"></i> 
-                ENTERPRISE-GRADE SECURITY <i class="fas fa-circle"></i> 
-                UNIFIED SAAS ECOSYSTEM <i class="fas fa-circle"></i> 
+                TRUSTED BY TEAMS WORLDWIDE <i class="fas fa-circle"></i>
+                AI-POWERED PRODUCTIVITY <i class="fas fa-circle"></i>
+                REAL-TIME SPEND INSIGHTS <i class="fas fa-circle"></i>
+                ENTERPRISE-GRADE SECURITY <i class="fas fa-circle"></i>
+                UNIFIED SAAS ECOSYSTEM <i class="fas fa-circle"></i>
                 EXPERIENCE THE FUTURE <i class="fas fa-circle"></i>
             </div>
             <div class="running-text-item">
-                TRUSTED BY TEAMS WORLDWIDE <i class="fas fa-circle"></i> 
-                AI-POWERED PRODUCTIVITY <i class="fas fa-circle"></i> 
-                REAL-TIME SPEND INSIGHTS <i class="fas fa-circle"></i> 
-                ENTERPRISE-GRADE SECURITY <i class="fas fa-circle"></i> 
-                UNIFIED SAAS ECOSYSTEM <i class="fas fa-circle"></i> 
+                TRUSTED BY TEAMS WORLDWIDE <i class="fas fa-circle"></i>
+                AI-POWERED PRODUCTIVITY <i class="fas fa-circle"></i>
+                REAL-TIME SPEND INSIGHTS <i class="fas fa-circle"></i>
+                ENTERPRISE-GRADE SECURITY <i class="fas fa-circle"></i>
+                UNIFIED SAAS ECOSYSTEM <i class="fas fa-circle"></i>
                 EXPERIENCE THE FUTURE <i class="fas fa-circle"></i>
             </div>
         </div>
@@ -6254,7 +6269,8 @@
                 <ul>
                     <li><a href="team.html">Our Team</a></li>
                     <li><a href="pricing.html">Pricing Plans</a></li>
-                    <li><a href="directories/submit.html" style="color:var(--purp); font-weight:700;">Submit Business (₹29)</a></li>
+                    <li><a href="directories/submit.html" style="color:var(--purp); font-weight:700;">Submit Business
+                            (₹29)</a></li>
                     <li><a href="#contact">Contact Us</a></li>
                     <li><a href="careers.html">Careers</a></li>
                 </ul>
@@ -6311,12 +6327,9 @@
             <button class="v-modal-close" id="closeVideo" aria-label="Close video">
                 <i class="fas fa-times"></i>
             </button>
-            <iframe id="videoIframe"
-                title="YouTube video player"
-                frameborder="0"
+            <iframe id="videoIframe" title="YouTube video player" frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen></iframe>
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -6785,6 +6798,7 @@
         });
     </script>
     <script src="js/global-enhancements.js"></script>
+    <script src="js/ai-assistant.js"></script>
 
     <!-- HERO 3D DIGITAL CORE -->
     <script>
