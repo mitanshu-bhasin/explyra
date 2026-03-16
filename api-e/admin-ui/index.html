@@ -3,183 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explyra API-E Admin</title>
+    <title>Admin - Explyra API-E</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
+            --brand-primary: #0070f3;
+            --brand-dark: #000000;
+            --brand-gray: #888888;
+            --brand-border: #1a1a1a;
+            --brand-card: #0a0a0a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--brand-dark);
+            color: white;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
+        .vercel-card {
+            background: var(--brand-card);
+            border: 1px solid var(--brand-border);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
         }
 
-        h1 { font-size: 24px; margin-bottom: 8px; text-align: center; }
-        p.subtitle { color: var(--text-muted); text-align: center; margin-bottom: 32px; font-size: 14px; }
-
-        .tabs { display: flex; gap: 10px; margin-bottom: 24px; }
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .vercel-card:hover {
+            border-color: #333;
+            transform: translateY(-2px);
         }
-        .tab-btn.active {
-            background: var(--primary);
+
+        .input-vercel {
+            background: #000;
+            border: 1px solid var(--brand-border);
             color: white;
-            border-color: var(--primary);
-        }
-
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-muted); }
-        input {
-            width: 100%;
-            padding: 12px;
             border-radius: 8px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            color: white;
-            font-size: 16px;
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
             transition: border-color 0.2s;
         }
-        input:focus { outline: none; border-color: var(--primary); }
 
-        button.main-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
+        .input-vercel:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 1px var(--brand-primary);
+        }
+
+        .btn-primary {
+            background: white;
+            color: black;
             font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button.main-btn:hover { background: var(--primary-hover); }
-
-        #result {
-            margin-top: 24px;
-            padding: 16px;
+            padding: 12px;
             border-radius: 8px;
-            background: rgba(0,0,0,0.2);
-            font-family: monospace;
-            font-size: 13px;
-            word-break: break-all;
-            display: none;
+            transition: opacity 0.2s;
+            width: 100%;
         }
-        .success { color: #4ade80; border: 1px solid #4ade8033; }
-        .error { color: #f87171; border: 1px solid #f8717133; }
 
-        .dashboard { display: none; }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--brand-border);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #111;
+            border-color: #333;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid white;
+            color: white;
+        }
+
+        .glass-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--brand-border);
+        }
+
+        #result-box {
+            font-family: 'Courier New', Courier, monospace;
+            background: #000;
+            border: 1px solid #222;
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div id="auth-section">
-            <h1>Explyra API-E</h1>
-            <p class="subtitle">Admin Management Portal</p>
-            
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-                <button class="tab-btn" onclick="switchTab('register')">Register</button>
-            </div>
+<body class="flex flex-col">
 
-            <div id="login-form">
-                <div class="form-group">
-                    <label>Admin Email</label>
-                    <input type="email" id="login-email" placeholder="admin@acme.com">
+    <header class="glass-header sticky top-0 z-50 p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-bolt text-black text-sm"></i>
                 </div>
-                <div class="form-group">
-                    <label>Admin Password</label>
-                    <input type="password" id="login-pass">
-                </div>
-                <button class="main-btn" onclick="handleLogin()">Login</button>
+                <span class="font-bold tracking-tight text-lg">Explyra <span class="text-brand-gray font-normal">API-E</span></span>
             </div>
+            <div id="nav-user" class="hidden flex items-center gap-4">
+                <span id="user-display" class="text-sm text-brand-gray"></span>
+                <button onclick="logout()" class="text-xs text-red-500 hover:underline">Logout</button>
+            </div>
+        </div>
+    </header>
 
-            <div id="register-form" style="display: none;">
-                <div class="form-group">
-                    <label>New Company ID</label>
-                    <input type="text" id="reg-id" placeholder="acme-corp">
+    <main class="flex-1 flex items-center justify-center p-6">
+        
+        <!-- Auth View -->
+        <div id="auth-view" class="w-full max-w-md animate-fade-in">
+            <div class="vercel-card p-8">
+                <div class="flex gap-6 mb-8 border-bottom border-brand-border">
+                    <button id="tab-login" onclick="switchTab('login')" class="pb-2 text-sm font-medium tab-active transition-all">Login</button>
+                    <button id="tab-register" onclick="switchTab('register')" class="pb-2 text-sm font-medium text-brand-gray hover:text-white transition-all">Onboard</button>
                 </div>
-                <div class="form-group">
-                    <label>Admin Email</label>
-                    <input type="email" id="reg-email" placeholder="admin@acme.com">
+
+                <div id="login-form">
+                    <h2 class="text-xl font-bold mb-2">Welcome Back</h2>
+                    <p class="text-brand-gray text-sm mb-6">Enter your admin credentials to manage keys.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Admin Email</label>
+                            <input type="email" id="login-email" class="input-vercel" placeholder="explyras@gmail.com">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Password</label>
+                            <input type="password" id="login-pass" class="input-vercel" placeholder="••••••••">
+                        </div>
+                        <button onclick="handleLogin()" class="btn-primary mt-4">Continue</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Admin Password</label>
-                    <input type="password" id="reg-pass">
+
+                <div id="register-form" class="hidden">
+                    <h2 class="text-xl font-bold mb-2">Register Company</h2>
+                    <p class="text-brand-gray text-sm mb-6">Create a new organizational account.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Company ID</label>
+                            <input type="text" id="reg-id" class="input-vercel" placeholder="cmp_ksi8vqw87">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Admin Email</label>
+                            <input type="email" id="reg-email" class="input-vercel" placeholder="explyras@gmail.com">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Admin Password</label>
+                            <input type="password" id="reg-pass" class="input-vercel" placeholder="••••••••">
+                        </div>
+                        <button onclick="handleRegister()" class="btn-primary mt-4">Create Account</button>
+                    </div>
                 </div>
-                <button class="main-btn" onclick="handleRegister()">Register Company</button>
             </div>
         </div>
 
-        <div id="dashboard-section" class="dashboard">
-            <h1>Dashboard</h1>
-            <p class="subtitle" id="company-name"></p>
-            
-            <div class="form-group">
-                <label>Key Label</label>
-                <input type="text" id="key-label" placeholder="Production Key">
-            </div>
-            <button class="main-btn" onclick="createKey()">Generate New API Key</button>
-            
-            <div style="margin-top: 20px;">
-                <button class="tab-btn" style="width: 100%;" onclick="logout()">Logout</button>
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="hidden w-full max-w-4xl animate-fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Sidebar Info -->
+                <div class="vercel-card p-6 h-fit">
+                    <h3 class="text-sm font-bold text-brand-gray uppercase mb-4 tracking-widest">Company Info</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-[10px] text-brand-gray uppercase">Entity ID</p>
+                            <p id="dash-id" class="font-mono text-sm">--</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-brand-gray uppercase">Current Plan</p>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">STARTER</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Action -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="vercel-card p-8">
+                        <h2 class="text-2xl font-bold mb-2">Generate API Key</h2>
+                        <p class="text-brand-gray text-sm mb-8">Create a new key for production or staging environments.</p>
+                        
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <label class="block text-[10px] font-bold text-brand-gray uppercase mb-2">Key Label</label>
+                                <input type="text" id="key-label" class="input-vercel" placeholder="Mobile App v1">
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="createKey()" class="btn-primary h-[44px] !w-auto px-6">Generate</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result Panel -->
+                    <div id="result-container" class="hidden vercel-card p-6 border-dashed">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold uppercase text-brand-gray">Server Response</span>
+                            <button onclick="copyResult()" class="text-xs text-brand-primary hover:underline">Copy JSON</button>
+                        </div>
+                        <pre id="result-box" class="p-4 rounded-lg overflow-x-auto text-xs text-green-400"></pre>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="result"></div>
-    </div>
+    </main>
 
     <script>
+        const API_BASE = "https://explyra-api-e.mfskufgu.workers.dev";
         let session = null;
-        const API_BASE = "http://localhost:8787"; // Change to production URL when deployed
 
         function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.tab-btn:nth-child(${tab === 'login' ? 1 : 2})`).classList.add('active');
-            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-            document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-            hideResult();
+            const loginTab = document.getElementById('tab-login');
+            const regTab = document.getElementById('tab-register');
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+
+            if (tab === 'login') {
+                loginTab.classList.add('tab-active');
+                loginTab.classList.remove('text-brand-gray');
+                regTab.classList.remove('tab-active');
+                regTab.classList.add('text-brand-gray');
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            } else {
+                regTab.classList.add('tab-active');
+                regTab.classList.remove('text-brand-gray');
+                loginTab.classList.remove('tab-active');
+                loginTab.classList.add('text-brand-gray');
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
         }
 
-        function showResult(text, type) {
-            const r = document.getElementById('result');
-            r.innerText = typeof text === 'object' ? JSON.stringify(text, null, 2) : text;
-            r.className = type;
-            r.style.display = 'block';
-        }
-
-        function hideResult() {
-            document.getElementById('result').style.display = 'none';
+        function showResult(data) {
+            const container = document.getElementById('result-container');
+            const box = document.getElementById('result-box');
+            container.classList.remove('hidden');
+            box.innerText = JSON.stringify(data, null, 2);
         }
 
         async function handleRegister() {
@@ -194,8 +258,9 @@
                     body: JSON.stringify({ id, admin_email: email, admin_password: pass })
                 });
                 const data = await res.json();
-                showResult(data, res.ok ? 'success' : 'error');
-            } catch (e) { showResult(e.message, 'error'); }
+                showResult(data);
+                if (res.ok) alert("Registered! You can now login.");
+            } catch (e) { alert(e.message); }
         }
 
         async function handleLogin() {
@@ -211,19 +276,20 @@
                 const data = await res.json();
                 if (res.ok) {
                     session = data;
-                    localStorage.setItem('explyra_session', JSON.stringify(data));
-                    showDashboard(email);
+                    localStorage.setItem('explyra_api_session', JSON.stringify(data));
+                    enterDashboard(email);
                 } else {
-                    showResult(data, 'error');
+                    alert(data.message || "Login failed");
                 }
-            } catch (e) { showResult(e.message, 'error'); }
+            } catch (e) { alert(e.message); }
         }
 
-        function showDashboard(id) {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('dashboard-section').style.display = 'block';
-            document.getElementById('company-name').innerText = `Managing ${id}`;
-            hideResult();
+        function enterDashboard(email) {
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            document.getElementById('nav-user').classList.remove('hidden');
+            document.getElementById('user-display').innerText = email;
+            document.getElementById('dash-id').innerText = email;
         }
 
         async function createKey() {
@@ -238,25 +304,25 @@
                     body: JSON.stringify({ label })
                 });
                 const data = await res.json();
-                showResult(data, res.ok ? 'success' : 'error');
-            } catch (e) { showResult(e.message, 'error'); }
+                showResult(data);
+            } catch (e) { alert(e.message); }
         }
 
         function logout() {
-            session = null;
-            localStorage.removeItem('explyra_session');
-            document.getElementById('auth-section').style.display = 'block';
-            document.getElementById('dashboard-section').style.display = 'none';
-            hideResult();
+            localStorage.removeItem('explyra_api_session');
+            location.reload();
         }
 
-        // Auto-login from local storage
+        function copyResult() {
+            const text = document.getElementById('result-box').innerText;
+            navigator.clipboard.writeText(text);
+        }
+
         window.onload = () => {
-            const saved = localStorage.getItem('explyra_session');
+            const saved = localStorage.getItem('explyra_api_session');
             if (saved) {
                 session = JSON.parse(saved);
-                // Note: In reality, we'd check if token is expired
-                showDashboard('Previous Session');
+                enterDashboard("Previous Session");
             }
         }
     </script>

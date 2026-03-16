@@ -1,71 +1,87 @@
-# Explyra API-E (Enhanced API)
+# Explyra API-E (Enhanced) A-Z Setup & Usage Guide
 
-Production-ready Cloudflare Worker API with Admin portal and quota-enforced public endpoints.
+Production-ready Cloudflare Worker API for Explyra. This guide covers how everything works, from registration to usage tracking.
 
-## Features
-- **Admin Management**: Register company, login, and manage API keys.
-- **Quota Enforcement**: Starter (1k/hr), Growth (10k/hr), Enterprise (100k/hr).
-- **Billing Integration**: HMAC-validated webhook for plan upgrades.
-- **Security**: PBKDF2 password hashing, JWT sessions, and API key validation.
+## 🚀 Live Demo Link
+**API Endpoint**: `https://explyra-api-e.mfskufgu.workers.dev`
+**Admin UI**: Open `api-e/admin-ui/index.html` in your browser.
 
-## Project Structure
-- `worker/`: Cloudflare Worker source code.
-- `admin-ui/`: Static administration dashboard.
-- `openapi.yaml`: API specification.
-- `postman_collection.json`: Testing collection.
-- `sample_sdk.md`: Code snippets for clients.
+---
 
-## Setup & Deployment
+## 🏗️ Architecture & Concepts
 
-### 1. Initialize KV Namespaces
-Run the following commands to create the required KV namespaces:
+### 1. Key Entities
+- **Company ID**: The unique internal identifier for an organization (e.g., `cmp_ksi8vqw87`). Used for usage tracking and API key metadata.
+- **Admin Email**: Used for logging into the Admin Dashboard (e.g., `explyras@gmail.com`).
+- **API Key**: A secure token (format: `exp_...`) used by clients to access `/v1/*` endpoints.
 
+### 2. Plan Quotas (Hourly)
+| Plan | Request Limit |
+| :--- | :--- |
+| **Starter** | 1,000 / hour |
+| **Growth** | 10,000 / hour |
+| **Enterprise** | 100,000 / hour |
+
+---
+
+## 🛠️ Step-by-Step Setup (Local & Production)
+
+### 1. Project Variables (Secrets)
+These are already set in production via `wrangler secret put`:
+- `JWT_SECRET`: Used to sign admin session tokens.
+- `WEBHOOK_SECRET`: Used to verify billing webhook signatures (HMAC-SHA256).
+
+### 2. KV Namespaces
+The following namespaces are bound in `wrangler.toml`:
+- `EXPLYRA_COMPANIES`: Stores company profiles and email-to-id mappings.
+- `EXPLYRA_API_KEYS`: Stores API key metadata and revocation status.
+- `EXPLYRA_USAGE`: Keeps track of hourly request counts.
+- `EXPLYRA_SESSIONS`: Manages admin login sessions.
+
+---
+
+## 💻 How to Use the API
+
+### A. Administration Flow
+
+1. **Register a Company**:
+   Go to the "Onboard" tab in the Admin UI or run:
+   ```bash
+   curl -X POST https://explyra-api-e.mitanshu-bhasin.workers.dev/admin/register-company \
+     -H "Content-Type: application/json" \
+     -d '{"id": "cmp_ksi8vqw87", "admin_email": "explyras@gmail.com", "admin_password": "mitanshu"}'
+   ```
+
+2. **Login**:
+   Login via the Admin UI with `explyras@gmail.com` and password `mitanshu`. This returns a **JWT Token**.
+
+3. **Generate API Key**:
+   Once logged in, provide a label (e.g., "Mobile App") to get your `api_key`.
+
+### B. Accessing Public Data
+
+Use your `api_key` in the header of any request to `/v1/`:
+
+**Example: Check Status (Ping)**
 ```bash
-# Production
-wrangler kv:namespace create EXPLYRA_COMPANIES
-wrangler kv:namespace create EXPLYRA_API_KEYS
-wrangler kv:namespace create EXPLYRA_USAGE
-wrangler kv:namespace create EXPLYRA_SESSIONS
-
-# Preview (for local/staging)
-wrangler kv:namespace create EXPLYRA_COMPANIES --preview
-wrangler kv:namespace create EXPLYRA_API_KEYS --preview
-wrangler kv:namespace create EXPLYRA_USAGE --preview
-wrangler kv:namespace create EXPLYRA_SESSIONS --preview
+curl -H "x-api-key: exp_YOUR_GENERATED_KEY" \
+     https://explyra-api-e.mitanshu-bhasin.workers.dev/v1/ping
 ```
 
-Take the IDs from the output and paste them into `worker/wrangler.toml`.
+---
 
-### 2. Set Secrets
-```bash
-wrangler secret put JWT_SECRET
-wrangler secret put WEBHOOK_SECRET
-```
+## 📝 Editing & Maintenance
 
-### 3. Local Development
-```bash
-cd worker
-npm install
-npm run dev
-```
+### To update the Worker:
+1. Edit files in `api-e/worker/src/`.
+2. Run `npm run deploy` inside the `worker/` folder.
 
-### 4. Deploy
-```bash
-npm run deploy
-```
+### To change rate limits:
+Edit `PLAN_QUOTAS` in [public.js](file:///d:/Expense%20Tracker/api-e/worker/src/public.js).
 
-## Testing Webhooks Locally
-Use the following `curl` command to simulate a billing upgrade (ensure `WEBHOOK_SECRET` matches):
+---
 
-```bash
-curl -X POST http://localhost:8787/webhook/billing \
-  -H "Content-Type: application/json" \
-  -H "x-webhook-signature: <HMAC_SHA256_BASE64_OF_BODY>" \
-  -d '{"company_id": "acme-corp", "event": "plan_update", "new_plan": "growth"}'
-```
-
-## Production Hardening Recommendations
-- [ ] Use Durable Objects for exact usage counters (KV is eventually consistent).
-- [ ] Implement rate limiting using Cloudflare's native `rateloop` or `rate-limit` features.
-- [ ] Add email notifications (SendGrid/Mailgun) in `billingWebhook.js`.
-- [ ] Hash API keys in KV for extra security.
+## 🔐 Security Notes
+- **Passwords**: Stored as PBKDF2 hashes.
+- **Quota Reset**: Counters reset automatically every hour as they are keyed by `YYYY-MM-DDTHH`.
+- **Revocation**: API keys can be revoked via the `/admin/revoke-api-key` endpoint, immediately blocking all further requests with that key.

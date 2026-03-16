@@ -94,8 +94,8 @@ export async function hmacVerify(payload, signature, secret) {
 
 export async function signJWT(payload, secret) {
   const header = { alg: "HS256", typ: "JWT" };
-  const encodedHeader = btoa(JSON.stringify(header)).replace(/=/g, "");
-  const encodedPayload = btoa(JSON.stringify(payload)).replace(/=/g, "");
+  const encodedHeader = btoa(JSON.stringify(header)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const encodedPayload = btoa(JSON.stringify(payload)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   
   const data = `${encodedHeader}.${encodedPayload}`;
   const encoder = new TextEncoder();
@@ -134,7 +134,12 @@ export async function verifyJWT(token, secret) {
   const isValid = await crypto.subtle.verify("HMAC", key, sigBuf, encoder.encode(data));
   
   if (!isValid) return null;
-  return JSON.parse(atob(payload));
+  
+  try {
+    return JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+  } catch (e) {
+    return null;
+  }
 }
 
 // --- KV Helpers ---
@@ -153,13 +158,23 @@ export async function kvPut(namespace, key, value, opts = {}) {
 export function errorResponse(error, message, status = 400) {
   return new Response(JSON.stringify({ error, message }), {
     status,
-    headers: { "Content-Type": "application/json" }
+    headers: { 
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE, PUT",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key, x-webhook-signature"
+    }
   });
 }
 
 export function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "Content-Type": "application/json" }
+    headers: { 
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE, PUT",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key, x-webhook-signature"
+    }
   });
 }
