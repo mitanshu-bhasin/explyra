@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra API-E Admin</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+
+        h1 { font-size: 24px; margin-bottom: 8px; text-align: center; }
+        p.subtitle { color: var(--text-muted); text-align: center; margin-bottom: 32px; font-size: 14px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-muted); }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: var(--primary); }
+
+        button.main-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.main-btn:hover { background: var(--primary-hover); }
+
+        #result {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+            display: none;
+        }
+        .success { color: #4ade80; border: 1px solid #4ade8033; }
+        .error { color: #f87171; border: 1px solid #f8717133; }
+
+        .dashboard { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="auth-section">
+            <h1>Explyra API-E</h1>
+            <p class="subtitle">Admin Management Portal</p>
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <div id="login-form">
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="login-email" placeholder="admin@acme.com">
+                </div>
+                <div class="form-group">
+                    <label>Admin Password</label>
+                    <input type="password" id="login-pass">
+                </div>
+                <button class="main-btn" onclick="handleLogin()">Login</button>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <div class="form-group">
+                    <label>New Company ID</label>
+                    <input type="text" id="reg-id" placeholder="acme-corp">
+                </div>
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="reg-email" placeholder="admin@acme.com">
+                </div>
+                <div class="form-group">
+                    <label>Admin Password</label>
+                    <input type="password" id="reg-pass">
+                </div>
+                <button class="main-btn" onclick="handleRegister()">Register Company</button>
+            </div>
+        </div>
+
+        <div id="dashboard-section" class="dashboard">
+            <h1>Dashboard</h1>
+            <p class="subtitle" id="company-name"></p>
+            
+            <div class="form-group">
+                <label>Key Label</label>
+                <input type="text" id="key-label" placeholder="Production Key">
+            </div>
+            <button class="main-btn" onclick="createKey()">Generate New API Key</button>
+            
+            <div style="margin-top: 20px;">
+                <button class="tab-btn" style="width: 100%;" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let session = null;
+        const API_BASE = "http://localhost:8787"; // Change to production URL when deployed
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.tab-btn:nth-child(${tab === 'login' ? 1 : 2})`).classList.add('active');
+            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+            hideResult();
+        }
+
+        function showResult(text, type) {
+            const r = document.getElementById('result');
+            r.innerText = typeof text === 'object' ? JSON.stringify(text, null, 2) : text;
+            r.className = type;
+            r.style.display = 'block';
+        }
+
+        function hideResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+
+        async function handleRegister() {
+            const id = document.getElementById('reg-id').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/register-company`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, admin_email: email, admin_password: pass })
+                });
+                const data = await res.json();
+                showResult(data, res.ok ? 'success' : 'error');
+            } catch (e) { showResult(e.message, 'error'); }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ admin_email: email, admin_password: pass })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    session = data;
+                    localStorage.setItem('explyra_session', JSON.stringify(data));
+                    showDashboard(email);
+                } else {
+                    showResult(data, 'error');
+                }
+            } catch (e) { showResult(e.message, 'error'); }
+        }
+
+        function showDashboard(id) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            document.getElementById('company-name').innerText = `Managing ${id}`;
+            hideResult();
+        }
+
+        async function createKey() {
+            const label = document.getElementById('key-label').value;
+            try {
+                const res = await fetch(`${API_BASE}/admin/create-api-key`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.token}`
+                    },
+                    body: JSON.stringify({ label })
+                });
+                const data = await res.json();
+                showResult(data, res.ok ? 'success' : 'error');
+            } catch (e) { showResult(e.message, 'error'); }
+        }
+
+        function logout() {
+            session = null;
+            localStorage.removeItem('explyra_session');
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+            hideResult();
+        }
+
+        // Auto-login from local storage
+        window.onload = () => {
+            const saved = localStorage.getItem('explyra_session');
+            if (saved) {
+                session = JSON.parse(saved);
+                // Note: In reality, we'd check if token is expired
+                showDashboard('Previous Session');
+            }
+        }
+    </script>
+</body>
+</html>
