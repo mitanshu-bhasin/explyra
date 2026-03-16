@@ -4875,9 +4875,19 @@ async function renderChat() {
                         <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                             <div class="flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500"></i></div>
                         </div>
-                        <form onsubmit="sendChatMessage(event)" class="p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0">
-                            <input type="text" id="chat-input" class="input-primary flex-1 bg-white dark:bg-slate-800 text-sm" placeholder="Type a message..." required autocomplete="off">
-                            <button type="submit" class="bg-green-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-2 rounded-lg font-bold transition shadow-sm flex items-center justify-center min-w-[60px]">
+                        <form onsubmit="sendChatMessage(event)" class="p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0 items-center">
+                            
+                            <!-- Hidden File Input -->
+                            <input type="file" id="chat-file" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input')">
+                            
+                            <!-- Attachment Button -->
+                            <button type="button" onclick="document.getElementById('chat-file').click()"
+                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file from Google Drive">
+                                <i class="fa-solid fa-paperclip"></i>
+                            </button>
+
+                            <input type="text" id="chat-input" class="input-primary flex-1 bg-white dark:bg-slate-800 text-sm" placeholder="Type a message..." autocomplete="off">
+                            <button type="submit" class="bg-green-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-2 rounded-lg font-bold transition shadow-sm flex items-center justify-center min-w-[60px] shrink-0">
                                 <i class="fa-solid fa-paper-plane"></i>
                             </button>
                         </form>
@@ -5081,10 +5091,10 @@ function loadMessages() {
                         `<img src="${data.senderPhotoUrl}" class="w-8 h-8 rounded-full object-cover shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">` :
                         `<div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 bg-slate-400 uppercase shadow-sm sm:flex hidden">${data.sender ? data.sender[0] : '?'}</div>`
                     ) : ''}
-                                 <div class="relative ${isMe ? 'bg-green-600 text-white font-medium' : 'bg-white dark:bg-slate-800 dark:text-slate-50 border border-slate-100 dark:border-slate-700 shadow-sm text-slate-900'} p-3 rounded-2xl ${isMe ? 'rounded-br-none' : 'rounded-bl-none'} shadow-sm">
-                                    ${!isMe && lastUser !== data.email && currentChatId === 'global_chat' ? `<p class="text-[9px] font-bold ${isMe ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'} mb-1">${data.sender || data.email}</p>` : ''}
-                                    <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">${data.text}</p>
-                                    <div class="flex items-center justify-end gap-1 mt-1">
+                                     <div class="relative ${isMe ? 'bg-green-600 text-white font-medium' : 'bg-white dark:bg-slate-800 dark:text-slate-50 border border-slate-100 dark:border-slate-700 shadow-sm text-slate-900'} p-3 rounded-2xl ${isMe ? 'rounded-br-none' : 'rounded-bl-none'} shadow-sm">
+                                        ${!isMe && lastUser !== data.email && currentChatId === 'global_chat' ? `<p class="text-[9px] font-bold ${isMe ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'} mb-1">${data.sender || data.email}</p>` : ''}
+                                        <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">${window.parseChatLinks ? window.parseChatLinks(data.text) : data.text}</p>
+                                        <div class="flex items-center justify-end gap-1 mt-1">
                                         <p class="text-[9px] ${isMe ? 'text-brand-100' : 'text-slate-400 dark:text-slate-500'} font-mono">${time}</p>
                                         ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-300' : 'text-brand-200'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
                                     </div>

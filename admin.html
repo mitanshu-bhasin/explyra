@@ -85,6 +85,7 @@
     <script src="js/theme.js"></script>
     <script src="js/utils.js" defer></script>
     <script src="js/admin-logic.js" defer></script>
+    <script src="js/gdrive-service.js" defer></script>
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -1077,6 +1078,29 @@
                                 <i class="fa-solid fa-moon theme-toggle-icon dark:text-green-400"></i>
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-800"></div>
+
+                <div>
+                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-brands fa-google-drive"></i> Integrations
+                    </h5>
+                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Drive</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gdrive-status-text">Not connected</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gdrive-connect" onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
                     </div>
                 </div>
 

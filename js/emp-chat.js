@@ -207,7 +207,7 @@ function runChatListener(collectionName, subCollectionId) {
                     
                     <div class="relative ${isMe ? 'bg-black dark:bg-white text-white dark:text-black font-medium' : 'bg-gray-100 dark:bg-[#111] dark:text-white border border-[#eaeaea] dark:border-[#333] text-black'} p-3 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} sm:text-sm text-xs relative overflow-hidden break-words">
                         ${!isMe && subCollectionId === null && lastSenderId !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'dark:text-gray-800 text-gray-200' : 'text-gray-500'} mb-1">${data.sender || data.email}</p>` : ''}
-                        <span class="leading-relaxed relative z-10 break-words">${data.text}</span>
+                        <span class="leading-relaxed relative z-10 break-words">${window.parseChatLinks ? window.parseChatLinks(data.text) : data.text}</span>
                         <div class="flex items-center justify-end gap-1 mt-1">
                             <div class="text-[9px] ${isMe ? 'opacity-70' : 'text-gray-500'} text-right font-mono">${time}</div>
                             ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-400' : 'opacity-70'}"><i class="fa-solid fa-check-double"></i></span>` : ''}

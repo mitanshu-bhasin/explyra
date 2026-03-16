@@ -140,3 +140,102 @@ window.prompt = async (message, defaultValue = '') => {
 
 // Expose internal method for custom usages
 window.customModal = modalSystem;
+
+// Handle Google Drive Chat Attachments
+window.handleChatAttachmentSelect = async (inputElement, targetInputId) => {
+    const file = inputElement.files[0];
+    if (!file) return;
+
+    if (!window.GDriveService) {
+        if (window.showToast) window.showToast('Google Drive Service not loaded.', 'error');
+        return;
+    }
+
+    if (!window.GDriveService.isConnected()) {
+        const connect = confirm("Google Drive is not connected. Connect now to send attachments?");
+        if (connect) {
+            window.GDriveService.authenticate(() => {
+                // Retry after connect
+                window.handleChatAttachmentSelect(inputElement, targetInputId);
+            });
+        }
+        inputElement.value = ''; // Reset
+        return;
+    }
+
+    // Indicate upload in progress on the submit button
+    const form = inputElement.closest('form');
+    let submitBtn = null;
+    let originalBtnHTML = '';
+    if (form) {
+        submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            originalBtnHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            submitBtn.disabled = true;
+        }
+    }
+    
+    // Also disable the paperclip button
+    const attachBtn = inputElement.nextElementSibling;
+    let origAttachClass = attachBtn ? attachBtn.className : '';
+    if (attachBtn) {
+        attachBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        attachBtn.classList.remove('hover:bg-slate-200', 'dark:hover:bg-slate-800');
+    }
+
+    try {
+        const uploadResult = await window.GDriveService.uploadFile(file);
+        
+        // Append the Drive link to the chat input value
+        const targetInput = document.getElementById(targetInputId);
+        if (targetInput) {
+            const linkText = ` [📎 Attachment: ${file.name}](${uploadResult.url}) `;
+            // Automatically submit if it's empty, or just append
+            if (targetInput.value.trim() === '') {
+                 targetInput.value = linkText;
+                 // Manually trigger form submit
+                 if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            } else {
+                 targetInput.value += linkText;
+                 targetInput.focus();
+            }
+        }
+    } catch (e) {
+        console.error("Attachment upload failed", e);
+        // Error toast is handled in gdrive-service.js
+    } finally {
+        inputElement.value = ''; // Reset input to allow selecting same file again
+        
+        // Restore buttons
+        if (submitBtn) {
+            submitBtn.innerHTML = originalBtnHTML;
+            submitBtn.disabled = false;
+        }
+        if (attachBtn) {
+            attachBtn.className = origAttachClass;
+        }
+    }
+};
+
+// Utility to parse markdown links in chat
+window.parseChatLinks = (text) => {
+    if (!text) return '';
+    
+    // First escape HTML to prevent XSS
+    const div = document.createElement('div');
+    div.innerText = text;
+    let safeText = div.innerHTML;
+
+    // Then convert markdown links [text](url) to HTML links
+    safeText = safeText.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
+        const safeUrl = url.replace(/"/g, '&quot;');
+        // Also if it's an image attachment link
+        if (label.includes('📎 Attachment:')) {
+            return `<a href="${safeUrl}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 mt-1 bg-brand-50/20 text-brand-600 dark:text-brand-300 dark:bg-black/20 hover:bg-brand-50 dark:hover:bg-black/40 rounded-lg text-xs font-bold transition border border-brand-100 dark:border-white/10" style="text-decoration: none;"><i class="fa-solid fa-file-arrow-down"></i> ${label.replace('📎 Attachment: ', '')}</a>`;
+        }
+        return `<a href="${safeUrl}" target="_blank" class="underline hover:opacity-80 transition">${label}</a>`;
+    });
+
+    return safeText;
+};
