@@ -1,539 +1,544 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!-- 
+    PROPERTY OF EXPLYRA. ALL RIGHTS RESERVED.
+    SOFTWARE AND DESIGN PATENTED (US-2026-EX-0081-A1, US-2026-EX-0092-B2).
+    UNAUTHORIZED DUPLICATION, MODIFICATION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
+    LEGAL ACTION WILL BE TAKEN AGAINST INFRINGEMENT.
+-->
+<html lang="en" data-theme="light">
 
 <head>
-    <meta property="og:site_name" content="Explyra" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:site" content="@explyras" />
-    <meta name="twitter:creator" content="@explyras" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Environment Config -->
+    <script src="js/env.js"></script>
+    <script src="js/ai-config.js"></script>
+    <link rel="stylesheet" href="css/ai-assistant.css">
+
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-TFBZ5GZ22C');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1E8E3E">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
-    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png">
-
-    <title>Verify — Free Explyra Suite Tool | Fast & Secure</title>
-    <meta name="description" content="Use Verify on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
-
     <script>
         (function () {
-            const theme = localStorage.getItem('explyra-theme') || 'light';
-            if (theme === 'dark') document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
+            const gaId = window.EXPLYRA_CONFIG?.analyticsId || 'G-TFBZ5GZ22C';
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+            document.head.appendChild(script);
 
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'explyra-theme') {
-                    if (e.newValue === 'dark') document.documentElement.classList.add('dark');
-                    else document.documentElement.classList.remove('dark');
-                }
-            });
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', gaId);
+            window.gtag = gtag;
         })();
     </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        explyra: {
-                            red: '#D93025',
-                            green: '#1E8E3E',
-                            dark: '#0F172A'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Verify Identity | Explyra Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Icons & App Config -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
+    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1546C0" />
 
-
-    <script src="js/theme.js"></script>
-    <script src="js/utils.js"></script>
-
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Preload Fonts & Base Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+        media="print" onload="this.media='all'" />
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
+    </noscript>
 
     <style>
+        /* ═══════════════════════════════════════════
+           DESIGN TOKENS (Synced with index.html)
+        ═══════════════════════════════════════════ */
+        :root {
+            /* Light */
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --bg3: #F1EFE9;
+            --bg4: #E9E6E0;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --bdr2: #CCC8C0;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --ink4: #939BAC;
+            /* Accents */
+            --blue: #1546C0;
+            --blue2: #5B8AF5;
+            --blue-g: rgba(21, 70, 192, .08);
+            --blue-b: rgba(21, 70, 192, .2);
+            --teal: #047857;
+            --teal2: #34D399;
+            --teal-g: rgba(4, 120, 87, .08);
+            --teal-b: rgba(4, 120, 87, .2);
+            --rose: #BE185D;
+            --rose-g: rgba(190, 24, 93, .08);
+            --rose-b: rgba(190, 24, 93, .2);
+            /* Shadows */
+            --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
+            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
+            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
+            --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
+            --r: 12px;
+            --t: .2s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --bg4: #1B2235;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, .07);
+            --bdr2: rgba(255, 255, 255, .14);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --ink4: #4E5A70;
+            --blue: #5B8AF5;
+            --blue2: #93B4FF;
+            --blue-g: rgba(91, 138, 245, .12);
+            --blue-b: rgba(91, 138, 245, .25);
+            --teal: #34D399;
+            --teal-g: rgba(52, 211, 153, .10);
+            --rose: #F472B6;
+            --rose-g: rgba(244, 114, 182, .10);
+            --s1: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 8px rgba(0, 0, 0, .25);
+            --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
+            --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
+            --s4: 0 24px 72px rgba(0, 0, 0, .6), 0 4px 16px rgba(0, 0, 0, .35);
+        }
+
+        /* ═══════════════════════════════════════════
+           BASE STYLES
+        ═══════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+        
         body {
-            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+            line-height: 1.65;
+            overflow-x: hidden;
+            transition: background .4s, color .4s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Glass Navbar - same as index.html */
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .dark .glass-effect {
-            background: rgba(15, 23, 42, 0.7);
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Dot pattern like index.html */
         .hero-pattern {
-            background-image: radial-gradient(#1E8E3E 1px, transparent 1px);
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(var(--blue) 0.5px, transparent 0.5px);
             background-size: 24px 24px;
-            opacity: 0.1;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        /* Gradient text like index.html */
-        .gradient-text {
-            background: linear-gradient(to right, #D93025, #F9AB00, #1E8E3E);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        [data-theme="dark"] .hero-pattern { opacity: 0.03; }
+
+        .blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: var(--blue-g);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s infinite alternate;
         }
 
-        /* Hero background matching index.html */
-        .hero-bg {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(240, 249, 255, 1) 100%);
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.1); }
         }
 
-        .dark .hero-bg {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        /* ═══════════════════════════════════════════
+           NAVBAR
+        ═══════════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            padding: 0 5vw;
+            background: rgba(248, 247, 244, .7);
+            backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--bdr);
+            justify-content: space-between;
         }
 
-        /* Card styling */
-        .card-glass {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+        [data-theme="dark"] nav { background: rgba(8, 11, 20, .7); }
+
+        .nav-logo { display: flex; align-items: center; gap: 12px; }
+        .nav-logo-icon { width: 36px; height: 36px; }
+        .nav-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+        .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--ink); }
+
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+        .btn-ghost {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink3);
+            padding: 8px 16px;
+            border-radius: 100px;
+            transition: all var(--t);
+            border: 1px solid transparent;
         }
 
-        .dark .card-glass {
-            background: rgba(30, 41, 59, 0.85);
-            border-color: rgba(51, 65, 85, 0.9);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        .btn-ghost:hover {
+            color: var(--ink);
+            background: var(--bg3);
+            border-color: var(--bdr);
         }
 
-        /* Input styling matching blue theme */
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+            background: var(--bg3);
+            cursor: pointer;
+            transition: all var(--t);
+            border: 1px solid var(--bdr);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            background: var(--bdr);
+        }
+
+        /* ═══════════════════════════════════════════
+           CARDS & FORMS
+        ═══════════════════════════════════════════ */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 60px;
+            position: relative;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--s3);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header { text-align: center; margin-bottom: 32px; }
+        .auth-icon-wrap {
+            width: 64px;
+            height: 64px;
+            background: var(--blue-g);
+            color: var(--blue);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 20px;
+            border: 1px solid var(--blue-b);
+        }
+
+        .auth-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+        .auth-desc { font-size: 0.95rem; color: var(--ink3); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--ink4); margin-bottom: 8px; letter-spacing: 0.05em; }
+        
+        .input-wrap { position: relative; }
+        .input-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--ink4); transition: color var(--t); }
+        
         .input-field {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            transition: all 0.25s ease;
-            color: #334155;
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            background: var(--bg);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--ink);
+            transition: all var(--t);
+            outline: none;
         }
 
         .input-field:focus {
-            background: white;
-            border-color: #1E8E3E;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+            background: var(--bg2);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px var(--blue-g);
         }
 
-        .dark .input-field {
-            background: #0f172a;
-            border-color: #334155;
-            color: #f1f5f9;
-        }
+        .input-field:focus + i { color: var(--blue); }
 
-        .dark .input-field:focus {
-            background: #1e293b;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-
-        /* Password strength meter */
-        .strength-bar {
-            height: 4px;
-            border-radius: 2px;
-            transition: all 0.4s ease;
-        }
-
-        /* Animate blobs */
-        @keyframes blob {
-
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-        }
-
-        .animate-blob {
-            animation: blob 12s infinite ease-in-out;
-        }
-
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-
-        /* Fade in animation */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .delay-100 {
-            animation-delay: 0.1s;
-            opacity: 0;
-        }
-
-        .delay-200 {
-            animation-delay: 0.2s;
-            opacity: 0;
-        }
-
-        .delay-300 {
-            animation-delay: 0.3s;
-            opacity: 0;
-        }
-
-        /* Success animation */
-        @keyframes checkmark {
-            0% {
-                stroke-dashoffset: 100;
-            }
-
-            100% {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        .checkmark-animate {
-            stroke-dasharray: 100;
-            stroke-dashoffset: 100;
-            animation: checkmark 0.6s ease forwards 0.3s;
-        }
-
-        /* Shimmer on button */
         .btn-primary {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-            transition: left 0.5s;
+            padding: 14px;
+            background: var(--blue);
+            color: white;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all var(--t);
+            box-shadow: 0 8px 20px var(--blue-b);
+            border: none;
+            cursor: pointer;
         }
 
-        .btn-primary:hover::after {
-            left: 100%;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: #0d38a0;
+            box-shadow: 0 12px 24px var(--blue-b);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .strength-meter { display: flex; gap: 4px; margin-top: 10px; }
+        .strength-bar { height: 4px; flex: 1; background: var(--bdr); border-radius: 100px; transition: background 0.3s; }
+        .strength-text { font-size: 0.75rem; font-weight: 600; margin-top: 6px; }
+
+        .view-footer { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--bdr); display: flex; justify-content: space-between; }
+        .view-footer a { font-size: 0.85rem; font-weight: 600; color: var(--ink3); transition: color var(--t); text-decoration: none; }
+        .view-footer a:hover { color: var(--blue); }
+
+        .hidden { display: none !important; }
+
+        /* Success State */
+        .success-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--teal-g);
+            color: var(--teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 24px;
+            border: 2px solid var(--teal-b);
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Error state */
+        .error-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--rose-g);
+            color: var(--rose);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 24px;
+            border: 2px solid var(--rose-b);
+        }
+
+        .explyra-footer { text-align: center; color: var(--ink4); font-size: 0.75rem; margin-top: 40px; }
+
+        @media (max-width: 480px) {
+            .auth-card { padding: 30px 20px; border-radius: 0; border: none; box-shadow: none; background: transparent; }
+            nav { padding: 0 4vw; }
+            .nav-logo-text { font-size: 1.1rem; }
         }
     </style>
-    
-    
-
-    
-    
-    
-    
-    
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "alternateName": "Explyra Suite",
-      "url": "https://explyra.me/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://explyra.me/assets/images/explyra_logo.png",
-        "width": 512,
-        "height": 512
-      },
-      "sameAs": [
-        "https://x.com/explyras",
-        "https://www.facebook.com/profile.php?id=61584891033070",
-        "https://www.instagram.com/explyras",
-        "https://www.youtube.com/@explyras",
-        "https://www.linkedin.com/company/explyra/",
-        "https://www.threads.com/@explyras",
-        "https://github.com/Explyra",
-        "https://ipecconsulting.org/"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+91-8076108584",
-          "contactType": "customer service",
-          "email": "explyra@gmail.com",
-          "availableLanguage": [
-            "en",
-            "hi"
-          ]
-        }
-      ],
-      "founder": {
-        "@type": "Person",
-        "name": "Mitanshu Bhasin",
-        "url": "https://explyra.me/mitanshu.html"
-      },
-      "foundingDate": "2024"
-    }
-  ]
-}
-    </script>
 </head>
 
-<body
-    class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased transition-colors duration-300 relative hero-bg min-h-screen flex flex-col">
+<body>
+    <div class="hero-pattern"></div>
+    <div class="blob" style="top: -10%; right: -5%;"></div>
+    <div class="blob" style="bottom: -10%; left: -5%; animation-delay: -5s;"></div>
 
-    <!-- Background Effects (matching index.html) -->
-    <div class="absolute inset-0 hero-pattern pointer-events-none opacity-20 dark:opacity-10"></div>
-    <div
-        class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-green-500/20 dark:bg-green-500/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob pointer-events-none">
-    </div>
-    <div
-        class="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-amber-400/20 dark:bg-amber-500/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob animation-delay-2000 pointer-events-none">
-    </div>
-
-    <!-- Navbar (matching index.html glass style) -->
-    <nav
-        class="fixed w-full z-50 transition-all duration-500 glass-effect border-b border-white/40 dark:border-slate-700/50 shadow-sm backdrop-blur-xl bg-white/60 dark:bg-slate-900/60">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex-shrink-0 flex items-center gap-3">
-                    <a href="index.html" class="flex items-center gap-3 group">
-                        <div
-                            class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-green-600 shadow-lg overflow-hidden border border-green-100">
-                            <img src="assets/images/explyra_logo.png" alt="Explyra Logo" class="w-8 h-8 object-contain">
-                        </div>
-                        <div>
-                            <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">Explyra</span>
-                            <span
-                                class="block text-[10px] font-bold text-green-600 uppercase tracking-wider relative -top-1">Expense
-                                Manager</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="emp.html"
-                        class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-green-600 dark:text-slate-400 dark:hover:text-green-400 transition px-3 py-2 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span class="hidden sm:inline">Back to Login</span>
-                    </a>
-                    <button onclick="toggleTheme()"
-                        class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-200 dark:border-slate-700">
-                        <i class="fa-solid fa-moon theme-toggle-icon"></i>
-                    </button>
-                </div>
+    <nav>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">
+                <img src="assets/images/explyra_logo.png" alt="Explyra">
             </div>
+            <span class="nav-logo-text">Explyra</span>
+        </div>
+        <div class="nav-actions">
+            <a href="emp.html" class="btn-ghost"><i class="fa-solid fa-arrow-left mr-2"></i>Login</a>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex items-center justify-center pt-28 pb-16 px-4 relative z-10">
-        <div class="w-full max-w-md">
-
-            <!-- ========== VIEW 1: Send Reset Email ========== -->
-            <div id="send-reset-view" class="animate-fade-in-up">
-                <div class="card-glass rounded-2xl p-7 md:p-9 backdrop-blur-xl">
-                    <div class="text-center mb-7">
-                        <div
-                            class="w-16 h-16 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-green-600 dark:text-green-400 text-2xl border border-green-100 dark:border-green-900/50 shadow-sm">
-                            <i class="fa-solid fa-envelope-open-text"></i>
-                        </div>
-                        <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">Forgot Password?</h1>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Enter your
-                            corporate email and we'll send you a link to reset your password.</p>
+    <main>
+        <div class="auth-card-container">
+            
+            <!-- VIEW 1: Send Reset Email -->
+            <div id="view-send-reset" class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-icon-wrap">
+                        <i class="fa-solid fa-envelope-open-text"></i>
                     </div>
-
-                    <form id="reset-form" class="space-y-4">
-                        <div>
-                            <label
-                                class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5 tracking-wider">Corporate
-                                Email</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-400"></i>
-                                <input type="email" id="reset-email"
-                                    class="input-field w-full rounded-xl py-3 pl-11 pr-4 text-sm"
-                                    placeholder="employee@company.com" autocomplete="username" required>
-                            </div>
+                    <h1 class="auth-title">Forgot Password?</h1>
+                    <p class="auth-desc">Enter your corporate email to receive a secure reset link.</p>
+                </div>
+                <form id="form-send-reset" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Corporate Email</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="reset-email" class="input-field" placeholder="employee@company.com" required autocomplete="email">
                         </div>
-
-                        <button type="submit" id="reset-btn"
-                            class="btn-primary w-full bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-green-200/50 dark:shadow-none transform hover:translate-y-[-1px] disabled:opacity-60 disabled:cursor-not-allowed border border-green-400/30">
-                            <i class="fa-solid fa-paper-plane mr-2"></i>Send Reset Link
-                        </button>
-
-                        <div class="flex justify-between mt-3 text-xs">
-                            <a href="emp.html" class="text-slate-400 hover:text-green-600 transition font-medium"><i
-                                    class="fa-solid fa-arrow-left mr-1"></i>Back to Login</a>
-                            <a href="support.html"
-                                class="text-green-500 hover:text-green-700 transition font-medium">Contact Support <i
-                                    class="fa-solid fa-headset ml-1"></i></a>
-                        </div>
-                    </form>
-
-                    <div
-                        class="mt-6 text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-100 dark:border-slate-700/50">
-                        <i class="fa-solid fa-circle-info text-green-400 mr-1"></i>
-                        If you don't receive an email, check your spam folder. For locked accounts, contact the Admin
-                        team.
                     </div>
+                    <button type="submit" id="btn-send-reset" class="btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i> Send Link
+                    </button>
+                </form>
+                <div class="view-footer">
+                    <a href="emp.html"><i class="fa-solid fa-arrow-left"></i> Back to Login</a>
+                    <a href="support.html">Get Help <i class="fa-solid fa-circle-question"></i></a>
                 </div>
             </div>
 
-            <!-- ========== VIEW 2: Set New Password (shown when user clicks reset link) ========== -->
-            <div id="new-password-view" class="hidden">
-                <div class="card-glass rounded-2xl p-7 md:p-9 backdrop-blur-xl animate-fade-in-up">
-                    <div class="text-center mb-7">
-                        <div
-                            class="w-16 h-16 bg-gradient-to-br from-green-50 to-indigo-50 dark:from-green-900/30 dark:to-indigo-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-green-600 dark:text-green-400 text-2xl border border-green-100 dark:border-green-900/50 shadow-sm">
-                            <i class="fa-solid fa-key"></i>
-                        </div>
-                        <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">Create New Password</h1>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Your identity has
-                            been verified. Set a strong new password below.</p>
+            <!-- VIEW 2: Set New Password -->
+            <div id="view-new-password" class="auth-card hidden">
+                <div class="auth-header">
+                    <div class="auth-icon-wrap">
+                        <i class="fa-solid fa-key"></i>
                     </div>
-
-                    <form id="new-password-form" class="space-y-4">
-                        <div>
-                            <label
-                                class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5 tracking-wider">New
-                                Password</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-400"></i>
-                                <input type="password" id="new-password"
-                                    class="input-field w-full rounded-xl py-3 pl-11 pr-12 text-sm"
-                                    placeholder="Enter new password" autocomplete="new-password" required minlength="6">
-                                <button type="button" onclick="togglePasswordVisibility('new-password', this)"
-                                    class="absolute right-3 top-3 text-slate-400 hover:text-green-600 transition p-0.5">
-                                    <i class="fa-solid fa-eye text-sm"></i>
-                                </button>
-                            </div>
-                            <!-- Password Strength Meter -->
-                            <div class="mt-2 flex gap-1">
-                                <div id="str-1" class="strength-bar flex-1 bg-slate-200 dark:bg-slate-700"></div>
-                                <div id="str-2" class="strength-bar flex-1 bg-slate-200 dark:bg-slate-700"></div>
-                                <div id="str-3" class="strength-bar flex-1 bg-slate-200 dark:bg-slate-700"></div>
-                                <div id="str-4" class="strength-bar flex-1 bg-slate-200 dark:bg-slate-700"></div>
-                            </div>
-                            <p id="str-text" class="text-[11px] text-slate-400 mt-1 font-medium"></p>
-                        </div>
-
-                        <div>
-                            <label
-                                class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5 tracking-wider">Confirm
-                                Password</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-shield-halved absolute left-3.5 top-3.5 text-slate-400"></i>
-                                <input type="password" id="confirm-password"
-                                    class="input-field w-full rounded-xl py-3 pl-11 pr-12 text-sm"
-                                    placeholder="Confirm new password" autocomplete="new-password" required
-                                    minlength="6">
-                                <button type="button" onclick="togglePasswordVisibility('confirm-password', this)"
-                                    class="absolute right-3 top-3 text-slate-400 hover:text-green-600 transition p-0.5">
-                                    <i class="fa-solid fa-eye text-sm"></i>
-                                </button>
-                            </div>
-                            <p id="match-status" class="text-[11px] mt-1 font-medium hidden"></p>
-                        </div>
-
-                        <button type="submit" id="confirm-btn"
-                            class="btn-primary w-full bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-green-200/50 dark:shadow-none transform hover:translate-y-[-1px] disabled:opacity-60 disabled:cursor-not-allowed border border-green-400/30">
-                            <i class="fa-solid fa-check-circle mr-2"></i>Reset Password
-                        </button>
-                    </form>
-
-                    <div
-                        class="mt-5 text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-100 dark:border-slate-700/50">
-                        <i class="fa-solid fa-shield-halved text-green-400 mr-1"></i>
-                        Use 6+ characters with a mix of uppercase, lowercase, numbers, and symbols for a strong
-                        password.
-                    </div>
+                    <h1 class="auth-title">New Password</h1>
+                    <p class="auth-desc">Create a strong password to secure your account.</p>
                 </div>
+                <form id="form-new-password" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="new-password" class="input-field" placeholder="Min. 6 characters" required minlength="6">
+                        </div>
+                        <div class="strength-meter">
+                            <div id="str-1" class="strength-bar"></div>
+                            <div id="str-2" class="strength-bar"></div>
+                            <div id="str-3" class="strength-bar"></div>
+                            <div id="str-4" class="strength-bar"></div>
+                        </div>
+                        <p id="str-text" class="strength-text"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <input type="password" id="confirm-password" class="input-field" placeholder="Repeat password" required>
+                        </div>
+                        <p id="match-status" class="strength-text hidden"></p>
+                    </div>
+                    <button type="submit" id="btn-confirm-reset" class="btn-primary">
+                        <i class="fa-solid fa-check-circle"></i> Update Password
+                    </button>
+                </form>
             </div>
 
-            <!-- ========== VIEW 3: Success ========== -->
-            <div id="success-view" class="hidden">
-                <div class="card-glass rounded-2xl p-7 md:p-9 backdrop-blur-xl animate-fade-in-up text-center">
-                    <div
-                        class="w-20 h-20 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-5 border border-green-100 dark:border-green-900/50">
-                        <svg class="w-10 h-10" viewBox="0 0 52 52">
-                            <circle cx="26" cy="26" r="24" fill="none" stroke="#22c55e" stroke-width="3"
-                                opacity="0.25" />
-                            <path class="checkmark-animate" fill="none" stroke="#22c55e" stroke-width="4"
-                                stroke-linecap="round" stroke-linejoin="round" d="M14 27l8 8 16-16" />
-                        </svg>
-                    </div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Password Reset Successful!
-                    </h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">Your password has been
-                        updated. You can now log in with your new credentials.</p>
-                    <a href="emp.html"
-                        class="btn-primary inline-flex items-center gap-2 bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white font-bold py-3.5 px-8 rounded-xl transition-all shadow-lg shadow-green-200/50 dark:shadow-none transform hover:translate-y-[-1px] border border-green-400/30">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                        Go to Login
-                    </a>
+            <!-- VIEW 3: Success -->
+            <div id="view-success" class="auth-card hidden">
+                <div class="success-circle">
+                    <i class="fa-solid fa-check"></i>
                 </div>
+                <div class="auth-header">
+                    <h1 class="auth-title">All Set!</h1>
+                    <p class="auth-desc">Your password has been reset successfully. You can now access your account.</p>
+                </div>
+                <a href="emp.html" class="btn-primary">
+                    <i class="fa-solid fa-right-to-bracket"></i> Proceed to Login
+                </a>
             </div>
 
-            <!-- ========== VIEW 4: Error / Invalid Link ========== -->
-            <div id="error-view" class="hidden">
-                <div class="card-glass rounded-2xl p-7 md:p-9 backdrop-blur-xl animate-fade-in-up text-center">
-                    <div
-                        class="w-20 h-20 bg-red-50 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-5 border border-red-100 dark:border-red-900/50">
-                        <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
-                    </div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Invalid or Expired Link</h1>
-                    <p id="error-message" class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">This
-                        password reset link is invalid or has expired. Please request a new one.</p>
-                    <a href="verify.html"
-                        class="btn-primary inline-flex items-center gap-2 bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white font-bold py-3.5 px-8 rounded-xl transition-all shadow-lg shadow-green-200/50 dark:shadow-none transform hover:translate-y-[-1px] border border-green-400/30">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        Request New Link
-                    </a>
+            <!-- VIEW 4: Error -->
+            <div id="view-error" class="auth-card hidden">
+                <div class="error-circle">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
+                <div class="auth-header">
+                    <h1 class="auth-title">Invalid Link</h1>
+                    <p id="error-message" class="auth-desc">This reset link is invalid or has expired. Please request a new one.</p>
+                </div>
+                <a href="verify.html" class="btn-primary">
+                    <i class="fa-solid fa-rotate-right"></i> Request New Link
+                </a>
             </div>
 
-            <!-- Footer -->
-            <div class="text-center text-slate-400 text-xs pt-8">
-                <p class="font-bold mb-1 opacity-70">Explyra Expense</p>
-                <p class="opacity-60">Authorized Access Only. All activities are monitored.</p>
+            <div class="explyra-footer">
+                <p><b>Explyra Suite</b> &bull; Authorized Access Only</p>
+                <p>&copy; 2026 Explyra. All Rights Reserved.</p>
             </div>
         </div>
     </main>
+
+    <!-- Theme Control -->
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('explyra-theme', target);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.querySelector('.theme-toggle i');
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                icon.className = 'fa-solid fa-sun';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('explyra-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon();
+    </script>
 
     <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, sendPasswordResetEmail, confirmPasswordReset, verifyPasswordResetCode } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
+        // Config from env or static fallback
         const firebaseConfig = {
             apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
             authDomain: "explyras.firebaseapp.com",
@@ -546,146 +551,80 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // ---- DOM Elements ----
-        const sendResetView = document.getElementById('send-reset-view');
-        const newPasswordView = document.getElementById('new-password-view');
-        const successView = document.getElementById('success-view');
-        const errorView = document.getElementById('error-view');
+        // Views
+        const views = {
+            send: document.getElementById('view-send-reset'),
+            newPass: document.getElementById('view-new-password'),
+            success: document.getElementById('view-success'),
+            error: document.getElementById('view-error')
+        };
 
-        const resetForm = document.getElementById('reset-form');
-        const emailInput = document.getElementById('reset-email');
-        const resetBtn = document.getElementById('reset-btn');
+        function showView(key) {
+            Object.values(views).forEach(v => v.classList.add('hidden'));
+            views[key].classList.remove('hidden');
+        }
 
-        const newPasswordForm = document.getElementById('new-password-form');
-        const newPasswordInput = document.getElementById('new-password');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const confirmBtn = document.getElementById('confirm-btn');
-        const matchStatus = document.getElementById('match-status');
-
-        // ---- Determine mode from URL ----
+        // Determine mode from URL
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode');
         const oobCode = urlParams.get('oobCode');
 
-        // If user arrived via reset link -> show new password form
         if (mode === 'resetPassword' && oobCode) {
-            showView('new-password');
-            // Verify the code is valid
             verifyPasswordResetCode(auth, oobCode)
-                .then((email) => {
-                    // Code is valid, user can set new password
-                    console.log('Reset code verified for:', email);
-                })
-                .catch((err) => {
-                    console.error('Invalid reset code:', err);
-                    document.getElementById('error-message').textContent =
-                        'This password reset link is invalid or has already been used. Please request a new one.';
+                .then(() => showView('newPass'))
+                .catch(err => {
+                    document.getElementById('error-message').textContent = "This secure link has expired or reached its usage limit.";
                     showView('error');
                 });
         }
 
-        // ---- Helper: Show a specific view ----
-        function showView(view) {
-            sendResetView.classList.add('hidden');
-            newPasswordView.classList.add('hidden');
-            successView.classList.add('hidden');
-            errorView.classList.add('hidden');
-
-            if (view === 'send-reset') sendResetView.classList.remove('hidden');
-            else if (view === 'new-password') newPasswordView.classList.remove('hidden');
-            else if (view === 'success') successView.classList.remove('hidden');
-            else if (view === 'error') errorView.classList.remove('hidden');
-        }
-
-        // ---- Loading state helper ----
-        function setLoading(btn, loading, defaultText) {
-            btn.disabled = loading;
-            btn.innerHTML = loading
-                ? '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Processing...'
-                : defaultText;
-        }
-
-        // ---- FORM 1: Send Reset Email ----
-        // Build the URL dynamically so it works on any hosting domain
-        const currentOrigin = window.location.origin;
-        const verifyPageUrl = currentOrigin + '/verify.html';
-
-        resetForm.addEventListener('submit', async (e) => {
+        // Form 1: Send Reset
+        document.getElementById('form-send-reset').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = (emailInput.value || '').trim();
-            if (!email) return;
-
-            setLoading(resetBtn, true, '<i class="fa-solid fa-paper-plane mr-2"></i>Send Reset Link');
+            const email = document.getElementById('reset-email').value.trim();
+            const btn = document.getElementById('btn-send-reset');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            
             try {
-                const actionCodeSettings = {
-                    url: verifyPageUrl,
-                    handleCodeInApp: false
-                };
-                await sendPasswordResetEmail(auth, email, actionCodeSettings);
-                if (window.customModal) {
-                    await window.customModal.show('success', 'Email Sent!', 'Password reset link has been sent to <b>' + email + '</b>. Check your inbox and click the link to set a new password.', false, 'OK', '', 'fa-envelope');
-                } else {
-                    alert('Password reset link sent to ' + email + '. Check your inbox.');
-                }
-                emailInput.value = '';
+                await sendPasswordResetEmail(auth, email, { url: window.location.origin + '/verify.html' });
+                alert('Success! A password reset link has been sent to ' + email);
+                document.getElementById('reset-email').value = '';
             } catch (err) {
-                const msg = err?.message || 'Failed to send reset email.';
-                if (window.customModal) {
-                    await window.customModal.show('error', 'Reset Failed', msg, false, 'OK', '', 'fa-triangle-exclamation');
-                } else {
-                    alert('Error: ' + msg);
-                }
+                alert('Error: ' + (err.message || 'Could not send reset email.'));
             } finally {
-                setLoading(resetBtn, false, '<i class="fa-solid fa-paper-plane mr-2"></i>Send Reset Link');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Link';
             }
         });
 
-        // ---- FORM 2: Set New Password ----
-        newPasswordForm.addEventListener('submit', async (e) => {
+        // Form 2: Confirm Reset
+        const newPassInput = document.getElementById('new-password');
+        const confirmPassInput = document.getElementById('confirm-password');
+
+        document.getElementById('form-new-password').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const newPass = newPasswordInput.value;
-            const confirmPass = confirmPasswordInput.value;
+            if (newPassInput.value !== confirmPassInput.value) return;
 
-            if (newPass !== confirmPass) {
-                matchStatus.textContent = 'Passwords do not match!';
-                matchStatus.className = 'text-[11px] mt-1 font-medium text-red-500';
-                matchStatus.classList.remove('hidden');
-                return;
-            }
+            const btn = document.getElementById('btn-confirm-reset');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
 
-            if (newPass.length < 6) {
-                matchStatus.textContent = 'Password must be at least 6 characters.';
-                matchStatus.className = 'text-[11px] mt-1 font-medium text-red-500';
-                matchStatus.classList.remove('hidden');
-                return;
-            }
-
-            setLoading(confirmBtn, true, '<i class="fa-solid fa-check-circle mr-2"></i>Reset Password');
             try {
-                await confirmPasswordReset(auth, oobCode, newPass);
+                await confirmPasswordReset(auth, oobCode, newPassInput.value);
                 showView('success');
             } catch (err) {
-                console.error('Password reset error:', err);
-                let errorMsg = 'Failed to reset password. ';
-                if (err.code === 'auth/expired-action-code') {
-                    errorMsg = 'This reset link has expired. Please request a new one.';
-                } else if (err.code === 'auth/invalid-action-code') {
-                    errorMsg = 'This reset link is invalid or has already been used.';
-                } else if (err.code === 'auth/weak-password') {
-                    errorMsg = 'Password is too weak. Use at least 6 characters.';
-                } else {
-                    errorMsg += err.message || '';
-                }
-                document.getElementById('error-message').textContent = errorMsg;
+                document.getElementById('error-message').textContent = err.message;
                 showView('error');
             } finally {
-                setLoading(confirmBtn, false, '<i class="fa-solid fa-check-circle mr-2"></i>Reset Password');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Update Password';
             }
         });
 
-        // ---- Password Strength Meter ----
-        newPasswordInput.addEventListener('input', () => {
-            const val = newPasswordInput.value;
+        // Password Strength
+        newPassInput.addEventListener('input', () => {
+            const val = newPassInput.value;
             let score = 0;
             if (val.length >= 6) score++;
             if (val.length >= 10) score++;
@@ -694,72 +633,26 @@
 
             const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
             const labels = ['Weak', 'Fair', 'Good', 'Strong'];
-            const textColors = ['text-red-500', 'text-orange-500', 'text-yellow-500', 'text-green-500'];
+            const textColors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
 
             for (let i = 1; i <= 4; i++) {
                 const bar = document.getElementById('str-' + i);
-                if (i <= score) {
-                    bar.style.background = colors[score - 1];
-                } else {
-                    bar.style.background = '';
-                    bar.className = 'strength-bar flex-1 bg-slate-200 dark:bg-slate-700';
-                }
+                bar.style.background = i <= score ? colors[score-1] : '';
             }
-
             const strText = document.getElementById('str-text');
-            if (val.length === 0) {
-                strText.textContent = '';
-            } else {
-                strText.textContent = labels[score - 1] || 'Too short';
-                strText.className = 'text-[11px] mt-1 font-medium ' + (textColors[score - 1] || 'text-red-500');
-            }
+            strText.textContent = labels[score-1] || 'Too short';
+            strText.style.color = colors[score-1] || '#ef4444';
         });
 
-        // ---- Confirm password match indicator ----
-        confirmPasswordInput.addEventListener('input', () => {
-            const newP = newPasswordInput.value;
-            const confP = confirmPasswordInput.value;
-            if (confP.length === 0) {
-                matchStatus.classList.add('hidden');
-                return;
-            }
+        confirmPassInput.addEventListener('input', () => {
+            const matchStatus = document.getElementById('match-status');
+            if (!confirmPassInput.value) { matchStatus.classList.add('hidden'); return; }
             matchStatus.classList.remove('hidden');
-            if (newP === confP) {
-                matchStatus.textContent = '✓ Passwords match';
-                matchStatus.className = 'text-[11px] mt-1 font-medium text-green-500';
-            } else {
-                matchStatus.textContent = '✗ Passwords do not match';
-                matchStatus.className = 'text-[11px] mt-1 font-medium text-red-500';
-            }
+            const match = newPassInput.value === confirmPassInput.value;
+            matchStatus.textContent = match ? '✓ Passwords match' : '✗ Passwords do not match';
+            matchStatus.style.color = match ? '#22c55e' : '#ef4444';
         });
 
-        // ---- Toggle password visibility ----
-        window.togglePasswordVisibility = function (inputId, btn) {
-            const input = document.getElementById(inputId);
-            const icon = btn.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        };
-    </script>
-    <!-- AI Support Chat -->
-    <script type="module">
-        import { AISupport } from './js/ai-support.js';
-        setTimeout(() => {
-            new AISupport({
-                name: 'Visitor',
-                role: 'Guest',
-                department: 'Account Services'
-            });
-        }, 5000);
     </script>
 </body>
-
-
 </html>
