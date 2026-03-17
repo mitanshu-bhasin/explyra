@@ -33,12 +33,12 @@ window.scanReceiptAI = async (input) => {
             reader.readAsDataURL(file);
         });
 
-        // 2. Google AI Studio (Gemini) Configuration
-        const GEMINI_KEY = 'AIzaSyBrTkpz5KnyhCqJmN7enz0RVDeUimyrpds';
-        const MODEL = 'gemini-2.5-flash';
+        // 2. Google AI Studio (Gemini) Configuration (Sourced from Environment)
+        const GEMINI_KEY = window.EXPLYRA_CONFIG?.ai?.geminiApiKey;
+        const MODEL = 'gemini-flash-latest';
         const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`;
 
-        const prompt = "Analyze this receipt. List items with date (YYYY-MM-DD), description, category (Travel, Food, Lodging, Supplies, Other), and amount. Return STRICTLY VALID JSON array. No markdown code blocks, just the raw array.";
+        const prompt = "Analyze this receipt image. Extract all line items and return them as a JSON array where each object has: 'date' (YYYY-MM-DD), 'desc' (item description), 'category' (Travel, Food, Lodging, Supplies, Other), and 'amount' (numeric). Return ONLY the raw JSON array. If you cannot find a date, use today's date: " + new Date().toISOString().split('T')[0];
 
         const response = await fetch(ENDPOINT, {
             method: 'POST',
@@ -58,14 +58,17 @@ window.scanReceiptAI = async (input) => {
 
         if (!response.ok) {
             const err = await response.text();
-            throw new Error(`Gemini Error: ${response.status}`);
+            throw new Error(`Gemini API Error: ${response.status} - ${err}`);
         }
 
         const data = await response.json();
-        const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawContent) throw new Error("Empty response from Gemini");
+        let rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawContent) throw new Error("Empty response from AI");
 
-        const items = JSON.parse(rawContent.trim());
+        // Clean up potential markdown formatting
+        rawContent = rawContent.replace(/```json/g, '').replace(/```/g, '').trim();
+
+        const items = JSON.parse(rawContent);
         processReceiptItems(items);
 
     } catch (error) {

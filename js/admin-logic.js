@@ -5962,7 +5962,11 @@ window.initiateCall = async (type) => {
 
     } catch (e) {
         console.error(e);
-        showToast("Failed to start call: " + e.message, "error");
+        if (e.name === 'NotAllowedError' || e.message?.toLowerCase().includes('permission denied')) {
+            showToast("Camera/Mic permission denied. Please click the lock icon in your browser address bar to allow access.", "error");
+        } else {
+            showToast("Failed to start call: " + e.message, "error");
+        }
     }
 };
 

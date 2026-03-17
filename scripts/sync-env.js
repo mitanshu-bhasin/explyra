@@ -11,24 +11,23 @@ const envPath = path.join(__dirname, '..', '.env');
 const outputPath = path.join(__dirname, '..', 'js', 'env.js');
 
 function sync() {
-    if (!fs.existsSync(envPath)) {
-        console.error('Error: .env file not found at ' + envPath);
-        process.exit(1);
+    let env = { ...process.env }; // Start with system env (useful for Cloudflare/CI)
+
+    if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        // Basic .env parser
+        envContent.split('\n').forEach(line => {
+            const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+            if (match) {
+                let value = match[2] || '';
+                if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+                if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
+                env[match[1]] = value.trim();
+            }
+        });
+    } else {
+        console.warn('Note: .env file not found. Using system environment variables only.');
     }
-
-    const envContent = fs.readFileSync(envPath, 'utf8');
-    const env = {};
-
-    // Basic .env parser
-    envContent.split('\n').forEach(line => {
-        const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
-        if (match) {
-            let value = match[2] || '';
-            if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-            if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
-            env[match[1]] = value.trim();
-        }
-    });
 
     const config = {
         firebase: {
@@ -41,8 +40,8 @@ function sync() {
             measurementId: env.FIREBASE_MEASUREMENT_ID || "G-TFBZ5GZ22C"
         },
         ai: {
-            model: 'moonshotai/kimi-k2-instruct-0905'
-            // NOTE: AI API Key is secret and should be used via backend/functions
+            model: 'moonshotai/kimi-k2-instruct-0905',
+            geminiApiKey: env.GEMINI_API_KEY || ""
         },
         analyticsId: env.GA_MEASUREMENT_ID || "G-TFBZ5GZ22C",
         emailApp: {

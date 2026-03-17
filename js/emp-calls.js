@@ -181,7 +181,7 @@ window.initiateCall = async (type) => {
 
     } catch (e) {
         console.error(e);
-        if (e.name === 'NotAllowedError') {
+        if (e.name === 'NotAllowedError' || e.message?.toLowerCase().includes('permission denied')) {
             window.showToast("Camera/Mic permission denied. Please click the lock icon in your browser address bar to allow access.", "error");
         } else {
             window.showToast("Failed to start call: " + e.message, "error");
