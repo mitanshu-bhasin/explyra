@@ -41,7 +41,7 @@ function sync() {
         },
         ai: {
             model: 'moonshotai/kimi-k2-instruct-0905',
-            geminiApiKey: env.GEMINI_API_KEY || ""
+            geminiApiKey: env.GEMINI_API_KEY || "AIzaSyCdJ0UQv7sQ4ExCufa9hWUy11og7IrpCgM"
         },
         analyticsId: env.GA_MEASUREMENT_ID || "G-TFBZ5GZ22C",
         emailApp: {
