@@ -2349,6 +2349,78 @@
         }
 
 
+        /* Mission & Values */
+        .mission-sec {
+            padding: 100px 5vw;
+            background: var(--bg2);
+            text-align: center;
+            border-top: 1px solid var(--bdr);
+        }
+
+        .mission-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .values-sec {
+            padding: 80px 5vw;
+            background: var(--bg);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 40px auto 0;
+        }
+
+        .value-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all .3s;
+        }
+
+        [data-theme="dark"] .value-card {
+            background: var(--bg3);
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--s3);
+            border-color: var(--blue);
+        }
+
+        .value-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--blue-g);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .value-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.8rem;
+        }
+
+        .value-desc {
+            font-size: 0.92rem;
+            color: var(--ink3);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
         /* Team specific styles */
         .team-hero {
             padding: 150px 5vw 80px;
@@ -2533,7 +2605,7 @@
                     <path d="M2 12l10 5 10-5" />
                 </svg>
             </div>
-            <span class="nav-logo-text">Explyra</span>
+            <span class="nav-logo-text">Explyra&trade;</span>
         </a>
         <ul class="nav-links">
             <li><a href="index.html#expense">Expense</a></li>
@@ -2566,7 +2638,7 @@
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
-            <span class="nav-logo-text">Explyra</span>
+            <span class="nav-logo-text">Explyra&trade;</span>
             <button class="close-menu-btn" id="closeMenuBtn">&times;</button>
         </div>
         <ul class="mobile-nav-links">
@@ -2593,6 +2665,44 @@
             <p class="sec-p">Driving process excellence, innovation, and global standards.</p>
         </div>
 
+        <section class="mission-sec reveal">
+            <div class="mission-inner">
+                <div class="eyebrow">Our Purpose</div>
+                <h2 class="sec-h">Empowering the <em class="grad">Global Workforce</em></h2>
+                <p class="sec-p">Explyra&trade; was founded on a simple premise: technology should simplify, not complicate. We build tools that bridge the gap between complex data and actionable intelligence, enabling teams and individuals to reach their full potential.</p>
+            </div>
+        </section>
+
+        <section class="values-sec reveal">
+            <div class="ov-header">
+                <div class="eyebrow">Our DNA</div>
+                <h2 class="sec-h">Core <em class="grad">Values</em></h2>
+                <p class="sec-p">The principles that guide every feature we ship and every decision we make.</p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🛡️</div>
+                    <div class="value-title">Privacy First</div>
+                    <p class="value-desc">Security isn't a feature; it's our foundation. We implement military-grade encryption for all user data.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">✨</div>
+                    <div class="value-title">Peak Innovation</div>
+                    <p class="value-desc">We don't just follow trends; we set them. Our AI-driven approach redefines productivity standards.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <div class="value-title">Radical Transparency</div>
+                    <p class="value-desc">Open communication and honest partnerships are at the heart of our operational excellence.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="ov-header reveal" style="margin-top: 100px;">
+            <div class="eyebrow">The Architects</div>
+            <h2 class="sec-h">Global <em class="grad">Leadership</em></h2>
+        </div>
+
         <div class="team-grid reveal d1">
             <!-- Mitanshu -->
             <div class="team-card">
@@ -2601,10 +2711,9 @@
                         alt="Mitanshu Bhasin">
                 </div>
                 <div class="team-name">Mitanshu Bhasin</div>
-                <div class="team-role">Founder</div>
+                <div class="team-role">Founder & Chief Architect</div>
                 <div class="team-bio">
-                    The visionary architect behind Explyra Suite. Leading technical development, strategy, and overall
-                    execution of the platform.
+                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize digital workflows. With expertise in AI system design and full-stack architecture, he oversees the global product roadmap and technical vision.
                 </div>
                 <a href="https://mitanshu.explyra.me" target="_blank" class="team-portfolio-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
@@ -2616,13 +2725,12 @@
             <div class="team-card">
                 <div class="team-img-wrap">
                     <img src="https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1774483200&v=beta&t=WVtSMFZ2b1oTk5yU7RVfMj8q_V0tZij7BJekgO33IO8"
-                        alt="Rohan">
+                        alt="Rohan Krishnagoudar">
                 </div>
                 <div class="team-name">Rohan Krishnagoudar</div>
-                <div class="team-role">Co-Founder</div>
+                <div class="team-role">Co-Founder & Head of Data</div>
                 <div class="team-bio">
-                    Expertly managing data operations and architecture. Ensuring seamless data integration, security,
-                    and scalability across all Explyra platforms.
+                    Rohan specializes in large-scale data systems and security operations. He is responsible for the integrity, scalability, and performance of the Explyra&trade; data warehouse, ensuring that every user's information is secure and accessible.
                 </div>
                 <a href="https://rohan.explyra.me" target="_blank" class="team-portfolio-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
@@ -2635,10 +2743,10 @@
     <footer>
 
         <div class="foot-left">
-            <span class="foot-logo">Explyra</span>
+            <span class="foot-logo">Explyra&trade;</span>
             <span class="foot-tagline">One Platform. Everything.</span>
         </div>
-        <p class="foot-copy">© 2026 Explyra · Founded by Mitanshu Bhasin · All rights reserved.</p>
+        <p class="foot-copy">© 2026 Explyra&trade; · Founded by Mitanshu Bhasin · All rights reserved.</p>
         <div class="foot-links">
             <a href="index.html#expense">Expense</a>
             <a href="index.html#health">Health</a>

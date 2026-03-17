@@ -48,7 +48,7 @@ async function initPeerJS() {
 }
 
 async function getLocalStream() {
-    if (localStream) return localStream;
+    if (localStream && localStream.active) return localStream;
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         const localVideo = document.getElementById('local-video');
@@ -58,7 +58,11 @@ async function getLocalStream() {
         return localStream;
     } catch (e) {
         console.error("Failed to get local stream", e);
-        window.showToast("Could not access camera/microphone", "error");
+        if (e.name === 'NotAllowedError') {
+            window.showToast("Camera/Mic access denied. Please allow permissions in your browser settings (look for the lock icon in the address bar).", "error");
+        } else {
+            window.showToast("Could not access camera/microphone: " + e.message, "error");
+        }
         throw e;
     }
 }

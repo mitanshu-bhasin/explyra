@@ -3,7 +3,8 @@ import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp, Listing } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
+import type { Listing } from "@/types/app"
 import { PackageOpen, Wrench, Search, Filter, Plus, X, ArrowUpDown, Sparkles } from "lucide-react"
 
 const allCategories = [

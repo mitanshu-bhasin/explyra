@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { Bell, CheckCircle2, UserPlus, Info, ArrowLeft, MoreHorizontal, Trash2 } from "lucide-react"
+import { Bell, CheckCircle2, UserPlus, Info, ArrowLeft, MoreHorizontal } from "lucide-react"
 
 export default function NotificationsPage() {
   const navigate = useNavigate()

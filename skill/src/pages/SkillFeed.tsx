@@ -2,7 +2,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 import { Heart, MessageSquare, Send, Trash2, Clock, User, ChevronDown, ChevronUp, X } from "lucide-react"
 
 interface Comment {

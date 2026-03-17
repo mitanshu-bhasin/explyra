@@ -18,8 +18,8 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>GDPR Compliance — Explyra Data Protection & Transparency</title>
-    <meta name="description" content="Detailed GDPR compliance documentation for Explyra. Learn about our commitment to data protection, user rights, and transparent processing in the EU.">
+    <title>Data Processing Addendum (DPA) — Explyra Enterprise Standards</title>
+    <meta name="description" content="Official Data Processing Addendum (DPA) for Explyra enterprise customers. Formalizing our commitment to GDPR, Article 28, and secure data processing.">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -365,14 +365,6 @@
             background: var(--bg)
         }
 
-        .legal-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--teal-g) 0%, transparent 60%);
-            pointer-events: none
-        }
-
         .legal-hero-grid {
             position: absolute;
             inset: 0;
@@ -417,7 +409,7 @@
         }
 
         .legal-hero h1 .grad {
-            background: linear-gradient(135deg, var(--blue), var(--purp));
+            background: linear-gradient(135deg, var(--blue), var(--teal));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text
@@ -426,7 +418,7 @@
         .legal-date {
             font-size: .82rem;
             font-weight: 500;
-            color: var(--blue);
+            color: var(--teal);
             margin-bottom: 1.2rem;
             letter-spacing: .05em
         }
@@ -476,9 +468,9 @@
             justify-content: center;
             width: 28px;
             height: 28px;
-            background: var(--blue-g);
-            border: 1px solid var(--blue-b);
-            color: var(--blue);
+            background: var(--teal-g);
+            border: 1px solid var(--teal-b);
+            color: var(--teal);
             font-size: .72rem;
             font-weight: 700;
             border-radius: 6px;
@@ -530,7 +522,7 @@
             top: .65em;
             width: 6px;
             height: 6px;
-            background: var(--blue);
+            background: var(--teal);
             border-radius: 50%
         }
 
@@ -543,7 +535,7 @@
         .contact-box {
             background: var(--bg3);
             border: 1px solid var(--bdr);
-            border-radius: 100px;
+            border-radius: 10px;
             padding: 1.5rem;
             margin-top: 1rem
         }
@@ -560,7 +552,7 @@
         }
 
         .contact-box a {
-            color: var(--blue);
+            color: var(--teal);
             font-weight: 600
         }
 
@@ -642,24 +634,6 @@
             }
         }
     </style>
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "url": "https://explyra.me/",
-      "logo": "https://explyra.me/assets/images/explyra_logo.png",
-      "sameAs": [
-        "https://x.com/explyras",
-        "https://www.linkedin.com/company/explyra/"
-      ]
-    }
-  ]
-}
-    </script>
 </head>
 
 <body>
@@ -706,10 +680,10 @@
     <section class="legal-hero">
         <div class="legal-hero-grid"></div>
         <div class="hero-inner">
-            <div class="legal-badge"><i class="fas fa-shield-alt"></i> GDPR COMPLIANCE</div>
-            <h1>General Data <span class="grad">Protection</span></h1>
-            <p class="legal-date">Last Updated: March 17, 2026</p>
-            <p class="legal-desc">Explyra is committed to the highest standards of data privacy and transparency for our European Union and global users.</p>
+            <div class="legal-badge"><i class="fas fa-file-contract"></i> ENTERPRISE DPA</div>
+            <h1>Data Processing <span class="grad">Addendum</span></h1>
+            <p class="legal-date">Article 28 Compliant Framework</p>
+            <p class="legal-desc">Formalizing the contractual relationship between Explyra (Processor) and our customers (Controllers) for secure data handling.</p>
         </div>
     </section>
 
@@ -717,69 +691,60 @@
         <div class="legal-card">
             <div class="legal-card-inner">
                 <div class="legal-section">
-                    <h2><span class="section-num">1</span>Commitment to GDPR</h2>
-                    <p>Explyra ("we," "us," or "our") is dedicated to protecting the privacy and security of your personal data. This GDPR Compliance statement outlines our efforts to adhere to the General Data Protection Regulation (Regulation (EU) 2016/679) for all individuals within the European Economic Area (EEA) and the United Kingdom.</p>
+                    <h2><span class="section-num">1</span>Applicability & Scope</h2>
+                    <p>This Data Processing Addendum ("DPA") applies to the processing of personal data by Explyra on behalf of our customers in the course of providing the Explyra Suite services. This DPA is incorporated into and forms part of the Terms of Service between Explyra and the Customer.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">2</span>Data Protection Principles</h2>
-                    <p>We process data in accordance with the seven core principles of GDPR:</p>
-                    <ul>
-                        <li><strong>Lawfulness, Fairness, and Transparency:</strong> We process data lawfully and are fully transparent with users.</li>
-                        <li><strong>Purpose Limitation:</strong> We only collect data for specific, explicit, and legitimate purposes.</li>
-                        <li><strong>Data Minimization:</strong> We limit collection to only what is necessary for our services.</li>
-                        <li><strong>Accuracy:</strong> We take reasonable steps to ensure data is accurate and up to date.</li>
-                        <li><strong>Storage Limitation:</strong> Data is retained only for as long as necessary.</li>
-                        <li><strong>Integrity and Confidentiality:</strong> We use advanced encryption and security controls.</li>
-                        <li><strong>Accountability:</strong> We document our compliance measures and take responsibility for data processing.</li>
-                    </ul>
+                    <h2><span class="section-num">2</span>Roles & Responsibilities</h2>
+                    <p>The parties acknowledge and agree that with regard to the Processing of Personal Data, Customer is the <strong>Data Controller</strong> and Explyra is the <strong>Data Processor</strong>. Each party will comply with the obligations applicable to it under Data Protection Laws (including GDPR and CCPA/CPRA).</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">3</span>User Rights (Chapter III)</h2>
-                    <p>As a data subject under GDPR, you possess significant rights regarding your information:</p>
-                    <ul>
-                        <li><strong>Right of Access (Art. 15):</strong> Obtain confirmation of processing and access to your data.</li>
-                        <li><strong>Right to Rectification (Art. 16):</strong> Correct inaccurate or incomplete personal information.</li>
-                        <li><strong>Right to Erasure (Art. 17):</strong> Request the permanent deletion of your data ("Right to be Forgotten").</li>
-                        <li><strong>Right to Data Portability (Art. 20):</strong> Receive your data in a structured, commonly used, and machine-readable format.</li>
-                        <li><strong>Right to Object (Art. 21):</strong> Object to processing based on legitimate interests or direct marketing.</li>
-                    </ul>
+                    <h2><span class="section-num">3</span>Processing Instructions</h2>
+                    <p>Explyra shall process personal data only on documented instructions from the Customer, including with regard to transfers of personal data to a third country. The Customer's instructions for the processing of personal data shall comply with Data Protection Laws.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">4</span>Data Protection Impact Assessments (DPIA)</h2>
-                    <p>For high-risk processing activities, particularly those involving automated decision-making or new technologies, Explyra&trade; conducts Data Protection Impact Assessments. These assessments ensure that privacy risks are identified and mitigated at the architectural phase of any new feature development.</p>
+                    <h2><span class="section-num">4</span>Personnel Confidentiality</h2>
+                    <p>Explyra ensures that persons authorized to process the personal data have committed themselves to confidentiality or are under an appropriate statutory obligation of confidentiality. We conduct regular background checks and security training for all personnel with access to production data.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">5</span>Sub-processing & Vendor Management</h2>
-                    <p>We only share data with third-party subprocessors who demonstrate equivalent or superior GDPR compliance standards. All subprocessors are subject to strict Data Processing Addendums (DPAs) in accordance with Article 28. For a full list of our partners, please visit our <a href="subprocessors.html" style="color:var(--blue);font-weight:600">Subprocessors Page</a>.</p>
+                    <h2><span class="section-num">5</span>Sub-processors</h2>
+                    <p>Customer provides a general authorization to Explyra to engage sub-processors. Explyra shall inform the Customer of any intended changes concerning the addition or replacement of sub-processors, thereby giving the Customer the opportunity to object to such changes. We maintain a current list of all sub-processors on our <a href="subprocessors.html" style="color:var(--teal)">Sub-processors Page</a>.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">6</span>Data Breach Protocol</h2>
-                    <p>In the event of a personal data breach, Explyra&trade; follows a rigorous notification protocol. We will notify the relevant Supervisory Authority within 72 hours of becoming aware of the breach, unless the breach is unlikely to result in a risk to your rights. Impacted users will be notified without undue delay.</p>
+                    <h2><span class="section-num">6</span>Technical & Organizational Measures</h2>
+                    <p>Explyra has implemented and will maintain appropriate technical and organizational measures to protect personal data against accidental or unlawful destruction, loss, alteration, unauthorized disclosure, or access. These measures include encryption of personal data, the ability to ensure ongoing confidentiality, integrity, availability, and resilience of processing systems.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">7</span>Data Protection Officer (DPO)</h2>
-                    <p>Explyra&trade; has appointed a Data Protection Officer to oversee our compliance program. If you wish to exercise your rights or have any questions, please contact our legal department:</p>
+                    <h2><span class="section-num">7</span>Audit Rights</h2>
+                    <p>Explyra shall make available to the Customer all information necessary to demonstrate compliance with the obligations laid down in Article 28 of the GDPR and allow for and contribute to audits, including inspections, conducted by the Customer or another auditor mandated by the Customer.</p>
+                </div>
+
+                <div class="legal-divider"></div>
+
+                <div class="legal-section">
+                    <h2><span class="section-num">8</span>Contact & Execution</h2>
+                    <p>This DPA is automatically effective for all customers using the Explyra platform. If your organization requires a signed version of this DPA, please contact our legal team:</p>
                     <div class="contact-box">
-                        <p>📧 Email: <a href="mailto:explyra@gmail.com">explyra@gmail.com</a><br>
-                            🏢 GDPR Compliance Office · Explyra&trade;<br>
+                        <p>📧 Legal Team: <a href="mailto:explyra@gmail.com">explyra@gmail.com</a><br>
+                            🏢 Legal & Compliance Office · Explyra<br>
                             📍 New Delhi, India</p>
                     </div>
                 </div>
@@ -795,6 +760,8 @@
             <a href="terms.html">Terms</a>
             <a href="license.html">License</a>
             <a href="refund.html">Refund Policy</a>
+            <a href="cookies.html">Cookie Policy</a>
+            <a href="javascript:void(0)" onclick="openCookieSettings()">Cookie Settings</a>
             <a href="mailto:explyra@gmail.com">Contact</a>
         </div>
     </footer>

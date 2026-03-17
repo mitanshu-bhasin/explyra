@@ -18,8 +18,8 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>GDPR Compliance — Explyra Data Protection & Transparency</title>
-    <meta name="description" content="Detailed GDPR compliance documentation for Explyra. Learn about our commitment to data protection, user rights, and transparent processing in the EU.">
+    <title>Cookie Policy — Explyra Data Transparency</title>
+    <meta name="description" content="Official Cookie Policy for Explyra. Learn how we use cookies and similar technologies to improve your experience and personalize our services.">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -369,8 +369,9 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--teal-g) 0%, transparent 60%);
-            pointer-events: none
+            background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--purp) 0%, transparent 60%);
+            pointer-events: none;
+            opacity: 0.1;
         }
 
         .legal-hero-grid {
@@ -417,7 +418,7 @@
         }
 
         .legal-hero h1 .grad {
-            background: linear-gradient(135deg, var(--blue), var(--purp));
+            background: linear-gradient(135deg, #FF6B6B, var(--purp));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text
@@ -426,7 +427,7 @@
         .legal-date {
             font-size: .82rem;
             font-weight: 500;
-            color: var(--blue);
+            color: #FF6B6B;
             margin-bottom: 1.2rem;
             letter-spacing: .05em
         }
@@ -476,9 +477,9 @@
             justify-content: center;
             width: 28px;
             height: 28px;
-            background: var(--blue-g);
-            border: 1px solid var(--blue-b);
-            color: var(--blue);
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            color: #FF6B6B;
             font-size: .72rem;
             font-weight: 700;
             border-radius: 6px;
@@ -530,7 +531,7 @@
             top: .65em;
             width: 6px;
             height: 6px;
-            background: var(--blue);
+            background: #FF6B6B;
             border-radius: 50%
         }
 
@@ -641,25 +642,26 @@
                 align-items: flex-start
             }
         }
+
+        /* Cookie specific table styling */
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+
+        .cookie-table th, .cookie-table td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid var(--bdr);
+        }
+
+        .cookie-table th {
+            background: var(--bg3);
+            font-weight: 600;
+        }
     </style>
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "url": "https://explyra.me/",
-      "logo": "https://explyra.me/assets/images/explyra_logo.png",
-      "sameAs": [
-        "https://x.com/explyras",
-        "https://www.linkedin.com/company/explyra/"
-      ]
-    }
-  ]
-}
-    </script>
 </head>
 
 <body>
@@ -706,10 +708,10 @@
     <section class="legal-hero">
         <div class="legal-hero-grid"></div>
         <div class="hero-inner">
-            <div class="legal-badge"><i class="fas fa-shield-alt"></i> GDPR COMPLIANCE</div>
-            <h1>General Data <span class="grad">Protection</span></h1>
+            <div class="legal-badge"><i class="fas fa-cookie"></i> COOKIE POLICY</div>
+            <h1>How We Use <span class="grad">Cookies</span></h1>
             <p class="legal-date">Last Updated: March 17, 2026</p>
-            <p class="legal-desc">Explyra is committed to the highest standards of data privacy and transparency for our European Union and global users.</p>
+            <p class="legal-desc">Transparency about how Explyra and our partners use cookies to enhance your experience and provide personalized services.</p>
         </div>
     </section>
 
@@ -717,69 +719,88 @@
         <div class="legal-card">
             <div class="legal-card-inner">
                 <div class="legal-section">
-                    <h2><span class="section-num">1</span>Commitment to GDPR</h2>
-                    <p>Explyra ("we," "us," or "our") is dedicated to protecting the privacy and security of your personal data. This GDPR Compliance statement outlines our efforts to adhere to the General Data Protection Regulation (Regulation (EU) 2016/679) for all individuals within the European Economic Area (EEA) and the United Kingdom.</p>
+                    <h2><span class="section-num">1</span>What are Cookies?</h2>
+                    <p>Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work more efficiently, as well as to provide information to the owners of the site. They help us remember your preferences, understand how you use our site, and improve your overall experience.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">2</span>Data Protection Principles</h2>
-                    <p>We process data in accordance with the seven core principles of GDPR:</p>
+                    <h2><span class="section-num">2</span>Types of Cookies We Use</h2>
+                    <p>We use both first-party cookies (set by Explyra) and third-party cookies (set by our partners for various purposes). These fall into the following categories:</p>
+                    
+                    <table class="cookie-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Purpose</th>
+                                <th>Typical Lifespan</th>
+                                <th>Managed By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Essential</strong></td>
+                                <td>Necessary for authentication and security.</td>
+                                <td>Session / 1 Month</td>
+                                <td>Explyra</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Anonymous traffic and interaction analysis.</td>
+                                <td>24 Hours - 2 Years</td>
+                                <td>Google/Mixpanel</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Functional</strong></td>
+                                <td>Persistence of theme and UI settings.</td>
+                                <td>1 Year</td>
+                                <td>Explyra</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Marketing</strong></td>
+                                <td>Ad conversion tracking and retargeting.</td>
+                                <td>90 Days</td>
+                                <td>LinkedIn/X</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="legal-divider"></div>
+
+                <div class="legal-section">
+                    <h2><span class="section-num">3</span>Google Analytics (GA4)</h2>
+                    <p>Explyra&trade; uses Google Analytics to gather anonymous statistical information about how our visitors use the site. Google uses cookies to collect data such as your IP address, browser type, and time spent on pages. This information is used to optimize our service. You can opt-out of Google Analytics by installing the <a href="https://tools.google.com/dlpage/gaoptout" style="color:var(--blue)">Google Analytics Opt-out Browser Add-on</a>.</p>
+                </div>
+
+                <div class="legal-divider"></div>
+
+                <div class="legal-section">
+                    <h2><span class="section-num">4</span>How to Manage Your Preferences</h2>
+                    <p>Most web browsers allow you to control cookies through their settings. You can set your browser to refuse all cookies or to indicate when a cookie is being sent. However, please note that some parts of the Explyra&trade; platform may not function properly if you disable essential cookies.</p>
                     <ul>
-                        <li><strong>Lawfulness, Fairness, and Transparency:</strong> We process data lawfully and are fully transparent with users.</li>
-                        <li><strong>Purpose Limitation:</strong> We only collect data for specific, explicit, and legitimate purposes.</li>
-                        <li><strong>Data Minimization:</strong> We limit collection to only what is necessary for our services.</li>
-                        <li><strong>Accuracy:</strong> We take reasonable steps to ensure data is accurate and up to date.</li>
-                        <li><strong>Storage Limitation:</strong> Data is retained only for as long as necessary.</li>
-                        <li><strong>Integrity and Confidentiality:</strong> We use advanced encryption and security controls.</li>
-                        <li><strong>Accountability:</strong> We document our compliance measures and take responsibility for data processing.</li>
+                        <li><a href="https://support.google.com/chrome/answer/95647" style="color:var(--blue)">Cookie settings in Chrome</a></li>
+                        <li><a href="https://support.apple.com/en-in/guide/safari/sfri11471/mac" style="color:var(--blue)">Cookie settings in Safari</a></li>
+                        <li><a href="https://support.microsoft.com/en-us/windows/delete-and-manage-cookies-168dab11-0753-043d-7c16-ede5947fc64d" style="color:var(--blue)">Cookie settings in Edge</a></li>
                     </ul>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">3</span>User Rights (Chapter III)</h2>
-                    <p>As a data subject under GDPR, you possess significant rights regarding your information:</p>
-                    <ul>
-                        <li><strong>Right of Access (Art. 15):</strong> Obtain confirmation of processing and access to your data.</li>
-                        <li><strong>Right to Rectification (Art. 16):</strong> Correct inaccurate or incomplete personal information.</li>
-                        <li><strong>Right to Erasure (Art. 17):</strong> Request the permanent deletion of your data ("Right to be Forgotten").</li>
-                        <li><strong>Right to Data Portability (Art. 20):</strong> Receive your data in a structured, commonly used, and machine-readable format.</li>
-                        <li><strong>Right to Object (Art. 21):</strong> Object to processing based on legitimate interests or direct marketing.</li>
-                    </ul>
+                    <h2><span class="section-num">5</span>Changes to this Policy</h2>
+                    <p>We may update our Cookie Policy from time to time to reflect changes in the cookies we use or for other operational, legal, or regulatory reasons. We will notify you of any significant changes by posting the new policy on this page with a revised "Last Updated" date.</p>
                 </div>
 
                 <div class="legal-divider"></div>
 
                 <div class="legal-section">
-                    <h2><span class="section-num">4</span>Data Protection Impact Assessments (DPIA)</h2>
-                    <p>For high-risk processing activities, particularly those involving automated decision-making or new technologies, Explyra&trade; conducts Data Protection Impact Assessments. These assessments ensure that privacy risks are identified and mitigated at the architectural phase of any new feature development.</p>
-                </div>
-
-                <div class="legal-divider"></div>
-
-                <div class="legal-section">
-                    <h2><span class="section-num">5</span>Sub-processing & Vendor Management</h2>
-                    <p>We only share data with third-party subprocessors who demonstrate equivalent or superior GDPR compliance standards. All subprocessors are subject to strict Data Processing Addendums (DPAs) in accordance with Article 28. For a full list of our partners, please visit our <a href="subprocessors.html" style="color:var(--blue);font-weight:600">Subprocessors Page</a>.</p>
-                </div>
-
-                <div class="legal-divider"></div>
-
-                <div class="legal-section">
-                    <h2><span class="section-num">6</span>Data Breach Protocol</h2>
-                    <p>In the event of a personal data breach, Explyra&trade; follows a rigorous notification protocol. We will notify the relevant Supervisory Authority within 72 hours of becoming aware of the breach, unless the breach is unlikely to result in a risk to your rights. Impacted users will be notified without undue delay.</p>
-                </div>
-
-                <div class="legal-divider"></div>
-
-                <div class="legal-section">
-                    <h2><span class="section-num">7</span>Data Protection Officer (DPO)</h2>
-                    <p>Explyra&trade; has appointed a Data Protection Officer to oversee our compliance program. If you wish to exercise your rights or have any questions, please contact our legal department:</p>
+                    <h2><span class="section-num">6</span>Contact Us</h2>
+                    <p>If you have any questions about our use of cookies or other technologies, please email us:</p>
                     <div class="contact-box">
-                        <p>📧 Email: <a href="mailto:explyra@gmail.com">explyra@gmail.com</a><br>
-                            🏢 GDPR Compliance Office · Explyra&trade;<br>
+                        <p>📧 Privacy Team: <a href="mailto:explyra@gmail.com">explyra@gmail.com</a><br>
+                            🏢 Data Privacy Office · Explyra&trade;<br>
                             📍 New Delhi, India</p>
                     </div>
                 </div>

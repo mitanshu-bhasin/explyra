@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 import { User, Settings as SettingsIcon, Shield, Trash2, Globe, Mail, CheckCircle2 } from "lucide-react"
 
 export default function Settings() {

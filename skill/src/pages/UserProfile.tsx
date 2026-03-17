@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 import { Mail, Globe, Briefcase, GraduationCap, MessageCircle, Plus, PackageOpen, Wrench, UserCheck, UserPlus } from "lucide-react"
 
 export default function UserProfile() {

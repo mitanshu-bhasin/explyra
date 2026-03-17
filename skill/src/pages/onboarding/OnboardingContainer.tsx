@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 
 import StepBasicInfo from "./steps/StepBasicInfo"
 import StepSkills from "./steps/StepSkills"

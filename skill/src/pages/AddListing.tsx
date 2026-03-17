@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 import { PackageOpen, Wrench, ImageIcon, DollarSign, Tag, AlignLeft, ArrowLeft } from "lucide-react"
 
 const categories = [

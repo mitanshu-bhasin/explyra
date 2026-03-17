@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 import { ArrowLeft, UserPlus, UserCheck, Search, MoreVertical } from "lucide-react"
 
 export default function FollowList() {

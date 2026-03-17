@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
-import { useApp } from "@/context/AppContext"
+import { useApp } from "@/hooks/useApp"
 import { ArrowLeft, PackageOpen, Wrench, User, Check, Tag, DollarSign, Calendar } from "lucide-react"
 
 export default function ListingDetail() {

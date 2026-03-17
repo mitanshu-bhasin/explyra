@@ -2677,13 +2677,13 @@
             try {
                 let stream;
                 if (type === 'screen') {
-                    if (SYS.localScreen) return showToast("Already sharing screen");
+                    if (SYS.localScreen && SYS.localScreen.active) return showToast("Already sharing screen");
                     // Simplified constraints for max compatibility
                     stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
                     SYS.localScreen = stream;
                     stream.getVideoTracks()[0].onended = () => endSpecificCall('screen');
                 } else {
-                    if (SYS.localStream) return showToast("Camera already active");
+                    if (SYS.localStream && SYS.localStream.active) return showToast("Camera already active");
                     stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                     SYS.localStream = stream;
                 }
@@ -2699,7 +2699,13 @@
                 showToast(`${type.toUpperCase()} Started!`);
             } catch (e) {
                 console.error(e);
-                showToast(`${type.toUpperCase()} Error: ` + (e.name === 'NotAllowedError' ? "Permission Denied" : e.message));
+                let errorMsg = e.message;
+                if (e.name === 'NotAllowedError') {
+                    errorMsg = "Permission Denied. Please click the lock icon in the address bar and allow Camera/Mic access.";
+                } else if (e.name === 'NotFoundError') {
+                    errorMsg = "No camera or microphone found on this device.";
+                }
+                showToast(`${type.toUpperCase()} Error: ` + errorMsg);
             }
         }
 

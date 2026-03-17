@@ -1,108 +1,115 @@
-// js/ai-receipt.js
-
 window.scanReceiptAI = async (input) => {
     const file = input.files[0];
     if (!file) return;
 
     const label = input.parentElement;
     const originalHtml = label.innerHTML;
-    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs mr-2"></i> Scanning with AI...';
+    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs mr-2"></i> Gemini Scanning...';
     label.classList.add('opacity-70', 'cursor-not-allowed');
 
     try {
-        // 1. Convert image to Base64
+        // 1. Convert/Compress Image to Base64
         const base64Data = await new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]); // remove data:image/...;base64,
-            reader.onerror = error => reject(error);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const max = 1024;
+                    if (width > height && width > max) { height *= max / width; width = max; }
+                    else if (height > max) { width *= max / height; height = max; }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8).split(',')[1]);
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
             reader.readAsDataURL(file);
         });
 
-        // 2. Prepare Gemini API Request
-        const apiKey = 'AIzaSyBrTkpz5KnyhCqJmN7enz0RVDeUimyrpds';
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        
-        const payload = {
-            contents: [{
-                parts: [
-                    {text: "You are a receipt extraction AI. Analyze this receipt and extract all product items purchased. Return the data STRICTLY as a JSON array of objects, with each object having exactly these keys: 'date' (YYYY-MM-DD), 'desc' (short product description), 'category' (must be exactly one of: Travel, Food, Lodging, Supplies, Other), 'amount' (number without currency symbol). Do not include tax as a separate item if it's already in the total, just list the individual items or a single 'Total Purchase' if it's a generic receipt. Example output: [{\"date\": \"2023-10-27\", \"desc\": \"Coffee\", \"category\": \"Food\", \"amount\": 4.50}]"},
-                    {
-                        inlineData: {
-                            mimeType: file.type || "image/jpeg",
-                            data: base64Data
-                        }
-                    }
-                ]
-            }],
-            generationConfig: {
-                responseMimeType: "application/json"
-            }
-        };
+        // 2. Google AI Studio (Gemini) Configuration
+        const GEMINI_KEY = 'AIzaSyBrTkpz5KnyhCqJmN7enz0RVDeUimyrpds';
+        const MODEL = 'gemini-2.5-flash';
+        const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`;
 
-        const response = await fetch(url, {
+        const prompt = "Analyze this receipt. List items with date (YYYY-MM-DD), description, category (Travel, Food, Lodging, Supplies, Other), and amount. Return STRICTLY VALID JSON array. No markdown code blocks, just the raw array.";
+
+        const response = await fetch(ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                contents: [{
+                    parts: [
+                        { text: prompt },
+                        { inlineData: { mimeType: 'image/jpeg', data: base64Data } }
+                    ]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            })
         });
 
         if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+            const err = await response.text();
+            throw new Error(`Gemini Error: ${response.status}`);
         }
 
         const data = await response.json();
-        const textResponse = data.candidates[0].content.parts[0].text;
-        
-        // 3. Parse JSON Response
-        const cleanedText = textResponse.replace(/^```json\s*/, '').replace(/```$/, '').trim();
-        const items = JSON.parse(cleanedText);
-        if (!Array.isArray(items) || items.length === 0) {
-            throw new Error("No items found on receipt");
-        }
+        const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawContent) throw new Error("Empty response from Gemini");
 
-        // 4. Update UI
-        const container = document.getElementById('line-items-container');
-        if (container) {
-            // Clear existing blank item if there's only one and it's mostly empty
-            if (container.children.length === 1) {
-                const firstItem = container.children[0];
-                const amt = firstItem.querySelector('.item-amount').value;
-                const desc = firstItem.querySelector('.item-desc').value;
-                if (!amt && !desc) {
-                    container.innerHTML = ''; 
-                }
-            }
-
-            // Append scanned items
-            items.forEach(item => {
-                window.addLineItem(); // Adds a new blank item
-                const newRow = container.lastElementChild;
-                
-                if (item.date) newRow.querySelector('.item-date').value = item.date;
-                if (item.desc) newRow.querySelector('.item-desc').value = item.desc;
-                if (item.amount) newRow.querySelector('.item-amount').value = parseFloat(item.amount).toFixed(2);
-                
-                const catDropdown = newRow.querySelector('.item-category');
-                if (catDropdown && item.category) {
-                    const validOptions = ['Travel', 'Food', 'Lodging', 'Supplies', 'Other'];
-                    if (validOptions.includes(item.category)) {
-                        catDropdown.value = item.category;
-                    } else {
-                        catDropdown.value = 'Other';
-                    }
-                }
-            });
-
-            if (window.calculateTotal) window.calculateTotal();
-            if (window.showToast) window.showToast(`AI successfully extracted ${items.length} item(s)!`, 'success');
-        }
+        const items = JSON.parse(rawContent.trim());
+        processReceiptItems(items);
 
     } catch (error) {
-        console.error("AI Receipt Scan Error:", error);
-        if (window.showToast) window.showToast("Failed to scan receipt. Please try again or enter manually.", 'error');
+        console.error("Gemini Scan Error:", error);
+        if (window.showToast) window.showToast(`AI Scan Failed: ${error.message}`, 'error');
     } finally {
-        // Reset button state
         label.innerHTML = originalHtml;
         label.classList.remove('opacity-70', 'cursor-not-allowed');
-        input.value = ''; // Reset file input so same file can be selected again
+        input.value = '';
+    }
+
+    function processReceiptItems(inputItems) {
+        let items = Array.isArray(inputItems) ? inputItems : (inputItems.items || inputItems.receipt_items || [inputItems]);
+        const container = document.getElementById('line-items-container');
+        if (!container) return;
+
+        if (container.children.length === 1) {
+            const first = container.children[0];
+            if (!first.querySelector('.item-amount').value && !first.querySelector('.item-desc').value) {
+                container.innerHTML = '';
+            }
+        }
+
+        items.forEach(item => {
+            if (!item || typeof item !== 'object') return;
+            if (window.addLineItem) window.addLineItem();
+            const row = container.lastElementChild;
+            if (!row) return;
+
+            if (item.date) row.querySelector('.item-date').value = item.date;
+            if (item.desc || item.description) row.querySelector('.item-desc').value = item.desc || item.description;
+            if (item.amount) row.querySelector('.item-amount').value = parseFloat(item.amount).toFixed(2);
+            
+            const catEl = row.querySelector('.item-category');
+            if (catEl && (item.category || item.cat)) {
+                const catVal = item.category || item.cat;
+                const normCat = catVal.charAt(0).toUpperCase() + catVal.slice(1).toLowerCase();
+                const options = Array.from(catEl.options).map(o => o.value);
+                if (options.includes(normCat)) catEl.value = normCat;
+                else catEl.value = 'Other';
+            }
+        });
+
+        if (window.calculateTotal) window.calculateTotal();
+        if (window.showToast) window.showToast(`Gemini Extracted ${items.length} items`, 'success');
     }
 };
