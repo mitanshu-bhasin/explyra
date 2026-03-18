@@ -32,6 +32,7 @@ export async function onRequest(context) {
     const plan = String(body?.plan || "").trim();
     const period = body?.period === "yearly" ? "yearly" : "monthly";
     const userId = body?.user_id ? String(body.user_id).trim() : "";
+    const companyId = body?.company_id ? String(body.company_id).trim() : "";
 
     const planPrices = {
       Starter: { monthly: 999, yearly: 799 },
@@ -45,6 +46,13 @@ export async function onRequest(context) {
 
     if (!planPrices[plan]) {
       return new Response(JSON.stringify({ error: "Invalid plan" }), {
+        status: 400,
+        headers
+      });
+    }
+
+    if (!companyId) {
+      return new Response(JSON.stringify({ error: "company_id is required" }), {
         status: 400,
         headers
       });
@@ -67,7 +75,7 @@ export async function onRequest(context) {
         price_currency: "usd",
         pay_currency: "usdttrc20",
         order_id: orderId,
-        order_description: `Explyra ${plan} (${period}) plan purchase - INR ${selectedPlanPriceInr} (~USD ${selectedPlanPriceUsd})`,
+        order_description: `Explyra ${plan} (${period}) plan purchase for ${companyId} - INR ${selectedPlanPriceInr} (~USD ${selectedPlanPriceUsd})`,
         ipn_callback_url: webhookUrl
       })
     });
@@ -96,6 +104,7 @@ export async function onRequest(context) {
     await savePaymentOrder(env, {
       orderId,
       userId,
+      companyId,
       plan,
       period,
       amountInr: selectedPlanPriceInr,
@@ -145,6 +154,7 @@ async function savePaymentOrder(env, order) {
       fields: {
         orderId: { stringValue: order.orderId },
         userId: { stringValue: order.userId || "" },
+        companyId: { stringValue: order.companyId || "" },
         plan: { stringValue: order.plan || "" },
         period: { stringValue: order.period || "" },
         amountInr: { integerValue: String(order.amountInr || 0) },

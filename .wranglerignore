@@ -1,0 +1,18 @@
+# Ignore heavy development artifacts for Pages direct uploads
+node_modules/
+**/node_modules/
+
+# Local build/dev caches
+.retired/
+retired/
+**/.next/
+**/.next/**
+
+# Tooling/work dirs
+.git/
+.vscode/
+.wrangler/
+
+# Logs and temp
+*.log
+*.tmp

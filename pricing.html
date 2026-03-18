@@ -972,6 +972,22 @@
             color: var(--teal);
         }
 
+        .crypto-company-id {
+            margin: -1.8rem auto 2rem;
+            max-width: 900px;
+            border: 1px dashed var(--bdr);
+            border-radius: 10px;
+            padding: .72rem .9rem;
+            font-size: .82rem;
+            color: var(--ink2);
+            background: color-mix(in srgb, var(--surf) 85%, transparent);
+            text-align: center;
+        }
+
+        .crypto-company-id strong {
+            color: var(--ink);
+        }
+
         /* ═══════════════════════════════════════════
    FEATURE COMPARISON
 ═══════════════════════════════════════════ */
@@ -2449,6 +2465,9 @@
             <span>Crypto payments are auto-verified within 1-5 minutes.</span>
             <span><strong>Recommended:</strong> USDT (TRC20) for low network fees.</span>
         </div>
+        <div id="cryptoCompanyIndicator" class="crypto-company-id" aria-live="polite">
+            Company ID required for crypto checkout.
+        </div>
 
         <div class="pricing-grid reveal">
             <!-- STARTER -->
@@ -3012,6 +3031,7 @@
             Enterprise: { monthly: 9999, yearly: 7999 }
         };
         const EXPLYRA_PUBLIC_IDENTIFIER = '00bdcfb7-b255-4283-a9b8-b6409f27ad52';
+        const PAYMENT_COMPANY_ID_KEYS = ['companyId', 'company_id', 'explyraCompanyId'];
 
         function getSelectedPeriod() {
             const activeToggle = document.querySelector('.toggle-btn.active');
@@ -3053,6 +3073,73 @@
             return null;
         }
 
+        function normalizeCompanyId(value) {
+            if (typeof value !== 'string') return '';
+            return value.trim();
+        }
+
+        function getStoredCompanyId() {
+            const fromWindow = normalizeCompanyId(window.EXPLYRA_PAYMENT_COMPANY_ID || '');
+            if (fromWindow) return fromWindow;
+
+            for (const key of PAYMENT_COMPANY_ID_KEYS) {
+                const stored = normalizeCompanyId(localStorage.getItem(key) || '');
+                if (stored) return stored;
+            }
+
+            return '';
+        }
+
+        function persistCompanyId(companyId, sourceLabel) {
+            const normalized = normalizeCompanyId(companyId);
+            if (!normalized) return '';
+
+            window.EXPLYRA_PAYMENT_COMPANY_ID = normalized;
+            PAYMENT_COMPANY_ID_KEYS.forEach((key) => localStorage.setItem(key, normalized));
+            updateCryptoCompanyIndicator(normalized, sourceLabel || 'manual');
+            return normalized;
+        }
+
+        function updateCryptoCompanyIndicator(companyId, sourceLabel) {
+            const indicator = document.getElementById('cryptoCompanyIndicator');
+            if (!indicator) return;
+
+            const normalized = normalizeCompanyId(companyId);
+            if (!normalized) {
+                indicator.textContent = 'Company ID required for crypto checkout.';
+                return;
+            }
+
+            const sourceText = sourceLabel ? ` (${sourceLabel})` : '';
+            indicator.innerHTML = `Using Company ID: <strong>${normalized}</strong>${sourceText}`;
+        }
+
+        window.updateCryptoCompanyIndicator = updateCryptoCompanyIndicator;
+
+        async function resolveCompanyIdForPayment() {
+            const existing = getStoredCompanyId();
+            if (existing) {
+                return persistCompanyId(existing, 'saved');
+            }
+
+            if (typeof window.EXPLYRA_FETCH_COMPANY_ID === 'function') {
+                try {
+                    const fetched = normalizeCompanyId(await window.EXPLYRA_FETCH_COMPANY_ID());
+                    if (fetched) {
+                        return persistCompanyId(fetched, 'profile');
+                    }
+                } catch (_) {
+                    // Continue to manual entry when profile fetch is unavailable.
+                }
+            }
+
+            const typed = window.prompt('Enter your Company ID for crypto checkout (example: CMP_12345):', '');
+            const normalized = normalizeCompanyId(typed || '');
+            if (!normalized) return '';
+
+            return persistCompanyId(normalized, 'manual');
+        }
+
         async function payWithCrypto(planName, triggerButton) {
             const period = getSelectedPeriod();
             const selectedPlanPrice = PLAN_PRICES[planName]?.[period];
@@ -3069,6 +3156,12 @@
             try {
                 const apiBase = getPaymentsApiBase();
                 const userId = getCurrentUserId();
+                const companyId = await resolveCompanyIdForPayment();
+
+                if (!companyId) {
+                    throw new Error('Company ID is required to continue crypto checkout.');
+                }
+
                 const response = await fetch(`${apiBase}/create-payment`, {
                     method: 'POST',
                     headers: {
@@ -3078,6 +3171,7 @@
                         plan: planName,
                         period,
                         user_id: userId,
+                        company_id: companyId,
                         selectedPlanPrice,
                         public_identifier: EXPLYRA_PUBLIC_IDENTIFIER
                     })
@@ -3099,6 +3193,8 @@
                 triggerButton.textContent = originalLabel;
             }
         }
+
+        updateCryptoCompanyIndicator(getStoredCompanyId(), 'saved');
 
         function closeBuyModal() {
             document.getElementById('buyModal').classList.remove('show');
@@ -3142,7 +3238,8 @@
     <!-- Firebase Logic for Companies Dropdown -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
             apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
@@ -3154,7 +3251,66 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+
+        function normalizeCompanyId(value) {
+            return typeof value === 'string' ? value.trim() : '';
+        }
+
+        function extractCompanyId(data) {
+            if (!data || typeof data !== 'object') return '';
+            return normalizeCompanyId(
+                data.companyId ||
+                data.company_id ||
+                data.company?.id ||
+                ''
+            );
+        }
+
+        async function fetchCompanyIdFromUserDoc(user) {
+            if (!user?.uid) return '';
+
+            try {
+                const snap = await getDoc(doc(db, 'users', user.uid));
+                if (!snap.exists()) return '';
+                return extractCompanyId(snap.data());
+            } catch {
+                return '';
+            }
+        }
+
+        async function resolveCompanyIdFromAuthSession() {
+            const current = auth.currentUser;
+            if (current) {
+                const fromProfile = await fetchCompanyIdFromUserDoc(current);
+                if (fromProfile) return fromProfile;
+            }
+
+            if (typeof window.getCurrentUserId === 'function') {
+                const uid = window.getCurrentUserId();
+                if (uid) {
+                    const fromStoredUser = await fetchCompanyIdFromUserDoc({ uid });
+                    if (fromStoredUser) return fromStoredUser;
+                }
+            }
+
+            return '';
+        }
+
+        window.EXPLYRA_FETCH_COMPANY_ID = async function EXPLYRA_FETCH_COMPANY_ID() {
+            const companyId = await resolveCompanyIdFromAuthSession();
+
+            if (companyId && typeof window.updateCryptoCompanyIndicator === 'function') {
+                window.EXPLYRA_PAYMENT_COMPANY_ID = companyId;
+                localStorage.setItem('companyId', companyId);
+                localStorage.setItem('company_id', companyId);
+                localStorage.setItem('explyraCompanyId', companyId);
+                window.updateCryptoCompanyIndicator(companyId, 'profile');
+            }
+
+            return companyId;
+        };
 
         async function loadCompanies() {
             const select = document.getElementById('buyCompany');
@@ -3183,6 +3339,11 @@
             }
         }
         loadCompanies();
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return;
+            await window.EXPLYRA_FETCH_COMPANY_ID();
+        });
     </script>
 </body>
 

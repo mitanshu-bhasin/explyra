@@ -53,16 +53,22 @@ app.post("/create-payment", express.json(), async (req, res) => {
       plan,
       period = "monthly",
       user_id = null,
+      company_id = null,
       customer_email = null,
       public_identifier = null
     } = req.body || {};
 
     const normalizedPlan = typeof plan === "string" ? plan.trim() : "";
     const normalizedPeriod = period === "yearly" ? "yearly" : "monthly";
+    const normalizedCompanyId = typeof company_id === "string" ? company_id.trim() : "";
     const selectedPlan = PLAN_PRICES_INR[normalizedPlan];
 
     if (!selectedPlan) {
       return res.status(400).json({ error: "Invalid plan" });
+    }
+
+    if (!normalizedCompanyId) {
+      return res.status(400).json({ error: "company_id is required" });
     }
 
     const selectedPlanPriceInr = selectedPlan[normalizedPeriod];
@@ -74,7 +80,7 @@ app.post("/create-payment", express.json(), async (req, res) => {
       price_currency: "usd",
       pay_currency: "usdttrc20",
       order_id: orderId,
-      order_description: `Explyra ${normalizedPlan} (${normalizedPeriod}) plan purchase - INR ${selectedPlanPriceInr} (~USD ${selectedPlanPriceUsd})`,
+      order_description: `Explyra ${normalizedPlan} (${normalizedPeriod}) plan purchase for ${normalizedCompanyId} - INR ${selectedPlanPriceInr} (~USD ${selectedPlanPriceUsd})`,
       success_url: `${PUBLIC_SITE_URL}/pricing.html?payment=success&order_id=${orderId}`,
       cancel_url: `${PUBLIC_SITE_URL}/pricing.html?payment=cancelled&order_id=${orderId}`
     };
@@ -123,6 +129,7 @@ app.post("/create-payment", express.json(), async (req, res) => {
       amount_usd: selectedPlanPriceUsd,
       currency: "usd",
       user_id,
+      company_id: normalizedCompanyId,
       customer_email,
       public_identifier,
       payment_status: "pending",
