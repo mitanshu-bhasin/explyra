@@ -3,12 +3,12 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+  authDomain: "explyras.firebaseapp.com",
+  projectId: "explyras",
+  storageBucket: "explyras.firebasestorage.app",
+  messagingSenderId: "411853553644",
+  appId: "1:411853553644:web:eca79eab846b6a5149cac9"
 };
 
 const OUTBOUND_WORKER_URL = "https://email-worker.mfskufgu.workers.dev";

@@ -4,3 +4,8 @@ compatibility_date = "2026-03-01"
 
 [vars]
 ALLOWED_ORIGINS = "https://explyra.me,https://www.explyra.me,http://localhost:5500"
+
+# Optional fallback for sending when MailChannels returns 401.
+# Uncomment after configuring Email Routing destination addresses.
+# [[send_email]]
+# name = "MAIL_SEND"

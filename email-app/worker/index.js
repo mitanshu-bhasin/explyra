@@ -1,5 +1,52 @@
 const MAILCHANNELS_URL = "https://api.mailchannels.net/tx/v1/send";
 
+function escapeHeaderValue(value) {
+  return String(value || "").replace(/[\r\n]+/g, " ").trim();
+}
+
+function buildRawEmail({ fromEmail, fromName, toEmail, subject, htmlContent }) {
+  const safeSubject = escapeHeaderValue(subject);
+  const senderName = escapeHeaderValue(fromName || fromEmail);
+  const textBody = htmlToText(htmlContent) || " ";
+  const boundary = `cfb-${crypto.randomUUID()}`;
+
+  return [
+    `From: ${senderName} <${fromEmail}>`,
+    `To: <${toEmail}>`,
+    `Subject: ${safeSubject}`,
+    "MIME-Version: 1.0",
+    `Content-Type: multipart/alternative; boundary=\"${boundary}\"`,
+    "",
+    `--${boundary}`,
+    "Content-Type: text/plain; charset=UTF-8",
+    "",
+    textBody,
+    `--${boundary}`,
+    "Content-Type: text/html; charset=UTF-8",
+    "",
+    htmlContent,
+    `--${boundary}--`,
+    ""
+  ].join("\r\n");
+}
+
+async function sendViaCloudflareBinding(payload, env) {
+  if (!env?.MAIL_SEND?.send) {
+    return { ok: false, detail: "MAIL_SEND binding not configured" };
+  }
+
+  const mod = await import("cloudflare:email");
+  const EmailMessage = mod?.EmailMessage;
+  if (!EmailMessage) {
+    return { ok: false, detail: "cloudflare:email unavailable" };
+  }
+
+  const raw = buildRawEmail(payload);
+  const message = new EmailMessage(payload.fromEmail, payload.toEmail, raw);
+  await env.MAIL_SEND.send(message);
+  return { ok: true, detail: "sent via Cloudflare Email binding" };
+}
+
 function parseAllowedOrigins(raw) {
   if (!raw || typeof raw !== "string") return [];
   return raw
@@ -82,13 +129,21 @@ export default {
       return json({ ok: false, error: "htmlContent is required" }, 400, origin, allowedOrigins);
     }
 
-    const payload = {
-      personalizations: [{ to: [{ email: toEmail.trim() }] }],
-      from: {
-        email: fromEmail.trim(),
-        name: typeof fromName === "string" && fromName.trim() ? fromName.trim() : fromEmail.trim()
-      },
+    const normalizedPayload = {
+      fromEmail: fromEmail.trim(),
+      fromName: typeof fromName === "string" && fromName.trim() ? fromName.trim() : fromEmail.trim(),
+      toEmail: toEmail.trim(),
       subject: subject.trim(),
+      htmlContent
+    };
+
+    const payload = {
+      personalizations: [{ to: [{ email: normalizedPayload.toEmail }] }],
+      from: {
+        email: normalizedPayload.fromEmail,
+        name: normalizedPayload.fromName
+      },
+      subject: normalizedPayload.subject,
       content: [
         { type: "text/plain", value: htmlToText(htmlContent) || " " },
         { type: "text/html", value: htmlContent }
@@ -104,6 +159,39 @@ export default {
 
       const responseText = await mcResp.text();
       if (!mcResp.ok) {
+        // MailChannels may return 401 depending on account/runtime policy.
+        // Fallback to Cloudflare Email binding when configured.
+        if (mcResp.status === 401) {
+          try {
+            const fallback = await sendViaCloudflareBinding(normalizedPayload, env);
+            if (fallback.ok) {
+              return json(
+                {
+                  ok: true,
+                  message: "Email sent with Cloudflare Email binding fallback",
+                  provider: fallback.detail,
+                  mailchannelsError: responseText
+                },
+                200,
+                origin,
+                allowedOrigins
+              );
+            }
+          } catch (fallbackError) {
+            return json(
+              {
+                ok: false,
+                error: "MailChannels unauthorized and fallback failed",
+                details: String(fallbackError),
+                mailchannelsError: responseText
+              },
+              502,
+              origin,
+              allowedOrigins
+            );
+          }
+        }
+
         return json(
           { ok: false, error: "MailChannels request failed", details: responseText },
           502,

@@ -5,8 +5,8 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 FIREBASE_PROJECT_ID = "explyras"
+GCP_CLIENT_EMAIL = "firebase-adminsdk-fbsvc@explyras.iam.gserviceaccount.com"
 
 # Set these via Cloudflare Secrets:
-# wrangler secret put GCP_CLIENT_EMAIL
 # wrangler secret put GCP_PRIVATE_KEY
 
