@@ -51,6 +51,16 @@ to = "https://explyra.me/:splat"
 status = 301
 
 [[redirects]]
+from = "https://explyra.fouralpha.org/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "https://explyras.web.app/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
 from = "/booking/:username"
 to = "/booking/booking-page.html?u=:username"
 status = 200

@@ -934,6 +934,44 @@
             background: var(--blue-g)
         }
 
+        .btn-p-crypto {
+            margin-top: .7rem;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #E2E8F0;
+            border: 1px solid rgba(148, 163, 184, .45);
+        }
+
+        .btn-p-crypto:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .25);
+        }
+
+        .btn-p-loading {
+            opacity: .72;
+            pointer-events: none;
+        }
+
+        .crypto-note {
+            margin: -2rem auto 2.4rem;
+            max-width: 900px;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: .9rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: .6rem;
+            flex-wrap: wrap;
+            font-size: .82rem;
+            color: var(--ink2);
+            box-shadow: var(--s1);
+        }
+
+        .crypto-note strong {
+            color: var(--teal);
+        }
+
         /* ═══════════════════════════════════════════
    FEATURE COMPARISON
 ═══════════════════════════════════════════ */
@@ -2405,6 +2443,11 @@
             <button class="toggle-btn" data-period="yearly">Yearly <span>Save 20%</span></button>
         </div>
 
+        <div class="crypto-note">
+            <span>Crypto payments are auto-verified within 1-5 minutes.</span>
+            <span><strong>Recommended:</strong> USDT (TRC20) for low network fees.</span>
+        </div>
+
         <div class="pricing-grid reveal">
             <!-- STARTER -->
             <div class="p-card">
@@ -2432,6 +2475,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Free Custom Domain Linking</li>
                 </ul>
                 <button onclick="buyPlan('Starter')" class="btn-p btn-p-sec">Buy Plan</button>
+                <button onclick="payWithCrypto('Starter', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
 
             <!-- GROWTH (MOST POPULAR) -->
@@ -2462,6 +2506,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Free Custom Domain Linking</li>
                 </ul>
                 <button onclick="buyPlan('Growth')" class="btn-p btn-p-primary">Buy Plan</button>
+                <button onclick="payWithCrypto('Growth', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
 
             <!-- SCALE -->
@@ -2494,6 +2539,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Multi-domain Custom Linking</li>
                 </ul>
                 <button onclick="buyPlan('Scale')" class="btn-p btn-p-sec">Buy Plan</button>
+                <button onclick="payWithCrypto('Scale', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
 
             <!-- ENTERPRISE -->
@@ -2521,6 +2567,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Multi-domain Custom Linking</li>
                 </ul>
                 <button onclick="buyPlan('Enterprise')" class="btn-p btn-p-sec">Contact Sales</button>
+                <button onclick="payWithCrypto('Enterprise', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
         </div>
     </section>
@@ -2954,6 +3001,76 @@
         function buyPlan(planName) {
             document.getElementById('buyPlanDisplay').value = planName;
             document.getElementById('buyModal').classList.add('show');
+        }
+
+        const PLAN_PRICES = {
+            Starter: { monthly: 999, yearly: 799 },
+            Growth: { monthly: 2499, yearly: 1999 },
+            Scale: { monthly: 6999, yearly: 5599 },
+            Enterprise: { monthly: 9999, yearly: 7999 }
+        };
+        const EXPLYRA_PUBLIC_IDENTIFIER = '00bdcfb7-b255-4283-a9b8-b6409f27ad52';
+
+        function getSelectedPeriod() {
+            const activeToggle = document.querySelector('.toggle-btn.active');
+            return activeToggle?.getAttribute('data-period') === 'yearly' ? 'yearly' : 'monthly';
+        }
+
+        function getPaymentsApiBase() {
+            const host = window.location.hostname;
+            const isLocal = host === 'localhost' || host === '127.0.0.1';
+
+            // When opened via Live Server (e.g. :5500/:5502), call the local payments backend.
+            if (isLocal && window.location.port !== '8787') {
+                return 'http://localhost:8787';
+            }
+
+            return '';
+        }
+
+        async function payWithCrypto(planName, triggerButton) {
+            const period = getSelectedPeriod();
+            const selectedPlanPrice = PLAN_PRICES[planName]?.[period];
+
+            if (!selectedPlanPrice) {
+                alert('Unable to start crypto checkout for this plan right now.');
+                return;
+            }
+
+            const originalLabel = triggerButton.textContent;
+            triggerButton.classList.add('btn-p-loading');
+            triggerButton.textContent = 'Creating Invoice...';
+
+            try {
+                const apiBase = getPaymentsApiBase();
+                const response = await fetch(`${apiBase}/create-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plan: planName,
+                        period,
+                        selectedPlanPrice,
+                        public_identifier: EXPLYRA_PUBLIC_IDENTIFIER
+                    })
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.invoice_url) {
+                    if (response.status === 405 && apiBase === '') {
+                        throw new Error('Payment backend is not running on this host. Start API on localhost:8787.');
+                    }
+                    throw new Error(data.error || 'Failed to create crypto payment invoice.');
+                }
+
+                window.location.href = data.invoice_url;
+            } catch (error) {
+                alert(error.message || 'Payment setup failed. Please try again in a moment.');
+            } finally {
+                triggerButton.classList.remove('btn-p-loading');
+                triggerButton.textContent = originalLabel;
+            }
         }
 
         function closeBuyModal() {

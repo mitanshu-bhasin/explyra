@@ -1,4 +1,5 @@
 import { auth, db } from './_lib/firebase.js';
+import { applyCors } from './_lib/cors.js';
 
 const CLOUDFLARE_API = 'https://api.cloudflare.com/client/v4';
 const REQUIRED_MX = [
@@ -137,7 +138,8 @@ function zoneTemplate(domain) {
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  applyCors(req, res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {

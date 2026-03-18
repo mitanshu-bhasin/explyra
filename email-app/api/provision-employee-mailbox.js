@@ -1,4 +1,5 @@
 import { auth, db } from './_lib/firebase.js';
+import { applyCors } from './_lib/cors.js';
 
 function getTokenFromReq(req) {
   return req.headers.authorization?.split('Bearer ')[1] || null;
@@ -59,7 +60,8 @@ async function sendOnboardingEmail({ notifyEmail, mailboxEmail, employeeAuthEmai
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  applyCors(req, res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const token = getTokenFromReq(req);
