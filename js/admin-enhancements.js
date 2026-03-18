@@ -2,6 +2,7 @@
     const PRODUCT_KEY = 'explyra-admin-kg-products-v1';
     const LOG_KEY = 'explyra-admin-ops-log-v1';
     const NOTIF_FILTER_KEY = 'explyra-admin-notif-filter-v1';
+    const INITIAL_RENDER_DELAY_MS = 800;
     const allowedPublishRoles = new Set(['ADMIN', 'FINANCE_MANAGER', 'SENIOR_MANAGER']);
     const defaultProducts = [
         { id: 'KGH-001', name: 'Clear Toughened Glass 8mm', category: 'Architectural', stock: 26, threshold: 20, price: 1450 },
@@ -12,6 +13,11 @@
     const mockUsers = 128;
     const mockMonthlyRevenue = 1834500;
     const mockPendingApprovals = 14;
+    const inrCurrencyFormatter = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    });
 
     const safeJsonParse = (value, fallback) => {
         if (!value) return fallback;
@@ -31,13 +37,13 @@
 
     const formatCurrency = (value) => {
         try {
-            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
+            return inrCurrencyFormatter.format(value);
         } catch {
             return `₹${value}`;
         }
     };
 
-    const getRole = () => (document.getElementById('current-user-role')?.textContent || '').trim().toUpperCase();
+    const getCurrentUserRole = () => (document.getElementById('current-user-role')?.textContent || '').trim().toUpperCase();
 
     const appendLog = (eventText, severity = 'info') => {
         const logs = getLogs();
@@ -141,7 +147,7 @@
 
         const products = getProducts();
         const lowStockCount = products.filter((product) => product.stock < product.threshold).length;
-        const role = getRole();
+        const role = getCurrentUserRole();
         const canPublish = allowedPublishRoles.has(role);
         const filter = getFilter();
 
@@ -261,6 +267,6 @@
         if (getLogs().length === 0) {
             appendLog('Operations center initialized for Krishna Glass House', 'info');
         }
-        setTimeout(render, 800);
+        setTimeout(render, INITIAL_RENDER_DELAY_MS);
     });
 })();

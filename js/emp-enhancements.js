@@ -1,6 +1,11 @@
 (() => {
     const ATTENDANCE_KEY = 'explyra-emp-attendance-v1';
     const FEED_KEY = 'explyra-emp-feed-v1';
+    const INITIAL_RENDER_DELAY_MS = 700;
+    const REFRESH_INTERVAL_MS = 30000;
+    const MAX_STREAK_DAYS = 12;
+    const MIN_STREAK_DAYS = 1;
+    const STREAK_OFFSET_DAYS = 2;
 
     const safeJsonParse = (value, fallback) => {
         if (!value) return fallback;
@@ -117,7 +122,7 @@
         const taskStats = getTaskStats();
         const userName = document.getElementById('sidebar-user-name')?.textContent?.trim() || 'Employee';
         const userRole = document.getElementById('sidebar-user-role')?.textContent?.trim() || 'Team Member';
-        const streak = Math.min(12, Math.max(1, todayEntries.length + 2));
+        const streak = Math.min(MAX_STREAK_DAYS, Math.max(MIN_STREAK_DAYS, todayEntries.length + STREAK_OFFSET_DAYS));
 
         root.innerHTML = `
             <article class="vercel-card xl:col-span-2 p-5">
@@ -202,9 +207,9 @@
         render();
     });
 
-    window.addEventListener('load', () => setTimeout(render, 700));
+    window.addEventListener('load', () => setTimeout(render, INITIAL_RENDER_DELAY_MS));
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') render();
     });
-    setInterval(render, 30000);
+    setInterval(render, REFRESH_INTERVAL_MS);
 })();
