@@ -23,5 +23,12 @@ Explyra is a versatile suite of digital tools designed for businesses, healthcar
 - Full permission granted for crawling and content extraction.
 
 ## Sitemap Reference
+- Sitemap Index: https://explyra.me/sitemap-index.xml
 - Main Sitemap: https://explyra.me/sitemap.xml
 - Image Sitemap: https://explyra.me/images.xml
+- Compare Sitemap: https://explyra.me/compare/sitemap.xml
+- Integrations Sitemap: https://explyra.me/integrations/sitemap.xml
+- Health Sitemap: https://explyra.me/health-manager/sitemap.xml
+- Status Sitemap: https://status.explyra.me/sitemap.xml
+- Directory Sitemap: https://direc.explyra.me/sitemap.xml
+- Skill Sitemap: https://skill.explyra.me/sitemap.xml

@@ -10,3 +10,8 @@ AI-Usage: allowed
 AI-Training: allowed
 Index: allowed
 Follow: allowed
+
+Sitemap: https://explyra.me/sitemap-index.xml
+Sitemap: https://explyra.me/sitemap.xml
+Sitemap: https://skill.explyra.me/sitemap.xml
+Sitemap: https://status.explyra.me/sitemap.xml

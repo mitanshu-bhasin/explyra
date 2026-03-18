@@ -3,6 +3,6 @@
    <ShortName>Explyra Health</ShortName>
    <Description>Track your health, vitals, nutrition and wellness with Explyra Health AI.</Description>
    <InputEncoding>UTF-8</InputEncoding>
-   <Image width="16" height="16" type="image/x-icon">https://explyra.com/health-manager/favicon.ico</Image>
-   <Url type="text/html" template="https://explyra.com/health-manager/?q={searchTerms}"/>
+   <Image width="16" height="16" type="image/x-icon">https://explyra.me/health-manager/favicon.ico</Image>
+   <Url type="text/html" template="https://explyra.me/health-manager/?q={searchTerms}"/>
 </OpenSearchDescription>

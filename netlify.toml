@@ -19,7 +19,7 @@
   compress = true
 
 # ==============================
-# 🚀 SECURITY & CACHE HEADERS (TESTING MODE)
+# 🚀 SECURITY & CACHE HEADERS (PRODUCTION MODE)
 # ==============================
 [[headers]]
   for = "/*"
@@ -29,8 +29,27 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    # TESTING MODE: Prevent all caching so you can see your updates instantly
-    Cache-Control = "no-cache, no-store, must-revalidate"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
 
 # ==============================
 # 🔒 SENSITIVE FILE PROTECTION
