@@ -54,10 +54,17 @@ let currentUser = null;
 let domains = [];
 let activeDnsDomain = null;
 
+const IS_LOCAL_STATIC = ["127.0.0.1", "localhost"].includes(window.location.hostname);
+const API_BASE = IS_LOCAL_STATIC ? "https://explyra.me/email-app/api" : "/api";
+
+function apiUrl(path) {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE}${normalized}`;
+}
+
 function getApiHintMessage() {
-  const localHost = ["127.0.0.1", "localhost"].includes(window.location.hostname);
-  if (!localHost) return "";
-  return " Local static server detected. Run `vercel dev` inside `email-app` and open that URL so /api endpoints execute properly.";
+  if (!IS_LOCAL_STATIC) return "";
+  return " Local static server detected. Using production API endpoint automatically.";
 }
 
 async function readApiJson(response) {
@@ -164,7 +171,7 @@ function bindStaticDnsUiActions() {
     try {
       const token = await currentUser.getIdToken();
       const domainRecord = domains.find((d) => d.domain === activeDnsDomain);
-      const response = await fetch("/api/dns-setup", {
+      const response = await fetch(apiUrl("/dns-setup"), {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -234,7 +241,7 @@ function renderDomainList() {
       btn.textContent = "Verifying...";
       try {
         const token = await currentUser.getIdToken();
-        const response = await fetch("/api/verify-domain", {
+        const response = await fetch(apiUrl("/verify-domain"), {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -407,7 +414,7 @@ employeeForm.addEventListener("submit", async (event) => {
 
   try {
     const token = await currentUser.getIdToken();
-    const response = await fetch("/api/provision-employee-mailbox", {
+    const response = await fetch(apiUrl("/provision-employee-mailbox"), {
       method: "POST",
       headers: {
         "content-type": "application/json",
