@@ -4817,10 +4817,412 @@
                 width: 25px;
             }
         }
+
+        /* ═══════════════════════════════════════════
+           PRELOADER
+        ═══════════════════════════════════════════ */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #preloader.loaded {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .preloader-logo {
+            animation: preloaderPulse 1.4s ease-in-out infinite;
+        }
+
+        .preloader-logo img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .preloader-bar {
+            width: 200px;
+            height: 3px;
+            background: var(--bg3);
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preloader-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--purp), var(--rose));
+            animation: preloaderSlide 1.2s ease-in-out infinite;
+        }
+
+        @keyframes preloaderPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.88); opacity: 0.6; }
+        }
+
+        @keyframes preloaderSlide {
+            0% { left: -100%; }
+            50% { left: 0%; }
+            100% { left: 100%; }
+        }
+
+        /* ═══════════════════════════════════════════
+           SCROLL PROGRESS BAR
+        ═══════════════════════════════════════════ */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--blue), var(--purp), var(--rose));
+            z-index: 99998;
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 10px var(--purp);
+            transition: width 0.08s linear;
+        }
+
+        /* ═══════════════════════════════════════════
+           CUSTOM CURSOR
+        ═══════════════════════════════════════════ */
+        #cursor-dot,
+        #cursor-ring {
+            pointer-events: none;
+            position: fixed;
+            border-radius: 50%;
+            z-index: 99997;
+            transform: translate(-50%, -50%);
+        }
+
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--blue);
+            top: -100px;
+            left: -100px;
+            box-shadow: 0 0 10px var(--blue), 0 0 20px rgba(21, 70, 192, 0.5);
+        }
+
+        #cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 2px solid rgba(21, 70, 192, 0.45);
+            top: -100px;
+            left: -100px;
+            transition: width 0.25s, height 0.25s, border-color 0.25s, background 0.25s;
+        }
+
+        #cursor-ring.cursor-hover {
+            width: 52px;
+            height: 52px;
+            border-color: var(--blue);
+            background: rgba(21, 70, 192, 0.07);
+        }
+
+        [data-theme="dark"] #cursor-dot {
+            background: var(--blue2);
+            box-shadow: 0 0 10px var(--blue2), 0 0 24px rgba(91, 138, 245, 0.5);
+        }
+
+        [data-theme="dark"] #cursor-ring {
+            border-color: rgba(91, 138, 245, 0.45);
+        }
+
+        @media (hover: none) {
+            #cursor-dot, #cursor-ring { display: none; }
+        }
+
+        /* ═══════════════════════════════════════════
+           ENHANCED REVEAL VARIANTS
+        ═══════════════════════════════════════════ */
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-48px);
+            transition: opacity .7s ease, transform .7s cubic-bezier(.25, 1, .5, 1);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(48px);
+            transition: opacity .7s ease, transform .7s cubic-bezier(.25, 1, .5, 1);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.82);
+            transition: opacity .65s ease, transform .65s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        .reveal-left.visible,
+        .reveal-right.visible,
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ═══════════════════════════════════════════
+           FLOATING ORBS — HERO BG
+        ═══════════════════════════════════════════ */
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 14s ease-in-out infinite;
+        }
+
+        .hero-orb-1 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(21, 70, 192, 0.2) 0%, transparent 70%);
+            top: -80px;
+            right: 8%;
+            animation-delay: 0s;
+        }
+
+        .hero-orb-2 {
+            width: 340px;
+            height: 340px;
+            background: radial-gradient(circle, rgba(109, 40, 217, 0.16) 0%, transparent 70%);
+            bottom: 60px;
+            left: 4%;
+            animation-delay: -5s;
+        }
+
+        .hero-orb-3 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(4, 120, 87, 0.13) 0%, transparent 70%);
+            top: 42%;
+            right: 32%;
+            animation-delay: -9s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33%       { transform: translate(28px, -22px) scale(1.06); }
+            66%       { transform: translate(-18px, 14px) scale(0.94); }
+        }
+
+        /* ═══════════════════════════════════════════
+           BUTTON RIPPLE
+        ═══════════════════════════════════════════ */
+        .btn-hero,
+        .btn-hero-ghost {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.32);
+            transform: scale(0);
+            animation: rippleAnim 0.65s linear;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* ═══════════════════════════════════════════
+           OV-CARD GLOW HALO
+        ═══════════════════════════════════════════ */
+        .ov-card {
+            isolation: isolate;
+        }
+
+        .ov-card::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, var(--card-clr, var(--blue)), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: -1;
+            filter: blur(10px);
+        }
+
+        .ov-card:hover::after {
+            opacity: 0.45;
+        }
+
+        /* ═══════════════════════════════════════════
+           OV-CARD ICON POP ON HOVER
+        ═══════════════════════════════════════════ */
+        .ov-card:hover .ov-ico {
+            animation: iconPop 0.42s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+
+        @keyframes iconPop {
+            0%   { transform: scale(1) rotate(0deg); }
+            50%  { transform: scale(1.35) rotate(-8deg); }
+            100% { transform: scale(1.15) rotate(0deg); }
+        }
+
+        /* ═══════════════════════════════════════════
+           SECTION HEADER UNDERLINE REVEAL
+        ═══════════════════════════════════════════ */
+        .sec-h {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sec-h::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue), var(--purp));
+            border-radius: 2px;
+            transition: width 0.9s cubic-bezier(.25, 1, .5, 1);
+        }
+
+        .sec-h.sec-h-visible::after {
+            width: 100%;
+        }
+
+        /* ═══════════════════════════════════════════
+           PRODUCT SECTION SHIMMER LINE
+        ═══════════════════════════════════════════ */
+        .prod-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(21, 70, 192, 0.5), transparent);
+            animation: sectionShimmerLine 5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes sectionShimmerLine {
+            0%   { left: -60%; }
+            100% { left: 120%; }
+        }
+
+        /* ═══════════════════════════════════════════
+           SUITE PILLS STAGGER
+        ═══════════════════════════════════════════ */
+        .suite-pill {
+            opacity: 0;
+            transform: translateY(12px) scale(0.94);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(.34, 1.56, .64, 1), background .25s, color .25s;
+        }
+
+        .suite-pills.pills-visible .suite-pill {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ═══════════════════════════════════════════
+           NAV SCROLL FROSTED GLASS
+        ═══════════════════════════════════════════ */
+        .main-nav.nav-scrolled {
+            background: rgba(248, 247, 244, 0.94) !important;
+            box-shadow: 0 2px 28px rgba(0, 0, 0, 0.07) !important;
+            backdrop-filter: saturate(180%) blur(22px) !important;
+            -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
+        }
+
+        [data-theme="dark"] .main-nav.nav-scrolled {
+            background: rgba(8, 11, 20, 0.94) !important;
+            box-shadow: 0 2px 28px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        /* ═══════════════════════════════════════════
+           HERO BOTTOM GRADIENT VEIL
+        ═══════════════════════════════════════════ */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 130px;
+            background: linear-gradient(to bottom, transparent, var(--bg));
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* ═══════════════════════════════════════════
+           SUPPORT CARD ICON LIFT
+        ═══════════════════════════════════════════ */
+        .support-card .supp-icon {
+            transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1), box-shadow 0.3s;
+        }
+
+        .support-card:hover .supp-icon {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 24px rgba(21, 70, 192, 0.25);
+        }
+
+        /* ═══════════════════════════════════════════
+           SOCIAL PROOF LOGO BOUNCE
+        ═══════════════════════════════════════════ */
+        .sp-logo {
+            transition: transform 0.35s cubic-bezier(.34, 1.56, .64, 1), color 0.25s;
+        }
+
+        .sp-logo:hover {
+            transform: translateY(-4px) scale(1.08);
+            color: var(--blue);
+        }
+
+        /* ═══════════════════════════════════════════
+           HERO STAT HOVER LIFT
+        ═══════════════════════════════════════════ */
+        .h-stat {
+            transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+            cursor: default;
+        }
+
+        .h-stat:hover {
+            transform: translateY(-4px);
+        }
+
+        .h-stat-num {
+            transition: color 0.3s;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- PRELOADER -->
+    <div id="preloader" aria-hidden="true">
+        <div class="preloader-logo">
+            <img src="nobg.png" alt="Explyra">
+        </div>
+        <div class="preloader-bar"></div>
+    </div>
+
+    <!-- SCROLL PROGRESS -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
+    <!-- CUSTOM CURSOR -->
+    <div id="cursor-dot" aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
 
     <!-- HEADER & NAV -->
     <header>
@@ -5241,6 +5643,9 @@
         <section class="hero" aria-label="Hero">
             <canvas id="hero-3d-canvas"></canvas>
             <div class="hero-mesh"></div>
+            <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+            <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+            <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
             <div class="hero-particles">
                 <div class="p-dot" style="top:20%;left:15%;animation-delay:0s"></div>
                 <div class="p-dot" style="top:60%;left:5%;animation-delay:1s"></div>
@@ -5422,7 +5827,7 @@
         <section class="prod-section expense-sec" id="expense">
             <div class="blob"></div>
             <div class="prod-inner">
-                <div class="reveal">
+                <div class="reveal-left">
                     <div class="prod-label" style="color:var(--blue)">💼 Explyra Expense</div>
                     <h2 class="prod-h display">Control every rupee. <em>Effortlessly.</em></h2>
                     <p class="prod-p">Enterprise-grade expense management for modern companies. From submission to
@@ -5469,7 +5874,7 @@
                             Demo</a>
                     </div>
                 </div>
-                <div class="reveal d2">
+                <div class="reveal-right d2">
                     <div class="exp-dash">
                         <div class="dash-bar">
                             <div class="dash-dot" style="background:#FF5F57"></div>
@@ -5541,7 +5946,7 @@
         <section class="prod-section dev-sec" id="crm">
             <div class="blob" style="background:var(--blue);bottom:-100px;left:-100px;width:500px;height:500px"></div>
             <div class="prod-inner rev">
-                <div class="reveal d2">
+                <div class="reveal-left d2">
                     <div class="dev-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
                         <div class="dev-bar"
                             style="background:#1E1E2E;padding:.85rem 1.2rem;display:flex;align-items:center;gap:.5rem">
@@ -5593,7 +5998,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="reveal">
+                <div class="reveal-right">
                     <div class="prod-label" style="color:var(--blue)">📈 Explyra CRM</div>
                     <h2 class="prod-h display">Accelerate sales. <em>Close deals faster.</em></h2>
                     <p class="prod-p">Manage leads, track your pipeline, and analyze sales performance with Explyra CRM.
@@ -5634,7 +6039,7 @@
         <section class="prod-section health-sec" id="health">
             <div class="blob"></div>
             <div class="prod-inner rev">
-                <div class="reveal d2">
+                <div class="reveal-left d2">
                     <div class="health-card">
                         <div class="hc-header">
                             <div class="hc-weather">
@@ -5701,7 +6106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="reveal">
+                <div class="reveal-right">
                     <div class="prod-label" style="color:var(--teal)">🏃 Explyra Health</div>
                     <h2 class="prod-h display">Your AI health companion, <em>always on.</em></h2>
                     <p class="prod-p">Track every dimension of your health — physical, mental, and nutritional. Explyra
@@ -5755,7 +6160,7 @@
         <section class="prod-section learn-sec" id="learning">
             <div class="blob"></div>
             <div class="prod-inner">
-                <div class="reveal">
+                <div class="reveal-left">
                     <div class="prod-label" style="color:var(--amber)">📚 Explyra Learning</div>
                     <h2 class="prod-h display">Master the skills that <em>define tomorrow.</em></h2>
                     <p class="prod-p">Explyra Learning offers expert-crafted courses on the most in-demand digital
@@ -5795,7 +6200,7 @@
                         Learning
                         →</a>
                 </div>
-                <div class="reveal d2">
+                <div class="reveal-right d2">
                     <div class="learn-card">
                         <div class="lc-top">
                             <div class="lc-top-label">Currently Learning</div>
@@ -5864,7 +6269,7 @@
         <section class="prod-section dev-sec" id="developers">
             <div class="blob"></div>
             <div class="prod-inner rev">
-                <div class="reveal d2">
+                <div class="reveal-left d2">
                     <div class="dev-card">
                         <div class="dev-bar">
                             <div class="dev-bar-dot" style="background:#FF5F57"></div>
@@ -5939,7 +6344,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="reveal">
+                <div class="reveal-right">
                     <div class="prod-label" style="color:var(--purp)">⚡ Explyra Developers</div>
                     <h2 class="prod-h display">Every tool a developer <em>actually needs.</em></h2>
                     <p class="prod-p">Stop juggling 10 different websites. Explyra Developers brings every essential
@@ -6929,6 +7334,179 @@
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
+        })();
+    </script>
+
+    <!-- ANIMATION ENHANCEMENTS -->
+    <script>
+        (function () {
+            /* Animation constants */
+            const PRELOADER_HIDE_DELAY = 350; /* ms after load before hiding preloader */
+            const NAV_SCROLL_THRESHOLD = 60;  /* px scrolled before nav gets frosted glass */
+            const MAGNETIC_STRENGTH = 0.22;   /* fraction of cursor offset applied to button */
+            const TILT_PERSPECTIVE = 600;     /* px — CSS perspective for card tilt */
+            const TILT_ROTATION = 9;          /* degrees max tilt on each axis */
+            const TILT_LIFT = -4;             /* px translateY on hover */
+            const TILT_SCALE = 1.025;         /* scale factor when card is hovered */
+            const PILL_STAGGER = 55;          /* ms delay between each suite pill appearance */
+            const COUNTER_DURATION = 1600;    /* ms for stat number count-up animation */
+
+            /* ── PRELOADER ── */
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                window.addEventListener('load', () => {
+                    setTimeout(() => preloader.classList.add('loaded'), PRELOADER_HIDE_DELAY);
+                });
+            }
+
+            /* ── SCROLL PROGRESS BAR ── */
+            const scrollProgress = document.getElementById('scroll-progress');
+            if (scrollProgress) {
+                const updateProgress = () => {
+                    const scrollTop = document.documentElement.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollProgress.style.width = (scrollTop / scrollHeight * 100) + '%';
+                };
+                window.addEventListener('scroll', updateProgress, { passive: true });
+            }
+
+            /* ── NAV FROSTED GLASS ON SCROLL ── */
+            const mainNav = document.querySelector('.main-nav');
+            if (mainNav) {
+                const toggleNav = () => {
+                    if (window.scrollY > NAV_SCROLL_THRESHOLD) mainNav.classList.add('nav-scrolled');
+                    else mainNav.classList.remove('nav-scrolled');
+                };
+                window.addEventListener('scroll', toggleNav, { passive: true });
+            }
+
+            /* ── CUSTOM CURSOR ── */
+            const cursorDot = document.getElementById('cursor-dot');
+            const cursorRing = document.getElementById('cursor-ring');
+            if (cursorDot && cursorRing && window.matchMedia('(hover: hover)').matches) {
+                let dotX = -200, dotY = -200, ringX = -200, ringY = -200;
+
+                document.addEventListener('mousemove', e => {
+                    dotX = e.clientX; dotY = e.clientY;
+                    cursorDot.style.left = dotX + 'px';
+                    cursorDot.style.top = dotY + 'px';
+                }, { passive: true });
+
+                const lerp = (a, b, t) => a + (b - a) * t;
+                const animRing = () => {
+                    ringX = lerp(ringX, dotX, 0.1);
+                    ringY = lerp(ringY, dotY, 0.1);
+                    cursorRing.style.left = ringX + 'px';
+                    cursorRing.style.top = ringY + 'px';
+                    requestAnimationFrame(animRing);
+                };
+                animRing();
+
+                const hoverEls = document.querySelectorAll('a, button, .ov-card, .suite-pill, .support-card, .test-card');
+                hoverEls.forEach(el => {
+                    el.addEventListener('mouseenter', () => cursorRing.classList.add('cursor-hover'));
+                    el.addEventListener('mouseleave', () => cursorRing.classList.remove('cursor-hover'));
+                });
+            }
+
+            /* ── BUTTON RIPPLE ── */
+            document.querySelectorAll('.btn-hero, .btn-hero-ghost').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height) * 1.6;
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size / 2}px;top:${e.clientY - rect.top - size / 2}px`;
+                    this.appendChild(ripple);
+                    ripple.addEventListener('animationend', () => ripple.remove());
+                });
+            });
+
+            /* ── MAGNETIC BUTTONS ── */
+            document.querySelectorAll('.btn-hero, .btn-hero-ghost').forEach(btn => {
+                btn.addEventListener('mousemove', function (e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = (e.clientX - rect.left - rect.width / 2) * MAGNETIC_STRENGTH;
+                    const y = (e.clientY - rect.top - rect.height / 2) * MAGNETIC_STRENGTH;
+                    this.style.transform = `translate(${x}px, ${y}px)`;
+                });
+                btn.addEventListener('mouseleave', function () {
+                    this.style.transform = '';
+                });
+            });
+
+            /* ── CARD 3D TILT ── */
+            document.querySelectorAll('.ov-card').forEach(card => {
+                card.addEventListener('mousemove', function (e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    this.style.transform = `perspective(${TILT_PERSPECTIVE}px) rotateX(${-y * TILT_ROTATION}deg) rotateY(${x * TILT_ROTATION}deg) translateY(${TILT_LIFT}px) scale(${TILT_SCALE})`;
+                    this.style.transition = 'transform 0.08s linear';
+                });
+                card.addEventListener('mouseleave', function () {
+                    this.style.transform = '';
+                    this.style.transition = 'transform 0.5s cubic-bezier(.25,1,.5,1)';
+                    setTimeout(() => this.style.transition = '', 500);
+                });
+            });
+
+            /* ── HERO STAT COUNTER ── */
+            const animateCounter = el => {
+                const text = el.textContent.trim();
+                const numMatch = text.match(/[\d,.]+/);
+                if (!numMatch) return;
+                const raw = numMatch[0].replace(/,/g, '');
+                const isFloat = raw.includes('.');
+                const target = parseFloat(raw);
+                const suffix = text.slice(text.indexOf(numMatch[0]) + numMatch[0].length);
+                const prefix = text.slice(0, text.indexOf(numMatch[0]));
+                const startTime = performance.now();
+                const easeOut = t => 1 - Math.pow(1 - t, 3);
+                const tick = now => {
+                    const progress = Math.min((now - startTime) / COUNTER_DURATION, 1);
+                    const value = target * easeOut(progress);
+                    el.textContent = prefix + (isFloat ? value.toFixed(1) : Math.floor(value).toLocaleString()) + suffix;
+                    if (progress < 1) requestAnimationFrame(tick);
+                    else el.textContent = text;
+                };
+                requestAnimationFrame(tick);
+            };
+
+            const counterIO = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { animateCounter(e.target); counterIO.unobserve(e.target); }
+                });
+            }, { threshold: 0.6 });
+            document.querySelectorAll('.h-stat-num').forEach(el => counterIO.observe(el));
+
+            /* ── ENHANCED REVEAL (left / right / scale) ── */
+            const enhIO = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.08 });
+            document.querySelectorAll('.reveal-left, .reveal-right, .reveal-scale').forEach(el => enhIO.observe(el));
+
+            /* ── SUITE PILLS STAGGER ── */
+            const pillsIO = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('pills-visible');
+                        e.target.querySelectorAll('.suite-pill').forEach((pill, i) => {
+                            pill.style.transitionDelay = (i * PILL_STAGGER) + 'ms';
+                        });
+                        pillsIO.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            document.querySelectorAll('.suite-pills').forEach(el => pillsIO.observe(el));
+
+            /* ── SECTION HEADING UNDERLINE ── */
+            const secHIO = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('sec-h-visible'); secHIO.unobserve(e.target); }
+                });
+            }, { threshold: 0.5 });
+            document.querySelectorAll('.sec-h').forEach(el => secHIO.observe(el));
         })();
     </script>
 </body>
