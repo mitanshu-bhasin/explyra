@@ -753,7 +753,8 @@
     <!-- User Modal -->
     <div id="user-modal"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
-        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto" id="user-modal-content">
+        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto"
+            id="user-modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold" id="user-modal-title">Add User</h3>
                 <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i
@@ -1084,20 +1085,26 @@
                 <div class="border-t border-slate-100 dark:border-slate-800"></div>
 
                 <div>
-                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <h5
+                        class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <i class="fa-brands fa-google-drive"></i> Integrations
                     </h5>
-                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-5 h-5">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"
+                                    alt="Google Drive" class="w-5 h-5">
                             </div>
                             <div>
                                 <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Drive</h6>
-                                <p class="text-[9px] text-slate-500 font-medium" id="gdrive-status-text">Not connected</p>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gdrive-status-text">Not connected
+                                </p>
                             </div>
                         </div>
-                        <button type="button" id="btn-gdrive-connect" onclick="window.GDriveService && window.GDriveService.authenticate()"
+                        <button type="button" id="btn-gdrive-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate()"
                             class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                             <i class="fa-solid fa-link"></i> Connect
                         </button>
@@ -1233,7 +1240,8 @@
                 <div id="google-signin-container" class="mt-8 space-y-3">
                     <button type="button" onclick="handleGoogleLogin()"
                         class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
+                            alt="Google">
                         Sign in with Google
                     </button>
                     <button type="button" onclick="window.location.href='emp.html'"
@@ -2839,39 +2847,56 @@
         })();
     </script>
     </script>
-    
+
     <!-- P2P Video Call Modal -->
-    <div id="modal-video-call" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
+    <div id="modal-video-call"
+        class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
         <div class="absolute top-4 right-4 flex gap-2">
-            <button onclick="window.leaveVideoCall()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i class="fa-solid fa-phone-slash ml-1"></i></button>
+            <button onclick="window.leaveVideoCall()"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i
+                    class="fa-solid fa-phone-slash ml-1"></i></button>
         </div>
         <div class="flex-1 min-h-0 flex flex-col gap-4 items-center justify-center p-4">
             <!-- Grid for remote videos -->
-            <div id="video-grid" class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory flex-nowrap md:justify-center pt-8">
+            <div id="video-grid"
+                class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory flex-nowrap md:justify-center pt-8">
             </div>
         </div>
         <!-- Local Video and Controls -->
-        <div class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
-            <div class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
-                <video id="local-video" playsinline autoplay muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+        <div
+            class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
+            <div
+                class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
+                <video id="local-video" playsinline autoplay muted
+                    class="w-full h-full object-cover transform scale-x-[-1]"></video>
                 <div class="absolute bottom-1 left-1 bg-black/50 text-[10px] text-white px-1.5 py-0.5 rounded">You</div>
             </div>
             <div class="flex items-center gap-4">
-                <button id="btn-toggle-audio" onclick="window.toggleAudio()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-microphone"></i></button>
-                <button id="btn-toggle-video" onclick="window.toggleVideo()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-video"></i></button>
-                <button id="btn-screen-share" onclick="window.toggleScreenShare()" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg" title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
-                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()" class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg" title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
+                <button id="btn-toggle-audio" onclick="window.toggleAudio()"
+                    class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i
+                        class="fa-solid fa-microphone"></i></button>
+                <button id="btn-toggle-video" onclick="window.toggleVideo()"
+                    class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i
+                        class="fa-solid fa-video"></i></button>
+                <button id="btn-screen-share" onclick="window.toggleScreenShare()"
+                    class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg"
+                    title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
+                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()"
+                    class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg"
+                    title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
             </div>
             <div class="w-32 md:w-48 hidden md:block"></div>
         </div>
     </div>
 
     <!-- Add Member to Call Modal -->
-    <div id="modal-add-member-call" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
+    <div id="modal-add-member-call"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up">
             <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Add Member to Call</h3>
-                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
