@@ -114,7 +114,11 @@ function setFromOptions(mailboxes) {
 
 onAuthStateChanged(auth, (user) => {
   clearSubscriptions();
-  if (!user) return;
+  if (!user) {
+    alert("Please sign in first to open inbox and compose.");
+    window.location.href = "./index.html";
+    return;
+  }
 
   const mailboxesQuery = query(collection(db, "mailboxes"), where("userId", "==", user.uid));
   onSnapshot(mailboxesQuery, (snap) => {

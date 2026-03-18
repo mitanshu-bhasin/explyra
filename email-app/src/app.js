@@ -193,8 +193,9 @@ $('google-signin-btn').onclick = async () => {
 
 $('email-login-form').onsubmit = async (e) => {
   e.preventDefault();
-  const email = `${$('login-prefix').value.trim()}@explyra.me`;
+  const email = $('login-email').value.trim().toLowerCase();
   const pass = $('login-password').value;
+  if (!email || !pass) return showToast('Fill all required fields', 'error');
   try { await signInWithEmailAndPassword(auth, email, pass); } catch (err) { showToast(err.message, 'error'); }
 };
 
@@ -215,13 +216,11 @@ $('show-login-btn').onclick = () => {
 $('email-signup-form').onsubmit = async (e) => {
   e.preventDefault();
   const name = $('signup-name').value.trim();
-  const personalEmail = $('signup-personal-email').value.trim();
-  const prefix = $('signup-prefix').value.trim();
+  const personalEmail = $('signup-personal-email').value.trim().toLowerCase();
+  const email = $('signup-email').value.trim().toLowerCase();
   const pass = $('signup-password').value;
-  
-  if (!prefix || !pass) return showToast('Fill all required fields', 'error');
-  
-  const email = `${prefix}@explyra.me`;
+
+  if (!email || !pass) return showToast('Fill all required fields', 'error');
   
   try {
     showToast('Creating account...', 'success');
@@ -231,7 +230,9 @@ $('email-signup-form').onsubmit = async (e) => {
     await updateProfile(cred.user, { displayName: name });
     
     // Save to users collection
-    await setDoc(doc(db, 'users', email), {
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      uid: cred.user.uid,
+      email: email,
       displayName: name,
       personalEmail: personalEmail,
       forwarding: true,
@@ -266,14 +267,14 @@ function initListeners() {
   }
 
   // Contacts
-  const qContacts = query(collection(db, 'users', currentUser.email, 'contacts'));
+  const qContacts = query(collection(db, 'users', currentUser.uid, 'contacts'));
   onSnapshot(qContacts, (snap) => {
     contacts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (currentSection === 'contacts') renderContacts();
   });
 
   // Calendar
-  const qEvents = query(collection(db, 'users', currentUser.email, 'events'), orderBy('date'));
+  const qEvents = query(collection(db, 'users', currentUser.uid, 'events'), orderBy('date'));
   onSnapshot(qEvents, (snap) => {
     events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (currentSection === 'calendar') renderCalendar();
@@ -553,14 +554,14 @@ $('contact-form').onsubmit = async (e) => {
   e.preventDefault();
   const name = $('contact-name').value;
   const email = $('contact-email').value;
-  await addDoc(collection(db, 'users', currentUser.email, 'contacts'), { name, email });
+  await addDoc(collection(db, 'users', currentUser.uid, 'contacts'), { name, email });
   $('contact-modal').classList.add('hidden');
   $('contact-form').reset();
   showToast('Contact Added');
 };
 
 window.deleteContact = async (id) => {
-  await deleteDoc(doc(db, 'users', currentUser.email, 'contacts', id));
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'contacts', id));
 };
 
 // ============================
@@ -610,7 +611,7 @@ $('event-form').onsubmit = async (e) => {
   const date = $('event-date').value;
   const time = $('event-time').value;
   const desc = $('event-desc').value;
-  await addDoc(collection(db, 'users', currentUser.email, 'events'), { title, date, time, desc });
+  await addDoc(collection(db, 'users', currentUser.uid, 'events'), { title, date, time, desc });
   $('event-modal').classList.add('hidden');
   $('event-form').reset();
   showToast('Meeting Scheduled');
@@ -621,7 +622,7 @@ $('event-form').onsubmit = async (e) => {
 // ============================
 
 async function loadSettings() {
-  const d = await getDoc(doc(db, 'users', currentUser.email));
+  const d = await getDoc(doc(db, 'users', currentUser.uid));
   if (d.exists()) {
     const data = d.data();
     applySettings(data);
@@ -656,7 +657,7 @@ $('save-settings-btn').onclick = async () => {
     forwarding: $('settings-forwarding').checked,
     darkMode: document.documentElement.classList.contains('dark')
   };
-  await setDoc(doc(db, 'users', currentUser.email), settings, { merge: true });
+  await setDoc(doc(db, 'users', currentUser.uid), settings, { merge: true });
   applySettings(settings);
   showToast('Changes Saved!');
   $('settings-modal').classList.add('hidden');

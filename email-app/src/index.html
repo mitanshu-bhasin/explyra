@@ -151,15 +151,12 @@
         </svg>
       </div>
       <h1 class="login-title">MailBox</h1>
-      <p class="login-subtitle">Sign in with your @explyra.me account</p>
+      <p class="login-subtitle">Sign in with your email account</p>
 
       <!-- Login Form -->
       <div id="login-form-container">
         <form id="email-login-form" onsubmit="return false;" class="space-y-4 mb-6">
-          <div class="input-group">
-            <input type="text" id="login-prefix" placeholder="Username" required class="input-vercel" style="padding-right:7.5rem;">
-            <span class="input-suffix">@explyra.me</span>
-          </div>
+          <input type="email" id="login-email" placeholder="you@domain.com" required class="input-vercel">
           <input type="password" id="login-password" placeholder="Password" required class="input-vercel">
           <button type="submit" id="email-login-btn" class="btn-primary">
             Sign In
@@ -183,11 +180,8 @@
       <div id="signup-form-container" class="hidden">
         <form id="email-signup-form" onsubmit="return false;" class="space-y-4 mb-6">
           <input type="text" id="signup-name" placeholder="Your Name" required class="input-vercel">
-          <input type="email" id="signup-personal-email" placeholder="Personal Email (for forwarding)" required class="input-vercel">
-          <div class="input-group">
-            <input type="text" id="signup-prefix" placeholder="Choose Username" required class="input-vercel" style="padding-right:7.5rem;">
-            <span class="input-suffix">@explyra.me</span>
-          </div>
+          <input type="email" id="signup-email" placeholder="you@domain.com" required class="input-vercel">
+          <input type="email" id="signup-personal-email" placeholder="Recovery / Personal Email (optional)" class="input-vercel">
           <input type="password" id="signup-password" placeholder="Set Password" required class="input-vercel">
           <button type="submit" id="email-signup-btn" class="btn-primary">
             Create Account

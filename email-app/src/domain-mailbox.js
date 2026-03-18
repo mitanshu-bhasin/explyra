@@ -58,7 +58,12 @@ function renderDomainList() {
           ${item.verified ? "Verified" : "Pending DNS verification"}
         </p>
       </div>
-      <button data-domain="${item.domain}" class="show-dns px-3 py-1 border rounded">DNS</button>
+      <div class="flex gap-2">
+        <button data-domain="${item.domain}" class="show-dns px-3 py-1 border rounded">DNS</button>
+        ${item.verified
+          ? '<button disabled class="px-3 py-1 border rounded bg-emerald-50 text-emerald-700 border-emerald-200">Verified</button>'
+          : `<button data-id="${item.id}" data-domain="${item.domain}" class="verify-domain px-3 py-1 border rounded bg-blue-600 text-white border-blue-600">Verify</button>`}
+      </div>
     `;
     domainList.appendChild(li);
   });
@@ -67,6 +72,49 @@ function renderDomainList() {
     btn.addEventListener("click", () => {
       dnsDomainText.textContent = btn.dataset.domain;
       dnsModal.showModal();
+    });
+  });
+
+  domainList.querySelectorAll(".verify-domain").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!currentUser) {
+        alert("Please sign in first.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Verifying...";
+      try {
+        const token = await currentUser.getIdToken();
+        const response = await fetch("/api/verify-domain", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            domainId: btn.dataset.id,
+            domain: btn.dataset.domain
+          })
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || "Verification failed");
+        }
+
+        if (result.verified) {
+          alert("Domain verified successfully.");
+        } else {
+          const missingMx = (result.missingMx || []).join(", ");
+          alert(`Domain not verified yet. SPF or MX records missing. Missing MX: ${missingMx || "none"}`);
+        }
+      } catch (error) {
+        alert(String(error.message || error));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Verify";
+      }
     });
   });
 }
@@ -105,7 +153,11 @@ function subscribeMailboxes(uid) {
 
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
-  if (!user) return;
+  if (!user) {
+    alert("Please sign in first to manage domains and mailboxes.");
+    window.location.href = "./index.html";
+    return;
+  }
 
   const q = query(collection(db, "custom_domains"), where("userId", "==", user.uid));
   onSnapshot(q, (snap) => {

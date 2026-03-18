@@ -17,21 +17,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Fetch user by email address (which we use as the doc ID in the users collection)
-    const userDocRef = db.collection('users').doc(email.toLowerCase());
-    const userDoc = await userDocRef.get();
+    const normalizedEmail = email.toLowerCase();
 
-    if (!userDoc.exists) {
+    // Users are stored by UID; resolve by email field.
+    const q = await db.collection('users').where('email', '==', normalizedEmail).limit(1).get();
+
+    if (q.empty) {
       return res.status(200).json({ 
         forwardingEnabled: false, 
         personalEmail: null 
       });
     }
 
-    const userData = userDoc.data();
+    const userData = q.docs[0].data();
     
     return res.status(200).json({ 
-      forwardingEnabled: userData.forwardingEnabled || false,
+      forwardingEnabled: userData.forwardingEnabled ?? userData.forwarding ?? false,
       personalEmail: userData.personalEmail || null
     });
   } catch (error) {
