@@ -169,5 +169,96 @@ window.CrmContacts = {
                 { duration: 0.4, delay: window.Motion.stagger(0.03), easing: [0.22, 1, 0.36, 1] }
             );
         }
+    },
+
+    importFromGoogle(sync = false) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+        firebase.auth().signInWithPopup(provider).then(async (result) => {
+            const token = result.credential.accessToken;
+
+            if (window.showToast) window.showToast("Successfully connected to Google. Fetching contacts...", "info");
+
+            try {
+                const response = await fetch('https://people.googleapis.com/v1/people/me/connections?personFields=names,emailAddresses,phoneNumbers,organizations', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                const connections = data.connections;
+
+                if (!connections || connections.length === 0) {
+                    if (window.showToast) window.showToast("No contacts found in your Google account.", "warning");
+                    return;
+                }
+
+                let newContacts = 0;
+                let updatedContacts = 0;
+
+                for (const person of connections) {
+                    const crmContact = this._mapGoogleContactToCrmContact(person);
+
+                    if (!crmContact.email) continue; // Skip contacts without email
+
+                    const existingContact = this.contacts.find(c => c.email === crmContact.email);
+
+                    if (existingContact) {
+                        if (sync) {
+                            // Update existing contact
+                            await window.CrmApi.withRetry(() => window.db.collection('crm_contacts').doc(existingContact.id).update(crmContact), 'Update Contact');
+                            updatedContacts++;
+                        }
+                    } else {
+                        // Add new contact
+                        await window.CrmApi.withRetry(() => window.db.collection('crm_contacts').add(crmContact), 'Create Contact');
+                        newContacts++;
+                    }
+                }
+
+                if (window.showToast) window.showToast(`Import complete! Added ${newContacts} new contacts and updated ${updatedContacts} contacts.`, "success");
+
+            } catch (err) {
+                console.error("Error fetching contacts:", err);
+                if (window.showToast) window.showToast("Error fetching contacts. See console for details.", "error");
+            }
+
+        }).catch((error) => {
+            console.error("Google Sign-In Error:", error);
+            if (window.showToast) window.showToast("Google Sign-In Failed: " + error.message, "error");
+        });
+    },
+
+    syncWithGoogle() {
+        this.importFromGoogle(true);
+    },
+
+    _mapGoogleContactToCrmContact(googleContact) {
+        const name = this._getPrimaryValue(googleContact.names, 'displayName');
+        const email = this._getPrimaryValue(googleContact.emailAddresses, 'value');
+        const phone = this._getPrimaryValue(googleContact.phoneNumbers, 'value');
+        const company = this._getPrimaryValue(googleContact.organizations, 'name');
+
+        const crmContact = {
+            name: name || '',
+            email: email || '',
+            phone: phone || '',
+            company: company || '',
+            companyId: window.companyId,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        return crmContact;
+    },
+
+    _getPrimaryValue(field, valueKey) {
+        if (!field || field.length === 0) {
+            return null;
+        }
+        const primaryField = field.find(f => f.metadata.primary);
+        return primaryField ? primaryField[valueKey] : field[0][valueKey];
     }
 };

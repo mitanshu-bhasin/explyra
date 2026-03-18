@@ -1005,6 +1005,14 @@
                                 <input type="text" id="search-contacts" placeholder="Search contacts..."
                                     class="search-bar" style="width: 220px;">
                             </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="CrmContacts.importFromGoogle()" class="btn-vercel-secondary text-xs">
+                                    <i class="fab fa-google mr-2"></i> Import from Google
+                                </button>
+                                <button onclick="CrmContacts.syncWithGoogle()" class="btn-vercel-secondary text-xs">
+                                    <i class="fas fa-sync-alt mr-2"></i> Sync from Google
+                                </button>
+                            </div>
                         </div>
                         <div class="p-4">
                             <div id="contacts-grid"

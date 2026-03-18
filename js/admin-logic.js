@@ -280,7 +280,7 @@ onAuthStateChanged(auth, async (user) => {
                     return;
                 }
 
-                if (!userData.companyId) {
+                if (!userData.companyId && !['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                     showToast("No company assigned to this account", "error");
                     await signOut(auth);
                     return;
@@ -2770,6 +2770,28 @@ window.confirmDeleteUser = async () => {
     }
 };
 
+window.toggleUserStatus = async (id, currentStatus) => {
+    const user = globalUsersCache.find(u => u.id === id);
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
+    
+    if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
+        return showToast("Access Denied: Main Admin status cannot be changed.", "error");
+    }
+
+    const newStatus = currentStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+    if (!await confirm(`Are you sure you want to ${newStatus === 'BLOCKED' ? 'BLOCK' : 'UNBLOCK'} this user?`)) return;
+
+    try {
+        await updateDoc(doc(db, "users", id), { status: newStatus });
+        showToast(`User ${newStatus === 'BLOCKED' ? 'blocked' : 'activated'} successfully!`, "success");
+        if (typeof renderUsers === 'function') renderUsers();
+        else if (typeof fetchUsers === 'function') fetchUsers();
+        else location.reload(); // Fallback
+    } catch (e) {
+        showToast("Error updating status: " + e.message, "error");
+    }
+};
+
 document.getElementById('user-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -3052,8 +3074,9 @@ function renderUserRows(usersList) {
         const uRank = roleRank[u.role] || 1;
         let canEdit = myRank > uRank || userData.role === 'ADMIN';
 
+        const MAIN_ADMIN_EMAILS_LIST = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
         // PROTECTION: Main Admin cannot be edited/deleted by others
-        if (u.email === MAIN_ADMIN_EMAIL && userData.email !== MAIN_ADMIN_EMAIL) {
+        if (MAIN_ADMIN_EMAILS_LIST.includes(u.email) && !MAIN_ADMIN_EMAILS_LIST.includes(userData.email)) {
             canEdit = false;
         }
 
@@ -3097,6 +3120,7 @@ function renderUserRows(usersList) {
                         ${canEdit ? `
                             <button onclick="editUser('${u.id}')" class="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-green-50 hover:text-green-600 transition uppercase tracking-widest border border-slate-100 dark:border-slate-700">Edit Profile</button>
                             ${u.email !== currentUser?.email ? `
+                                <button onclick="toggleUserStatus('${u.id}', '${u.status || 'ACTIVE'}')" class="px-3 py-1.5 text-[10px] font-bold ${u.status === 'BLOCKED' ? 'text-green-600 bg-green-50' : 'text-orange-400 bg-orange-50/10'} rounded-lg transition uppercase tracking-widest">${u.status === 'BLOCKED' ? 'Unblock' : 'Block'}</button>
                                 <button onclick="showDeleteModal('${u.id}', '${u.name || u.email}')" class="px-3 py-1.5 text-[10px] font-bold text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition uppercase tracking-widest">Delete</button>
                             ` : ''}
                         ` : `
