@@ -9,11 +9,15 @@ function buildRawEmail({ fromEmail, fromName, toEmail, subject, htmlContent }) {
   const senderName = escapeHeaderValue(fromName || fromEmail);
   const textBody = htmlToText(htmlContent) || " ";
   const boundary = `cfb-${crypto.randomUUID()}`;
+  const messageId = `<${crypto.randomUUID()}@explyra.me>`;
+  const date = new Date().toUTCString();
 
   return [
     `From: ${senderName} <${fromEmail}>`,
     `To: <${toEmail}>`,
     `Subject: ${safeSubject}`,
+    `Date: ${date}`,
+    `Message-ID: ${messageId}`,
     "MIME-Version: 1.0",
     `Content-Type: multipart/alternative; boundary=\"${boundary}\"`,
     "",
