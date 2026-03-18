@@ -13,7 +13,8 @@ window.EXPLYRA_CONFIG = {
         "measurementId": "G-TFBZ5GZ22C"
     },
     "ai": {
-        "model": "moonshotai/kimi-k2-instruct-0905"
+        "model": "moonshotai/kimi-k2-instruct-0905",
+        "geminiApiKey": "AIzaSyCdJ0UQv7sQ4ExCufa9hWUy11og7IrpCgM"
     },
     "analyticsId": "G-TFBZ5GZ22C",
     "emailApp": {

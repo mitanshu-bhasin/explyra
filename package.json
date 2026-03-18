@@ -4,8 +4,9 @@
     "description": "Enterprise Expense Management System",
     "main": "index.html",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "node scripts/sync-env.js && powershell -Command \"if (-not (Test-Path dist)) { New-Item -Path dist -ItemType Directory }; npx -y minify index.html | Out-File -FilePath dist/index.html -Encoding utf8; Get-ChildItem -Path . -File -Filter *.html | Where-Object { $_.Name -ne 'index.html' } | ForEach-Object { Copy-Item $_.FullName -Destination dist/ -Force }; Copy-Item css, js, assets, email-app, booking, status, api, functions, nobg.png, mitanshu.png, _headers, _redirects -Destination dist -Recurse -Force -ErrorAction SilentlyContinue\""
+        "start": "npx serve .",
+        "test": "node _test.js",
+        "build": "node scripts/sync-env.js && powershell -Command \"if (-not (Test-Path dist)) { New-Item -Path dist -ItemType Directory | Out-Null }; npx -y minify index.html | Out-File -FilePath dist/index.html -Encoding utf8; Get-ChildItem -Path . -File | Where-Object { $_.Name -ne 'index.html' -and $_.Name -ne 'package-lock.json' -and $_.Name -ne 'package.json' -and -not $_.Name.StartsWith('.') -and $_.Extension -ne '.log' -and $_.Name -ne 'Expense Tracker.code-workspace' } | ForEach-Object { Copy-Item $_.FullName -Destination dist/ -Force }; Get-ChildItem -Path . -Directory | Where-Object { @('node_modules','.git','dist','www','.firebase','.wrangler','android') -notcontains $_.Name } | ForEach-Object { Copy-Item $_.FullName -Destination dist -Recurse -Force -ErrorAction SilentlyContinue }; Get-ChildItem -Path dist -Directory -Recurse -ErrorAction SilentlyContinue | Where-Object { @('node_modules','.git','.wrangler','.next') -contains $_.Name } | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }\""
     },
     "keywords": [
         "expense",

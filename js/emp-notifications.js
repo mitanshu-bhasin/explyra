@@ -164,7 +164,11 @@ window.renderNotifList = (notifications) => {
 window.openNotifPdp = async (n) => {
     const modal = document.getElementById('modal-notif-pdp');
     if (!modal) return;
-    modal.classList.remove('hidden');
+    if (typeof window.openModalWithHistory === 'function') {
+        window.openModalWithHistory('modal-notif-pdp');
+    } else {
+        modal.classList.remove('hidden');
+    }
 
     document.getElementById('pdp-notif-title').textContent = n.title || 'Notification';
     document.getElementById('pdp-notif-sender').textContent = n.senderName || n.sender || 'System';

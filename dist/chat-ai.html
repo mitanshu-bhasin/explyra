@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra AI | Premium Uncensored Intelligence</title>
+    
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    
+    <style>
+        :root {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --bg4: #1B2235;
+            --surf: rgba(20, 25, 40, 0.7);
+            --bdr: rgba(255, 255, 255, 0.08);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --blue: #1546C0;
+            --blue-glow: rgba(21, 70, 192, 0.4);
+            --purp: #6D28D9;
+            --purp-glow: rgba(109, 40, 217, 0.4);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-top: rgba(255, 255, 255, 0.05);
+            --r: 16px;
+            --t: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --bg3: #F1EFE9;
+            --bg4: #E9E6E0;
+            --surf: rgba(255, 255, 255, 0.8);
+            --bdr: rgba(0, 0, 0, 0.08);
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --glass: rgba(0, 0, 0, 0.02);
+            --glass-top: rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            transition: background var(--t);
+        }
+
+        /* --- Sidebar --- */
+        #sidebar {
+            width: 300px;
+            background: var(--bg2);
+            border-right: 1px solid var(--bdr);
+            display: flex;
+            flex-direction: column;
+            transition: width var(--t), transform var(--t);
+            z-index: 100;
+        }
+
+        #sidebar.collapsed {
+            width: 0;
+            transform: translateX(-300px);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .new-chat-btn {
+            flex-grow: 1;
+            padding: 12px;
+            background: var(--glass-top);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            color: var(--ink);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .new-chat-btn:hover {
+            background: var(--bdr);
+            border-color: var(--ink3);
+        }
+
+        .history-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .history-item {
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--t);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+            color: var(--ink2);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-item:hover, .history-item.active {
+            background: var(--glass-top);
+            color: var(--ink);
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--bdr);
+        }
+
+        /* --- Main Content --- */
+        #main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at top right, var(--blue-glow), transparent 40%),
+                        radial-gradient(circle at bottom left, var(--purp-glow), transparent 40%);
+        }
+
+        header {
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            z-index: 90;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+        }
+
+        /* --- Chat Display --- */
+        #chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px 10%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+            position: relative;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--blue);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(21, 70, 192, 0.3);
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: var(--surf);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--bdr);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .message code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .message pre {
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* --- Input Area --- */
+        .input-wrapper {
+            padding: 20px 10%;
+            background: linear-gradient(transparent, var(--bg));
+            position: relative;
+        }
+
+        .input-container {
+            background: var(--surf);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--bdr);
+            border-radius: 24px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+            transition: var(--t);
+        }
+
+        .input-container:focus-within {
+            border-color: var(--blue);
+            box-shadow: 0 0 20px var(--blue-glow);
+        }
+
+        textarea {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 12px 0;
+            resize: none;
+            max-height: 200px;
+            outline: none;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--t);
+            color: var(--ink3);
+            margin-bottom: 4px;
+        }
+
+        .action-btn:hover {
+            color: var(--ink);
+            background: var(--glass-top);
+        }
+
+        .send-btn {
+            background: var(--blue);
+            color: white;
+        }
+
+        .send-btn:hover {
+            background: var(--purp);
+            transform: scale(1.05);
+        }
+
+        /* --- Attachments --- */
+        #attachment-preview {
+            display: none;
+            padding: 10px;
+            background: var(--glass-top);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        /* --- Loading --- */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 10px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--ink3);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: absolute;
+                height: 100%;
+                box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            }
+            #chat-container { padding: 20px 5%; }
+            .message { max-width: 95%; }
+            .input-wrapper { padding: 10px 5%; }
+        }
+        /* --- Settings Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--ink3);
+            margin-bottom: 8px;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg3);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            color: var(--ink);
+            font-family: inherit;
+            outline: none;
+            transition: var(--t);
+        }
+
+        .setting-input:focus {
+            border-color: var(--blue);
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--blue);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .save-btn:hover {
+            background: var(--purp);
+        }
+
+        .error-meta {
+            font-size: 0.75rem;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.05);
+            border-left: 2px solid #ff4444;
+            color: var(--ink2);
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-btn" onclick="startNewChat()">
+                <i class="fa-solid fa-plus"></i>
+                New Conversation
+            </button>
+            <button class="action-btn" onclick="toggleSidebar()" title="Close Sidebar">
+                <i class="fa-solid fa-sidebar"></i>
+            </button>
+        </div>
+        <div class="history-list" id="history-list">
+            <!-- Items injected via JS -->
+        </div>
+        <div class="sidebar-footer">
+            <button class="history-item" onclick="toggleSettings()" style="width: 100%;">
+                <i class="fa-solid fa-gear"></i>
+                Settings & API
+            </button>
+            <div id="user-profile" class="history-item" style="margin-top: 10px;">
+                <i class="fa-solid fa-user-circle"></i>
+                <span id="user-name">Guest User</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Section -->
+    <main id="main">
+        <header>
+            <div class="logo-area">
+                <button class="action-btn" id="sidebar-toggle" onclick="toggleSidebar()" style="display: none;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <img src="assets/images/explyra_logo.png" height="30" alt="Logo">
+                <span>Explyra <span style="color: var(--blue);">Intelligence</span></span>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn" onclick="connectDrive()" id="drive-sync-btn" title="Sync with Google Drive">
+                    <i class="fa-brands fa-google-drive"></i>
+                </button>
+                <button class="action-btn" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="chat-container">
+            <!-- Messages injected here -->
+            <div class="message ai">
+                Hello! I am your <strong>Explyra AI Assistant</strong>, powered by Dolphin-Mistral. How can I help you today?
+            </div>
+        </div>
+
+        <div class="input-wrapper">
+            <div id="attachment-preview">
+                <i class="fa-solid fa-file-lines"></i>
+                <span id="file-name">filename.txt</span>
+                <button class="action-btn" onclick="clearAttachment()" style="width: 20px; height: 20px; font-size: 10px;">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <div class="input-container">
+                <button class="action-btn" onclick="document.getElementById('file-input').click()" title="Attach File">
+                    <i class="fa-solid fa-paperclip"></i>
+                </button>
+                <input type="file" id="file-input" style="display: none;" onchange="handleFileSelect(this)">
+                
+                <textarea id="chat-input" placeholder="Ask anything... (Shift+Enter for newline)" rows="1" oninput="autoResize(this)"></textarea>
+                
+                <button class="action-btn send-btn" id="send-btn" onclick="sendMessage()" title="Send Message">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+            </div>
+            <p style="text-align: center; font-size: 0.7rem; color: var(--ink3); margin-top: 8px;">
+                Explyra AI can make mistakes. Check important info.
+            </p>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // Constants
+        const OPENROUTER_API_KEY = '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';
+        const MODEL = 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/drive.file');
+
+        // State
+        let currentChat = {
+            id: Date.now(),
+            messages: []
+        };
+        let chatHistory = [];
+        let attachment = null;
+        let accessToken = null;
+
+        // --- UI Logic ---
+        window.autoResize = (el) => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        };
+
+        window.toggleSidebar = () => {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('collapsed');
+            document.getElementById('sidebar-toggle').style.display = sb.classList.contains('collapsed') ? 'flex' : 'none';
+        };
+
+        window.toggleTheme = () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('explyra-theme', next);
+        };
+
+        window.startNewChat = () => {
+            currentChat = {
+                id: Date.now(),
+                messages: []
+            };
+            document.getElementById('chat-container').innerHTML = `
+                <div class="message ai">
+                    New session started. How can I assist you today?
+                </div>
+            `;
+            updateHistorySidebar();
+        };
+
+        window.toggleSettings = () => {
+            const modal = document.getElementById('settings-modal');
+            const isVisible = modal.style.display === 'flex';
+            modal.style.display = isVisible ? 'none' : 'flex';
+            
+            if (!isVisible) {
+                document.getElementById('custom-api-key').value = localStorage.getItem('explyra-custom-key') || '';
+            }
+        };
+
+        window.saveSettings = () => {
+            const key = document.getElementById('custom-api-key').value.trim();
+            if (key) {
+                localStorage.setItem('explyra-custom-key', key);
+                alert("API Key saved! Current session will now use this key.");
+            } else {
+                localStorage.removeItem('explyra-custom-key');
+                alert("Settings reset to default.");
+            }
+            toggleSettings();
+        };
+
+        function getApiKey() {
+            return localStorage.getItem('explyra-custom-key') || OPENROUTER_API_KEY;
+        }
+
+        // --- Chat Logic ---
+        window.handleFileSelect = async (input) => {
+            if (input.files.length > 0) {
+                const file = input.files[0];
+                attachment = {
+                    name: file.name,
+                    content: await file.text() // Simple text analysis for now
+                };
+                document.getElementById('attachment-preview').style.display = 'flex';
+                document.getElementById('file-name').textContent = file.name;
+            }
+        };
+
+        window.clearAttachment = () => {
+            attachment = null;
+            document.getElementById('attachment-preview').style.display = 'none';
+            document.getElementById('file-input').value = '';
+        };
+
+        window.sendMessage = async () => {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text && !attachment) return;
+
+            // Add user message to UI
+            addMessage('user', text + (attachment ? `\n\n[Attachment: ${attachment.name}]` : ''));
+            const userMsg = text;
+            const currentAttachment = attachment;
+            
+            input.value = '';
+            input.style.height = 'auto';
+            clearAttachment();
+
+            // Add AI response placeholder
+            const aiMsgId = addMessage('ai', '<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>');
+            
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${getApiKey()}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "model": MODEL,
+                        "messages": [
+                            ...currentChat.messages.map(m => ({ role: m.role, content: m.content })),
+                            { 
+                                role: "user", 
+                                content: currentAttachment ? `User has attached a file "${currentAttachment.name}" with content: ${currentAttachment.content}\n\nUser Question: ${userMsg}` : userMsg 
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    let errMsg = "API Error. Please try again.";
+                    let metadata = null;
+
+                    if (response.status === 429) {
+                        errMsg = "Rate limit reached (429). The OpenRouter key has hit its limit.";
+                    }
+                    
+                    if (data.error) {
+                        errMsg = data.error.message || errMsg;
+                        metadata = data.error.metadata ? JSON.stringify(data.error.metadata, null, 2) : null;
+                    }
+
+                    const errorHtml = `**Error:** ${errMsg}${metadata ? `\n\n<div class="error-meta">${metadata}</div>` : ''}`;
+                    throw new Error(errorHtml);
+                }
+
+                if (!data.choices || data.choices.length === 0) {
+                    throw new Error("AI returned an empty response.");
+                }
+
+                const aiText = data.choices[0].message.content;
+                
+                updateMessage(aiMsgId, aiText);
+                
+                // Update State
+                currentChat.messages.push({ role: 'user', content: userMsg });
+                currentChat.messages.push({ role: 'assistant', content: aiText });
+                
+                // Save to Drive if logged in
+                if (accessToken) syncChatToDrive();
+                
+            } catch (error) {
+                console.error(error);
+                let errorMessage = error.message;
+                
+                // If the default key failed, suggest using a personal key
+                if (getApiKey() === OPENROUTER_API_KEY && (error.message.includes("429") || error.message.includes("Provider returned error"))) {
+                    errorMessage += `\n\n**Tip:** The default Explyra key is currently rate-limited. Click the **Settings** icon below to use your own OpenRouter API key for uninterrupted service.`;
+                }
+
+                const el = document.getElementById(aiMsgId);
+                if (el) {
+                    el.innerHTML = marked.parse(errorMessage);
+                }
+            }
+        };
+
+        function addMessage(role, content) {
+            const container = document.getElementById('chat-container');
+            const div = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            div.id = id;
+            div.className = `message ${role}`;
+            div.innerHTML = role === 'ai' ? marked.parse(content) : content.replace(/\n/g, '<br>');
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function updateMessage(id, content) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerHTML = marked.parse(content);
+                Prism.highlightAllUnder(el);
+            }
+        }
+
+        // --- Google Drive Logic ---
+        const DRIVE_ROOT_FOLDER = "Explyra";
+        const CHATS_FOLDER = "Chats";
+        let driveFolders = { root: null, chats: null };
+
+        window.connectDrive = async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                accessToken = credential.accessToken;
+                
+                document.getElementById('drive-sync-btn').style.color = 'var(--blue)';
+                document.getElementById('user-name').textContent = result.user.displayName;
+                
+                // Initialize Drive Folders
+                await initDriveFolders();
+                await loadChatsFromDrive();
+                
+                alert("Google Drive Connected! Your chats are synced.");
+            } catch (error) {
+                console.error(error);
+                alert("Drive connection failed: " + error.message);
+            }
+        };
+
+        async function initDriveFolders() {
+            try {
+                // Check if root folder exists
+                const rootQuery = await driveRequest(`files?q=name='${DRIVE_ROOT_FOLDER}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+                if (rootQuery.files.length > 0) {
+                    driveFolders.root = rootQuery.files[0].id;
+                } else {
+                    const folder = await driveRequest('files', 'POST', {
+                        name: DRIVE_ROOT_FOLDER,
+                        mimeType: 'application/vnd.google-apps.folder'
+                    });
+                    driveFolders.root = folder.id;
+                }
+
+                // Check for Chats folder inside root
+                const chatsQuery = await driveRequest(`files?q=name='${CHATS_FOLDER}' and '${driveFolders.root}' in parents and trashed=false`);
+                if (chatsQuery.files.length > 0) {
+                    driveFolders.chats = chatsQuery.files[0].id;
+                } else {
+                    const folder = await driveRequest('files', 'POST', {
+                        name: CHATS_FOLDER,
+                        mimeType: 'application/vnd.google-apps.folder',
+                        parents: [driveFolders.root]
+                    });
+                    driveFolders.chats = folder.id;
+                }
+            } catch (e) {
+                console.error("Folder Init Error:", e);
+            }
+        }
+
+        async function syncChatToDrive() {
+            if (!driveFolders.chats || currentChat.messages.length === 0) return;
+            
+            const fileName = `chat_${currentChat.id}.json`;
+            const content = JSON.stringify(currentChat);
+            
+            try {
+                // Find if file exists
+                const query = await driveRequest(`files?q=name='${fileName}' and '${driveFolders.chats}' in parents and trashed=false`);
+                
+                if (query.files.length > 0) {
+                    // Update existing
+                    await driveUpload(query.files[0].id, content, true);
+                } else {
+                    // Create new
+                    await driveUpload(null, content, false, fileName);
+                    updateHistorySidebar();
+                }
+            } catch (e) {
+                console.error("Sync Error:", e);
+            }
+        }
+
+        async function loadChatsFromDrive() {
+            if (!driveFolders.chats) return;
+            try {
+                const query = await driveRequest(`files?q='${driveFolders.chats}' in parents and trashed=false&fields=files(id,name)`);
+                chatHistory = query.files;
+                updateHistorySidebar();
+            } catch (e) {
+                console.error("Load Error:", e);
+            }
+        }
+
+        function updateHistorySidebar() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = chatHistory.map(chat => `
+                <div class="history-item ${currentChat.id === chat.name.split('_')[1].split('.')[0] ? 'active' : ''}" 
+                     onclick="loadSpecificChat('${chat.id}')">
+                    <i class="fa-regular fa-message"></i>
+                    ${chat.name.replace('chat_', '').replace('.json', '')}
+                </div>
+            `).join('');
+        }
+
+        window.loadSpecificChat = async (fileId) => {
+            try {
+                const data = await driveRequest(`files/${fileId}?alt=media`);
+                currentChat = data;
+                
+                // Refresh UI
+                const container = document.getElementById('chat-container');
+                container.innerHTML = '';
+                currentChat.messages.forEach(m => addMessage(m.role === 'assistant' ? 'ai' : 'user', m.content));
+                updateHistorySidebar();
+            } catch (e) {
+                alert("Failed to load chat.");
+            }
+        };
+
+        async function driveRequest(endpoint, method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            };
+            if (body) {
+                options.headers['Content-Type'] = 'application/json';
+                options.body = JSON.stringify(body);
+            }
+            const response = await fetch(`https://www.googleapis.com/drive/v3/${endpoint}`, options);
+            if (!response.ok) throw new Error(await response.text());
+            return response.json();
+        }
+
+        async function driveUpload(fileId, content, isUpdate = false, fileName = null) {
+            const url = isUpdate 
+                ? `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`
+                : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
+
+            if (isUpdate) {
+                await fetch(url, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${accessToken}` },
+                    body: content
+                });
+            } else {
+                const metadata = {
+                    name: fileName,
+                    parents: [driveFolders.chats],
+                    mimeType: 'application/json'
+                };
+                const form = new FormData();
+                form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                form.append('file', new Blob([content], { type: 'application/json' }));
+
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${accessToken}` },
+                    body: form
+                });
+            }
+        }
+
+        // --- Init ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('user-name').textContent = user.displayName;
+            }
+        });
+
+        // Enter to send
+        document.getElementById('chat-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                window.sendMessage();
+            }
+        });
+
+    </script>
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal" onclick="if(event.target === this) toggleSettings()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Intelligence Settings</span>
+                <button class="action-btn" onclick="toggleSettings()">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            
+            <div class="setting-group">
+                <label class="setting-label">OpenRouter API Key (Optional)</label>
+                <input type="password" id="custom-api-key" class="setting-input" placeholder="sk-or-v1-...">
+                <p style="font-size: 0.7rem; color: var(--ink3); margin-top: 5px;">Leave empty to use default. Key is stored locally in your browser.</p>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Current Model</label>
+                <input type="text" class="setting-input" value="dolphin-mistral-24b-venice-edition:free" disabled>
+            </div>
+
+            <button class="save-btn" onclick="saveSettings()">Save & Close</button>
+        </div>
+    </div>
+</body>
+</html>

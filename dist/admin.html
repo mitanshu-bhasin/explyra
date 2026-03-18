@@ -7,8 +7,8 @@
     <meta name="twitter:site" content="@explyras">
     <meta name="twitter:creator" content="@explyras">
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="theme-color" content="#1546C0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
     <link rel="apple-touch-icon" href="assets/images/explyra_logo.png">
     <meta name="description"
-        content="Admin dashboard for Explyra Expense by Explyra & Mitanshu Bhasin. Approve claims securely and efficiently.">
+        content="Use Admin on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
     <meta name="keywords" content="Explyra, Admin, Expense Approval, Dashboard, Management, Mitanshu Bhasin">
     <meta name="author" content="Mitanshu Bhasin, Explyra">
     <link rel="canonical" href="https://explyra.me/admin.html">
@@ -38,24 +38,9 @@
     <meta name="twitter:image" content="https://explyra.me/assets/images/explyra_logo.png">
 
     <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Explyra Admin Portal",
-      "url": "https://explyra.me/admin.html",
-      "description": "Administrative dashboard for Explyra expense management.",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Any",
-      "author": {
-          "@type": "Organization",
-          "name": "Explyra",
-          "url": "https://explyra.me"
-      }
-    }
-    </script>
 
-    <title>Dashboard | Explyra</title>
+
+    <title>Admin — Free Explyra Suite Tool | Fast & Secure</title>
     <!-- Environment Config -->
     <script src="js/env.js"></script>
     <script>
@@ -93,12 +78,14 @@
         };
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/utils.js" defer></script>
-    <script src="js/admin-logic.js" defer></script>
+    <script type="module" src="js/admin-logic.js" defer></script>
+    <script src="js/gdrive-service.js" defer></script>
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -267,7 +254,7 @@
             right: 0;
             bottom: 0;
             width: 40%;
-            background: linear-gradient(to left, rgba(255,255,255,0.05), transparent);
+            background: linear-gradient(to left, rgba(255, 255, 255, 0.05), transparent);
         }
 
         /* Mobile Sidebar Logic */
@@ -275,10 +262,12 @@
             .sidebar-hidden {
                 transform: translateX(-100%);
             }
+
             .sidebar-visible {
                 transform: translateX(0);
             }
         }
+
         .input-vercel {
             width: 100%;
             background-color: var(--bg-primary);
@@ -300,13 +289,16 @@
         ::-webkit-scrollbar {
             width: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-secondary);
         }
@@ -329,19 +321,341 @@
 
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in {
             animation: fadeIn 0.4s ease-out forwards;
         }
+
+        /* ═══════════ NEW FEATURES ═══════════ */
+
+        /* Welcome Banner */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .welcome-hero {
+            background: linear-gradient(-45deg, #000, #111, #1a1a2e, #16213e);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            border-radius: var(--radius-md);
+            padding: 2rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark .welcome-hero {
+            background: linear-gradient(-45deg, #000, #0a0a0a, #0d1117, #010409);
+            border: 1px solid #222;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .welcome-hero .stat-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 0.35rem 0.85rem;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            animation: countUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .welcome-hero .stat-pill:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .welcome-hero .stat-pill:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        /* Command Palette */
+        .cmd-palette-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 15vh;
+        }
+
+        .cmd-palette-backdrop.open {
+            display: flex;
+        }
+
+        .cmd-palette {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 560px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        .cmd-palette input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem 1.25rem;
+            font-size: 15px;
+            font-family: 'Outfit', sans-serif;
+            outline: none;
+        }
+
+        .cmd-palette input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .cmd-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .cmd-item:hover,
+        .cmd-item.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .cmd-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .cmd-item .cmd-shortcut {
+            margin-left: auto;
+            font-size: 10px;
+            font-family: 'Outfit', monospace;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        /* Activity Feed */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .activity-item {
+            animation: slideInRight 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        .activity-item:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .activity-item:nth-child(2) {
+            animation-delay: 0.05s;
+        }
+
+        .activity-item:nth-child(3) {
+            animation-delay: 0.1s;
+        }
+
+        .activity-item:nth-child(4) {
+            animation-delay: 0.15s;
+        }
+
+        .activity-item:nth-child(5) {
+            animation-delay: 0.2s;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 0 0 4px 0;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-nav .bc-sep {
+            font-size: 10px;
+            opacity: 0.4;
+        }
+
+        .breadcrumb-nav .bc-current {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* System Health Pill */
+        @keyframes healthPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 4px rgba(34, 197, 94, 0);
+            }
+        }
+
+        .health-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: healthPulse 2s ease-in-out infinite;
+        }
+
+        .health-dot.offline {
+            background: #ef4444;
+            animation: none;
+        }
+
+        /* Export Toolbar */
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .export-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        /* Sidebar Collapse */
+        .sidebar-collapsed {
+            width: 64px !important;
+        }
+
+        .sidebar-collapsed .sidebar-label,
+        .sidebar-collapsed .sidebar-section-title,
+        .sidebar-collapsed .sidebar-footer-info,
+        .sidebar-collapsed .sidebar-header-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .sidebar-item {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+
+        .sidebar-collapsed .sidebar-item i {
+            margin: 0;
+        }
+
+        .sidebar-btn-collapse {
+            transition: transform 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-btn-collapse {
+            transform: rotate(180deg);
+        }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
         const IMAGEKIT_URL = window.EXPLYRA_CONFIG?.imagekit?.url || "https://upload.imagekit.io/api/v1/files/upload";
-        const IMAGEKIT_PUBLIC_KEY = window.EXPLYRA_CONFIG?.imagekit?.publicKey || "ENV_MISSING";
-        const IMAGEKIT_PRIVATE_KEY = window.EXPLYRA_CONFIG?.imagekit?.privateKey || "ENV_MISSING";
+        const IMAGEKIT_PUBLIC_KEY = window.EXPLYRA_CONFIG?.imagekit?.publicKey || "public_A7ZHxCiIBfl/fxzXlk1tXUUR+B4=";
+        const IMAGEKIT_PRIVATE_KEY = window.EXPLYRA_CONFIG?.imagekit?.privateKey || "private_m7Ie0ZXD/4WpBlly116odVbWhhM=";
     </script>
     <script type="module">
         import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
@@ -375,6 +689,60 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
 
+
+
+
+
+
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    }
+  ]
+}
+    </script>
 </head>
 
 <body
@@ -383,25 +751,30 @@
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
 
     <!-- User Modal -->
-    <div id="user-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
-        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in" id="user-modal-content">
+    <div id="user-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
+        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto" id="user-modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold" id="user-modal-title">Add User</h3>
-                <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i class="fa-solid fa-times"></i></button>
+                <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i
+                        class="fa-solid fa-times"></i></button>
             </div>
             <form id="user-form" class="space-y-4">
                 <input type="hidden" id="user-doc-id">
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name <span class="text-red-500">*</span></label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name <span
+                            class="text-red-500">*</span></label>
                     <input type="text" id="user-name" class="input-vercel h-10" required>
                 </div>
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email <span class="text-red-500">*</span></label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email <span
+                            class="text-red-500">*</span></label>
                     <input type="email" id="user-email" class="input-vercel h-10" required>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Role <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Role <span
+                                class="text-red-500">*</span></label>
                         <select id="user-role" class="input-vercel h-10" required>
                             <option value="EMPLOYEE">Employee</option>
                             <option value="MANAGER">Manager</option>
@@ -411,7 +784,8 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">MR Role</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">MR
+                            Role</label>
                         <select id="user-mr-role" class="input-vercel h-10">
                             <option value="">None</option>
                             <option value="admin">Prod Admin</option>
@@ -422,7 +796,8 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</label>
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</label>
                         <input type="tel" id="user-phone" class="input-vercel h-10" placeholder="+91 9999999999">
                     </div>
                     <div class="space-y-1">
@@ -432,41 +807,53 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
                         <input type="text" id="user-department" class="input-vercel h-10" placeholder="e.g. Sales">
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee ID</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee
+                            ID</label>
                         <input type="text" id="user-employee-id" class="input-vercel h-10" placeholder="EMP-001">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Joining Date</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Joining
+                            Date</label>
                         <input type="date" id="user-joining-date" class="input-vercel h-10">
                     </div>
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Salary (₹)</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly
+                            Salary (₹)</label>
                         <input type="number" id="user-salary" class="input-vercel h-10" placeholder="0.00">
                     </div>
                 </div>
-                <div class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                    <input type="checkbox" id="user-incentive" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
-                    <label for="user-incentive" class="text-xs font-bold text-slate-600 dark:text-slate-300">Eligible for Incentives / Variable Pay</label>
+                <div
+                    class="flex items-center gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                    <input type="checkbox" id="user-incentive"
+                        class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                    <label for="user-incentive" class="text-xs font-bold text-slate-600 dark:text-slate-300">Eligible
+                        for Incentives / Variable Pay</label>
                 </div>
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manager ID</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manager
+                        ID</label>
                     <input type="text" id="user-manager-id" class="input-vercel h-10" placeholder="Manager Document ID">
                 </div>
                 <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Budget Limit (₹)</label>
-                    <input type="number" id="user-budget-limit" class="input-vercel h-10" placeholder="Leave empty for unlimited">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Budget Limit
+                        (₹)</label>
+                    <input type="number" id="user-budget-limit" class="input-vercel h-10"
+                        placeholder="Leave empty for unlimited">
                 </div>
                 <div id="user-profile-pic-container" class="space-y-1 hidden">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profile Pic URL <span class="text-green-500">(Admin)</span></label>
-                    <input type="url" id="user-profile-pic" class="input-vercel h-10" placeholder="https://i.postimg.cc/...">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profile Pic URL
+                        <span class="text-green-500">(Admin)</span></label>
+                    <input type="url" id="user-profile-pic" class="input-vercel h-10"
+                        placeholder="https://i.postimg.cc/...">
                 </div>
-                
+
                 <div class="pt-6 flex gap-3">
                     <button type="button" onclick="closeUserModal()" class="btn-vercel-secondary flex-1">Cancel</button>
                     <button type="submit" class="btn-vercel-primary flex-1">Save User</button>
@@ -697,6 +1084,29 @@
                 <div class="border-t border-slate-100 dark:border-slate-800"></div>
 
                 <div>
+                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-brands fa-google-drive"></i> Integrations
+                    </h5>
+                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Drive</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gdrive-status-text">Not connected</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gdrive-connect" onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-800"></div>
+
+                <div>
                     <h5
                         class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-lock"></i> Security & Contact
@@ -762,11 +1172,13 @@
     </div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black">
+    <div id="auth-screen"
+        class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black">
         <div class="w-full flex-1 flex flex-col items-center justify-center p-6 relative z-10">
             <div class="vercel-card w-full max-w-sm !p-8 animate-fade-in shadow-2xl">
                 <div class="text-center mb-10">
-                    <div class="w-12 h-12 bg-black dark:bg-white rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <div
+                        class="w-12 h-12 bg-black dark:bg-white rounded-lg flex items-center justify-center mx-auto mb-6">
                         <i class="fa-solid fa-bolt text-white dark:text-black"></i>
                     </div>
                     <h1 class="text-2xl font-bold tracking-tight mb-2" id="login-company-name">Login to Explyra</h1>
@@ -776,13 +1188,16 @@
                 <form id="login-form" class="space-y-4">
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</label>
-                        <input type="email" id="login-email" class="input-vercel h-10" placeholder="admin@explyra.me" required>
+                        <input type="email" id="login-email" class="input-vercel h-10" placeholder="admin@explyra.me"
+                            required>
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Password</label>
                         <div class="relative">
-                            <input type="password" id="login-password" class="input-vercel h-10 pr-10" placeholder="••••••••" required>
-                            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
+                            <input type="password" id="login-password" class="input-vercel h-10 pr-10"
+                                placeholder="••••••••" required>
+                            <button type="button" onclick="toggleLoginPassword()"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
                                 <i class="fa-regular fa-eye" id="login-eye-icon"></i>
                             </button>
                         </div>
@@ -791,39 +1206,58 @@
                         Continue
                     </button>
                     <div class="text-center">
-                        <button type="button" onclick="forgotPassword()" class="text-xs text-slate-500 hover:text-black font-medium">Forgot password?</button>
+                        <button type="button" onclick="forgotPassword()"
+                            class="text-xs text-slate-500 hover:text-black font-medium">Forgot password?</button>
                     </div>
                 </form>
 
                 <!-- Signup Form (Activation) -->
                 <form id="signup-form" class="space-y-4 hidden" onsubmit="handleAccountActivation(event)">
                     <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Corporate Email</label>
-                        <input type="email" id="signup-email" class="input-vercel h-10" placeholder="admin@company.com" required>
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Corporate
+                            Email</label>
+                        <input type="email" id="signup-email" class="input-vercel h-10" placeholder="admin@company.com"
+                            required>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Create Password</label>
-                        <input type="password" id="signup-password" class="input-vercel h-10" placeholder="••••••••" required>
+                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Create
+                            Password</label>
+                        <input type="password" id="signup-password" class="input-vercel h-10" placeholder="••••••••"
+                            required>
                     </div>
                     <button type="submit" id="signup-btn" class="btn-vercel-primary w-full h-10 mt-2">
                         Activate Account
                     </button>
                 </form>
 
-                <div id="google-signin-container" class="hidden"></div>
+                <div id="google-signin-container" class="mt-8 space-y-3">
+                    <button type="button" onclick="handleGoogleLogin()"
+                        class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
+                        Sign in with Google
+                    </button>
+                    <button type="button" onclick="window.location.href='emp.html'"
+                        class="w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition flex items-center justify-center gap-2 shadow-sm border border-transparent">
+                        <i class="fa-solid fa-user-tie text-slate-500"></i>
+                        Login as Employee
+                    </button>
+                </div>
 
                 <div id="login-footer" class="mt-6 text-center text-xs text-slate-500">
-                    Don't have an account? <button onclick="toggleAuthMode('signup')" class="text-black dark:text-white font-semibold hover:underline">Activate</button>
+                    Don't have an account? <button onclick="toggleAuthMode('signup')"
+                        class="text-black dark:text-white font-semibold hover:underline">Activate</button>
                 </div>
 
                 <div id="signup-footer" class="mt-6 text-center text-xs text-slate-500 hidden">
-                    Already have an account? <button onclick="toggleAuthMode('login')" class="text-black dark:text-white font-semibold hover:underline">Login</button>
+                    Already have an account? <button onclick="toggleAuthMode('login')"
+                        class="text-black dark:text-white font-semibold hover:underline">Login</button>
                 </div>
                 <div class="mt-2 text-center text-xs text-slate-500">
-                    Want to use for your business? <a href="company.html" class="text-black dark:text-white font-semibold hover:underline">Create Company</a>
+                    Want to use for your business? <a href="company.html"
+                        class="text-black dark:text-white font-semibold hover:underline">Create Company</a>
                 </div>
             </div>
-            
+
             <div class="mt-12 flex flex-col items-center gap-6 opacity-60">
                 <div class="flex items-center gap-4 grayscale group hover:grayscale-0 transition duration-500">
                     <img src="assets/images/explyra_logo.png" class="h-4 w-auto" alt="Logo">
@@ -834,10 +1268,13 @@
         </div>
 
         <!-- Extended Footer Section -->
-        <div class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
+        <div
+            class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
             <!-- Qualys SSL Labs A+ Certification Badge -->
-            <div class="flex items-center gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group cursor-default shadow-sm transform hover:-translate-y-px">
-                <img src="images%20(1).png" alt="Qualys SSL Labs A+" class="h-4 w-auto opacity-50 group-hover:opacity-100 transition-opacity">
+            <div
+                class="flex items-center gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group cursor-default shadow-sm transform hover:-translate-y-px">
+                <img src="images%20(1).png" alt="Qualys SSL Labs A+"
+                    class="h-4 w-auto opacity-50 group-hover:opacity-100 transition-opacity">
                 <div class="flex flex-col text-left border-l border-slate-200 dark:border-slate-800 pl-3">
                     <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200">Qualys SSL Labs A+</span>
                 </div>
@@ -857,13 +1294,15 @@
     <!-- Dashboard Screen -->
     <div id="dashboard-screen" class="hidden flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside id="admin-sidebar" class="w-64 bg-white dark:bg-black border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 z-30 lg:translate-x-0 -translate-x-full fixed lg:static inset-y-0 left-0">
+        <aside id="admin-sidebar"
+            class="w-64 bg-white dark:bg-black border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 z-30 lg:translate-x-0 -translate-x-full fixed lg:static inset-y-0 left-0">
             <div class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
                 <div class="flex items-center gap-2">
                     <div class="w-6 h-6 bg-black dark:bg-white rounded flex items-center justify-center">
                         <i class="fa-solid fa-bolt text-white dark:text-black text-xs"></i>
                     </div>
-                    <span class="font-bold text-sm tracking-tight" id="sidebar-company-name">EXPLYRA <span class="text-green-500">PORTAL</span></span>
+                    <span class="font-bold text-sm tracking-tight" id="sidebar-company-name">EXPLYRA <span
+                            class="text-green-500">PORTAL</span></span>
                 </div>
                 <!-- Mobile Close Button -->
                 <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black transition-colors">
@@ -876,7 +1315,8 @@
                 <button onclick="switchTab('overview')" class="sidebar-item w-full active" data-tab="overview">
                     <i class="fa-solid fa-chart-pie"></i> Dashboard
                 </button>
-                <button onclick="switchTab('approvals')" id="nav-approvals" class="sidebar-item w-full" data-tab="approvals">
+                <button onclick="switchTab('approvals')" id="nav-approvals" class="sidebar-item w-full"
+                    data-tab="approvals">
                     <i class="fa-solid fa-stamp"></i> Approvals
                 </button>
                 <button onclick="switchTab('my-claims')" class="sidebar-item w-full" data-tab="my-claims">
@@ -886,7 +1326,8 @@
                     <i class="fa-solid fa-list-check"></i> Task Manager
                 </button>
 
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Administration</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">
+                    Administration</div>
                 <button onclick="switchTab('users')" id="nav-users" class="sidebar-item w-full hidden" data-tab="users">
                     <i class="fa-solid fa-users"></i> User Mgmt
                 </button>
@@ -899,15 +1340,19 @@
                 <button onclick="switchTab('roles')" id="nav-roles" class="sidebar-item w-full hidden" data-tab="roles">
                     <i class="fa-solid fa-user-shield"></i> Role Mgmt
                 </button>
-                <button onclick="switchTab('projects')" id="nav-projects" class="sidebar-item w-full hidden" data-tab="projects">
+                <button onclick="switchTab('projects')" id="nav-projects" class="sidebar-item w-full hidden"
+                    data-tab="projects">
                     <i class="fa-solid fa-folder-tree"></i> Projects
                 </button>
-                <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden" data-tab="workflow">
+                <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden"
+                    data-tab="workflow">
                     <i class="fa-solid fa-route"></i> Workflow
                 </button>
 
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics</div>
-                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden" data-tab="reports">
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics
+                </div>
+                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden"
+                    data-tab="reports">
                     <i class="fa-solid fa-chart-line"></i> Reports
                 </button>
                 <button onclick="switchTab('audit')" id="nav-audit" class="sidebar-item w-full hidden" data-tab="audit">
@@ -917,24 +1362,30 @@
                     <i class="fa-solid fa-robot"></i> AI Agent
                 </button>
 
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Tools & System</div>
-                <button onclick="window.location.href='crm/index.html'" id="nav-crm" class="sidebar-item w-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10">
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Tools &
+                    System</div>
+                <button onclick="window.location.href='crm/index.html'" id="nav-crm"
+                    class="sidebar-item w-full text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10">
                     <i class="fa-solid fa-layer-group"></i> CRM
                 </button>
-                <button onclick="window.location.href='Ino software/ino.html'" id="nav-invoices" class="sidebar-item w-full hidden" data-tab="invoices">
+                <button onclick="window.location.href='Ino software/ino.html'" id="nav-invoices"
+                    class="sidebar-item w-full hidden" data-tab="invoices">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Invoices
                 </button>
                 <button onclick="switchTab('chat')" id="nav-chat" class="sidebar-item w-full" data-tab="chat">
                     <i class="fa-solid fa-comments"></i> Chat
                 </button>
-                <button onclick="switchTab('settings')" id="nav-settings" class="sidebar-item w-full hidden" data-tab="settings">
+                <button onclick="switchTab('settings')" id="nav-settings" class="sidebar-item w-full hidden"
+                    data-tab="settings">
                     <i class="fa-solid fa-sliders"></i> Settings
                 </button>
             </nav>
 
             <div class="p-4 border-t border-slate-200 dark:border-slate-800">
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition mb-2 cursor-pointer" onclick="openAccountCenter()">
-                    <div id="sidebar-user-avatar" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs border border-slate-300 dark:border-slate-700 overflow-hidden">
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition mb-2 cursor-pointer"
+                    onclick="openAccountCenter()">
+                    <div id="sidebar-user-avatar"
+                        class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs border border-slate-300 dark:border-slate-700 overflow-hidden">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div class="flex-1 overflow-hidden">
@@ -942,7 +1393,8 @@
                         <p class="text-[10px] text-slate-500 uppercase font-medium" id="current-user-role">ADMIN</p>
                     </div>
                 </div>
-                <button onclick="logout()" class="sidebar-item w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
+                <button onclick="logout()"
+                    class="sidebar-item w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
                     <i class="fa-solid fa-power-off"></i> Logout
                 </button>
             </div>
@@ -956,81 +1408,130 @@
                     <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 hover:text-black">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h2 id="page-title" class="text-sm font-semibold">Dashboard</h2>
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="breadcrumb-nav hidden sm:flex" id="admin-breadcrumb">
+                        <a href="#" onclick="switchTab('overview'); return false;">Home</a>
+                        <i class="fa-solid fa-chevron-right bc-sep"></i>
+                        <span class="bc-current" id="breadcrumb-current">Dashboard</span>
+                    </nav>
+                    <h2 id="page-title" class="text-sm font-semibold sm:hidden">Dashboard</h2>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div class="relative hidden sm:block">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" placeholder="Search..." class="input-vercel pl-9 h-8 w-64 bg-slate-100 dark:bg-slate-900 border-none">
+                <div class="flex items-center gap-3">
+                    <!-- System Health Indicator -->
+                    <div id="system-health"
+                        class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 cursor-default"
+                        title="System Status">
+                        <div class="health-dot" id="health-dot"></div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider"
+                            id="health-text">Online</span>
                     </div>
 
-                    <button onclick="openNotifList()" class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
-                        <i class="fa-solid fa-bell"></i>
-                        <span id="header-notif-dot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
+                    <!-- Search / Cmd Palette Trigger -->
+                    <!-- Mobile Search Icon -->
+                    <button onclick="openCommandPalette()" aria-label="Open command palette"
+                        class="sm:hidden p-2 text-slate-500 hover:text-slate-800 dark:hover:text-slate-100 transition">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <!-- Desktop Search Button -->
+                    <button onclick="openCommandPalette()" aria-label="Open command palette"
+                        class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-400 text-xs">
+                        <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+                        <span class="font-medium">Search...</span>
+                        <kbd
+                            class="ml-2 px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[9px] font-bold text-slate-500">⌘K</kbd>
                     </button>
 
-                    <button onclick="toggleTheme()" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
+
+                    <button onclick="openNotifList()" aria-label="Open notifications"
+                        class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="header-notif-dot"
+                            class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
+                    </button>
+
+                    <button onclick="toggleTheme()" aria-label="Toggle theme"
+                        class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
                         <i class="fa-solid fa-moon theme-toggle-icon"></i>
                     </button>
-                    
-                    <button onclick="openAccountCenter()" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
-                        <img id="header-avatar-img" src="assets/images/explyra_logo.png" class="w-full h-full object-cover" alt="Profile">
+
+                    <button onclick="openAccountCenter()" aria-label="Open account center"
+                        class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
+                        <img id="header-avatar-img" src="assets/images/explyra_logo.png"
+                            class="w-full h-full object-cover" alt="Profile">
                     </button>
                 </div>
             </header>
 
             <div id="content-area" class="flex-1 overflow-y-auto p-6 animate-fade-in">
+                <!-- Welcome Hero Banner (injected by JS on overview tab) -->
+                <div id="welcome-hero-container"></div>
+                <div id="crm-widget-container" class="mb-8"></div>
                 <!-- Content will be injected here -->
             </div>
         </main>
-    <!-- Extended Modals for Notifications -->
-    <!-- Notification List Modal -->
-    <div id="modal-notif-list" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('modal-notif-list')"></div>
-        <div id="modal-notif-list-content" class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden flex flex-col max-h-[80vh]">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-bell text-yellow-500"></i> Notifications
-                </h3>
-                <button onclick="closeModal('modal-notif-list')" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition">
-                    <i class="fa-solid fa-xmark text-slate-400"></i>
-                </button>
+        <!-- Extended Modals for Notifications -->
+        <!-- Notification List Modal -->
+        <div id="modal-notif-list" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal('modal-notif-list')">
             </div>
-            <div id="notif-list-container" class="overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50 flex-1 min-h-[300px]">
-                <div class="text-center py-10 opacity-50"><i class="fa-solid fa-circle-notch fa-spin text-2xl"></i></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification PDP Modal -->
-    <div id="modal-notif-pdp" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onclick="closeModal('modal-notif-pdp')"></div>
-        <div id="modal-notif-pdp-content" class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
-                        <i class="fa-solid fa-envelope-open text-xl"></i>
-                    </div>
-                    <button onclick="closeModal('modal-notif-pdp')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition">
+            <div id="modal-notif-list-content"
+                class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden flex flex-col max-h-[80vh]">
+                <div
+                    class="px-6 py-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800">
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-yellow-500"></i> Notifications
+                    </h3>
+                    <button onclick="closeModal('modal-notif-list')"
+                        class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition">
                         <i class="fa-solid fa-xmark text-slate-400"></i>
                     </button>
                 </div>
-                <h4 id="pdp-notif-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Notification Title</h4>
-                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
-                    <span id="pdp-notif-sender">Admin</span>
-                    <span>•</span>
-                    <span id="pdp-notif-date">Date</span>
-                </div>
-                <div id="pdp-notif-body" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 mb-6 min-h-[100px] whitespace-pre-wrap">
-                    Notification body goes here...
-                </div>
-                <div class="flex justify-end">
-                    <button onclick="closeModal('modal-notif-pdp')" class="px-8 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition">Close Preview</button>
+                <div id="notif-list-container"
+                    class="overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50 flex-1 min-h-[300px]">
+                    <div class="text-center py-10 opacity-50"><i class="fa-solid fa-circle-notch fa-spin text-2xl"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Notification PDP Modal -->
+        <div id="modal-notif-pdp" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onclick="closeModal('modal-notif-pdp')">
+            </div>
+            <div id="modal-notif-pdp-content"
+                class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative z-10 transition-all duration-300 transform scale-95 opacity-0 overflow-y-auto max-h-[90vh]">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-envelope-open text-xl"></i>
+                        </div>
+                        <button onclick="closeModal('modal-notif-pdp')"
+                            class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition">
+                            <i class="fa-solid fa-xmark text-slate-400"></i>
+                        </button>
+                    </div>
+                    <h4 id="pdp-notif-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+                        Notification Title</h4>
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+                        <span id="pdp-notif-sender">Admin</span>
+                        <span>•</span>
+                        <span id="pdp-notif-date">Date</span>
+                    </div>
+                    <div id="pdp-notif-body"
+                        class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 mb-6 min-h-[100px] whitespace-pre-wrap">
+                        Notification body goes here...
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="closeModal('modal-notif-pdp')"
+                            class="px-8 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition">Close
+                            Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Expense Modal -->
@@ -1984,6 +2485,405 @@
             triggerGoogleTranslate(lang);
         };
     </script>
+
+    <!-- ═══════════ COMMAND PALETTE ═══════════ -->
+    <div class="cmd-palette-backdrop" id="cmd-palette">
+        <div class="cmd-palette">
+            <div style="position:relative">
+                <i class="fa-solid fa-magnifying-glass"
+                    style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:13px"></i>
+                <input type="text" id="cmd-input" placeholder="Type a command or search..." style="padding-left:40px"
+                    autocomplete="off">
+            </div>
+            <div id="cmd-results" style="max-height:320px;overflow-y:auto;padding:6px 0">
+                <div class="cmd-item" onclick="cmdAction('overview')">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard Overview</span>
+                    <span class="cmd-shortcut">1</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('approvals')">
+                    <i class="fa-solid fa-stamp"></i> <span>Approvals</span>
+                    <span class="cmd-shortcut">2</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('my-claims')">
+                    <i class="fa-solid fa-receipt"></i> <span>My Claims</span>
+                    <span class="cmd-shortcut">3</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('users')">
+                    <i class="fa-solid fa-users"></i> <span>User Management</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('projects')">
+                    <i class="fa-solid fa-folder-tree"></i> <span>Projects</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('reports')">
+                    <i class="fa-solid fa-chart-line"></i> <span>Reports & Analytics</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('audit')">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit Logs</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('settings')">
+                    <i class="fa-solid fa-sliders"></i> <span>Settings</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('chat')">
+                    <i class="fa-solid fa-comments"></i> <span>Open Chat</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('theme')">
+                    <i class="fa-solid fa-moon"></i> <span>Toggle Dark Mode</span>
+                    <span class="cmd-shortcut">T</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('notif')">
+                    <i class="fa-solid fa-bell"></i> <span>View Notifications</span>
+                    <span class="cmd-shortcut">N</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('new_claim')">
+                    <i class="fa-solid fa-plus"></i> <span>Create New Claim</span>
+                    <span class="cmd-shortcut">C</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('export_csv')">
+                    <i class="fa-solid fa-file-csv"></i> <span>Export Current View (CSV)</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('export_pdf')">
+                    <i class="fa-solid fa-file-pdf"></i> <span>Export Current View (PDF)</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('focus_search')">
+                    <i class="fa-solid fa-magnifying-glass"></i> <span>Focus Search</span>
+                    <span class="cmd-shortcut">/</span>
+                </div>
+            </div>
+            <div
+                style="padding:8px 16px;border-top:1px solid var(--border-color);display:flex;gap:12px;align-items:center">
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:600"><kbd
+                        style="padding:1px 5px;border:1px solid var(--border-color);border-radius:3px;font-size:9px;background:var(--bg-secondary)">↑↓</kbd>
+                    Navigate</span>
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:600"><kbd
+                        style="padding:1px 5px;border:1px solid var(--border-color);border-radius:3px;font-size:9px;background:var(--bg-secondary)">↵</kbd>
+                    Select</span>
+                <span style="font-size:10px;color:var(--text-secondary);font-weight:600"><kbd
+                        style="padding:1px 5px;border:1px solid var(--border-color);border-radius:3px;font-size:9px;background:var(--bg-secondary)">Esc</kbd>
+                    Close</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ NEW FEATURES JS ═══════════ -->
+    <script>
+        (function () {
+
+            // ── Helper: Time Ago ──
+            function getTimeAgo(date) {
+                if (!date) return 'Recently';
+                const now = new Date();
+                const past = date instanceof Date ? date : (date.toDate ? date.toDate() : new Date(date));
+                const diff = Math.floor((now - past) / 1000);
+                if (diff < 60) return 'Just now';
+                if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+                return `${Math.floor(diff / 86400)}d ago`;
+            }
+
+            // ── Welcome Hero Banner ──
+            function renderWelcomeHero() {
+                const container = document.getElementById('welcome-hero-container');
+                if (!container) return;
+                const hour = new Date().getHours();
+                let greeting = 'Good Evening';
+                let icon = 'fa-moon';
+                if (hour < 12) { greeting = 'Good Morning'; icon = 'fa-sun'; }
+                else if (hour < 17) { greeting = 'Good Afternoon'; icon = 'fa-cloud-sun'; }
+                const name = document.getElementById('current-user-name')?.textContent?.trim() || 'Admin';
+                const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+                // Get real data if available
+                const data = window.adminDashboardData || { pending: 0, totalUsers: 0, approvedToday: 0 };
+
+                container.innerHTML = `
+                <div class="welcome-hero mb-8" style="animation: floatIn 0.6s ease forwards">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <i class="fa-solid ${icon}" style="color:rgba(255,255,255,0.5);font-size:14px"></i>
+                                <span style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:0.1em">${dateStr}</span>
+                            </div>
+                            <h2 style="color:#fff;font-size:24px;font-weight:800;margin:0;letter-spacing:-0.5px">${greeting}, <span style="background:linear-gradient(to right,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${name.split(' ')[0]}</span></h2>
+                            <p style="color:rgba(255,255,255,0.45);font-size:13px;margin-top:6px;font-weight:400">Here's your admin overview for today.</p>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <div class="stat-pill"><i class="fa-solid fa-stamp" style="margin-right:4px"></i> <span id="hero-pending-count">${data.pending}</span> Pending</div>
+                            <div class="stat-pill"><i class="fa-solid fa-users" style="margin-right:4px"></i> <span id="hero-user-count">${data.totalUsers}</span> Users</div>
+                            <div class="stat-pill"><i class="fa-solid fa-check-circle" style="margin-right:4px;color:#34d399"></i> <span id="hero-approved-today">${data.approvedToday}</span> Approved Today</div>
+                        </div>
+                    </div>
+                    <!-- Export Toolbar -->
+                    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="export-btn" onclick="exportAdminCSV()" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                        <button class="export-btn" onclick="exportAdminPDF()" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">
+                            <i class="fa-solid fa-file-pdf"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+                <!-- Activity Feed -->
+                <div class="vercel-card mb-8" style="padding:0;overflow:hidden">
+                    <div style="padding:14px 20px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <div style="width:28px;height:28px;border-radius:8px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center">
+                                <i class="fa-solid fa-bolt" style="font-size:11px;color:var(--text-secondary)"></i>
+                            </div>
+                            <span style="font-size:12px;font-weight:700;color:var(--text-primary)">Recent Activity</span>
+                        </div>
+                        <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em">Live</span>
+                    </div>
+                    <div id="admin-activity-feed" style="padding:12px 20px;min-height:100px">
+                        <div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:12px">
+                            <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:6px"></i> Loading activity...
+                        </div>
+                    </div>
+                </div>
+            `;
+                // Populate
+                populateActivityFeed();
+            }
+
+            function populateActivityFeed() {
+                const feed = document.getElementById('admin-activity-feed');
+                if (!feed) return;
+
+                const data = window.adminDashboardData || {};
+                const expenses = data.recentExpenses || [];
+
+                if (expenses.length === 0) {
+                    feed.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text-secondary);font-size:12px">No recent activity.</div>`;
+                    return;
+                }
+
+                feed.innerHTML = expenses.map((e, i) => {
+                    let icon = 'fa-receipt';
+                    let color = '#3b82f6';
+                    let badge = 'Claim';
+
+                    if (e.status === 'PAID') { icon = 'fa-stamp'; color = '#22c55e'; badge = 'Approved'; }
+                    else if (e.status === 'REJECTED') { icon = 'fa-xmark'; color = '#ef4444'; badge = 'Rejected'; }
+                    else if (e.status.includes('MANAGER')) { badge = 'Manager'; color = '#f59e0b'; }
+
+                    const ts = e.createdAt?.toDate ? e.createdAt.toDate() : new Date(e.createdAt || 0);
+
+                    return `
+                    <div class="activity-item" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color);animation-delay:${i * 0.06}s">
+                        <div style="width:32px;height:32px;border-radius:8px;background:${color}15;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="fa-solid ${icon}" style="font-size:12px;color:${color}"></i>
+                        </div>
+                        <div style="flex:1;min-width:0">
+                            <p style="font-size:12px;font-weight:600;color:var(--text-primary);margin:0">${e.title}</p>
+                            <p style="font-size:10px;color:var(--text-secondary);margin:2px 0 0">${e.employeeName || e.userName || 'Employee'} • ${getTimeAgo(ts)}</p>
+                        </div>
+                        <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;padding:2px 8px;border-radius:999px;background:${color}15;color:${color};border:1px solid ${color}30;white-space:nowrap">${badge}</span>
+                    </div>
+                `;
+                }).join('');
+            }
+
+            // Global refresh hook for admin-logic.js
+            window.refreshNewAdminUI = function () {
+                renderWelcomeHero();
+            };
+
+            // ── Command Palette ──
+            window.openCommandPalette = function () {
+                const el = document.getElementById('cmd-palette');
+                el.classList.add('open');
+                const input = document.getElementById('cmd-input');
+                input.value = '';
+                input.focus();
+                filterCmdItems('');
+            };
+            window.closeCommandPalette = function () {
+                document.getElementById('cmd-palette').classList.remove('open');
+            };
+            window.cmdAction = function (action) {
+                closeCommandPalette();
+                if (action === 'theme') { if (typeof toggleTheme === 'function') toggleTheme(); return; }
+                if (action === 'notif') { if (typeof openNotifList === 'function') openNotifList(); return; }
+                if (action === 'new_claim') { if (typeof openCreateModal === 'function') openCreateModal(); return; }
+                if (action === 'export_csv') { if (typeof exportAdminCSV === 'function') exportAdminCSV(); return; }
+                if (action === 'export_pdf') { if (typeof exportAdminPDF === 'function') exportAdminPDF(); return; }
+                if (action === 'focus_search') {
+                    const search = document.getElementById('approval-search') || document.getElementById('task-search') || document.getElementById('audit-search-input');
+                    if (search) search.focus();
+                    return;
+                }
+                if (typeof switchTab === 'function') switchTab(action);
+            };
+            function filterCmdItems(query) {
+                const items = document.querySelectorAll('#cmd-results .cmd-item');
+                const q = query.toLowerCase();
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(q) ? '' : 'none';
+                });
+            }
+            // Keyboard listeners
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    openCommandPalette();
+                }
+                if (e.key === 'Escape') {
+                    closeCommandPalette();
+                }
+                if (e.key === '/' && !e.ctrlKey && !e.metaKey && e.target === document.body) {
+                    e.preventDefault();
+                    const search = document.getElementById('approval-search') || document.getElementById('task-search') || document.getElementById('audit-search-input');
+                    if (search) search.focus();
+                }
+            });
+            document.getElementById('cmd-palette')?.addEventListener('click', (e) => {
+                if (e.target.classList.contains('cmd-palette-backdrop')) closeCommandPalette();
+            });
+            document.getElementById('cmd-input')?.addEventListener('input', (e) => {
+                filterCmdItems(e.target.value);
+            });
+
+            // ── Breadcrumb Updater ──
+            const origSwitchTab = window.switchTab;
+            if (typeof origSwitchTab === 'function') {
+                window.switchTab = function (tab, options) {
+                    origSwitchTab(tab, options);
+                    updateBreadcrumb(tab);
+                };
+            }
+            window.updateBreadcrumb = function (tab) {
+                const names = {
+                    'overview': 'Dashboard', 'approvals': 'Approvals', 'my-claims': 'My Claims',
+                    'tasks': 'Task Manager', 'users': 'User Management', 'roles': 'Role Management',
+                    'projects': 'Projects', 'workflow': 'Workflow', 'reports': 'Reports',
+                    'audit': 'Audit Logs', 'settings': 'Settings', 'chat': 'Chat'
+                };
+                const el = document.getElementById('breadcrumb-current');
+                const title = document.getElementById('page-title');
+                if (el) el.textContent = names[tab] || tab;
+                if (title) title.textContent = names[tab] || tab;
+            };
+
+            // ── System Health Monitor ──
+            function checkHealth() {
+                const dot = document.getElementById('health-dot');
+                const text = document.getElementById('health-text');
+                if (!dot || !text) return;
+                if (navigator.onLine) {
+                    dot.classList.remove('offline');
+                    text.textContent = 'Online';
+                } else {
+                    dot.classList.add('offline');
+                    text.textContent = 'Offline';
+                }
+            }
+            window.addEventListener('online', checkHealth);
+            window.addEventListener('offline', checkHealth);
+            checkHealth();
+
+            // ── Export Functions ──
+            window.exportAdminCSV = function () {
+                if (typeof showToast === 'function') showToast('Preparing CSV export...', 'info');
+                // Gather visible table data from content-area
+                const rows = document.querySelectorAll('#content-area table tr');
+                if (!rows.length) {
+                    if (typeof showToast === 'function') showToast('No table data to export', 'error');
+                    return;
+                }
+                let csv = '';
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td, th');
+                    const line = Array.from(cells).map(c => '"' + c.textContent.trim().replace(/"/g, '""') + '"').join(',');
+                    csv += line + '\n';
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'explyra-admin-export-' + new Date().toISOString().slice(0, 10) + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                if (typeof showToast === 'function') showToast('CSV downloaded!', 'success');
+            };
+            window.exportAdminPDF = function () {
+                if (typeof showToast === 'function') showToast('Generating PDF...', 'info');
+                const content = document.getElementById('content-area');
+                if (!content) return;
+                if (typeof html2pdf !== 'undefined') {
+                    html2pdf().set({
+                        margin: 10,
+                        filename: 'explyra-admin-report-' + new Date().toISOString().slice(0, 10) + '.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    }).from(content).save().then(() => {
+                        if (typeof showToast === 'function') showToast('PDF downloaded!', 'success');
+                    });
+                } else {
+                    if (typeof showToast === 'function') showToast('PDF library not loaded', 'error');
+                }
+            };
+
+            // ── Render hero on tab switch to overview ──
+            const observer = new MutationObserver(() => {
+                const container = document.getElementById('welcome-hero-container');
+                if (container && !container.children.length) {
+                    setTimeout(renderWelcomeHero, 300);
+                }
+            });
+            const contentArea = document.getElementById('content-area');
+            if (contentArea) observer.observe(contentArea, { childList: true });
+
+            // Initial render
+            window.addEventListener('load', () => setTimeout(renderWelcomeHero, 1500));
+        })();
+    </script>
+    </script>
+    
+    <!-- P2P Video Call Modal -->
+    <div id="modal-video-call" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
+        <div class="absolute top-4 right-4 flex gap-2">
+            <button onclick="window.leaveVideoCall()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i class="fa-solid fa-phone-slash ml-1"></i></button>
+        </div>
+        <div class="flex-1 min-h-0 flex flex-col gap-4 items-center justify-center p-4">
+            <!-- Grid for remote videos -->
+            <div id="video-grid" class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory flex-nowrap md:justify-center pt-8">
+            </div>
+        </div>
+        <!-- Local Video and Controls -->
+        <div class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
+            <div class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
+                <video id="local-video" playsinline autoplay muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+                <div class="absolute bottom-1 left-1 bg-black/50 text-[10px] text-white px-1.5 py-0.5 rounded">You</div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="btn-toggle-audio" onclick="window.toggleAudio()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-microphone"></i></button>
+                <button id="btn-toggle-video" onclick="window.toggleVideo()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-video"></i></button>
+                <button id="btn-screen-share" onclick="window.toggleScreenShare()" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg" title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
+                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()" class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg" title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
+            </div>
+            <div class="w-32 md:w-48 hidden md:block"></div>
+        </div>
+    </div>
+
+    <!-- Add Member to Call Modal -->
+    <div id="modal-add-member-call" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Add Member to Call</h3>
+                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-4 max-h-[60vh] overflow-y-auto" id="call-member-list">
+                <!-- User list populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- P2P Dependencies -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="js/emp-p2p.js" type="module"></script>
 </body>
 
 </html>

@@ -7,8 +7,8 @@
     <meta name="twitter:site" content="@explyras">
     <meta name="twitter:creator" content="@explyras">
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="theme-color" content="#1546C0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1429,12 +1429,12 @@
 
                     <!-- Search / Cmd Palette Trigger -->
                     <!-- Mobile Search Icon -->
-                    <button onclick="openCommandPalette()"
+                    <button onclick="openCommandPalette()" aria-label="Open command palette"
                         class="sm:hidden p-2 text-slate-500 hover:text-slate-800 dark:hover:text-slate-100 transition">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                     <!-- Desktop Search Button -->
-                    <button onclick="openCommandPalette()"
+                    <button onclick="openCommandPalette()" aria-label="Open command palette"
                         class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-400 text-xs">
                         <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
                         <span class="font-medium">Search...</span>
@@ -1443,19 +1443,19 @@
                     </button>
 
 
-                    <button onclick="openNotifList()"
+                    <button onclick="openNotifList()" aria-label="Open notifications"
                         class="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition">
                         <i class="fa-solid fa-bell"></i>
                         <span id="header-notif-dot"
                             class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
                     </button>
 
-                    <button onclick="toggleTheme()"
+                    <button onclick="toggleTheme()" aria-label="Toggle theme"
                         class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
                         <i class="fa-solid fa-moon theme-toggle-icon"></i>
                     </button>
 
-                    <button onclick="openAccountCenter()"
+                    <button onclick="openAccountCenter()" aria-label="Open account center"
                         class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
                         <img id="header-avatar-img" src="assets/images/explyra_logo.png"
                             class="w-full h-full object-cover" alt="Profile">
@@ -2534,6 +2534,20 @@
                     <i class="fa-solid fa-bell"></i> <span>View Notifications</span>
                     <span class="cmd-shortcut">N</span>
                 </div>
+                <div class="cmd-item" onclick="cmdAction('new_claim')">
+                    <i class="fa-solid fa-plus"></i> <span>Create New Claim</span>
+                    <span class="cmd-shortcut">C</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('export_csv')">
+                    <i class="fa-solid fa-file-csv"></i> <span>Export Current View (CSV)</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('export_pdf')">
+                    <i class="fa-solid fa-file-pdf"></i> <span>Export Current View (PDF)</span>
+                </div>
+                <div class="cmd-item" onclick="cmdAction('focus_search')">
+                    <i class="fa-solid fa-magnifying-glass"></i> <span>Focus Search</span>
+                    <span class="cmd-shortcut">/</span>
+                </div>
             </div>
             <div
                 style="padding:8px 16px;border-top:1px solid var(--border-color);display:flex;gap:12px;align-items:center">
@@ -2689,6 +2703,14 @@
                 closeCommandPalette();
                 if (action === 'theme') { if (typeof toggleTheme === 'function') toggleTheme(); return; }
                 if (action === 'notif') { if (typeof openNotifList === 'function') openNotifList(); return; }
+                if (action === 'new_claim') { if (typeof openCreateModal === 'function') openCreateModal(); return; }
+                if (action === 'export_csv') { if (typeof exportAdminCSV === 'function') exportAdminCSV(); return; }
+                if (action === 'export_pdf') { if (typeof exportAdminPDF === 'function') exportAdminPDF(); return; }
+                if (action === 'focus_search') {
+                    const search = document.getElementById('approval-search') || document.getElementById('task-search') || document.getElementById('audit-search-input');
+                    if (search) search.focus();
+                    return;
+                }
                 if (typeof switchTab === 'function') switchTab(action);
             };
             function filterCmdItems(query) {
@@ -2708,6 +2730,11 @@
                 if (e.key === 'Escape') {
                     closeCommandPalette();
                 }
+                if (e.key === '/' && !e.ctrlKey && !e.metaKey && e.target === document.body) {
+                    e.preventDefault();
+                    const search = document.getElementById('approval-search') || document.getElementById('task-search') || document.getElementById('audit-search-input');
+                    if (search) search.focus();
+                }
             });
             document.getElementById('cmd-palette')?.addEventListener('click', (e) => {
                 if (e.target.classList.contains('cmd-palette-backdrop')) closeCommandPalette();
@@ -2719,8 +2746,8 @@
             // ── Breadcrumb Updater ──
             const origSwitchTab = window.switchTab;
             if (typeof origSwitchTab === 'function') {
-                window.switchTab = function (tab) {
-                    origSwitchTab(tab);
+                window.switchTab = function (tab, options) {
+                    origSwitchTab(tab, options);
                     updateBreadcrumb(tab);
                 };
             }

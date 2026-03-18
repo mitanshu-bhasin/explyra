@@ -71,7 +71,15 @@ window.initiateCall = async (type) => {
     }
 
     try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: type === 'video', audio: true });
+        // Reuse stream if already active and matches type
+        if (!localStream) {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: type === 'video', audio: true });
+        } else if (type === 'video' && localStream.getVideoTracks().length === 0) {
+            // If we have an audio-only stream but want video, we need a new one
+            localStream.getTracks().forEach(t => t.stop());
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        }
+
         const localVideo = document.getElementById('local-video');
         if (localVideo) {
             localVideo.srcObject = localStream;
@@ -173,7 +181,11 @@ window.initiateCall = async (type) => {
 
     } catch (e) {
         console.error(e);
-        window.showToast("Failed to start call: " + e.message, "error");
+        if (e.name === 'NotAllowedError' || e.message?.toLowerCase().includes('permission denied')) {
+            window.showToast("Camera/Mic permission denied. Please click the lock icon in your browser address bar to allow access.", "error");
+        } else {
+            window.showToast("Failed to start call: " + e.message, "error");
+        }
     }
 };
 
@@ -190,9 +202,18 @@ window.acceptCall = async () => {
         if (!callSnap.exists()) throw new Error("Call ended");
         const callData = callSnap.data();
 
-        localStream = await navigator.mediaDevices.getUserMedia({ video: callData.type === 'video', audio: true });
+        try {
+            if (!localStream) {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: callData.type === 'video', audio: true });
+            }
+        } catch (mediaErr) {
+            console.warn("Media access denied on accept, answering without media", mediaErr);
+            window.showToast("Answering without camera/mic (Permission denied)", "info");
+            localStream = new MediaStream(); // Empty stream to allow connection
+        }
+
         const localVideo = document.getElementById('local-video');
-        if (localVideo) {
+        if (localVideo && localStream.getVideoTracks().length > 0) {
             localVideo.srcObject = localStream;
             if (callData.type === 'voice') localVideo.classList.add('hidden');
             else localVideo.classList.remove('hidden');
@@ -202,7 +223,9 @@ window.acceptCall = async () => {
         setTimeout(() => switchToConnectedUI(), 300);
 
         peerConnection = new RTCPeerConnection(servers);
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+        if (localStream) {
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+        }
 
         const offerCandidates = collection(callDocRef, "offerCandidates");
         const answerCandidates = collection(callDocRef, "answerCandidates");

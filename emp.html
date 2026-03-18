@@ -7,8 +7,8 @@
     <meta name="twitter:site" content="@explyras" />
     <meta name="twitter:creator" content="@explyras" />
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="theme-color" content="#1546C0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -549,6 +549,29 @@
             transition: opacity 0.3s;
         }
         .vercel-card:hover .sparkline-svg { opacity: 0.6; }
+
+        @media (max-width: 767px) {
+            #modal-chat {
+                padding: 0;
+            }
+
+            #modal-chat > div {
+                width: 100%;
+                max-width: none;
+                height: 100dvh;
+                border-radius: 0;
+            }
+
+            #chat-main-area {
+                position: absolute;
+                inset: 0;
+                min-height: 100dvh;
+            }
+
+            #chat-messages-emp {
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+        }
     </style>
     <link rel="manifest" href="manifest.json">
     <script>
@@ -965,7 +988,7 @@
                                 class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-black hidden"></span>
                         </button>
 
-                        <button onclick="toggleTheme()"
+                        <button onclick="toggleTheme()" aria-label="Toggle theme"
                             class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors">
                             <i class="fa-solid fa-moon theme-toggle-icon text-sm text-gray-500 dark:text-gray-400"></i>
                         </button>
@@ -1861,7 +1884,7 @@
                         <div>
                             <label
                                 class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Theme</label>
-                            <button type="button" onclick="toggleTheme()"
+                            <button type="button" onclick="toggleTheme()" aria-label="Toggle theme"
                                 class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-moon theme-toggle-icon"></i> Toggle
                             </button>

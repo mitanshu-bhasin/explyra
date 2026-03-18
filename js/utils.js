@@ -322,3 +322,118 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.updateGDriveUI) window.updateGDriveUI();
     }, 1000);
 });
+
+// Shared accessibility enhancements for legacy modal patterns across portals.
+window.initModalAccessibility = () => {
+    const focusableSelector = [
+        'a[href]',
+        'button:not([disabled])',
+        'textarea:not([disabled])',
+        'input:not([disabled]):not([type="hidden"])',
+        'select:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+
+    let activeModal = null;
+    let lastFocused = null;
+
+    const getModalCandidates = () => Array.from(document.querySelectorAll(
+        '[id^="modal-"], #user-modal, #project-modal, #delete-modal, #global-modal, #input-modal'
+    )).filter((node) => node && node.classList && node.classList.contains('fixed'));
+
+    const isVisibleModal = (el) => el && !el.classList.contains('hidden') && getComputedStyle(el).display !== 'none';
+
+    const decorateModal = (modal) => {
+        if (!modal || modal.dataset.a11yDecorated === 'true') return;
+        modal.dataset.a11yDecorated = 'true';
+        modal.setAttribute('role', modal.getAttribute('role') || 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-hidden', modal.classList.contains('hidden') ? 'true' : 'false');
+    };
+
+    const decorateIconButtons = () => {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn) => {
+            const hasLabel = btn.getAttribute('aria-label');
+            const text = (btn.textContent || '').trim();
+            const iconOnly = !text;
+            if (!hasLabel && iconOnly) {
+                const icon = btn.querySelector('i');
+                if (!icon) return;
+                const cls = icon.className || '';
+                if (cls.includes('fa-xmark') || cls.includes('fa-times')) btn.setAttribute('aria-label', 'Close');
+                else if (cls.includes('fa-moon')) btn.setAttribute('aria-label', 'Toggle theme');
+                else if (cls.includes('fa-bell')) btn.setAttribute('aria-label', 'Open notifications');
+                else if (cls.includes('fa-search') || cls.includes('fa-magnifying-glass')) btn.setAttribute('aria-label', 'Search');
+            }
+            const icon = btn.querySelector('i');
+            if (icon) icon.setAttribute('aria-hidden', 'true');
+        });
+    };
+
+    const handleTrap = (event) => {
+        if (!activeModal || !isVisibleModal(activeModal) || event.key !== 'Tab') return;
+        const focusables = Array.from(activeModal.querySelectorAll(focusableSelector))
+            .filter((el) => el.offsetParent !== null || el === document.activeElement);
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    };
+
+    const syncActiveModal = () => {
+        const visible = getModalCandidates().filter(isVisibleModal);
+        visible.forEach((m) => m.setAttribute('aria-hidden', 'false'));
+        getModalCandidates().filter((m) => !isVisibleModal(m)).forEach((m) => m.setAttribute('aria-hidden', 'true'));
+
+        const next = visible[visible.length - 1] || null;
+        if (next && activeModal !== next) {
+            lastFocused = document.activeElement;
+            activeModal = next;
+            const focusables = Array.from(activeModal.querySelectorAll(focusableSelector));
+            if (focusables.length) setTimeout(() => focusables[0].focus(), 20);
+        } else if (!next && activeModal) {
+            activeModal = null;
+            if (lastFocused && typeof lastFocused.focus === 'function') {
+                setTimeout(() => lastFocused.focus(), 10);
+            }
+        }
+    };
+
+    getModalCandidates().forEach(decorateModal);
+    decorateIconButtons();
+    syncActiveModal();
+
+    const mo = new MutationObserver(() => {
+        getModalCandidates().forEach(decorateModal);
+        decorateIconButtons();
+        syncActiveModal();
+    });
+    mo.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'aria-label'] });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && activeModal) {
+            const closeButton = activeModal.querySelector('button[aria-label="Close"], button i.fa-xmark, button i.fa-times');
+            if (closeButton) {
+                const btn = closeButton.tagName === 'BUTTON' ? closeButton : closeButton.closest('button');
+                if (btn) btn.click();
+            }
+        }
+        handleTrap(event);
+    });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (typeof window.initModalAccessibility === 'function') {
+            window.initModalAccessibility();
+        }
+    }, 150);
+});

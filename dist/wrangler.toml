@@ -1,0 +1,53 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "explyra"
+pages_build_output_dir = "."
+compatibility_date = "2024-03-14"
+
+[observability]
+enabled = true
+
+# ==============================
+# 🚀 SECURITY & CACHE HEADERS
+# ==============================
+[[headers]]
+pattern = "/*"
+[headers.values]
+  X-Frame-Options = "DENY"
+  X-XSS-Protection = "1; mode=block"
+  X-Content-Type-Options = "nosniff"
+  Referrer-Policy = "strict-origin-when-cross-origin"
+  Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+  # Caching disabled as requested (no-cache, no-store)
+  Cache-Control = "no-cache, no-store, must-revalidate"
+  Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+  Content-Security-Policy = "upgrade-insecure-requests; frame-ancestors 'none';"
+  X-Permitted-Cross-Domain-Policies = "none"
+
+# ==============================
+# 🔗 REDIRECTS & REWRITES
+# ==============================
+[[redirects]]
+from = "https://explyra.pages.dev/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "/booking/:username"
+to = "/booking/booking-page.html?u=:username"
+status = 200
+
+[[redirects]]
+from = "/mailbox"
+to = "/email-app/src/index.html"
+status = 200
+
+[[redirects]]
+from = "/mail"
+to = "/email-app/src/index.html"
+status = 200
+
+# Block access to firestore rules
+[[redirects]]
+from = "/firestore.rules"
+to = "/404.html"
+status = 404

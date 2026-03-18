@@ -111,6 +111,8 @@ let aiAssistant = null;
 let lastDashboardContext = null;
 let overviewSortBy = 'date';
 let auditSearchTerm = '';
+let currentAdminTab = null;
+let currentAdminModalId = null;
 
 const roleRank = {
     'ADMIN': 7,
@@ -124,12 +126,60 @@ const roleRank = {
     'EMPLOYEE': 1
 };
 
+const ADMIN_TABS = new Set([
+    'overview', 'approvals', 'my-claims', 'tasks', 'users', 'roles', 'projects',
+    'workflow', 'reports', 'audit', 'chat', 'settings'
+]);
+
+function normalizeAdminTab(tab) {
+    return ADMIN_TABS.has(tab) ? tab : 'overview';
+}
+
+function buildAdminTabUrl(tab) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    return `${url.pathname}${url.search}${url.hash}`;
+}
+
+function pushAdminModalState(modalId) {
+    const url = buildAdminTabUrl(currentAdminTab || 'overview');
+    window.history.pushState({ adminTab: currentAdminTab || 'overview', adminModal: modalId }, '', url);
+    currentAdminModalId = modalId;
+}
+
+function setAdminModalVisibility(modalId, show) {
+    const el = document.getElementById(modalId);
+    if (!el) return;
+    if (show) el.classList.remove('hidden');
+    else el.classList.add('hidden');
+}
+
+function syncAdminModalFromState(state) {
+    const stateModal = state?.adminModal || null;
+
+    if (!stateModal && currentAdminModalId) {
+        setAdminModalVisibility(currentAdminModalId, false);
+        currentAdminModalId = null;
+        return;
+    }
+
+    if (stateModal && stateModal !== currentAdminModalId) {
+        if (currentAdminModalId) setAdminModalVisibility(currentAdminModalId, false);
+        setAdminModalVisibility(stateModal, true);
+        currentAdminModalId = stateModal;
+    }
+}
+
 // Cache users for edit modal
 let globalUsersCache = [];
 
 // Toast function
 window.showToast = (message, type = 'info') => {
     const container = document.getElementById('toast-container');
+    if (!container) return;
+    container.setAttribute('role', 'status');
+    container.setAttribute('aria-live', 'polite');
+    container.setAttribute('aria-atomic', 'false');
     const toast = document.createElement('div');
     const colors = {
         success: 'bg-green-600',
@@ -138,6 +188,7 @@ window.showToast = (message, type = 'info') => {
         warning: 'bg-yellow-600'
     };
     toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-[slideUp_0.3s] z-50`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
     toast.innerHTML = `
                 <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
                 <span class="text-sm">${message}</span>
@@ -1028,29 +1079,63 @@ window.checkAccess = async () => {
     else switchTab('overview');
 }
 
-window.switchTab = (tab) => {
+window.switchTab = (tab, options = {}) => {
+    const normalizedTab = normalizeAdminTab(tab);
+
     // Cleanup active listeners
     activeListeners.forEach(unsub => unsub());
     activeListeners = [];
 
     document.querySelectorAll('.sidebar-item').forEach(el => {
         el.classList.remove('active', 'bg-slate-800', 'text-white');
-        if (el.dataset.tab === tab) el.classList.add('active');
+        if (el.dataset.tab === normalizedTab) el.classList.add('active');
     });
 
-    if (tab === 'overview') renderOverview();
-    if (tab === 'approvals') renderApprovals();
-    if (tab === 'users') renderUserManagement();
-    if (tab === 'settings') renderSettings();
-    if (tab === 'reports') renderReports();
-    if (tab === 'audit') renderAuditLogs();
-    if (tab === 'tasks') renderTasks(); // Added tasks renderer
-    if (tab === 'my-claims') renderMyClaims();
-    if (tab === 'projects') renderProjects();
-    if (tab === 'chat') renderChat();
-    if (tab === 'workflow') renderWorkflow();
-    if (tab === 'roles') renderRoles();
+    if (normalizedTab === 'overview') renderOverview();
+    if (normalizedTab === 'approvals') renderApprovals();
+    if (normalizedTab === 'users') renderUserManagement();
+    if (normalizedTab === 'settings') renderSettings();
+    if (normalizedTab === 'reports') renderReports();
+    if (normalizedTab === 'audit') renderAuditLogs();
+    if (normalizedTab === 'tasks') renderTasks(); // Added tasks renderer
+    if (normalizedTab === 'my-claims') renderMyClaims();
+    if (normalizedTab === 'projects') renderProjects();
+    if (normalizedTab === 'chat') renderChat();
+    if (normalizedTab === 'workflow') renderWorkflow();
+    if (normalizedTab === 'roles') renderRoles();
+
+    const skipHistory = !!options.skipHistory;
+    const replaceHistory = !!options.replaceHistory;
+    const previousTab = currentAdminTab;
+
+    if (!skipHistory) {
+        const nextUrl = buildAdminTabUrl(normalizedTab);
+        const state = { adminTab: normalizedTab };
+
+        if (!previousTab || replaceHistory) {
+            window.history.replaceState(state, '', nextUrl);
+        } else if (previousTab !== normalizedTab) {
+            window.history.pushState(state, '', nextUrl);
+        }
+    }
+
+    currentAdminTab = normalizedTab;
 };
+
+window.addEventListener('popstate', (event) => {
+    const dashboardScreen = document.getElementById('dashboard-screen');
+    if (!dashboardScreen || dashboardScreen.classList.contains('hidden')) return;
+
+    syncAdminModalFromState(event.state || {});
+
+    const tabFromState = normalizeAdminTab(
+        event.state?.adminTab || new URL(window.location.href).searchParams.get('tab')
+    );
+
+    if (tabFromState !== currentAdminTab) {
+        window.switchTab(tabFromState, { skipHistory: true });
+    }
+});
 
 async function renderOverview() {
     renderCrmWidget();
@@ -1657,21 +1742,6 @@ window.uploadAuditCSV = (input) => {
     reader.readAsText(file);
 };
 
-window.uploadAuditCSV = (input) => {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const text = e.target.result;
-        const rows = text.split("\n").slice(1);
-        console.log("Parsed rows:", rows.length);
-        showToast(`Successfully processed ${rows.length} records (Simulation)`, 'success');
-        input.value = '';
-    };
-    reader.readAsText(file);
-};
-
 async function renderTasks() {
     document.getElementById('page-title').textContent = "Task Manager";
     const content = document.getElementById('content-area');
@@ -2224,6 +2294,7 @@ window.updateAdminEmail = async () => {
 
 
 window.selectedApprovals = new Set();
+window.currentFilteredApprovalIds = [];
 let approvalsData = []; // Store for filtering
 
 async function renderApprovals() {
@@ -2270,6 +2341,11 @@ async function renderApprovals() {
                                 <option value="user_asc">User Name (A-Z)</option>
                                 <option value="user_desc">User Name (Z-A)</option>
                             </select>
+                        </div>
+
+                        <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                            <input type="checkbox" id="approvals-select-all" onchange="toggleSelectAllApprovals(this.checked)" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500 transition cursor-pointer">
+                            <label for="approvals-select-all" class="text-[11px] font-bold text-slate-500">Select All (Filtered)</label>
                         </div>
 
                         <div id="bulk-actions" class="hidden flex gap-2 items-center w-full md:w-auto justify-end animate-[slideUp_0.1s_ease-out]">
@@ -2391,7 +2467,10 @@ window.applyApprovalFilters = () => {
         return 0;
     });
 
+    window.currentFilteredApprovalIds = filtered.map((d) => d.id);
+
     if (filtered.length === 0) {
+        updateBulkUI();
         list.innerHTML = emptyState("No matching approvals found.");
         return;
     }
@@ -2400,6 +2479,12 @@ window.applyApprovalFilters = () => {
     list.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in pb-10">
                         ${filtered.map(d => {
         const date = d.createdAt?.toDate ? d.createdAt.toDate() : (d.createdAt ? new Date(d.createdAt) : new Date());
+        const ageDays = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
+        const agingClass = ageDays >= 7
+            ? 'bg-red-50 text-red-600 border-red-100'
+            : ageDays >= 3
+                ? 'bg-amber-50 text-amber-600 border-amber-100'
+                : 'bg-green-50 text-green-600 border-green-100';
         let statusColor = 'bg-slate-100 text-slate-600';
         if (d.status === 'PENDING') statusColor = 'bg-amber-50 text-amber-600 border-amber-100';
         else if (d.status === 'APPROVED') statusColor = 'bg-blue-50 text-blue-600 border-blue-100';
@@ -2437,6 +2522,9 @@ window.applyApprovalFilters = () => {
                                         <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${statusColor}">
                                             ${d.status.replace('_', ' ')}
                                         </span>
+                                        <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${agingClass}" title="Time pending since creation">
+                                            ${ageDays}d Open
+                                        </span>
                                     </div>
 
                                     ${d.isSpam ? `<div class="absolute top-0 right-0 p-1 bg-red-500 text-white text-[8px] font-bold px-2 rounded-bl-lg">SPAM</div>` : ''}
@@ -2445,6 +2533,18 @@ window.applyApprovalFilters = () => {
                             `;
     }).join('')}
                     </div>`;
+
+    updateBulkUI();
+};
+
+window.toggleSelectAllApprovals = (checked) => {
+    const ids = window.currentFilteredApprovalIds || [];
+    if (checked) {
+        ids.forEach((id) => window.selectedApprovals.add(id));
+    } else {
+        ids.forEach((id) => window.selectedApprovals.delete(id));
+    }
+    window.applyApprovalFilters();
 };
 
 window.toggleSelection = (id) => {
@@ -2455,19 +2555,36 @@ window.toggleSelection = (id) => {
 
 function updateBulkUI() {
     const count = window.selectedApprovals.size;
-    document.getElementById('selected-count').textContent = count;
+    const selectedCountEl = document.getElementById('selected-count');
+    if (selectedCountEl) selectedCountEl.textContent = count;
     const actionDiv = document.getElementById('bulk-actions');
-    if (count > 0) actionDiv.classList.remove('hidden');
-    else actionDiv.classList.add('hidden');
+    if (actionDiv) {
+        if (count > 0) actionDiv.classList.remove('hidden');
+        else actionDiv.classList.add('hidden');
+    }
+
+    const selectAll = document.getElementById('approvals-select-all');
+    const filteredIds = window.currentFilteredApprovalIds || [];
+    if (selectAll) {
+        if (!filteredIds.length) {
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+            return;
+        }
+        const selectedInFiltered = filteredIds.filter((id) => window.selectedApprovals.has(id)).length;
+        selectAll.checked = selectedInFiltered === filteredIds.length;
+        selectAll.indeterminate = selectedInFiltered > 0 && selectedInFiltered < filteredIds.length;
+    }
 }
 
 window.handleBulkAction = async (action) => {
     if (window.selectedApprovals.size === 0) return;
     if (!await confirm(`Are you sure you want to ${action} ${window.selectedApprovals.size} items ? `)) return;
 
-    const btn = event.currentTarget;
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+    const evt = window.event;
+    const btn = evt?.currentTarget || null;
+    const originalHTML = btn ? btn.innerHTML : '';
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
 
     try {
         const batch = writeBatch(db);
@@ -2544,15 +2661,23 @@ window.handleBulkAction = async (action) => {
             }
         }
 
-        await Promise.all(updates);
-        showToast(`Processed ${updates.length} items successfully!`, 'success');
+        const settled = await Promise.allSettled(updates);
+        const successCount = settled.filter((r) => r.status === 'fulfilled').length;
+        const failCount = settled.length - successCount;
+
+        if (failCount > 0) {
+            showToast(`Processed ${successCount} items, ${failCount} failed.`, 'warning');
+        } else {
+            showToast(`Processed ${successCount} items successfully!`, 'success');
+        }
+
         window.selectedApprovals.clear();
         updateBulkUI();
     } catch (e) {
         console.error(e);
         showToast("Bulk action failed: " + e.message, "error");
     } finally {
-        btn.innerHTML = originalHTML;
+        if (btn) btn.innerHTML = originalHTML;
     }
 };
 
@@ -3390,6 +3515,7 @@ window.exportReport = async (format) => {
 window.openExpenseModal = (id) => {
     const modal = document.getElementById('modal-expense');
     modal.classList.remove('hidden');
+    pushAdminModalState('modal-expense');
     document.getElementById('modal-items').innerHTML = '<div class="p-4 text-center text-slate-400">Loading...</div>';
 
     onSnapshot(doc(db, "expenses", id), (snap) => {
@@ -4112,7 +4238,16 @@ window.deleteProject = async (id) => {
 
 
 
-window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+window.closeModal = (id) => {
+    const currentStateModal = window.history.state?.adminModal;
+    if (currentStateModal && currentStateModal === id) {
+        window.history.back();
+        return;
+    }
+
+    setAdminModalVisibility(id, false);
+    if (currentAdminModalId === id) currentAdminModalId = null;
+};
 window.showImage = (src) => {
     if (src) {
         document.getElementById('overlay-img').src = src;
@@ -5706,8 +5841,8 @@ window.deleteChatMessage = async (msgId) => {
 
 // Close sidebar on route change (mobile)
 const originalSwitchTab = window.switchTab;
-window.switchTab = (tab) => {
-    if (originalSwitchTab) originalSwitchTab(tab);
+window.switchTab = (tab, options = {}) => {
+    if (originalSwitchTab) originalSwitchTab(tab, options);
     if (window.innerWidth < 1024) { // lg breakpoint
         const sidebar = document.getElementById('admin-sidebar');
         if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
@@ -5984,6 +6119,7 @@ window.openNotificationPDP = async (id) => {
 
         const modal = document.getElementById('modal-notif-pdp');
         modal.classList.remove('hidden');
+        pushAdminModalState('modal-notif-pdp');
         setTimeout(() => {
             document.getElementById('modal-notif-pdp-content').classList.remove('scale-95', 'opacity-0');
             document.getElementById('modal-notif-pdp-content').classList.add('scale-100', 'opacity-100');

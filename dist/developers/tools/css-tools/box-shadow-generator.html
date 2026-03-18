@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box shadow generator — Free Explyra Developer Hub Tool | Fast & Secure</title>
+    <meta name="description" content="Use Box shadow generator on Explyra Developer Hub. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .preview-box {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 20px;
+            margin: 40px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--bdr);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--bg3);
+            border-radius: 5px;
+            appearance: none;
+            outline: none;
+            margin: 10px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--blue);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+    </style>
+
+    
+
+    
+    
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/developers/tools/css-tools/box-shadow-generator.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Developers",
+          "item": "https://explyra.me/developers/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Tools",
+          "item": "https://explyra.me/developers/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Css tools",
+          "item": "https://explyra.me/developers/tools/css-tools/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+
+<body>
+
+    <header>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+        <a href="../../index.html" class="logo">
+            <div class="logo-icon">E</div>
+            <span>Explyra <span
+                    style="font-weight: 400; font-family: 'Outfit'; font-size: 0.8rem; color: var(--ink3);">Developers</span></span>
+        </a>
+    </header>
+
+    <main class="container">
+        <nav style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink3);">
+            <a href="../../index.html">Developers</a> / CSS Tools / Box Shadow Generator
+        </nav>
+
+        <div class="tool-card animate-fade">
+            <div class="tool-header">
+                <h1 class="tool-title">Box Shadow Generator</h1>
+                <p class="tool-desc">Visually design and generate CSS box-shadow properties with ease.</p>
+            </div>
+
+            <div class="preview-box" id="preview">
+                <span style="color: var(--ink4); font-size: 0.8rem;">Preview Box</span>
+            </div>
+
+            <div class="controls">
+                <div class="input-group">
+                    <label>Shift Right (X): <span id="valX">10</span>px</label>
+                    <input type="range" id="shiftX" min="-50" max="50" value="10">
+                </div>
+                <div class="input-group">
+                    <label>Shift Down (Y): <span id="valY">10</span>px</label>
+                    <input type="range" id="shiftY" min="-50" max="50" value="10">
+                </div>
+                <div class="input-group">
+                    <label>Blur Radius: <span id="valBlur">20</span>px</label>
+                    <input type="range" id="blur" min="0" max="100" value="20">
+                </div>
+                <div class="input-group">
+                    <label>Spread Radius: <span id="valSpread">0</span>px</label>
+                    <input type="range" id="spread" min="-50" max="50" value="0">
+                </div>
+                <div class="input-group">
+                    <label>Opacity: <span id="valOp">0.15</span></label>
+                    <input type="range" id="opacity" min="0" max="100" value="15">
+                </div>
+                <div class="input-group">
+                    <label>Shadow Color</label>
+                    <input type="color" id="color" value="#000000" style="padding: 0; height: 40px; border: none;">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 30px;">
+                <label>Generated CSS</label>
+                <textarea id="output" readonly style="min-height: 60px;"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button id="copyBtn" class="btn btn-primary">Copy CSS Code</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const preview = document.getElementById('preview');
+        const output = document.getElementById('output');
+        const controls = ['shiftX', 'shiftY', 'blur', 'spread', 'opacity', 'color'];
+
+        function hexToRgb(hex) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `${r}, ${g}, ${b}`;
+        }
+
+        function update() {
+            const x = document.getElementById('shiftX').value;
+            const y = document.getElementById('shiftY').value;
+            const bl = document.getElementById('blur').value;
+            const sp = document.getElementById('spread').value;
+            const op = document.getElementById('opacity').value / 100;
+            const cl = document.getElementById('color').value;
+
+            document.getElementById('valX').textContent = x;
+            document.getElementById('valY').textContent = y;
+            document.getElementById('valBlur').textContent = bl;
+            document.getElementById('valSpread').textContent = sp;
+            document.getElementById('valOp').textContent = op;
+
+            const shadow = `box-shadow: ${x}px ${y}px ${bl}px ${sp}px rgba(${hexToRgb(cl)}, ${op});`;
+            preview.style.boxShadow = `${x}px ${y}px ${bl}px ${sp}px rgba(${hexToRgb(cl)}, ${op})`;
+            output.value = shadow;
+        }
+
+        controls.forEach(id => {
+            document.getElementById(id).addEventListener('input', update);
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+        });
+
+        update();
+    </script>
+</body>
+
+</html>

@@ -1,3 +1,6 @@
+# Domain Redirects
+https://explyra.pages.dev/* https://explyra.me/:splat 301
+
 # Rewrites
 /booking/:username /booking/booking-page.html?u=:username 200
 /mailbox /email-app/src/index.html 200

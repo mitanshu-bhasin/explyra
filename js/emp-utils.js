@@ -6,6 +6,9 @@ export const IMGBB_URL = "https://api.imgbb.com/1/upload";
 window.showToast = (message, type = 'info') => {
     const container = document.getElementById('toast-container');
     if (!container) return;
+    container.setAttribute('role', 'status');
+    container.setAttribute('aria-live', 'polite');
+    container.setAttribute('aria-atomic', 'false');
     const toast = document.createElement('div');
     const colors = {
         success: 'bg-green-600',
@@ -14,6 +17,7 @@ window.showToast = (message, type = 'info') => {
         warning: 'bg-yellow-600'
     };
     toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-[slideUp_0.3s] z-50`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
     toast.innerHTML = `
         <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
         <span class="text-sm">${message}</span>
@@ -122,8 +126,91 @@ function updateEmpLangUI(lang) {
     if (select) select.value = lang;
 }
 
+let currentEmpModalId = null;
+let isApplyingEmpHistoryState = false;
 
-window.toggleEmpView = (view) => {
+window.getEmpNavState = () => ({
+    empMainView: document.getElementById('main-view-messages')?.classList.contains('hidden') ? 'dashboard' : 'messages',
+    empTab: document.getElementById('section-financials') && !document.getElementById('section-financials').classList.contains('hidden')
+        ? 'financials'
+        : (!document.getElementById('section-tasks')?.classList.contains('hidden') ? 'tasks' : 'claims'),
+    empMode: window.currentMode || 'company',
+    empModal: currentEmpModalId || null
+});
+
+window.pushEmpNavState = ({ replace = false } = {}) => {
+    if (isApplyingEmpHistoryState) return;
+    const state = window.getEmpNavState();
+    const url = new URL(window.location.href);
+    url.searchParams.set('view', state.empMainView);
+    url.searchParams.set('tab', state.empTab);
+    url.searchParams.set('mode', state.empMode);
+    const finalUrl = `${url.pathname}${url.search}${url.hash}`;
+
+    if (replace) window.history.replaceState(state, '', finalUrl);
+    else window.history.pushState(state, '', finalUrl);
+};
+
+window.openModalWithHistory = (id) => {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    currentEmpModalId = id;
+    window.pushEmpNavState();
+};
+
+window.applyEmpHistoryState = (state) => {
+    isApplyingEmpHistoryState = true;
+    try {
+        const nextMain = state?.empMainView || 'dashboard';
+        const nextMode = state?.empMode || 'company';
+        const nextTab = state?.empTab || 'claims';
+        const nextModal = state?.empModal || null;
+
+        window.toggleMainView(nextMain, { skipHistory: true });
+        if (typeof window.toggleMode === 'function') {
+            window.toggleMode(nextMode, { skipHistory: true });
+        }
+        window.toggleEmpView(nextTab, { skipHistory: true });
+
+        if (currentEmpModalId && currentEmpModalId !== nextModal) {
+            const currentModalEl = document.getElementById(currentEmpModalId);
+            if (currentModalEl) currentModalEl.classList.add('hidden');
+        }
+
+        if (nextModal) {
+            const nextModalEl = document.getElementById(nextModal);
+            if (nextModalEl) nextModalEl.classList.remove('hidden');
+            currentEmpModalId = nextModal;
+        } else {
+            currentEmpModalId = null;
+        }
+    } finally {
+        isApplyingEmpHistoryState = false;
+    }
+};
+
+window.addEventListener('popstate', (event) => {
+    const dash = document.getElementById('dashboard-screen');
+    if (!dash || dash.classList.contains('hidden')) return;
+    const state = event.state || {
+        empMainView: new URL(window.location.href).searchParams.get('view') || 'dashboard',
+        empTab: new URL(window.location.href).searchParams.get('tab') || 'claims',
+        empMode: new URL(window.location.href).searchParams.get('mode') || 'company',
+        empModal: null
+    };
+    window.applyEmpHistoryState(state);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (document.getElementById('dashboard-screen')?.classList.contains('hidden')) return;
+        window.pushEmpNavState({ replace: true });
+    }, 600);
+});
+
+
+window.toggleEmpView = (view, options = {}) => {
     const btnClaims = document.getElementById('btn-view-claims');
     const btnTasks = document.getElementById('btn-view-tasks');
     const btnFinancials = document.getElementById('btn-view-financials');
@@ -165,14 +252,23 @@ window.toggleEmpView = (view) => {
         if (secFinancials) secFinancials.classList.remove('hidden');
         if (window.fetchFinancialAccounts) window.fetchFinancialAccounts();
     }
+
+    if (!options.skipHistory) window.pushEmpNavState();
 };
 
 window.closeModal = (id) => {
+    const stateModal = window.history.state?.empModal;
+    if (stateModal && stateModal === id) {
+        window.history.back();
+        return;
+    }
+
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
+    if (currentEmpModalId === id) currentEmpModalId = null;
 };
 
-window.toggleMainView = (viewId) => {
+window.toggleMainView = (viewId, options = {}) => {
     // viewId can be 'dashboard' or 'messages'
     const viewDashboard = document.getElementById('main-view-dashboard');
     const viewMessages = document.getElementById('main-view-messages');
@@ -232,6 +328,8 @@ window.toggleMainView = (viewId) => {
          sidebar.classList.add('hidden');
          sidebar.classList.remove('flex', 'absolute', 'z-50', 'h-full', 'left-0');
     }
+
+    if (!options.skipHistory) window.pushEmpNavState();
 };
 
 window.toggleMobileSidebar = () => {

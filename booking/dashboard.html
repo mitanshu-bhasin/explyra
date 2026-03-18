@@ -527,7 +527,41 @@
             settings: { icon: 'fa-gear', label: 'Settings' }
         };
 
-        window.showSection = (section, navEl) => {
+        const validSections = new Set(Object.keys(pageTitles));
+        let currentBookingSection = 'dashboard';
+
+        function normalizeBookingSection(section) {
+            return validSections.has(section) ? section : 'dashboard';
+        }
+
+        function isLinkModalOpen() {
+            const modal = document.getElementById('linkModal');
+            return !!(modal && modal.classList.contains('active'));
+        }
+
+        function getBookingSectionUrl(section) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('section', section);
+            return `${url.pathname}${url.search}${url.hash}`;
+        }
+
+        window.showSection = (section, navEl, options = {}) => {
+            const normalizedSection = normalizeBookingSection(section);
+
+            if (!options.skipHistory && normalizedSection !== currentBookingSection) {
+                history.pushState(
+                    { bookingSection: normalizedSection, bookingModalOpen: false },
+                    '',
+                    getBookingSectionUrl(normalizedSection)
+                );
+            }
+
+            currentBookingSection = normalizedSection;
+
+            if (isLinkModalOpen()) {
+                window.closeModal({ skipHistory: true });
+            }
+
             // Hide all sections
             document.querySelectorAll('.view-section').forEach(s => {
                 s.classList.remove('active');
@@ -537,17 +571,18 @@
             document.querySelectorAll('.sidebar-item[data-section]').forEach(n => n.classList.remove('active'));
 
             // Show target section
-            const sectionEl = document.getElementById(section + '-section');
+            const sectionEl = document.getElementById(normalizedSection + '-section');
             if (sectionEl) {
                 sectionEl.classList.add('active');
                 sectionEl.style.animation = 'fadeIn 0.3s ease-out';
             }
 
             // Activate nav item
-            if (navEl) navEl.classList.add('active');
+            const resolvedNav = navEl || document.querySelector(`.sidebar-item[data-section="${normalizedSection}"]`);
+            if (resolvedNav) resolvedNav.classList.add('active');
 
             // Update header title
-            const info = pageTitles[section];
+            const info = pageTitles[normalizedSection];
             if (info) {
                 document.getElementById('page-title').innerHTML = `<i class="fa-solid ${info.icon}"></i> ${info.label}`;
             }
@@ -559,8 +594,28 @@
             }
 
             // Render calendar when switching to it
-            if (section === 'calendar') renderCalendar();
+            if (normalizedSection === 'calendar') renderCalendar();
         };
+
+        const initialSection = normalizeBookingSection(new URLSearchParams(window.location.search).get('section'));
+        window.showSection(initialSection, document.querySelector(`.sidebar-item[data-section="${initialSection}"]`), { skipHistory: true });
+        history.replaceState(
+            { bookingSection: initialSection, bookingModalOpen: false },
+            '',
+            getBookingSectionUrl(initialSection)
+        );
+
+        window.addEventListener('popstate', (event) => {
+            const state = event.state || {};
+            const targetSection = normalizeBookingSection(state.bookingSection || 'dashboard');
+            const shouldModalBeOpen = Boolean(state.bookingModalOpen);
+
+            window.showSection(targetSection, document.querySelector(`.sidebar-item[data-section="${targetSection}"]`), { skipHistory: true });
+
+            if (!shouldModalBeOpen && isLinkModalOpen()) {
+                window.closeModal({ skipHistory: true });
+            }
+        });
     </script>
 
     <!-- Calendar View -->
@@ -966,14 +1021,35 @@
         };
 
         // --- Meeting Link Modal ---
-        window.openLinkModal = (bookingId, currentLink) => {
+        window.openLinkModal = (bookingId, currentLink, options = {}) => {
             selectedBookingId = bookingId;
             document.getElementById('meeting-url-input').value = currentLink;
             document.getElementById('linkModal').classList.add('active');
+
+            if (!options.skipHistory) {
+                history.pushState(
+                    { bookingSection: currentBookingSection, bookingModalOpen: true },
+                    '',
+                    getBookingSectionUrl(currentBookingSection)
+                );
+            }
         };
 
-        window.closeModal = () => {
+        window.closeModal = (options = {}) => {
+            if (!options.skipHistory && history.state && history.state.bookingModalOpen) {
+                history.back();
+                return;
+            }
+
             document.getElementById('linkModal').classList.remove('active');
+
+            if (!options.skipHistory && history.state) {
+                history.replaceState(
+                    { ...history.state, bookingModalOpen: false, bookingSection: currentBookingSection },
+                    '',
+                    getBookingSectionUrl(currentBookingSection)
+                );
+            }
         };
 
         document.getElementById('saveLinkBtn').addEventListener('click', async () => {

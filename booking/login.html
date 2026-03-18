@@ -197,11 +197,36 @@
         import { doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         // --- UI Logic ---
-        window.switchTab = (tab) => {
+        const validAuthTabs = new Set(['login', 'register']);
+        let currentAuthTab = 'login';
+
+        function normalizeAuthTab(tab) {
+            return validAuthTabs.has(tab) ? tab : 'login';
+        }
+
+        function getAuthTabUrl(tab) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', tab);
+            return `${url.pathname}${url.search}${url.hash}`;
+        }
+
+        window.switchTab = (tab, options = {}) => {
+            const normalizedTab = normalizeAuthTab(tab);
+
+            if (!options.skipHistory && normalizedTab !== currentAuthTab) {
+                history.pushState(
+                    { bookingAuthTab: normalizedTab },
+                    '',
+                    getAuthTabUrl(normalizedTab)
+                );
+            }
+
+            currentAuthTab = normalizedTab;
+
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
 
-            if (tab === 'login') {
+            if (normalizedTab === 'login') {
                 document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
                 document.getElementById('loginForm').classList.add('active');
                 document.getElementById('form-title').innerText = "Welcome Back";
@@ -213,6 +238,20 @@
                 document.getElementById('form-desc').innerText = "Create your public booking page in seconds.";
             }
         };
+
+        const initialAuthTab = normalizeAuthTab(new URLSearchParams(window.location.search).get('tab'));
+        window.switchTab(initialAuthTab, { skipHistory: true });
+        history.replaceState(
+            { bookingAuthTab: initialAuthTab },
+            '',
+            getAuthTabUrl(initialAuthTab)
+        );
+
+        window.addEventListener('popstate', (event) => {
+            const state = event.state || {};
+            const tab = normalizeAuthTab(state.bookingAuthTab || new URLSearchParams(window.location.search).get('tab'));
+            window.switchTab(tab, { skipHistory: true });
+        });
 
         const showToast = (msg, isError = false) => {
             const container = document.getElementById('toast-container');

@@ -4,9 +4,11 @@ import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 import { AISupport } from './ai-support.js';
+import { handleAIChatRequest } from './chat-ai-helper.js';
+
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: "ENV_MISSING",
+    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",
@@ -109,6 +111,8 @@ let aiAssistant = null;
 let lastDashboardContext = null;
 let overviewSortBy = 'date';
 let auditSearchTerm = '';
+let currentAdminTab = null;
+let currentAdminModalId = null;
 
 const roleRank = {
     'ADMIN': 7,
@@ -122,12 +126,60 @@ const roleRank = {
     'EMPLOYEE': 1
 };
 
+const ADMIN_TABS = new Set([
+    'overview', 'approvals', 'my-claims', 'tasks', 'users', 'roles', 'projects',
+    'workflow', 'reports', 'audit', 'chat', 'settings'
+]);
+
+function normalizeAdminTab(tab) {
+    return ADMIN_TABS.has(tab) ? tab : 'overview';
+}
+
+function buildAdminTabUrl(tab) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    return `${url.pathname}${url.search}${url.hash}`;
+}
+
+function pushAdminModalState(modalId) {
+    const url = buildAdminTabUrl(currentAdminTab || 'overview');
+    window.history.pushState({ adminTab: currentAdminTab || 'overview', adminModal: modalId }, '', url);
+    currentAdminModalId = modalId;
+}
+
+function setAdminModalVisibility(modalId, show) {
+    const el = document.getElementById(modalId);
+    if (!el) return;
+    if (show) el.classList.remove('hidden');
+    else el.classList.add('hidden');
+}
+
+function syncAdminModalFromState(state) {
+    const stateModal = state?.adminModal || null;
+
+    if (!stateModal && currentAdminModalId) {
+        setAdminModalVisibility(currentAdminModalId, false);
+        currentAdminModalId = null;
+        return;
+    }
+
+    if (stateModal && stateModal !== currentAdminModalId) {
+        if (currentAdminModalId) setAdminModalVisibility(currentAdminModalId, false);
+        setAdminModalVisibility(stateModal, true);
+        currentAdminModalId = stateModal;
+    }
+}
+
 // Cache users for edit modal
 let globalUsersCache = [];
 
 // Toast function
 window.showToast = (message, type = 'info') => {
     const container = document.getElementById('toast-container');
+    if (!container) return;
+    container.setAttribute('role', 'status');
+    container.setAttribute('aria-live', 'polite');
+    container.setAttribute('aria-atomic', 'false');
     const toast = document.createElement('div');
     const colors = {
         success: 'bg-green-600',
@@ -136,6 +188,7 @@ window.showToast = (message, type = 'info') => {
         warning: 'bg-yellow-600'
     };
     toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-[slideUp_0.3s] z-50`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
     toast.innerHTML = `
                 <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
                 <span class="text-sm">${message}</span>
@@ -213,7 +266,17 @@ onAuthStateChanged(auth, async (user) => {
                 snap = { empty: false, docs: [userDocSnap] };
             } else {
                 const q = query(collection(db, "users"), where("email", "==", user.email));
-                snap = await safeFirebaseFetch(getDocs(q));
+                const querySnap = await safeFirebaseFetch(getDocs(q));
+                if (!querySnap.empty) {
+                    // If multiple records, prioritize ADMIN/MANAGER for this portal
+                    const sortedDocs = querySnap.docs.sort((a, b) => {
+                        const roles = ['ADMIN', 'MANAGER', 'FINANCE_MANAGER'];
+                        const aIsAdmin = roles.includes(a.data().role) ? 0 : 1;
+                        const bIsAdmin = roles.includes(b.data().role) ? 0 : 1;
+                        return aIsAdmin - bIsAdmin;
+                    });
+                    snap = { empty: false, docs: sortedDocs };
+                }
             }
 
             if (snap.empty) {
@@ -239,7 +302,7 @@ onAuthStateChanged(auth, async (user) => {
                     const settingsRef = doc(db, "settings", "global");
                     const setSnap = await safeFirebaseFetch(getDoc(settingsRef));
                     if (setSnap.exists() && setSnap.data().maintenanceMode === true) {
-                        if (user.email !== 'explyra@gmail.com' && user.email !== 'info@fouralpha.org') {
+                        if (!['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                             document.body.innerHTML = `
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
@@ -256,7 +319,7 @@ onAuthStateChanged(auth, async (user) => {
                 }
                 // ------------------------------
 
-                if (!userData.companyId && !['explyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
+                if (!userData.companyId && !['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                     window.location.href = 'company.html';
                     return;
                 }
@@ -268,7 +331,7 @@ onAuthStateChanged(auth, async (user) => {
                     return;
                 }
 
-                if (!userData.companyId) {
+                if (!userData.companyId && !['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                     showToast("No company assigned to this account", "error");
                     await signOut(auth);
                     return;
@@ -511,7 +574,7 @@ onAuthStateChanged(auth, async (user) => {
                 updatePendingCount();
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
-                if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes(user.email.toLowerCase()) || user.email.toLowerCase().endsWith('@explyra.com')) {
                     console.log('[Auth] Explyra admin detected, bypassing normal auth checks.');
 
                     // Create mock userData for the master admin so the dashboard can load
@@ -719,7 +782,16 @@ window.handleGoogleLogin = async () => {
             snap = { empty: false, docs: [userDocSnap] };
         } else {
             const q = query(collection(db, "users"), where("email", "==", user.email));
-            snap = await safeFirebaseFetch(getDocs(q));
+            const querySnap = await safeFirebaseFetch(getDocs(q));
+            if (!querySnap.empty) {
+                const sortedDocs = querySnap.docs.sort((a, b) => {
+                    const roles = ['ADMIN', 'MANAGER', 'FINANCE_MANAGER'];
+                    const aIsAdmin = roles.includes(a.data().role) ? 0 : 1;
+                    const bIsAdmin = roles.includes(b.data().role) ? 0 : 1;
+                    return aIsAdmin - bIsAdmin;
+                });
+                snap = { empty: false, docs: sortedDocs };
+            }
         }
 
         if (snap.empty) {
@@ -736,7 +808,7 @@ window.handleGoogleLogin = async () => {
         }
 
         if (snap.empty) {
-            if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+            if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes(user.email.toLowerCase()) || user.email.toLowerCase().endsWith('@explyra.com')) {
                 console.log('[Auth] Explyra admin Google login — skipping admin portal.');
                 return;
             }
@@ -1007,31 +1079,66 @@ window.checkAccess = async () => {
     else switchTab('overview');
 }
 
-window.switchTab = (tab) => {
+window.switchTab = (tab, options = {}) => {
+    const normalizedTab = normalizeAdminTab(tab);
+
     // Cleanup active listeners
     activeListeners.forEach(unsub => unsub());
     activeListeners = [];
 
     document.querySelectorAll('.sidebar-item').forEach(el => {
         el.classList.remove('active', 'bg-slate-800', 'text-white');
-        if (el.dataset.tab === tab) el.classList.add('active');
+        if (el.dataset.tab === normalizedTab) el.classList.add('active');
     });
 
-    if (tab === 'overview') renderOverview();
-    if (tab === 'approvals') renderApprovals();
-    if (tab === 'users') renderUserManagement();
-    if (tab === 'settings') renderSettings();
-    if (tab === 'reports') renderReports();
-    if (tab === 'audit') renderAuditLogs();
-    if (tab === 'tasks') renderTasks(); // Added tasks renderer
-    if (tab === 'my-claims') renderMyClaims();
-    if (tab === 'projects') renderProjects();
-    if (tab === 'chat') renderChat();
-    if (tab === 'workflow') renderWorkflow();
-    if (tab === 'roles') renderRoles();
+    if (normalizedTab === 'overview') renderOverview();
+    if (normalizedTab === 'approvals') renderApprovals();
+    if (normalizedTab === 'users') renderUserManagement();
+    if (normalizedTab === 'settings') renderSettings();
+    if (normalizedTab === 'reports') renderReports();
+    if (normalizedTab === 'audit') renderAuditLogs();
+    if (normalizedTab === 'tasks') renderTasks(); // Added tasks renderer
+    if (normalizedTab === 'my-claims') renderMyClaims();
+    if (normalizedTab === 'projects') renderProjects();
+    if (normalizedTab === 'chat') renderChat();
+    if (normalizedTab === 'workflow') renderWorkflow();
+    if (normalizedTab === 'roles') renderRoles();
+
+    const skipHistory = !!options.skipHistory;
+    const replaceHistory = !!options.replaceHistory;
+    const previousTab = currentAdminTab;
+
+    if (!skipHistory) {
+        const nextUrl = buildAdminTabUrl(normalizedTab);
+        const state = { adminTab: normalizedTab };
+
+        if (!previousTab || replaceHistory) {
+            window.history.replaceState(state, '', nextUrl);
+        } else if (previousTab !== normalizedTab) {
+            window.history.pushState(state, '', nextUrl);
+        }
+    }
+
+    currentAdminTab = normalizedTab;
 };
 
+window.addEventListener('popstate', (event) => {
+    const dashboardScreen = document.getElementById('dashboard-screen');
+    if (!dashboardScreen || dashboardScreen.classList.contains('hidden')) return;
+
+    syncAdminModalFromState(event.state || {});
+
+    const tabFromState = normalizeAdminTab(
+        event.state?.adminTab || new URL(window.location.href).searchParams.get('tab')
+    );
+
+    if (tabFromState !== currentAdminTab) {
+        window.switchTab(tabFromState, { skipHistory: true });
+    }
+});
+
 async function renderOverview() {
+    renderCrmWidget();
     document.getElementById('page-title').textContent = "System Overview";
     const content = document.getElementById('content-area');
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
@@ -1039,9 +1146,19 @@ async function renderOverview() {
     try {
         const companyId = userData.companyId;
 
-        const expensesQuery = companyId ? query(collection(db, "expenses"), where("companyId", "==", companyId)) : collection(db, "expenses");
-        const usersQuery = companyId ? query(collection(db, "users"), where("companyId", "==", companyId)) : collection(db, "users");
-        const projectsQuery = companyId ? query(collection(db, "projects"), where("companyId", "==", companyId)) : collection(db, "projects");
+        // Correctly scope queries based on admin level
+        let expensesQuery, usersQuery, projectsQuery;
+
+        if (companyId === 'GLOBAL') {
+            expensesQuery = collection(db, "expenses");
+            usersQuery = collection(db, "users");
+            projectsQuery = collection(db, "projects");
+        } else {
+            const scopeId = companyId || 'N/A';
+            expensesQuery = query(collection(db, "expenses"), where("companyId", "==", scopeId));
+            usersQuery = query(collection(db, "users"), where("companyId", "==", scopeId));
+            projectsQuery = query(collection(db, "projects"), where("companyId", "==", scopeId));
+        }
 
         const [expensesSnap, usersSnap, projectsSnap, companySnap, attendanceSnap, salarySnap] = await Promise.all([
             getDocs(expensesQuery),
@@ -1107,6 +1224,19 @@ async function renderOverview() {
             salaries,
             employees: users.map(u => ({ id: u.docId || u.id, name: u.name, role: u.role, department: u.department }))
         };
+
+        // Export data for new UI features
+        window.adminDashboardData = {
+            pending,
+            totalUsers,
+            approvedToday: expenses.filter(e => {
+                if (e.status !== 'PAID') return false;
+                const paidDate = e.updatedAt?.toDate ? e.updatedAt.toDate() : new Date(e.updatedAt || 0);
+                return paidDate.toDateString() === new Date().toDateString();
+            }).length,
+            recentExpenses: expenses.slice(0, 5)
+        };
+        if (typeof window.refreshNewAdminUI === 'function') window.refreshNewAdminUI();
 
         if (aiAssistant) aiAssistant.updateContext({ dashboardData: lastDashboardContext });
 
@@ -1413,7 +1543,13 @@ async function renderAuditLogs(forceRefresh = true) {
         content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
         try {
-            const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId), orderBy("createdAt", "desc"))));
+            let expensesQuery;
+            if (userData.companyId === 'GLOBAL') {
+                expensesQuery = query(collection(db, "expenses"), orderBy("createdAt", "desc"));
+            } else {
+                expensesQuery = query(collection(db, "expenses"), where("companyId", "==", userData.companyId || 'N/A'), orderBy("createdAt", "desc"));
+            }
+            const expensesSnap = await safeFirebaseFetch(getDocs(expensesQuery));
             const auditLogs = [];
 
             expensesSnap.forEach(doc => {
@@ -1606,21 +1742,6 @@ window.uploadAuditCSV = (input) => {
     reader.readAsText(file);
 };
 
-window.uploadAuditCSV = (input) => {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const text = e.target.result;
-        const rows = text.split("\n").slice(1);
-        console.log("Parsed rows:", rows.length);
-        showToast(`Successfully processed ${rows.length} records (Simulation)`, 'success');
-        input.value = '';
-    };
-    reader.readAsText(file);
-};
-
 async function renderTasks() {
     document.getElementById('page-title').textContent = "Task Manager";
     const content = document.getElementById('content-area');
@@ -1699,12 +1820,18 @@ async function renderTasks() {
     const today = new Date().toISOString().split('T')[0];
     const dueInput = document.getElementById('task-due-date');
     if (dueInput) dueInput.min = today;
-
     try {
-        // Fetch tasks (ADMIN sees all for their company, others see only what they assigned for their company)
-        let q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId));
-        if (userData.role !== 'ADMIN') {
-            q = query(collection(db, "tasks"), where("companyId", "==", userData.companyId), where("assignedBy", "==", userData.email));
+        // Fetch tasks
+        let q;
+        if (userData.companyId === 'GLOBAL') {
+            q = collection(db, "tasks");
+        } else {
+            const scopeId = userData.companyId || 'N/A';
+            if (userData.role === 'ADMIN') {
+                q = query(collection(db, "tasks"), where("companyId", "==", scopeId));
+            } else {
+                q = query(collection(db, "tasks"), where("companyId", "==", scopeId), where("assignedBy", "==", userData.email));
+            }
         }
 
         // Remove server-side orderBy to avoid index issues. We sort in JS.
@@ -1888,7 +2015,7 @@ async function renderSettings() {
     }
 
     content.innerHTML = `
-                        <div class="max-w-2xl mx-auto space-y-6">
+                        <div class="space-y-6">
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
                         <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Global Branding</h3>
                         
@@ -2055,7 +2182,6 @@ async function renderSettings() {
                                 <span class="font-bold text-slate-600 dark:text-slate-300 group-hover:text-green-700">License Info</span>
                             </a>
                         </div>
-                        </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
@@ -2073,40 +2199,102 @@ async function renderSettings() {
                         </div>
                     </div>
 
-                </div>
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Account Security</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Admin Password</p>
+                                    <p class="text-xs text-slate-400">Send a password reset email to your registered address.</p>
+                                </div>
+                                <button onclick="resetAdminPassword()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-lg text-sm border border-slate-200 dark:border-slate-700 transition">
+                                    <i class="fa-solid fa-key mr-2"></i> Reset Password
+                                </button>
+                            </div>
 
-                <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
-                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Account Security</h3>
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Admin Password</p>
-                            <p class="text-xs text-slate-400">Send a password reset email to your registered address.</p>
+                            ${userData.role === 'ADMIN' ? `
+                            <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Change Corporate Email</label>
+                                <div class="flex gap-3">
+                                    <input type="email" id="new-admin-email" class="input-primary" placeholder="new-email@company.com">
+                                    <button onclick="updateAdminEmail()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm whitespace-nowrap">
+                                        Update Email
+                                    </button>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-2">Note: You will receive a verification link at the new email address.</p>
+                            </div>
+                            ` : ''}
                         </div>
-                        <button onclick="resetAdminPassword()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-lg text-sm border border-slate-200 dark:border-slate-700 transition">
-                            <i class="fa-solid fa-key mr-2"></i> Reset Password
-                        </button>
+                    </div>
+
+                    <!-- Danger Zone Section -->
+                    <div class="bg-rose-50/50 dark:bg-rose-900/10 p-8 rounded-2xl shadow-sm border border-rose-100 dark:border-rose-900/40 fade-in border-dashed">
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="text-center md:text-left">
+                                <h3 class="text-lg font-black text-rose-800 dark:text-rose-400 mb-1 flex items-center justify-center md:justify-start gap-2">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Permanent Actions
+                                </h3>
+                                <p class="text-xs text-rose-600 dark:text-rose-400 opacity-80">Request to permanently delete this company and all associated corporate data.</p>
+                            </div>
+                            <a href="verify.html?view=deleteRequest" class="bg-rose-600 hover:bg-rose-700 text-white font-black px-8 py-3 rounded-xl transition-premium shadow-lg shadow-rose-200 dark:shadow-none whitespace-nowrap flex items-center gap-3">
+                                <i class="fa-solid fa-trash-can"></i> Request Deletion
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-end">
+                        <button onclick="saveAllSettings()" class="btn-primary px-10 py-3 w-auto">Save All Changes</button>
                     </div>
                 </div>
-
-                <div class="pt-4">
-                    <button onclick="saveAllSettings()" class="btn-primary w-full py-3">Save All Changes</button>
-                </div>
-            </div>
-                        `;
+                         `;
 }
 
 window.resetAdminPassword = async () => {
     if (await confirm("Send password reset email to " + userData.email + "?")) {
         try {
+        if (userData.role === 'ADMIN') {
+            await sendPasswordResetEmail(auth, userData.email, { url: window.location.origin + '/verify.html' });
+            showToast("Password reset email sent!", "success");
+        } else {
             await sendPasswordResetEmail(auth, userData.email);
             showToast("Password reset email sent!", "success");
-        } catch (e) {
-            showToast(e.message, "error");
         }
+    } catch (e) {
+        showToast(e.message, "error");
+    }
     }
 };
 
+window.updateAdminEmail = async () => {
+    const newEmail = document.getElementById('new-admin-email').value.trim();
+    if (!newEmail) return showToast("Please enter a valid email address.", "error");
+    if (!await confirm("Change your corporate email to " + newEmail + "? You will need to verify the new email before it takes effect.")) return;
+
+    const btn = event.currentTarget;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
+    btn.disabled = true;
+
+    try {
+        const { verifyBeforeUpdateEmail } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+        const actionCodeSettings = {
+            url: window.location.origin + '/verify.html',
+            handleCodeInApp: true
+        };
+        await verifyBeforeUpdateEmail(auth.currentUser, newEmail, actionCodeSettings);
+        showToast("Verification email sent to " + newEmail + ". Please check your inbox.", "success");
+    } catch (e) {
+        console.error("Email update error:", e);
+        showToast(e.message, "error");
+    } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+    }
+};
+
+
 window.selectedApprovals = new Set();
+window.currentFilteredApprovalIds = [];
 let approvalsData = []; // Store for filtering
 
 async function renderApprovals() {
@@ -2153,6 +2341,11 @@ async function renderApprovals() {
                                 <option value="user_asc">User Name (A-Z)</option>
                                 <option value="user_desc">User Name (Z-A)</option>
                             </select>
+                        </div>
+
+                        <div class="flex items-center gap-2 px-2 py-1 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                            <input type="checkbox" id="approvals-select-all" onchange="toggleSelectAllApprovals(this.checked)" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500 transition cursor-pointer">
+                            <label for="approvals-select-all" class="text-[11px] font-bold text-slate-500">Select All (Filtered)</label>
                         </div>
 
                         <div id="bulk-actions" class="hidden flex gap-2 items-center w-full md:w-auto justify-end animate-[slideUp_0.1s_ease-out]">
@@ -2274,7 +2467,10 @@ window.applyApprovalFilters = () => {
         return 0;
     });
 
+    window.currentFilteredApprovalIds = filtered.map((d) => d.id);
+
     if (filtered.length === 0) {
+        updateBulkUI();
         list.innerHTML = emptyState("No matching approvals found.");
         return;
     }
@@ -2283,6 +2479,12 @@ window.applyApprovalFilters = () => {
     list.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in pb-10">
                         ${filtered.map(d => {
         const date = d.createdAt?.toDate ? d.createdAt.toDate() : (d.createdAt ? new Date(d.createdAt) : new Date());
+        const ageDays = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
+        const agingClass = ageDays >= 7
+            ? 'bg-red-50 text-red-600 border-red-100'
+            : ageDays >= 3
+                ? 'bg-amber-50 text-amber-600 border-amber-100'
+                : 'bg-green-50 text-green-600 border-green-100';
         let statusColor = 'bg-slate-100 text-slate-600';
         if (d.status === 'PENDING') statusColor = 'bg-amber-50 text-amber-600 border-amber-100';
         else if (d.status === 'APPROVED') statusColor = 'bg-blue-50 text-blue-600 border-blue-100';
@@ -2320,6 +2522,9 @@ window.applyApprovalFilters = () => {
                                         <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${statusColor}">
                                             ${d.status.replace('_', ' ')}
                                         </span>
+                                        <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${agingClass}" title="Time pending since creation">
+                                            ${ageDays}d Open
+                                        </span>
                                     </div>
 
                                     ${d.isSpam ? `<div class="absolute top-0 right-0 p-1 bg-red-500 text-white text-[8px] font-bold px-2 rounded-bl-lg">SPAM</div>` : ''}
@@ -2328,6 +2533,18 @@ window.applyApprovalFilters = () => {
                             `;
     }).join('')}
                     </div>`;
+
+    updateBulkUI();
+};
+
+window.toggleSelectAllApprovals = (checked) => {
+    const ids = window.currentFilteredApprovalIds || [];
+    if (checked) {
+        ids.forEach((id) => window.selectedApprovals.add(id));
+    } else {
+        ids.forEach((id) => window.selectedApprovals.delete(id));
+    }
+    window.applyApprovalFilters();
 };
 
 window.toggleSelection = (id) => {
@@ -2338,19 +2555,36 @@ window.toggleSelection = (id) => {
 
 function updateBulkUI() {
     const count = window.selectedApprovals.size;
-    document.getElementById('selected-count').textContent = count;
+    const selectedCountEl = document.getElementById('selected-count');
+    if (selectedCountEl) selectedCountEl.textContent = count;
     const actionDiv = document.getElementById('bulk-actions');
-    if (count > 0) actionDiv.classList.remove('hidden');
-    else actionDiv.classList.add('hidden');
+    if (actionDiv) {
+        if (count > 0) actionDiv.classList.remove('hidden');
+        else actionDiv.classList.add('hidden');
+    }
+
+    const selectAll = document.getElementById('approvals-select-all');
+    const filteredIds = window.currentFilteredApprovalIds || [];
+    if (selectAll) {
+        if (!filteredIds.length) {
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+            return;
+        }
+        const selectedInFiltered = filteredIds.filter((id) => window.selectedApprovals.has(id)).length;
+        selectAll.checked = selectedInFiltered === filteredIds.length;
+        selectAll.indeterminate = selectedInFiltered > 0 && selectedInFiltered < filteredIds.length;
+    }
 }
 
 window.handleBulkAction = async (action) => {
     if (window.selectedApprovals.size === 0) return;
     if (!await confirm(`Are you sure you want to ${action} ${window.selectedApprovals.size} items ? `)) return;
 
-    const btn = event.currentTarget;
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+    const evt = window.event;
+    const btn = evt?.currentTarget || null;
+    const originalHTML = btn ? btn.innerHTML : '';
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
 
     try {
         const batch = writeBatch(db);
@@ -2427,15 +2661,23 @@ window.handleBulkAction = async (action) => {
             }
         }
 
-        await Promise.all(updates);
-        showToast(`Processed ${updates.length} items successfully!`, 'success');
+        const settled = await Promise.allSettled(updates);
+        const successCount = settled.filter((r) => r.status === 'fulfilled').length;
+        const failCount = settled.length - successCount;
+
+        if (failCount > 0) {
+            showToast(`Processed ${successCount} items, ${failCount} failed.`, 'warning');
+        } else {
+            showToast(`Processed ${successCount} items successfully!`, 'success');
+        }
+
         window.selectedApprovals.clear();
         updateBulkUI();
     } catch (e) {
         console.error(e);
         showToast("Bulk action failed: " + e.message, "error");
     } finally {
-        btn.innerHTML = originalHTML;
+        if (btn) btn.innerHTML = originalHTML;
     }
 };
 
@@ -2507,7 +2749,7 @@ window.showAddUserModal = async () => {
     const picInput = document.getElementById('user-profile-pic');
     if (picContainer) {
         picInput.value = '';
-        if (['info@fouralpha.org', 'explyra@gmail.com'].includes(userData.email)) {
+        if (['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'].includes(userData.email)) {
             picContainer.classList.remove('hidden');
         } else {
             picContainer.classList.add('hidden');
@@ -2526,7 +2768,7 @@ window.editUser = async (id) => {
     const user = globalUsersCache.find(u => u.id === id);
     if (!user) return showToast("User not found", "error");
 
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
     if (MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be edited.", "error");
     }
@@ -2585,7 +2827,7 @@ window.closeUserModal = () => {
 
 window.showDeleteModal = (docId, name) => {
     const user = globalUsersCache.find(u => u.id === docId);
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
 
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be deleted.", "error");
@@ -2616,7 +2858,7 @@ window.confirmDeleteUser = async () => {
     if (!userToDelete) return;
 
     const user = globalUsersCache.find(u => u.id === userToDelete);
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
 
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be deleted.", "error");
@@ -2651,6 +2893,28 @@ window.confirmDeleteUser = async () => {
         showToast('Error deleting user: ' + e.message, 'error');
     } finally {
         btn.innerHTML = originalText;
+    }
+};
+
+window.toggleUserStatus = async (id, currentStatus) => {
+    const user = globalUsersCache.find(u => u.id === id);
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
+    
+    if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
+        return showToast("Access Denied: Main Admin status cannot be changed.", "error");
+    }
+
+    const newStatus = currentStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+    if (!await confirm(`Are you sure you want to ${newStatus === 'BLOCKED' ? 'BLOCK' : 'UNBLOCK'} this user?`)) return;
+
+    try {
+        await updateDoc(doc(db, "users", id), { status: newStatus });
+        showToast(`User ${newStatus === 'BLOCKED' ? 'blocked' : 'activated'} successfully!`, "success");
+        if (typeof renderUsers === 'function') renderUsers();
+        else if (typeof fetchUsers === 'function') fetchUsers();
+        else location.reload(); // Fallback
+    } catch (e) {
+        showToast("Error updating status: " + e.message, "error");
     }
 };
 
@@ -2844,13 +3108,25 @@ async function renderUserManagement() {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
+        let uQ;
+        if (userData.companyId === 'GLOBAL') {
+            uQ = collection(db, "users");
+        } else {
+            uQ = query(collection(db, "users"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const usersSnap = await safeFirebaseFetch(getDocs(uQ));
         const users = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         globalUsersCache = users; // Update cache
 
         // Get expense counts for each user
         expenseCountsCache = {};
-        const expensesSnap = await safeFirebaseFetch(getDocs(query(collection(db, "expenses"), where("companyId", "==", userData.companyId))));
+        let exQ;
+        if (userData.companyId === 'GLOBAL') {
+            exQ = collection(db, "expenses");
+        } else {
+            exQ = query(collection(db, "expenses"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const expensesSnap = await safeFirebaseFetch(getDocs(exQ));
         expensesSnap.forEach(doc => {
             const data = doc.data();
             expenseCountsCache[data.userId] = (expenseCountsCache[data.userId] || 0) + 1;
@@ -2918,14 +3194,15 @@ function renderUserRows(usersList) {
     }
 
     const myRank = roleRank[userData.role] || 0;
-    const MAIN_ADMIN_EMAIL = 'explyra@gmail.com';
+    const MAIN_ADMIN_EMAILS = ['explyra@gmail.com', 'epxlyra@gmail.com'];
 
     container.innerHTML = usersList.map(u => {
         const uRank = roleRank[u.role] || 1;
         let canEdit = myRank > uRank || userData.role === 'ADMIN';
 
+        const MAIN_ADMIN_EMAILS_LIST = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
         // PROTECTION: Main Admin cannot be edited/deleted by others
-        if (u.email === MAIN_ADMIN_EMAIL && userData.email !== MAIN_ADMIN_EMAIL) {
+        if (MAIN_ADMIN_EMAILS_LIST.includes(u.email) && !MAIN_ADMIN_EMAILS_LIST.includes(userData.email)) {
             canEdit = false;
         }
 
@@ -2969,6 +3246,7 @@ function renderUserRows(usersList) {
                         ${canEdit ? `
                             <button onclick="editUser('${u.id}')" class="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-green-50 hover:text-green-600 transition uppercase tracking-widest border border-slate-100 dark:border-slate-700">Edit Profile</button>
                             ${u.email !== currentUser?.email ? `
+                                <button onclick="toggleUserStatus('${u.id}', '${u.status || 'ACTIVE'}')" class="px-3 py-1.5 text-[10px] font-bold ${u.status === 'BLOCKED' ? 'text-green-600 bg-green-50' : 'text-orange-400 bg-orange-50/10'} rounded-lg transition uppercase tracking-widest">${u.status === 'BLOCKED' ? 'Unblock' : 'Block'}</button>
                                 <button onclick="showDeleteModal('${u.id}', '${u.name || u.email}')" class="px-3 py-1.5 text-[10px] font-bold text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition uppercase tracking-widest">Delete</button>
                             ` : ''}
                         ` : `
@@ -3237,6 +3515,7 @@ window.exportReport = async (format) => {
 window.openExpenseModal = (id) => {
     const modal = document.getElementById('modal-expense');
     modal.classList.remove('hidden');
+    pushAdminModalState('modal-expense');
     document.getElementById('modal-items').innerHTML = '<div class="p-4 text-center text-slate-400">Loading...</div>';
 
     onSnapshot(doc(db, "expenses", id), (snap) => {
@@ -3789,7 +4068,13 @@ window.renderProjects = async () => {
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
 
     try {
-        const snap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", userData.companyId))));
+        let pQ;
+        if (userData.companyId === 'GLOBAL') {
+            pQ = collection(db, "projects");
+        } else {
+            pQ = query(collection(db, "projects"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const snap = await safeFirebaseFetch(getDocs(pQ));
         const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
         content.innerHTML = `
@@ -3953,7 +4238,16 @@ window.deleteProject = async (id) => {
 
 
 
-window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+window.closeModal = (id) => {
+    const currentStateModal = window.history.state?.adminModal;
+    if (currentStateModal && currentStateModal === id) {
+        window.history.back();
+        return;
+    }
+
+    setAdminModalVisibility(id, false);
+    if (currentAdminModalId === id) currentAdminModalId = null;
+};
 window.showImage = (src) => {
     if (src) {
         document.getElementById('overlay-img').src = src;
@@ -4314,6 +4608,107 @@ window.getNextStageStatus = async (currentStatus, role) => {
 
     return 'COMPLETED'; // End of chain?
 };
+
+async function renderCrmWidget() {
+    const crmContainer = document.getElementById('crm-widget-container');
+    if (!crmContainer) return;
+
+    // Show a loading state
+    crmContainer.innerHTML = `
+        <div class="vercel-card p-6">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-blue-500"></i> CRM Snapshot
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+            </div>
+        </div>
+    `;
+
+    try {
+        const companyId = userData.companyId;
+        if (!companyId) {
+            crmContainer.innerHTML = ''; // Hide if no companyId
+            return;
+        }
+
+        const leadsQuery = query(collection(db, "crm_leads"), where("companyId", "==", companyId));
+        const dealsQuery = query(collection(db, "crm_deals"), where("companyId", "==", companyId));
+
+        const [leadsSnap, dealsSnap] = await Promise.all([
+            getDocs(leadsQuery),
+            getDocs(dealsQuery)
+        ]);
+
+        const totalLeads = leadsSnap.size;
+        const deals = dealsSnap.docs.map(doc => doc.data());
+
+        let activeDeals = 0;
+        let pipelineValue = 0;
+        let wonDeals = 0;
+        let lostDeals = 0;
+
+        deals.forEach(deal => {
+            if (deal.stage !== 'Closed-Won' && deal.stage !== 'Closed-Lost') {
+                activeDeals++;
+                pipelineValue += deal.amount || 0;
+            } else if (deal.stage === 'Closed-Won') {
+                wonDeals++;
+            } else if (deal.stage === 'Closed-Lost') {
+                lostDeals++;
+            }
+        });
+
+        const totalClosedDeals = wonDeals + lostDeals;
+        const winRate = totalClosedDeals > 0 ? Math.round((wonDeals / totalClosedDeals) * 100) : 0;
+
+        const html = `
+            <div class="vercel-card p-6 fade-in">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-blue-500"></i> CRM Snapshot
+                    </h3>
+                    <a href="crm/index.html" class="text-xs font-bold text-blue-600 hover:underline">
+                        Open CRM <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Total Leads</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">${totalLeads}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Active Deals</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">${activeDeals}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Pipeline Value</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1 font-mono">${formatCurrency(pipelineValue, 'INR')}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Win Rate</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">${winRate}%</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        crmContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error("Error rendering CRM widget:", error);
+        crmContainer.innerHTML = `
+             <div class="vercel-card p-6">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-blue-500"></i> CRM Snapshot
+                </h3>
+                <p class="text-xs text-slate-500">Could not load CRM data. The module might be unavailable or data is still being populated.</p>
+            </div>
+        `;
+    }
+}
 
 window.showModal = (title, msg, type) => {
     const m = document.getElementById('global-modal');
@@ -4828,6 +5223,7 @@ async function renderChat() {
                     <div class="w-full md:w-1/3 md:max-w-[300px] border-r border-slate-100 dark:border-slate-700 flex flex-col z-10" id="chat-sidebar">
                         <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
                             <h3 class="font-bold text-slate-800 dark:text-slate-100">Chats</h3>
+                            <button onclick="window.openCreateGroupModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 transition flex items-center justify-center cursor-pointer" title="Create Group"><i class="fa-solid fa-plus"></i></button>
                         </div>
                         <div id="chat-user-list" class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
                              <div class="flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500"></i></div>
@@ -4860,9 +5256,31 @@ async function renderChat() {
                         <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                             <div class="flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500"></i></div>
                         </div>
-                        <form onsubmit="sendChatMessage(event)" class="p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0">
-                            <input type="text" id="chat-input" class="input-primary flex-1 bg-white dark:bg-slate-800 text-sm" placeholder="Type a message..." required autocomplete="off">
-                            <button type="submit" class="bg-green-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-2 rounded-lg font-bold transition shadow-sm flex items-center justify-center min-w-[60px]">
+                        <form onsubmit="sendChatMessage(event)" class="p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0 items-center">
+                            
+                            <!-- Hidden File Input -->
+                            <input type="file" id="chat-file" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input')">
+                            
+                            <!-- Attachment Button -->
+                            <button type="button" onclick="document.getElementById('chat-file').click()"
+                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file">
+                                <i class="fa-solid fa-paperclip"></i>
+                            </button>
+
+                            <!-- Location Sharing Button -->
+                            <button type="button" onclick="sendLocationMessage()"
+                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-blue-500 dark:text-blue-400 flex items-center justify-center transition shadow-sm shrink-0" title="Share Location">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </button>
+
+                            <div class="flex-1 relative">
+                                <input type="text" id="chat-input" class="w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700 px-3 bg-white dark:bg-slate-800 text-sm outline-none focus:border-green-500" placeholder="Type a message or @mention..." autocomplete="off">
+                                
+                                <!-- Mentions Dropdown -->
+                                <div id="mentions-dropdown" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar"></div>
+                            </div>
+                            
+                            <button type="submit" class="bg-green-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-2 rounded-lg font-bold transition shadow-sm flex items-center justify-center min-w-[60px] shrink-0">
                                 <i class="fa-solid fa-paper-plane"></i>
                             </button>
                         </form>
@@ -4872,6 +5290,71 @@ async function renderChat() {
 
     loadChatUsers();
     selectChat(null);
+
+    // Mentions Setup
+    setTimeout(() => {
+        const input = document.getElementById('chat-input');
+        const dropdown = document.getElementById('mentions-dropdown');
+        if (!input || !dropdown) return;
+
+        input.addEventListener('input', (e) => {
+            const val = input.value;
+            const cursorStart = input.selectionStart;
+            const textBeforeCursor = val.slice(0, cursorStart);
+            const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+
+            if (match) {
+                const queryStr = match[1].toLowerCase();
+                const users = window.adminChatUsers || [];
+                const filtered = users.filter(u => 
+                    (u.name && u.name.toLowerCase().includes(queryStr)) || 
+                    (u.email && u.email.toLowerCase().includes(queryStr))
+                ).slice(0, 5);
+
+                if (filtered.length > 0) {
+                    dropdown.innerHTML = filtered.map(u => `
+                        <div onclick="insertMention('${u.name || '*'}')" class="p-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded cursor-pointer flex items-center gap-2 transition">
+                            <div class="w-5 h-5 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[10px] font-bold uppercase">${(u.name || u.email)[0]}</div>
+                            <span class="truncate">${u.name || u.email}</span>
+                        </div>
+                    `).join('');
+                    dropdown.classList.remove('hidden');
+                    dropdown.classList.add('flex');
+                } else {
+                    dropdown.classList.add('hidden');
+                    dropdown.classList.remove('flex');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('flex');
+            }
+        });
+
+        window.insertMention = (name) => {
+            if (name === '*') return;
+            // sanitize name for mention
+            const validName = name.replace(/[^a-zA-Z0-9_]/g, '');
+            const val = input.value;
+            const cursorStart = input.selectionStart;
+            const textBeforeCursor = val.slice(0, cursorStart);
+            const textAfterCursor = val.slice(cursorStart);
+            
+            const replaced = textBeforeCursor.replace(/@([a-zA-Z0-9_]*)$/, '@' + validName + ' ');
+            input.value = replaced + textAfterCursor;
+            
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('flex');
+            input.focus();
+        };
+
+        // Hide when clicking outside
+        document.addEventListener('click', (ev) => {
+            if (!dropdown.contains(ev.target) && ev.target !== input) {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('flex');
+            }
+        });
+    }, 500);
 }
 
 async function loadChatUsers() {
@@ -4879,17 +5362,30 @@ async function loadChatUsers() {
     if (!list) return;
 
     try {
-        // Fetch all users
-        const usersSnap = await safeFirebaseFetch(getDocs(query(collection(db, "users"), where("companyId", "==", userData.companyId))));
+        // Fetch users
+        let uQ;
+        if (userData.companyId === 'GLOBAL') {
+            uQ = collection(db, "users");
+        } else {
+            uQ = query(collection(db, "users"), where("companyId", "==", userData.companyId || 'N/A'));
+        }
+        const usersSnap = await safeFirebaseFetch(getDocs(uQ));
         const users = usersSnap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
 
-        // Fetch chats for sorting and last message
-        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats")), where("users", "array-contains", userData.docId)));
+        // Fetch chat metadata for 1-on-1
         const chatMeta = {};
+        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats"), where("users", "array-contains", userData.docId))));
         chatsSnap.forEach(docSnap => {
             const data = docSnap.data();
-            const otherUser = (data.users || []).find(id => id !== userData.docId);
+            const otherUser = data.users.find(id => id !== userData.docId);
             if (otherUser) chatMeta[otherUser] = data;
+        });
+
+        // Fetch group chats
+        const groupChatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "group_chats"), where("users", "array-contains", userData.docId))));
+        const groupsMeta = {};
+        groupChatsSnap.forEach(docSnap => {
+            groupsMeta[docSnap.id] = { docId: docSnap.id, ...docSnap.data(), isGroup: true };
         });
 
         // Get Global Chat last message
@@ -4903,43 +5399,71 @@ async function loadChatUsers() {
             return timeB - timeA;
         });
 
+        window.adminChatUsers = sortedUsers;
+
+        window.adminGroupChats = Object.values(groupsMeta).sort((a, b) => {
+            const timeA = a.lastMessageAt?.toMillis() || 0;
+            const timeB = b.lastMessageAt?.toMillis() || 0;
+            return timeB - timeA;
+        });
+
         let html = `
-                    <div onclick="selectChat(null)" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 bg-green-50 dark:bg-brand-900/20 relative" id="chat-tgt-global">
+                    <div onclick="selectChat('global_chat')" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 bg-green-50 dark:bg-brand-900/20 relative" id="chat-tgt-global_chat">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-green-600 to-indigo-500 flex items-center justify-center text-white shrink-0 shadow-sm relative">
                             <i class="fa-solid fa-users text-xs"></i>
                         </div>
-                        <div class="flex-1 overflow-hidden">
-                            <p class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Global Group</p>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${globalLast}</p>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-6">Global Group</h4>
+                            <p class="text-[10px] text-slate-500 truncate">${globalLast}</p>
                         </div>
-                        <span id="global-unread-dot" class="absolute right-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm animate-pulse hidden"></span>
                     </div>
                 `;
 
+        window.adminGroupChats.forEach(g => {
+            const lastMsg = g.lastMessage || 'No messages';
+            const safeJson = JSON.stringify(g).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+            html += `
+                <div onclick="selectChat(JSON.parse('${safeJson}'))" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-group_${g.docId}">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0 object-cover border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
+                        <i class="fa-solid fa-user-group text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center mb-0.5">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">${g.name}</h4>
+                            <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">GROUP</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 truncate ${g.read === false ? 'font-bold text-black dark:text-white' : ''}">${lastMsg}</p>
+                    </div>
+                </div>
+            `;
+        });
+
         sortedUsers.forEach(u => {
-            const initial = u.name ? u.name[0].toUpperCase() : '?';
-            const lastMsg = chatMeta[u.docId]?.lastMessage || (u.role || 'User').replace('_', ' ');
+            const initial = (u.name || u.email || '?').charAt(0).toUpperCase();
+            const lastMsg = chatMeta[u.docId]?.lastMessage || u.email;
+            let unreadDot = '';
+            if (chatMeta[u.docId]?.lastSender && chatMeta[u.docId]?.lastSender !== userData.docId && !chatMeta[u.docId]?.read) {
+                unreadDot = `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>`;
+            }
+
             const safeJson = JSON.stringify(u).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-
-            // Unread dot logic: check if last sender wasn't me and if we have metadata for it
-            // For now, we'll use a simple 'lastSender' check. 
-            // To be really accurate, we'd need a lastRead timestamp per user in each chat.
-            const isUnread = chatMeta[u.docId]?.lastSender && chatMeta[u.docId]?.lastSender !== userData.docId && !chatMeta[u.docId]?.read;
-
             html += `
                         <div onclick="selectChat(JSON.parse('${safeJson}'))" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-${u.docId}">
-                            ${u.photoUrl ?
-                    `<img src="${u.photoUrl}" class="w-10 h-10 rounded-full object-cover shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">` :
-                    `<div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 flex items-center justify-center font-bold text-sm shrink-0 uppercase shadow-sm">${initial}</div>`
-                }
-                            <div class="flex-1 overflow-hidden">
-                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">${u.name || 'User'}</p>
-                                <p class="text-[10px] text-slate-500 truncate">${lastMsg}</p>
+                            <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 font-bold flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0 object-cover border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden text-xs">
+                                ${u.photoUrl ? `<img src="${u.photoUrl}" class="w-full h-full object-cover">` : initial}
                             </div>
-                            ${isUnread ? `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm animate-pulse"></span>` : ''}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">${u.name || u.email}</h4>
+                                    <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">${u.role}</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 truncate ${unreadDot ? 'font-bold text-slate-800 dark:text-slate-200' : ''}">${lastMsg}</p>
+                            </div>
+                            ${unreadDot}
                         </div>
                     `;
         });
+        
         list.innerHTML = html;
         updateActiveChatHighlight();
     } catch (e) {
@@ -4949,8 +5473,28 @@ async function loadChatUsers() {
 }
 
 window.selectChat = (userObj) => {
-    currentChatUser = userObj;
-    currentChatId = userObj ? getOneOnOneChatId(userData.docId, userObj.docId) : 'global_chat';
+    if (typeof userObj === 'string') {
+        if (userObj === 'global_chat') {
+            currentChatUser = null;
+            currentChatId = 'global_chat';
+        } else if (userObj.startsWith('group_')) {
+            const gId = userObj.replace('group_', '');
+            currentChatUser = window.adminGroupChats ? window.adminGroupChats.find(g => g.docId === gId) : null;
+            currentChatId = userObj;
+        } else {
+            currentChatUser = window.adminChatUsers ? window.adminChatUsers.find(u => u.docId === userObj) : null;
+            currentChatId = getOneOnOneChatId(userData.docId, userObj);
+        }
+    } else {
+        currentChatUser = userObj;
+        if (userObj && userObj.isGroup) {
+            currentChatId = 'group_' + userObj.docId;
+        } else if (userObj) {
+            currentChatId = getOneOnOneChatId(userData.docId, userObj.docId);
+        } else {
+            currentChatId = 'global_chat';
+        }
+    }
 
     const nameEl = document.getElementById('active-chat-name');
     const statusEl = document.getElementById('active-chat-status');
@@ -4958,13 +5502,13 @@ window.selectChat = (userObj) => {
     const callsEl = document.getElementById('chat-cal-actions');
     const chatMain = document.getElementById('chat-main-area');
 
-    if (userObj) {
-        nameEl.textContent = userObj.name || 'Unknown User';
-        statusEl.textContent = (userObj.role || 'User').replace('_', ' ');
-        if (userObj.photoUrl) {
-            avatarEl.innerHTML = `<img src="${userObj.photoUrl}" class="w-full h-full object-cover">`;
+    if (currentChatUser) {
+        nameEl.textContent = currentChatUser.name || currentChatUser.email || 'Unknown User';
+        statusEl.textContent = (currentChatUser.isGroup ? 'Group' : (currentChatUser.role || 'User').replace('_', ' '));
+        if (currentChatUser.photoUrl) {
+            avatarEl.innerHTML = `<img src="${currentChatUser.photoUrl}" class="w-full h-full object-cover">`;
         } else {
-            avatarEl.innerHTML = userObj.name ? userObj.name[0].toUpperCase() : '?';
+            avatarEl.innerHTML = currentChatUser.name ? currentChatUser.name[0].toUpperCase() : '?';
         }
         avatarEl.className = 'w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 flex items-center justify-center font-bold shrink-0 overflow-hidden shadow-sm';
         callsEl.classList.remove('hidden');
@@ -4975,7 +5519,6 @@ window.selectChat = (userObj) => {
         avatarEl.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm';
         callsEl.classList.add('hidden');
     }
-
     // Mobile Navigation: Slide Chat Main Area over sidebar
     if (chatMain) {
         chatMain.classList.remove('translate-x-full');
@@ -4998,6 +5541,97 @@ window.hideMobileChatArea = () => {
         chatMain.classList.remove('translate-x-0');
         chatMain.classList.add('translate-x-full');
     }
+};
+
+window.openCreateGroupModal = () => {
+    const list = window.adminChatUsers || [];
+    const userOptions = list.map(u => `
+        <label class="flex items-center gap-3 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer transition">
+            <input type="checkbox" value="${u.docId}" class="group-user-checkbox w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500">
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate text-slate-800 dark:text-slate-100">${u.name || u.email}</p>
+                <p class="text-[10px] text-slate-500 truncate">${u.role || 'EMP'}</p>
+            </div>
+        </label>
+    `).join('');
+
+    const modalHtml = `
+        <div id="create-group-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 animate-scale-up">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Create New Group</h3>
+                    <button onclick="document.getElementById('create-group-modal').remove()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="p-4 flex-1 overflow-y-auto space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Group Name</label>
+                        <input type="text" id="group-name-input" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-green-500 transition" placeholder="e.g. Project Alpha">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Select Members</label>
+                        <div class="space-y-1 max-h-60 overflow-y-auto border border-slate-100 dark:border-slate-800 rounded-xl p-2 bg-white dark:bg-slate-900 custom-scrollbar">
+                            ${userOptions}
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+                    <button onclick="document.getElementById('create-group-modal').remove()" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition">Cancel</button>
+                    <button onclick="window.confirmCreateGroup()" class="px-6 py-2 bg-green-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-200 dark:shadow-none hover:scale-95 transition">Create Group</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+};
+
+window.confirmCreateGroup = async () => {
+    const nameInput = document.getElementById('group-name-input').value.trim();
+    if (!nameInput) return showToast("Enter group name", "error");
+
+    const checkboxes = document.querySelectorAll('.group-user-checkbox:checked');
+    const selectedUsers = Array.from(checkboxes).map(cb => cb.value);
+    if (selectedUsers.length === 0) return showToast("Select members", "error");
+
+    selectedUsers.push(userData.docId);
+
+    try {
+        const groupRef = await addDoc(collection(db, "group_chats"), {
+            name: nameInput,
+            companyId: userData.companyId,
+            admin: userData.docId,
+            users: selectedUsers,
+            createdAt: serverTimestamp(),
+            lastMessage: "Group created",
+            lastMessageAt: serverTimestamp()
+        });
+        document.getElementById('create-group-modal').remove();
+        showToast("Group created!", "success");
+        loadChatUsers();
+        selectChat({ docId: groupRef.id, name: nameInput, isGroup: true, users: selectedUsers });
+    } catch (e) {
+        console.error(e);
+        showToast("Failed to create group", "error");
+    }
+};
+
+window.sendLocationMessage = () => {
+    if (!navigator.geolocation) return showToast("Geolocation not supported", "error");
+    
+    showToast("Getting location...", "info");
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        const msg = `📍 Shared Location: ${mapUrl}`;
+        
+        // Simulating message send
+        const input = document.getElementById('chat-input');
+        if (input) {
+            input.value = msg;
+            document.querySelector('#chat-main-area form').dispatchEvent(new Event('submit'));
+        }
+    }, (err) => {
+        showToast("Location access denied", "error");
+    });
 };
 
 function getOneOnOneChatId(uid1, uid2) {
@@ -5058,27 +5692,38 @@ function loadMessages() {
                 const canDelete = isMe && data.createdAt && (Date.now() - data.createdAt.toMillis() < 60000);
 
                 const div = document.createElement('div');
-                div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} group`;
+                div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} drop-in w-full max-w-full group`;
+
+                // Process mentions and logic
+                let processedText = data.text || '';
+                if (processedText) {
+                    // simple mention string replace styling
+                    processedText = processedText.replace(/(@[A-Za-z0-9_]+)/g, '<span class="text-green-500 font-bold bg-green-50 dark:bg-green-900/20 px-1 rounded mx-0.5">$1</span>');
+                    // process locations
+                    processedText = processedText.replace(/\[MAP:([-0-9.]+),([-0-9.]+)\]/g, '<a href="https://www.google.com/maps/search/?api=1&query=$1,$2" target="_blank" class="block mt-1 bg-slate-100 dark:bg-slate-800 p-2 rounded flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition"><i class="fa-solid fa-map-location-dot text-blue-500"></i><span class="text-xs text-blue-600 dark:text-blue-400 font-bold">View Shared Location</span></a>');
+                }
 
                 div.innerHTML = `
-                            <div class="flex items-end gap-2 max-w-[85%] ${isMe ? 'flex-row-reverse' : ''}">
-                                 ${!isMe ? (data.senderPhotoUrl ?
-                        `<img src="${data.senderPhotoUrl}" class="w-8 h-8 rounded-full object-cover shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">` :
-                        `<div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 bg-slate-400 uppercase shadow-sm sm:flex hidden">${data.sender ? data.sender[0] : '?'}</div>`
+                            <div class="flex items-end gap-2 max-w-[85%] sm:max-w-[75%] ${isMe ? 'flex-row-reverse' : ''}">
+                                ${!isMe ? (data.senderPhotoUrl ?
+                        `<img src="${data.senderPhotoUrl}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 border border-white dark:border-slate-800 mt-auto">` :
+                        `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 mt-auto border border-white dark:border-slate-800 uppercase">${(data.sender || data.email || '?')[0]}</div>`
                     ) : ''}
-                                 <div class="relative ${isMe ? 'bg-green-600 text-white font-medium' : 'bg-white dark:bg-slate-800 dark:text-slate-50 border border-slate-100 dark:border-slate-700 shadow-sm text-slate-900'} p-3 rounded-2xl ${isMe ? 'rounded-br-none' : 'rounded-bl-none'} shadow-sm">
-                                    ${!isMe && lastUser !== data.email && currentChatId === 'global_chat' ? `<p class="text-[9px] font-bold ${isMe ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'} mb-1">${data.sender || data.email}</p>` : ''}
-                                    <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">${data.text}</p>
-                                    <div class="flex items-center justify-end gap-1 mt-1">
-                                        <p class="text-[9px] ${isMe ? 'text-brand-100' : 'text-slate-400 dark:text-slate-500'} font-mono">${time}</p>
-                                        ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-300' : 'text-brand-200'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
+                                
+                                <div class="relative ${isMe ? 'bg-black dark:bg-white text-white dark:text-black font-medium text-left' : 'bg-slate-100 dark:bg-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 text-slate-800'} p-3 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} text-xs sm:text-sm shadow-sm relative overflow-hidden break-words">
+                                    ${!isMe && window.currentChatContext === 'global' && lastUser !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'opacity-80' : 'text-green-600 dark:text-green-400'} mb-1">${data.sender || data.email}</p>` : ''}
+                                    ${!isMe && window.currentChatContext && window.currentChatContext.startsWith('group_') && lastUser !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'opacity-80' : 'text-blue-600 dark:text-blue-400'} mb-1">${data.sender || data.email}</p>` : ''}
+                                    <span class="leading-relaxed relative z-10 break-words whitespace-pre-wrap">${window.parseChatLinks ? window.parseChatLinks(processedText) : processedText}</span>
+                                    <div class="flex items-center justify-end gap-1 mt-1 opacity-60 mix-blend-luminosity">
+                                        <div class="text-[9px] text-right font-mono">${time}</div>
+                                        ${isMe ? `<span class="text-[10px] ml-1"><i class="fa-solid fa-check-double"></i></span>` : ''}
                                     </div>
                                     ${canDelete ? `
                                         <button onclick="deleteChatMessage('${msgId}')" class="absolute -top-2 ${isMe ? '-left-2' : '-right-2'} w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     ` : ''}
-                                 </div>
+                                </div>
                             </div>
                         `;
                 container.appendChild(div);
@@ -5138,9 +5783,49 @@ window.sendChatMessage = async (e) => {
 
         const container = document.getElementById('chat-messages');
         if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
+
+        // --- @ai Trigger ---
+        if (text.toLowerCase().includes('@ai')) {
+            setTimeout(() => {
+                handleAIChatRequest(db, userData, userData.companyId, currentChatId, currentChatUser);
+            }, 1000);
+        }
+
     } catch (err) {
         showToast("Failed to send: " + err.message, 'error');
     }
+};
+
+window.sendLocationMessage = () => {
+    if (!navigator.geolocation) {
+        showToast("Geolocation is not supported by your browser", "error");
+        return;
+    }
+
+    const btnHtml = document.querySelector('button[onclick="sendLocationMessage()"]');
+    if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const locationText = `Here is my current location:\n[MAP:${lat},${lng}]`;
+            
+            // Re-use sendChatMessage flow seamlessly
+            const input = document.getElementById('chat-input');
+            const originalVal = input.value;
+            input.value = locationText;
+            window.sendChatMessage({ preventDefault: () => {} });
+            input.value = originalVal; // Restore draft if any
+
+            if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-location-dot"></i>';
+        },
+        (error) => {
+            console.error(error);
+            showToast("Unable to retrieve location", "error");
+            if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-location-dot"></i>';
+        }
+    );
 };
 
 window.deleteChatMessage = async (msgId) => {
@@ -5156,8 +5841,8 @@ window.deleteChatMessage = async (msgId) => {
 
 // Close sidebar on route change (mobile)
 const originalSwitchTab = window.switchTab;
-window.switchTab = (tab) => {
-    if (originalSwitchTab) originalSwitchTab(tab);
+window.switchTab = (tab, options = {}) => {
+    if (originalSwitchTab) originalSwitchTab(tab, options);
     if (window.innerWidth < 1024) { // lg breakpoint
         const sidebar = document.getElementById('admin-sidebar');
         if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
@@ -5434,6 +6119,7 @@ window.openNotificationPDP = async (id) => {
 
         const modal = document.getElementById('modal-notif-pdp');
         modal.classList.remove('hidden');
+        pushAdminModalState('modal-notif-pdp');
         setTimeout(() => {
             document.getElementById('modal-notif-pdp-content').classList.remove('scale-95', 'opacity-0');
             document.getElementById('modal-notif-pdp-content').classList.add('scale-100', 'opacity-100');
@@ -5598,7 +6284,11 @@ window.initiateCall = async (type) => {
 
     } catch (e) {
         console.error(e);
-        showToast("Failed to start call: " + e.message, "error");
+        if (e.name === 'NotAllowedError' || e.message?.toLowerCase().includes('permission denied')) {
+            showToast("Camera/Mic permission denied. Please click the lock icon in your browser address bar to allow access.", "error");
+        } else {
+            showToast("Failed to start call: " + e.message, "error");
+        }
     }
 };
 

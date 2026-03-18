@@ -7,6 +7,218 @@ window.expensesData = [];
 window.expensesUnsub = null;
 window.currentMode = 'company';
 
+const EXPENSE_DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+window.getExpenseDraftKey = () => {
+    const userId = window.userData?.docId || 'anon';
+    const companyId = window.companyId || 'no-company';
+    return `explyra-expense-draft:${companyId}:${userId}`;
+};
+
+window.clearExpenseValidationErrors = () => {
+    document.querySelectorAll('#expense-form .field-error').forEach((el) => el.remove());
+    document.querySelectorAll('#expense-form .border-red-500').forEach((el) => {
+        el.classList.remove('border-red-500', 'ring-1', 'ring-red-400');
+    });
+};
+
+window.setFieldError = (inputEl, message) => {
+    if (!inputEl) return;
+    const id = inputEl.id || `field-${Math.random().toString(36).slice(2)}`;
+    inputEl.id = id;
+    inputEl.setAttribute('aria-invalid', 'true');
+    const errorId = `${id}-error`;
+    inputEl.setAttribute('aria-describedby', errorId);
+    inputEl.classList.add('border-red-500', 'ring-1', 'ring-red-400');
+
+    const existing = inputEl.parentElement?.querySelector(`#${errorId}`);
+    if (existing) {
+        existing.textContent = message;
+        return;
+    }
+
+    const err = document.createElement('p');
+    err.id = errorId;
+    err.className = 'field-error text-[11px] text-red-600 mt-1 font-semibold';
+    err.textContent = message;
+    inputEl.parentElement?.appendChild(err);
+};
+
+window.validateExpenseClaimForm = () => {
+    window.clearExpenseValidationErrors();
+    let valid = true;
+
+    const title = document.getElementById('report-title');
+    const projectCode = document.getElementById('project-code');
+    const preApproved = document.getElementById('pre-approved')?.checked || false;
+    const proofUrlFile = document.getElementById('approval-proof-final-url')?.value.trim() || '';
+    const proofUrlText = document.getElementById('approval-proof-url')?.value.trim() || '';
+    const proofUrl = proofUrlFile || proofUrlText;
+
+    if (!title?.value.trim()) {
+        window.setFieldError(title, 'Title is required.');
+        valid = false;
+    }
+
+    if (window.currentMode !== 'personal' && !projectCode?.value.trim()) {
+        window.setFieldError(projectCode, 'Select a project or cost code.');
+        valid = false;
+    }
+
+    if (preApproved && !proofUrl) {
+        const proofInput = document.getElementById('approval-proof-url') || document.getElementById('proof-file-input');
+        window.setFieldError(proofInput, 'Provide approval proof for pre-approved activity.');
+        valid = false;
+    }
+
+    const lineItems = document.querySelectorAll('.line-item');
+    if (!lineItems.length) {
+        valid = false;
+    }
+
+    lineItems.forEach((el) => {
+        const amountEl = el.querySelector('.item-amount');
+        const descEl = el.querySelector('.item-desc');
+        const dateEl = el.querySelector('.item-date');
+        const amount = parseFloat(amountEl?.value || 0);
+
+        if (!descEl?.value.trim()) {
+            window.setFieldError(descEl, 'Description is required.');
+            valid = false;
+        }
+        if (!amount || amount <= 0) {
+            window.setFieldError(amountEl, 'Amount must be greater than 0.');
+            valid = false;
+        }
+        if (!dateEl?.value) {
+            window.setFieldError(dateEl, 'Date is required.');
+            valid = false;
+        }
+    });
+
+    const firstError = document.querySelector('#expense-form .field-error');
+    if (!valid && firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return valid;
+};
+
+window.collectExpenseDraft = () => {
+    const modal = document.getElementById('modal-create');
+    if (!modal || modal.classList.contains('hidden')) return null;
+    if (window.currentMode === 'personal') return null;
+    if (document.getElementById('expense-id')?.value) return null;
+
+    return {
+        version: 1,
+        savedAt: Date.now(),
+        title: document.getElementById('report-title')?.value || '',
+        projectCode: document.getElementById('project-code')?.value || '',
+        currency: document.getElementById('currency')?.value || 'INR',
+        preApproved: !!document.getElementById('pre-approved')?.checked,
+        approvalProofUrl: document.getElementById('approval-proof-url')?.value || '',
+        approvalProofFinalUrl: document.getElementById('approval-proof-final-url')?.value || '',
+        notes: document.getElementById('expense-notes')?.value || '',
+        claimType: document.getElementById('claim-type')?.value || 'EXPENSE',
+        lineItems: Array.from(document.querySelectorAll('.line-item')).map((el) => ({
+            category: el.querySelector('.item-category')?.value || 'Other',
+            amount: el.querySelector('.item-amount')?.value || '',
+            description: el.querySelector('.item-desc')?.value || '',
+            receiptUrl: el.querySelector('.item-img-url')?.value || '',
+            date: el.querySelector('.item-date')?.value || ''
+        }))
+    };
+};
+
+window.saveExpenseDraft = () => {
+    try {
+        const payload = window.collectExpenseDraft();
+        if (!payload) return;
+        localStorage.setItem(window.getExpenseDraftKey(), JSON.stringify(payload));
+    } catch (e) {
+        console.warn('Failed to save expense draft', e);
+    }
+};
+
+window.clearExpenseDraft = () => {
+    try {
+        localStorage.removeItem(window.getExpenseDraftKey());
+    } catch (e) {
+        console.warn('Failed to clear expense draft', e);
+    }
+};
+
+window.restoreExpenseDraft = () => {
+    try {
+        const raw = localStorage.getItem(window.getExpenseDraftKey());
+        if (!raw) return false;
+        const draft = JSON.parse(raw);
+        if (!draft?.savedAt || Date.now() - draft.savedAt > EXPENSE_DRAFT_TTL_MS) {
+            window.clearExpenseDraft();
+            return false;
+        }
+
+        const title = document.getElementById('report-title');
+        const projectCode = document.getElementById('project-code');
+        const currency = document.getElementById('currency');
+        const preApproved = document.getElementById('pre-approved');
+        const proofUrl = document.getElementById('approval-proof-url');
+        const proofFinal = document.getElementById('approval-proof-final-url');
+        const notes = document.getElementById('expense-notes');
+        const claimType = document.getElementById('claim-type');
+
+        if (title && !title.readOnly) title.value = draft.title || '';
+        if (currency) currency.value = draft.currency || 'INR';
+        if (preApproved) preApproved.checked = !!draft.preApproved;
+        if (proofUrl) proofUrl.value = draft.approvalProofUrl || '';
+        if (proofFinal) proofFinal.value = draft.approvalProofFinalUrl || '';
+        if (notes) notes.value = draft.notes || '';
+        if (claimType) claimType.value = draft.claimType || 'EXPENSE';
+
+        if (preApproved) {
+            const proofBox = document.getElementById('pre-approved-proof-container');
+            if (proofBox) {
+                if (preApproved.checked) proofBox.classList.remove('hidden');
+                else proofBox.classList.add('hidden');
+            }
+        }
+
+        const container = document.getElementById('line-items-container');
+        if (container && Array.isArray(draft.lineItems) && draft.lineItems.length) {
+            container.innerHTML = '';
+            draft.lineItems.forEach((item) => {
+                window.addLineItem();
+                const row = container.lastElementChild;
+                if (!row) return;
+                const c = row.querySelector('.item-category');
+                const a = row.querySelector('.item-amount');
+                const d = row.querySelector('.item-desc');
+                const r = row.querySelector('.item-img-url');
+                const dt = row.querySelector('.item-date');
+                if (c) c.value = item.category || 'Other';
+                if (a) a.value = item.amount || '';
+                if (d) d.value = item.description || '';
+                if (r) r.value = item.receiptUrl || '';
+                if (dt) dt.value = item.date || '';
+            });
+            window.calculateTotal();
+        }
+
+        if (projectCode) {
+            const applyProject = () => {
+                if (draft.projectCode) projectCode.value = draft.projectCode;
+            };
+            setTimeout(applyProject, 120);
+            setTimeout(applyProject, 500);
+        }
+
+        return true;
+    } catch (e) {
+        console.warn('Failed to restore expense draft', e);
+        return false;
+    }
+};
+
 window.fetchExpenses = () => {
     if (!window.currentUser || !window.userData) return;
 
@@ -188,6 +400,10 @@ window.submitExpense = async () => {
     const notes = document.getElementById('expense-notes')?.value.trim() || '';
     const claimType = document.getElementById('claim-type')?.value || 'EXPENSE';
 
+    if (!window.validateExpenseClaimForm()) {
+        return window.showToast("Please fix highlighted fields.", "error");
+    }
+
     if (!title) return window.showToast("Enter title.", "error");
 
     if (preApproved && !proofUrl) {
@@ -249,6 +465,7 @@ window.submitExpense = async () => {
                 history: [{ action: 'SUBMITTED', by: window.userData.name, date: new Date() }]
             });
             window.showToast("Claim Submitted!", "success");
+            window.clearExpenseDraft();
         }
         window.closeModal('modal-create');
     } catch (e) {
@@ -266,7 +483,7 @@ window.openModeSelector = () => {
     window.toggleMode('personal');
 };
 
-window.toggleMode = (mode) => {
+window.toggleMode = (mode, options = {}) => {
     window.currentMode = mode;
 
     // UI Elements
@@ -345,6 +562,10 @@ window.toggleMode = (mode) => {
         window.fetchExpenses();
         if (window.filterEmpTasks) window.filterEmpTasks();
     }
+
+    if (!options.skipHistory && typeof window.pushEmpNavState === 'function') {
+        window.pushEmpNavState();
+    }
 };
 
 window.openCreateModal = (type = 'EXPENSE') => {
@@ -422,6 +643,14 @@ window.openCreateModal = (type = 'EXPENSE') => {
 
     if (window.loadProjects) window.loadProjects();
     window.addLineItem();
+
+    const isNewClaim = !document.getElementById('expense-id')?.value;
+    if (window.currentMode !== 'personal' && isNewClaim) {
+        const restored = window.restoreExpenseDraft();
+        if (restored) {
+            window.showToast('Restored your unsent draft.', 'info');
+        }
+    }
 };
 
 window.addLineItem = () => {
@@ -613,7 +842,11 @@ window.viewReportHistory = (input) => {
     const modal = document.getElementById('modal-view');
     if (!modal) return;
 
-    modal.classList.remove('hidden');
+    if (typeof window.openModalWithHistory === 'function') {
+        window.openModalWithHistory('modal-view');
+    } else {
+        modal.classList.remove('hidden');
+    }
     document.getElementById('view-title').textContent = data.title;
 
     const statusEl = document.getElementById('view-status');
@@ -716,4 +949,22 @@ document.addEventListener('change', (e) => {
             else container.classList.add('hidden');
         }
     }
+});
+
+document.addEventListener('input', (e) => {
+    const modal = document.getElementById('modal-create');
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (!e.target.closest('#expense-form')) return;
+    if (window.currentMode === 'personal') return;
+    if (document.getElementById('expense-id')?.value) return;
+    window.saveExpenseDraft();
+});
+
+document.addEventListener('change', (e) => {
+    const modal = document.getElementById('modal-create');
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (!e.target.closest('#expense-form')) return;
+    if (window.currentMode === 'personal') return;
+    if (document.getElementById('expense-id')?.value) return;
+    window.saveExpenseDraft();
 });
