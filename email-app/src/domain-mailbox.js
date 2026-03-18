@@ -58,6 +58,7 @@ let activeDnsDomain = null;
 
 const IS_LOCAL_STATIC = ["127.0.0.1", "localhost"].includes(window.location.hostname);
 const API_BASE = IS_LOCAL_STATIC ? "https://explyra.me/email-app/api" : "/api";
+const API_RUNTIME_UNAVAILABLE = window.location.hostname === "explyra.me";
 
 function apiUrl(path) {
   const normalized = path.startsWith("/") ? path : `/${path}`;
@@ -310,7 +311,7 @@ function renderDomainList() {
       btn.textContent = "Verifying...";
       try {
         let result;
-        if (IS_LOCAL_STATIC) {
+        if (IS_LOCAL_STATIC || API_RUNTIME_UNAVAILABLE) {
           try {
             result = await verifyDomainClientSide(btn.dataset.id, btn.dataset.domain);
           } catch (localError) {
@@ -505,9 +506,11 @@ employeeForm.addEventListener("submit", async (event) => {
     return showEmployeeResult("Select a verified domain.", "error");
   }
 
-  const btn = employeeForm.querySelector("button[type='submit']");
-  btn.disabled = true;
-  btn.textContent = "Provisioning...";
+  const btn = employeeForm.querySelector("button[type='submit']") || employeeForm.querySelector("button");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Provisioning...";
+  }
 
   try {
     const token = await currentUser.getIdToken();
@@ -539,8 +542,10 @@ employeeForm.addEventListener("submit", async (event) => {
   } catch (error) {
     showEmployeeResult(String(error.message || error), "error");
   } finally {
-    btn.disabled = false;
-    btn.textContent = "Create Employee Email Setup";
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Create Employee Email Setup";
+    }
   }
 });
 
