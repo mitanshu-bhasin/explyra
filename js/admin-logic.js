@@ -1053,6 +1053,7 @@ window.switchTab = (tab) => {
 };
 
 async function renderOverview() {
+    renderCrmWidget();
     document.getElementById('page-title').textContent = "System Overview";
     const content = document.getElementById('content-area');
     content.innerHTML = '<div class="flex flex-col space-y-4 p-6 w-full"><div class="h-10 w-full skeleton rounded-lg"></div><div class="h-16 w-full skeleton rounded-xl"></div><div class="h-16 w-full skeleton rounded-xl"></div></div>';
@@ -4472,6 +4473,107 @@ window.getNextStageStatus = async (currentStatus, role) => {
 
     return 'COMPLETED'; // End of chain?
 };
+
+async function renderCrmWidget() {
+    const crmContainer = document.getElementById('crm-widget-container');
+    if (!crmContainer) return;
+
+    // Show a loading state
+    crmContainer.innerHTML = `
+        <div class="vercel-card p-6">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-blue-500"></i> CRM Snapshot
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+            </div>
+        </div>
+    `;
+
+    try {
+        const companyId = userData.companyId;
+        if (!companyId) {
+            crmContainer.innerHTML = ''; // Hide if no companyId
+            return;
+        }
+
+        const leadsQuery = query(collection(db, "crm_leads"), where("companyId", "==", companyId));
+        const dealsQuery = query(collection(db, "crm_deals"), where("companyId", "==", companyId));
+
+        const [leadsSnap, dealsSnap] = await Promise.all([
+            getDocs(leadsQuery),
+            getDocs(dealsQuery)
+        ]);
+
+        const totalLeads = leadsSnap.size;
+        const deals = dealsSnap.docs.map(doc => doc.data());
+
+        let activeDeals = 0;
+        let pipelineValue = 0;
+        let wonDeals = 0;
+        let lostDeals = 0;
+
+        deals.forEach(deal => {
+            if (deal.stage !== 'Closed-Won' && deal.stage !== 'Closed-Lost') {
+                activeDeals++;
+                pipelineValue += deal.amount || 0;
+            } else if (deal.stage === 'Closed-Won') {
+                wonDeals++;
+            } else if (deal.stage === 'Closed-Lost') {
+                lostDeals++;
+            }
+        });
+
+        const totalClosedDeals = wonDeals + lostDeals;
+        const winRate = totalClosedDeals > 0 ? Math.round((wonDeals / totalClosedDeals) * 100) : 0;
+
+        const html = `
+            <div class="vercel-card p-6 fade-in">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-blue-500"></i> CRM Snapshot
+                    </h3>
+                    <a href="crm/index.html" class="text-xs font-bold text-blue-600 hover:underline">
+                        Open CRM <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Total Leads</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">${totalLeads}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Active Deals</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">${activeDeals}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Pipeline Value</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1 font-mono">${formatCurrency(pipelineValue, 'INR')}</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Win Rate</p>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1">${winRate}%</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        crmContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error("Error rendering CRM widget:", error);
+        crmContainer.innerHTML = `
+             <div class="vercel-card p-6">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-blue-500"></i> CRM Snapshot
+                </h3>
+                <p class="text-xs text-slate-500">Could not load CRM data. The module might be unavailable or data is still being populated.</p>
+            </div>
+        `;
+    }
+}
 
 window.showModal = (title, msg, type) => {
     const m = document.getElementById('global-modal');
