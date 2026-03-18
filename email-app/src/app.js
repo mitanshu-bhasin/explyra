@@ -60,6 +60,41 @@ let quill = null;
 let currentMonth = new Date();
 let googleAccessToken = null;
 
+const OUTBOUND_WORKER_URL = 'https://email-worker.mfskufgu.workers.dev';
+
+async function parseJsonSafe(response) {
+  const text = await response.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: text.slice(0, 200) };
+  }
+}
+
+async function sendViaWorkerFallback({ to, subject, htmlContent }) {
+  const fallbackFrom = currentUser?.email?.endsWith('@explyra.me') ? currentUser.email : 'support@explyra.me';
+  const response = await fetch(OUTBOUND_WORKER_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      origin: window.location.origin || 'https://explyra.me'
+    },
+    body: JSON.stringify({
+      fromEmail: fallbackFrom,
+      fromName: currentUser?.displayName || 'Explyra Mail',
+      toEmail: to,
+      subject,
+      htmlContent
+    })
+  });
+
+  const result = await parseJsonSafe(response);
+  if (!response.ok || !result.ok) {
+    throw new Error(result.error || 'Fallback send failed');
+  }
+}
+
 // ============================
 // 💾 Local Cache Logic
 // ============================
@@ -809,32 +844,41 @@ $('send-btn').onclick = async () => {
         // Refresh to show the sent email
         setTimeout(() => fetchGmailRecent(), 1500);
     } else {
+      let sent = false;
+      try {
         const response = await fetch('/api/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await auth.currentUser.getIdToken()}`
-            },
-            body: JSON.stringify({
-                to,
-                subject: sub,
-                htmlBody: htmlContent,
-                fromEmail: currentUser.email,
-                senderName: currentUser.displayName || currentUser.email.split('@')[0]
-            })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${await auth.currentUser.getIdToken()}`
+          },
+          body: JSON.stringify({
+            to,
+            subject: sub,
+            htmlBody: htmlContent,
+            fromEmail: currentUser.email,
+            senderName: currentUser.displayName || currentUser.email.split('@')[0]
+          })
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-            showToast('Email Sent Successfully!');
-            $('compose-modal').classList.add('hidden');
-            if (quill) quill.setText('');
-            $('compose-to').value = '';
-            $('compose-subject').value = '';
+        const result = await parseJsonSafe(response);
+        if (response.ok && result.success) {
+          sent = true;
         } else {
-            throw new Error(result.error || 'Failed to send email');
+          throw new Error(result.error || 'Primary API send failed');
         }
+      } catch (apiError) {
+        await sendViaWorkerFallback({ to, subject: sub, htmlContent });
+        sent = true;
+      }
+
+      if (sent) {
+        showToast('Email Sent Successfully!');
+        $('compose-modal').classList.add('hidden');
+        if (quill) quill.setText('');
+        $('compose-to').value = '';
+        $('compose-subject').value = '';
+      }
     }
   } catch (error) {
     console.error('Send Error:', error);
