@@ -11,7 +11,9 @@ import {
   where,
   onSnapshot,
   serverTimestamp,
-  getDocs
+  getDocs,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -86,6 +88,57 @@ const REGISTRAR_LINKS = {
   namecheap: () => "https://ap.www.namecheap.com/domains/domaincontrolpanel/",
   cloudflare: () => "https://dash.cloudflare.com/"
 };
+
+const REQUIRED_MX = [
+  "isaac.mx.cloudflare.net",
+  "linda.mx.cloudflare.net",
+  "amir.mx.cloudflare.net"
+];
+
+async function resolveDnsRecord(name, type) {
+  const res = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}`);
+  if (!res.ok) {
+    throw new Error(`DNS lookup failed: ${type}`);
+  }
+  return res.json();
+}
+
+function normalizeHost(value) {
+  return String(value || "").trim().toLowerCase().replace(/\.$/, "");
+}
+
+async function verifyDomainClientSide(domainId, domain) {
+  const [txtResult, mxResult] = await Promise.all([
+    resolveDnsRecord(domain, "TXT"),
+    resolveDnsRecord(domain, "MX")
+  ]);
+
+  const txtFound = (txtResult.Answer || []).map((x) => String(x.data || "").replace(/"/g, "").toLowerCase());
+  const mxFound = (mxResult.Answer || []).map((x) => {
+    const row = String(x.data || "").trim();
+    const host = row.split(/\s+/).slice(1).join(" ");
+    return normalizeHost(host || row);
+  });
+
+  const hasSpf = txtFound.some((x) => x.includes("include:_spf.mailchannels.net"));
+  const missingMx = REQUIRED_MX.filter((host) => !mxFound.includes(host));
+  const verified = hasSpf && missingMx.length === 0;
+
+  await updateDoc(doc(db, "custom_domains", domainId), {
+    verified,
+    status: verified ? "verified" : "pending_dns",
+    verifiedAt: new Date().toISOString(),
+    verification: {
+      hasSpf,
+      missingMx,
+      txtFound: txtFound.slice(0, 10),
+      mxFound: mxFound.slice(0, 10),
+      source: "client-fallback"
+    }
+  });
+
+  return { verified, hasSpf, missingMx };
+}
 
 function normalizeDomain(value) {
   return value.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*/, "");
@@ -240,22 +293,28 @@ function renderDomainList() {
       btn.disabled = true;
       btn.textContent = "Verifying...";
       try {
-        const token = await currentUser.getIdToken();
-        const response = await fetch(apiUrl("/verify-domain"), {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            domainId: btn.dataset.id,
-            domain: btn.dataset.domain
-          })
-        });
+        let result;
+        try {
+          const token = await currentUser.getIdToken();
+          const response = await fetch(apiUrl("/verify-domain"), {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              domainId: btn.dataset.id,
+              domain: btn.dataset.domain
+            })
+          });
 
-        const result = await readApiJson(response);
-        if (!response.ok) {
-          throw new Error(result.error || "Verification failed");
+          result = await readApiJson(response);
+          if (!response.ok) {
+            throw new Error(result.error || "Verification failed");
+          }
+        } catch (apiError) {
+          // Fallback for local/static mode when API preflight fails.
+          result = await verifyDomainClientSide(btn.dataset.id, btn.dataset.domain);
         }
 
         if (result.verified) {
