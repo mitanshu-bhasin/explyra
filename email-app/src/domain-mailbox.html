@@ -11,6 +11,10 @@
     <section class="bg-white rounded-xl shadow p-6">
       <h1 class="text-2xl font-semibold">Domain Manager</h1>
       <p class="text-sm text-slate-600 mt-1">Admin flow: add domain, configure DNS, verify, then provision employee email IDs.</p>
+      <p class="text-xs text-slate-500 mt-2">
+        Signed-in Admin ID:
+        <code id="currentAdminId" class="rounded bg-slate-100 px-2 py-1">Not signed in</code>
+      </p>
 
       <form id="addDomainForm" class="mt-4 flex gap-2">
         <input id="domainInput" type="text" placeholder="acme.com" class="flex-1 border rounded-lg px-3 py-2" required />
@@ -38,6 +42,10 @@
     <section class="bg-white rounded-xl shadow p-6">
       <h2 class="text-xl font-semibold">Provision Employee Email</h2>
       <p class="text-sm text-slate-600 mt-1">Creates employee login, mailbox, and sends onboarding mail automatically.</p>
+      <p class="text-xs text-slate-500 mt-2">
+        Verified domain owner/admin ID:
+        <code id="selectedDomainAdminId" class="rounded bg-slate-100 px-2 py-1">Select domain</code>
+      </p>
 
       <form id="employeeForm" class="mt-4 grid md:grid-cols-2 gap-3">
         <input id="employeeName" type="text" placeholder="Employee Name" class="border rounded-lg px-3 py-2" required />
