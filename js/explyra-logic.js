@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, query, where, Timestamp, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
@@ -18,19 +18,41 @@ const db = getFirestore(app);
 window.auth = auth;
 window.db = db;
 
-const MASTER_ADMIN = "explyra@gmail.com";
+const MASTER_ADMINS = ["explyra@gmail.com", "epxlyra@gmail.com"];
 
 async function isExplyraTeam(email) {
-    if (!email) return false;
+    if (!email) {
+        console.warn("isExplyraTeam: No email provided");
+        return false;
+    }
     const lower = email.toLowerCase();
-    if (lower === MASTER_ADMIN) return true;
+    
+    // 1. Check Master Admin
+    if (MASTER_ADMINS.includes(lower)) {
+        console.info("isExplyraTeam: Authorized as Master Admin");
+        return true;
+    }
 
     try {
-        // Also check if they were added as an admin in 'explyra_admins' collection
-        const { query, where } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
+        // 2. Check Database Admins (Collection)
         const q = query(collection(db, "explyra_admins"), where("email", "==", lower));
         const snap = await getDocs(q);
-        return !snap.empty;
+        if (!snap.empty) {
+            console.info(`isExplyraTeam: Found in ads collection for ${lower}`);
+            return true;
+        }
+
+        // 3. Check Fallback Document (admin_list)
+        const listDoc = await getDoc(doc(db, "explyra_admins", "admin_list"));
+        if (listDoc.exists()) {
+            const emails = listDoc.data().emails || [];
+            const found = emails.some(e => e.toLowerCase() === lower);
+            console.info(`isExplyraTeam: Admin list check for ${lower}: ${found}`);
+            return found;
+        }
+
+        console.warn(`isExplyraTeam: No admin record found for ${lower}`);
+        return false;
     } catch (e) {
         console.error("Admin check failed", e);
         return false;
@@ -41,27 +63,44 @@ async function isExplyraTeam(email) {
 let allCompanies = [];
 let allUsers = [];
 let allExpenses = [];
+let allDeletionRequests = [];
 
 onAuthStateChanged(auth, async (user) => {
+    console.info("Auth state changed:", user ? user.email : "Logged Out");
     if (user) {
-        const isAuthorized = await isExplyraTeam(user.email);
-        if (isAuthorized) {
-            // Authorized
-            document.getElementById("auth-screen").classList.add("hidden");
-            document.getElementById("dashboard-screen").classList.remove("hidden");
-            document.getElementById("admin-user-email").textContent = user.email;
+        try {
+            const isAuthorized = await isExplyraTeam(user.email);
+            if (isAuthorized) {
+                console.info(`[Explyra] Access granted to: ${user.email}`);
+                document.getElementById("auth-screen").classList.add("hidden");
+                document.getElementById("dashboard-screen").classList.remove("hidden");
+                
+                const emailEl = document.getElementById("admin-user-email");
+                if (emailEl) emailEl.textContent = user.email;
 
-            if (user.email.toLowerCase() === MASTER_ADMIN) {
-                const btnAddAdmin = document.getElementById("btn-add-admin");
-                if (btnAddAdmin) btnAddAdmin.classList.remove("hidden");
+                if (MASTER_ADMINS.includes(user.email.toLowerCase())) {
+                    const btnAddAdmin = document.getElementById("btn-add-admin");
+                    if (btnAddAdmin) btnAddAdmin.classList.remove("hidden");
+                }
+
+                await loadExplyraData();
+            } else {
+                console.error(`[Explyra] Unauthorized access attempt by: ${user.email}`);
+                alert(`Unauthorized Access: ${user.email} is not in the Explyra Admin list.`);
+                await signOut(auth);
+                // Redirect back to main portal or login
+                window.location.href = "../admin.html";
             }
-
-            await loadExplyraData();
-        } else {
-            // Unauthorized
-            alert("Unauthorized Access. Only Explyra team members can access this dashboard.");
-            await signOut(auth);
-            window.location.href = "../admin.html";
+        } catch (authErr) {
+            console.error("[Explyra] Authorization System Error:", authErr);
+            // Don't sign out automatically on internal errors to allow debugging
+            // unless it's a clear 'permission-denied' from a critical auth check
+            if (authErr.code === 'permission-denied') {
+                alert("Security Verification Failed: Access Denied.");
+                await signOut(auth);
+            } else {
+                console.warn("Caught non-critical error during auth update, staying logged in for debug.");
+            }
         }
     } else {
         // Not logged in
@@ -120,7 +159,11 @@ async function loadExplyraData() {
         allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
         allExpenses = expSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
+        const delSnap = await getDocs(collection(db, "deletion_requests"));
+        allDeletionRequests = delSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
         updateDashboard();
+        renderDeletionRequests();
     } catch (err) {
         console.error("Error loading data:", err);
         alert("Failed to load platform data. See console.");
@@ -153,11 +196,18 @@ function updateDashboard() {
     });
 
     // Top Stats
-    document.getElementById("stat-companies").textContent = allCompanies.length;
-    document.getElementById("stat-employees").textContent = allUsers.length;
-    document.getElementById("stat-expenses").textContent = allExpenses.length;
-    document.getElementById("stat-active").textContent = activePlans;
-    document.getElementById("stat-suspended").textContent = suspended;
+    const stats = {
+        "stat-companies": allCompanies.length,
+        "stat-employees": allUsers.length,
+        "stat-expenses": allExpenses.length,
+        "stat-active": activePlans,
+        "stat-suspended": suspended
+    };
+
+    for (const [id, val] of Object.entries(stats)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    }
 
     renderTable(enhancedCompanies);
 }
@@ -223,17 +273,20 @@ window.toggleStatus = async (compId, newStatus) => {
 };
 
 window.openEditPlan = (compId, name, currentPlan) => {
+    console.log("[Explyra] Opening edit plan for:", compId, name, currentPlan);
     const comp = allCompanies.find(c => c.id === compId) || {};
-
+    
+    const planValue = (currentPlan || "starter").toLowerCase();
+    
     document.getElementById("edit-plan-company-id").value = compId;
     document.getElementById("edit-plan-company-name").textContent = name;
-    document.getElementById("edit-plan-select").value = currentPlan;
+    document.getElementById("edit-plan-select").value = planValue;
 
-    document.getElementById("edit-plan-cost").value = comp.planCost || '';
-    document.getElementById("edit-plan-duration").value = comp.planDurationMonths || '';
-
-    // We handle Trial Ends At or Plan Ends At based on what's available
-    let endsAt = comp.planEndsAt || comp.trialEndsAt;
+    document.getElementById("edit-plan-cost").value = comp.subscriptionValue || comp.planCost || '';
+    document.getElementById("edit-plan-duration").value = comp.planDurationMonths || '12';
+    
+    // Check various date fields that might exist
+    let endsAt = comp.subscriptionEnd || comp.planEndsAt || comp.trialEndsAt;
     if (endsAt) {
         try {
             const d = endsAt.toDate ? endsAt.toDate() : new Date(endsAt);
@@ -245,7 +298,9 @@ window.openEditPlan = (compId, name, currentPlan) => {
         document.getElementById("edit-plan-end-date").value = '';
     }
 
-    document.getElementById("plan-modal").classList.remove("hidden");
+    const modal = document.getElementById("plan-modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
 };
 
 document.getElementById("save-plan-btn")?.addEventListener("click", async () => {
@@ -297,6 +352,42 @@ window.deleteCompany = async (compId) => {
     }
 };
 
+// Tab switching
+window.switchTab = (tabId) => {
+    // Hide all
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    
+    // Show target
+    const target = document.getElementById('tab-' + tabId);
+    if(target) target.classList.remove('hidden');
+
+    // Update Sidebar
+    document.querySelectorAll('.sidebar-item').forEach(btn => {
+        btn.classList.remove('active');
+        // Check if button text or data-tab matches
+        if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
+    });
+
+    // Update Title
+    const labels = {
+        'overview': 'Platform Overview',
+        'companies': 'Corporate Entities',
+        'users': 'User Ecosystem',
+        'management': 'System Configuration',
+        'admins': 'Access & Governance',
+        'deletion-requests': 'Deletion Requests Audit',
+        'logs': 'Global Audit Logs'
+    };
+    const titleEl = document.getElementById('active-tab-title');
+    if (titleEl) titleEl.textContent = labels[tabId] || 'Platform Admin';
+};
+
+window.toggleTheme = () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('explyra-theme', isDark ? 'dark' : 'light');
+    console.log("[Explyra] Theme toggled. Dark Mode:", isDark);
+};
+
 // Add Admin functionality
 document.getElementById('save-admin-btn')?.addEventListener('click', async () => {
     const emailInput = document.getElementById('new-admin-email').value.trim().toLowerCase();
@@ -306,7 +397,6 @@ document.getElementById('save-admin-btn')?.addEventListener('click', async () =>
 
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
     try {
-        const { addDoc } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
         await addDoc(collection(db, "explyra_admins"), {
             email: emailInput,
             addedBy: auth.currentUser.email,
@@ -320,6 +410,58 @@ document.getElementById('save-admin-btn')?.addEventListener('click', async () =>
     }
     btn.innerHTML = 'Add Admin';
 });
+
+function renderDeletionRequests() {
+    const tbody = document.getElementById("deletion-requests-table-body");
+    if (!tbody) return;
+
+    if (allDeletionRequests.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-400">No pending deletion requests.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = allDeletionRequests.map(r => {
+        const date = r.timestamp?.toDate ? r.timestamp.toDate().toLocaleString() : 'N/A';
+        return `
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                <td class="px-8 py-4">
+                    <div class="font-bold text-slate-800 dark:text-slate-100">${r.email || 'Unknown'}</div>
+                </td>
+                <td class="px-8 py-4 text-slate-500">${r.company || 'N/A'}</td>
+                <td class="px-8 py-4 text-xs font-medium text-slate-400 italic max-w-xs truncate" title="${r.reason || ''}">${r.reason || 'No reason provided'}</td>
+                <td class="px-8 py-4 text-xs text-slate-500 font-mono">${date}</td>
+                <td class="px-8 py-4">
+                    <span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-700 text-[9px] font-black uppercase">Pending</span>
+                </td>
+                <td class="px-8 py-4 text-right">
+                    <button onclick="window.clearDeletionRequest('${r.id}')" class="text-slate-400 hover:text-indigo-600 transition" title="Mark as Seen">
+                        <i class="fa-solid fa-check-double"></i>
+                    </button>
+                    <button onclick="window.deleteCompanyRequest('${r.id}')" class="text-slate-300 hover:text-red-600 ml-3" title="Permanent Action Required">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+window.clearDeletionRequest = async (id) => {
+    if (!confirm("Acknowledge this request? This will not delete the data, just clear the notice (simulated).")) return;
+    try {
+        await updateDoc(doc(db, "deletion_requests", id), {
+            status: 'ACKNOWLEDGED'
+        });
+        alert("Request acknowledged.");
+        loadExplyraData();
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
+};
+
+window.deleteCompanyRequest = (id) => {
+    alert("DANGER: This action requires manual verification of ownership through the 'Companies' tab. Use the 'Delete' icon in the main registry.");
+};
 
 // Search filter
 document.getElementById('search-companies')?.addEventListener('input', (e) => {

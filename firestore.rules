@@ -3,203 +3,154 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Explyra Directories - Business Submissions
-    match /business_submissions/{submissionId} {
-      allow read: if true; // Public can view approved listings
-      allow create: if request.auth != null; // Authenticated users can submit
-      allow update, delete: if request.auth != null && 
-        (get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'MASTER_ADMIN');
-    }
-
-    // ─── Helper Functions ──────────────────────────────────────────────────────
+    // ─── HELPER FUNCTIONS ──────────────────────────────────────────────────
+    
     function isSignedIn() {
       return request.auth != null;
+    }
+
+    // Check if the user is part of the Explyra Team (Master Admin)
+    function isMasterAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email in ['explyra@gmail.com', 'epxlyra@gmail.com'] ||
+        exists(/databases/$(database)/documents/explyra_admins/$(request.auth.uid)) ||
+        // Fallback check for email in token or user doc
+        (request.auth.token.email != null && 
+         get(/databases/$(database)/documents/explyra_admins/admin_list).data.emails.hasAny([request.auth.token.email.toLowerCase()]))
+      );
     }
 
     function getUserData() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
     function isCompanyMember(companyId) {
-      return isSignedIn() && getUserData().companyId == companyId;
+      return isSignedIn() && (isMasterAdmin() || getUserData().companyId == companyId);
     }
 
     function isCompanyAdmin(companyId) {
-      return isCompanyMember(companyId) && getUserData().role in ['ADMIN', 'SUPER_ADMIN'];
+      return isMasterAdmin() || (isCompanyMember(companyId) && getUserData().role in ['ADMIN', 'SUPER_ADMIN', 'FINANCE_MANAGER']);
     }
 
-    // ─── Users Collection ──────────────────────────────────────────────────────
+    function isOwner(userId) {
+      return isSignedIn() && (request.auth.uid == userId || isMasterAdmin());
+    }
+
+    // ─── VALIDATION HELPERS ────────────────────────────────────────────────
+    
+    function isValidExpense(data) {
+      return data.title is string && 
+             data.totalAmount != null &&
+             data.companyId is string &&
+             data.userId is string;
+    }
+
+    // ─── PUBLIC COLLECTIONS ────────────────────────────────────────────────
+
+    // Contact Form Submissions (Public Create)
+    match /contactSubmissions/{submissionId} {
+      allow create: if true; 
+      allow read, update, delete: if isMasterAdmin();
+    }
+
+    // Business Submissions (Directory Listings)
+    match /business_submissions/{submissionId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isMasterAdmin();
+    }
+
+    // Retired Professional Marketplace (Public Read)
+    match /retired_experts/{expertId} { allow read: if true; }
+    match /retired_reviews/{reviewId} { allow read: if true; }
+    match /retired_posts/{postId} { allow read: if true; }
+
+    // ─── SECURE COLLECTIONS ────────────────────────────────────────────────
+
+    // Users: Profiles
     match /users/{userId} {
-      // Users can read any user profile if signed in (for search/collaboration)
       allow read: if isSignedIn();
-      // Only the user themselves or an admin can create/update profiles
-      allow create: if isSignedIn() && (request.auth.uid == userId || getUserData().role == 'ADMIN');
-      allow update: if isSignedIn() && (request.auth.uid == userId || getUserData().role == 'ADMIN');
-      allow delete: if isSignedIn() && getUserData().role == 'ADMIN';
+      allow create: if isSignedIn() && (request.auth.uid == userId || isMasterAdmin());
+      allow update: if isSignedIn() && (request.auth.uid == userId || isCompanyAdmin(getUserData().companyId) || isMasterAdmin());
+      allow delete: if isMasterAdmin();
     }
 
-    // ─── Companies Collection ──────────────────────────────────────────────────
+    // Companies: Organizational isolation
     match /companies/{companyId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isCompanyAdmin(companyId);
-      allow delete: if false; // Deletion restricted
+      allow create: if isSignedIn(); // Allow self-onboarding
+      allow update: if isCompanyAdmin(companyId) || isMasterAdmin();
+      allow delete: if isMasterAdmin();
 
-      // Company subcollections (inventory, invoices, customers, etc)
       match /{subcollection}/{docId} {
         allow read, write: if isCompanyMember(companyId);
       }
     }
 
-    // ─── Company Members Collection ────────────────────────────────────────────
-    match /companyMembers/{memberId} {
-      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
-      allow write: if isSignedIn() && (
-        (resource == null && request.resource.data.userId == request.auth.uid) || 
-        isCompanyAdmin(resource.data.companyId)
-      );
-    }
-
-    // ─── Expenses Collection ───────────────────────────────────────────────────
+    // Expenses: Principal logic
     match /expenses/{expenseId} {
-      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
-      allow create: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
-      allow update, delete: if isSignedIn() && (
-        resource.data.createdBy == request.auth.uid || 
-        isCompanyAdmin(resource.data.companyId)
-      );
-    }
-
-    // ─── Projects Collection ───────────────────────────────────────────────────
-    match /projects/{projectId} {
-      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
-      allow write: if isSignedIn() && isCompanyAdmin(resource.data.companyId);
-    }
-
-    // ─── Tasks Collection ──────────────────────────────────────────────────────
-    match /tasks/{taskId} {
       allow read: if isSignedIn() && (
-        resource.data.assignedTo == request.auth.uid || 
-        resource.data.assignedBy == request.auth.uid || 
+        isMasterAdmin() || 
+        resource.data.userId == request.auth.uid || 
+        isCompanyMember(resource.data.companyId)
+      );
+      
+      allow create: if isSignedIn() && 
+        (request.resource.data.userId == request.auth.uid || isMasterAdmin()) &&
+        isValidExpense(request.resource.data);
+        
+      allow update: if isSignedIn() && (
+        isOwner(resource.data.userId) ||
         isCompanyAdmin(resource.data.companyId)
       );
-      allow write: if isSignedIn() && (
-        request.resource.data.assignedBy == request.auth.uid || 
-        isCompanyAdmin(request.resource.data.companyId)
-      );
+      
+      allow delete: if isCompanyAdmin(resource.data.companyId) || isMasterAdmin();
     }
 
-    // ─── CRM Collections ───────────────────────────────────────────────────────
-    match /crm_deals/{dealId} {
-      allow read, write: if isSignedIn() && (
-        (resource != null && isCompanyMember(resource.data.companyId)) ||
-        (resource == null && isCompanyMember(request.resource.data.companyId))
-      );
-    }
-    match /crm_leads/{leadId} {
-      allow read, write: if isSignedIn() && (
-        (resource != null && isCompanyMember(resource.data.companyId)) ||
-        (resource == null && isCompanyMember(request.resource.data.companyId))
-      );
-    }
-    match /crm_contacts/{contactId} {
-      allow read, write: if isSignedIn() && (
-        (resource != null && isCompanyMember(resource.data.companyId)) ||
-        (resource == null && isCompanyMember(request.resource.data.companyId))
-      );
-    }
-
-    // ─── Personal Vault: Strict User Isolation ─────────────────────────────────
+    // Personal Vault & Financial Accounts: Strict User Isolation
     match /personal_vault/{itemId} {
-      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
-      allow read, update, delete: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow read, write: if isOwner(resource == null ? request.resource.data.uid : resource.data.uid);
+    }
+    match /financial_accounts/{accountId} {
+      allow read, write: if isOwner(resource == null ? request.resource.data.uid : resource.data.uid);
     }
 
-    // ─── Settings (Global/Branding) ────────────────────────────────────────────
-    match /settings/{docId} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn() && getUserData().role in ['ADMIN', 'SUPER_ADMIN'];
+    // Infrastructure: Projects, Tasks, CRM
+    match /projects/{projectId} { allow read: if isCompanyMember(resource.data.companyId); allow write: if isCompanyAdmin(resource.data.companyId); }
+    match /tasks/{taskId} { allow read, write: if isCompanyMember(resource.data.companyId) || isMasterAdmin(); }
+    match /crm_deals/{id} { allow read, write: if isCompanyMember(resource.data.companyId) || isMasterAdmin(); }
+    match /crm_leads/{id} { allow read, write: if isCompanyMember(resource.data.companyId) || isMasterAdmin(); }
+    match /crm_contacts/{id} { allow read, write: if isCompanyMember(resource.data.companyId) || isMasterAdmin(); }
+
+    // Communication: Chats & Notifications
+    match /chats/{chatId} { allow read, write: if isCompanyMember(resource.data.companyId) || isMasterAdmin(); }
+    match /notifications/{notifId} { allow read, write: if isOwner(resource == null ? request.resource.data.userId : resource.data.userId); }
+    match /audit_logs/{logId} { allow read: if isCompanyAdmin(resource.data.companyId); allow create: if isSignedIn(); }
+
+    // ─── ADMIN GOVERNANCE ────────────────────────────────────────────────
+    
+    // Deletion Requests
+    match /deletion_requests/{requestId} {
+      allow create: if true; // Public submission as it's a "Request Deletion" path
+      allow read, update, delete: if isMasterAdmin();
     }
 
-    // ─── Chats & Global Chat ───────────────────────────────────────────────────
-    match /chats/{chatId} {
-      allow read, write: if isSignedIn() && (
-        (resource != null && isCompanyMember(resource.data.companyId)) ||
-        (resource == null && isCompanyMember(request.resource.data.companyId))
+    match /explyra_admins/{adminId} {
+      // Allow any signed-in user to check if they are an admin
+      allow read: if isSignedIn() && (
+        isMasterAdmin() || 
+        adminId == 'admin_list' || 
+        (resource != null && resource.data.email.toLowerCase() == request.auth.token.email.toLowerCase())
       );
-      
-      match /messages/{msgId} {
-         allow read: if isSignedIn();
-         allow create: if isSignedIn();
-      }
+      allow write: if isMasterAdmin();
     }
 
-    match /global_chat/{messageId} {
-      allow read: if isSignedIn() && isCompanyMember(resource.data.companyId);
-      allow create: if isSignedIn() && isCompanyMember(request.resource.data.companyId);
-      allow update: if isCompanyAdmin(resource.data.companyId);
+    // Fallback: Master Admin can access everything
+    match /{collection}/{document=**} {
+      allow read, write: if isMasterAdmin();
     }
 
-    // ─── Calling Signaling ─────────────────────────────────────────────────────
-    match /calls/{callId} {
-      allow read, write: if isSignedIn() && (
-        (resource != null && (resource.data.caller == request.auth.uid || resource.data.receiver == request.auth.uid)) ||
-        (resource == null && request.resource.data.caller == request.auth.uid)
-      );
-    }
-
-    // ─── Workflow & Audit Collections ──────────────────────────────────────────
-    match /audit_logs/{logId} {
-      allow read: if isCompanyAdmin(resource.data.companyId);
-      allow create: if isSignedIn(); // System generated logs
-    }
-
-    // ─── Retired Professionals Marketplace ─────────────────────────────────────
-    match /retired_users/{userId} {
-      allow read: if isSignedIn();
-      allow create, update: if isOwner(userId);
-      allow delete: if false;
-    }
-
-    match /retired_experts/{expertId} {
-      allow read: if true; 
-      allow create, update: if isOwner(expertId);
-      allow delete: if isOwner(expertId) || getUserData().role == 'ADMIN';
-    }
-
-    match /retired_bookings/{bookingId} {
-      allow read: if isSignedIn() && (resource.data.clientId == request.auth.uid || resource.data.expertId == request.auth.uid);
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && (resource.data.clientId == request.auth.uid || resource.data.expertId == request.auth.uid);
-    }
-
-    match /retired_reviews/{reviewId} {
-      allow read: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if false;
-    }
-
-    match /retired_posts/{postId} {
-      allow read: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if isOwner(resource.data.authorId);
-    }
-
-    match /retired_chats/{chatId} {
-      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participants;
-      allow create: if isSignedIn();
-      
-      match /messages/{msgId} {
-        allow read: if isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/retired_chats/$(chatId)).data.participants;
-        allow create: if isSignedIn();
-      }
-    }
-
-    // ─── Fallback: Deny everything else ───────────────────────────────────────
+    // Global Fallback: Deny
     match /{document=**} {
       allow read, write: if false;
     }

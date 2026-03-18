@@ -58,7 +58,7 @@ export default function Marketplace() {
     )
 
   const [now, setNow] = useState(0)
-  
+
   useEffect(() => {
     // Using setTimeout to avoid cascading renders warning and satisfy purity rules
     const timer = setTimeout(() => {
@@ -79,7 +79,7 @@ export default function Marketplace() {
     <div className="space-y-8 pb-10">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -91,7 +91,7 @@ export default function Marketplace() {
             Discover and list premium digital products and freelance services.
           </p>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -114,15 +114,14 @@ export default function Marketplace() {
               <button
                 key={key}
                 onClick={() => setTab(key)}
-                className={`relative px-6 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
-                  tab === key 
-                    ? "bg-surface shadow-md text-primary" 
+                className={`relative px-6 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${tab === key
+                    ? "bg-surface shadow-md text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface/50"
-                }`}
+                  }`}
               >
                 {label}
                 {tab === key && (
-                  <motion.div 
+                  <motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 bg-surface rounded-lg -z-10 shadow-sm"
                   />
@@ -132,12 +131,12 @@ export default function Marketplace() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              className={`gap-2 h-10 border-border/60 ${showFilters ? "bg-secondary" : ""}`} 
+            <Button
+              variant="outline"
+              className={`gap-2 h-10 border-border/60 ${showFilters ? "bg-secondary" : ""}`}
               onClick={() => setShowFilters(!showFilters)}
             >
-              <Filter className="w-4 h-4" /> 
+              <Filter className="w-4 h-4" />
               <span>Filters</span>
             </Button>
             <Button
@@ -164,8 +163,8 @@ export default function Marketplace() {
             className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-surface text-base transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none shadow-sm"
           />
           {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery("")} 
+            <button
+              onClick={() => setSearchQuery("")}
               className="absolute right-3.5 top-3.5 p-0.5 hover:bg-secondary rounded-full transition-colors"
             >
               <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
@@ -177,7 +176,7 @@ export default function Marketplace() {
       {/* Filter Panel */}
       <AnimatePresence>
         {showFilters && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -188,11 +187,10 @@ export default function Marketplace() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 text-xs font-semibold rounded-full transition-all border ${
-                    selectedCategory === cat
+                  className={`px-4 py-2 text-xs font-semibold rounded-full transition-all border ${selectedCategory === cat
                       ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
                       : "bg-surface text-muted-foreground border-border hover:border-primary/40 hover:text-primary"
-                  }`}
+                    }`}
                 >
                   {cat}
                 </button>
@@ -204,7 +202,7 @@ export default function Marketplace() {
 
       {/* Results */}
       {filtered.length === 0 ? (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center py-24 border-2 border-dashed border-border/60 rounded-3xl"
@@ -223,7 +221,7 @@ export default function Marketplace() {
           </Link>
         </motion.div>
       ) : (
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -250,12 +248,11 @@ export default function Marketplace() {
                         }
                       </div>
                     )}
-                    
+
                     {/* Floating badges */}
                     <div className="absolute top-3 left-3 flex gap-2">
-                      <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded shadow-sm ${
-                        listing.type === "product" ? "bg-blue-600 text-white" : "bg-purple-600 text-white"
-                      }`}>
+                      <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded shadow-sm ${listing.type === "product" ? "bg-blue-600 text-white" : "bg-purple-600 text-white"
+                        }`}>
                         {listing.type}
                       </span>
                       {isRecent(listing.createdAt) && (
@@ -279,12 +276,12 @@ export default function Marketplace() {
                       {listing.title}
                     </CardTitle>
                   </CardHeader>
-                  
+
                   <CardContent className="p-5 pt-0 flex-1 flex flex-col justify-between">
                     <CardDescription className="text-sm line-clamp-2 leading-relaxed">
                       {listing.description}
                     </CardDescription>
-                    
+
                     <div className="flex items-center gap-2.5 mt-6 pt-4 border-t border-border/50">
                       <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-primary/20 to-primary/40 flex items-center justify-center text-[10px] font-bold text-primary">
                         {listing.owner.charAt(0).toUpperCase()}

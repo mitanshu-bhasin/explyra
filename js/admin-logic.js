@@ -251,7 +251,7 @@ onAuthStateChanged(auth, async (user) => {
                     const settingsRef = doc(db, "settings", "global");
                     const setSnap = await safeFirebaseFetch(getDoc(settingsRef));
                     if (setSnap.exists() && setSnap.data().maintenanceMode === true) {
-                        if (user.email !== 'explyra@gmail.com' && user.email !== 'info@fouralpha.org') {
+                        if (!['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                             document.body.innerHTML = `
                                         <div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:white;font-family:sans-serif;text-align:center;padding:20px;">
                                             <i class="fa-solid fa-person-digging" style="font-size:5rem;color:#ef4444;margin-bottom:20px;"></i>
@@ -268,7 +268,7 @@ onAuthStateChanged(auth, async (user) => {
                 }
                 // ------------------------------
 
-                if (!userData.companyId && !['explyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
+                if (!userData.companyId && !['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
                     window.location.href = 'company.html';
                     return;
                 }
@@ -523,7 +523,7 @@ onAuthStateChanged(auth, async (user) => {
                 updatePendingCount();
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
-                if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes(user.email.toLowerCase()) || user.email.toLowerCase().endsWith('@explyra.com')) {
                     console.log('[Auth] Explyra admin detected, bypassing normal auth checks.');
 
                     // Create mock userData for the master admin so the dashboard can load
@@ -757,7 +757,7 @@ window.handleGoogleLogin = async () => {
         }
 
         if (snap.empty) {
-            if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+            if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes(user.email.toLowerCase()) || user.email.toLowerCase().endsWith('@explyra.com')) {
                 console.log('[Auth] Explyra admin Google login — skipping admin portal.');
                 return;
             }
@@ -1944,7 +1944,7 @@ async function renderSettings() {
     }
 
     content.innerHTML = `
-                        <div class="max-w-2xl mx-auto space-y-6">
+                        <div class="space-y-6">
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
                         <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Global Branding</h3>
                         
@@ -2111,7 +2111,6 @@ async function renderSettings() {
                                 <span class="font-bold text-slate-600 dark:text-slate-300 group-hover:text-green-700">License Info</span>
                             </a>
                         </div>
-                        </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
@@ -2129,38 +2128,99 @@ async function renderSettings() {
                         </div>
                     </div>
 
-                </div>
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Account Security</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Admin Password</p>
+                                    <p class="text-xs text-slate-400">Send a password reset email to your registered address.</p>
+                                </div>
+                                <button onclick="resetAdminPassword()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-lg text-sm border border-slate-200 dark:border-slate-700 transition">
+                                    <i class="fa-solid fa-key mr-2"></i> Reset Password
+                                </button>
+                            </div>
 
-                <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
-                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Account Security</h3>
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Admin Password</p>
-                            <p class="text-xs text-slate-400">Send a password reset email to your registered address.</p>
+                            ${userData.role === 'ADMIN' ? `
+                            <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Change Corporate Email</label>
+                                <div class="flex gap-3">
+                                    <input type="email" id="new-admin-email" class="input-primary" placeholder="new-email@company.com">
+                                    <button onclick="updateAdminEmail()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm whitespace-nowrap">
+                                        Update Email
+                                    </button>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-2">Note: You will receive a verification link at the new email address.</p>
+                            </div>
+                            ` : ''}
                         </div>
-                        <button onclick="resetAdminPassword()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-lg text-sm border border-slate-200 dark:border-slate-700 transition">
-                            <i class="fa-solid fa-key mr-2"></i> Reset Password
-                        </button>
+                    </div>
+
+                    <!-- Danger Zone Section -->
+                    <div class="bg-rose-50/50 dark:bg-rose-900/10 p-8 rounded-2xl shadow-sm border border-rose-100 dark:border-rose-900/40 fade-in border-dashed">
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="text-center md:text-left">
+                                <h3 class="text-lg font-black text-rose-800 dark:text-rose-400 mb-1 flex items-center justify-center md:justify-start gap-2">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Permanent Actions
+                                </h3>
+                                <p class="text-xs text-rose-600 dark:text-rose-400 opacity-80">Request to permanently delete this company and all associated corporate data.</p>
+                            </div>
+                            <a href="verify.html?view=deleteRequest" class="bg-rose-600 hover:bg-rose-700 text-white font-black px-8 py-3 rounded-xl transition-premium shadow-lg shadow-rose-200 dark:shadow-none whitespace-nowrap flex items-center gap-3">
+                                <i class="fa-solid fa-trash-can"></i> Request Deletion
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex justify-end">
+                        <button onclick="saveAllSettings()" class="btn-primary px-10 py-3 w-auto">Save All Changes</button>
                     </div>
                 </div>
-
-                <div class="pt-4">
-                    <button onclick="saveAllSettings()" class="btn-primary w-full py-3">Save All Changes</button>
-                </div>
-            </div>
-                        `;
+                         `;
 }
 
 window.resetAdminPassword = async () => {
     if (await confirm("Send password reset email to " + userData.email + "?")) {
         try {
+        if (userData.role === 'ADMIN') {
+            await sendPasswordResetEmail(auth, userData.email, { url: window.location.origin + '/verify.html' });
+            showToast("Password reset email sent!", "success");
+        } else {
             await sendPasswordResetEmail(auth, userData.email);
             showToast("Password reset email sent!", "success");
-        } catch (e) {
-            showToast(e.message, "error");
         }
+    } catch (e) {
+        showToast(e.message, "error");
+    }
     }
 };
+
+window.updateAdminEmail = async () => {
+    const newEmail = document.getElementById('new-admin-email').value.trim();
+    if (!newEmail) return showToast("Please enter a valid email address.", "error");
+    if (!await confirm("Change your corporate email to " + newEmail + "? You will need to verify the new email before it takes effect.")) return;
+
+    const btn = event.currentTarget;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
+    btn.disabled = true;
+
+    try {
+        const { verifyBeforeUpdateEmail } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+        const actionCodeSettings = {
+            url: window.location.origin + '/verify.html',
+            handleCodeInApp: true
+        };
+        await verifyBeforeUpdateEmail(auth.currentUser, newEmail, actionCodeSettings);
+        showToast("Verification email sent to " + newEmail + ". Please check your inbox.", "success");
+    } catch (e) {
+        console.error("Email update error:", e);
+        showToast(e.message, "error");
+    } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+    }
+};
+
 
 window.selectedApprovals = new Set();
 let approvalsData = []; // Store for filtering
@@ -2563,7 +2623,7 @@ window.showAddUserModal = async () => {
     const picInput = document.getElementById('user-profile-pic');
     if (picContainer) {
         picInput.value = '';
-        if (['info@fouralpha.org', 'explyra@gmail.com'].includes(userData.email)) {
+        if (['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'].includes(userData.email)) {
             picContainer.classList.remove('hidden');
         } else {
             picContainer.classList.add('hidden');
@@ -2582,7 +2642,7 @@ window.editUser = async (id) => {
     const user = globalUsersCache.find(u => u.id === id);
     if (!user) return showToast("User not found", "error");
 
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
     if (MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be edited.", "error");
     }
@@ -2641,7 +2701,7 @@ window.closeUserModal = () => {
 
 window.showDeleteModal = (docId, name) => {
     const user = globalUsersCache.find(u => u.id === docId);
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
 
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be deleted.", "error");
@@ -2672,7 +2732,7 @@ window.confirmDeleteUser = async () => {
     if (!userToDelete) return;
 
     const user = globalUsersCache.find(u => u.id === userToDelete);
-    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com'];
+    const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
 
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin cannot be deleted.", "error");
@@ -2986,7 +3046,7 @@ function renderUserRows(usersList) {
     }
 
     const myRank = roleRank[userData.role] || 0;
-    const MAIN_ADMIN_EMAIL = 'explyra@gmail.com';
+    const MAIN_ADMIN_EMAILS = ['explyra@gmail.com', 'epxlyra@gmail.com'];
 
     container.innerHTML = usersList.map(u => {
         const uRank = roleRank[u.role] || 1;

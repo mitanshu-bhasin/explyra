@@ -430,7 +430,10 @@
                 </form>
                 <div class="view-footer">
                     <a href="emp.html"><i class="fa-solid fa-arrow-left"></i> Back to Login</a>
-                    <a href="support.html">Get Help <i class="fa-solid fa-circle-question"></i></a>
+                    <div>
+                        <a href="support.html" class="mr-4">Get Help <i class="fa-solid fa-circle-question"></i></a>
+                        <a href="#" onclick="event.preventDefault(); showView('deleteRequest')" class="text-rose-500 font-bold hover:text-rose-700 transition">Request Deletion <i class="fa-solid fa-trash-can"></i></a>
+                    </div>
                 </div>
             </div>
 
@@ -486,7 +489,44 @@
                 </a>
             </div>
 
-            <!-- VIEW 4: Error -->
+            <!-- VIEW 5: Request Deletion -->
+            <div id="view-delete-request" class="auth-card hidden">
+                <div class="auth-header">
+                    <div class="auth-icon-wrap" style="background: var(--rose-g); color: var(--rose); border-color: var(--rose-b);">
+                        <i class="fa-solid fa-building-circle-exclamation"></i>
+                    </div>
+                    <h1 class="auth-title">Request Deletion</h1>
+                    <p class="auth-desc">Request to permanently delete your company's workspace from the Explyra ecosystem.</p>
+                </div>
+                <form id="form-delete-request" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Corporate Email</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="del-email" class="input-field" placeholder="admin@company.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Company Name / ID</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="del-company" class="input-field" placeholder="Acme Inc." required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reason for deletion</label>
+                        <div class="input-wrap">
+                            <textarea id="del-reason" class="input-field" style="height: 100px; padding-left: 16px;" placeholder="Optional: Why are you leaving us?"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-submit-delete" class="btn-primary" style="background: var(--rose);">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Request
+                    </button>
+                </form>
+                <div class="view-footer">
+                    <a href="#" onclick="event.preventDefault(); showView('send')"><i class="fa-solid fa-arrow-left"></i> Back</a>
+                </div>
+            </div>
             <div id="view-error" class="auth-card hidden">
                 <div class="error-circle">
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -556,7 +596,8 @@
             send: document.getElementById('view-send-reset'),
             newPass: document.getElementById('view-new-password'),
             success: document.getElementById('view-success'),
-            error: document.getElementById('view-error')
+            error: document.getElementById('view-error'),
+            deleteRequest: document.getElementById('view-delete-request')
         };
 
         function showView(key) {
@@ -576,6 +617,10 @@
                     document.getElementById('error-message').textContent = "This secure link has expired or reached its usage limit.";
                     showView('error');
                 });
+        } else if (urlParams.get('view') === 'deleteRequest') {
+             showView('deleteRequest');
+        } else {
+             showView('send');
         }
 
         // Form 1: Send Reset
@@ -651,6 +696,41 @@
             const match = newPassInput.value === confirmPassInput.value;
             matchStatus.textContent = match ? '✓ Passwords match' : '✗ Passwords do not match';
             matchStatus.style.color = match ? '#22c55e' : '#ef4444';
+        });
+
+        // Form 3: Deletion Request
+        document.getElementById('form-delete-request').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('del-email').value.trim();
+            const company = document.getElementById('del-company').value.trim();
+            const reason = document.getElementById('del-reason').value.trim();
+            const btn = document.getElementById('btn-submit-delete');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
+
+            try {
+                const { getFirestore, collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
+                const db = getFirestore(app);
+
+                await addDoc(collection(db, "deletion_requests"), {
+                    email,
+                    company,
+                    reason,
+                    timestamp: serverTimestamp(),
+                    status: 'PENDING'
+                });
+
+                alert('Deletion request submitted! Our team will review it and contact you if necessary.');
+                e.target.reset();
+                showView('send');
+            } catch (err) {
+                console.error("Deletion request error:", err);
+                alert('Submit Failed: ' + (err.message || 'Check your internet connection.'));
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Request';
+            }
         });
 
     </script>
