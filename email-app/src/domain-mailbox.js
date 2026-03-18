@@ -36,14 +36,142 @@ const verifiedDomainSelect = document.getElementById("verifiedDomainSelect");
 const mailboxList = document.getElementById("mailboxList");
 const dnsModal = document.getElementById("dnsModal");
 const dnsDomainText = document.getElementById("dnsDomainText");
+const autoSetupBtn = document.getElementById("autoSetupBtn");
+const zoneDownloadBtn = document.getElementById("zoneDownloadBtn");
+const dnsStatus = document.getElementById("dnsStatus");
+
+const employeeForm = document.getElementById("employeeForm");
+const employeeName = document.getElementById("employeeName");
+const employeeAuthEmail = document.getElementById("employeeAuthEmail");
+const employeeNotifyEmail = document.getElementById("employeeNotifyEmail");
+const employeePrefix = document.getElementById("employeePrefix");
+const employeeDomainSelect = document.getElementById("employeeDomainSelect");
+const employeeResult = document.getElementById("employeeResult");
 
 document.getElementById("closeDnsModal").addEventListener("click", () => dnsModal.close());
 
 let currentUser = null;
 let domains = [];
+let activeDnsDomain = null;
+
+const REGISTRAR_LINKS = {
+  godaddy: (domain) => `https://dcc.godaddy.com/manage/${domain}/dns`,
+  namecheap: () => "https://ap.www.namecheap.com/domains/domaincontrolpanel/",
+  cloudflare: () => "https://dash.cloudflare.com/"
+};
 
 function normalizeDomain(value) {
   return value.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*/, "");
+}
+
+function setDnsStatus(message, tone = "info") {
+  const themes = {
+    info: "border-amber-200 bg-amber-50 text-amber-900",
+    success: "border-emerald-200 bg-emerald-50 text-emerald-900",
+    error: "border-rose-200 bg-rose-50 text-rose-900"
+  };
+  dnsStatus.className = `mt-4 rounded-lg border p-3 text-sm ${themes[tone] || themes.info}`;
+  dnsStatus.textContent = message;
+}
+
+function showEmployeeResult(message, tone = "success") {
+  const themes = {
+    success: "border-emerald-200 bg-emerald-50 text-emerald-900",
+    error: "border-rose-200 bg-rose-50 text-rose-900"
+  };
+  employeeResult.className = `mt-4 rounded-lg border p-3 text-sm ${themes[tone] || themes.success}`;
+  employeeResult.textContent = message;
+  employeeResult.classList.remove("hidden");
+}
+
+function openDnsWizard(domain) {
+  activeDnsDomain = domain;
+  dnsDomainText.textContent = domain;
+  setDnsStatus("Add records in your registrar, wait 2-10 minutes, then click Verify on domain row.");
+  dnsModal.showModal();
+}
+
+function downloadZoneTemplate(domain) {
+  const text = [
+    `; DNS template for ${domain}`,
+    "",
+    '@  TXT  "v=spf1 include:_spf.mailchannels.net ~all"',
+    "@  MX   28  isaac.mx.cloudflare.net",
+    "@  MX   64  linda.mx.cloudflare.net",
+    "@  MX   98  amir.mx.cloudflare.net",
+    ""
+  ].join("\n");
+
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${domain}-dns-template.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function bindStaticDnsUiActions() {
+  document.querySelectorAll(".copy-btn").forEach((btn) => {
+    const originalLabel = btn.textContent;
+    btn.addEventListener("click", async () => {
+      const value = btn.dataset.copy || "";
+      await navigator.clipboard.writeText(value);
+      btn.textContent = "Copied";
+      setTimeout(() => {
+        btn.textContent = originalLabel;
+      }, 1000);
+    });
+  });
+
+  document.querySelectorAll(".registrar-link").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const provider = btn.dataset.provider;
+      if (!activeDnsDomain) return;
+      const linkBuilder = REGISTRAR_LINKS[provider];
+      if (!linkBuilder) return;
+      window.open(linkBuilder(activeDnsDomain), "_blank", "noopener,noreferrer");
+    });
+  });
+
+  autoSetupBtn.addEventListener("click", async () => {
+    if (!currentUser || !activeDnsDomain) return;
+    autoSetupBtn.disabled = true;
+    autoSetupBtn.textContent = "Configuring...";
+    setDnsStatus("Trying Cloudflare automatic setup...", "info");
+
+    try {
+      const token = await currentUser.getIdToken();
+      const domainRecord = domains.find((d) => d.domain === activeDnsDomain);
+      const response = await fetch("/api/dns-setup", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          mode: "cloudflare_auto",
+          domain: activeDnsDomain,
+          domainId: domainRecord?.id || null
+        })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Auto setup failed");
+
+      setDnsStatus("Cloudflare auto setup done. Click Verify on the domain row.", "success");
+    } catch (error) {
+      setDnsStatus(`Auto setup failed: ${error.message}. Use manual records below.`, "error");
+    } finally {
+      autoSetupBtn.disabled = false;
+      autoSetupBtn.textContent = "Auto Setup (Cloudflare)";
+    }
+  });
+
+  zoneDownloadBtn.addEventListener("click", () => {
+    if (!activeDnsDomain) return;
+    downloadZoneTemplate(activeDnsDomain);
+  });
 }
 
 function renderDomainList() {
@@ -70,8 +198,7 @@ function renderDomainList() {
 
   domainList.querySelectorAll(".show-dns").forEach((btn) => {
     btn.addEventListener("click", () => {
-      dnsDomainText.textContent = btn.dataset.domain;
-      dnsModal.showModal();
+      openDnsWizard(btn.dataset.domain);
     });
   });
 
@@ -104,7 +231,10 @@ function renderDomainList() {
         }
 
         if (result.verified) {
-          alert("Domain verified successfully.");
+          const details = result.hasSpf
+            ? "SPF OK"
+            : "SPF missing";
+          alert(`Domain verified successfully. ${details}`);
         } else {
           const missingMx = (result.missingMx || []).join(", ");
           alert(`Domain not verified yet. SPF or MX records missing. Missing MX: ${missingMx || "none"}`);
@@ -121,12 +251,18 @@ function renderDomainList() {
 
 function renderVerifiedDomains() {
   verifiedDomainSelect.innerHTML = "";
+  employeeDomainSelect.innerHTML = "";
   const verified = domains.filter((x) => x.verified);
   if (verified.length === 0) {
     const empty = document.createElement("option");
     empty.value = "";
     empty.textContent = "No verified domains available";
     verifiedDomainSelect.appendChild(empty);
+
+    const emptyEmployee = document.createElement("option");
+    emptyEmployee.value = "";
+    emptyEmployee.textContent = "No verified domains available";
+    employeeDomainSelect.appendChild(emptyEmployee);
     return;
   }
 
@@ -135,6 +271,11 @@ function renderVerifiedDomains() {
     option.value = item.id;
     option.textContent = item.domain;
     verifiedDomainSelect.appendChild(option);
+
+    const employeeOption = document.createElement("option");
+    employeeOption.value = item.id;
+    employeeOption.textContent = item.domain;
+    employeeDomainSelect.appendChild(employeeOption);
   });
 }
 
@@ -181,13 +322,13 @@ addDomainForm.addEventListener("submit", async (event) => {
   await addDoc(collection(db, "custom_domains"), {
     userId: currentUser.uid,
     domain,
+    status: "pending_dns",
     verified: false,
     createdAt: serverTimestamp()
   });
 
   domainInput.value = "";
-  dnsDomainText.textContent = domain;
-  dnsModal.showModal();
+  openDnsWizard(domain);
 });
 
 mailboxForm.addEventListener("submit", async (event) => {
@@ -219,3 +360,63 @@ mailboxForm.addEventListener("submit", async (event) => {
 
   prefixInput.value = "";
 });
+
+employeeForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!currentUser) return;
+
+  const name = employeeName.value.trim();
+  const authEmail = employeeAuthEmail.value.trim().toLowerCase();
+  const notifyEmail = employeeNotifyEmail.value.trim().toLowerCase();
+  const prefix = employeePrefix.value.trim().toLowerCase();
+  const domainId = employeeDomainSelect.value;
+
+  if (!name || !authEmail || !notifyEmail || !prefix || !domainId) {
+    return showEmployeeResult("All employee fields are required.", "error");
+  }
+
+  const selected = domains.find((d) => d.id === domainId);
+  if (!selected || !selected.verified) {
+    return showEmployeeResult("Select a verified domain.", "error");
+  }
+
+  const btn = employeeForm.querySelector("button[type='submit']");
+  btn.disabled = true;
+  btn.textContent = "Provisioning...";
+
+  try {
+    const token = await currentUser.getIdToken();
+    const response = await fetch("/api/provision-employee-mailbox", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        domainId,
+        localPart: prefix,
+        employeeName: name,
+        employeeAuthEmail: authEmail,
+        notifyEmail
+      })
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || "Employee provisioning failed");
+    }
+
+    showEmployeeResult(
+      `Provisioned: ${result.mailboxEmail}. Temporary password sent to ${notifyEmail}.`,
+      "success"
+    );
+    employeeForm.reset();
+  } catch (error) {
+    showEmployeeResult(String(error.message || error), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Create Employee Email Setup";
+  }
+});
+
+bindStaticDnsUiActions();

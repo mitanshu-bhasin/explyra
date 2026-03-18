@@ -71,9 +71,11 @@ export default async function handler(req, res) {
     const hasSpf = txtAnswers.some((txt) => txt.includes('include:_spf.mailchannels.net'));
     const missingMx = REQUIRED_MX.filter((host) => !mxAnswers.includes(host));
     const verified = hasSpf && missingMx.length === 0;
+    const status = verified ? 'verified' : 'pending_dns';
 
     await docRef.set(
       {
+        status,
         verified,
         verifiedAt: new Date().toISOString(),
         verification: {
@@ -88,6 +90,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
+      status,
       verified,
       hasSpf,
       missingMx,

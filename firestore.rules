@@ -121,7 +121,8 @@ service cloud.firestore {
         && request.resource.data.userId == resource.data.userId
         && request.resource.data.domain == resource.data.domain
         && request.resource.data.createdAt == resource.data.createdAt
-        && request.resource.data.verified is bool;
+        && request.resource.data.verified == resource.data.verified
+        && request.resource.data.status == resource.data.status;
       allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
