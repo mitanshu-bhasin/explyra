@@ -12,12 +12,19 @@ const ROOT_DIR = path.resolve(__dirname, "..");
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || "http://localhost:8787";
 const STATE_FILE = path.join(__dirname, "payment-state.json");
 
-const PLAN_PRICES_USD = {
+const PLAN_PRICES_INR = {
   Starter: { monthly: 999, yearly: 799 },
   Growth: { monthly: 2499, yearly: 1999 },
   Scale: { monthly: 6999, yearly: 5599 },
   Enterprise: { monthly: 9999, yearly: 7999 }
 };
+
+const USD_INR_RATE = Number(process.env.USD_INR_RATE || 83);
+
+function convertInrToUsd(amountInr) {
+  const safeRate = Number.isFinite(USD_INR_RATE) && USD_INR_RATE > 0 ? USD_INR_RATE : 83;
+  return Number((amountInr / safeRate).toFixed(2));
+}
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -52,21 +59,22 @@ app.post("/create-payment", express.json(), async (req, res) => {
 
     const normalizedPlan = typeof plan === "string" ? plan.trim() : "";
     const normalizedPeriod = period === "yearly" ? "yearly" : "monthly";
-    const selectedPlan = PLAN_PRICES_USD[normalizedPlan];
+    const selectedPlan = PLAN_PRICES_INR[normalizedPlan];
 
     if (!selectedPlan) {
       return res.status(400).json({ error: "Invalid plan" });
     }
 
-    const selectedPlanPrice = selectedPlan[normalizedPeriod];
+    const selectedPlanPriceInr = selectedPlan[normalizedPeriod];
+    const selectedPlanPriceUsd = convertInrToUsd(selectedPlanPriceInr);
     const orderId = `EXPLYRA_${Date.now()}`;
 
     const payload = {
-      price_amount: selectedPlanPrice,
+      price_amount: selectedPlanPriceUsd,
       price_currency: "usd",
       pay_currency: "usdttrc20",
       order_id: orderId,
-      order_description: `Explyra ${normalizedPlan} (${normalizedPeriod}) plan purchase`,
+      order_description: `Explyra ${normalizedPlan} (${normalizedPeriod}) plan purchase - INR ${selectedPlanPriceInr} (~USD ${selectedPlanPriceUsd})`,
       success_url: `${PUBLIC_SITE_URL}/pricing.html?payment=success&order_id=${orderId}`,
       cancel_url: `${PUBLIC_SITE_URL}/pricing.html?payment=cancelled&order_id=${orderId}`
     };
@@ -111,7 +119,8 @@ app.post("/create-payment", express.json(), async (req, res) => {
       order_id: orderId,
       plan: normalizedPlan,
       period: normalizedPeriod,
-      amount: selectedPlanPrice,
+      amount_inr: selectedPlanPriceInr,
+      amount_usd: selectedPlanPriceUsd,
       currency: "usd",
       user_id,
       customer_email,
@@ -125,7 +134,10 @@ app.post("/create-payment", express.json(), async (req, res) => {
 
     return res.json({
       invoice_url: invoiceUrl,
-      order_id: orderId
+      order_id: orderId,
+      amount_inr: selectedPlanPriceInr,
+      amount_usd: selectedPlanPriceUsd,
+      usd_inr_rate: USD_INR_RATE
     });
   } catch (error) {
     return res.status(500).json({

@@ -31,6 +31,7 @@ export async function onRequest(context) {
     const body = await request.json();
     const plan = String(body?.plan || "").trim();
     const period = body?.period === "yearly" ? "yearly" : "monthly";
+    const userId = body?.user_id ? String(body.user_id).trim() : "";
 
     const planPrices = {
       Starter: { monthly: 999, yearly: 799 },
@@ -39,6 +40,9 @@ export async function onRequest(context) {
       Enterprise: { monthly: 9999, yearly: 7999 }
     };
 
+    const usdInrRate = Number(env.USD_INR_RATE || 83);
+    const safeRate = Number.isFinite(usdInrRate) && usdInrRate > 0 ? usdInrRate : 83;
+
     if (!planPrices[plan]) {
       return new Response(JSON.stringify({ error: "Invalid plan" }), {
         status: 400,
@@ -46,8 +50,11 @@ export async function onRequest(context) {
       });
     }
 
-    const selectedPlanPrice = planPrices[plan][period];
+    const selectedPlanPriceInr = planPrices[plan][period];
+    const selectedPlanPriceUsd = Number((selectedPlanPriceInr / safeRate).toFixed(2));
     const orderId = `EXPLYRA_${Date.now()}`;
+    const origin = new URL(request.url).origin;
+    const webhookUrl = `${origin}/webhook`;
 
     const nowResponse = await fetch("https://api.nowpayments.io/v1/invoice", {
       method: "POST",
@@ -56,11 +63,12 @@ export async function onRequest(context) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        price_amount: selectedPlanPrice,
+        price_amount: selectedPlanPriceUsd,
         price_currency: "usd",
         pay_currency: "usdttrc20",
         order_id: orderId,
-        order_description: `Explyra ${plan} (${period}) plan purchase`
+        order_description: `Explyra ${plan} (${period}) plan purchase - INR ${selectedPlanPriceInr} (~USD ${selectedPlanPriceUsd})`,
+        ipn_callback_url: webhookUrl
       })
     });
 
@@ -85,10 +93,23 @@ export async function onRequest(context) {
       );
     }
 
+    await savePaymentOrder(env, {
+      orderId,
+      userId,
+      plan,
+      period,
+      amountInr: selectedPlanPriceInr,
+      amountUsd: selectedPlanPriceUsd,
+      paymentStatus: "pending"
+    });
+
     return new Response(
       JSON.stringify({
         invoice_url: nowData.invoice_url,
-        order_id: orderId
+        order_id: orderId,
+        amount_inr: selectedPlanPriceInr,
+        amount_usd: selectedPlanPriceUsd,
+        usd_inr_rate: safeRate
       }),
       { status: 200, headers }
     );
@@ -101,4 +122,36 @@ export async function onRequest(context) {
       { status: 500, headers }
     );
   }
+}
+
+async function savePaymentOrder(env, order) {
+  const projectId = env.FIREBASE_PROJECT_ID;
+  const apiKey = env.FIREBASE_API_KEY;
+
+  if (!projectId || !apiKey || !order.orderId) {
+    return;
+  }
+
+  const docUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/payment_orders/${encodeURIComponent(
+    order.orderId
+  )}?key=${apiKey}`;
+
+  await fetch(docUrl, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      fields: {
+        orderId: { stringValue: order.orderId },
+        userId: { stringValue: order.userId || "" },
+        plan: { stringValue: order.plan || "" },
+        period: { stringValue: order.period || "" },
+        amountInr: { integerValue: String(order.amountInr || 0) },
+        amountUsd: { doubleValue: order.amountUsd || 0 },
+        paymentStatus: { stringValue: order.paymentStatus || "pending" },
+        updatedAt: { timestampValue: new Date().toISOString() }
+      }
+    })
+  });
 }

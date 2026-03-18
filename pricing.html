@@ -1815,6 +1815,8 @@
             opacity: 0;
             transition: all .35s cubic-bezier(.4, 0, .2, 1);
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-overlay.show .modal-box {
@@ -3028,6 +3030,29 @@
             return '';
         }
 
+        function getCurrentUserId() {
+            if (window.EXPLYRA_USER?.uid) return window.EXPLYRA_USER.uid;
+
+            const directKeys = ['explyraUserId', 'userId', 'uid'];
+            for (const key of directKeys) {
+                const val = localStorage.getItem(key);
+                if (val && typeof val === 'string' && val.trim()) return val.trim();
+            }
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i) || '';
+                if (!key.startsWith('firebase:authUser:')) continue;
+                try {
+                    const data = JSON.parse(localStorage.getItem(key) || '{}');
+                    if (data?.uid) return data.uid;
+                } catch (_) {
+                    // Ignore malformed localStorage entries.
+                }
+            }
+
+            return null;
+        }
+
         async function payWithCrypto(planName, triggerButton) {
             const period = getSelectedPeriod();
             const selectedPlanPrice = PLAN_PRICES[planName]?.[period];
@@ -3043,6 +3068,7 @@
 
             try {
                 const apiBase = getPaymentsApiBase();
+                const userId = getCurrentUserId();
                 const response = await fetch(`${apiBase}/create-payment`, {
                     method: 'POST',
                     headers: {
@@ -3051,6 +3077,7 @@
                     body: JSON.stringify({
                         plan: planName,
                         period,
+                        user_id: userId,
                         selectedPlanPrice,
                         public_identifier: EXPLYRA_PUBLIC_IDENTIFIER
                     })

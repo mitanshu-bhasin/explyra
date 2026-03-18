@@ -1,0 +1,53 @@
+;;
+;; Domain:     mitanshu.tech.
+;; Exported:   2026-03-18 19:03:48
+;;
+;; This file is intended for use for informational and archival
+;; purposes ONLY and MUST be edited before use on a production
+;; DNS server.  In particular, you must:
+;;   -- update the SOA record with the correct authoritative name server
+;;   -- update the SOA record with the contact e-mail address information
+;;   -- update the NS record(s) with the authoritative name servers for this domain.
+;;
+;; For further information, please consult the BIND documentation
+;; located on the following website:
+;;
+;; http://www.isc.org/
+;;
+;; And RFC 1035:
+;;
+;; http://www.ietf.org/rfc/rfc1035.txt
+;;
+;; Please note that we do NOT offer technical support for any use
+;; of this zone data, the BIND name server, or any other third-party
+;; DNS software.
+;;
+;; Use at your own risk.
+;; SOA Record
+mitanshu.tech	3600	IN	SOA	clay.ns.cloudflare.com. dns.cloudflare.com. 2052552722 10000 2400 604800 3600
+
+;; NS Records
+mitanshu.tech.	86400	IN	NS	clay.ns.cloudflare.com.
+mitanshu.tech.	86400	IN	NS	sierra.ns.cloudflare.com.
+
+;; A Records
+mi.mitanshu.tech.	1	IN	A	1.1.1.1 ; cf_tags=cf-proxied:false
+racebook.mitanshu.tech.	1	IN	A	1.1.1.1 ; cf_tags=cf-proxied:false
+vnvej.mitanshu.tech.	1	IN	A	1.1.1.1 ; cf_tags=cf-proxied:false
+wde.mitanshu.tech.	1	IN	A	1.1.1.1 ; cf_tags=cf-proxied:false
+
+;; CNAME Records
+2w.heello.mitanshu.tech.	1	IN	CNAME	mitanshu.me. ; cf_tags=cf-proxied:false
+jswewdf.wde.mitanshu.tech.	1	IN	CNAME	explyra.me. ; cf_tags=cf-proxied:false
+mb.hello.mitanshu.tech.	1	IN	CNAME	fouralpha.org. ; cf_tags=cf-proxied:false
+
+;; MX Records
+mitanshu.tech.	1	IN	MX	98 amir.mx.cloudflare.net.mitanshu.tech.
+mitanshu.tech.	1	IN	MX	64 linda.mx.cloudflare.net.mitanshu.tech.
+mitanshu.tech.	1	IN	MX	28 isaac.mx.cloudflare.net.mitanshu.tech.
+mitanshu.tech.	1	IN	MX	68 linda.mx.cloudflare.net.
+mitanshu.tech.	1	IN	MX	98 amir.mx.cloudflare.net.
+mitanshu.tech.	1	IN	MX	28 isaac.mx.cloudflare.net.
+
+;; TXT Records
+mitanshu.tech.	1	IN	TXT	"v=spf1 include:_spf.mailchannels.net ~all"

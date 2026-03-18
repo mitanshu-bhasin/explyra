@@ -22,9 +22,21 @@ export async function onRequest(context) {
   try {
     const payload = await request.json();
     const paymentStatus = payload?.payment_status || "unknown";
+    const orderId = String(payload?.order_id || "");
 
     if (paymentStatus === "finished") {
-      await markUserAsPaid(payload, env);
+      let userId = payload?.user_id || payload?.userId || "";
+      if (!userId && orderId) {
+        userId = await resolveUserIdByOrderId(env, orderId);
+      }
+
+      if (userId) {
+        await markUserAsPaid(userId, orderId, env);
+      }
+    }
+
+    if (orderId) {
+      await updatePaymentOrderStatus(env, orderId, paymentStatus);
     }
 
     return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
@@ -36,10 +48,9 @@ export async function onRequest(context) {
   }
 }
 
-async function markUserAsPaid(payload, env) {
+async function markUserAsPaid(userId, orderId, env) {
   const projectId = env.FIREBASE_PROJECT_ID;
   const apiKey = env.FIREBASE_API_KEY;
-  const userId = payload?.user_id || payload?.userId;
 
   if (!projectId || !apiKey || !userId) {
     return;
@@ -59,7 +70,54 @@ async function markUserAsPaid(payload, env) {
         paid: { booleanValue: true },
         accessUnlocked: { booleanValue: true },
         paymentStatus: { stringValue: "finished" },
-        lastOrderId: { stringValue: String(payload?.order_id || "") }
+        lastOrderId: { stringValue: String(orderId || "") }
+      }
+    })
+  });
+}
+
+async function resolveUserIdByOrderId(env, orderId) {
+  const projectId = env.FIREBASE_PROJECT_ID;
+  const apiKey = env.FIREBASE_API_KEY;
+
+  if (!projectId || !apiKey || !orderId) {
+    return "";
+  }
+
+  const docUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/payment_orders/${encodeURIComponent(
+    orderId
+  )}?key=${apiKey}`;
+
+  const response = await fetch(docUrl);
+  if (!response.ok) {
+    return "";
+  }
+
+  const data = await response.json();
+  return data?.fields?.userId?.stringValue || "";
+}
+
+async function updatePaymentOrderStatus(env, orderId, paymentStatus) {
+  const projectId = env.FIREBASE_PROJECT_ID;
+  const apiKey = env.FIREBASE_API_KEY;
+
+  if (!projectId || !apiKey || !orderId) {
+    return;
+  }
+
+  const docUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/payment_orders/${encodeURIComponent(
+    orderId
+  )}?key=${apiKey}`;
+
+  await fetch(docUrl, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      fields: {
+        paymentStatus: { stringValue: paymentStatus || "unknown" },
+        updatedAt: { timestampValue: new Date().toISOString() }
       }
     })
   });
