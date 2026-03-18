@@ -32,6 +32,11 @@ to = "https://explyra.me/:splat"
 status = 301
 
 [[redirects]]
+from = "https://*.explyra.pages.dev/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
 from = "/booking/:username"
 to = "/booking/booking-page.html?u=:username"
 status = 200
