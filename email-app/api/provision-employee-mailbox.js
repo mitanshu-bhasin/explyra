@@ -18,7 +18,20 @@ function isValidLocalPart(value) {
   return /^[a-z0-9._%+-]+$/.test(String(value || ''));
 }
 
-async function sendOnboardingEmail({ notifyEmail, mailboxEmail, employeeAuthEmail, tempPassword, resetLink, employeeName }) {
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+}
+
+async function sendOnboardingEmail({
+  notifyEmail,
+  mailboxEmail,
+  employeeAuthEmail,
+  tempPassword,
+  resetLink,
+  employeeName,
+  senderEmail,
+  senderName
+}) {
   const workerUrl = process.env.OUTBOUND_WORKER_URL || 'https://email-worker.mfskufgu.workers.dev';
 
   const html = `
@@ -43,8 +56,8 @@ async function sendOnboardingEmail({ notifyEmail, mailboxEmail, employeeAuthEmai
       origin: 'https://explyra.me'
     },
     body: JSON.stringify({
-      fromEmail: process.env.EMAIL_DOMAIN ? `support@${process.env.EMAIL_DOMAIN}` : 'support@explyra.me',
-      fromName: 'Explyra Admin',
+      fromEmail: senderEmail,
+      fromName: senderName || 'Explyra Admin',
       toEmail: notifyEmail,
       subject: 'Your employee email account is ready',
       htmlContent: html
@@ -70,12 +83,17 @@ export default async function handler(req, res) {
   try {
     const decoded = await auth.verifyIdToken(token);
     const {
+      adminUid,
       domainId,
       localPart,
       employeeName,
       employeeAuthEmail,
       notifyEmail
     } = req.body || {};
+
+    if (adminUid && String(adminUid) !== String(decoded.uid)) {
+      return res.status(403).json({ error: 'adminUid mismatch with authenticated user' });
+    }
 
     if (!domainId || !localPart || !employeeAuthEmail || !notifyEmail) {
       return res.status(400).json({ error: 'domainId, localPart, employeeAuthEmail, notifyEmail are required' });
@@ -153,18 +171,30 @@ export default async function handler(req, res) {
     });
 
     const resetLink = await auth.generatePasswordResetLink(normalizedAuthEmail);
+
+    const fallbackSender = process.env.EMAIL_DOMAIN
+      ? `support@${process.env.EMAIL_DOMAIN}`
+      : 'support@explyra.me';
+    const senderEmail = isValidEmail(decoded.email)
+      ? String(decoded.email).toLowerCase()
+      : fallbackSender;
+    const senderName = String(adminData?.displayName || decoded.name || 'Explyra Admin').trim();
+
     await sendOnboardingEmail({
       notifyEmail: String(notifyEmail).toLowerCase(),
       mailboxEmail,
       employeeAuthEmail: normalizedAuthEmail,
       tempPassword,
       resetLink,
-      employeeName
+      employeeName,
+      senderEmail,
+      senderName
     });
 
     await db.collection('provisioning_audit').add({
       type: 'employee_mailbox_provision',
       adminUid: decoded.uid,
+      domainOwnerUid: domainData.userId || null,
       employeeUid: employeeAuthUser.uid,
       employeeAuthEmail: normalizedAuthEmail,
       mailboxEmail,
@@ -172,11 +202,15 @@ export default async function handler(req, res) {
       domainId,
       employeeCreated,
       notifyEmail: String(notifyEmail).toLowerCase(),
+      emailSender: senderEmail,
       createdAt: new Date().toISOString()
     });
 
     return res.status(200).json({
       success: true,
+      adminUid: decoded.uid,
+      domainOwnerUid: domainData.userId || null,
+      senderEmail,
       mailboxEmail,
       employeeUid: employeeAuthUser.uid,
       employeeCreated

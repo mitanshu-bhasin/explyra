@@ -49,6 +49,8 @@ const employeeNotifyEmail = document.getElementById("employeeNotifyEmail");
 const employeePrefix = document.getElementById("employeePrefix");
 const employeeDomainSelect = document.getElementById("employeeDomainSelect");
 const employeeResult = document.getElementById("employeeResult");
+const currentAdminIdEl = document.getElementById("currentAdminId");
+const selectedDomainAdminIdEl = document.getElementById("selectedDomainAdminId");
 
 document.getElementById("closeDnsModal").addEventListener("click", () => dnsModal.close());
 
@@ -177,6 +179,22 @@ function showEmployeeResult(message, tone = "success") {
   employeeResult.classList.remove("hidden");
 }
 
+function setCurrentAdminId(uid) {
+  if (!currentAdminIdEl) return;
+  currentAdminIdEl.textContent = uid || "Not signed in";
+}
+
+function setSelectedDomainAdminId(uid) {
+  if (!selectedDomainAdminIdEl) return;
+  selectedDomainAdminIdEl.textContent = uid || "Select domain";
+}
+
+function updateSelectedDomainOwnerIndicator() {
+  const selectedDomainId = employeeDomainSelect?.value || "";
+  const selectedDomain = domains.find((item) => item.id === selectedDomainId);
+  setSelectedDomainAdminId(selectedDomain?.userId || "");
+}
+
 function openDnsWizard(domain) {
   activeDnsDomain = domain;
   dnsDomainText.textContent = domain;
@@ -283,6 +301,7 @@ function renderDomainList() {
         <p class="text-xs ${item.verified ? "text-emerald-600" : "text-amber-600"}">
           ${item.verified ? "Verified" : "Pending DNS verification"}
         </p>
+        <p class="text-xs text-slate-500">Admin ID: ${item.userId || "N/A"}</p>
       </div>
       <div class="flex gap-2">
         <button data-domain="${item.domain}" class="show-dns px-3 py-1 border rounded">DNS</button>
@@ -382,6 +401,7 @@ function renderVerifiedDomains() {
     emptyEmployee.value = "";
     emptyEmployee.textContent = "No verified domains available";
     employeeDomainSelect.appendChild(emptyEmployee);
+    setSelectedDomainAdminId("");
     return;
   }
 
@@ -396,7 +416,11 @@ function renderVerifiedDomains() {
     employeeOption.textContent = item.domain;
     employeeDomainSelect.appendChild(employeeOption);
   });
+
+  updateSelectedDomainOwnerIndicator();
 }
+
+employeeDomainSelect?.addEventListener("change", updateSelectedDomainOwnerIndicator);
 
 function subscribeMailboxes(uid) {
   const q = query(collection(db, "mailboxes"), where("userId", "==", uid));
@@ -414,10 +438,13 @@ function subscribeMailboxes(uid) {
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (!user) {
+    setCurrentAdminId("");
     alert("Please sign in first to manage domains and mailboxes.");
     window.location.href = "./index.html";
     return;
   }
+
+  setCurrentAdminId(user.uid);
 
   const q = query(collection(db, "custom_domains"), where("userId", "==", user.uid));
   onSnapshot(q, (snap) => {
@@ -521,6 +548,7 @@ employeeForm.addEventListener("submit", async (event) => {
         authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
+        adminUid: currentUser.uid,
         domainId,
         localPart: prefix,
         employeeName: name,
