@@ -140,6 +140,18 @@ async function verifyDomainClientSide(domainId, domain) {
   return { verified, hasSpf, missingMx };
 }
 
+async function markDomainVerifiedManually(domainId) {
+  await updateDoc(doc(db, "custom_domains", domainId), {
+    verified: true,
+    status: "verified",
+    verifiedAt: new Date().toISOString(),
+    verification: {
+      source: "manual-owner-confirmation",
+      note: "Marked verified manually from localhost fallback"
+    }
+  });
+}
+
 function normalizeDomain(value) {
   return value.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*/, "");
 }
@@ -217,6 +229,10 @@ function bindStaticDnsUiActions() {
 
   autoSetupBtn.addEventListener("click", async () => {
     if (!currentUser || !activeDnsDomain) return;
+    if (IS_LOCAL_STATIC) {
+      setDnsStatus("Cloudflare auto setup is disabled on static localhost. Use deployed app URL for this action.", "error");
+      return;
+    }
     autoSetupBtn.disabled = true;
     autoSetupBtn.textContent = "Configuring...";
     setDnsStatus("Trying Cloudflare automatic setup...", "info");
@@ -294,27 +310,42 @@ function renderDomainList() {
       btn.textContent = "Verifying...";
       try {
         let result;
-        try {
-          const token = await currentUser.getIdToken();
-          const response = await fetch(apiUrl("/verify-domain"), {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-              authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              domainId: btn.dataset.id,
-              domain: btn.dataset.domain
-            })
-          });
-
-          result = await readApiJson(response);
-          if (!response.ok) {
-            throw new Error(result.error || "Verification failed");
+        if (IS_LOCAL_STATIC) {
+          try {
+            result = await verifyDomainClientSide(btn.dataset.id, btn.dataset.domain);
+          } catch (localError) {
+            const force = window.confirm(
+              "DNS lookup failed on localhost. If you already added correct TXT + MX records, click OK to mark as verified manually."
+            );
+            if (!force) {
+              throw localError;
+            }
+            await markDomainVerifiedManually(btn.dataset.id);
+            result = { verified: true, hasSpf: true, missingMx: [] };
           }
-        } catch (apiError) {
-          // Fallback for local/static mode when API preflight fails.
-          result = await verifyDomainClientSide(btn.dataset.id, btn.dataset.domain);
+        } else {
+          try {
+            const token = await currentUser.getIdToken();
+            const response = await fetch(apiUrl("/verify-domain"), {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+                authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                domainId: btn.dataset.id,
+                domain: btn.dataset.domain
+              })
+            });
+
+            result = await readApiJson(response);
+            if (!response.ok) {
+              throw new Error(result.error || "Verification failed");
+            }
+          } catch (apiError) {
+            // Fallback for hosted mode API issues.
+            result = await verifyDomainClientSide(btn.dataset.id, btn.dataset.domain);
+          }
         }
 
         if (result.verified) {
@@ -451,6 +482,13 @@ mailboxForm.addEventListener("submit", async (event) => {
 employeeForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!currentUser) return;
+
+  if (IS_LOCAL_STATIC) {
+    return showEmployeeResult(
+      "Employee provisioning is disabled on static localhost. Use deployed app URL to run admin provisioning API.",
+      "error"
+    );
+  }
 
   const name = employeeName.value.trim();
   const authEmail = employeeAuthEmail.value.trim().toLowerCase();
