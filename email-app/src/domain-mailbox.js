@@ -59,17 +59,81 @@ let domains = [];
 let activeDnsDomain = null;
 
 const IS_LOCAL_STATIC = ["127.0.0.1", "localhost"].includes(window.location.hostname);
-const API_BASE = IS_LOCAL_STATIC ? "https://explyra.me/email-app/api" : "/api";
 const API_RUNTIME_UNAVAILABLE = window.location.hostname === "explyra.me";
+const API_BASE_STORAGE_KEY = "emailAppApiBase";
 
-function apiUrl(path) {
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  return `${API_BASE}${normalized}`;
+function normalizeApiBase(base) {
+  if (!base || typeof base !== "string") return "";
+  return base.trim().replace(/\/$/, "");
+}
+
+function apiUrl(base, path) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const normalizedBase = normalizeApiBase(base);
+  return `${normalizedBase}${normalizedPath}`;
+}
+
+function getApiBaseCandidates() {
+  const configured = normalizeApiBase(
+    window.EXPLYRA_EMAIL_API_BASE ||
+      localStorage.getItem(API_BASE_STORAGE_KEY) ||
+      ""
+  );
+
+  const localCandidates = [
+    "http://localhost:3000/api",
+    "http://localhost:8787/api",
+    "https://explyra.me/api",
+    "https://explyra.me/email-app/api"
+  ];
+
+  const hostedCandidates = [
+    "/api",
+    "/email-app/api",
+    "https://explyra.me/api",
+    "https://explyra.me/email-app/api"
+  ];
+
+  const baseList = [configured, ...(IS_LOCAL_STATIC ? localCandidates : hostedCandidates)]
+    .map(normalizeApiBase)
+    .filter(Boolean);
+
+  return [...new Set(baseList)];
+}
+
+function shouldTryNextApiBase(response) {
+  return [404, 405, 501].includes(response.status);
+}
+
+async function fetchFromAvailableApi(path, options = {}) {
+  const candidates = getApiBaseCandidates();
+  let lastResponse = null;
+  let lastError = null;
+
+  for (const base of candidates) {
+    try {
+      const response = await fetch(apiUrl(base, path), options);
+      if (shouldTryNextApiBase(response)) {
+        lastResponse = response;
+        continue;
+      }
+
+      localStorage.setItem(API_BASE_STORAGE_KEY, base);
+      return response;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (lastResponse) return lastResponse;
+  throw lastError || new Error("No reachable API base found");
 }
 
 function getApiHintMessage() {
-  if (!IS_LOCAL_STATIC) return "";
-  return " Local static server detected. Using production API endpoint automatically.";
+  const selectedBase = normalizeApiBase(localStorage.getItem(API_BASE_STORAGE_KEY) || "");
+  const selectedText = selectedBase ? ` Active API base: ${selectedBase}.` : "";
+  if (!IS_LOCAL_STATIC) return selectedText;
+  return ` Local static server detected. Trying fallback API bases automatically.${selectedText}`;
 }
 
 async function readApiJson(response) {
@@ -259,7 +323,7 @@ function bindStaticDnsUiActions() {
     try {
       const token = await currentUser.getIdToken();
       const domainRecord = domains.find((d) => d.domain === activeDnsDomain);
-      const response = await fetch(apiUrl("/dns-setup"), {
+      const response = await fetchFromAvailableApi("/dns-setup", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -346,7 +410,7 @@ function renderDomainList() {
         } else {
           try {
             const token = await currentUser.getIdToken();
-            const response = await fetch(apiUrl("/verify-domain"), {
+            const response = await fetchFromAvailableApi("/verify-domain", {
               method: "POST",
               headers: {
                 "content-type": "application/json",
@@ -541,7 +605,7 @@ employeeForm.addEventListener("submit", async (event) => {
 
   try {
     const token = await currentUser.getIdToken();
-    const response = await fetch(apiUrl("/provision-employee-mailbox"), {
+    const response = await fetchFromAvailableApi("/provision-employee-mailbox", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -559,6 +623,9 @@ employeeForm.addEventListener("submit", async (event) => {
 
     const result = await readApiJson(response);
     if (!response.ok) {
+      if (response.status === 404 || response.status === 405) {
+        throw new Error(`Provision API is not available on current deployment.${getApiHintMessage()}`);
+      }
       throw new Error(result.error || "Employee provisioning failed");
     }
 
