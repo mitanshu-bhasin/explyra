@@ -54,6 +54,26 @@ let currentUser = null;
 let domains = [];
 let activeDnsDomain = null;
 
+function getApiHintMessage() {
+  const localHost = ["127.0.0.1", "localhost"].includes(window.location.hostname);
+  if (!localHost) return "";
+  return " Local static server detected. Run `vercel dev` inside `email-app` and open that URL so /api endpoints execute properly.";
+}
+
+async function readApiJson(response) {
+  const text = await response.text();
+  if (!text) {
+    throw new Error(`Empty API response.${getApiHintMessage()}`);
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    const preview = text.slice(0, 120).replace(/\s+/g, " ");
+    throw new Error(`API returned non-JSON response: ${preview}.${getApiHintMessage()}`);
+  }
+}
+
 const REGISTRAR_LINKS = {
   godaddy: (domain) => `https://dcc.godaddy.com/manage/${domain}/dns`,
   namecheap: () => "https://ap.www.namecheap.com/domains/domaincontrolpanel/",
@@ -87,7 +107,8 @@ function showEmployeeResult(message, tone = "success") {
 function openDnsWizard(domain) {
   activeDnsDomain = domain;
   dnsDomainText.textContent = domain;
-  setDnsStatus("Add records in your registrar, wait 2-10 minutes, then click Verify on domain row.");
+  const base = "Add records in your registrar, wait 2-10 minutes, then click Verify on domain row.";
+  setDnsStatus(`${base}${getApiHintMessage()}`);
   dnsModal.showModal();
 }
 
@@ -156,7 +177,7 @@ function bindStaticDnsUiActions() {
         })
       });
 
-      const result = await response.json();
+      const result = await readApiJson(response);
       if (!response.ok) throw new Error(result.error || "Auto setup failed");
 
       setDnsStatus("Cloudflare auto setup done. Click Verify on the domain row.", "success");
@@ -225,7 +246,7 @@ function renderDomainList() {
           })
         });
 
-        const result = await response.json();
+        const result = await readApiJson(response);
         if (!response.ok) {
           throw new Error(result.error || "Verification failed");
         }
@@ -401,7 +422,7 @@ employeeForm.addEventListener("submit", async (event) => {
       })
     });
 
-    const result = await response.json();
+    const result = await readApiJson(response);
     if (!response.ok) {
       throw new Error(result.error || "Employee provisioning failed");
     }
