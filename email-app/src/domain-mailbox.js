@@ -84,6 +84,35 @@ async function readApiJson(response) {
   }
 }
 
+function generatePassword(length = 16) {
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%";
+  const charLen = chars.length;
+  // Rejection sampling ensures uniform distribution across the character set.
+  const maxValid = Math.floor(256 / charLen) * charLen;
+  const result = [];
+  while (result.length < length) {
+    const batch = new Uint8Array(length - result.length + 8);
+    crypto.getRandomValues(batch);
+    for (const v of batch) {
+      if (v < maxValid && result.length < length) {
+        result.push(chars[v % charLen]);
+      }
+    }
+  }
+  return result.join("");
+}
+
+async function generateAndSaveAdminCredentials(domainId, domain) {
+  const adminEmail = `admin@${domain}`;
+  const adminPassword = generatePassword();
+  await updateDoc(doc(db, "custom_domains", domainId), {
+    adminEmail,
+    adminPassword,
+    adminCreatedAt: new Date().toISOString()
+  });
+  return { adminEmail, adminPassword };
+}
+
 const REGISTRAR_LINKS = {
   godaddy: (domain) => `https://dcc.godaddy.com/manage/${domain}/dns`,
   namecheap: () => "https://ap.www.namecheap.com/domains/domaincontrolpanel/",
@@ -276,20 +305,44 @@ function renderDomainList() {
   domainList.innerHTML = "";
   domains.forEach((item) => {
     const li = document.createElement("li");
-    li.className = "border rounded-lg p-3 flex items-center justify-between";
+    li.className = "border rounded-lg p-4 space-y-3";
+
+    const credentialsSection = item.verified && item.adminEmail
+      ? `<div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+           <p class="font-semibold text-emerald-800 text-sm mb-2">Admin Credentials</p>
+           <div class="space-y-2 text-sm">
+             <div class="flex items-center gap-2">
+               <span class="text-slate-500 w-20 shrink-0">Email</span>
+               <code class="flex-1 break-all text-slate-800">${item.adminEmail}</code>
+               <button class="copy-cred-btn shrink-0 px-2 py-1 border rounded text-xs bg-white hover:bg-slate-50" data-domain-id="${item.id}" data-field="adminEmail">Copy</button>
+             </div>
+             <div class="flex items-center gap-2">
+               <span class="text-slate-500 w-20 shrink-0">Password</span>
+               <code class="flex-1 break-all text-slate-800 admin-pw-display">••••••••</code>
+               <button class="reveal-pw-btn shrink-0 px-2 py-1 border rounded text-xs bg-white hover:bg-slate-50" data-domain-id="${item.id}">Reveal</button>
+               <button class="copy-cred-btn shrink-0 px-2 py-1 border rounded text-xs bg-white hover:bg-slate-50" data-domain-id="${item.id}" data-field="adminPassword">Copy</button>
+             </div>
+           </div>
+           <p class="mt-2 text-xs text-emerald-700">Store these credentials securely — they provide admin access to this domain.</p>
+         </div>`
+      : "";
+
     li.innerHTML = `
-      <div>
-        <p class="font-medium">${item.domain}</p>
-        <p class="text-xs ${item.verified ? "text-emerald-600" : "text-amber-600"}">
-          ${item.verified ? "Verified" : "Pending DNS verification"}
-        </p>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="font-medium">${item.domain}</p>
+          <p class="text-xs ${item.verified ? "text-emerald-600" : "text-amber-600"}">
+            ${item.verified ? "✓ Verified" : "Pending DNS verification"}
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <button data-domain="${item.domain}" class="show-dns px-3 py-1 border rounded text-sm">DNS</button>
+          ${item.verified
+            ? '<span class="px-3 py-1 border rounded bg-emerald-50 text-emerald-700 border-emerald-200 text-sm select-none">Verified ✓</span>'
+            : `<button data-id="${item.id}" data-domain="${item.domain}" class="verify-domain px-3 py-1 border rounded bg-blue-600 text-white border-blue-600 text-sm">Verify</button>`}
+        </div>
       </div>
-      <div class="flex gap-2">
-        <button data-domain="${item.domain}" class="show-dns px-3 py-1 border rounded">DNS</button>
-        ${item.verified
-          ? '<button disabled class="px-3 py-1 border rounded bg-emerald-50 text-emerald-700 border-emerald-200">Verified</button>'
-          : `<button data-id="${item.id}" data-domain="${item.domain}" class="verify-domain px-3 py-1 border rounded bg-blue-600 text-white border-blue-600">Verify</button>`}
-      </div>
+      ${credentialsSection}
     `;
     domainList.appendChild(li);
   });
@@ -297,6 +350,30 @@ function renderDomainList() {
   domainList.querySelectorAll(".show-dns").forEach((btn) => {
     btn.addEventListener("click", () => {
       openDnsWizard(btn.dataset.domain);
+    });
+  });
+
+  domainList.querySelectorAll(".copy-cred-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const domainItem = domains.find((d) => d.id === btn.dataset.domainId);
+      const value = domainItem?.[btn.dataset.field] || "";
+      await navigator.clipboard.writeText(value);
+      const prev = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(() => { btn.textContent = prev; }, 1200);
+    });
+  });
+
+  domainList.querySelectorAll(".reveal-pw-btn").forEach((btn) => {
+    let revealed = false;
+    btn.addEventListener("click", () => {
+      const domainItem = domains.find((d) => d.id === btn.dataset.domainId);
+      const pw = domainItem?.adminPassword || "";
+      const pwEl = btn.closest(".space-y-2")?.querySelector(".admin-pw-display");
+      if (!pwEl) return;
+      revealed = !revealed;
+      pwEl.textContent = revealed ? pw : "••••••••";
+      btn.textContent = revealed ? "Hide" : "Reveal";
     });
   });
 
@@ -350,10 +427,11 @@ function renderDomainList() {
         }
 
         if (result.verified) {
-          const details = result.hasSpf
-            ? "SPF OK"
-            : "SPF missing";
-          alert(`Domain verified successfully. ${details}`);
+          const existing = domains.find((d) => d.id === btn.dataset.id);
+          if (!existing?.adminPassword) {
+            await generateAndSaveAdminCredentials(btn.dataset.id, btn.dataset.domain);
+          }
+          alert("Domain verified! Admin credentials are now shown in the domain panel.");
         } else {
           const missingMx = (result.missingMx || []).join(", ");
           alert(`Domain not verified yet. SPF or MX records missing. Missing MX: ${missingMx || "none"}`);
@@ -361,8 +439,10 @@ function renderDomainList() {
       } catch (error) {
         alert(String(error.message || error));
       } finally {
-        btn.disabled = false;
-        btn.textContent = "Verify";
+        if (btn.isConnected) {
+          btn.disabled = false;
+          btn.textContent = "Verify";
+        }
       }
     });
   });
