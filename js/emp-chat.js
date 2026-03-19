@@ -499,6 +499,71 @@ window.sendChatMessage = async (e) => {
             }, 1000);
         }
 
+        // --- @meet Trigger ---
+        if (text.toLowerCase().includes('@meet')) {
+            setTimeout(async () => {
+                try {
+                    if (!window.GDriveService || !window.GDriveService.isConnected()) {
+                        // Send a system-style message telling them to connect
+                        const sysMsg = {
+                            text: '⚠️ To use @meet, please connect your Google account from Profile → Integrations first.',
+                            sender: 'System',
+                            senderPhotoUrl: '',
+                            email: 'system@explyra.app',
+                            role: 'SYSTEM',
+                            read: false,
+                            createdAt: serverTimestamp(),
+                            companyId: window.companyId
+                        };
+                        if (window.currentChatContext === 'global') {
+                            await addDoc(collection(db, "global_chat"), sysMsg);
+                        } else if (window.currentChatContext.startsWith('group_')) {
+                            const gId = window.currentChatContext.replace('group_', '');
+                            await addDoc(collection(db, "group_chats", gId, "messages"), sysMsg);
+                        } else {
+                            const cId = window.userData.docId < window.currentChatUser.docId ?
+                                `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
+                                `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
+                            await addDoc(collection(db, "chats", cId, "messages"), sysMsg);
+                        }
+                        return;
+                    }
+
+                    const meetResult = await window.GDriveService.createMeetLink('Explyra Meeting — ' + (window.userData.name || 'Team'));
+                    
+                    const meetMessage = {
+                        text: `📹 **Meeting Started**\n🔗 Join: ${meetResult.meetUrl}\n👤 Host: ${window.userData.name || window.userData.email}\n📅 ${new Date(meetResult.startTime).toLocaleString()}`,
+                        sender: (window.userData.name || window.userData.email || 'Employee'),
+                        senderPhotoUrl: (window.userData.photoUrl || ''),
+                        email: (window.userData.email || ''),
+                        role: (window.userData.role || 'USER'),
+                        read: false,
+                        createdAt: serverTimestamp(),
+                        companyId: window.companyId,
+                        type: 'meet_link',
+                        meetUrl: meetResult.meetUrl,
+                        meetHost: window.userData.email
+                    };
+
+                    if (window.currentChatContext === 'global') {
+                        await addDoc(collection(db, "global_chat"), meetMessage);
+                    } else if (window.currentChatContext.startsWith('group_')) {
+                        const gId = window.currentChatContext.replace('group_', '');
+                        await setDoc(doc(db, "group_chats", gId), { lastMessage: '📹 Meeting Link', lastMessageAt: serverTimestamp() }, { merge: true });
+                        await addDoc(collection(db, "group_chats", gId, "messages"), meetMessage);
+                    } else {
+                        const cId = window.userData.docId < window.currentChatUser.docId ?
+                            `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
+                            `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
+                        await setDoc(doc(db, "chats", cId), { lastMessage: '📹 Meeting Link', lastMessageAt: serverTimestamp(), lastSender: window.userData.docId, read: false, users: [window.userData.docId, window.currentChatUser.docId], companyId: window.companyId }, { merge: true });
+                        await addDoc(collection(db, "chats", cId, "messages"), meetMessage);
+                    }
+                } catch (meetErr) {
+                    console.error('@meet error:', meetErr);
+                }
+            }, 500);
+        }
+
     } catch (e) {
         console.error("Chat Error:", e);
         window.showToast("Failed to send: " + e.message, "error");

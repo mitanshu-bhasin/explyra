@@ -5965,8 +5965,6 @@ function loadMessages() {
                 // Process mentions and logic
                 let processedText = data.text || '';
                 if (processedText) {
-                    // simple mention string replace styling
-                    processedText = processedText.replace(/(@[A-Za-z0-9_]+)/g, '<span class="text-green-500 font-bold bg-green-50 dark:bg-green-900/20 px-1 rounded mx-0.5">$1</span>');
                     // process locations
                     processedText = processedText.replace(/\[MAP:([-0-9.]+),([-0-9.]+)\]/g, '<a href="https://www.google.com/maps/search/?api=1&query=$1,$2" target="_blank" class="block mt-1 bg-slate-100 dark:bg-slate-800 p-2 rounded flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition"><i class="fa-solid fa-map-location-dot text-blue-500"></i><span class="text-xs text-blue-600 dark:text-blue-400 font-bold">View Shared Location</span></a>');
                 }
@@ -6059,6 +6057,57 @@ window.sendChatMessage = async (e) => {
             }, 1000);
         }
 
+        // --- @meet Trigger ---
+        if (text.toLowerCase().includes('@meet')) {
+            setTimeout(async () => {
+                try {
+                    if (!window.GDriveService || !window.GDriveService.isConnected()) {
+                        const sysMsg = {
+                            text: '⚠️ To use @meet, please connect your Google account from Profile → Integrations first.',
+                            sender: 'System',
+                            senderPhotoUrl: '',
+                            email: 'system@explyra.app',
+                            role: 'SYSTEM',
+                            read: false,
+                            createdAt: serverTimestamp(),
+                            companyId: userData.companyId
+                        };
+                        if (currentChatId === 'global_chat') {
+                            await addDoc(collection(db, "global_chat"), sysMsg);
+                        } else {
+                            await addDoc(collection(db, "chats", currentChatId, "messages"), sysMsg);
+                        }
+                        return;
+                    }
+
+                    const meetResult = await window.GDriveService.createMeetLink('Explyra Meeting — ' + (userData.name || 'Admin'));
+                    
+                    const meetMessage = {
+                        text: `📹 **Meeting Started**\n🔗 Join: ${meetResult.meetUrl}\n👤 Host: ${userData.name || userData.email}\n📅 ${new Date(meetResult.startTime).toLocaleString()}`,
+                        sender: (userData.name || userData.email || 'Admin'),
+                        senderPhotoUrl: (userData.photoUrl || ''),
+                        email: (userData.email || ''),
+                        role: (userData.role || 'ADMIN'),
+                        read: false,
+                        createdAt: serverTimestamp(),
+                        companyId: userData.companyId,
+                        type: 'meet_link',
+                        meetUrl: meetResult.meetUrl,
+                        meetHost: userData.email
+                    };
+
+                    if (currentChatId === 'global_chat') {
+                        await addDoc(collection(db, "global_chat"), meetMessage);
+                    } else {
+                        await setDoc(doc(db, "chats", currentChatId), { lastMessage: '📹 Meeting Link', lastMessageAt: serverTimestamp(), lastSender: userData.docId, read: false, users: [userData.docId, currentChatUser.docId], companyId: userData.companyId }, { merge: true });
+                        await addDoc(collection(db, "chats", currentChatId, "messages"), meetMessage);
+                    }
+                } catch (meetErr) {
+                    console.error('@meet error:', meetErr);
+                }
+            }, 500);
+        }
+
     } catch (err) {
         showToast("Failed to send: " + err.message, 'error');
     }
@@ -6119,6 +6168,22 @@ window.switchTab = (tab, options = {}) => {
     }
 };
 
+window.toggleAIFeatures = (enabled) => {
+    localStorage.setItem('explyra_ai_enabled', enabled);
+    const floatBtn = document.getElementById('ai-floating-btn');
+    const navAi = document.getElementById('nav-ai');
+    
+    if (floatBtn) floatBtn.classList.toggle('hidden', !enabled);
+    if (navAi) {
+        if (!enabled) navAi.classList.add('hidden');
+        else if (window.hasAccessTo('ai')) navAi.classList.remove('hidden');
+    }
+    
+    // Also update preference toggle in modal if open
+    const toggle = document.getElementById('pref-ai-enabled');
+    if (toggle) toggle.checked = enabled;
+};
+
 
 // Account Center Logic
 window.openAccountCenter = async () => {
@@ -6144,6 +6209,45 @@ window.openAccountCenter = async () => {
 
     document.getElementById('ac-phone').value = u.altPhone || '';
     document.getElementById('ac-alt-email').value = u.altEmail || '';
+    
+    // Populate 2FA
+    const twoFaToggle = document.getElementById('ac-2fa-enabled');
+    const twoFaPinContainer = document.getElementById('ac-2fa-pin-container');
+    const twoFaPinInput = document.getElementById('ac-2fa-pin');
+    
+    if (twoFaToggle) {
+        twoFaToggle.checked = !!u.twoFactorEnabled;
+        if (twoFaPinContainer) {
+            twoFaPinContainer.classList.toggle('hidden', !u.twoFactorEnabled);
+        }
+        if (twoFaPinInput) {
+            twoFaPinInput.value = u.twoFactorPin || '';
+        }
+    }
+
+    // Company & Plan Population
+    const planBadge = document.getElementById('ac-plan-badge');
+    const companyName = document.getElementById('ac-company-display');
+    if (planBadge) {
+        const plan = (window.companyPlan || 'Starter').toUpperCase();
+        planBadge.textContent = plan;
+        planBadge.className = `text-[8px] font-black px-1.5 py-0.5 rounded-full border uppercase tracking-tighter ${
+            plan === 'ENTERPRISE' ? 'border-amber-200 bg-amber-50 text-amber-700' :
+            plan === 'BUSINESS' ? 'border-purple-200 bg-purple-50 text-purple-700' :
+            'border-green-200 bg-green-50 text-green-700'
+        }`;
+    }
+    if (companyName) {
+        // Find company name from global settings or userData
+        companyName.textContent = u.companyName || 'Corporate Account';
+    }
+
+    // AI Preference Toggle
+    const aiToggle = document.getElementById('pref-ai-enabled');
+    if (aiToggle) {
+        const aiEnabled = localStorage.getItem('explyra_ai_enabled') !== 'false';
+        aiToggle.checked = aiEnabled;
+    }
 
     // 2FA Population
     const twoFactorToggle = document.getElementById('ac-2fa-enabled');

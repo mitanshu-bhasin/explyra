@@ -1062,10 +1062,13 @@
                         ?
                     </div>
                     <div class="relative z-10 overflow-hidden">
-                        <h4 class="font-bold text-lg text-slate-800 dark:text-slate-100 truncate" id="ac-name">
-                            Loading...</h4>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-lg text-slate-800 dark:text-slate-100 truncate" id="ac-name">Loading...</h4>
+                            <span id="ac-plan-badge" class="text-[8px] font-black px-1.5 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 uppercase tracking-tighter">Growth</span>
+                        </div>
                         <p class="text-[10px] font-bold text-green-700 dark:text-brand-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm px-2.5 py-1 rounded-full inline-block mt-1 uppercase tracking-wider shadow-sm border border-green-200/50 dark:border-green-500/30"
                             id="ac-role">...</p>
+                        <p id="ac-company-display" class="text-[9px] text-slate-400 font-medium mt-1 truncate max-w-[150px]">Company Name</p>
                     </div>
                 </div>
 
@@ -1139,7 +1142,7 @@
                             <label
                                 class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Language</label>
                             <select onchange="selectAdminLanguage(this.value)"
-                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none">
+                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none w-full">
                                 <option value="en">English (US)</option>
                                 <option value="hi">हिंदी (Hindi)</option>
                             </select>
@@ -1156,27 +1159,39 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3 mb-2">
                         <div>
+                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI Empowerment</label>
+                            <label class="relative inline-flex items-center cursor-pointer w-full">
+                                <input type="checkbox" id="pref-ai-enabled" checked
+                                    onchange="window.toggleAIFeatures && window.toggleAIFeatures(this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600">
+                                </div>
+                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable AI</span>
+                            </label>
+                        </div>
+                        <div>
                             <label
-                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Base
-                                Currency</label>
+                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Base Currency</label>
                             <select id="pref-base-currency" onchange="updateBaseCurrency(this.value)"
-                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none">
+                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none w-full">
                                 <option value="INR">INR (₹)</option>
                                 <option value="USD">USD ($)</option>
                                 <option value="EUR">EUR (€)</option>
                                 <option value="GBP">GBP (£)</option>
                             </select>
                         </div>
-                        <div class="flex flex-col justify-end">
-                            <label class="relative inline-flex items-center cursor-pointer mb-1.5">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Voice Control</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="pref-webspeech" onchange="toggleWebSpeech(this.checked)"
                                     class="sr-only peer">
                                 <div
-                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                    class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
                                 </div>
-                                <span
-                                    class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Voice
-                                    Control</span>
+                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable</span>
                             </label>
                         </div>
                     </div>
@@ -1418,6 +1433,66 @@
                         </div>
                         <button type="button" id="btn-gsheets-connect"
                             onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://www.gstatic.com/images/branding/product/2x/maps_96dp.png"
+                                    alt="Google Maps" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Maps</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="maps-status-text">Not active</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-maps-connect"
+                            onclick="window.enableMaps && window.enableMaps()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-power-off"></i> Enable
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
+                                    alt="Google Calendar" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Calendar</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gcalendar-status-text">Not connected</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gcalendar-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg"
+                                    alt="Google Meet" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Meet</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gmeet-status-text">Not connected</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gmeet-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
                             class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                             <i class="fa-solid fa-link"></i> Connect
                         </button>

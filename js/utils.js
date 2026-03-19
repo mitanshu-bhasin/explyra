@@ -223,11 +223,76 @@ window.parseChatLinks = (text) => {
     if (!text) return '';
     
     // First escape HTML to prevent XSS
-    const div = document.createElement('div');
-    div.innerText = text;
-    let safeText = div.innerHTML;
+    const tempDiv = document.createElement('div');
+    tempDiv.innerText = text;
+    let safeText = tempDiv.innerHTML;
 
-    // Then convert markdown links [text](url) to HTML links
+    // 1. Detection for Google Maps raw links
+    // Format: 📍 Shared Location: https://www.google.com/maps?q=lat,lng
+    const mapsRegex = /https:\/\/www\.google\.com\/maps\?q=(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
+    safeText = safeText.replace(mapsRegex, (match, lat, lng) => {
+        const isEnabled = localStorage.getItem('google_maps_enabled') === 'true';
+        const apiKey = window.EXPLYRA_CONFIG?.firebase?.apiKey || '';
+        
+        if (!isEnabled) {
+            return `<div class="mt-2 p-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-white/5 flex flex-col gap-2 italic text-[10px] text-slate-500">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> Logged location shared</div>
+                <button onclick="window.enableMaps && window.enableMaps()" class="text-explyra-blue font-bold hover:underline text-left">Enable Google Maps preview</button>
+            </div>`;
+        }
+
+        const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}`;
+        
+        return `
+            <div class="mt-2 rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg bg-white dark:bg-black/40 max-w-sm">
+                <div class="h-44 w-full relative bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                    <iframe width="100%" height="100%" frameborder="0" style="border:0" src="${embedUrl}" allowfullscreen></iframe>
+                    <div class="absolute top-2 right-2 flex gap-1">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="px-2.5 py-1.5 bg-white/95 dark:bg-black/90 backdrop-blur rounded-xl text-[10px] font-extrabold text-blue-600 shadow-xl flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all border border-blue-100 dark:border-blue-900/30">
+                            <i class="fa-solid fa-diamond-turn-right"></i> Start Navigation
+                        </a>
+                    </div>
+                </div>
+                <div class="p-3 flex items-center justify-between border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-600/20 text-blue-600 flex items-center justify-center text-xs shadow-inner"><i class="fa-solid fa-location-arrow"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-tighter">Live Location</span>
+                            <span class="text-[8px] text-slate-400 font-bold -mt-0.5">${lat.slice(0,7)}, ${lng.slice(0,7)}</span>
+                        </div>
+                    </div>
+                    <a href="${match}" target="_blank" class="text-[10px] text-blue-600 font-black hover:underline uppercase tracking-widest bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded-lg">Full Map</a>
+                </div>
+            </div>`;
+    });
+
+    // 1b. Detection for Google Meet links
+    const meetRegex = /https:\/\/meet\.google\.com\/[a-z\-]+/g;
+    safeText = safeText.replace(meetRegex, (match) => {
+        const meetCode = match.split('/').pop();
+        return `
+            <div class="mt-2 rounded-2xl overflow-hidden border border-green-200 dark:border-green-800/40 shadow-lg bg-white dark:bg-black/40 max-w-sm">
+                <div class="p-4 flex items-center gap-3 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20">
+                    <div class="w-10 h-10 rounded-xl bg-green-500 text-white flex items-center justify-center shadow-lg flex-shrink-0">
+                        <i class="fa-solid fa-video text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[10px] font-black text-green-700 dark:text-green-400 uppercase tracking-widest">Google Meet</span>
+                        <p class="text-[9px] text-slate-500 font-mono truncate">${meetCode}</p>
+                    </div>
+                </div>
+                <div class="p-3 flex items-center gap-2 border-t border-green-100 dark:border-green-900/30 bg-white/80 dark:bg-black/60">
+                    <a href="${match}" target="_blank" class="flex-1 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white text-[10px] font-extrabold uppercase tracking-widest text-center flex items-center justify-center gap-1.5 transition-all shadow-sm hover:shadow-lg active:scale-95" style="text-decoration:none;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Join Meeting
+                    </a>
+                    <button onclick="navigator.clipboard.writeText('${match}');window.showToast && window.showToast('Link copied!','success')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1">
+                        <i class="fa-solid fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>`;
+    });
+
+    // 2. Convert markdown links [text](url) to HTML links
     safeText = safeText.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
         const safeUrl = url.replace(/"/g, '&quot;');
         
@@ -248,12 +313,8 @@ window.parseChatLinks = (text) => {
             let previewHtml = '';
             
             if (isImage) {
-                // For images, we try to show a small preview if it's a direct-ish link, 
-                // but since it's GDrive webViewLink, we'll just show the attachment box.
-                // If we want actual preview from Drive, we'd need more complex logic.
-                previewHtml = `<div class="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 max-w-xs shadow-sm"><img src="${safeUrl.replace('/view', '/thumbnail?sz=w600')}" class="w-full h-auto block" alt="${fileName}" onerror="this.parentElement.style.display='none'"></div>`;
+                 previewHtml = `<div class="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 max-w-xs shadow-sm bg-slate-100 dark:bg-slate-900"><img src="${safeUrl.replace('/view', '/thumbnail?sz=w600')}" class="w-full h-auto cursor-pointer hover:opacity-90 transition object-contain" style="max-height:180px" onclick="window.open('${safeUrl}', '_blank')" alt="${fileName}" onerror="this.parentElement.style.display='none'"></div>`;
             } else if (isVideo) {
-                 // Video preview from Drive is tricky without the ID, but we can try basic placeholder or link
                  previewHtml = `<div class="mt-2 p-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
                     <i class="fa-solid fa-video text-2xl text-slate-400"></i>
                     <div class="text-[10px] text-slate-500 font-medium">Video preview available at Drive link</div>
@@ -276,60 +337,103 @@ window.parseChatLinks = (text) => {
         return `<a href="${safeUrl}" target="_blank" class="underline hover:opacity-80 transition">${label}</a>`;
     });
 
+    // 3. Mentions (@username or @meet)
+    safeText = safeText.replace(/(@[A-Za-z0-9_]+)/g, '<span class="text-green-500 font-bold bg-green-50 dark:bg-green-900/20 px-1 rounded mx-0.5">$1</span>');
+
     return safeText;
 };
 
-// Global Google Drive UI Update helper
+// Global Integrations UI Update helper
 window.updateGDriveUI = () => {
-    const isConnected = window.GDriveService && window.GDriveService.isConnected();
+    const isDriveConnected = window.GDriveService && window.GDriveService.isConnected();
+    const isMapsEnabled = localStorage.getItem('google_maps_enabled') === 'true';
     
-    // IDs to check for
-    const statusTextIds = ['gdrive-status-text', 'gsheets-status-text', 'emp-gdrive-status-text', 'emp-gsheets-status-text'];
-    const connectBtnIds = ['btn-gdrive-connect', 'btn-gsheets-connect', 'btn-emp-gdrive-connect', 'btn-emp-gsheets-connect'];
+    // IDs to check for Drive/Sheets/Calendar/Meet
+    const driveStatusIds = ['gdrive-status-text', 'gsheets-status-text', 'gcalendar-status-text', 'gmeet-status-text', 'emp-gdrive-status-text', 'emp-gsheets-status-text', 'emp-gcalendar-status-text', 'emp-gmeet-status-text'];
+    const driveBtnIds = ['btn-gdrive-connect', 'btn-gsheets-connect', 'btn-gcalendar-connect', 'btn-gmeet-connect', 'btn-emp-gdrive-connect', 'btn-emp-gsheets-connect', 'btn-emp-gcalendar-connect', 'btn-emp-gmeet-connect'];
     
-    statusTextIds.forEach(id => {
+    // IDs for Maps
+    const mapStatusIds = ['maps-status-text', 'emp-maps-status-text'];
+    const mapBtnIds = ['btn-maps-connect', 'btn-emp-maps-connect'];
+    
+    driveStatusIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.textContent = isConnected ? 'Connected' : 'Not connected';
-            el.className = isConnected ? 'text-[9px] text-green-500 font-bold' : 'text-[9px] text-slate-500 font-medium';
+            el.textContent = isDriveConnected ? 'Connected' : 'Not connected';
+            el.className = isDriveConnected ? 'text-[9px] text-green-500 font-bold' : 'text-[9px] text-slate-500 font-medium';
         }
     });
     
-    connectBtnIds.forEach(id => {
+    driveBtnIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            if (isConnected) {
+            if (isDriveConnected) {
                 el.innerHTML = '<i class="fa-solid fa-check-circle"></i> Connected';
                 el.classList.add('bg-green-50', 'dark:bg-green-900/20', 'text-green-600', 'dark:text-green-400', 'border-green-200', 'dark:border-green-800/30');
                 el.classList.remove('text-slate-700', 'dark:text-slate-300');
                 
                 // Add disconnect button if not exists
-                const disconnectBtnId = id + '-disconnect';
-                let disconnectBtn = document.getElementById(disconnectBtnId);
-                if (!disconnectBtn) {
-                    disconnectBtn = document.createElement('button');
-                    disconnectBtn.id = disconnectBtnId;
-                    disconnectBtn.type = 'button';
-                    disconnectBtn.className = 'ml-2 text-[10px] text-red-500 hover:text-red-700 font-bold uppercase transition';
-                    disconnectBtn.innerHTML = '<i class="fa-solid fa-unlink"></i>';
-                    disconnectBtn.title = 'Disconnect Service';
-                    disconnectBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        if (window.GDriveService) window.GDriveService.disconnect();
-                    };
-                    el.after(disconnectBtn);
+                const dId = id + '-disconnect';
+                if (!document.getElementById(dId)) {
+                    const db = document.createElement('button');
+                    db.id = dId;
+                    db.className = 'ml-2 text-[10px] text-red-500 hover:text-red-700 font-bold uppercase transition';
+                    db.innerHTML = '<i class="fa-solid fa-unlink"></i>';
+                    db.onclick = (e) => { e.stopPropagation(); window.GDriveService.disconnect(); };
+                    el.after(db);
                 }
             } else {
                 el.innerHTML = '<i class="fa-solid fa-link"></i> Connect';
                 el.classList.remove('bg-green-50', 'dark:bg-green-900/20', 'text-green-600', 'dark:text-green-400', 'border-green-200', 'dark:border-green-800/30');
                 el.classList.add('text-slate-700', 'dark:text-slate-300');
-                
-                // Remove disconnect button if exists
-                const disconnectBtn = document.getElementById(id + '-disconnect');
-                if (disconnectBtn) disconnectBtn.remove();
+                const d = document.getElementById(id + '-disconnect');
+                if (d) d.remove();
             }
         }
     });
+
+    // Handle Maps
+    mapStatusIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = isMapsEnabled ? 'Active' : 'Not active';
+            el.className = isMapsEnabled ? 'text-[9px] text-blue-500 font-bold' : 'text-[9px] text-slate-500 font-medium';
+        }
+    });
+
+    mapBtnIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            if (isMapsEnabled) {
+                el.innerHTML = '<i class="fa-solid fa-check"></i> Active';
+                el.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400', 'border-blue-200', 'dark:border-blue-800/30');
+                el.classList.remove('text-slate-700', 'dark:text-slate-300');
+                
+                // Add disable button
+                const dId = id + '-disable';
+                if (!document.getElementById(dId)) {
+                    const db = document.createElement('button');
+                    db.id = dId;
+                    db.className = 'ml-2 text-[10px] text-red-500 hover:text-red-700 font-bold uppercase transition';
+                    db.innerHTML = '<i class="fa-solid fa-power-off"></i>';
+                    db.onclick = (e) => { e.stopPropagation(); localStorage.setItem('google_maps_enabled', 'false'); window.updateGDriveUI(); };
+                    el.after(db);
+                }
+            } else {
+                el.innerHTML = '<i class="fa-solid fa-power-off"></i> Enable';
+                el.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400', 'border-blue-200', 'dark:border-blue-800/30');
+                el.classList.add('text-slate-700', 'dark:text-slate-300');
+                const d = document.getElementById(id + '-disable');
+                if (d) d.remove();
+            }
+        }
+    });
+};
+
+window.enableMaps = () => {
+    localStorage.setItem('google_maps_enabled', 'true');
+    window.updateGDriveUI();
+    if (window.showToast) window.showToast("Google Maps services enabled!", "success");
 };
 
 // Listen for connection events globally

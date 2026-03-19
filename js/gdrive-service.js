@@ -8,10 +8,11 @@ const GDriveService = {
     // The user needs to set this up themselves.
     CLIENT_ID: window.EXPLYRA_CONFIG?.googleDrive?.clientId || '411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com',
     API_KEY: window.EXPLYRA_CONFIG?.firebase?.apiKey || 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0',
-    SCOPES: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets',
+    SCOPES: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar.events',
     DISCOVERY_DOCS: [
         'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
-        'https://sheets.googleapis.com/$discovery/rest?version=v4'
+        'https://sheets.googleapis.com/$discovery/rest?version=v4',
+        'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'
     ],
 
     tokenClient: null,
@@ -133,8 +134,8 @@ const GDriveService = {
         if (window.showToast) window.showToast("Google Drive Disconnected", "success");
     },
 
-    async authenticate(actionContent = null) {
-        if (this.isConnected()) {
+    async authenticate(actionContent = null, force = false) {
+        if (this.isConnected() && !force) {
             if (actionContent) actionContent();
             return;
         }
@@ -321,6 +322,70 @@ const GDriveService = {
         } catch (error) {
             console.error("Error creating Google Sheet:", error);
             if (window.showToast) window.showToast(error.message || "Failed to create Google Sheet", "error");
+            throw error;
+        }
+    },
+
+    async createMeetLink(meetingTitle) {
+        if (!this.isConnected()) {
+            throw new Error('Google account not connected. Please connect from your Profile first.');
+        }
+
+        if (window.showToast) window.showToast('Creating meeting link...', 'info');
+
+        try {
+            const now = new Date();
+            const end = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour
+
+            const event = {
+                summary: meetingTitle || 'Explyra Team Meeting',
+                start: { dateTime: now.toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+                end: { dateTime: end.toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+                conferenceData: {
+                    createRequest: {
+                        requestId: 'explyra-meet-' + Date.now(),
+                        conferenceSolutionKey: { type: 'hangoutsMeet' }
+                    }
+                }
+            };
+
+            const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(event)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Meet creation error:', errorData);
+                if (response.status === 401) {
+                    this.disconnect();
+                    throw new Error('Connection expired. Please reconnect Google.');
+                }
+                throw new Error('Meet creation failed: ' + (errorData.error?.message || response.statusText));
+            }
+
+            const result = await response.json();
+            const meetUrl = result.conferenceData?.entryPoints?.find(e => e.entryPointType === 'video')?.uri;
+
+            if (!meetUrl) {
+                throw new Error('Meeting created but no Meet link was generated.');
+            }
+
+            if (window.showToast) window.showToast('Meeting link created!', 'success');
+
+            return {
+                meetUrl: meetUrl,
+                eventUrl: result.htmlLink,
+                title: result.summary,
+                startTime: result.start.dateTime
+            };
+        } catch (error) {
+            console.error('Error creating Meet link:', error);
+            if (window.showToast) window.showToast(error.message || 'Failed to create meeting', 'error');
             throw error;
         }
     }

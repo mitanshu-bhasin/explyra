@@ -2019,6 +2019,66 @@
                                 <i class="fa-solid fa-link"></i> Connect
                             </button>
                         </div>
+                        
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                    <img src="https://www.gstatic.com/images/branding/product/1x/maps_96dp.png"
+                                        alt="Google Maps" class="w-5 h-5">
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Maps</h6>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-maps-status-text">Not active</p>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-emp-maps-connect"
+                                onclick="window.enableMaps && window.enableMaps()"
+                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-power-off"></i> Enable
+                            </button>
+                        </div>
+                        
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
+                                        alt="Google Calendar" class="w-5 h-5">
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Calendar</h6>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gcalendar-status-text">Not connected</p>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-emp-gcalendar-connect"
+                                onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
+                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-link"></i> Connect
+                            </button>
+                        </div>
+                        
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg"
+                                        alt="Google Meet" class="w-full h-full object-contain">
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Meet</h6>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gmeet-status-text">Not connected</p>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-emp-gmeet-connect"
+                                onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
+                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-link"></i> Connect
+                            </button>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 mb-2 mt-2">
@@ -2033,10 +2093,32 @@
                         </div>
                         <div>
                             <label
-                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Base
-                                Currency</label>
-                            <select onchange="window.updateBaseCurrency(this.value)" id="emp-base-currency"
-                                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm text-slate-700 dark:text-slate-200 outline-none">
+                                class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Theme</label>
+                            <button onclick="toggleTheme()"
+                                class="w-full py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 flex justify-between items-center px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                <span>Dark/Light</span>
+                                <i class="fa-solid fa-moon theme-toggle-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI Empowerment</label>
+                            <label class="relative inline-flex items-center cursor-pointer w-full">
+                                <input type="checkbox" id="pref-ai-enabled" checked
+                                    onchange="window.toggleAIFeatures && window.toggleAIFeatures(this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600">
+                                </div>
+                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable AI</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Currency</label>
+                            <select id="emp-base-currency" onchange="window.updateBaseCurrency && window.updateBaseCurrency(this.value)"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs text-slate-700 dark:text-slate-200 outline-none">
                                 <option value="INR">INR (₹)</option>
                                 <option value="USD">USD ($)</option>
                                 <option value="EUR">EUR (€)</option>
@@ -2600,10 +2682,21 @@
     <script type="module">
         import { EmpAI } from './emp/ai.js';
 
+        window.toggleAIFeatures = (enabled) => {
+            localStorage.setItem('explyra_ai_enabled', enabled);
+            const trigger = document.getElementById('emp-ai-trigger');
+            if (trigger) trigger.style.display = enabled ? 'flex' : 'none';
+            if (!enabled && window.empAI && window.empAI.isOpen) {
+                window.empAI.toggle(false);
+            }
+        };
+
         window.addEventListener('load', () => {
             // Wait for other data to load
             setTimeout(() => {
-                window.empAI = new EmpAI();
+                if (localStorage.getItem('explyra_ai_enabled') !== 'false') {
+                    window.empAI = new EmpAI();
+                }
             }, 1000);
 
             // Register Service Worker
