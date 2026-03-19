@@ -40,6 +40,23 @@ onAuthStateChanged(auth, async (user) => {
                 window.companyId = window.userData.companyId;
                 window.currentUser = user;
 
+                // --- GOOGLE DRIVE CLOUD SYNC ---
+                if (window.GDriveService) {
+                    window.GDriveService.setOnStateChange(async (isConnected) => {
+                        try {
+                            const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
+                            await updateDoc(doc(window.db, "users", window.userData.docId), { gdriveConnected: isConnected });
+                            console.log("Employee GDrive state synced to cloud.");
+                        } catch (e) {
+                            console.error("GDrive cloud sync failed:", e);
+                        }
+                    });
+
+                    if (window.userData.gdriveConnected) {
+                        window.GDriveService.restoreConnection(true);
+                    }
+                }
+
                 try {
                     const compSnap = await getDoc(doc(db, "companies", window.companyId));
                     if (compSnap.exists() && compSnap.data().status === "suspended") {

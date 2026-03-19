@@ -88,6 +88,32 @@ const GDriveService = {
         } else {
              localStorage.removeItem('gdrive_access_token');
         }
+
+        // External sync callback if provided
+        if (this.onStateChange) {
+            this.onStateChange(isConnected);
+        }
+    },
+
+    // Set a callback to handle external persistence (e.g. Firestore)
+    setOnStateChange(callback) {
+        this.onStateChange = callback;
+    },
+
+    // Manually set connection state from external source (e.g. on load)
+    restoreConnection(isConnected) {
+        if (isConnected && !this.accessToken) {
+            // We are marked as connected in Firestore but don't have a token (new device)
+            // We set the flag so the UI shows "Connected", but we'll need a user click to get a fresh token
+            // because browser security prevents popups without user action.
+            localStorage.setItem('gdrive_connected', 'true');
+            console.log("GDrive connection flag restored from cloud.");
+        }
+        
+        // Signal UI update
+        if (isConnected) {
+            setTimeout(() => window.dispatchEvent(new CustomEvent('gdrive-connected')), 100);
+        }
     },
 
     isConnected() {

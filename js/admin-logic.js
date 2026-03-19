@@ -425,6 +425,25 @@ onAuthStateChanged(auth, async (user) => {
                     }
                 }, 5000);
 
+                // --- GOOGLE DRIVE CLOUD SYNC ---
+                if (window.GDriveService) {
+                    // Set up the sync provider BEFORE restoration
+                    window.GDriveService.setOnStateChange(async (isConnected) => {
+                        try {
+                            const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
+                            await updateDoc(doc(window.db, "users", userData.docId), { gdriveConnected: isConnected });
+                            console.log("GDrive connection state synced to cloud.");
+                        } catch (e) {
+                            console.error("Failed to sync GDrive state to Firestore", e);
+                        }
+                    });
+
+                    // Restore state from cloud
+                    if (userData.gdriveConnected) {
+                        window.GDriveService.restoreConnection(true);
+                    }
+                }
+
 
 
                 // --- FCM LIVE NOTIFICATIONS PUSH ---
