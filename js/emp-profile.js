@@ -14,6 +14,18 @@ window.openProfileModal = () => {
     if (document.getElementById('profile-photo-url')) {
         document.getElementById('profile-photo-url').value = userData.photoUrl || '';
     }
+
+    // 2FA Population
+    const twoFactorToggle = document.getElementById('profile-2fa-enabled');
+    const pinContainer = document.getElementById('profile-2fa-pin-container');
+    const pinInput = document.getElementById('profile-2fa-pin');
+
+    if (twoFactorToggle) {
+        twoFactorToggle.checked = userData.twoFactorEnabled || false;
+        pinContainer.classList.toggle('hidden', !userData.twoFactorEnabled);
+        pinInput.value = userData.twoFactorPin || '';
+    }
+
     document.getElementById('modal-profile').classList.remove('hidden');
 };
 
@@ -28,19 +40,30 @@ window.submitProfile = async (e) => {
         const name = document.getElementById('profile-name').value;
         const phone = document.getElementById('profile-phone').value;
         const photoUrl = document.getElementById('profile-photo-url')?.value || '';
+        const twoFactorEnabled = document.getElementById('profile-2fa-enabled').checked;
+        const twoFactorPin = document.getElementById('profile-2fa-pin').value;
+
+        if (twoFactorEnabled && (!twoFactorPin || twoFactorPin.length !== 4)) {
+            throw new Error("Please enter a 4-digit PIN for 2FA");
+        }
 
         await updateDoc(doc(window.db, "users", window.userData.docId), {
-            name, phone, photoUrl, updatedAt: serverTimestamp()
+            name, phone, photoUrl,
+            twoFactorEnabled,
+            twoFactorPin,
+            updatedAt: serverTimestamp()
         });
 
         window.userData.name = name;
         window.userData.phone = phone;
         window.userData.photoUrl = photoUrl;
+        window.userData.twoFactorEnabled = twoFactorEnabled;
+        window.userData.twoFactorPin = twoFactorPin;
 
         // Update UI
         const nameD = document.getElementById('user-name-display');
         if (nameD) nameD.textContent = name;
-        
+
         const sidebarName = document.getElementById('sidebar-user-name');
         if (sidebarName) sidebarName.textContent = name;
 

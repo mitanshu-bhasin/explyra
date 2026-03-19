@@ -20,6 +20,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+
+// Expose for inline scripts
+window.auth = auth;
+window.db = db;
+window.storage = storage;
+
 let messaging = null;
 try {
     messaging = getMessaging(app);
@@ -660,6 +666,12 @@ onAuthStateChanged(auth, async (user) => {
                 // --- WEBRTC CALL LISTENER ---
                 if (typeof listenForCalls === 'function') listenForCalls();
 
+                // --- 2FA CHECK ---
+                if (userData.twoFactorEnabled && sessionStorage.getItem('explyra_2fa_verified') !== (userData.twoFactorPin || 'true')) {
+                    document.getElementById('modal-2fa-verify').classList.remove('hidden');
+                    return; // Stop here, wait for 2FA
+                }
+
                 showDashboard();
                 updatePendingCount();
             } else {
@@ -937,8 +949,28 @@ window.handleGoogleLogin = async () => {
 window.logout = async () => {
     if (await showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
         localStorage.removeItem('explyra_admin_data_cache');
+        sessionStorage.removeItem('explyra_2fa_verified'); // Clear 2FA
         signOut(auth);
         showToast('Logged out successfully', 'info');
+    }
+};
+
+window.verify2FAPin = () => {
+    const enteredPin = document.getElementById('verify-2fa-pin').value;
+    
+    if (!userData || !userData.twoFactorPin) {
+        showToast("Configuration error. Please login again.", "error");
+        return;
+    }
+
+    if (enteredPin === userData.twoFactorPin) {
+        sessionStorage.setItem('explyra_2fa_verified', userData.twoFactorPin);
+        document.getElementById('modal-2fa-verify').classList.add('hidden');
+        showDashboard();
+        showToast("Identity verified!", "success");
+    } else {
+        showToast("Incorrect PIN. Please try again.", "error");
+        document.getElementById('verify-2fa-pin').value = '';
     }
 };
 
@@ -6044,6 +6076,17 @@ window.openAccountCenter = async () => {
     document.getElementById('ac-phone').value = u.altPhone || '';
     document.getElementById('ac-alt-email').value = u.altEmail || '';
 
+    // 2FA Population
+    const twoFactorToggle = document.getElementById('ac-2fa-enabled');
+    const pinContainer = document.getElementById('ac-2fa-pin-container');
+    const pinInput = document.getElementById('ac-2fa-pin');
+
+    if (twoFactorToggle) {
+        twoFactorToggle.checked = u.twoFactorEnabled || false;
+        pinContainer.classList.toggle('hidden', !u.twoFactorEnabled);
+        pinInput.value = u.twoFactorPin || '';
+    }
+
     // Initialize Visibility Toggles
     try {
         const visibilityPrefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
@@ -6100,15 +6143,28 @@ window.saveAccountSettings = async (e) => {
         const docId = userData.docId || userData.id;
         if (!docId) throw new Error("User ID not found");
 
+        const phone = document.getElementById('ac-phone').value;
+        const altEmail = document.getElementById('ac-alt-email').value;
+        const twoFactorEnabled = document.getElementById('ac-2fa-enabled').checked;
+        const twoFactorPin = document.getElementById('ac-2fa-pin').value;
+
+        if (twoFactorEnabled && (!twoFactorPin || twoFactorPin.length !== 4)) {
+            throw new Error("Please enter a 4-digit PIN for 2FA");
+        }
+
         await updateDoc(doc(db, "users", docId), {
             altPhone: phone,
             altEmail: altEmail,
+            twoFactorEnabled: twoFactorEnabled,
+            twoFactorPin: twoFactorPin,
             updatedAt: serverTimestamp()
         });
 
         // Update local cache
         userData.altPhone = phone;
         userData.altEmail = altEmail;
+        userData.twoFactorEnabled = twoFactorEnabled;
+        userData.twoFactorPin = twoFactorPin;
 
         showToast("Account settings saved!", "success");
         closeModal('modal-account');
@@ -6117,6 +6173,27 @@ window.saveAccountSettings = async (e) => {
         showToast("Error saving: " + err.message, "error");
     } finally {
         btn.innerHTML = originalText;
+    }
+};
+
+window.verify2FAPin = () => {
+    const enteredPin = document.getElementById('verify-2fa-pin').value;
+    const btn = document.getElementById('btn-verify-2fa');
+
+    if (!userData || !userData.twoFactorPin) {
+        showToast("Configuration error. Please login again.", "error");
+        return;
+    }
+
+    if (enteredPin === userData.twoFactorPin) {
+        sessionStorage.setItem('explyra_2fa_verified', userData.twoFactorPin);
+        document.getElementById('modal-2fa-verify').classList.add('hidden');
+        showDashboard();
+        updatePendingCount();
+        showToast("Identity verified!", "success");
+    } else {
+        showToast("Incorrect PIN. Please try again.", "error");
+        document.getElementById('verify-2fa-pin').value = '';
     }
 };
 

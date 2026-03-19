@@ -286,12 +286,12 @@ window.toggleMainView = (viewId, options = {}) => {
 
     // Sidebar items
     const sidebarItems = document.querySelectorAll('#main-sidebar .sidebar-item');
-    
+
     // First remove active state from all
     sidebarItems.forEach(item => {
         item.classList.remove('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white', 'hover:bg-gray-100', 'dark:hover:bg-[#111]');
         item.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-black', 'dark:hover:text-white', 'hover:bg-gray-100', 'dark:hover:bg-[#111]');
-        
+
         const icon = item.querySelector('i');
         if (icon) {
             icon.classList.remove('text-black', 'dark:text-white');
@@ -305,7 +305,7 @@ window.toggleMainView = (viewId, options = {}) => {
         if (item.textContent.includes(tgtText)) {
             item.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
             item.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-black', 'dark:hover:text-white', 'hover:bg-gray-100', 'dark:hover:bg-[#111]');
-            
+
             const icon = item.querySelector('i');
             if (icon) {
                 icon.classList.remove('text-gray-400', 'group-hover:text-black', 'dark:group-hover:text-white');
@@ -323,12 +323,12 @@ window.toggleMainView = (viewId, options = {}) => {
         if (viewDashboard) viewDashboard.classList.remove('flex-1', 'overflow-y-auto');
         if (viewMessages) viewMessages.classList.remove('hidden');
         if (viewMessages) viewMessages.classList.add('flex-1', 'flex', 'flex-col');
-        
+
         // Fetch chat users if not already fetched
         if (window.fetchChatUsers) {
             window.fetchChatUsers();
             if (window.currentChatContext === 'global' || !window.currentChatContext) {
-                 window.selectChat('global');
+                window.selectChat('global');
             }
         }
     }
@@ -336,8 +336,8 @@ window.toggleMainView = (viewId, options = {}) => {
     // On mobile, close sidebar after clicking
     const sidebar = document.getElementById('main-sidebar');
     if (sidebar && !sidebar.classList.contains('hidden') && window.innerWidth < 768) {
-         sidebar.classList.add('hidden');
-         sidebar.classList.remove('flex', 'absolute', 'z-50', 'h-full', 'left-0');
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('flex', 'absolute', 'z-50', 'h-full', 'left-0');
     }
 
     if (!options.skipHistory) window.pushEmpNavState();

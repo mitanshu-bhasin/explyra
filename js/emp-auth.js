@@ -68,6 +68,12 @@ onAuthStateChanged(auth, async (user) => {
                     console.error("Error checking company status:", e);
                 }
 
+                // --- 2FA CHECK ---
+                if (window.userData.twoFactorEnabled && sessionStorage.getItem('explyra_2fa_verified') !== (window.userData.twoFactorPin || 'true')) {
+                    document.getElementById('modal-2fa-verify').classList.remove('hidden');
+                    return; // Stop here, wait for 2FA
+                }
+
                 showEmployeeDashboard();
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
@@ -339,8 +345,28 @@ window.forgotPassword = async () => {
     }
 };
 
+window.verify2FAPin = () => {
+    const enteredPin = document.getElementById('verify-2fa-pin').value;
+    
+    if (!window.userData || !window.userData.twoFactorPin) {
+        window.showToast("Configuration error. Please login again.", "error");
+        return;
+    }
+
+    if (enteredPin === window.userData.twoFactorPin) {
+        sessionStorage.setItem('explyra_2fa_verified', window.userData.twoFactorPin);
+        document.getElementById('modal-2fa-verify').classList.add('hidden');
+        showEmployeeDashboard();
+        window.showToast("Identity verified!", "success");
+    } else {
+        window.showToast("Incorrect PIN. Please try again.", "error");
+        document.getElementById('verify-2fa-pin').value = '';
+    }
+};
+
 window.handleLogout = async () => {
     if (await window.showInputPromise("Logout", "Are you sure you want to logout?", "", "none")) {
+        sessionStorage.removeItem('explyra_2fa_verified'); // Clear 2FA on logout
         signOut(auth);
         window.showToast('Logged out successfully', 'info');
         window.location.reload();

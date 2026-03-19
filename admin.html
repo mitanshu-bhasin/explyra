@@ -1366,6 +1366,29 @@
                     <form id="account-form" onsubmit="saveAccountSettings(event)">
                         <div class="grid grid-cols-1 gap-3">
                             <div>
+                                <h5
+                                    class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-halved"></i> Two-Step Verification
+                                </h5>
+                                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div>
+                                            <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Enable 2FA</h6>
+                                            <p class="text-[9px] text-slate-500">Secure your account with a secondary 4-digit PIN.</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="ac-2fa-enabled" class="sr-only peer" onchange="document.getElementById('ac-2fa-pin-container').classList.toggle('hidden', !this.checked)">
+                                            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                    <div id="ac-2fa-pin-container" class="hidden">
+                                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Set 4-Digit PIN</label>
+                                        <input type="password" id="ac-2fa-pin" maxlength="4" class="input-primary bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 py-2 text-center text-lg tracking-[1em] font-bold focus:ring-brand-500 focus:border-green-500 outline-none" placeholder="••••">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
                                 <label
                                     class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Alternative
                                     Phone</label>
@@ -3245,6 +3268,28 @@
     <!-- P2P Dependencies -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="js/emp-p2p.js" type="module"></script>
+    <!-- Two-Factor Verification Modal -->
+    <div id="modal-2fa-verify" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-lock text-2xl text-green-600 dark:text-green-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Two-Step Verification</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">Enter your 4-digit security PIN to continue</p>
+            
+            <div class="flex justify-center gap-3 mb-8">
+                <input type="password" maxlength="4" id="verify-2fa-pin" oninput="if(this.value.length === 4) verify2FAPin()" class="w-48 py-3 text-center text-2xl tracking-[1em] font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-green-500 focus:ring-0 outline-none transition-all" placeholder="••••" autofocus>
+            </div>
+            
+            <button onclick="verify2FAPin()" id="btn-verify-2fa" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-200 dark:shadow-none transition-all active:scale-95">
+                Verify & Unlock
+            </button>
+
+            <button onclick="auth.signOut().then(() => window.location.reload())" class="mt-6 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                Back to Login
+            </button>
+        </div>
+    </div>
 </body>
 
 </html>
