@@ -284,8 +284,8 @@ window.updateGDriveUI = () => {
     const isConnected = window.GDriveService && window.GDriveService.isConnected();
     
     // IDs to check for
-    const statusTextIds = ['gdrive-status-text', 'emp-gdrive-status-text'];
-    const connectBtnIds = ['btn-gdrive-connect', 'btn-emp-gdrive-connect'];
+    const statusTextIds = ['gdrive-status-text', 'gsheets-status-text', 'emp-gdrive-status-text', 'emp-gsheets-status-text'];
+    const connectBtnIds = ['btn-gdrive-connect', 'btn-gsheets-connect', 'btn-emp-gdrive-connect', 'btn-emp-gsheets-connect'];
     
     statusTextIds.forEach(id => {
         const el = document.getElementById(id);
@@ -302,10 +302,31 @@ window.updateGDriveUI = () => {
                 el.innerHTML = '<i class="fa-solid fa-check-circle"></i> Connected';
                 el.classList.add('bg-green-50', 'dark:bg-green-900/20', 'text-green-600', 'dark:text-green-400', 'border-green-200', 'dark:border-green-800/30');
                 el.classList.remove('text-slate-700', 'dark:text-slate-300');
+                
+                // Add disconnect button if not exists
+                const disconnectBtnId = id + '-disconnect';
+                let disconnectBtn = document.getElementById(disconnectBtnId);
+                if (!disconnectBtn) {
+                    disconnectBtn = document.createElement('button');
+                    disconnectBtn.id = disconnectBtnId;
+                    disconnectBtn.type = 'button';
+                    disconnectBtn.className = 'ml-2 text-[10px] text-red-500 hover:text-red-700 font-bold uppercase transition';
+                    disconnectBtn.innerHTML = '<i class="fa-solid fa-unlink"></i>';
+                    disconnectBtn.title = 'Disconnect Service';
+                    disconnectBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        if (window.GDriveService) window.GDriveService.disconnect();
+                    };
+                    el.after(disconnectBtn);
+                }
             } else {
                 el.innerHTML = '<i class="fa-solid fa-link"></i> Connect';
                 el.classList.remove('bg-green-50', 'dark:bg-green-900/20', 'text-green-600', 'dark:text-green-400', 'border-green-200', 'dark:border-green-800/30');
                 el.classList.add('text-slate-700', 'dark:text-slate-300');
+                
+                // Remove disconnect button if exists
+                const disconnectBtn = document.getElementById(id + '-disconnect');
+                if (disconnectBtn) disconnectBtn.remove();
             }
         }
     });

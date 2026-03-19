@@ -3442,6 +3442,10 @@ function renderUserRows(usersList) {
                     </div>
 
                     <div class="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-700/50 gap-2">
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button onclick="exportUserExpenses('${u.id}', 'CSV', '${u.name || u.email}')" title="Export CSV" class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-green-600 hover:bg-green-50 flex items-center justify-center transition focus:ring-2 focus:ring-green-500 outline-none"><i class="fa-solid fa-file-csv"></i></button>
+                            <button onclick="exportUserExpenses('${u.id}', 'SHEETS', '${u.name || u.email}')" title="Export to Google Sheets" class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-green-600 hover:bg-green-50 flex items-center justify-center transition focus:ring-2 focus:ring-green-500 outline-none"><i class="fa-brands fa-google-drive"></i></button>
+                        </div>
                         ${canEdit ? `
                             <button onclick="editUser('${u.id}')" class="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-green-50 hover:text-green-600 transition uppercase tracking-widest border border-slate-100 dark:border-slate-700">Edit Profile</button>
                             ${u.email !== currentUser?.email ? `
@@ -3455,6 +3459,71 @@ function renderUserRows(usersList) {
                 </div>
                             `}).join('');
 }
+
+window.exportUserExpenses = async (uid, format, userName = 'User') => {
+    if (typeof showToast === 'function') showToast(`Fetching expenses for ${userName}...`, 'info');
+    
+    try {
+        const q = query(collection(db, "expenses"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            showToast("No expenses found for this user.", "warning");
+            return;
+        }
+        
+        const expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const headers = ["ID", "Title", "Category", "Amount", "Currency", "Status", "Date", "Items"];
+        const rows = expenses.map(e => [
+            e.id,
+            e.title || 'Untitled',
+            e.category || 'General',
+            e.totalAmount || 0,
+            e.currency || 'INR',
+            e.status || 'SUBMITTED',
+            e.createdAt?.toDate ? e.createdAt.toDate().toISOString().split('T')[0] : 'N/A',
+            (e.lineItems || []).map(item => `${item.description}(${item.amount})`).join('; ')
+        ]);
+
+        if (format === 'CSV') {
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                const line = row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',');
+                csv += line + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Expenses_${userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("CSV Exported successfully!", "success");
+        } else if (format === 'SHEETS') {
+            if (!window.GDriveService) {
+                showToast("Google Drive Service not loaded", "error");
+                return;
+            }
+            
+            if (!GDriveService.isConnected()) {
+                showToast("Please connect Google Drive from settings first.", "warning");
+                // Optionally open settings or guide them
+                return;
+            }
+            
+            const title = `Expenses - ${userName} (${new Date().toLocaleDateString()})`;
+            const result = await GDriveService.createSpreadsheet(title, headers, rows);
+            
+            if (result && result.url) {
+                window.open(result.url, '_blank');
+                showToast("Google Sheet created and opened!", "success");
+            }
+        }
+    } catch (err) {
+        console.error("Export failed:", err);
+        showToast("Export failed: " + err.message, "error");
+    }
+};
 
 window.handleLogoPreview = async (input) => {
     if (input.files && input.files[0]) {
@@ -6119,6 +6188,9 @@ window.openAccountCenter = async () => {
     setTimeout(() => {
         content.classList.remove('scale-95', 'opacity-0');
         content.classList.add('scale-100', 'opacity-100');
+        
+        // Reset to first tab
+        window.switchAccountTab('account');
     }, 10);
 
     try {
@@ -6128,6 +6200,56 @@ window.openAccountCenter = async () => {
             document.getElementById('ac-stat-claims').textContent = snap.size;
         });
     } catch (e) { console.warn(e); }
+};
+
+window.switchAccountTab = (tabId) => {
+    // 1. Toggle Tab Buttons active state
+    document.querySelectorAll('.ac-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick')?.includes(tabId)) {
+            btn.classList.add('active');
+        }
+    });
+
+    // 2. Clear current section content with animation
+    document.querySelectorAll('.ac-content-section').forEach(section => {
+        section.classList.add('hidden');
+    });
+
+    // 3. Show new section
+    const target = document.getElementById(`ac-section-${tabId}`);
+    if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('animate-in');
+    }
+
+    // 4. Update Header Title & Desc
+    const title = document.getElementById('ac-tab-title');
+    const desc = document.getElementById('ac-tab-desc');
+    const footer = document.getElementById('ac-footer');
+
+    const meta = {
+        'account': ['Profile Details', 'Manage your corporate identity and system records'],
+        'security': ['Security Settings', 'Update verification methods and login credentials'],
+        'preferences': ['User Preferences', 'Configure display settings and interface options'],
+        'sidebar': ['Navigation Menu', 'Toggle sidebar modules visibility'],
+        'integrations': ['Connected Services', 'Manage third-party cloud integrations'],
+        'system': ['System Data', 'Administrative actions and data exports']
+    };
+
+    if (title && meta[tabId]) {
+        title.textContent = meta[tabId][0];
+        desc.textContent = meta[tabId][1];
+    }
+
+    // 5. Toggle Footer (Only show for tabs that have form inputs to save)
+    if (footer) {
+        if (['security', 'preferences', 'sidebar'].includes(tabId)) {
+            footer.classList.remove('hidden');
+        } else {
+            footer.classList.add('hidden');
+        }
+    }
 };
 
 window.saveAccountSettings = async (e) => {

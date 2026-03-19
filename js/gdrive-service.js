@@ -8,8 +8,11 @@ const GDriveService = {
     // The user needs to set this up themselves.
     CLIENT_ID: window.EXPLYRA_CONFIG?.googleDrive?.clientId || '411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com',
     API_KEY: window.EXPLYRA_CONFIG?.firebase?.apiKey || 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0',
-    SCOPES: 'https://www.googleapis.com/auth/drive.file',
-    DISCOVERY_DOCS: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+    SCOPES: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets',
+    DISCOVERY_DOCS: [
+        'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+        'https://sheets.googleapis.com/$discovery/rest?version=v4'
+    ],
 
     tokenClient: null,
     gapiInited: false,
@@ -251,6 +254,75 @@ const GDriveService = {
             reader.onload = () => resolve(reader.result.split(',')[1]);
             reader.onerror = error => reject(error);
         });
+    },
+
+    async createSpreadsheet(title, headers, rows) {
+        if (!this.isConnected()) {
+            throw new Error("Google Drive is not connected. Please connect from your Profile first.");
+        }
+
+        if (window.showToast) window.showToast(`Creating Google Sheet: ${title}...`, 'info');
+
+        try {
+            // Create a new spreadsheet
+            const response = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    properties: { title: title }
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Sheets create error detail:", errorData);
+                throw new Error("Sheet creation failed: " + response.statusText);
+            }
+
+            const spreadsheet = await response.json();
+            const spreadsheetId = spreadsheet.spreadsheetId;
+            const sheetName = spreadsheet.sheets[0]?.properties?.title || 'Sheet1';
+
+            // Update with headers and data
+            const valueRange = {
+                range: `${sheetName}!A1`,
+                majorDimension: 'ROWS',
+                values: [headers, ...rows]
+            };
+
+            const updateResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}!A1?valueInputOption=RAW`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + this.accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(valueRange)
+            });
+
+            if (!updateResponse.ok) {
+                const updateErr = await updateResponse.json();
+                console.error("Sheets update error detail:", updateErr);
+                throw new Error("Data population failed: " + (updateErr.error?.message || updateResponse.statusText));
+            }
+
+            // Set public permission (optional, but same as file upload)
+            await this.setPublicPermission(spreadsheetId);
+
+            if (window.showToast) window.showToast('Google Sheet created successfully!', 'success');
+
+            return {
+                id: spreadsheetId,
+                name: title,
+                url: `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`
+            };
+        } catch (error) {
+            console.error("Error creating Google Sheet:", error);
+            if (window.showToast) window.showToast(error.message || "Failed to create Google Sheet", "error");
+            throw error;
+        }
     }
 };
 

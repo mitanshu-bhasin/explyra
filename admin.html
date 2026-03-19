@@ -677,6 +677,53 @@
             transition: width 0.12s ease;
             pointer-events: none;
         }
+
+        /* Account Console Tab Styling */
+        .ac-tab-btn {
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ac-tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .ac-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .ac-tab-btn.active {
+            background: white !important;
+            color: #1546C0 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: #eee !important;
+        }
+
+        .dark .ac-tab-btn.active {
+            background: #111 !important;
+            color: #4ade80 !important;
+            border-color: #222 !important;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-in {
+            animation: slideInUp 0.3s ease-out forwards;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
@@ -1335,7 +1382,7 @@
                         <i class="fa-brands fa-google-drive"></i> Integrations
                     </h5>
                     <div
-                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div
                                 class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
@@ -1349,6 +1396,27 @@
                             </div>
                         </div>
                         <button type="button" id="btn-gdrive-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Google_Sheets_logo_%282014-2020%29.svg"
+                                    alt="Google Sheets" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Sheets</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gsheets-status-text">Not connected
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gsheets-connect"
                             onclick="window.GDriveService && window.GDriveService.authenticate()"
                             class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                             <i class="fa-solid fa-link"></i> Connect
@@ -1636,10 +1704,13 @@
                     data-tab="workflow">
                     <i class="fa-solid fa-route"></i> Workflow
                 </button>
+                <button onclick="switchTab('budgets')" id="nav-budgets" class="sidebar-item w-full" data-tab="budgets">
+                    <i class="fa-solid fa-coins"></i> Budgets
+                </button>
 
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics
                 </div>
-                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden"
+                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full"
                     data-tab="reports">
                     <i class="fa-solid fa-chart-line"></i> Reports
                 </button>
@@ -3290,6 +3361,165 @@
             </button>
         </div>
     </div>
-</body>
+    <!-- Budget Modal -->
+    <div id="budget-modal"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[95] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-soft transition-enterprise scale-95 opacity-0 max-w-md w-full p-6"
+            id="budget-modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100" id="budget-modal-title">Add Budget
+                </h3>
+                <button onclick="closeBudgetModal()" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
+                        class="fa-solid fa-times"></i></button>
+            </div>
+            <form id="budget-form" class="space-y-4">
+                <input type="hidden" id="budget-id">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Budget
+                        Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="budget-name" class="input-primary"
+                        placeholder="e.g. Q1 Marketing Budget" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Budget
+                        Type <span class="text-red-500">*</span></label>
+                    <select id="budget-type" class="input-primary" required>
+                        <option value="department">Department</option>
+                        <option value="project">Project</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Amount
+                         <span class="text-red-500">*</span></label>
+                    <input type="number" id="budget-amount" class="input-primary" placeholder="e.g. 50000" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Time
+                        Period <span class="text-red-500">*</span></label>
+                    <select id="budget-period" class="input-primary" required>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeBudgetModal()" class="flex-1 ghost-btn">Cancel</button>
+                    <button type="button" onclick="saveBudget()"
+                        class="flex-1 bg-green-600 hover:bg-brand-700 text-white py-2 rounded-lg text-sm font-semibold transition shadow-md shadow-green-200">Save
+                        Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function renderBudgets() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Budgets</h2>
+                <button class="btn-vercel-primary" onclick="openBudgetModal()">New Budget</button>
+                </div>
+                <div id="budgets-list">
+                </div>
+            `;
+            renderBudgetList();
+        }
 
+        function openBudgetModal(budgetId) {
+            const modal = document.getElementById('budget-modal');
+            const modalTitle = document.getElementById('budget-modal-title');
+            const budgetIdInput = document.getElementById('budget-id');
+            const budgetNameInput = document.getElementById('budget-name');
+            const budgetTypeInput = document.getElementById('budget-type');
+            const budgetAmountInput = document.getElementById('budget-amount');
+            const budgetPeriodInput = document.getElementById('budget-period');
+
+            if (budgetId) {
+                modalTitle.textContent = 'Edit Budget';
+                // In a real app, you would fetch the budget from the database
+                const budget = { id: budgetId, name: 'Q1 Marketing', type: 'Project', amount: 50000, period: 'Quarterly' };
+                budgetIdInput.value = budget.id;
+                budgetNameInput.value = budget.name;
+                budgetTypeInput.value = budget.type;
+                budgetAmountInput.value = budget.amount;
+                budgetPeriodInput.value = budget.period;
+            } else {
+                modalTitle.textContent = 'Add Budget';
+                budgetIdInput.value = '';
+                budgetNameInput.value = '';
+                budgetTypeInput.value = 'department';
+                budgetAmountInput.value = '';
+                budgetPeriodInput.value = 'monthly';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeBudgetModal() {
+            document.getElementById('budget-modal').classList.add('hidden');
+        }
+
+        function saveBudget() {
+            // This is a placeholder. In a real app, you'd save to a database.
+            const budget = {
+                id: document.getElementById('budget-id').value || new Date().getTime().toString(),
+                name: document.getElementById('budget-name').value,
+                type: document.getElementById('budget-type').value,
+                amount: document.getElementById('budget-amount').value,
+                period: document.getElementById('budget-period').value,
+            };
+            console.log('Saving budget:', budget);
+            showToast('Budget saved successfully!', 'success');
+            closeBudgetModal();
+            renderBudgetList();
+        }
+        
+        function renderBudgetList() {
+            // This is a placeholder. In a real app, you'd fetch from a database.
+            const budgetList = [
+                { id: 1, name: 'Q1 Marketing', type: 'Project', amount: 50000, period: 'Quarterly', used: 25000 },
+                { id: 2, name: 'Sales Department', type: 'Department', amount: 100000, period: 'Monthly', used: 75000 },
+                { id: 3, name: 'Engineering Department', type: 'Department', amount: 200000, period: 'Monthly', used: 150000 },
+            ];
+
+            const listElement = document.getElementById('budgets-list');
+            if(listElement){
+                listElement.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${budgetList.map(budget => {
+                            const percentage = (budget.used / budget.amount) * 100;
+                            let progressBarColor = 'bg-green-500';
+                            if (percentage > 75) {
+                                progressBarColor = 'bg-yellow-500';
+                            }
+                            if (percentage > 90) {
+                                progressBarColor = 'bg-red-500';
+                            }
+                            return `
+                                <div class="vercel-card">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">${budget.type}</p>
+                                            <p class="text-lg font-bold text-slate-800 dark:text-white">${budget.name}</p>
+                                        </div>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:text-slate-300" onclick="openBudgetModal(${budget.id})"><i class="fa-solid fa-pen"></i></button>
+                                    </div>
+                                    <div class="mt-4">
+                                        <div class="flex justify-between items-center text-sm">
+                                            <p class="text-slate-500 dark:text-slate-300">Used: <span class="font-bold text-slate-800 dark:text-white">₹${budget.used.toLocaleString()}</span></p>
+                                            <p class="text-slate-500 dark:text-slate-300">Budget: <span class="font-bold text-slate-800 dark:text-white">₹${budget.amount.toLocaleString()}</span></p>
+                                        </div>
+                                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 mt-2">
+                                            <div class="${progressBarColor} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                                        </div>
+                                        <p class="text-right text-xs text-slate-500 dark:text-slate-400 mt-1">${percentage.toFixed(2)}% Used</p>
+                                    </div>
+                                </div>
+                            `
+                        }).join('')}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
 </html>

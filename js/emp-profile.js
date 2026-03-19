@@ -1,6 +1,76 @@
 // js/emp-profile.js
-import { doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+window.exportUserExpenses = async (uid, format, userName = 'User') => {
+    if (typeof showToast === 'function') showToast(`Preparing export for ${userName}...`, 'info');
+    
+    try {
+        const db = window.db;
+        const q = query(collection(db, "expenses"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            showToast("No expenses found.", "warning");
+            return;
+        }
+        
+        const expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const headers = ["ID", "Title", "Category", "Amount", "Currency", "Status", "Date", "Items"];
+        const rows = expenses.map(e => [
+            e.id,
+            e.title || 'Untitled',
+            e.category || 'General',
+            e.totalAmount || 0,
+            e.currency || 'INR',
+            e.status || 'SUBMITTED',
+            e.createdAt?.toDate ? e.createdAt.toDate().toISOString().split('T')[0] : 'N/A',
+            (e.lineItems || []).map(item => `${item.description}(${item.amount})`).join('; ')
+        ]);
+
+        if (format === 'CSV') {
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                const line = row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',');
+                csv += line + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Expenses_${userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("CSV Exported successfully!", "success");
+        } else if (format === 'SHEETS') {
+            if (!window.GDriveService) {
+                showToast("Google Drive Service not loaded", "error");
+                return;
+            }
+            
+            if (!GDriveService.isConnected()) {
+                const connect = await confirm("Please connect Google Drive from settings first. Connect now?");
+                if (connect && GDriveService.authenticate) {
+                   GDriveService.authenticate(() => {
+                        showToast("Re-click export to continue.", "info");
+                   });
+                }
+                return;
+            }
+            
+            const title = `Expenses - ${userName} (${new Date().toLocaleDateString()})`;
+            const result = await GDriveService.createSpreadsheet(title, headers, rows);
+            
+            if (result && result.url) {
+                window.open(result.url, '_blank');
+                showToast("Google Sheet created and opened!", "success");
+            }
+        }
+    } catch (err) {
+        console.error("Export failed:", err);
+        showToast("Export failed: " + err.message, "error");
+    }
+};
 
 window.openProfileModal = () => {
     const userData = window.userData;

@@ -1958,8 +1958,21 @@
                     </div>
                 </div>
 
-                <div class="pt-4 flex flex-col gap-3 border-t border-slate-100 dark:border-slate-800 mt-2">
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 mt-2">
+                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-file-export"></i> Data Export
+                    </h5>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <button type="button" onclick="exportUserExpenses(currentUser.uid, 'CSV', userData.name)" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-csv text-green-600"></i> Export CSV
+                        </button>
+                        <button type="button" onclick="exportUserExpenses(currentUser? currentUser.uid : '', 'SHEETS', userData? userData.name : 'Me')" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-google-drive text-blue-500"></i> Export to Sheets
+                        </button>
+                    </div>
+                </div>
 
+                <div class="pt-2 flex flex-col gap-3">
                     <div>
                         <h5
                             class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -1980,6 +1993,27 @@
                                 </div>
                             </div>
                             <button type="button" id="btn-emp-gdrive-connect"
+                                onclick="window.GDriveService && window.GDriveService.authenticate()"
+                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-link"></i> Connect
+                            </button>
+                        </div>
+                        
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Google_Sheets_logo_%282014-2020%29.svg"
+                                        alt="Google Sheets" class="w-5 h-5">
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Sheets</h6>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gsheets-status-text">Not
+                                        connected</p>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-emp-gsheets-connect"
                                 onclick="window.GDriveService && window.GDriveService.authenticate()"
                                 class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                                 <i class="fa-solid fa-link"></i> Connect
