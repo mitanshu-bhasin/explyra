@@ -3,7 +3,7 @@
  * Features: Local History (Per Page/Course), Code Blocks with Copy, Concise Models.
  */
 (function() {
-    const GITHUB_TOKEN = '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';
+    const GITHUB_TOKEN = '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';
     const ENDPOINT = 'https://models.github.ai/inference/chat/completions';
     const MODEL = 'mistral-ai/mistral-small-2503';
 

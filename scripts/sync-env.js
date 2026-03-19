@@ -40,8 +40,8 @@ function sync() {
             measurementId: env.FIREBASE_MEASUREMENT_ID || "G-TFBZ5GZ22C"
         },
         ai: {
-            model: 'moonshotai/kimi-k2-instruct-0905',
-            geminiApiKey: env.GEMINI_API_KEY || "AIzaSyCdJ0UQv7sQ4ExCufa9hWUy11og7IrpCgM"
+            model: 'moonshotai/kimi-k2-instruct-0905'
+            // NOTE: Gemini API Key is a secret and handled by backend functions
         },
         analyticsId: env.GA_MEASUREMENT_ID || "G-TFBZ5GZ22C",
         emailApp: {

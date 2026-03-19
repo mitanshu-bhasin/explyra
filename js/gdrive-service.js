@@ -7,7 +7,7 @@ const GDriveService = {
     // Replace this with the actual client ID generated in Google Cloud Console
     // The user needs to set this up themselves.
     CLIENT_ID: window.EXPLYRA_CONFIG?.googleDrive?.clientId || '411853553644-tpf4p1f6co6gvtb3p3jnc574ncghu21l.apps.googleusercontent.com',
-    API_KEY: window.EXPLYRA_CONFIG?.googleDrive?.apiKey || 'YOUR_GOOGLE_API_KEY_HERE',
+    API_KEY: window.EXPLYRA_CONFIG?.firebase?.apiKey || 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0',
     SCOPES: 'https://www.googleapis.com/auth/drive.file',
     DISCOVERY_DOCS: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
 

@@ -7,7 +7,7 @@
  * EXPORT_REPORT, SHOW_USER_INFO, ASSIGN_TASK, TOGGLE_THEME
  */
 
-const GROQ_API_KEY = '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';
+const GROQ_API_KEY = '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';
 const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export class AISupport {

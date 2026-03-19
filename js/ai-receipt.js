@@ -33,32 +33,49 @@ window.scanReceiptAI = async (input) => {
             reader.readAsDataURL(file);
         });
 
-        // 2. Google AI Studio (Gemini) Configuration (Sourced from Environment)
-        const GEMINI_KEY = window.EXPLYRA_CONFIG?.ai?.geminiApiKey;
-        const MODEL = 'gemini-flash-latest';
-        const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`;
-
+        // 2. Call backend proxy to keep GEMINI_KEY secure
         const prompt = "Analyze this receipt image. Extract all line items and return them as a JSON array where each object has: 'date' (YYYY-MM-DD), 'desc' (item description), 'category' (Travel, Food, Lodging, Supplies, Other), and 'amount' (numeric). Return ONLY the raw JSON array. If you cannot find a date, use today's date: " + new Date().toISOString().split('T')[0];
+        
+        // Use proxy in production, direct call in local dev (if proxy returns 405/404)
+        let response;
+        try {
+            response = await fetch('/api/scan-receipt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ base64Data, prompt })
+            });
+        } catch (e) {
+            console.warn("Backend proxy failed, trying direct call...", e);
+        }
 
-        const response = await fetch(ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [
-                        { text: prompt },
-                        { inlineData: { mimeType: 'image/jpeg', data: base64Data } }
-                    ]
-                }],
-                generationConfig: {
-                    responseMimeType: "application/json"
-                }
-            })
-        });
+        if (!response || !response.ok) {
+            // Local dev fallback if proxy is missing (e.g., Live Server)
+            const LOCAL_HOSTS = ['localhost', '127.0.0.1'];
+            if (LOCAL_HOSTS.includes(window.location.hostname)) {
+                console.info("Using Direct Gemini API Fallback for Local Dev...");
+                const DEV_KEY = 'AIzaSyDVSn3L5_JyFOol8IsnGDktYiv1znqFmdA';
+                const MODEL = 'gemini-flash-latest';
+                const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${DEV_KEY}`;
+                
+                response = await fetch(ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: prompt },
+                                { inlineData: { mimeType: 'image/jpeg', data: base64Data } }
+                            ]
+                        }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+            }
+        }
 
-        if (!response.ok) {
-            const err = await response.text();
-            throw new Error(`Gemini API Error: ${response.status} - ${err}`);
+        if (!response || !response.ok) {
+            const errBody = response ? await response.text() : 'Network error';
+            throw new Error(`Scan Failed: ${errBody}`);
         }
 
         const data = await response.json();

@@ -550,6 +550,87 @@
         }
         .vercel-card:hover .sparkline-svg { opacity: 0.6; }
 
+        /* Quick filters + compact mode */
+        .emp-quick-filter {
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #6b7280;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .emp-quick-filter:hover {
+            border-color: #9ca3af;
+            color: #111827;
+        }
+
+        .emp-quick-filter.active {
+            background: #111827;
+            color: #fff;
+            border-color: #111827;
+        }
+
+        .dark .emp-quick-filter {
+            background: #0a0a0a;
+            border-color: #333;
+            color: #9ca3af;
+        }
+
+        .dark .emp-quick-filter.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .emp-compact #main-view-dashboard {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        .emp-compact .vercel-card {
+            border-radius: 10px;
+        }
+
+        .emp-compact #expenses-list .vercel-card,
+        .emp-compact #emp-tasks-list .vercel-card,
+        .emp-compact #financial-accounts-list .vercel-card {
+            padding: 0.75rem !important;
+        }
+
+        #emp-scroll-top {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.9);
+            color: #111827;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 45;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(6px);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        #emp-scroll-top:hover {
+            transform: translateY(-2px);
+        }
+
+        .dark #emp-scroll-top {
+            background: rgba(10, 10, 10, 0.88);
+            color: #fff;
+            border-color: #333;
+        }
+
         @media (max-width: 767px) {
             #modal-chat {
                 padding: 0;
@@ -2493,6 +2574,7 @@
                 <div class="kbd-row"><span>Switch to tasks</span><span class="kbd-key"><kbd>Shift</kbd> +
                         <kbd>T</kbd></span></div>
                 <div class="kbd-row"><span>Open messages</span><span class="kbd-key"><kbd>M</kbd></span></div>
+                <div class="kbd-row"><span>Toggle compact mode</span><span class="kbd-key"><kbd>D</kbd></span></div>
                 <div class="kbd-row"><span>Close / Escape</span><span class="kbd-key"><kbd>Esc</kbd></span></div>
             </div>
             <p style="font-size:10px;color:#999;margin-top:14px;text-align:center;font-weight:500">Press <kbd
@@ -2791,6 +2873,13 @@
                         if (typeof toggleMainView === 'function') toggleMainView('messages');
                     }
                 }
+                if (e.key === 'd' || e.key === 'D') {
+                    if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                        e.preventDefault();
+                        const compact = localStorage.getItem('emp-ui-density') === 'compact';
+                        applyEmpDensity(compact ? 'comfortable' : 'compact');
+                    }
+                }
             });
 
             // ── Drag-and-Drop Upload Enhancement ──
@@ -2820,10 +2909,118 @@
                 });
             }
 
+            function injectExpenseQuickFilters() {
+                const toolbar = document.querySelector('#section-claims > div.p-4');
+                if (!toolbar || document.getElementById('emp-quick-filters')) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.id = 'emp-quick-filters';
+                wrapper.className = 'flex flex-wrap items-center gap-2 mt-2';
+                wrapper.innerHTML = `
+                    <button class="emp-quick-filter active" data-filter="ALL">All</button>
+                    <button class="emp-quick-filter" data-filter="PENDING">Pending</button>
+                    <button class="emp-quick-filter" data-filter="PAID">Paid</button>
+                    <button class="emp-quick-filter" data-filter="REJECTED">Rejected</button>
+                `;
+                toolbar.appendChild(wrapper);
+
+                wrapper.addEventListener('click', (event) => {
+                    const btn = event.target.closest('.emp-quick-filter');
+                    if (!btn) return;
+                    applyExpenseQuickFilter(btn.getAttribute('data-filter'));
+                });
+            }
+
+            function applyExpenseQuickFilter(filterKey) {
+                const searchInput = document.getElementById('emp-search');
+                const map = {
+                    ALL: '',
+                    PENDING: 'pending',
+                    PAID: 'paid',
+                    REJECTED: 'rejected'
+                };
+
+                document.querySelectorAll('#emp-quick-filters .emp-quick-filter').forEach((btn) => {
+                    btn.classList.toggle('active', btn.getAttribute('data-filter') === filterKey);
+                });
+
+                if (searchInput) searchInput.value = map[filterKey] || '';
+                if (typeof filterExpenses === 'function') {
+                    filterExpenses(map[filterKey] || '');
+                }
+
+                const list = document.getElementById('expenses-list');
+                if (!list) return;
+                const items = Array.from(list.children || []);
+                items.forEach((item) => {
+                    if (filterKey === 'ALL') {
+                        item.classList.remove('hidden');
+                        return;
+                    }
+
+                    const text = (item.textContent || '').toUpperCase();
+                    let visible = false;
+                    if (filterKey === 'PENDING') visible = /(PENDING|PROCESS|MANAGER|FINANCE|TREASURY)/.test(text);
+                    if (filterKey === 'PAID') visible = /PAID/.test(text);
+                    if (filterKey === 'REJECTED') visible = /REJECTED/.test(text);
+                    item.classList.toggle('hidden', !visible);
+                });
+            }
+
+            function applyEmpDensity(mode) {
+                const compact = mode === 'compact';
+                document.body.classList.toggle('emp-compact', compact);
+                localStorage.setItem('emp-ui-density', compact ? 'compact' : 'comfortable');
+                const icon = document.querySelector('#emp-density-toggle i');
+                if (icon) {
+                    icon.className = compact ? 'fa-solid fa-compress text-sm text-gray-500 dark:text-gray-400' : 'fa-solid fa-expand text-sm text-gray-500 dark:text-gray-400';
+                }
+            }
+
+            function injectDensityToggle() {
+                const headerActions = document.querySelector('header .flex.items-center.gap-1.sm\\:gap-2');
+                if (!headerActions || document.getElementById('emp-density-toggle')) return;
+
+                const btn = document.createElement('button');
+                btn.id = 'emp-density-toggle';
+                btn.type = 'button';
+                btn.title = 'Toggle compact view';
+                btn.className = 'w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors';
+                btn.innerHTML = '<i class="fa-solid fa-expand text-sm text-gray-500 dark:text-gray-400"></i>';
+                btn.addEventListener('click', () => {
+                    const compact = localStorage.getItem('emp-ui-density') === 'compact';
+                    applyEmpDensity(compact ? 'comfortable' : 'compact');
+                });
+
+                headerActions.prepend(btn);
+            }
+
+            function initScrollTopButton() {
+                if (document.getElementById('emp-scroll-top')) return;
+
+                const btn = document.createElement('button');
+                btn.id = 'emp-scroll-top';
+                btn.setAttribute('aria-label', 'Back to top');
+                btn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+                document.body.appendChild(btn);
+
+                const host = document.getElementById('main-view-dashboard');
+                if (!host) return;
+
+                host.addEventListener('scroll', () => {
+                    btn.style.display = host.scrollTop > 280 ? 'flex' : 'none';
+                }, { passive: true });
+
+                btn.addEventListener('click', () => {
+                    host.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
             // ── Dashboard Auto-Refresh (Real-time sync) ──
             function refreshDashboardFeatures() {
                 renderEmpGreeting();
                 injectActivityFeed();
+                injectExpenseQuickFilters();
 
                 // Auto-stepper: show progress of the most recent pending claim
                 const pendingClaims = (window.expensesData || [])
@@ -2842,6 +3039,10 @@
                 } else {
                     window.hideClaimStepper();
                 }
+
+                if (!document.querySelector('#emp-quick-filters .emp-quick-filter.active')) {
+                    applyExpenseQuickFilter('ALL');
+                }
             }
 
             // ── Init all features ──
@@ -2850,6 +3051,9 @@
                     refreshDashboardFeatures();
                     addSparklines();
                     enhanceDragDrop();
+                    injectDensityToggle();
+                    initScrollTopButton();
+                    applyEmpDensity(localStorage.getItem('emp-ui-density') === 'compact' ? 'compact' : 'comfortable');
                 }, 1200);
 
                 // Periodic refresh to keep TS and real data in sync

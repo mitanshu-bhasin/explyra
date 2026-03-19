@@ -650,6 +650,33 @@
         .sidebar-collapsed .sidebar-btn-collapse {
             transform: rotate(180deg);
         }
+
+        /* Admin Density + Scroll Progress */
+        .admin-compact .vercel-card {
+            padding: 1rem !important;
+        }
+
+        .admin-compact #content-area {
+            padding: 1rem !important;
+        }
+
+        .admin-compact .sidebar-item {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        #admin-scroll-progress {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 2px;
+            width: 0;
+            z-index: 120;
+            background: linear-gradient(90deg, #22c55e, #3b82f6);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.45);
+            transition: width 0.12s ease;
+            pointer-events: none;
+        }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
@@ -2652,6 +2679,77 @@
                 populateActivityFeed();
             }
 
+            function renderAdminQuickStrip() {
+                const mount = document.getElementById('crm-widget-container');
+                if (!mount) return;
+
+                const existing = document.getElementById('admin-quick-strip');
+                if (existing) return;
+
+                const compactEnabled = localStorage.getItem('admin-ui-density') === 'compact';
+                const wrapper = document.createElement('div');
+                wrapper.id = 'admin-quick-strip';
+                wrapper.className = 'mb-6';
+                wrapper.innerHTML = `
+                    <div class="vercel-card" style="padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
+                        <div style="display:flex;flex-wrap:wrap;gap:8px">
+                            <button class="export-btn" onclick="switchTab && switchTab('approvals')"><i class="fa-solid fa-stamp"></i> Pending Queue</button>
+                            <button class="export-btn" onclick="switchTab && switchTab('users')"><i class="fa-solid fa-users"></i> Team</button>
+                            <button class="export-btn" onclick="switchTab && switchTab('reports')"><i class="fa-solid fa-chart-line"></i> Reports</button>
+                            <button class="export-btn" onclick="refreshAdminWorkspace()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                        </div>
+                        <button id="btn-admin-density" class="export-btn" onclick="toggleAdminDensity()">
+                            <i class="fa-solid fa-compress"></i>
+                            <span>${compactEnabled ? 'Compact' : 'Comfortable'}</span>
+                        </button>
+                    </div>
+                `;
+                mount.prepend(wrapper);
+            }
+
+            window.refreshAdminWorkspace = function () {
+                if (typeof showToast === 'function') showToast('Refreshing dashboard data...', 'info');
+                if (typeof switchTab === 'function') {
+                    const active = document.querySelector('.sidebar-item.active')?.getAttribute('data-tab') || 'overview';
+                    switchTab(active);
+                } else {
+                    location.reload();
+                }
+            };
+
+            function applyAdminDensity(mode) {
+                const isCompact = mode === 'compact';
+                document.body.classList.toggle('admin-compact', isCompact);
+                localStorage.setItem('admin-ui-density', isCompact ? 'compact' : 'comfortable');
+
+                const densityBtn = document.querySelector('#btn-admin-density span');
+                if (densityBtn) densityBtn.textContent = isCompact ? 'Compact' : 'Comfortable';
+            }
+
+            window.toggleAdminDensity = function () {
+                const current = localStorage.getItem('admin-ui-density') === 'compact' ? 'compact' : 'comfortable';
+                applyAdminDensity(current === 'compact' ? 'comfortable' : 'compact');
+            };
+
+            function initScrollProgress() {
+                if (document.getElementById('admin-scroll-progress')) return;
+                const bar = document.createElement('div');
+                bar.id = 'admin-scroll-progress';
+                document.body.appendChild(bar);
+
+                const host = document.getElementById('content-area');
+                if (!host) return;
+
+                const update = () => {
+                    const max = host.scrollHeight - host.clientHeight;
+                    const pct = max > 0 ? (host.scrollTop / max) * 100 : 0;
+                    bar.style.width = pct + '%';
+                };
+
+                host.addEventListener('scroll', update, { passive: true });
+                update();
+            }
+
             function populateActivityFeed() {
                 const feed = document.getElementById('admin-activity-feed');
                 if (!feed) return;
@@ -2693,6 +2791,7 @@
             // Global refresh hook for admin-logic.js
             window.refreshNewAdminUI = function () {
                 renderWelcomeHero();
+                renderAdminQuickStrip();
             };
 
             // ── Command Palette ──
@@ -2843,7 +2942,14 @@
             if (contentArea) observer.observe(contentArea, { childList: true });
 
             // Initial render
-            window.addEventListener('load', () => setTimeout(renderWelcomeHero, 1500));
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    renderWelcomeHero();
+                    renderAdminQuickStrip();
+                    applyAdminDensity(localStorage.getItem('admin-ui-density') === 'compact' ? 'compact' : 'comfortable');
+                    initScrollProgress();
+                }, 1500);
+            });
         })();
     </script>
     </script>

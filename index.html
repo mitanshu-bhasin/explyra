@@ -791,6 +791,25 @@
             font-family: inherit
         }
 
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: 2600;
+            pointer-events: none;
+            background: color-mix(in srgb, var(--bg2) 75%, transparent);
+        }
+
+        .scroll-progress-bar {
+            width: var(--scroll-progress, 0%);
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--teal), var(--amber));
+            box-shadow: 0 0 20px color-mix(in srgb, var(--blue) 45%, transparent);
+            transition: width 0.16s ease-out;
+        }
+
         /* ═══════════════════════════════════════════
    NAV
 ═══════════════════════════════════════════ */
@@ -869,6 +888,21 @@
 
         .nav-links a:hover {
             color: var(--ink)
+        }
+
+        .nav-links a.is-active {
+            color: var(--ink);
+        }
+
+        .nav-links a.is-active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 100%;
+            height: 2px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, var(--blue), var(--teal));
         }
 
         /* Dropdown & Mega Menu Fix */
@@ -1957,6 +1991,18 @@
             cursor: default
         }
 
+        .suite-pill {
+            animation: soft-float 6s ease-in-out infinite;
+        }
+
+        .suite-pill:nth-child(2n) {
+            animation-delay: .8s;
+        }
+
+        .suite-pill:nth-child(3n) {
+            animation-delay: 1.6s;
+        }
+
         .suite-pill:hover {
             transform: translateY(-2px);
             box-shadow: var(--s2)
@@ -2007,6 +2053,17 @@
             to {
                 opacity: 1;
                 transform: translateY(0)
+            }
+        }
+
+        @keyframes soft-float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
             }
         }
 
@@ -2192,6 +2249,17 @@
             padding: 3.5rem 5vw;
             position: relative;
             overflow: hidden
+        }
+
+        .overview,
+        .prod-section,
+        .testimonials,
+        .support-sec,
+        .founder-strip,
+        .cta-banner,
+        footer {
+            content-visibility: auto;
+            contain-intrinsic-size: 900px;
         }
 
         .prod-inner {
@@ -4210,13 +4278,16 @@
 ═══════════════════════════════════════════ */
         .reveal {
             opacity: 0;
-            transform: translateY(24px);
-            transition: opacity .6s ease, transform .6s ease
+            transform: translateY(24px) scale(.985);
+            filter: blur(3px);
+            transition: opacity .7s ease, transform .7s cubic-bezier(.22, .61, .36, 1), filter .7s ease;
+            transition-delay: var(--reveal-delay, 0ms)
         }
 
         .reveal.visible {
             opacity: 1;
-            transform: none
+            transform: none;
+            filter: blur(0)
         }
 
         .d1 {
@@ -4233,6 +4304,16 @@
 
         .d4 {
             transition-delay: .4s
+        }
+
+        .motion-tilt {
+            will-change: transform;
+            transition: transform .35s cubic-bezier(.22, .61, .36, 1), box-shadow .35s ease;
+        }
+
+        .parallax-blob,
+        .parallax-mesh {
+            will-change: transform;
         }
 
         /* ═══════════════════════════════════════════
@@ -4817,10 +4898,41 @@
                 width: 25px;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .running-text-content {
+                animation: none;
+            }
+
+            .suite-pill,
+            .reveal,
+            .motion-tilt,
+            .parallax-blob,
+            .parallax-mesh {
+                transform: none !important;
+                filter: none !important;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <div class="scroll-progress" aria-hidden="true">
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
 
     <!-- HEADER & NAV -->
     <header>
@@ -5240,7 +5352,7 @@
         <!-- ══ HERO ══ -->
         <section class="hero" aria-label="Hero">
             <canvas id="hero-3d-canvas"></canvas>
-            <div class="hero-mesh"></div>
+            <div class="hero-mesh parallax-mesh"></div>
             <div class="hero-particles">
                 <div class="p-dot" style="top:20%;left:15%;animation-delay:0s"></div>
                 <div class="p-dot" style="top:60%;left:5%;animation-delay:1s"></div>
@@ -5276,15 +5388,15 @@
 
                 <div class="hero-stats reveal">
                     <div class="h-stat">
-                        <div class="h-stat-num">500+</div>
+                        <div class="h-stat-num" data-count="500" data-suffix="+">500+</div>
                         <div class="h-stat-lbl">Early Users</div>
                     </div>
                     <div class="h-stat">
-                        <div class="h-stat-num">9</div>
+                        <div class="h-stat-num" data-count="9">9</div>
                         <div class="h-stat-lbl">Core Products</div>
                     </div>
                     <div class="h-stat">
-                        <div class="h-stat-num">1</div>
+                        <div class="h-stat-num" data-count="1">1</div>
                         <div class="h-stat-lbl">Visionary Builder</div>
                     </div>
                     <div class="h-stat">
@@ -5420,7 +5532,7 @@
 
         <!-- ══ EXPENSE ══ -->
         <section class="prod-section expense-sec" id="expense">
-            <div class="blob"></div>
+            <div class="blob parallax-blob"></div>
             <div class="prod-inner">
                 <div class="reveal">
                     <div class="prod-label" style="color:var(--blue)">💼 Explyra Expense</div>
@@ -5539,7 +5651,7 @@
 
         <!-- ══ CRM ══ -->
         <section class="prod-section dev-sec" id="crm">
-            <div class="blob" style="background:var(--blue);bottom:-100px;left:-100px;width:500px;height:500px"></div>
+            <div class="blob parallax-blob" style="background:var(--blue);bottom:-100px;left:-100px;width:500px;height:500px"></div>
             <div class="prod-inner rev">
                 <div class="reveal d2">
                     <div class="dev-card" style="--card-clr:var(--blue);--card-g:var(--blue-g);--card-b:var(--blue-b)">
@@ -5632,7 +5744,7 @@
 
         <!-- ══ HEALTH ══ -->
         <section class="prod-section health-sec" id="health">
-            <div class="blob"></div>
+            <div class="blob parallax-blob"></div>
             <div class="prod-inner rev">
                 <div class="reveal d2">
                     <div class="health-card">
@@ -5753,7 +5865,7 @@
 
         <!-- ══ LEARNING ══ -->
         <section class="prod-section learn-sec" id="learning">
-            <div class="blob"></div>
+            <div class="blob parallax-blob"></div>
             <div class="prod-inner">
                 <div class="reveal">
                     <div class="prod-label" style="color:var(--amber)">📚 Explyra Learning</div>
@@ -5862,7 +5974,7 @@
 
         <!-- ══ DEVELOPERS ══ -->
         <section class="prod-section dev-sec" id="developers">
-            <div class="blob"></div>
+            <div class="blob parallax-blob"></div>
             <div class="prod-inner rev">
                 <div class="reveal d2">
                     <div class="dev-card">
@@ -6136,7 +6248,8 @@
                         <em>Trailer</em>
                     </h2>
                     <div class="video-thumbnail" id="videoTrigger">
-                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer">
+                        <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer"
+                            loading="lazy" decoding="async" fetchpriority="low">
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <i class="fas fa-play"></i>
@@ -6352,17 +6465,64 @@
     <script>
         /* THEME */
         const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const netInfo = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const isDataSaver = !!netInfo?.saveData;
+        const isLowSpecDevice = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+        const allowEnhancedEffects = !prefersReducedMotion && !isDataSaver && !isLowSpecDevice;
         const saved = localStorage.getItem('explyra-theme') || 'light';
         html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
-        pill.addEventListener('click', () => {
+        const toggleTheme = () => {
             const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', nxt); lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light';
+            html.setAttribute('data-theme', nxt);
+            lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light';
             localStorage.setItem('explyra-theme', nxt);
-        });
+        };
+
+        if (pill) {
+            pill.addEventListener('click', toggleTheme);
+            pill.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleTheme();
+                }
+            });
+        }
+
+        /* SCROLL PROGRESS */
+        const scrollProgressBar = document.getElementById('scrollProgressBar');
+        const updateScrollProgress = () => {
+            if (!scrollProgressBar) return;
+            const scrollTop = window.scrollY;
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            const ratio = max > 0 ? Math.min(scrollTop / max, 1) : 0;
+            scrollProgressBar.style.width = `${ratio * 100}%`;
+        };
+        updateScrollProgress();
 
         /* REVEAL */
-        const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .08 });
-        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+        document.querySelectorAll('.ov-grid, .support-grid, .test-grid, .suite-pills, .feat-list').forEach(group => {
+            [...group.children].forEach((child, index) => {
+                if (!child.classList.contains('reveal')) {
+                    child.classList.add('reveal');
+                }
+                child.style.setProperty('--reveal-delay', `${Math.min(index * 70, 420)}ms`);
+            });
+        });
+
+        if (prefersReducedMotion) {
+            document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+        } else {
+            const io = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+            document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+        }
 
         /* SMOOTH SCROLL */
         document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -6404,10 +6564,14 @@
 
         /* BACK TO TOP */
         const btt = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
+        const handleGlobalScroll = () => {
+            updateScrollProgress();
+            if (!btt) return;
             if (window.scrollY > 400) { btt.classList.add('visible'); }
             else { btt.classList.remove('visible'); }
-        });
+        };
+        window.addEventListener('scroll', handleGlobalScroll, { passive: true });
+        handleGlobalScroll();
 
         /* COMING SOON TOAST LOGIC */
         const toast = document.getElementById('exToast');
@@ -6427,9 +6591,11 @@
                 showComingSoon();
             });
         });
-        btt.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        if (btt) {
+            btt.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
         /* FOOTER ACCORDION */
         document.querySelectorAll('.foot-col h4').forEach(header => {
@@ -6475,6 +6641,119 @@
 
         /* PRODUCT DEMO INTERACTIVITY */
         document.addEventListener('DOMContentLoaded', () => {
+            // Hero counters animate once when stats come into view.
+            const countUp = (el) => {
+                const target = Number(el.dataset.count || 0);
+                const suffix = el.dataset.suffix || '';
+                if (!target) return;
+
+                if (prefersReducedMotion) {
+                    el.textContent = `${target}${suffix}`;
+                    return;
+                }
+
+                const duration = 1300;
+                const start = performance.now();
+                const step = (now) => {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const value = Math.max(1, Math.floor(target * eased));
+                    el.textContent = `${value}${suffix}`;
+                    if (progress < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            };
+
+            const heroStats = document.querySelector('.hero-stats');
+            const heroCounters = document.querySelectorAll('.hero-stats .h-stat-num[data-count]');
+            if (heroStats && heroCounters.length) {
+                const counterObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            heroCounters.forEach(countUp);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.45 });
+                counterObserver.observe(heroStats);
+            }
+
+            // Keep in-page nav links synced with visible product section.
+            const sectionLinks = [...document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav-links a[href^="#"]')];
+            const sectionIds = [...new Set(
+                sectionLinks
+                    .map(link => link.getAttribute('href'))
+                    .filter(id => id && id.startsWith('#') && id.length > 1)
+            )];
+            const sections = sectionIds
+                .map(id => document.querySelector(id))
+                .filter(Boolean);
+
+            if (sections.length) {
+                const sectionObserver = new IntersectionObserver((entries) => {
+                    const visible = entries
+                        .filter(entry => entry.isIntersecting)
+                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+                    if (!visible) return;
+                    const current = `#${visible.target.id}`;
+                    sectionLinks.forEach((link) => {
+                        link.classList.toggle('is-active', link.getAttribute('href') === current);
+                    });
+                }, { threshold: [0.2, 0.4, 0.6], rootMargin: '-20% 0px -45% 0px' });
+
+                sections.forEach(section => sectionObserver.observe(section));
+            }
+
+            if (allowEnhancedEffects) {
+                // Layered parallax for background mesh + section blobs.
+                const parallaxMesh = document.querySelector('.parallax-mesh');
+                const parallaxBlobs = document.querySelectorAll('.parallax-blob');
+                let ticking = false;
+
+                const runParallax = () => {
+                    const scrollTop = window.scrollY;
+                    if (parallaxMesh) {
+                        parallaxMesh.style.transform = `translate3d(0, ${scrollTop * 0.06}px, 0)`;
+                    }
+
+                    parallaxBlobs.forEach((blob, idx) => {
+                        const speed = 0.025 + (idx * 0.008);
+                        const drift = idx % 2 === 0 ? 1 : -1;
+                        const xShift = scrollTop * 0.01 * drift;
+                        blob.style.transform = `translate3d(${xShift}px, ${scrollTop * speed}px, 0)`;
+                    });
+                    ticking = false;
+                };
+
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        requestAnimationFrame(runParallax);
+                        ticking = true;
+                    }
+                }, { passive: true });
+                runParallax();
+
+                // Subtle card tilt on pointer devices.
+                if (window.matchMedia('(pointer: fine)').matches && window.innerWidth >= 1024) {
+                    const tiltCards = document.querySelectorAll('.exp-dash, .dev-card, .health-card, .learn-card, .founder-card, .founder-video-col');
+                    tiltCards.forEach((card) => {
+                        card.classList.add('motion-tilt');
+                        card.addEventListener('mousemove', (e) => {
+                            const rect = card.getBoundingClientRect();
+                            const x = (e.clientX - rect.left) / rect.width;
+                            const y = (e.clientY - rect.top) / rect.height;
+                            const rotateY = (x - 0.5) * 7;
+                            const rotateX = (0.5 - y) * 6;
+                            card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+                        });
+                        card.addEventListener('mouseleave', () => {
+                            card.style.transform = '';
+                        });
+                    });
+                }
+            }
+
             // 1. Expense Dashboard
             const expenseStatusPills = document.querySelectorAll('.expense-sec .er-st');
             const statusCycle = [
@@ -6807,16 +7086,35 @@
     <script>
         (function () {
             const canvas = document.getElementById('hero-3d-canvas');
-            if (!canvas) return;
+            if (!canvas || typeof THREE === 'undefined') return;
 
+            const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            const saveData = !!connection?.saveData;
+            const lowSpec = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+            const mobileView = window.innerWidth < 820;
+            const disableScene = motionReduced || saveData;
+            if (disableScene) {
+                canvas.style.display = 'none';
+                return;
+            }
+
+            const lowQuality = lowSpec || mobileView;
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            const renderer = new THREE.WebGLRenderer({
+                canvas,
+                alpha: true,
+                antialias: !lowQuality,
+                powerPreference: lowQuality ? 'low-power' : 'high-performance'
+            });
 
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const setRendererSize = () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowQuality ? 1.25 : 1.8));
+            };
+            setRendererSize();
 
-            // Theme-based colors
             const getColors = () => {
                 const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
                 return {
@@ -6826,42 +7124,26 @@
                 };
             };
 
-            let colors = getColors();
+            const colors = getColors();
+            const segmentCount = lowQuality ? 20 : 32;
 
-            // Core
-            const coreGeom = new THREE.SphereGeometry(1.2, 32, 32);
-            const coreMat = new THREE.MeshBasicMaterial({
-                color: colors.core,
-                transparent: true,
-                opacity: 0.4
-            });
+            const coreGeom = new THREE.SphereGeometry(1.2, segmentCount, segmentCount);
+            const coreMat = new THREE.MeshBasicMaterial({ color: colors.core, transparent: true, opacity: 0.4 });
             const core = new THREE.Mesh(coreGeom, coreMat);
             scene.add(core);
 
-            // Core Glow
-            const coreGlowGeom = new THREE.SphereGeometry(1.6, 32, 32);
-            const coreGlowMat = new THREE.MeshBasicMaterial({
-                color: colors.core,
-                transparent: true,
-                opacity: 0.15
-            });
+            const coreGlowGeom = new THREE.SphereGeometry(1.6, segmentCount, segmentCount);
+            const coreGlowMat = new THREE.MeshBasicMaterial({ color: colors.core, transparent: true, opacity: 0.15 });
             const coreGlow = new THREE.Mesh(coreGlowGeom, coreGlowMat);
             scene.add(coreGlow);
 
-            // Shell
-            const shellGeom = new THREE.IcosahedronGeometry(3.5, 1);
-            const shellMat = new THREE.MeshBasicMaterial({
-                color: colors.shell,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.2
-            });
+            const shellGeom = new THREE.IcosahedronGeometry(3.5, lowQuality ? 0 : 1);
+            const shellMat = new THREE.MeshBasicMaterial({ color: colors.shell, wireframe: true, transparent: true, opacity: 0.2 });
             const shell = new THREE.Mesh(shellGeom, shellMat);
             scene.add(shell);
 
-            // Particles
             const particlesGeom = new THREE.BufferGeometry();
-            const particlesCount = 150;
+            const particlesCount = lowQuality ? 70 : 140;
             const posArray = new Float32Array(particlesCount * 3);
 
             for (let i = 0; i < particlesCount * 3; i++) {
@@ -6870,40 +7152,47 @@
 
             particlesGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             const particlesMat = new THREE.PointsMaterial({
-                size: 0.04,
+                size: lowQuality ? 0.03 : 0.04,
                 color: colors.particles,
                 transparent: true,
-                opacity: 0.5
+                opacity: lowQuality ? 0.42 : 0.5
             });
             const particles = new THREE.Points(particlesGeom, particlesMat);
             scene.add(particles);
 
             camera.position.z = 8;
 
-            // Interaction
             let mouseX = 0;
             let mouseY = 0;
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX / window.innerWidth) - 0.5;
-                mouseY = (e.clientY / window.innerHeight) - 0.5;
-            });
+            if (window.matchMedia('(pointer: fine)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = (e.clientX / window.innerWidth) - 0.5;
+                    mouseY = (e.clientY / window.innerHeight) - 0.5;
+                }, { passive: true });
+            }
 
-            // Theme Observer
-            const observer = new MutationObserver(() => {
+            const themeObserver = new MutationObserver(() => {
                 const newColors = getColors();
                 coreMat.color.set(newColors.core);
                 coreGlowMat.color.set(newColors.core);
                 shellMat.color.set(newColors.shell);
                 particlesMat.color.set(newColors.particles);
             });
-            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+            themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-            // Animate
-            const clock = new THREE.Clock();
-            const animate = () => {
-                requestAnimationFrame(animate);
-                const elapsedTime = clock.getElapsedTime();
+            const heroSection = canvas.closest('.hero');
+            let heroVisible = true;
+            let tabVisible = !document.hidden;
+            let rafId = null;
+            const startTime = performance.now();
 
+            const renderLoop = () => {
+                if (!heroVisible || !tabVisible) {
+                    rafId = null;
+                    return;
+                }
+
+                const elapsedTime = (performance.now() - startTime) / 1000;
                 shell.rotation.y = elapsedTime * 0.1;
                 shell.rotation.x = elapsedTime * 0.05;
 
@@ -6914,21 +7203,56 @@
 
                 particles.rotation.y = elapsedTime * 0.05;
 
-                // Mouse influence
                 scene.rotation.y += (mouseX * 0.5 - scene.rotation.y) * 0.05;
                 scene.rotation.x += (mouseY * 0.5 - scene.rotation.x) * 0.05;
-
                 renderer.render(scene, camera);
+                rafId = requestAnimationFrame(renderLoop);
             };
 
-            animate();
+            const ensureRenderLoop = () => {
+                if (!rafId && heroVisible && tabVisible) {
+                    rafId = requestAnimationFrame(renderLoop);
+                }
+            };
 
-            // Handle resize
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+            if (heroSection) {
+                const heroObserver = new IntersectionObserver((entries) => {
+                    heroVisible = entries[0]?.isIntersecting ?? true;
+                    ensureRenderLoop();
+                }, { threshold: 0.02 });
+                heroObserver.observe(heroSection);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                tabVisible = !document.hidden;
+                ensureRenderLoop();
             });
+
+            let resizeRaf = null;
+            window.addEventListener('resize', () => {
+                if (resizeRaf) cancelAnimationFrame(resizeRaf);
+                resizeRaf = requestAnimationFrame(() => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    setRendererSize();
+                });
+            });
+
+            window.addEventListener('beforeunload', () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                themeObserver.disconnect();
+                renderer.dispose();
+                coreGeom.dispose();
+                coreGlowGeom.dispose();
+                shellGeom.dispose();
+                particlesGeom.dispose();
+                coreMat.dispose();
+                coreGlowMat.dispose();
+                shellMat.dispose();
+                particlesMat.dispose();
+            });
+
+            ensureRenderLoop();
         })();
     </script>
 </body>
