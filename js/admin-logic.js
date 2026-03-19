@@ -131,6 +131,34 @@ const ADMIN_TABS = new Set([
     'workflow', 'reports', 'audit', 'chat', 'settings'
 ]);
 
+const isTabVisibleInPrefs = (tabId) => {
+    try {
+        const prefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
+        return prefs[tabId] !== false;
+    } catch (e) { return true; }
+};
+
+window.updateSidebarVisibilityPref = (tabId, isVisible) => {
+    try {
+        const prefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
+        prefs[tabId] = isVisible;
+        localStorage.setItem('explyra_sidebar_visibility', JSON.stringify(prefs));
+        
+        // Instant Feedback: apply to current UI
+        const el = document.getElementById(`nav-${tabId}`) || (tabId === 'overview' ? document.querySelector('.sidebar-item[onclick*="overview"]') : null);
+        if (el) {
+            if (isVisible) {
+                // We re-run checkAccess to ensure role permissions allow showing it
+                window.checkAccess();
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+        showToast(`${tabId.charAt(0).toUpperCase() + tabId.slice(1)} visibility updated`, "success");
+    } catch (e) { console.error(e); }
+};
+
+
 function normalizeAdminTab(tab) {
     return ADMIN_TABS.has(tab) ? tab : 'overview';
 }
@@ -1007,8 +1035,14 @@ window.checkAccess = async () => {
         } catch (e) { console.warn("Failed to fetch role permissions", e); }
     } else {
         // Give admins all permissions locally to bypass checks
-        userData.permissions = { viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, viewInvoices: true, viewCrm: true };
+        userData.permissions = { 
+            viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, 
+            viewInvoices: true, viewCrm: true, viewTasks: true, viewProjects: true, 
+            viewRoles: true, viewWorkflow: true, viewAudit: true, viewAi: true, 
+            viewAttendance: true, viewSalary: true, viewChat: true
+        };
     }
+
 
     // --- Role Based Access Control ---
 
@@ -1059,25 +1093,94 @@ window.checkAccess = async () => {
         }
     }
 
-    // Audit Logs: Visible to all, but data is filtered by role inside the tab
+    // Audit Logs
     const navA = document.getElementById('nav-audit');
-    if (navA) navA.classList.remove('hidden');
+    if (navA && (userData.permissions?.viewAudit || userData.role === 'ADMIN' || userData.role === 'AUDIT' || userData.role === 'TREASURY')) {
+        navA.classList.remove('hidden');
+    }
 
-    // Task Manager: Visible to all positions
+    // Task Manager
     const navTasks = document.getElementById('nav-tasks');
-    if (navTasks) navTasks.classList.remove('hidden');
+    if (navTasks && (userData.permissions?.viewTasks || userData.role === 'ADMIN' || userData.role === 'MANAGER' || userData.role === 'SENIOR_MANAGER')) {
+        navTasks.classList.remove('hidden');
+    }
 
     // Workflow: Admin only
-    if (userData.role === 'ADMIN') {
-        const navW = document.getElementById('nav-workflow');
-        if (navW) navW.classList.remove('hidden');
+    const navW = document.getElementById('nav-workflow');
+    if (navW && (userData.role === 'ADMIN' || userData.permissions?.viewWorkflow)) {
+        navW.classList.remove('hidden');
     }
+
+    // Attendance & Salary
+    const navAtt = document.getElementById('nav-attendance');
+    if (navAtt && (userData.permissions?.viewAttendance || userData.role === 'ADMIN' || userData.role === 'HR')) {
+        navAtt.classList.remove('hidden');
+    }
+
+    const navSal = document.getElementById('nav-salary');
+    if (navSal && (userData.permissions?.viewSalary || userData.role === 'ADMIN' || userData.role === 'FINANCE_MANAGER')) {
+        navSal.classList.remove('hidden');
+    }
+
+    // AI & Chat
+    const navAI = document.getElementById('nav-ai');
+    if (navAI && (userData.permissions?.viewAi || userData.role === 'ADMIN')) {
+        navAI.classList.remove('hidden');
+    }
+
+    const navChat = document.getElementById('nav-chat');
+    if (navChat && (userData.permissions?.viewChat || userData.role === 'ADMIN')) {
+        navChat.classList.remove('hidden');
+    }
+
+
+    // --- GLOBAL VISIBILITY OVERRIDE ---
+    // Double check specific toggles that might have been missed or are generic
+    ['overview', 'approvals', 'tasks', 'crm', 'ai', 'attendance', 'salary', 'chat', 'invoices', 'reports', 'audit', 'users', 'roles', 'projects', 'workflow', 'settings'].forEach(id => {
+        if (!isTabVisibleInPrefs(id)) {
+            const el = document.getElementById(`nav-${id}`) || (id === 'overview' ? document.querySelector('.sidebar-item[onclick*="overview"]') : null);
+            if (el) el.classList.add('hidden');
+        }
+    });
 
     // Default Tab Logic
     if (userData.role === 'HR') switchTab('users');
     else if (userData.role === 'AUDIT') switchTab('audit');
     else switchTab('overview');
 }
+
+/**
+ * Helper to check if current user has permission for a specific feature/tab
+ */
+window.hasAccessTo = (tabId) => {
+    if (!userData) return false;
+    if (userData.role === 'ADMIN') return true;
+    const p = userData.permissions || {};
+    const r = userData.role;
+
+    switch (tabId) {
+        case 'overview': return true;
+        case 'my-claims': return true;
+        case 'approvals': return p.viewApprovals || ['MANAGER', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS', 'TREASURY'].includes(r);
+        case 'tasks': return p.viewTasks || ['MANAGER', 'SENIOR_MANAGER'].includes(r);
+        case 'users': return p.viewUsers || r === 'HR';
+        case 'projects': return p.viewUsers || r === 'HR';
+        case 'roles': return r === 'HR';
+        case 'workflow': return p.viewWorkflow;
+        case 'reports': return p.viewReports || ['TREASURY', 'SENIOR_MANAGER', 'FINANCE_MANAGER', 'ACCOUNTS'].includes(r);
+        case 'audit': return p.viewAudit || r === 'AUDIT' || r === 'TREASURY';
+        case 'ai': return p.viewAi;
+        case 'crm': return p.viewCrm;
+        case 'invoices': return p.viewInvoices || ['FINANCE_MANAGER', 'ACCOUNTS'].includes(r);
+        case 'chat': return p.viewChat;
+        case 'settings': return p.viewSettings;
+        case 'attendance': return p.viewAttendance || r === 'HR';
+        case 'salary': return p.viewSalary || r === 'FINANCE_MANAGER';
+        default: return false;
+    }
+};
+
+
 
 window.switchTab = (tab, options = {}) => {
     const normalizedTab = normalizeAdminTab(tab);
@@ -5877,7 +5980,32 @@ window.openAccountCenter = async () => {
     document.getElementById('ac-phone').value = u.altPhone || '';
     document.getElementById('ac-alt-email').value = u.altEmail || '';
 
+    // Initialize Visibility Toggles
+    try {
+        const visibilityPrefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
+        const tabs = ['overview', 'approvals', 'tasks', 'my-claims', 'users', 'projects', 'roles', 'workflow', 'crm', 'ai', 'attendance', 'salary', 'reports', 'audit'];
+        
+        tabs.forEach(id => {
+            const toggle = document.getElementById(`pref-vis-${id}`);
+            if (toggle) {
+                const container = toggle.closest('.flex');
+                if (window.hasAccessTo(id)) {
+                    if (container) container.classList.remove('hidden');
+                    toggle.checked = visibilityPrefs[id] !== false;
+                } else {
+                    if (container) container.classList.add('hidden');
+                }
+            }
+        });
+
+        // Hide section headers if no items are visible in that section
+        // (Optional but nice: checking groups)
+    } catch (e) { console.error("Toggle init failed", e); }
+
+
+
     document.getElementById('ac-stat-budget').textContent = u.budgetLimit ? u.budgetLimit.toLocaleString() : 'N/A';
+
     document.getElementById('ac-stat-claims').textContent = '...';
 
     modal.classList.remove('hidden');

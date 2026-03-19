@@ -1114,6 +1114,128 @@
                 <div>
                     <h5
                         class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-eye-slash"></i> Sidebar Visibility
+                    </h5>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mb-4 shadow-inner">
+                        <div class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Core Navigation</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Dashboard</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-overview" checked onchange="window.updateSidebarVisibilityPref('overview', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Approvals</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-approvals" checked onchange="window.updateSidebarVisibilityPref('approvals', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Task Mgr</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-tasks" checked onchange="window.updateSidebarVisibilityPref('tasks', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">My Claims</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-my-claims" checked onchange="window.updateSidebarVisibilityPref('my-claims', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Management</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">User Mgmt</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-users" checked onchange="window.updateSidebarVisibilityPref('users', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Projects</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-projects" checked onchange="window.updateSidebarVisibilityPref('projects', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Roles</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-roles" checked onchange="window.updateSidebarVisibilityPref('roles', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Workflow</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-workflow" checked onchange="window.updateSidebarVisibilityPref('workflow', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Tools & Systems</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">CRM</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-crm" checked onchange="window.updateSidebarVisibilityPref('crm', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">AI Agent</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-ai" checked onchange="window.updateSidebarVisibilityPref('ai', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Attendance</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-attendance" checked onchange="window.updateSidebarVisibilityPref('attendance', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Payroll</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-salary" checked onchange="window.updateSidebarVisibilityPref('salary', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Reports</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-reports" checked onchange="window.updateSidebarVisibilityPref('reports', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Audit Logs</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-audit" checked onchange="window.updateSidebarVisibilityPref('audit', this.checked)" class="sr-only peer">
+                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-800"></div>
+
+
+                <div>
+                    <h5
+                        class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <i class="fa-brands fa-google-drive"></i> Integrations
                     </h5>
                     <div
@@ -1187,12 +1309,13 @@
                             </a>
                         </div>
                     </form>
-                <div>
+
                     <button type="button" onclick="window.location.href='emp.html'"
                         class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg mb-4">
                         <i class="fa-solid fa-shuffle"></i> Switch to Employee Portal
                     </button>
                 </div>
+
 
                 <div class="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-xl p-4 mt-2">
                     <h5
@@ -1359,9 +1482,10 @@
                     data-tab="approvals">
                     <i class="fa-solid fa-stamp"></i> Approvals
                 </button>
-                <button onclick="switchTab('my-claims')" class="sidebar-item w-full" data-tab="my-claims">
+                <button onclick="switchTab('my-claims')" id="nav-my-claims" class="sidebar-item w-full" data-tab="my-claims">
                     <i class="fa-solid fa-receipt"></i> My Claims
                 </button>
+
                 <button onclick="switchTab('tasks')" id="nav-tasks" class="sidebar-item w-full hidden" data-tab="tasks">
                     <i class="fa-solid fa-list-check"></i> Task Manager
                 </button>

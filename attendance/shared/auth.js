@@ -75,9 +75,9 @@ function updateUIForRole(role, moduleType) {
         const adminOnly = document.querySelectorAll('.admin-only');
         const hrAuth = document.querySelectorAll('.hr-auth');
 
-        if (role === 'Manager') {
-            adminOnly.forEach(el => el.style.display = 'none');
-            hrAuth.forEach(el => el.style.display = 'none');
+        if (role === 'Manager' || role === 'Senior Manager' || role === 'SENIOR_MANAGER') {
+            adminOnly.forEach(el => el.style.display = '');
+            hrAuth.forEach(el => el.style.display = '');
         } else if (role === 'HR') {
             adminOnly.forEach(el => el.style.display = 'none');
             hrAuth.forEach(el => el.style.display = '');
@@ -85,6 +85,7 @@ function updateUIForRole(role, moduleType) {
             adminOnly.forEach(el => el.style.display = '');
             hrAuth.forEach(el => el.style.display = '');
         }
+
     } else {
         // School logic
         const principalOnly = document.querySelectorAll('.principal-only');
