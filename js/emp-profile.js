@@ -45,15 +45,15 @@ window.submitProfile = async (e) => {
         if (sidebarName) sidebarName.textContent = name;
 
         // Update Avatars
-        const avatars = ['header-profile-avatar', 'sidebar-user-avatar'];
+        const avatars = ['header-profile-avatar', 'sidebar-user-avatar', 'ac-avatar'];
         avatars.forEach(id => {
             const el = document.getElementById(id);
             if (!el) return;
             if (photoUrl) {
                 el.innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover ${id.includes('sidebar') ? 'rounded-full' : ''}">`;
             } else {
-                const first = name.charAt(0).toUpperCase();
-                el.innerHTML = `<span class="text-xs font-bold ${id.includes('header') ? 'text-gray-400' : ''}">${first}</span>`;
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`;
+                el.innerHTML = `<img src="${avatarUrl}" class="w-full h-full object-cover ${id.includes('sidebar') ? 'rounded-full' : ''}">`;
             }
         });
 

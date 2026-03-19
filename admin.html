@@ -1107,6 +1107,42 @@
                             </button>
                         </div>
                     </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Base
+                                Currency</label>
+                            <select id="pref-base-currency" onchange="updateBaseCurrency(this.value)"
+                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none">
+                                <option value="INR">INR (₹)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col justify-end">
+                            <label class="relative inline-flex items-center cursor-pointer mb-1.5">
+                                <input type="checkbox" id="pref-webspeech" onchange="toggleWebSpeech(this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                                <span
+                                    class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Voice
+                                    Control</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="speech-guide"
+                        class="hidden mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg text-[10px] text-blue-700 dark:text-blue-300">
+                        <p class="font-bold mb-1"><i class="fa-solid fa-microphone mr-1"></i> Voice Commands Active:</p>
+                        <ul class="list-disc ml-4 space-y-1">
+                            <li>Say "Open Approvals" to switch tabs</li>
+                            <li>Say "Show Dashboard" for overview</li>
+                            <li>Say "New Expense" to start a claim</li>
+                            <li>Say "Logout" to exit sessions</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="border-t border-slate-100 dark:border-slate-800"></div>
@@ -1116,114 +1152,174 @@
                         class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-eye-slash"></i> Sidebar Visibility
                     </h5>
-                    <div class="grid grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mb-4 shadow-inner">
-                        <div class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1">
+                    <div
+                        class="grid grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mb-4 shadow-inner">
+                        <div
+                            class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1">
                             <span class="text-[10px] font-bold text-slate-400 uppercase">Core Navigation</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Dashboard</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-overview" checked onchange="window.updateSidebarVisibilityPref('overview', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-overview" checked
+                                    onchange="window.updateSidebarVisibilityPref('overview', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Approvals</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-approvals" checked onchange="window.updateSidebarVisibilityPref('approvals', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-approvals" checked
+                                    onchange="window.updateSidebarVisibilityPref('approvals', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Task Mgr</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-tasks" checked onchange="window.updateSidebarVisibilityPref('tasks', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-tasks" checked
+                                    onchange="window.updateSidebarVisibilityPref('tasks', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">My Claims</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-my-claims" checked onchange="window.updateSidebarVisibilityPref('my-claims', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-my-claims" checked
+                                    onchange="window.updateSidebarVisibilityPref('my-claims', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
 
-                        <div class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
+                        <div
+                            class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
                             <span class="text-[10px] font-bold text-slate-400 uppercase">Management</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">User Mgmt</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-users" checked onchange="window.updateSidebarVisibilityPref('users', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-users" checked
+                                    onchange="window.updateSidebarVisibilityPref('users', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Projects</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-projects" checked onchange="window.updateSidebarVisibilityPref('projects', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-projects" checked
+                                    onchange="window.updateSidebarVisibilityPref('projects', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Roles</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-roles" checked onchange="window.updateSidebarVisibilityPref('roles', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-roles" checked
+                                    onchange="window.updateSidebarVisibilityPref('roles', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Workflow</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-workflow" checked onchange="window.updateSidebarVisibilityPref('workflow', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-workflow" checked
+                                    onchange="window.updateSidebarVisibilityPref('workflow', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
 
-                        <div class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
+                        <div
+                            class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
                             <span class="text-[10px] font-bold text-slate-400 uppercase">Tools & Systems</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">CRM</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-crm" checked onchange="window.updateSidebarVisibilityPref('crm', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-crm" checked
+                                    onchange="window.updateSidebarVisibilityPref('crm', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">AI Agent</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-ai" checked onchange="window.updateSidebarVisibilityPref('ai', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-ai" checked
+                                    onchange="window.updateSidebarVisibilityPref('ai', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Attendance</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-attendance" checked onchange="window.updateSidebarVisibilityPref('attendance', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-attendance" checked
+                                    onchange="window.updateSidebarVisibilityPref('attendance', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Payroll</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-salary" checked onchange="window.updateSidebarVisibilityPref('salary', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-salary" checked
+                                    onchange="window.updateSidebarVisibilityPref('salary', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Reports</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-reports" checked onchange="window.updateSidebarVisibilityPref('reports', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-reports" checked
+                                    onchange="window.updateSidebarVisibilityPref('reports', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Audit Logs</span>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pref-vis-audit" checked onchange="window.updateSidebarVisibilityPref('audit', this.checked)" class="sr-only peer">
-                                <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="pref-vis-audit" checked
+                                    onchange="window.updateSidebarVisibilityPref('audit', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -1482,8 +1578,13 @@
                     data-tab="approvals">
                     <i class="fa-solid fa-stamp"></i> Approvals
                 </button>
-                <button onclick="switchTab('my-claims')" id="nav-my-claims" class="sidebar-item w-full" data-tab="my-claims">
+                <button onclick="switchTab('my-claims')" id="nav-my-claims" class="sidebar-item w-full"
+                    data-tab="my-claims">
                     <i class="fa-solid fa-receipt"></i> My Claims
+                </button>
+                <button onclick="switchTab('scheduler')" id="nav-scheduler" class="sidebar-item w-full"
+                    data-tab="scheduler">
+                    <i class="fa-solid fa-calendar-days"></i> Scheduler
                 </button>
 
                 <button onclick="switchTab('tasks')" id="nav-tasks" class="sidebar-item w-full hidden" data-tab="tasks">

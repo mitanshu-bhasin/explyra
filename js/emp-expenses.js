@@ -297,14 +297,19 @@ window.getSymbol = (curr) => {
     return sym[curr] || '₹';
 };
 
-window.updateStats = (pending, paid) => {
+window.updateStats = async (pending, paid) => {
     const pEl = document.getElementById('stat-pending');
     const paEl = document.getElementById('stat-paid');
-    if (pEl) pEl.textContent = `₹${pending.toLocaleString()}`;
-    if (paEl) paEl.textContent = `₹${paid.toLocaleString()}`;
+    
+    // Convert to base currency
+    const pendingConverted = await window.convertCurrency(pending, 'INR', window.baseCurrency);
+    const paidConverted = await window.convertCurrency(paid, 'INR', window.baseCurrency);
+
+    if (pEl) pEl.textContent = window.formatCurrency(pendingConverted, window.baseCurrency);
+    if (paEl) paEl.textContent = window.formatCurrency(paidConverted, window.baseCurrency);
 };
 
-window.renderExpensesList = (expenses) => {
+window.renderExpensesList = async (expenses) => {
     const list = document.getElementById('expenses-list');
     if (!list) return;
     list.innerHTML = '';
@@ -314,9 +319,10 @@ window.renderExpensesList = (expenses) => {
         return;
     }
 
-    expenses.forEach(data => {
+    for (const data of expenses) {
         const dateStr = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Now';
         const amt = parseFloat(data.totalAmount) || 0;
+        const convertedAmt = await window.convertCurrency(amt, data.currency || 'INR', window.baseCurrency);
         const canEdit = !['PAID', 'AUDITED', 'PAYMENT_ISSUE', 'PAYMENT_DISPUTED'].includes(data.status);
 
         const div = document.createElement('div');
@@ -334,7 +340,7 @@ window.renderExpensesList = (expenses) => {
                 <div>
                     <p class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-green-600 transition truncate max-w-[150px] sm:max-w-xs">${data.title}</p>
                     <div class="flex gap-2 text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
-                        <span class="bg-slate-100 dark:bg-slate-700 px-1.5 rounded font-medium">${window.getSymbol(data.currency)} ${amt.toLocaleString()}</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 px-1.5 rounded font-medium">${window.formatCurrency(convertedAmt, window.baseCurrency)}</span>
                         <span class="bg-slate-100 dark:bg-slate-700 px-1.5 rounded">${data.status.replace(/_/g, ' ')}</span>
                     </div>
                 </div>
@@ -347,7 +353,7 @@ window.renderExpensesList = (expenses) => {
             ` : ''}
         `;
         list.appendChild(div);
-    });
+    }
 };
 
 window.filterExpenses = (term) => {

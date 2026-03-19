@@ -30,11 +30,50 @@ try {
 let currentUser = null;
 
 // ======== INJECTED INTERNATIONALIZATION & ERROR HELPERS ========
+// ======== EXCHANGE RATE CACHE & HELPERS ========
+window.exchangeRates = null;
+window.baseCurrency = 'INR'; // Default, will be loaded from settings
+
 window.formatCurrency = (amount, currency = 'INR') => {
     try {
-        return Intl.NumberFormat(undefined, { style: 'currency', currency: currency }).format(amount || 0);
-    } catch (e) { return '₹' + amount; }
+        const displayCurrency = currency || window.baseCurrency || 'INR';
+        return Intl.NumberFormat(undefined, { style: 'currency', currency: displayCurrency }).format(amount || 0);
+    } catch (e) { return (currency === 'INR' ? '₹' : '$') + amount; }
 };
+
+window.getExchangeRates = async () => {
+    if (window.exchangeRates && (Date.now() - window.lastRateFetch < 3600000)) return window.exchangeRates;
+    try {
+        const res = await fetch('https://api.exchangerate.host/latest?base=' + (window.baseCurrency || 'INR'));
+        const data = await res.json();
+        if (data && data.rates) {
+            window.exchangeRates = data.rates;
+            window.lastRateFetch = Date.now();
+            return data.rates;
+        }
+    } catch (e) { console.error("Rate fetch failed", e); }
+    return null;
+};
+
+window.convertCurrency = async (amount, from, to) => {
+    if (from === to) return amount;
+    const rates = await window.getExchangeRates();
+    if (rates && rates[to] && rates[from]) {
+        // Convert 'from' to base, then base to 'to'
+        const amountInBase = amount / rates[from]; // This assumes base is what's in the API call
+        // Actually exchangerate.host latest?base=X means rates[Y] is how many Y per 1 X.
+        // So 1 X = rates[Y] Y.
+        // If X is base, then to get Y: amount * rates[Y]
+        // But our base is 'to' or 'from'? 
+        // Let's use a simpler approach: rates are relative to their own base.
+        // If we always fetch relative to 'from', then result = amount * rates[to].
+        const response = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
+        const result = await response.json();
+        return result.result || amount;
+    }
+    return amount;
+};
+// ===============================================
 window.formatDateUtc = (dateInput) => {
     if (!dateInput) return '';
     try {
@@ -99,7 +138,11 @@ try {
             const avContainer = document.getElementById('header-profile-avatar');
             if (avContainer) {
                 if (userData.photoUrl) avContainer.innerHTML = `<img src="${userData.photoUrl}" class="w-full h-full object-cover">`;
-                else avContainer.innerHTML = `<i class="fa-solid fa-user-gear text-xs"></i>`;
+                else {
+                    const initials = (userData.name || 'User').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name || 'User')}&background=random&color=fff&bold=true`;
+                    avContainer.innerHTML = `<img src="${avatarUrl}" class="w-full h-full object-cover">`;
+                }
             }
         });
     }
@@ -143,7 +186,7 @@ window.updateSidebarVisibilityPref = (tabId, isVisible) => {
         const prefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
         prefs[tabId] = isVisible;
         localStorage.setItem('explyra_sidebar_visibility', JSON.stringify(prefs));
-        
+
         // Instant Feedback: apply to current UI
         const el = document.getElementById(`nav-${tabId}`) || (tabId === 'overview' ? document.querySelector('.sidebar-item[onclick*="overview"]') : null);
         if (el) {
@@ -1054,10 +1097,10 @@ window.checkAccess = async () => {
         } catch (e) { console.warn("Failed to fetch role permissions", e); }
     } else {
         // Give admins all permissions locally to bypass checks
-        userData.permissions = { 
-            viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true, 
-            viewInvoices: true, viewCrm: true, viewTasks: true, viewProjects: true, 
-            viewRoles: true, viewWorkflow: true, viewAudit: true, viewAi: true, 
+        userData.permissions = {
+            viewApprovals: true, viewReports: true, viewUsers: true, viewSettings: true,
+            viewInvoices: true, viewCrm: true, viewTasks: true, viewProjects: true,
+            viewRoles: true, viewWorkflow: true, viewAudit: true, viewAi: true,
             viewAttendance: true, viewSalary: true, viewChat: true
         };
     }
@@ -1225,6 +1268,8 @@ window.switchTab = (tab, options = {}) => {
     if (normalizedTab === 'chat') renderChat();
     if (normalizedTab === 'workflow') renderWorkflow();
     if (normalizedTab === 'roles') renderRoles();
+    if (normalizedTab === 'scheduler') renderScheduler();
+    if (normalizedTab === 'scheduler') renderScheduler();
 
     const skipHistory = !!options.skipHistory;
     const replaceHistory = !!options.replaceHistory;
@@ -2374,16 +2419,16 @@ async function renderSettings() {
 window.resetAdminPassword = async () => {
     if (await confirm("Send password reset email to " + userData.email + "?")) {
         try {
-        if (userData.role === 'ADMIN') {
-            await sendPasswordResetEmail(auth, userData.email, { url: window.location.origin + '/verify.html' });
-            showToast("Password reset email sent!", "success");
-        } else {
-            await sendPasswordResetEmail(auth, userData.email);
-            showToast("Password reset email sent!", "success");
+            if (userData.role === 'ADMIN') {
+                await sendPasswordResetEmail(auth, userData.email, { url: window.location.origin + '/verify.html' });
+                showToast("Password reset email sent!", "success");
+            } else {
+                await sendPasswordResetEmail(auth, userData.email);
+                showToast("Password reset email sent!", "success");
+            }
+        } catch (e) {
+            showToast(e.message, "error");
         }
-    } catch (e) {
-        showToast(e.message, "error");
-    }
     }
 };
 
@@ -3021,7 +3066,7 @@ window.confirmDeleteUser = async () => {
 window.toggleUserStatus = async (id, currentStatus) => {
     const user = globalUsersCache.find(u => u.id === id);
     const MAIN_ADMIN_EMAILS = ['info@fouralpha.org', 'explyra@gmail.com', 'epxlyra@gmail.com'];
-    
+
     if (user && MAIN_ADMIN_EMAILS.includes(user.email) && !MAIN_ADMIN_EMAILS.includes(userData.email)) {
         return showToast("Access Denied: Main Admin status cannot be changed.", "error");
     }
@@ -5428,8 +5473,8 @@ async function renderChat() {
             if (match) {
                 const queryStr = match[1].toLowerCase();
                 const users = window.adminChatUsers || [];
-                const filtered = users.filter(u => 
-                    (u.name && u.name.toLowerCase().includes(queryStr)) || 
+                const filtered = users.filter(u =>
+                    (u.name && u.name.toLowerCase().includes(queryStr)) ||
                     (u.email && u.email.toLowerCase().includes(queryStr))
                 ).slice(0, 5);
 
@@ -5460,10 +5505,10 @@ async function renderChat() {
             const cursorStart = input.selectionStart;
             const textBeforeCursor = val.slice(0, cursorStart);
             const textAfterCursor = val.slice(cursorStart);
-            
+
             const replaced = textBeforeCursor.replace(/@([a-zA-Z0-9_]*)$/, '@' + validName + ' ');
             input.value = replaced + textAfterCursor;
-            
+
             dropdown.classList.add('hidden');
             dropdown.classList.remove('flex');
             input.focus();
@@ -5585,7 +5630,7 @@ async function loadChatUsers() {
                         </div>
                     `;
         });
-        
+
         list.innerHTML = html;
         updateActiveChatHighlight();
     } catch (e) {
@@ -5738,13 +5783,13 @@ window.confirmCreateGroup = async () => {
 
 window.sendLocationMessage = () => {
     if (!navigator.geolocation) return showToast("Geolocation not supported", "error");
-    
+
     showToast("Getting location...", "info");
     navigator.geolocation.getCurrentPosition(async (pos) => {
         const { latitude, longitude } = pos.coords;
         const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
         const msg = `📍 Shared Location: ${mapUrl}`;
-        
+
         // Simulating message send
         const input = document.getElementById('chat-input');
         if (input) {
@@ -5932,12 +5977,12 @@ window.sendLocationMessage = () => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             const locationText = `Here is my current location:\n[MAP:${lat},${lng}]`;
-            
+
             // Re-use sendChatMessage flow seamlessly
             const input = document.getElementById('chat-input');
             const originalVal = input.value;
             input.value = locationText;
-            window.sendChatMessage({ preventDefault: () => {} });
+            window.sendChatMessage({ preventDefault: () => { } });
             input.value = originalVal; // Restore draft if any
 
             if (btnHtml) btnHtml.innerHTML = '<i class="fa-solid fa-location-dot"></i>';
@@ -6003,7 +6048,7 @@ window.openAccountCenter = async () => {
     try {
         const visibilityPrefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
         const tabs = ['overview', 'approvals', 'tasks', 'my-claims', 'users', 'projects', 'roles', 'workflow', 'crm', 'ai', 'attendance', 'salary', 'reports', 'audit'];
-        
+
         tabs.forEach(id => {
             const toggle = document.getElementById(`pref-vis-${id}`);
             if (toggle) {

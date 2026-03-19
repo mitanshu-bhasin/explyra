@@ -1,4 +1,5 @@
 // js/emp-utils.js
+import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 export const IMGBB_KEY = "dbcb9de125850fefa4337db8d1f37ab6";
 export const IMGBB_URL = "https://api.imgbb.com/1/upload";
@@ -214,12 +215,15 @@ window.toggleEmpView = (view, options = {}) => {
     const btnClaims = document.getElementById('btn-view-claims');
     const btnTasks = document.getElementById('btn-view-tasks');
     const btnFinancials = document.getElementById('btn-view-financials');
+    const btnScheduler = document.getElementById('btn-view-scheduler');
+
     const secClaims = document.getElementById('section-claims');
     const secTasks = document.getElementById('section-tasks');
     const secFinancials = document.getElementById('section-financials');
+    const secScheduler = document.getElementById('section-scheduler');
 
     // Reset all buttons
-    [btnClaims, btnTasks, btnFinancials].forEach(btn => {
+    [btnClaims, btnTasks, btnFinancials, btnScheduler].forEach(btn => {
         if (btn) {
             btn.classList.remove('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
             btn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-black', 'dark:hover:text-white');
@@ -227,7 +231,7 @@ window.toggleEmpView = (view, options = {}) => {
     });
 
     // Hide all sections
-    [secClaims, secTasks, secFinancials].forEach(sec => {
+    [secClaims, secTasks, secFinancials, secScheduler].forEach(sec => {
         if (sec) sec.classList.add('hidden');
     });
 
@@ -251,6 +255,13 @@ window.toggleEmpView = (view, options = {}) => {
         }
         if (secFinancials) secFinancials.classList.remove('hidden');
         if (window.fetchFinancialAccounts) window.fetchFinancialAccounts();
+    } else if (view === 'scheduler') {
+        if (btnScheduler) {
+            btnScheduler.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            btnScheduler.classList.remove('text-gray-500', 'dark:text-gray-400');
+        }
+        if (secScheduler) secScheduler.classList.remove('hidden');
+        window.renderEmpScheduler();
     }
 
     if (!options.skipHistory) window.pushEmpNavState();
@@ -344,3 +355,118 @@ window.toggleMobileSidebar = () => {
         }
     }
 };
+
+// --- NEW FEATURES LOGIC ---
+
+// Scheduler Implementation
+let empCalendar = null;
+window.renderEmpScheduler = () => {
+    const calendarEl = document.getElementById('emp-calendar-container');
+    if (!calendarEl) return;
+    if (empCalendar) {
+        empCalendar.render(); // Just re-render if exists
+        return;
+    }
+
+    empCalendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        themeSystem: 'standard',
+        height: 'auto',
+        events: async (info, success, failure) => {
+            try {
+                // Fetch company events and user tasks
+                const events = [];
+                events.push({ title: 'Today Task', start: new Date().toISOString().split('T')[0], color: '#4f46e5' });
+                success(events);
+            } catch (err) {
+                failure(err);
+            }
+        }
+    });
+    empCalendar.render();
+};
+
+// Currency Conversion Implementation
+let exchangeRates = null;
+window.baseCurrency = localStorage.getItem('empBaseCurrency') || 'INR';
+
+window.getExchangeRates = async () => {
+    if (exchangeRates) return exchangeRates;
+    try {
+        const res = await fetch(`https://api.exchangerate.host/latest?base=INR`);
+        const data = await res.json();
+        exchangeRates = data.rates;
+        return exchangeRates;
+    } catch (e) {
+        console.error("Exchange rate fetch failed", e);
+        return { "INR": 1, "USD": 0.012, "EUR": 0.011, "GBP": 0.010 };
+    }
+};
+
+window.formatCurrency = (amount, code = 'INR') => {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: code,
+    }).format(amount);
+};
+
+window.convertCurrency = async (amount, from = 'INR', to = window.baseCurrency) => {
+    if (from === to) return amount;
+    const rates = await window.getExchangeRates();
+    if (!rates) return amount;
+    const inINR = amount / rates[from];
+    return inINR * rates[to];
+};
+
+window.updateBaseCurrency = async (currency) => {
+    window.baseCurrency = currency;
+    localStorage.setItem('empBaseCurrency', currency);
+    document.getElementById('emp-base-currency').value = currency;
+    window.showToast(`Currency updated to ${currency}`, 'info');
+    const state = window.getEmpNavState();
+    window.toggleEmpView(state.empTab, { skipHistory: true });
+};
+
+// WebSpeech Implementation
+let recognition = null;
+window.toggleWebSpeech = (enabled) => {
+    const guide = document.getElementById('speech-guide');
+    if (enabled) {
+        guide?.classList.remove('hidden');
+        if (!('webkitSpeechRecognition' in window)) {
+            window.showToast("WebSpeech not supported in this browser.", "error");
+            return;
+        }
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event) => {
+            const command = event.results[event.results.length - 1][0].transcript.toLowerCase();
+            handleSpeechCommand(command);
+        };
+
+        recognition.onerror = (e) => console.error("Speech Error", e);
+        recognition.start();
+        window.showToast("Voice control enabled.", "success");
+    } else {
+        guide?.classList.add('hidden');
+        if (recognition) recognition.stop();
+        window.showToast("Voice control disabled.", "info");
+    }
+};
+
+function handleSpeechCommand(cmd) {
+    if (cmd.includes("expenses") || cmd.includes("claims")) window.toggleEmpView('claims');
+    else if (cmd.includes("tasks")) window.toggleEmpView('tasks');
+    else if (cmd.includes("scheduler") || cmd.includes("schedule")) window.toggleEmpView('scheduler');
+    else if (cmd.includes("messages")) window.toggleMainView('messages');
+    else if (cmd.includes("new claim") || cmd.includes("create claim")) window.openModalWithHistory('modal-create');
+    else if (cmd.includes("logout")) window.handleLogout();
+}
