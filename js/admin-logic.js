@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc, onSnapshot, serverTimestamp, setDoc, orderBy, getDoc, deleteDoc, writeBatch, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
@@ -950,6 +950,87 @@ window.handleGoogleLogin = async () => {
     } catch (error) {
         console.error(error);
         showToast("Google Sign-In Failed: " + error.message, "error");
+    }
+};
+
+window.handleMicrosoftLogin = async () => {
+    const provider = new OAuthProvider('microsoft.com');
+    provider.addScope('openid');
+    provider.addScope('email');
+    provider.addScope('profile');
+
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // 1. Match by Firebase UID first, then corporate email.
+        let userDocSnap = await safeFirebaseFetch(getDoc(doc(db, "users", user.uid)));
+        let snap = { empty: true, docs: [] };
+
+        if (userDocSnap.exists()) {
+            snap = { empty: false, docs: [userDocSnap] };
+        } else {
+            const q = query(collection(db, "users"), where("email", "==", user.email));
+            const querySnap = await safeFirebaseFetch(getDocs(q));
+            if (!querySnap.empty) {
+                const sortedDocs = querySnap.docs.sort((a, b) => {
+                    const roles = ['ADMIN', 'MANAGER', 'FINANCE_MANAGER'];
+                    const aIsAdmin = roles.includes(a.data().role) ? 0 : 1;
+                    const bIsAdmin = roles.includes(b.data().role) ? 0 : 1;
+                    return aIsAdmin - bIsAdmin;
+                });
+                snap = { empty: false, docs: sortedDocs };
+            }
+        }
+
+        if (snap.empty) {
+            try {
+                const allUsersSnap = await safeFirebaseFetch(getDocs(collection(db, "users")));
+                const normalizedEmail = (user.email || '').trim().toLowerCase();
+                const foundDoc = allUsersSnap.docs.find(d => (d.data().email || '').trim().toLowerCase() === normalizedEmail);
+                if (foundDoc) {
+                    snap = { empty: false, docs: [foundDoc] };
+                    await updateDoc(doc(db, "users", foundDoc.id), { email: user.email });
+                }
+            } catch (e) {
+                console.error("Microsoft Auth Fallback Error", e);
+            }
+        }
+
+        if (snap.empty) {
+            if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes((user.email || '').toLowerCase()) || (user.email || '').toLowerCase().endsWith('@explyra.com')) {
+                console.log('[Auth] Explyra admin Microsoft login - skipping admin portal.');
+                return;
+            }
+            await signOut(auth);
+            showToast(`Access Denied: Email [${user.email}] not registered in system.`, "error");
+            return;
+        }
+
+        const userDoc = snap.docs[0].data();
+        const docId = snap.docs[0].id;
+
+        // 2. Keep admin portal role restrictions.
+        const allowed = ['ADMIN', 'MANAGER', 'SENIOR_MANAGER', 'TREASURY', 'AUDIT', 'HR', 'FINANCE_MANAGER', 'ACCOUNTS'];
+        if (!allowed.includes(userDoc.role)) {
+            await signOut(auth);
+            showToast("Access Denied: You do not have management privileges.", "error");
+            return;
+        }
+
+        // 3. Persist provider and uid mapping when account is matched.
+        await updateDoc(doc(db, "users", docId), {
+            uid: user.uid,
+            updatedAt: serverTimestamp(),
+            status: 'ACTIVE',
+            authProvider: 'microsoft'
+        });
+
+        showToast("Login successful!", "success");
+        // onAuthStateChanged handles the rest
+    } catch (error) {
+        console.error(error);
+        showToast("Microsoft Sign-In Failed: " + error.message, "error");
     }
 };
 

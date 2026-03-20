@@ -1,6 +1,6 @@
 // emp-auth.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
@@ -270,6 +270,51 @@ window.handleGoogleLogin = async () => {
         window.showToast("Login successful!", "success");
     } catch (error) {
         window.showToast("Google Sign-In Failed: " + error.message, "error");
+    }
+};
+
+window.handleMicrosoftLogin = async () => {
+    const provider = new OAuthProvider('microsoft.com');
+    provider.addScope('openid');
+    provider.addScope('email');
+    provider.addScope('profile');
+
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        const q = query(collection(db, "users"), where("email", "==", user.email));
+        let snap = await getDocs(q);
+
+        if (snap.empty) {
+            try {
+                const allUsersSnap = await getDocs(collection(db, "users"));
+                const normalizedEmail = (user.email || '').trim().toLowerCase();
+                const foundDoc = allUsersSnap.docs.find(d => (d.data().email || '').trim().toLowerCase() === normalizedEmail);
+                if (foundDoc) {
+                    snap = { empty: false, docs: [foundDoc] };
+                    await updateDoc(doc(db, "users", foundDoc.id), { email: user.email });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        if (snap.empty) {
+            await signOut(auth);
+            window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
+            return;
+        }
+
+        const docId = snap.docs[0].id;
+        await updateDoc(doc(db, "users", docId), {
+            uid: user.uid,
+            updatedAt: serverTimestamp(),
+            status: 'ACTIVE',
+            authProvider: 'microsoft'
+        });
+
+        window.showToast("Login successful!", "success");
+    } catch (error) {
+        window.showToast("Microsoft Sign-In Failed: " + error.message, "error");
     }
 };
 
