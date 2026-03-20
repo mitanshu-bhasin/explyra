@@ -1944,18 +1944,25 @@
     <div id="modal-profile"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div
-            class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-[slideUp_0.2s_ease-out]">
+            class="bg-white/95 dark:bg-slate-800/95 w-full max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-700 ring-1 ring-white/60 dark:ring-slate-700/60 shadow-2xl flex flex-col max-h-[90vh] animate-[slideUp_0.2s_ease-out]">
             <div
-                class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 shrink-0">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">My Profile</h3>
+                class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shrink-0 rounded-t-3xl">
+                <h3 class="text-lg md:text-xl font-black text-slate-800 dark:text-slate-100">My Profile</h3>
                 <button onclick="closeModal('modal-profile')"
-                    class="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition">
+                    class="w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 transition flex items-center justify-center hover:bg-white/80 dark:hover:bg-slate-800">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <form id="profile-form" onsubmit="window.submitProfile(event)" class="p-6 space-y-4 overflow-y-auto">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4 py-3 flex items-center justify-between gap-3 shadow-sm">
+                    <div class="min-w-0">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Work Identity</p>
+                        <span id="profile-company-display" class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate block">Company Name</span>
+                    </div>
+                    <span id="profile-company-verify-badge" class="px-1.5 py-0.5 rounded-full border border-slate-300 bg-slate-100 text-slate-500 text-[8px] font-bold uppercase tracking-wide">Unverified</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Full
                             Name</label>
@@ -2010,7 +2017,7 @@
                     <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-file-export"></i> Data Export
                     </h5>
-                    <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                         <button type="button" onclick="exportUserExpenses(currentUser.uid, 'CSV', userData.name)" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-file-csv text-green-600"></i> Export CSV
                         </button>
@@ -2127,7 +2134,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 mb-2 mt-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2 mt-2">
                         <div>
                             <label
                                 class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Language</label>
@@ -2147,7 +2154,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 mb-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI Empowerment</label>
                             <label class="relative inline-flex items-center cursor-pointer w-full">
@@ -2189,7 +2196,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 mb-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
                         <div
                             class="flex items-center gap-2 p-2 px-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg">
                             <input type="checkbox" id="voice-control-toggle"
@@ -2222,7 +2229,7 @@
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Ask AI Assistant
                     </button>
 
-                    <div class="flex gap-3 pt-2">
+                    <div class="flex flex-col md:flex-row gap-3 pt-2">
                         <button type="button" onclick="resetUserPassword()"
                             class="px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-red-500 rounded-xl text-xs font-bold transition flex-1">
                             Reset Password
@@ -2238,7 +2245,7 @@
                         <i class="fa-solid fa-shuffle"></i> Switch to Admin Portal
                     </button>
 
-                    <div class="grid grid-cols-2 gap-3 mt-1">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-1">
                         <button type="button" onclick="handleLogout()"
                             class="w-full px-4 py-2.5 bg-red-500 text-white rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm">
                             <i class="fa-solid fa-power-off"></i> Logout
@@ -2246,6 +2253,10 @@
                         <a href="support.html"
                             class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 text-slate-600">
                             <i class="fa-solid fa-headset"></i> Support
+                        </a>
+                        <a href="benifits.html"
+                            class="w-full px-4 py-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 text-blue-600 dark:text-blue-300">
+                            <i class="fa-solid fa-gift"></i> Benefits
                         </a>
                     </div>
 

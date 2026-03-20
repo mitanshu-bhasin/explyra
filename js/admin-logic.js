@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc, onSnapshot, serverTimestamp, setDoc, orderBy, getDoc, deleteDoc, writeBatch, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, RecaptchaVerifier, PhoneAuthProvider, updatePhoneNumber, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, collection, collectionGroup, query, where, getDocs, getCountFromServer, doc, updateDoc, addDoc, onSnapshot, serverTimestamp, setDoc, orderBy, getDoc, deleteDoc, writeBatch, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 import { AISupport } from './ai-support.js';
@@ -92,7 +92,14 @@ window.safeFirebaseFetch = async (fetchPromise) => {
         return await fetchPromise;
     } catch (error) {
         console.error("Firebase Network Error:", error);
-        if (typeof showToast === 'function') {
+        const code = error?.code || '';
+        const isLikelyNetworkIssue = [
+            'unavailable',
+            'deadline-exceeded',
+            'network-request-failed',
+            'resource-exhausted'
+        ].some((c) => code.includes(c));
+        if (isLikelyNetworkIssue && typeof showToast === 'function') {
             showToast("Slow network or offline. Please try again.", "warning");
         }
         throw error;
@@ -164,6 +171,8 @@ let overviewSortBy = 'date';
 let auditSearchTerm = '';
 let currentAdminTab = null;
 let currentAdminModalId = null;
+let adminPhoneRecaptchaVerifier = null;
+let adminPhoneVerificationId = null;
 
 const roleRank = {
     'ADMIN': 7,
@@ -2259,6 +2268,133 @@ function getTaskStatusClass(status) {
     }
 }
 
+const setUsageValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = Number(value || 0).toLocaleString();
+};
+
+const SETTINGS_COUNTRIES = [
+    'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan',
+    'Bahrain', 'Bangladesh', 'Belarus', 'Belgium', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Bulgaria',
+    'Cambodia', 'Cameroon', 'Canada', 'Chile', 'China', 'Colombia', 'Costa Rica', 'Croatia', 'Cyprus', 'Czech Republic',
+    'Denmark', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador', 'Estonia', 'Ethiopia', 'Finland', 'France', 'Georgia',
+    'Germany', 'Ghana', 'Greece', 'Guatemala', 'Hong Kong', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran',
+    'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kuwait',
+    'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lithuania', 'Luxembourg', 'Malaysia', 'Maldives', 'Malta', 'Mexico',
+    'Mongolia', 'Morocco', 'Myanmar', 'Nepal', 'Netherlands', 'New Zealand', 'Nigeria', 'North Macedonia', 'Norway', 'Oman',
+    'Pakistan', 'Panama', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Russia',
+    'Saudi Arabia', 'Serbia', 'Singapore', 'Slovakia', 'Slovenia', 'South Africa', 'South Korea', 'Spain', 'Sri Lanka', 'Sweden',
+    'Switzerland', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Tunisia', 'Turkey', 'Turkmenistan', 'Uganda', 'Ukraine',
+    'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
+];
+
+const SETTINGS_INDUSTRIES = [
+    'Aerospace', 'Agriculture', 'Automotive', 'Banking', 'Biotechnology', 'Chemicals', 'Construction', 'Consulting',
+    'Consumer Goods', 'Cybersecurity', 'Defense', 'E-commerce', 'Education', 'Electronics', 'Energy', 'Entertainment',
+    'Environmental Services', 'Event Management', 'Fashion', 'Finance', 'FinTech', 'Food and Beverage', 'Gaming',
+    'Government', 'Healthcare', 'Hospitality', 'Human Resources', 'Information Technology', 'Insurance', 'Legal Services',
+    'Logistics', 'Manufacturing', 'Marketing', 'Media', 'Mining', 'Non-Profit', 'Oil and Gas', 'Pharmaceuticals',
+    'Real Estate', 'Recruitment', 'Retail', 'SaaS', 'Shipping', 'Sports', 'Telecommunications', 'Textiles',
+    'Tourism', 'Transportation', 'Utilities', 'Venture Capital', 'Other'
+];
+
+const buildDatalistOptions = (items) => items.map((item) => `<option value="${item}"></option>`).join('');
+
+window.openSettingsLookup = (inputId) => {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.focus();
+    try {
+        if (typeof input.showPicker === 'function') input.showPicker();
+    } catch (e) { }
+};
+
+const getQueryCountSafe = async (q) => {
+    try {
+        const snap = await safeFirebaseFetch(getCountFromServer(q));
+        return snap?.data()?.count || 0;
+    } catch (e) {
+        try {
+            const snap = await safeFirebaseFetch(getDocs(q));
+            return snap.size || 0;
+        } catch (innerError) {
+            console.warn('Usage count query failed:', innerError);
+            return 0;
+        }
+    }
+};
+
+async function loadCompanyUsageStats(companyId) {
+    if (!companyId) return;
+
+    const isAiMessage = (msg) => {
+        const sender = String(msg?.sender || '').toLowerCase();
+        const email = String(msg?.email || '').toLowerCase();
+        const type = String(msg?.type || '').toLowerCase();
+        return type === 'ai' || sender.includes('ai') || email.includes('ai-agent');
+    };
+
+    const usersQuery = query(collection(db, "users"), where("companyId", "==", companyId));
+    const tasksQuery = query(collection(db, "tasks"), where("companyId", "==", companyId));
+    const expensesQuery = query(collection(db, "expenses"), where("companyId", "==", companyId));
+
+    const usersCountPromise = getQueryCountSafe(usersQuery).catch(() => 0);
+    const tasksCountPromise = getQueryCountSafe(tasksQuery).catch(() => 0);
+    const expensesSnapPromise = safeFirebaseFetch(getDocs(expensesQuery)).catch(() => null);
+
+    const aiGlobalCountPromise = (async () => {
+        try {
+            const snap = await safeFirebaseFetch(getDocs(query(collection(db, "global_chat"), where("companyId", "==", companyId))));
+            let count = 0;
+            snap.forEach((d) => { if (isAiMessage(d.data())) count += 1; });
+            return count;
+        } catch (e) {
+            console.warn('AI usage global chat count failed:', e);
+            return 0;
+        }
+    })();
+
+    const aiThreadCountPromise = (async () => {
+        try {
+            // companyId filtered first for better reliability and then detect AI messages flexibly.
+            const snap = await safeFirebaseFetch(getDocs(query(collectionGroup(db, "messages"), where("companyId", "==", companyId))));
+            let count = 0;
+            snap.forEach((d) => { if (isAiMessage(d.data())) count += 1; });
+            return count;
+        } catch (e) {
+            console.warn('AI usage thread count failed:', e);
+            return 0;
+        }
+    })();
+
+    const [usersCount, tasksCount, expensesSnap, aiGlobalCount, aiThreadMessagesCount] = await Promise.all([
+        usersCountPromise,
+        tasksCountPromise,
+        expensesSnapPromise,
+        aiGlobalCountPromise,
+        aiThreadCountPromise
+    ]);
+
+    const expensesCount = expensesSnap?.size || 0;
+    let imagesUploadedCount = 0;
+    expensesSnap?.forEach((expenseDoc) => {
+        const expense = expenseDoc.data() || {};
+        if (Array.isArray(expense.lineItems)) {
+            imagesUploadedCount += expense.lineItems.filter((item) => {
+                const url = (item?.receiptUrl || '').trim();
+                return !!url;
+            }).length;
+        }
+        if ((expense.approvalProof || '').trim()) imagesUploadedCount += 1;
+    });
+
+    setUsageValue('usage-ai-messages', aiGlobalCount + aiThreadMessagesCount);
+    setUsageValue('usage-expenses-created', expensesCount);
+    setUsageValue('usage-images-uploaded', imagesUploadedCount);
+    setUsageValue('usage-tasks-created', tasksCount);
+    setUsageValue('usage-users-total', usersCount);
+}
+
 async function renderSettings() {
     if (userData.role !== 'ADMIN') return;
     document.getElementById('page-title').textContent = "Company Settings";
@@ -2367,6 +2503,32 @@ async function renderSettings() {
                             </div>
                             ` : ''}
                         </div>
+
+                        <div class="mt-5 border-t border-slate-100 dark:border-slate-800 pt-5">
+                            <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Usage (Company-Wide)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">AI Messages</p>
+                                    <p id="usage-ai-messages" class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">...</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Expenses Created</p>
+                                    <p id="usage-expenses-created" class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">...</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Images Uploaded</p>
+                                    <p id="usage-images-uploaded" class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">...</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tasks Created</p>
+                                    <p id="usage-tasks-created" class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">...</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Users</p>
+                                    <p id="usage-users-total" class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
@@ -2380,14 +2542,13 @@ async function renderSettings() {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Industry</label>
-                                    <select id="company-industry" class="input-primary">
-                                        <option value="Technology" ${cmpData.industry === 'Technology' ? 'selected' : ''}>Technology</option>
-                                        <option value="Finance" ${cmpData.industry === 'Finance' ? 'selected' : ''}>Finance</option>
-                                        <option value="Healthcare" ${cmpData.industry === 'Healthcare' ? 'selected' : ''}>Healthcare</option>
-                                        <option value="Education" ${cmpData.industry === 'Education' ? 'selected' : ''}>Education</option>
-                                        <option value="Retail" ${cmpData.industry === 'Retail' ? 'selected' : ''}>Retail</option>
-                                        <option value="Other" ${(cmpData.industry || 'Other') === 'Other' ? 'selected' : ''}>Other</option>
-                                    </select>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="company-industry" list="company-industry-list" value="${cmpData.industry || ''}" class="input-primary" placeholder="Search and choose industry">
+                                        <button type="button" onclick="openSettingsLookup('company-industry')" class="px-3 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                    <datalist id="company-industry-list">${buildDatalistOptions(SETTINGS_INDUSTRIES)}</datalist>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Company Size</label>
@@ -2400,7 +2561,13 @@ async function renderSettings() {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Country</label>
-                                    <input type="text" id="company-country" value="${cmpData.country || ''}" class="input-primary" placeholder="India">
+                                    <div class="flex gap-2">
+                                        <input type="text" id="company-country" list="company-country-list" value="${cmpData.country || ''}" class="input-primary" placeholder="Search and choose country">
+                                        <button type="button" onclick="openSettingsLookup('company-country')" class="px-3 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                    <datalist id="company-country-list">${buildDatalistOptions(SETTINGS_COUNTRIES)}</datalist>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-600 dark:text-slate-300 mb-2">Tax ID / GST</label>
@@ -2488,6 +2655,23 @@ async function renderSettings() {
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-code text-blue-600"></i> Developers
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <a href="api-e/admin-ui/" class="px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition shadow-sm">
+                                <i class="fa-solid fa-plug mr-2"></i> Get API
+                            </a>
+                            <a href="#" class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-sm font-bold text-center transition border border-slate-200 dark:border-slate-600">
+                                <i class="fa-solid fa-book mr-2"></i> View Documentation
+                            </a>
+                            <a href="#" class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-sm font-bold text-center transition border border-slate-200 dark:border-slate-600">
+                                <i class="fa-solid fa-circle-info mr-2"></i> View Explanation
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 fade-in">
                         <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">Account Security</h3>
                         <div class="space-y-6">
                             <div class="flex items-center justify-between">
@@ -2535,6 +2719,8 @@ async function renderSettings() {
                     </div>
                 </div>
                          `;
+
+    loadCompanyUsageStats(userData.companyId);
 }
 
 window.resetAdminPassword = async () => {
@@ -4689,6 +4875,62 @@ window.showImage = (src) => {
 
 
 // --- Workflow Management ---
+const normalizeRoleCode = (roleName) => String(roleName || '').trim().toUpperCase().replace(/\s+/g, '_');
+
+async function getWorkflowAvailableRoles() {
+    const roles = new Set(['ADMIN', 'MANAGER', 'SENIOR_MANAGER', 'HR', 'FINANCE_MANAGER', 'ACCOUNTS', 'TREASURY', 'AUDIT']);
+
+    try {
+        const rolesQ = query(collection(db, "roles"), where("companyId", "in", [userData.companyId, "GLOBAL"]));
+        const rolesSnap = await safeFirebaseFetch(getDocs(rolesQ));
+        rolesSnap.forEach((d) => {
+            const r = d.data() || {};
+            const code = normalizeRoleCode(r.name || r.code);
+            if (code) roles.add(code);
+        });
+    } catch (e) {
+        console.warn('Workflow role fetch from roles collection failed:', e);
+    }
+
+    try {
+        const usersQ = query(collection(db, "users"), where("companyId", "==", userData.companyId));
+        const usersSnap = await safeFirebaseFetch(getDocs(usersQ));
+        usersSnap.forEach((d) => {
+            const u = d.data() || {};
+            const code = normalizeRoleCode(u.role);
+            if (code) roles.add(code);
+        });
+    } catch (e) {
+        console.warn('Workflow role fetch from users collection failed:', e);
+    }
+
+    return Array.from(roles).sort((a, b) => a.localeCompare(b));
+}
+
+function sanitizeWorkflowByRoles(config, validRoles) {
+    const validSet = new Set(validRoles || []);
+    const sanitizeFlow = (flow) => (Array.isArray(flow) ? flow : []).map((step) => ({
+        ...step,
+        approverRole: step?.approverRole && validSet.has(step.approverRole) ? step.approverRole : null
+    }));
+
+    const sanitized = {
+        ...config,
+        defaultFlow: sanitizeFlow(config.defaultFlow),
+        roleOverrides: {}
+    };
+
+    Object.entries(config.roleOverrides || {}).forEach(([roleKey, override]) => {
+        if (!validSet.has(roleKey)) return;
+        sanitized.roleOverrides[roleKey] = {
+            ...(override || {}),
+            flow: sanitizeFlow(override?.flow)
+        };
+    });
+
+    return sanitized;
+}
+
 window.renderWorkflow = async () => {
     document.getElementById('page-title').textContent = "Workflow Configuration";
     const content = document.getElementById('content-area');
@@ -4716,6 +4958,8 @@ window.renderWorkflow = async () => {
         };
 
         const config = { ...defaults, ...existingConfig };
+        window.workflowAvailableRoles = await getWorkflowAvailableRoles();
+        const overrideRoleOptions = (window.workflowAvailableRoles || []).map((r) => `<option value="${r}">${r.replace(/_/g, ' ')}</option>`).join('');
         window.currentWorkflowConfig = config;
 
         // --- Access Control Check ---
@@ -4745,9 +4989,7 @@ window.renderWorkflow = async () => {
                                     <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100"><i class="fa-solid fa-route text-green-500 mr-2"></i> Approval Chains</h3>
                                     <select id="workflow-role-select" onchange="renderWorkflowChain(this.value)" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-500">
                                         <option value="DEFAULT">Default (Employees)</option>
-                                        <option value="MANAGER">Manager</option>
-                                        <option value="SENIOR_MANAGER">Senior Manager</option>
-                                        <option value="ADMIN">Admin</option>
+                                        ${overrideRoleOptions}
                                     </select>
                                 </div>
                                 
@@ -4799,7 +5041,7 @@ window.renderWorkflow = async () => {
                              <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">
                                 <h4 class="font-bold text-slate-700 dark:text-slate-200 mb-4">Available Roles</h4>
                                 <div class="flex flex-wrap gap-2">
-                                    ${['MANAGER', 'SENIOR_MANAGER', 'HR', 'FINANCE_MANAGER', 'ACCOUNTS', 'TREASURY', 'AUDIT', 'ADMIN'].map(r =>
+                                    ${(window.workflowAvailableRoles || []).map(r =>
             `<span class="px-2 py-1 bg-slate-100 dark:bg-slate-900 rounded text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400">${r}</span>`
         ).join('')}
                                 </div>
@@ -4875,6 +5117,7 @@ window.renderWorkflowChain = (roleKey) => {
 window.renderChainVisuals = () => {
     const container = document.getElementById('workflow-chain-container');
     const chain = window.editingChain;
+    const validRoles = window.workflowAvailableRoles || [];
 
     if (chain.length === 0) {
         container.innerHTML = `
@@ -4885,6 +5128,8 @@ window.renderChainVisuals = () => {
                  `;
         return;
     }
+
+    const approverOptionsHtml = validRoles.map((r) => `<option value="${r}">${r.replace(/_/g, ' ')}</option>`).join('');
 
     container.innerHTML = chain.map((step, index) => `
                 <div class="relative pl-8 pb-8 last:pb-0 group">
@@ -4911,15 +5156,8 @@ window.renderChainVisuals = () => {
                              <div class="md:col-span-3">
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Approver Role</label>
                                 <select onchange="updateStage(${index}, 'approverRole', this.value)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 focus:border-green-500 outline-none">
-                                    <option value="null" ${step.approverRole === null ? 'selected' : ''}>None (End)</option>
-                                    <option value="MANAGER" ${step.approverRole === 'MANAGER' ? 'selected' : ''}>MANAGER</option>
-                                    <option value="SENIOR_MANAGER" ${step.approverRole === 'SENIOR_MANAGER' ? 'selected' : ''}>SENIOR MANAGER</option>
-                                    <option value="HR" ${step.approverRole === 'HR' ? 'selected' : ''}>HR</option>
-                                    <option value="FINANCE_MANAGER" ${step.approverRole === 'FINANCE_MANAGER' ? 'selected' : ''}>FINANCE_MANAGER</option>
-                                    <option value="ACCOUNTS" ${step.approverRole === 'ACCOUNTS' ? 'selected' : ''}>ACCOUNTS</option>
-                                    <option value="TREASURY" ${step.approverRole === 'TREASURY' ? 'selected' : ''}>TREASURY</option>
-                                    <option value="AUDIT" ${step.approverRole === 'AUDIT' ? 'selected' : ''}>AUDIT</option>
-                                    <option value="ADMIN" ${step.approverRole === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+                                    <option value="null" ${step.approverRole && validRoles.includes(step.approverRole) ? '' : 'selected'}>None (End)</option>
+                                    ${approverOptionsHtml}
                                 </select>
                             </div>
                             <div class="md:col-span-1 flex justify-end">
@@ -4935,6 +5173,19 @@ window.renderChainVisuals = () => {
                 </div>
             `).join('');
 
+    // Ensure selected values are reflected correctly for dynamic options.
+    chain.forEach((step, index) => {
+        const selects = container.querySelectorAll('select');
+        const roleSelect = selects[index];
+        if (!roleSelect) return;
+        if (step.approverRole && validRoles.includes(step.approverRole)) {
+            roleSelect.value = step.approverRole;
+        } else {
+            roleSelect.value = 'null';
+            window.editingChain[index].approverRole = null;
+        }
+    });
+
     // Final Add Button
     container.innerHTML += `
                 <div class="flex justify-center pt-4">
@@ -4949,7 +5200,8 @@ window.updateStage = (index, field, value) => {
 };
 
 window.addStage = (index) => {
-    window.editingChain.splice(index, 0, { stage: 'NEW_STAGE', label: 'New Stage', approverRole: 'ADMIN' });
+    const defaultApprover = (window.workflowAvailableRoles && window.workflowAvailableRoles[0]) ? window.workflowAvailableRoles[0] : null;
+    window.editingChain.splice(index, 0, { stage: 'NEW_STAGE', label: 'New Stage', approverRole: defaultApprover });
     renderChainVisuals();
 };
 
@@ -4965,13 +5217,20 @@ window.saveWorkflowConfig = async () => {
     btn.disabled = true;
 
     try {
+        const validRoles = window.workflowAvailableRoles || await getWorkflowAvailableRoles();
+
         // Update global config object
         if (window.editingRoleKey === 'DEFAULT') {
             window.currentWorkflowConfig.defaultFlow = window.editingChain;
         } else {
+            if (!validRoles.includes(window.editingRoleKey)) {
+                throw new Error("Selected role no longer exists. Please choose a valid role.");
+            }
             if (!window.currentWorkflowConfig.roleOverrides) window.currentWorkflowConfig.roleOverrides = {};
             window.currentWorkflowConfig.roleOverrides[window.editingRoleKey] = { flow: window.editingChain };
         }
+
+        window.currentWorkflowConfig = sanitizeWorkflowByRoles(window.currentWorkflowConfig, validRoles);
 
         // Save to Firestore
         await setDoc(doc(db, "settings", "workflow_config"), window.currentWorkflowConfig);
@@ -6429,6 +6688,8 @@ window.openAccountCenter = async () => {
     // Company & Plan Population
     const planBadge = document.getElementById('ac-plan-badge');
     const companyName = document.getElementById('ac-company-display');
+    let isCompanyPhoneVerified = false;
+    let verifiedCompanyPhoneNumber = '';
     if (planBadge) {
         const plan = (window.companyPlan || 'Starter').toUpperCase();
         planBadge.textContent = plan;
@@ -6439,9 +6700,50 @@ window.openAccountCenter = async () => {
         }`;
     }
     if (companyName) {
-        // Find company name from global settings or userData
-        companyName.textContent = u.companyName || 'Corporate Account';
+        let resolvedCompanyName = u.companyName || 'Corporate Account';
+
+        if (u.companyId) {
+            try {
+                const compSnap = await safeFirebaseFetch(getDoc(doc(db, "companies", u.companyId)));
+                if (compSnap.exists()) {
+                    const cData = compSnap.data();
+                    resolvedCompanyName = cData.name || cData.companyName || resolvedCompanyName;
+                    isCompanyPhoneVerified = !!cData.phoneVerified;
+                    verifiedCompanyPhoneNumber = cData.verifiedPhoneNumber || '';
+
+                    const adminPhoneStatus = document.getElementById('ac-admin-phone-status');
+                    if (adminPhoneStatus) {
+                        adminPhoneStatus.textContent = isCompanyPhoneVerified
+                            ? `Company phone verified (${cData.verifiedPhoneNumber || 'number hidden'})`
+                            : 'Company phone is not verified yet.';
+                        adminPhoneStatus.className = isCompanyPhoneVerified
+                            ? 'text-[10px] text-blue-600 font-semibold'
+                            : 'text-[10px] text-slate-500';
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed loading company verification state', e);
+            }
+        }
+
+        companyName.innerHTML = `${resolvedCompanyName} <span class="px-1.5 py-0.5 rounded-full border ${isCompanyPhoneVerified ? 'border-blue-200 bg-blue-50 text-blue-600' : 'border-slate-300 bg-slate-100 text-slate-500'} text-[8px] font-bold uppercase tracking-wide">${isCompanyPhoneVerified ? 'Verified' : 'Unverified'}</span>`;
     }
+
+    const isAdminUser = (u.role || '').toUpperCase() === 'ADMIN';
+    const adminPhoneSection = document.getElementById('admin-phone-verify-section');
+    const adminPhoneVerifiedNote = document.getElementById('admin-phone-verified-note');
+    const adminPhoneVerifiedNoteText = document.getElementById('ac-admin-verified-note-text');
+    const adminPhoneInput = document.getElementById('ac-admin-verify-phone');
+    const otpInput = document.getElementById('ac-admin-otp-code');
+
+    if (adminPhoneSection) adminPhoneSection.classList.toggle('hidden', !isAdminUser || isCompanyPhoneVerified);
+    if (adminPhoneVerifiedNote) adminPhoneVerifiedNote.classList.toggle('hidden', !isAdminUser || !isCompanyPhoneVerified);
+    if (adminPhoneVerifiedNoteText && isCompanyPhoneVerified) {
+        const verifiedPhone = verifiedCompanyPhoneNumber || (adminPhoneInput?.value || 'saved number');
+        adminPhoneVerifiedNoteText.textContent = `Company verified by phone number ${verifiedPhone}`;
+    }
+    if (adminPhoneInput) adminPhoneInput.value = u.phone || u.altPhone || '';
+    if (otpInput) otpInput.value = '';
 
     // AI Preference Toggle
     const aiToggle = document.getElementById('pref-ai-enabled');
@@ -6505,6 +6807,118 @@ window.openAccountCenter = async () => {
             document.getElementById('ac-stat-claims').textContent = snap.size;
         });
     } catch (e) { console.warn(e); }
+};
+
+window.sendAdminPhoneOtp = async () => {
+    if (!userData || (userData.role || '').toUpperCase() !== 'ADMIN') {
+        showToast('Only admin can verify company phone.', 'error');
+        return;
+    }
+
+    const phone = (document.getElementById('ac-admin-verify-phone')?.value || '').trim();
+    if (!phone) {
+        showToast('Enter phone number with country code (e.g. +91...).', 'warning');
+        return;
+    }
+    if (!auth.currentUser) {
+        showToast('Please login again to continue phone verification.', 'error');
+        return;
+    }
+
+    try {
+        if (!adminPhoneRecaptchaVerifier) {
+            adminPhoneRecaptchaVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
+        }
+        await adminPhoneRecaptchaVerifier.render();
+
+        const provider = new PhoneAuthProvider(auth);
+        adminPhoneVerificationId = await provider.verifyPhoneNumber(phone, adminPhoneRecaptchaVerifier);
+        showToast('OTP sent successfully.', 'success');
+    } catch (error) {
+        console.error(error);
+        showToast('Failed to send OTP: ' + error.message, 'error');
+        try {
+            if (adminPhoneRecaptchaVerifier) adminPhoneRecaptchaVerifier.clear();
+        } catch (e) { }
+        adminPhoneRecaptchaVerifier = null;
+    }
+};
+
+window.verifyAdminPhoneOtp = async () => {
+    if (!userData || (userData.role || '').toUpperCase() !== 'ADMIN') {
+        showToast('Only admin can verify company phone.', 'error');
+        return;
+    }
+
+    const phone = (document.getElementById('ac-admin-verify-phone')?.value || '').trim();
+    const code = (document.getElementById('ac-admin-otp-code')?.value || '').trim();
+
+    if (!adminPhoneVerificationId) {
+        showToast('Send OTP first.', 'warning');
+        return;
+    }
+    if (!code || code.length < 6) {
+        showToast('Enter a valid 6-digit OTP.', 'warning');
+        return;
+    }
+    if (!auth.currentUser) {
+        showToast('Session expired. Please login again.', 'error');
+        return;
+    }
+
+    try {
+        const credential = PhoneAuthProvider.credential(adminPhoneVerificationId, code);
+        await updatePhoneNumber(auth.currentUser, credential);
+
+        const companyId = userData.companyId;
+        if (!companyId) throw new Error('Company ID not found for this admin.');
+
+        await updateDoc(doc(db, 'companies', companyId), {
+            phoneVerified: true,
+            verifiedPhoneNumber: phone,
+            phoneVerifiedBy: userData.docId || auth.currentUser.uid,
+            phoneVerifiedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+
+        const docId = userData.docId || userData.id;
+        if (docId) {
+            await updateDoc(doc(db, 'users', docId), {
+                phone,
+                phoneVerified: true,
+                updatedAt: serverTimestamp()
+            });
+            userData.phone = phone;
+            userData.phoneVerified = true;
+        }
+
+        const statusEl = document.getElementById('ac-admin-phone-status');
+        if (statusEl) {
+            statusEl.textContent = `Company phone verified (${phone})`;
+            statusEl.className = 'text-[10px] text-blue-600 font-semibold';
+        }
+
+        const companyName = document.getElementById('ac-company-display');
+        const companyLabel = (companyName?.textContent || userData.companyName || 'Corporate Account').replace(/Verified|Unverified/g, '').trim();
+        if (companyName) {
+            companyName.innerHTML = `${companyLabel} <span class="px-1.5 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-[8px] font-bold uppercase tracking-wide">Verified</span>`;
+        }
+
+        const adminPhoneSection = document.getElementById('admin-phone-verify-section');
+        const adminPhoneVerifiedNote = document.getElementById('admin-phone-verified-note');
+        const adminPhoneVerifiedNoteText = document.getElementById('ac-admin-verified-note-text');
+        if (adminPhoneSection) adminPhoneSection.classList.add('hidden');
+        if (adminPhoneVerifiedNote) adminPhoneVerifiedNote.classList.remove('hidden');
+        if (adminPhoneVerifiedNoteText) adminPhoneVerifiedNoteText.textContent = `Company verified by phone number ${phone}`;
+
+        showToast('Phone verified and company marked as verified.', 'success');
+        adminPhoneVerificationId = null;
+        const otpEl = document.getElementById('ac-admin-otp-code');
+        if (otpEl) otpEl.value = '';
+    } catch (error) {
+        console.error(error);
+        showToast('OTP verification failed: ' + error.message, 'error');
+    }
 };
 
 window.switchAccountTab = (tabId) => {

@@ -1,5 +1,5 @@
 // js/emp-profile.js
-import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { doc, updateDoc, serverTimestamp, collection, query, where, getDocs, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
 window.exportUserExpenses = async (uid, format, userName = 'User') => {
@@ -72,7 +72,7 @@ window.exportUserExpenses = async (uid, format, userName = 'User') => {
     }
 };
 
-window.openProfileModal = () => {
+window.openProfileModal = async () => {
     const userData = window.userData;
     if (!userData) return;
     document.getElementById('profile-name').value = userData.name || '';
@@ -83,6 +83,32 @@ window.openProfileModal = () => {
     document.getElementById('profile-dob').value = userData.dob || '';
     if (document.getElementById('profile-photo-url')) {
         document.getElementById('profile-photo-url').value = userData.photoUrl || '';
+    }
+
+    const companyNameEl = document.getElementById('profile-company-display');
+    const companyBadgeEl = document.getElementById('profile-company-verify-badge');
+    if (companyNameEl && companyBadgeEl) {
+        let companyName = userData.companyName || 'Corporate Account';
+        let isVerified = false;
+
+        if (userData.companyId) {
+            try {
+                const companySnap = await getDoc(doc(window.db, 'companies', userData.companyId));
+                if (companySnap.exists()) {
+                    const companyData = companySnap.data();
+                    companyName = companyData.name || companyData.companyName || companyName;
+                    isVerified = !!companyData.phoneVerified;
+                }
+            } catch (err) {
+                console.warn('Could not load company verification status', err);
+            }
+        }
+
+        companyNameEl.textContent = companyName;
+        companyBadgeEl.textContent = isVerified ? 'Verified' : 'Unverified';
+        companyBadgeEl.className = isVerified
+            ? 'px-1.5 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-[8px] font-bold uppercase tracking-wide'
+            : 'px-1.5 py-0.5 rounded-full border border-slate-300 bg-slate-100 text-slate-500 text-[8px] font-bold uppercase tracking-wide';
     }
 
     // 2FA Population

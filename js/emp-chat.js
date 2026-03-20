@@ -512,13 +512,14 @@ function runChatListener(collectionName, subCollectionId) {
                         ${!isMe && (collectionName === 'global_chat' || collectionName === 'group_chats') && lastSenderId !== data.email ? `<p class="text-[10px] font-black text-green-600 mb-1">${data.sender || data.email}</p>` : ''}
                         ${replyHtml}
                         ${contentHtml}
-                        <div class="flex items-center justify-end gap-1 mt-1 opacity-60">
+                        <div class="flex items-center justify-end gap-1 mt-1 opacity-70">
                             <span class="text-[9px]">${time}</span>
-                            ${isMe ? `<button onclick="window.showSeenInfo('${msgId}', '${subCollectionId}', '${collectionName}')" class="text-[10px] ${data.seenBy?.length > 1 ? 'text-blue-300' : ''}"><i class="fa-solid fa-check-double"></i></button>` : ''}
+                            ${isMe && collectionName === 'group_chats' ? `<button onclick="window.showSeenInfo('${msgId}', '${subCollectionId}', '${collectionName}')" title="Message info" class="text-[10px] px-1 rounded hover:bg-black/10 dark:hover:bg-white/10 ${data.seenBy?.length > 1 ? 'text-blue-200' : 'text-white/80 dark:text-black/70'}"><i class="fa-solid fa-circle-info"></i></button>` : ''}
+                            ${isMe && collectionName !== 'group_chats' ? `<span class="text-[10px] ${data.seenBy?.length > 1 ? 'text-blue-200' : 'text-white/80 dark:text-black/70'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
                         </div>
-                        <div class="absolute top-0 ${isMe ? '-left-8' : '-right-8'} flex flex-col gap-1 opacity-0 group-hover/msg:opacity-100 transition-opacity p-1">
-                             <button onclick="window.replyToMessage('${msgId}', '${data.sender}', '${data.text}')" class="w-6 h-6 rounded-full bg-white dark:bg-black shadow border border-gray-100 dark:border-white/10 flex items-center justify-center text-[10px] hover:text-green-500 transition"><i class="fa-solid fa-reply"></i></button>
-                             ${canDelete ? `<button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="w-6 h-6 rounded-full bg-white dark:bg-black shadow border border-gray-100 dark:border-white/10 flex items-center justify-center text-[10px] hover:text-red-500 transition"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        <div class="absolute top-0 ${isMe ? '-left-8' : '-right-8'} flex flex-col gap-1 opacity-80 group-hover/msg:opacity-100 transition-opacity p-1">
+                             <button onclick="window.replyToMessage('${msgId}', '${data.sender}', '${(data.text || '').replace(/'/g, "\\'")}')" class="w-6 h-6 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow border border-slate-200 dark:border-slate-700 flex items-center justify-center text-[10px] hover:text-green-500 transition" title="Reply"><i class="fa-solid fa-reply"></i></button>
+                             ${canDelete ? `<button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="w-6 h-6 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow border border-slate-200 dark:border-slate-700 flex items-center justify-center text-[10px] hover:text-red-500 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </div>
                     </div>
                 </div>
