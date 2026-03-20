@@ -486,10 +486,17 @@ function runChatListener(collectionName, subCollectionId) {
                 `;
             } else if (data.type === 'meet_link') {
                 contentHtml = `
-                    <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/20 max-w-xs">
-                        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-video text-blue-600"></i><span class="text-xs font-bold text-blue-700 dark:text-blue-400">Google Meet</span></div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 mb-3">${data.text.replace('📹 **Meeting Started**\n', '')}</p>
-                        <a href="${data.meetUrl}" target="_blank" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition"><i class="fa-solid fa-external-link text-[10px]"></i> Join Now</a>
+                    <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/20 max-w-xs min-w-[220px]">
+                        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-video text-blue-600"></i><span class="text-xs font-bold text-blue-700 dark:text-blue-400">Google Meet Invite</span></div>
+                        <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">${data.meetTitle || 'Team Meeting'}</p>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 mb-1">Host: ${data.meetHost || data.sender || 'Host'}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">${data.meetDate || ''}</p>
+                        <div class="flex gap-2">
+                            <a href="${data.meetUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition"><i class="fa-solid fa-right-to-bracket text-[10px]"></i> Join Meeting</a>
+                            <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText('${data.meetUrl || ''}'); window.showToast && window.showToast('Meet link copied', 'success');" class="px-3 py-2 bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-900/40 rounded-lg text-xs font-bold text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition">
+                                Copy
+                            </button>
+                        </div>
                     </div>
                 `;
             }
@@ -599,20 +606,81 @@ window.toggleVoicePlay = (url, btn) => {
     audio.play();
 };
 
-window.sendChatMessage = async (e, voiceData = null) => {
-    if (e) e.preventDefault();
-    const input = document.getElementById('chat-input-emp');
-    const text = voiceData ? '🎤 Voice Message' : (input ? input.value.trim() : '');
-    if (!text && !voiceData) return;
+function resolveChatTarget() {
+    if (window.currentChatContext === 'global') {
+        return { kind: 'global' };
+    }
 
-    if (input) input.value = '';
+    if (window.currentChatContext && window.currentChatContext.startsWith('group_')) {
+        return { kind: 'group', id: window.currentChatContext.replace('group_', '') };
+    }
+
+    const otherUserId = window.currentChatUser?.docId;
+    if (!otherUserId) {
+        throw new Error('No active direct chat selected.');
+    }
+
+    const combinedId = window.userData.docId < otherUserId
+        ? `chat_${window.userData.docId}_${otherUserId}`
+        : `chat_${otherUserId}_${window.userData.docId}`;
+
+    return { kind: 'direct', id: combinedId, otherUserId };
+}
+
+async function writeChatMessageByTarget(db, target, messageData) {
+    const lastMessageText = messageData.type === 'meet_link'
+        ? '📹 Meeting Link'
+        : (messageData.type === 'voice' ? '🎤 Voice Message' : messageData.text);
+
+    if (target.kind === 'global') {
+        await addDoc(collection(db, 'global_chat'), messageData);
+        return;
+    }
+
+    if (target.kind === 'group') {
+        await setDoc(doc(db, 'group_chats', target.id), {
+            lastMessage: lastMessageText,
+            lastMessageAt: serverTimestamp(),
+            lastSender: window.userData.docId || 'system',
+            read: false
+        }, { merge: true });
+        await addDoc(collection(db, 'group_chats', target.id, 'messages'), messageData);
+        return;
+    }
+
+    await setDoc(doc(db, 'chats', target.id), {
+        lastMessage: lastMessageText,
+        lastMessageAt: serverTimestamp(),
+        lastSender: window.userData.docId || 'system',
+        read: false,
+        users: [window.userData.docId, target.otherUserId],
+        companyId: window.companyId
+    }, { merge: true });
+    await addDoc(collection(db, 'chats', target.id, 'messages'), messageData);
+}
+
+window.sendChatMessage = async (e, payload = null) => {
+    if (e) e.preventDefault();
+
+    const payloadType = payload?.type || null;
+    const payloadText = typeof payload?.text === 'string' ? payload.text.trim() : '';
+    const input = document.getElementById('chat-input-emp');
+    const userTypedText = input ? input.value.trim() : '';
+    const text = payloadType
+        ? (payloadText || (payloadType === 'voice' ? '🎤 Voice Message' : ''))
+        : userTypedText;
+
+    if (!text && !payloadType) return;
+
+    if (!payloadType && input) input.value = '';
 
     try {
         const db = window.db;
+        const target = resolveChatTarget();
         let isSpam = false;
         let groupId = null;
 
-        if (window.currentChatContext.startsWith('group_') || window.currentChatContext === 'global') {
+        if (!payloadType && (window.currentChatContext.startsWith('group_') || window.currentChatContext === 'global')) {
             groupId = window.currentChatContext === 'global' ? 'global' : window.currentChatContext.replace('group_', '');
             
             // Check spam filter if group
@@ -636,66 +704,52 @@ window.sendChatMessage = async (e, voiceData = null) => {
             companyId: window.companyId,
             seenBy: [window.userData.docId], // Initialize seenBy with sender
             replyTo: currentReplyMessage || null,
-            type: voiceData ? 'voice' : (isSpam ? 'spam' : 'text'),
-            audioUrl: voiceData?.audioUrl || null
+            type: payloadType || (isSpam ? 'spam' : 'text'),
+            audioUrl: payload?.audioUrl || null,
+            meetUrl: payload?.meetUrl || null,
+            meetTitle: payload?.meetTitle || null,
+            meetHost: payload?.meetHost || null,
+            meetDate: payload?.meetDate || null
         };
 
         if (isSpam) {
             messageData.originalText = text; // Log for audit if needed
         }
 
-        if (window.currentChatContext === 'global') {
-            await addDoc(collection(db, "global_chat"), messageData);
-        } else if (window.currentChatContext.startsWith('group_')) {
-            const gId = window.currentChatContext.replace('group_', '');
-            await setDoc(doc(db, "group_chats", gId), { lastMessage: messageData.text, lastMessageAt: serverTimestamp() }, { merge: true });
-            await addDoc(collection(db, "group_chats", gId, "messages"), messageData);
-        } else {
-            const combinedId = window.userData.docId < window.currentChatUser.docId ?
-                `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
-                `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
-
-            const chatMetaUpdate = {
-                lastMessage: messageData.text,
-                lastMessageAt: serverTimestamp(),
-                lastSender: window.userData.docId || 'system',
-                read: false,
-                users: [window.userData.docId, window.currentChatUser.docId],
-                companyId: window.companyId
-            };
-
-            await setDoc(doc(db, "chats", combinedId), chatMetaUpdate, { merge: true });
-            await addDoc(collection(db, "chats", combinedId, "messages"), messageData);
-        }
+        await writeChatMessageByTarget(db, target, messageData);
 
         cancelReply();
+        if (input) input.focus();
         const container = document.getElementById('chat-messages-emp');
         if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
 
-        // Notify AI if tagged
-        if (!isSpam && text.toLowerCase().includes('@ai')) {
+        // Notify AI if tagged in user text messages
+        if (!payloadType && !isSpam && text.toLowerCase().includes('@ai')) {
             setTimeout(() => {
                 handleAIChatRequest(db, window.userData, window.companyId, window.currentChatContext, window.currentChatUser);
             }, 1000);
         }
 
-        // Handle @meet (only if not spam)
-        if (!isSpam && text.toLowerCase().includes('@meet')) {
+        // Handle @meet (only for user text, non-spam)
+        if (!payloadType && !isSpam && text.toLowerCase().includes('@meet')) {
             setTimeout(async () => {
                 try {
                     if (!window.GDriveService || !window.GDriveService.isConnected()) {
-                        const sysMsg = { text: '⚠️ Please connect Google account from Profile → Integrations first.', sender: 'System', role: 'SYSTEM', read: false, createdAt: serverTimestamp(), companyId: window.companyId, type: 'system' };
-                        const path = window.currentChatContext === 'global' ? "global_chat" : 
-                                   (window.currentChatContext.startsWith('group_') ? `chats/${window.currentChatContext.replace('group_','')}/messages` : 
-                                   `chats/${window.userData.docId < window.currentChatUser.docId ? `chat_${window.userData.docId}_${window.currentChatUser.docId}` : `chat_${window.currentChatUser.docId}_${window.userData.docId}`}/messages`);
-                        await addDoc(collection(db, path), sysMsg);
+                        await window.sendChatMessage(null, {
+                            type: 'system',
+                            text: '⚠️ Google account connect karo: Profile -> Integrations, tab @meet ka link banega.'
+                        });
                         return;
                     }
+
                     const meetResult = await window.GDriveService.createMeetLink('Explyra Meeting — ' + (window.userData.name || 'Team'));
                     await window.sendChatMessage(null, { 
                         type: 'meet_link', 
-                        text: `📹 **Meeting Started**\n🔗 Join: ${meetResult.meetUrl}\n👤 Host: ${window.userData.name}\n📅 ${new Date().toLocaleString()}`,
-                        meetUrl: meetResult.meetUrl
+                        text: `Meeting invite created by ${window.userData.name || 'Host'}`,
+                        meetUrl: meetResult.meetUrl,
+                        meetTitle: 'Team Sync Meeting',
+                        meetHost: window.userData.name || window.userData.email,
+                        meetDate: new Date().toLocaleString()
                     });
                 } catch (err) { console.error('@meet error:', err); }
             }, 500);

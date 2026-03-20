@@ -1,5 +1,5 @@
 // js/chat-ai-helper.js
-import { collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { collection, query, where, orderBy, limit, getDocs, addDoc, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const AI_CONFIG = window.AI_CONFIG || {
     apiKey: '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',
@@ -10,21 +10,49 @@ const AI_CONFIG = window.AI_CONFIG || {
 export async function handleAIChatRequest(db, userData, companyId, currentChatContext, currentChatUser) {
     try {
         let q;
-        let isGlobal = currentChatContext === 'global' || currentChatContext === 'global_chat';
-        
+        const isGlobal = currentChatContext === 'global' || currentChatContext === 'global_chat';
+        const isGroup = typeof currentChatContext === 'string' && currentChatContext.startsWith('group_');
+        let targetType = 'direct';
+        let targetId = null;
+
         if (isGlobal) {
+            targetType = 'global';
+            q = companyId
+                ? query(
+                    collection(db, "global_chat"),
+                    where("companyId", "==", companyId),
+                    orderBy("createdAt", "desc"),
+                    limit(5)
+                )
+                : query(
+                    collection(db, "global_chat"),
+                    orderBy("createdAt", "desc"),
+                    limit(5)
+                );
+        } else if (isGroup) {
+            targetType = 'group';
+            targetId = currentChatContext.replace('group_', '');
             q = query(
-                collection(db, "global_chat"),
+                collection(db, "group_chats", targetId, "messages"),
                 orderBy("createdAt", "desc"),
                 limit(5)
             );
         } else {
-            // Private chat
-            const combinedId = currentChatContext.startsWith('chat_') ? currentChatContext : 
-                (userData.docId < currentChatUser.docId ? 
-                 `chat_${userData.docId}_${currentChatUser.docId}` : 
-                 `chat_${currentChatUser.docId}_${userData.docId}`);
-            
+            // Direct chat
+            const combinedId = currentChatContext && currentChatContext.startsWith('chat_')
+                ? currentChatContext
+                : (currentChatUser?.docId
+                    ? (userData.docId < currentChatUser.docId
+                        ? `chat_${userData.docId}_${currentChatUser.docId}`
+                        : `chat_${currentChatUser.docId}_${userData.docId}`)
+                    : null);
+
+            if (!combinedId) {
+                throw new Error('Unable to resolve direct chat context for AI request.');
+            }
+
+            targetType = 'direct';
+            targetId = combinedId;
             q = query(
                 collection(db, "chats", combinedId, "messages"),
                 orderBy("createdAt", "desc"),
@@ -36,13 +64,16 @@ export async function handleAIChatRequest(db, userData, companyId, currentChatCo
         const lastMessages = snap.docs.map(d => d.data()).reverse();
 
         // Format history for AI
-        const historyText = lastMessages.map(m => `${m.sender || m.email}: ${m.text}`).join('\n');
+        const historyText = lastMessages.map(m => {
+            const body = m.text || (m.type === 'voice' ? '[Voice message]' : '[Attachment]');
+            return `${m.sender || m.email}: ${body}`;
+        }).join('\n');
 
         const systemPrompt = `You are Explyra Chat AI, a helpful office assistant. 
         You are participating in a group or private chat. 
         Read the last messages and provide helpful advice, a summary, or a direct response to the situation. 
         Keep your response concise, professional, and useful. 
-        Context: ${isGlobal ? 'Global Group Chat' : 'Private Direct Message'}.
+        Context: ${targetType === 'global' ? 'Global Group Chat' : (targetType === 'group' ? 'Private Group Chat' : 'Private Direct Message')}.
         User Info: ${userData.name || userData.email} (${userData.role || 'User'}).
         Current Chat History:
         ${historyText}`;
@@ -65,7 +96,7 @@ export async function handleAIChatRequest(db, userData, companyId, currentChatCo
 
 
         const data = await response.json();
-        const aiText = data.choices[0].message.content;
+        const aiText = data?.choices?.[0]?.message?.content || 'I could not analyze the context right now. Please try again.';
 
         // Save AI response to Firestore
         const aiMsgData = {
@@ -74,23 +105,28 @@ export async function handleAIChatRequest(db, userData, companyId, currentChatCo
             senderPhotoUrl: "assets/images/explyra_logo.png",
             email: "ai-agent@explyra.me",
             role: "AI",
+            type: "ai",
             read: false,
             createdAt: serverTimestamp(),
+            seenBy: userData?.docId ? [userData.docId] : [],
             companyId: companyId
         };
 
-        if (isGlobal) {
+        if (targetType === 'global') {
             await addDoc(collection(db, "global_chat"), aiMsgData);
+        } else if (targetType === 'group') {
+            await addDoc(collection(db, "group_chats", targetId, "messages"), aiMsgData);
+            await setDoc(doc(db, "group_chats", targetId), {
+                lastMessage: `🤖 AI: ${aiText.substring(0, 50)}...`,
+                lastMessageAt: serverTimestamp(),
+                lastSender: 'ai-agent',
+                read: false
+            }, { merge: true });
         } else {
-            const combinedId = currentChatContext.startsWith('chat_') ? currentChatContext : 
-                (userData.docId < currentChatUser.docId ? 
-                 `chat_${userData.docId}_${currentChatUser.docId}` : 
-                 `chat_${currentChatUser.docId}_${userData.docId}`);
+            await addDoc(collection(db, "chats", targetId, "messages"), aiMsgData);
 
-            await addDoc(collection(db, "chats", combinedId, "messages"), aiMsgData);
-            
             // Update last message in meta
-            await setDoc(doc(db, "chats", combinedId), {
+            await setDoc(doc(db, "chats", targetId), {
                 lastMessage: `🤖 AI: ${aiText.substring(0, 50)}...`,
                 lastMessageAt: serverTimestamp(),
                 lastSender: 'ai-agent',
