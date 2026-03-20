@@ -9,4 +9,28 @@
         <loc>https://explyra.me/images.xml</loc>
         <lastmod>2026-03-15</lastmod>
     </sitemap>
+    <sitemap>
+        <loc>https://explyra.me/compare/sitemap.xml</loc>
+        <lastmod>2026-03-18</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://explyra.me/integrations/sitemap.xml</loc>
+        <lastmod>2026-03-18</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://explyra.me/health-manager/sitemap.xml</loc>
+        <lastmod>2026-03-18</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://status.explyra.me/sitemap.xml</loc>
+        <lastmod>2026-03-18</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://direc.explyra.me/sitemap.xml</loc>
+        <lastmod>2026-03-18</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://skill.explyra.me/sitemap.xml</loc>
+        <lastmod>2026-03-18</lastmod>
+    </sitemap>
 </sitemapindex>

@@ -1425,14 +1425,49 @@
                                     title="Video Call">
                                     <i class="fa-solid fa-video text-xs"></i>
                                 </button>
+                                <button onclick="openGroupSettings()" id="btn-group-settings"
+                                    class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#111] text-slate-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-[#222] transition flex items-center justify-center shadow-sm hidden"
+                                    title="Group Settings">
+                                    <i class="fa-solid fa-gear text-xs"></i>
+                                </button>
                             </div>
                         </div>
                         <div id="chat-messages-emp" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 relative">
                             <div class="flex justify-center py-10"><i
                                     class="fa-solid fa-circle-notch fa-spin text-gray-300"></i></div>
                         </div>
-                        <form onsubmit="sendChatMessage(event)"
+
+                        <!-- Reply Preview Area -->
+                        <div id="reply-preview-container" class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden flex items-center gap-3">
+                            <div class="w-1 bg-green-500 h-10 rounded-full"></div>
+                            <div class="flex-1 min-w-0">
+                                <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
+                                <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
+                            </div>
+                            <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">
+                                <i class="fa-solid fa-xmark text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Voice Recorder UI (Floating/Inline overlay) -->
+                        <div id="voice-recorder-ui" class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden items-center gap-4 animate-in slide-in-from-bottom-2 duration-200">
+                             <div class="flex items-center gap-2 text-red-500 animate-pulse">
+                                 <i class="fa-solid fa-microphone"></i>
+                                 <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
+                             </div>
+                             <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                 <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width: 0%"></div>
+                             </div>
+                             <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
+                             <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition">
+                                 <i class="fa-solid fa-paper-plane"></i>
+                             </button>
+                        </div>
+
+                        <form onsubmit="sendChatMessage(event)" id="chat-form-emp"
                             class="p-4 border-t border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black flex gap-3 shrink-0 items-center">
+                            
+                            <input type="hidden" id="reply-message-id">
 
                             <!-- Hidden File Input -->
                             <input type="file" id="chat-file-emp-1" class="hidden"
@@ -1461,6 +1496,14 @@
                                     class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-[#eaeaea] dark:border-[#333] rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar">
                                 </div>
                             </div>
+                            
+                            <!-- Voice Recording Trigger -->
+                            <button type="button" onclick="startVoiceRecord()" id="btn-voice-record"
+                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shadow-sm shrink-0"
+                                title="Record Voice Message">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+
                             <button type="submit" class="btn-geist-primary px-5 py-2 shrink-0">
                                 Send
                             </button>
@@ -2040,44 +2083,42 @@
                             </button>
                         </div>
                         
-                        <div
-                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
-                                        alt="Google Calendar" class="w-5 h-5">
+                        <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-3 mt-2">
+                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Google Workspace</h6>
+                            
+                            <!-- Calendar -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-5 h-5">
+                                    </div>
+                                    <div>
+                                        <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Calendar</h6>
+                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gcalendar-status-text">Not connected</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Calendar</h6>
-                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gcalendar-status-text">Not connected</p>
-                                </div>
+                                <button type="button" id="btn-emp-gcalendar-connect" onclick="window.GDriveService && window.GDriveService.authenticate(null, true)" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                    <i class="fa-solid fa-link"></i> Connect
+                                </button>
                             </div>
-                            <button type="button" id="btn-emp-gcalendar-connect"
-                                onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
-                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
-                                <i class="fa-solid fa-link"></i> Connect
-                            </button>
-                        </div>
-                        
-                        <div
-                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg"
-                                        alt="Google Meet" class="w-full h-full object-contain">
+
+                            <div class="h-[1px] bg-slate-200 dark:bg-slate-800"></div>
+
+                            <!-- Meet -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" alt="Google Meet" class="w-full h-full object-contain">
+                                    </div>
+                                    <div>
+                                        <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Meet</h6>
+                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gmeet-status-text">Not connected</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Meet</h6>
-                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gmeet-status-text">Not connected</p>
-                                </div>
+                                <button type="button" id="btn-emp-gmeet-connect" onclick="window.GDriveService && window.GDriveService.authenticate(null, true)" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                    <i class="fa-solid fa-link"></i> Connect
+                                </button>
                             </div>
-                            <button type="button" id="btn-emp-gmeet-connect"
-                                onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
-                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
-                                <i class="fa-solid fa-link"></i> Connect
-                            </button>
                         </div>
                     </div>
 
@@ -2423,20 +2464,26 @@
                                 Chat</p>
                         </div>
                     </div>
-                    <div id="chat-call-actions" class="flex items-center gap-2 hidden shrink-0 ml-2">
-                        <button onclick="initiateCall('voice')"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
-                            <i class="fa-solid fa-phone"></i>
+                    <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
+                        <div id="chat-call-actions" class="flex items-center gap-1 sm:gap-2 hidden">
+                            <button onclick="initiateCall('voice')"
+                                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <button onclick="initiateCall('video')"
+                                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                        </div>
+                        <button id="btn-chat-group-settings" onclick="window.openGroupSettings && window.openGroupSettings()"
+                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition flex items-center justify-center hidden">
+                            <i class="fa-solid fa-gear"></i>
                         </button>
-                        <button onclick="initiateCall('video')"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
-                            <i class="fa-solid fa-video"></i>
+                        <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
+                            class="hidden md:flex w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition items-center justify-center">
+                            <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
-                        class="hidden md:flex w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition items-center justify-center shrink-0 ml-2">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
                 </div>
 
                 <div id="chat-messages-emp"
@@ -2445,32 +2492,43 @@
                             class="fa-solid fa-circle-notch fa-spin text-slate-300 dark:text-slate-600 text-2xl"></i>
                     </div>
                 </div>
-
-                <div
-                    class="p-3 sm:p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                    <form onsubmit="sendChatMessage(event)" class="relative flex items-center gap-2">
-                        <!-- Hidden File Input -->
-                        <input type="file" id="chat-file-emp-2" class="hidden"
-                            onchange="handleChatAttachmentSelect(this, 'chat-input-emp-2')">
-
-                        <!-- Attachment Button -->
-                        <button type="button" onclick="document.getElementById('chat-file-emp-2').click()"
-                            class="w-[42px] h-[42px] rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0"
-                            title="Attach file from Google Drive">
-                            <i class="fa-solid fa-paperclip px-1"></i>
-                        </button>
-
-                        <div class="relative flex-1">
-                            <input type="text" id="chat-input-emp-2"
-                                class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-5 pr-12 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-green-500 transition outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400"
-                                placeholder="Type a message..." autocomplete="off">
-                            <button type="submit"
-                                class="absolute right-[5px] top-[5px] w-[38px] h-[38px] bg-green-600 hover:bg-brand-700 text-white rounded-full shadow-md flex items-center justify-center transition active:scale-95 z-10">
-                                <i class="fa-solid fa-paper-plane text-xs translate-x-[-1px] translate-y-[1px]"></i>
-                            </button>
-                        </div>
-                    </form>
+                <!-- Reply Preview -->
+                <div id="reply-preview-container" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden items-center gap-3">
+                    <div class="w-1 bg-green-500 h-10 rounded-full shrink-0"></div>
+                    <div class="flex-1 min-w-0">
+                        <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
+                        <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
+                    </div>
+                    <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
+
+                <!-- Voice Recorder UI -->
+                <div id="voice-recorder-ui" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 hidden items-center gap-3">
+                    <div class="flex items-center gap-2 text-red-500 animate-pulse">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
+                    </div>
+                    <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width:0%"></div>
+                    </div>
+                    <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">Cancel</button>
+                    <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form onsubmit="sendChatMessage(event)" id="chat-form-emp" class="p-3 sm:p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 shrink-0 flex items-center gap-2">
+                    <input type="file" id="chat-file-emp-1" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
+                    <button type="button" onclick="document.getElementById('chat-file-emp-1').click()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition shrink-0" title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
+
+                    <div class="relative flex-1">
+                        <input type="text" id="chat-input-emp" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-4 pr-4 py-3 text-sm focus:ring-2 focus:ring-green-500 transition outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400" placeholder="Type a message or @mention..." autocomplete="off">
+                        <div id="mentions-dropdown-emp" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1"></div>
+                    </div>
+
+                    <button type="button" onclick="startVoiceRecord()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 text-slate-500 flex items-center justify-center transition shrink-0" title="Voice Message"><i class="fa-solid fa-microphone"></i></button>
+
+                    <button type="submit" class="w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition active:scale-95 shrink-0"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                </form>
             </div>
         </div>
     </div>
@@ -2694,9 +2752,7 @@
         window.addEventListener('load', () => {
             // Wait for other data to load
             setTimeout(() => {
-                if (localStorage.getItem('explyra_ai_enabled') !== 'false') {
-                    window.empAI = new EmpAI();
-                }
+                window.empAI = new EmpAI();
             }, 1000);
 
             // Register Service Worker
@@ -3333,6 +3389,82 @@
     <!-- P2P Dependencies -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="js/emp-p2p.js" type="module"></script>
+    <!-- Group Settings Modal -->
+    <div id="modal-group-settings" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Group Settings</h3>
+                <button onclick="document.getElementById('modal-group-settings').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Group Identity -->
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('group-pic-input').click()">
+                        <div id="group-settings-pic" class="w-24 h-24 rounded-3xl bg-brand-500 flex items-center justify-center text-white text-3xl shadow-xl overflow-hidden">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <input type="file" id="group-pic-input" class="hidden" accept="image/*" onchange="window.uploadGroupPic && window.uploadGroupPic(this)">
+                    </div>
+                    <div class="w-full">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">Group Name</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="group-settings-name" class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="window.saveGroupName && window.saveGroupName()" class="bg-black dark:bg-white text-white dark:text-black px-4 rounded-xl font-bold text-xs hover:scale-105 transition">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Controls -->
+                <div id="group-admin-only-settings" class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">AI Spam Filter</h4>
+                            <p class="text-[10px] text-slate-500">Auto-delete spam messages</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="group-spam-filter-toggle" class="sr-only peer" onchange="window.toggleSpamFilter && window.toggleSpamFilter(this.checked)">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Members Section -->
+                <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">Members</h4>
+                        <button id="btn-add-member" onclick="window.showAddMemberModal && window.showAddMemberModal()" class="text-brand-600 dark:text-brand-400 text-[10px] font-bold hover:underline">Add Member</button>
+                    </div>
+                    <div id="group-settings-members" class="space-y-2">
+                        <!-- Members list here -->
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <button onclick="window.exportChatMessages && window.exportChatMessages()" class="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-file-export"></i> Export Chat History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Seen Info Modal -->
+    <div id="modal-seen-info" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[260] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-scale-up flex flex-col">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                <h3 class="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Message Info</h3>
+                <button onclick="document.getElementById('modal-seen-info').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="seen-info-list" class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+                <!-- Seen users list here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Two-Factor Verification Modal -->
     <div id="modal-2fa-verify" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-slate-100 dark:border-slate-700">

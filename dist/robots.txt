@@ -4,6 +4,12 @@ Allow: /
 Sitemap: https://explyra.me/sitemap-index.xml
 Sitemap: https://explyra.me/sitemap.xml
 Sitemap: https://explyra.me/images.xml
+Sitemap: https://explyra.me/compare/sitemap.xml
+Sitemap: https://explyra.me/integrations/sitemap.xml
+Sitemap: https://explyra.me/health-manager/sitemap.xml
+Sitemap: https://status.explyra.me/sitemap.xml
+Sitemap: https://direc.explyra.me/sitemap.xml
+Sitemap: https://skill.explyra.me/sitemap.xml
 Sitemap: https://explyra.me/feed.xml
 Sitemap: https://explyra.me/rss.xml
 Sitemap: https://explyra.me/atom.xml

@@ -650,6 +650,80 @@
         .sidebar-collapsed .sidebar-btn-collapse {
             transform: rotate(180deg);
         }
+
+        /* Admin Density + Scroll Progress */
+        .admin-compact .vercel-card {
+            padding: 1rem !important;
+        }
+
+        .admin-compact #content-area {
+            padding: 1rem !important;
+        }
+
+        .admin-compact .sidebar-item {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        #admin-scroll-progress {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 2px;
+            width: 0;
+            z-index: 120;
+            background: linear-gradient(90deg, #22c55e, #3b82f6);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.45);
+            transition: width 0.12s ease;
+            pointer-events: none;
+        }
+
+        /* Account Console Tab Styling */
+        .ac-tab-btn {
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ac-tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .ac-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .ac-tab-btn.active {
+            background: white !important;
+            color: #1546C0 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: #eee !important;
+        }
+
+        .dark .ac-tab-btn.active {
+            background: #111 !important;
+            color: #4ade80 !important;
+            border-color: #222 !important;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-in {
+            animation: slideInUp 0.3s ease-out forwards;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
@@ -743,6 +817,7 @@
   ]
 }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
 
 <body
@@ -753,7 +828,8 @@
     <!-- User Modal -->
     <div id="user-modal"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] hidden flex items-center justify-center p-4">
-        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto" id="user-modal-content">
+        <div class="vercel-card max-w-md w-full !p-8 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto"
+            id="user-modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold" id="user-modal-title">Add User</h3>
                 <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i
@@ -889,6 +965,12 @@
                         placeholder="e.g. Q1 Marketing Campaign" required>
                 </div>
                 <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Project
+                        Budget (₹)</label>
+                    <input type="number" id="project-budget-input" class="input-primary"
+                        placeholder="e.g. 500000">
+                </div>
+                <div>
                     <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Details /
                         Description</label>
                     <textarea id="project-details-input" class="input-primary h-24 resize-none"
@@ -987,10 +1069,13 @@
                         ?
                     </div>
                     <div class="relative z-10 overflow-hidden">
-                        <h4 class="font-bold text-lg text-slate-800 dark:text-slate-100 truncate" id="ac-name">
-                            Loading...</h4>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-lg text-slate-800 dark:text-slate-100 truncate" id="ac-name">Loading...</h4>
+                            <span id="ac-plan-badge" class="text-[8px] font-black px-1.5 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 uppercase tracking-tighter">Growth</span>
+                        </div>
                         <p class="text-[10px] font-bold text-green-700 dark:text-brand-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm px-2.5 py-1 rounded-full inline-block mt-1 uppercase tracking-wider shadow-sm border border-green-200/50 dark:border-green-500/30"
                             id="ac-role">...</p>
+                        <p id="ac-company-display" class="text-[9px] text-slate-400 font-medium mt-1 truncate max-w-[150px]">Company Name</p>
                     </div>
                 </div>
 
@@ -1064,7 +1149,7 @@
                             <label
                                 class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Language</label>
                             <select onchange="selectAdminLanguage(this.value)"
-                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none">
+                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none w-full">
                                 <option value="en">English (US)</option>
                                 <option value="hi">हिंदी (Hindi)</option>
                             </select>
@@ -1079,25 +1164,342 @@
                             </button>
                         </div>
                     </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI Empowerment</label>
+                            <label class="relative inline-flex items-center cursor-pointer w-full">
+                                <input type="checkbox" id="pref-ai-enabled" checked
+                                    onchange="window.toggleAIFeatures && window.toggleAIFeatures(this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600">
+                                </div>
+                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable AI</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Base Currency</label>
+                            <select id="pref-base-currency" onchange="updateBaseCurrency(this.value)"
+                                class="input-primary bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-xs py-1.5 focus:ring-brand-500 focus:border-green-500 outline-none w-full">
+                                <option value="INR">INR (₹)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Voice Control</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-webspeech" onchange="toggleWebSpeech(this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="speech-guide"
+                        class="hidden mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg text-[10px] text-blue-700 dark:text-blue-300">
+                        <p class="font-bold mb-1"><i class="fa-solid fa-microphone mr-1"></i> Voice Commands Active:</p>
+                        <ul class="list-disc ml-4 space-y-1">
+                            <li>Say "Open Approvals" to switch tabs</li>
+                            <li>Say "Show Dashboard" for overview</li>
+                            <li>Say "New Expense" to start a claim</li>
+                            <li>Say "Logout" to exit sessions</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="border-t border-slate-100 dark:border-slate-800"></div>
 
                 <div>
-                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <h5
+                        class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-eye-slash"></i> Sidebar Visibility
+                    </h5>
+                    <div
+                        class="grid grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mb-4 shadow-inner">
+                        <div
+                            class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Core Navigation</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Dashboard</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-overview" checked
+                                    onchange="window.updateSidebarVisibilityPref('overview', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Approvals</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-approvals" checked
+                                    onchange="window.updateSidebarVisibilityPref('approvals', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Task Mgr</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-tasks" checked
+                                    onchange="window.updateSidebarVisibilityPref('tasks', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">My Claims</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-my-claims" checked
+                                    onchange="window.updateSidebarVisibilityPref('my-claims', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Management</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">User Mgmt</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-users" checked
+                                    onchange="window.updateSidebarVisibilityPref('users', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Projects</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-projects" checked
+                                    onchange="window.updateSidebarVisibilityPref('projects', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Roles</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-roles" checked
+                                    onchange="window.updateSidebarVisibilityPref('roles', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Workflow</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-workflow" checked
+                                    onchange="window.updateSidebarVisibilityPref('workflow', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between col-span-2 pb-1 border-b border-slate-200 dark:border-slate-700 mb-1 mt-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Tools & Systems</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">CRM</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-crm" checked
+                                    onchange="window.updateSidebarVisibilityPref('crm', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">AI Agent</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-ai" checked
+                                    onchange="window.updateSidebarVisibilityPref('ai', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Attendance</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-attendance" checked
+                                    onchange="window.updateSidebarVisibilityPref('attendance', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Payroll</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-salary" checked
+                                    onchange="window.updateSidebarVisibilityPref('salary', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Reports</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-reports" checked
+                                    onchange="window.updateSidebarVisibilityPref('reports', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-700 dark:text-slate-300">Audit Logs</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pref-vis-audit" checked
+                                    onchange="window.updateSidebarVisibilityPref('audit', this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-800"></div>
+
+
+                <div>
+                    <h5
+                        class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <i class="fa-brands fa-google-drive"></i> Integrations
                     </h5>
-                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-5 h-5">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"
+                                    alt="Google Drive" class="w-5 h-5">
                             </div>
                             <div>
                                 <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Drive</h6>
-                                <p class="text-[9px] text-slate-500 font-medium" id="gdrive-status-text">Not connected</p>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gdrive-status-text">Not connected
+                                </p>
                             </div>
                         </div>
-                        <button type="button" id="btn-gdrive-connect" onclick="window.GDriveService && window.GDriveService.authenticate()"
+                        <button type="button" id="btn-gdrive-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Google_Sheets_logo_%282014-2020%29.svg"
+                                    alt="Google Sheets" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Sheets</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gsheets-status-text">Not connected
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gsheets-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://www.gstatic.com/images/branding/product/2x/maps_96dp.png"
+                                    alt="Google Maps" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Maps</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="maps-status-text">Not active</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-maps-connect"
+                            onclick="window.enableMaps && window.enableMaps()"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-power-off"></i> Enable
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
+                                    alt="Google Calendar" class="w-5 h-5">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Calendar</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gcalendar-status-text">Not connected</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gcalendar-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
+                            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                            <i class="fa-solid fa-link"></i> Connect
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg"
+                                    alt="Google Meet" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Meet</h6>
+                                <p class="text-[9px] text-slate-500 font-medium" id="gmeet-status-text">Not connected</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-gmeet-connect"
+                            onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
                             class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                             <i class="fa-solid fa-link"></i> Connect
                         </button>
@@ -1113,6 +1515,29 @@
                     </h5>
                     <form id="account-form" onsubmit="saveAccountSettings(event)">
                         <div class="grid grid-cols-1 gap-3">
+                            <div>
+                                <h5
+                                    class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-halved"></i> Two-Step Verification
+                                </h5>
+                                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div>
+                                            <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Enable 2FA</h6>
+                                            <p class="text-[9px] text-slate-500">Secure your account with a secondary 4-digit PIN.</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="ac-2fa-enabled" class="sr-only peer" onchange="document.getElementById('ac-2fa-pin-container').classList.toggle('hidden', !this.checked)">
+                                            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                    <div id="ac-2fa-pin-container" class="hidden">
+                                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Set 4-Digit PIN</label>
+                                        <input type="password" id="ac-2fa-pin" maxlength="4" class="input-primary bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 py-2 text-center text-lg tracking-[1em] font-bold focus:ring-brand-500 focus:border-green-500 outline-none" placeholder="••••">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <label
                                     class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Alternative
@@ -1153,7 +1578,13 @@
                             </a>
                         </div>
                     </form>
+
+                    <button type="button" onclick="window.location.href='emp.html'"
+                        class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg mb-4">
+                        <i class="fa-solid fa-shuffle"></i> Switch to Employee Portal
+                    </button>
                 </div>
+
 
                 <div class="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-xl p-4 mt-2">
                     <h5
@@ -1233,7 +1664,8 @@
                 <div id="google-signin-container" class="mt-8 space-y-3">
                     <button type="button" onclick="handleGoogleLogin()"
                         class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
+                            alt="Google">
                         Sign in with Google
                     </button>
                     <button type="button" onclick="window.location.href='emp.html'"
@@ -1319,9 +1751,15 @@
                     data-tab="approvals">
                     <i class="fa-solid fa-stamp"></i> Approvals
                 </button>
-                <button onclick="switchTab('my-claims')" class="sidebar-item w-full" data-tab="my-claims">
+                <button onclick="switchTab('my-claims')" id="nav-my-claims" class="sidebar-item w-full"
+                    data-tab="my-claims">
                     <i class="fa-solid fa-receipt"></i> My Claims
                 </button>
+                <button onclick="switchTab('scheduler')" id="nav-scheduler" class="sidebar-item w-full"
+                    data-tab="scheduler">
+                    <i class="fa-solid fa-calendar-days"></i> Scheduler
+                </button>
+
                 <button onclick="switchTab('tasks')" id="nav-tasks" class="sidebar-item w-full hidden" data-tab="tasks">
                     <i class="fa-solid fa-list-check"></i> Task Manager
                 </button>
@@ -1347,11 +1785,9 @@
                 <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden"
                     data-tab="workflow">
                     <i class="fa-solid fa-route"></i> Workflow
-                </button>
-
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics
                 </div>
-                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full hidden"
+                <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full"
                     data-tab="reports">
                     <i class="fa-solid fa-chart-line"></i> Reports
                 </button>
@@ -2029,6 +2465,9 @@
     <script src="components/loader.js"></script>
     <script src="js/common.js"></script>
     <script type="module" src="js/admin-logic.js"></script>
+    <script type="module" src="js/spam-filter.js"></script>
+    <script type="module" src="js/chat-ai-helper.js"></script>
+    <script type="module" src="js/emp-chat.js"></script>
     <script>
         // Load components after DOM is ready
         document.addEventListener("DOMContentLoaded", () => {
@@ -2644,6 +3083,77 @@
                 populateActivityFeed();
             }
 
+            function renderAdminQuickStrip() {
+                const mount = document.getElementById('crm-widget-container');
+                if (!mount) return;
+
+                const existing = document.getElementById('admin-quick-strip');
+                if (existing) return;
+
+                const compactEnabled = localStorage.getItem('admin-ui-density') === 'compact';
+                const wrapper = document.createElement('div');
+                wrapper.id = 'admin-quick-strip';
+                wrapper.className = 'mb-6';
+                wrapper.innerHTML = `
+                    <div class="vercel-card" style="padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
+                        <div style="display:flex;flex-wrap:wrap;gap:8px">
+                            <button class="export-btn" onclick="switchTab && switchTab('approvals')"><i class="fa-solid fa-stamp"></i> Pending Queue</button>
+                            <button class="export-btn" onclick="switchTab && switchTab('users')"><i class="fa-solid fa-users"></i> Team</button>
+                            <button class="export-btn" onclick="switchTab && switchTab('reports')"><i class="fa-solid fa-chart-line"></i> Reports</button>
+                            <button class="export-btn" onclick="refreshAdminWorkspace()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                        </div>
+                        <button id="btn-admin-density" class="export-btn" onclick="toggleAdminDensity()">
+                            <i class="fa-solid fa-compress"></i>
+                            <span>${compactEnabled ? 'Compact' : 'Comfortable'}</span>
+                        </button>
+                    </div>
+                `;
+                mount.prepend(wrapper);
+            }
+
+            window.refreshAdminWorkspace = function () {
+                if (typeof showToast === 'function') showToast('Refreshing dashboard data...', 'info');
+                if (typeof switchTab === 'function') {
+                    const active = document.querySelector('.sidebar-item.active')?.getAttribute('data-tab') || 'overview';
+                    switchTab(active);
+                } else {
+                    location.reload();
+                }
+            };
+
+            function applyAdminDensity(mode) {
+                const isCompact = mode === 'compact';
+                document.body.classList.toggle('admin-compact', isCompact);
+                localStorage.setItem('admin-ui-density', isCompact ? 'compact' : 'comfortable');
+
+                const densityBtn = document.querySelector('#btn-admin-density span');
+                if (densityBtn) densityBtn.textContent = isCompact ? 'Compact' : 'Comfortable';
+            }
+
+            window.toggleAdminDensity = function () {
+                const current = localStorage.getItem('admin-ui-density') === 'compact' ? 'compact' : 'comfortable';
+                applyAdminDensity(current === 'compact' ? 'comfortable' : 'compact');
+            };
+
+            function initScrollProgress() {
+                if (document.getElementById('admin-scroll-progress')) return;
+                const bar = document.createElement('div');
+                bar.id = 'admin-scroll-progress';
+                document.body.appendChild(bar);
+
+                const host = document.getElementById('content-area');
+                if (!host) return;
+
+                const update = () => {
+                    const max = host.scrollHeight - host.clientHeight;
+                    const pct = max > 0 ? (host.scrollTop / max) * 100 : 0;
+                    bar.style.width = pct + '%';
+                };
+
+                host.addEventListener('scroll', update, { passive: true });
+                update();
+            }
+
             function populateActivityFeed() {
                 const feed = document.getElementById('admin-activity-feed');
                 if (!feed) return;
@@ -2685,6 +3195,7 @@
             // Global refresh hook for admin-logic.js
             window.refreshNewAdminUI = function () {
                 renderWelcomeHero();
+                renderAdminQuickStrip();
             };
 
             // ── Command Palette ──
@@ -2835,43 +3346,67 @@
             if (contentArea) observer.observe(contentArea, { childList: true });
 
             // Initial render
-            window.addEventListener('load', () => setTimeout(renderWelcomeHero, 1500));
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    renderWelcomeHero();
+                    renderAdminQuickStrip();
+                    applyAdminDensity(localStorage.getItem('admin-ui-density') === 'compact' ? 'compact' : 'comfortable');
+                    initScrollProgress();
+                }, 1500);
+            });
         })();
     </script>
     </script>
-    
+
     <!-- P2P Video Call Modal -->
-    <div id="modal-video-call" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
+    <div id="modal-video-call"
+        class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
         <div class="absolute top-4 right-4 flex gap-2">
-            <button onclick="window.leaveVideoCall()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i class="fa-solid fa-phone-slash ml-1"></i></button>
+            <button onclick="window.leaveVideoCall()"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i
+                    class="fa-solid fa-phone-slash ml-1"></i></button>
         </div>
         <div class="flex-1 min-h-0 flex flex-col gap-4 items-center justify-center p-4">
             <!-- Grid for remote videos -->
-            <div id="video-grid" class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory flex-nowrap md:justify-center pt-8">
+            <div id="video-grid"
+                class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory flex-nowrap md:justify-center pt-8">
             </div>
         </div>
         <!-- Local Video and Controls -->
-        <div class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
-            <div class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
-                <video id="local-video" playsinline autoplay muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+        <div
+            class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
+            <div
+                class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
+                <video id="local-video" playsinline autoplay muted
+                    class="w-full h-full object-cover transform scale-x-[-1]"></video>
                 <div class="absolute bottom-1 left-1 bg-black/50 text-[10px] text-white px-1.5 py-0.5 rounded">You</div>
             </div>
             <div class="flex items-center gap-4">
-                <button id="btn-toggle-audio" onclick="window.toggleAudio()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-microphone"></i></button>
-                <button id="btn-toggle-video" onclick="window.toggleVideo()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-video"></i></button>
-                <button id="btn-screen-share" onclick="window.toggleScreenShare()" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg" title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
-                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()" class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg" title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
+                <button id="btn-toggle-audio" onclick="window.toggleAudio()"
+                    class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i
+                        class="fa-solid fa-microphone"></i></button>
+                <button id="btn-toggle-video" onclick="window.toggleVideo()"
+                    class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i
+                        class="fa-solid fa-video"></i></button>
+                <button id="btn-screen-share" onclick="window.toggleScreenShare()"
+                    class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg"
+                    title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
+                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()"
+                    class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg"
+                    title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
             </div>
             <div class="w-32 md:w-48 hidden md:block"></div>
         </div>
     </div>
 
     <!-- Add Member to Call Modal -->
-    <div id="modal-add-member-call" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
+    <div id="modal-add-member-call"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up">
             <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Add Member to Call</h3>
-                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -2884,6 +3419,187 @@
     <!-- P2P Dependencies -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="js/emp-p2p.js" type="module"></script>
-</body>
+    <!-- Two-Factor Verification Modal -->
+    <div id="modal-2fa-verify" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-lock text-2xl text-green-600 dark:text-green-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Two-Step Verification</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">Enter your 4-digit security PIN to continue</p>
+            
+            <div class="flex justify-center gap-3 mb-8">
+                <input type="password" maxlength="4" id="verify-2fa-pin" oninput="if(this.value.length === 4) verify2FAPin()" class="w-48 py-3 text-center text-2xl tracking-[1em] font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-green-500 focus:ring-0 outline-none transition-all" placeholder="••••" autofocus>
+            </div>
+            
+            <button onclick="verify2FAPin()" id="btn-verify-2fa" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-200 dark:shadow-none transition-all active:scale-95">
+                Verify & Unlock
+            </button>
 
+            <button onclick="auth.signOut().then(() => window.location.reload())" class="mt-6 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                Back to Login
+            </button>
+        </div>
+    </div>
+    <!-- Budget Modal -->
+    <div id="budget-modal"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[95] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-soft transition-enterprise scale-95 opacity-0 max-w-md w-full p-6"
+            id="budget-modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100" id="budget-modal-title">Add Budget
+                </h3>
+                <button onclick="closeBudgetModal()" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
+                        class="fa-solid fa-times"></i></button>
+            </div>
+            <form id="budget-form" class="space-y-4">
+                <input type="hidden" id="budget-id">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Budget
+                        Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="budget-name" class="input-primary"
+                        placeholder="e.g. Q1 Marketing Budget" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Budget
+                        Type <span class="text-red-500">*</span></label>
+                    <select id="budget-type" class="input-primary" required>
+                        <option value="department">Department</option>
+                        <option value="project">Project</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Amount
+                         <span class="text-red-500">*</span></label>
+                    <input type="number" id="budget-amount" class="input-primary" placeholder="e.g. 50000" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Time
+                        Period <span class="text-red-500">*</span></label>
+                    <select id="budget-period" class="input-primary" required>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeBudgetModal()" class="flex-1 ghost-btn">Cancel</button>
+                    <button type="button" onclick="saveBudget()"
+                        class="flex-1 bg-green-600 hover:bg-brand-700 text-white py-2 rounded-lg text-sm font-semibold transition shadow-md shadow-green-200">Save
+                        Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function renderBudgets() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Budgets</h2>
+                <button class="btn-vercel-primary" onclick="openBudgetModal()">New Budget</button>
+                </div>
+                <div id="budgets-list">
+                </div>
+            `;
+            renderBudgetList();
+        }
+
+        function openBudgetModal(budgetId) {
+            const modal = document.getElementById('budget-modal');
+            const modalTitle = document.getElementById('budget-modal-title');
+            const budgetIdInput = document.getElementById('budget-id');
+            const budgetNameInput = document.getElementById('budget-name');
+            const budgetTypeInput = document.getElementById('budget-type');
+            const budgetAmountInput = document.getElementById('budget-amount');
+            const budgetPeriodInput = document.getElementById('budget-period');
+
+            if (budgetId) {
+                modalTitle.textContent = 'Edit Budget';
+                // In a real app, you would fetch the budget from the database
+                const budget = { id: budgetId, name: 'Q1 Marketing', type: 'Project', amount: 50000, period: 'Quarterly' };
+                budgetIdInput.value = budget.id;
+                budgetNameInput.value = budget.name;
+                budgetTypeInput.value = budget.type;
+                budgetAmountInput.value = budget.amount;
+                budgetPeriodInput.value = budget.period;
+            } else {
+                modalTitle.textContent = 'Add Budget';
+                budgetIdInput.value = '';
+                budgetNameInput.value = '';
+                budgetTypeInput.value = 'department';
+                budgetAmountInput.value = '';
+                budgetPeriodInput.value = 'monthly';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeBudgetModal() {
+            document.getElementById('budget-modal').classList.add('hidden');
+        }
+
+        function saveBudget() {
+            // This is a placeholder. In a real app, you'd save to a database.
+            const budget = {
+                id: document.getElementById('budget-id').value || new Date().getTime().toString(),
+                name: document.getElementById('budget-name').value,
+                type: document.getElementById('budget-type').value,
+                amount: document.getElementById('budget-amount').value,
+                period: document.getElementById('budget-period').value,
+            };
+            console.log('Saving budget:', budget);
+            showToast('Budget saved successfully!', 'success');
+            closeBudgetModal();
+            renderBudgetList();
+        }
+        
+        function renderBudgetList() {
+            // This is a placeholder. In a real app, you'd fetch from a database.
+            const budgetList = [
+                { id: 1, name: 'Q1 Marketing', type: 'Project', amount: 50000, period: 'Quarterly', used: 25000 },
+                { id: 2, name: 'Sales Department', type: 'Department', amount: 100000, period: 'Monthly', used: 75000 },
+                { id: 3, name: 'Engineering Department', type: 'Department', amount: 200000, period: 'Monthly', used: 150000 },
+            ];
+
+            const listElement = document.getElementById('budgets-list');
+            if(listElement){
+                listElement.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${budgetList.map(budget => {
+                            const percentage = (budget.used / budget.amount) * 100;
+                            let progressBarColor = 'bg-green-500';
+                            if (percentage > 75) {
+                                progressBarColor = 'bg-yellow-500';
+                            }
+                            if (percentage > 90) {
+                                progressBarColor = 'bg-red-500';
+                            }
+                            return `
+                                <div class="vercel-card">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">${budget.type}</p>
+                                            <p class="text-lg font-bold text-slate-800 dark:text-white">${budget.name}</p>
+                                        </div>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:text-slate-300" onclick="openBudgetModal(${budget.id})"><i class="fa-solid fa-pen"></i></button>
+                                    </div>
+                                    <div class="mt-4">
+                                        <div class="flex justify-between items-center text-sm">
+                                            <p class="text-slate-500 dark:text-slate-300">Used: <span class="font-bold text-slate-800 dark:text-white">₹${budget.used.toLocaleString()}</span></p>
+                                            <p class="text-slate-500 dark:text-slate-300">Budget: <span class="font-bold text-slate-800 dark:text-white">₹${budget.amount.toLocaleString()}</span></p>
+                                        </div>
+                                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 mt-2">
+                                            <div class="${progressBarColor} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                                        </div>
+                                        <p class="text-right text-xs text-slate-500 dark:text-slate-400 mt-1">${percentage.toFixed(2)}% Used</p>
+                                    </div>
+                                </div>
+                            `
+                        }).join('')}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
 </html>

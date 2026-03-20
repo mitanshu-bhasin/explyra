@@ -17,17 +17,46 @@ pattern = "/*"
   X-Content-Type-Options = "nosniff"
   Referrer-Policy = "strict-origin-when-cross-origin"
   Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-  # Caching disabled as requested (no-cache, no-store)
-  Cache-Control = "no-cache, no-store, must-revalidate"
+  Cache-Control = "public, max-age=0, must-revalidate"
   Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
   Content-Security-Policy = "upgrade-insecure-requests; frame-ancestors 'none';"
   X-Permitted-Cross-Domain-Policies = "none"
+
+[[headers]]
+pattern = "/assets/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+pattern = "/css/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+pattern = "/js/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+pattern = "/*.xml"
+[headers.values]
+  Cache-Control = "public, max-age=3600, must-revalidate"
 
 # ==============================
 # 🔗 REDIRECTS & REWRITES
 # ==============================
 [[redirects]]
 from = "https://explyra.pages.dev/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "https://explyra.fouralpha.org/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "https://explyras.web.app/*"
 to = "https://explyra.me/:splat"
 status = 301
 

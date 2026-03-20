@@ -6,7 +6,7 @@
 (function () {
     // 1. DOM Elements Injection
     const aiHTML = `
-        <div class="ai-assistant-wrapper">
+        <div class="ai-assistant-wrapper" id="aiAssistantWrapper" style="${localStorage.getItem('explyra_ai_enabled') === 'false' ? 'display:none' : ''}">
             <div class="ai-chat-window" id="aiChatWindow">
                 <div class="ai-chat-header">
                     <div class="ai-header-info">

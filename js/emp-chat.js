@@ -1,5 +1,7 @@
 // js/emp-chat.js
-import { collection, query, where, getDocs, doc, onSnapshot, serverTimestamp, orderBy, limit, addDoc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { collection, query, where, getDocs, getDoc, doc, onSnapshot, serverTimestamp, orderBy, limit, addDoc, setDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+import { checkSpam } from './spam-filter.js';
 import { handleAIChatRequest } from './chat-ai-helper.js';
 
 
@@ -7,6 +9,45 @@ let activeChatUnsub = null;
 let chatUsers = [];
 window.currentChatContext = 'global'; // 'global' or 'userDocId'
 window.currentChatUser = null;
+let currentReplyMessage = null;
+let voiceRecorder = null;
+let voiceBlob = null;
+let voiceStartTime = null;
+let voiceTimerInterval = null;
+
+class VoiceRecorder {
+    constructor() {
+        this.mediaRecorder = null;
+        this.chunks = [];
+        this.stream = null;
+    }
+
+    async start() {
+        try {
+            this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            this.mediaRecorder = new MediaRecorder(this.stream);
+            this.chunks = [];
+            this.mediaRecorder.ondataavailable = (e) => this.chunks.push(e.data);
+            this.mediaRecorder.start();
+            return true;
+        } catch (e) {
+            console.error("Mic access denied:", e);
+            showToast("Microphone access denied!", "error");
+            return false;
+        }
+    }
+
+    stop() {
+        return new Promise((resolve) => {
+            this.mediaRecorder.onstop = () => {
+                const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
+                this.stream.getTracks().forEach(track => track.stop());
+                resolve(blob);
+            };
+            this.mediaRecorder.stop();
+        });
+    }
+}
 
 window.openChatModal = async () => {
     document.getElementById('modal-chat').classList.remove('hidden');
@@ -199,10 +240,12 @@ window.confirmCreateGroup = async () => {
             name: nameInput,
             companyId: window.companyId,
             admin: window.userData.docId,
+            admins: [window.userData.docId],
             users: selectedUsers,
             createdAt: serverTimestamp(),
             lastMessage: "Group created",
             lastMessageAt: serverTimestamp(),
+            spamFilter: false,
             activeCall: {}
         });
 
@@ -325,6 +368,8 @@ window.selectChat = (contextId) => {
         else b.classList.add('hidden');
     }
 
+    const gearBtn = document.getElementById('btn-chat-group-settings');
+
     if (contextId === 'global') {
         if (headerName) headerName.textContent = 'Global Group';
         if (headerStatus) headerStatus.textContent = 'Company Chat';
@@ -333,15 +378,18 @@ window.selectChat = (contextId) => {
             headerAvatar.className = 'w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shrink-0 font-bold';
         }
         if (callActions) callActions.classList.add('hidden');
+        if (gearBtn) gearBtn.classList.add('hidden');
         runChatListener('global_chat', null);
     } else if (contextId.startsWith('group_')) {
-        if (headerName) headerName.textContent = window.currentGroupChat.name;
-        if (headerStatus) headerStatus.textContent = window.currentGroupChat.users.length + ' Members';
+        const gc = window.currentGroupChat;
+        if (headerName) headerName.textContent = gc.name;
+        if (headerStatus) headerStatus.textContent = gc.users.length + ' Members';
         if (headerAvatar) {
-            headerAvatar.innerHTML = '<i class="fa-solid fa-user-group text-sm"></i>';
             headerAvatar.className = 'w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold overflow-hidden text-xs';
+            headerAvatar.innerHTML = gc.photoUrl ? `<img src="${gc.photoUrl}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user-group text-sm"></i>';
         }
         if (callActions) callActions.classList.remove('hidden');
+        if (gearBtn) gearBtn.classList.remove('hidden');
         const groupId = contextId.replace('group_', '');
         runChatListener('group_chats', groupId);
     } else {
@@ -354,6 +402,7 @@ window.selectChat = (contextId) => {
             headerAvatar.className = 'w-8 h-8 rounded-full bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-gray-200 flex items-center justify-center shrink-0 font-bold overflow-hidden text-xs';
         }
         if (callActions) callActions.classList.remove('hidden');
+        if (gearBtn) gearBtn.classList.add('hidden');
 
         const combinedId = window.userData.docId < window.currentChatUser.docId ?
             `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
@@ -381,7 +430,7 @@ function runChatListener(collectionName, subCollectionId) {
         q = query(collection(db, "chats", subCollectionId, "messages"), orderBy("createdAt", "asc"), limit(100));
     }
 
-    activeChatUnsub = onSnapshot(q, (snapshot) => {
+    activeChatUnsub = onSnapshot(q, async (snapshot) => {
         if (!container) return;
 
         if (snapshot.empty) {
@@ -398,40 +447,72 @@ function runChatListener(collectionName, subCollectionId) {
             const time = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...';
             const msgId = docSnap.id;
 
-            // Mark as read if receiving and not read
-            if (!isMe && !data.read) {
-                const path = subCollectionId ? `chats/${subCollectionId}/messages/${msgId}` : `global_chat/${msgId}`;
-                updateDoc(doc(db, path), { read: true }).catch(() => { });
-                // Update chat doc if private
-                if (subCollectionId) {
-                    updateDoc(doc(db, "chats", subCollectionId), { read: true }).catch(() => { });
-                }
+            // Mark as seenBy
+            if (!isMe && (!data.seenBy || !data.seenBy.includes(window.userData.docId))) {
+                const path = collectionName === 'global_chat' ? `global_chat/${msgId}` : (collectionName === 'group_chats' ? `group_chats/${subCollectionId}/messages/${msgId}` : `chats/${subCollectionId}/messages/${msgId}`);
+                updateDoc(doc(db, path), { seenBy: arrayUnion(window.userData.docId) }).catch(() => { });
             }
 
-            const canDelete = isMe && data.createdAt && (Date.now() - data.createdAt.toMillis() < 60000);
+            const canDelete = isMe && data.createdAt && (Date.now() - data.createdAt.toMillis() < 3600000);
 
             const div = document.createElement('div');
-            div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} drop-in w-full max-w-full group`;
+            div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} mb-2 w-full max-w-full group/msg`;
+
+            let replyHtml = '';
+            if (data.replyTo) {
+                replyHtml = `
+                    <div class="mb-2 p-2 rounded-lg bg-black/5 dark:bg-white/10 border-l-4 border-green-500 text-[10px] opacity-80 cursor-pointer overflow-hidden" onclick="document.getElementById('${data.replyTo.id}')?.scrollIntoView({behavior:'smooth', block:'center'})">
+                        <p class="font-bold text-green-600 truncate">${data.replyTo.sender}</p>
+                        <p class="truncate text-slate-500 dark:text-slate-300 italic">${data.replyTo.text}</p>
+                    </div>
+                `;
+            }
+
+            let contentHtml = '';
+            if (data.type === 'spam') {
+                contentHtml = `<div class="flex items-center gap-2 text-red-300 italic text-[11px]"><i class="fa-solid fa-shield-virus"></i><span>🚫 Message deleted by AI — Spam detected</span></div>`;
+            } else {
+                contentHtml = `<span class="leading-relaxed relative z-10 break-words">${window.parseChatLinks ? window.parseChatLinks(data.text) : data.text}</span>`;
+            }
+            if (data.type === 'voice' && data.audioUrl) {
+                contentHtml = `
+                    <div class="flex items-center gap-3 py-1 min-w-[200px]">
+                        <button onclick="window.toggleVoicePlay('${data.audioUrl}', this)" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 shadow-md"><i class="fa-solid fa-play ml-1"></i></button>
+                        <div class="flex-1">
+                            <div class="h-1 bg-slate-200 dark:bg-white/20 rounded-full overflow-hidden mb-1"><div class="voice-progress h-full bg-green-500 w-0 transition-all duration-100"></div></div>
+                            <div class="flex justify-between text-[8px] opacity-60"><span>Voice Message</span><span class="voice-duration">0:00</span></div>
+                        </div>
+                    </div>
+                `;
+            } else if (data.type === 'meet_link') {
+                contentHtml = `
+                    <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/20 max-w-xs">
+                        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-video text-blue-600"></i><span class="text-xs font-bold text-blue-700 dark:text-blue-400">Google Meet</span></div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mb-3">${data.text.replace('📹 **Meeting Started**\n', '')}</p>
+                        <a href="${data.meetUrl}" target="_blank" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition"><i class="fa-solid fa-external-link text-[10px]"></i> Join Now</a>
+                    </div>
+                `;
+            }
 
             div.innerHTML = `
-                <div class="flex items-end gap-2 max-w-[85%] ${isMe ? 'flex-row-reverse' : ''}">
+                <div class="flex items-end gap-2 max-w-[85%] sm:max-w-[70%] ${isMe ? 'flex-row-reverse' : ''}" id="${msgId}">
                     ${!isMe ? (data.senderPhotoUrl ?
-                    `<img src="${data.senderPhotoUrl}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 border border-white dark:border-[#111] mt-auto">` :
-                    `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0 bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-gray-200 mt-auto border border-white dark:border-[#111] uppercase">${(data.sender || data.email || '?')[0]}</div>`
-                ) : ''}
+                    `<img src="${data.senderPhotoUrl}" class="w-8 h-8 rounded-full object-cover shrink-0 mt-auto">` :
+                    `<div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-500 mt-auto uppercase">${(data.sender || '?')[0]}</div>`
+                    ) : ''}
                     
-                    <div class="relative ${isMe ? 'bg-black dark:bg-white text-white dark:text-black font-medium' : 'bg-gray-100 dark:bg-[#111] dark:text-white border border-[#eaeaea] dark:border-[#333] text-black'} p-3 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} sm:text-sm text-xs relative overflow-hidden break-words">
-                        ${!isMe && subCollectionId === null && lastSenderId !== data.email ? `<p class="text-[9px] font-bold ${isMe ? 'dark:text-gray-800 text-gray-200' : 'text-gray-500'} mb-1">${data.sender || data.email}</p>` : ''}
-                        <span class="leading-relaxed relative z-10 break-words">${window.parseChatLinks ? window.parseChatLinks(data.text) : data.text}</span>
-                        <div class="flex items-center justify-end gap-1 mt-1">
-                            <div class="text-[9px] ${isMe ? 'opacity-70' : 'text-gray-500'} text-right font-mono">${time}</div>
-                            ${isMe ? `<span class="text-[10px] ${data.read ? 'text-green-400' : 'opacity-70'}"><i class="fa-solid fa-check-double"></i></span>` : ''}
+                    <div class="relative ${isMe ? 'bg-green-600 text-white rounded-2xl rounded-tr-none' : 'bg-white dark:bg-[#1a1a1a] dark:text-white border border-[#eaeaea] dark:border-[#333] text-black rounded-2xl rounded-tl-none'} p-3 sm:text-sm text-xs shadow-sm min-w-[80px]">
+                        ${!isMe && (collectionName === 'global_chat' || collectionName === 'group_chats') && lastSenderId !== data.email ? `<p class="text-[10px] font-black text-green-600 mb-1">${data.sender || data.email}</p>` : ''}
+                        ${replyHtml}
+                        ${contentHtml}
+                        <div class="flex items-center justify-end gap-1 mt-1 opacity-60">
+                            <span class="text-[9px]">${time}</span>
+                            ${isMe ? `<button onclick="window.showSeenInfo('${msgId}', '${subCollectionId}', '${collectionName}')" class="text-[10px] ${data.seenBy?.length > 1 ? 'text-blue-300' : ''}"><i class="fa-solid fa-check-double"></i></button>` : ''}
                         </div>
-                        ${canDelete ? `
-                            <button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="absolute -top-1 ${isMe ? '-left-1' : '-right-1'} w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        ` : ''}
+                        <div class="absolute top-0 ${isMe ? '-left-8' : '-right-8'} flex flex-col gap-1 opacity-0 group-hover/msg:opacity-100 transition-opacity p-1">
+                             <button onclick="window.replyToMessage('${msgId}', '${data.sender}', '${data.text}')" class="w-6 h-6 rounded-full bg-white dark:bg-black shadow border border-gray-100 dark:border-white/10 flex items-center justify-center text-[10px] hover:text-green-500 transition"><i class="fa-solid fa-reply"></i></button>
+                             ${canDelete ? `<button onclick="window.deleteChatMessage('${msgId}', '${subCollectionId}')" class="w-6 h-6 rounded-full bg-white dark:bg-black shadow border border-gray-100 dark:border-white/10 flex items-center justify-center text-[10px] hover:text-red-500 transition"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
                     </div>
                 </div>
             `;
@@ -439,134 +520,189 @@ function runChatListener(collectionName, subCollectionId) {
             lastSenderId = data.email;
         });
 
-        // Keep scroll at bottom
-        setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
     });
 }
 
-window.sendChatMessage = async (e) => {
+window.showSeenInfo = async (msgId, subCollectionId, collectionName) => {
+    try {
+        const path = collectionName === 'global_chat' ? `global_chat/${msgId}` : (collectionName === 'group_chats' ? `group_chats/${subCollectionId}/messages/${msgId}` : `chats/${subCollectionId}/messages/${msgId}`);
+        const msgSnap = await getDoc(doc(db, path));
+        const data = msgSnap.data();
+        if (!data || !data.seenBy) return showToast("No one has seen this yet", "info");
+
+        // Fetch users to get names
+        const usersSnap = await getDocs(query(collection(db, "users"), where("companyId", "==", window.companyId)));
+        const usersMap = {};
+        usersSnap.forEach(d => { usersMap[d.id] = d.data().name || d.data().email; });
+
+        const seenByNames = data.seenBy.map(uid => usersMap[uid] || "Unknown").filter(n => n !== "Unknown");
+        
+        const modalHtml = `
+            <div id="seen-info-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300] flex items-center justify-center p-4 animate-fade-in">
+                <div class="bg-white dark:bg-[#0a0a0a] rounded-2xl w-full max-w-xs shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-400">Message Info</h3>
+                        <button onclick="document.getElementById('seen-info-modal').remove()" class="text-slate-400 hover:text-black dark:hover:text-white transition"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                    <div class="p-4 max-h-60 overflow-y-auto space-y-3 custom-scrollbar">
+                        <p class="text-[10px] font-bold text-blue-500 uppercase mb-2">Read by</p>
+                        ${seenByNames.map(name => `
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-double text-blue-400 text-[10px]"></i>
+                                <span class="text-xs text-slate-700 dark:text-slate-200">${name}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    } catch(e) { showToast(e.message, "error"); }
+};
+
+window.toggleVoicePlay = (url, btn) => {
+    const icon = btn.querySelector('i');
+    const container = btn.closest('div');
+    const progress = container.querySelector('.voice-progress');
+    const durationEl = container.querySelector('.voice-duration');
+    
+    if (window.currentAudio && window.currentAudio.src === url) {
+        if (!window.currentAudio.paused) {
+            window.currentAudio.pause();
+            icon.className = 'fa-solid fa-play ml-1';
+        } else {
+            window.currentAudio.play();
+            icon.className = 'fa-solid fa-pause';
+        }
+        return;
+    }
+
+    if (window.currentAudio) window.currentAudio.pause();
+    
+    const audio = new Audio(url);
+    window.currentAudio = audio;
+    icon.className = 'fa-solid fa-pause';
+    
+    audio.addEventListener('timeupdate', () => {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        if (progress) progress.style.width = pct + '%';
+        const mins = Math.floor(audio.currentTime / 60);
+        const secs = Math.floor(audio.currentTime % 60);
+        if (durationEl) durationEl.textContent = `${mins}:${secs < 10 ? '0':''}${secs}`;
+    });
+    
+    audio.addEventListener('ended', () => {
+        icon.className = 'fa-solid fa-play ml-1';
+        if (progress) progress.style.width = '0%';
+    });
+    
+    audio.play();
+};
+
+window.sendChatMessage = async (e, voiceData = null) => {
     if (e) e.preventDefault();
     const input = document.getElementById('chat-input-emp');
-    const text = input.value.trim();
-    if (!text) return;
+    const text = voiceData ? '🎤 Voice Message' : (input ? input.value.trim() : '');
+    if (!text && !voiceData) return;
 
-    input.value = '';
+    if (input) input.value = '';
 
     try {
         const db = window.db;
+        let isSpam = false;
+        let groupId = null;
+
+        if (window.currentChatContext.startsWith('group_') || window.currentChatContext === 'global') {
+            groupId = window.currentChatContext === 'global' ? 'global' : window.currentChatContext.replace('group_', '');
+            
+            // Check spam filter if group
+            if (groupId !== 'global') {
+                const groupSnap = await getDoc(doc(db, "group_chats", groupId));
+                const group = groupSnap.data();
+                if (group && group.spamFilter && checkSpam(text)) {
+                    isSpam = true;
+                }
+            }
+        }
+
         const messageData = {
-            text,
+            text: isSpam ? '🚫 *Message deleted by AI: Spam detected*' : text,
             sender: (window.userData.name || window.userData.email || 'Employee'),
             senderPhotoUrl: (window.userData.photoUrl || ''),
             email: (window.userData.email || ''),
             role: (window.userData.role || 'USER'),
             read: false,
             createdAt: serverTimestamp(),
-            companyId: window.companyId // INJECT COMPANY ID!
+            companyId: window.companyId,
+            seenBy: [window.userData.docId], // Initialize seenBy with sender
+            replyTo: currentReplyMessage || null,
+            type: voiceData ? 'voice' : (isSpam ? 'spam' : 'text'),
+            audioUrl: voiceData?.audioUrl || null
         };
+
+        if (isSpam) {
+            messageData.originalText = text; // Log for audit if needed
+        }
 
         if (window.currentChatContext === 'global') {
             await addDoc(collection(db, "global_chat"), messageData);
         } else if (window.currentChatContext.startsWith('group_')) {
-            const groupId = window.currentChatContext.replace('group_', '');
-            await setDoc(doc(db, "group_chats", groupId), { lastMessage: text, lastMessageAt: serverTimestamp() }, { merge: true });
-            await addDoc(collection(db, "group_chats", groupId, "messages"), messageData);
+            const gId = window.currentChatContext.replace('group_', '');
+            await setDoc(doc(db, "group_chats", gId), { lastMessage: messageData.text, lastMessageAt: serverTimestamp() }, { merge: true });
+            await addDoc(collection(db, "group_chats", gId, "messages"), messageData);
         } else {
             const combinedId = window.userData.docId < window.currentChatUser.docId ?
                 `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
                 `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
 
             const chatMetaUpdate = {
-                lastMessage: text,
+                lastMessage: messageData.text,
                 lastMessageAt: serverTimestamp(),
                 lastSender: window.userData.docId || 'system',
                 read: false,
                 users: [window.userData.docId, window.currentChatUser.docId],
-                companyId: window.companyId // ALSO INJECT IN CHAT META
+                companyId: window.companyId
             };
 
             await setDoc(doc(db, "chats", combinedId), chatMetaUpdate, { merge: true });
             await addDoc(collection(db, "chats", combinedId, "messages"), messageData);
         }
 
+        cancelReply();
         const container = document.getElementById('chat-messages-emp');
         if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
 
-        // --- @ai Trigger ---
-        if (text.toLowerCase().includes('@ai')) {
+        // Notify AI if tagged
+        if (!isSpam && text.toLowerCase().includes('@ai')) {
             setTimeout(() => {
                 handleAIChatRequest(db, window.userData, window.companyId, window.currentChatContext, window.currentChatUser);
             }, 1000);
         }
 
-        // --- @meet Trigger ---
-        if (text.toLowerCase().includes('@meet')) {
+        // Handle @meet (only if not spam)
+        if (!isSpam && text.toLowerCase().includes('@meet')) {
             setTimeout(async () => {
                 try {
                     if (!window.GDriveService || !window.GDriveService.isConnected()) {
-                        // Send a system-style message telling them to connect
-                        const sysMsg = {
-                            text: '⚠️ To use @meet, please connect your Google account from Profile → Integrations first.',
-                            sender: 'System',
-                            senderPhotoUrl: '',
-                            email: 'system@explyra.app',
-                            role: 'SYSTEM',
-                            read: false,
-                            createdAt: serverTimestamp(),
-                            companyId: window.companyId
-                        };
-                        if (window.currentChatContext === 'global') {
-                            await addDoc(collection(db, "global_chat"), sysMsg);
-                        } else if (window.currentChatContext.startsWith('group_')) {
-                            const gId = window.currentChatContext.replace('group_', '');
-                            await addDoc(collection(db, "group_chats", gId, "messages"), sysMsg);
-                        } else {
-                            const cId = window.userData.docId < window.currentChatUser.docId ?
-                                `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
-                                `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
-                            await addDoc(collection(db, "chats", cId, "messages"), sysMsg);
-                        }
+                        const sysMsg = { text: '⚠️ Please connect Google account from Profile → Integrations first.', sender: 'System', role: 'SYSTEM', read: false, createdAt: serverTimestamp(), companyId: window.companyId, type: 'system' };
+                        const path = window.currentChatContext === 'global' ? "global_chat" : 
+                                   (window.currentChatContext.startsWith('group_') ? `chats/${window.currentChatContext.replace('group_','')}/messages` : 
+                                   `chats/${window.userData.docId < window.currentChatUser.docId ? `chat_${window.userData.docId}_${window.currentChatUser.docId}` : `chat_${window.currentChatUser.docId}_${window.userData.docId}`}/messages`);
+                        await addDoc(collection(db, path), sysMsg);
                         return;
                     }
-
                     const meetResult = await window.GDriveService.createMeetLink('Explyra Meeting — ' + (window.userData.name || 'Team'));
-                    
-                    const meetMessage = {
-                        text: `📹 **Meeting Started**\n🔗 Join: ${meetResult.meetUrl}\n👤 Host: ${window.userData.name || window.userData.email}\n📅 ${new Date(meetResult.startTime).toLocaleString()}`,
-                        sender: (window.userData.name || window.userData.email || 'Employee'),
-                        senderPhotoUrl: (window.userData.photoUrl || ''),
-                        email: (window.userData.email || ''),
-                        role: (window.userData.role || 'USER'),
-                        read: false,
-                        createdAt: serverTimestamp(),
-                        companyId: window.companyId,
-                        type: 'meet_link',
-                        meetUrl: meetResult.meetUrl,
-                        meetHost: window.userData.email
-                    };
-
-                    if (window.currentChatContext === 'global') {
-                        await addDoc(collection(db, "global_chat"), meetMessage);
-                    } else if (window.currentChatContext.startsWith('group_')) {
-                        const gId = window.currentChatContext.replace('group_', '');
-                        await setDoc(doc(db, "group_chats", gId), { lastMessage: '📹 Meeting Link', lastMessageAt: serverTimestamp() }, { merge: true });
-                        await addDoc(collection(db, "group_chats", gId, "messages"), meetMessage);
-                    } else {
-                        const cId = window.userData.docId < window.currentChatUser.docId ?
-                            `chat_${window.userData.docId}_${window.currentChatUser.docId}` :
-                            `chat_${window.currentChatUser.docId}_${window.userData.docId}`;
-                        await setDoc(doc(db, "chats", cId), { lastMessage: '📹 Meeting Link', lastMessageAt: serverTimestamp(), lastSender: window.userData.docId, read: false, users: [window.userData.docId, window.currentChatUser.docId], companyId: window.companyId }, { merge: true });
-                        await addDoc(collection(db, "chats", cId, "messages"), meetMessage);
-                    }
-                } catch (meetErr) {
-                    console.error('@meet error:', meetErr);
-                }
+                    await window.sendChatMessage(null, { 
+                        type: 'meet_link', 
+                        text: `📹 **Meeting Started**\n🔗 Join: ${meetResult.meetUrl}\n👤 Host: ${window.userData.name}\n📅 ${new Date().toLocaleString()}`,
+                        meetUrl: meetResult.meetUrl
+                    });
+                } catch (err) { console.error('@meet error:', err); }
             }, 500);
         }
-
     } catch (e) {
         console.error("Chat Error:", e);
-        window.showToast("Failed to send: " + e.message, "error");
+        showToast("Failed to send: " + e.message, "error");
     }
 };
 
@@ -584,9 +720,9 @@ window.deleteChatMessage = async (msgId, subCollectionId) => {
             path = `chats/${subCollectionId}/messages/${msgId}`;
         }
         await deleteDoc(doc(db, path));
-        window.showToast("Message deleted", "info");
+        showToast("Message deleted", "info");
     } catch (e) {
-        window.showToast("Failed to delete: " + e.message, "error");
+        showToast("Failed to delete: " + e.message, "error");
     }
 };
 
@@ -608,4 +744,285 @@ window.sendLocationMessage = () => {
     }, (err) => {
         window.showToast("Location access denied", "error");
     });
+};
+
+// --- Reply & Voice Functions ---
+window.replyToMessage = (msgId, sender, text) => {
+    currentReplyMessage = { id: msgId, sender, text };
+    const container = document.getElementById('reply-preview-container');
+    const nameEl = document.getElementById('reply-to-name');
+    const contentEl = document.getElementById('reply-to-content');
+    if (container && nameEl && contentEl) {
+        nameEl.textContent = `Replying to ${sender}`;
+        contentEl.textContent = text;
+        container.classList.remove('hidden');
+        container.classList.add('flex');
+        document.getElementById('chat-input-emp').focus();
+    }
+};
+
+window.cancelReply = () => {
+    currentReplyMessage = null;
+    const container = document.getElementById('reply-preview-container');
+    if (container) {
+        container.classList.add('hidden');
+        container.classList.remove('flex');
+    }
+};
+
+window.startVoiceRecord = async () => {
+    if (!voiceRecorder) voiceRecorder = new VoiceRecorder();
+    const success = await voiceRecorder.start();
+    if (success) {
+        document.getElementById('voice-recorder-ui').classList.remove('hidden');
+        document.getElementById('voice-recorder-ui').classList.add('flex');
+        document.getElementById('chat-form-emp').classList.add('hidden');
+        
+        voiceStartTime = Date.now();
+        voiceTimerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - voiceStartTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            document.getElementById('voice-timer').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            document.getElementById('voice-waveform').style.width = `${Math.min(100, elapsed * 10)}%`;
+        }, 100);
+    }
+};
+
+window.cancelVoiceRecord = () => {
+    if (voiceRecorder) voiceRecorder.stop();
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-recorder-ui').classList.add('hidden');
+    document.getElementById('voice-recorder-ui').classList.remove('flex');
+    document.getElementById('chat-form-emp').classList.remove('hidden');
+};
+
+window.stopAndSendVoice = async () => {
+    const blob = await voiceRecorder.stop();
+    clearInterval(voiceTimerInterval);
+    document.getElementById('voice-recorder-ui').classList.add('hidden');
+    document.getElementById('voice-recorder-ui').classList.remove('flex');
+    document.getElementById('chat-form-emp').classList.remove('hidden');
+
+    if (blob.size < 1000) return showToast("Recording too short", "error");
+
+    showToast("Uploading voice message...", "info");
+    const filename = `voice_${Date.now()}.webm`;
+    const storageRef = ref(window.storage, `chats/voice/${filename}`);
+    const uploadTask = uploadBytesResumable(storageRef, blob);
+
+    uploadTask.on('state_changed', null, (e) => showToast(e.message, "error"), async () => {
+        const url = await getDownloadURL(uploadTask.snapshot.ref);
+        window.sendChatMessage(null, { type: 'voice', audioUrl: url });
+    });
+};
+
+// --- Group Settings ---
+window.openGroupSettings = async () => {
+    const ctx = window.currentChatContext;
+    if (ctx === 'global') return showToast("Settings not available for Global Group", "info");
+    if (!ctx.startsWith('group_')) return showToast("Settings only for groups", "info");
+    const groupId = ctx.replace('group_', '');
+    const groupSnap = await getDoc(doc(db, "group_chats", groupId));
+    const group = groupSnap.data();
+    if (!group) return;
+
+    const isAdmin = group.admins?.includes(window.userData.docId) || window.userData.role === 'ADMIN' || window.userData.role === 'HR';
+    const usersSnap = await getDocs(query(collection(db, "users"), where("companyId", "==", window.companyId)));
+    const allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    const membersHtml = allUsers.map(u => {
+        const isMember = group.users.includes(u.id);
+        const isGroupAdmin = group.admins?.includes(u.id);
+        if (!isMember && !isAdmin) return ''; // Only show members unless you are admin
+        return `
+            <div class="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-[#111] rounded-xl transition">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs uppercase">${u.name[0]}</div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-800 dark:text-slate-100">${u.name} ${isGroupAdmin ? '<span class="text-[8px] bg-green-100 text-green-600 px-1 rounded ml-1">ADMIN</span>' : ''}</p>
+                        <p class="text-[9px] text-slate-400">${u.role}</p>
+                    </div>
+                </div>
+                ${isAdmin && u.id !== window.userData.docId ? `
+                    <div class="flex gap-1">
+                        <button onclick="window.toggleGroupMember('${groupId}', '${u.id}', ${isMember})" class="p-1.5 rounded-lg ${isMember ? 'text-red-500 hover:bg-red-50' : 'text-green-600 hover:bg-green-50'} transition"><i class="fa-solid ${isMember ? 'fa-user-minus' : 'fa-user-plus'}"></i></button>
+                        ${isMember ? `<button onclick="window.toggleGroupAdmin('${groupId}', '${u.id}', ${isGroupAdmin})" class="p-1.5 rounded-lg ${isGroupAdmin ? 'text-orange-500 hover:bg-orange-50' : 'text-blue-500 hover:bg-blue-50'} transition" title="${isGroupAdmin ? 'Remove Admin' : 'Make Admin'}"><i class="fa-solid fa-crown"></i></button>` : ''}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+
+    const modalHtml = `
+        <div id="group-settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[250] flex items-center justify-center p-4 animate-fade-in shadow-2xl">
+            <div class="bg-white dark:bg-[#0a0a0a] rounded-3xl w-full max-w-md border border-gray-200 dark:border-[#333] overflow-hidden flex flex-col max-h-[85vh]">
+                <div class="p-5 border-b border-gray-100 dark:border-[#222] flex justify-between items-center bg-slate-50 dark:bg-[#0a0a0a]">
+                    <h3 class="font-black text-slate-800 dark:text-white uppercase tracking-widest text-sm">Group Settings</h3>
+                    <button onclick="document.getElementById('group-settings-modal').remove()" class="text-gray-400 hover:text-black dark:hover:text-white transition"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="p-6 flex-1 overflow-y-auto space-y-6 custom-scrollbar">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="relative group">
+                            <div id="group-settings-pic" class="w-24 h-24 rounded-3xl bg-green-500 flex items-center justify-center text-white text-3xl font-bold overflow-hidden shadow-xl shadow-green-500/20">
+                                ${group.photoUrl ? `<img src="${group.photoUrl}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-users"></i>`}
+                            </div>
+                            ${isAdmin ? `
+                                <label class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition border border-gray-100 dark:border-gray-800">
+                                    <i class="fa-solid fa-camera text-slate-600 text-xs"></i>
+                                    <input type="file" class="hidden" onchange="window.uploadGroupPic(this, '${groupId}')" accept="image/*">
+                                </label>
+                            ` : ''}
+                        </div>
+                        <div class="text-center w-full">
+                            ${isAdmin ? 
+                                `<input type="text" id="edit-group-name" class="text-center w-full font-bold text-slate-800 dark:text-white text-lg bg-transparent border-b border-dashed border-slate-300 focus:border-green-500 outline-none pb-1" value="${group.name}">` : 
+                                `<h4 class="font-bold text-slate-800 dark:text-white text-lg">${group.name}</h4>`
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
+                        <div class="flex items-center gap-2">
+                             <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 flex items-center justify-center"><i class="fa-solid fa-shield-virus"></i></div>
+                             <div>
+                                <p class="text-xs font-bold text-red-700 dark:text-red-400">AI Spam Filter</p>
+                                <p class="text-[9px] text-red-600/80">Deletes toxic/spam messages</p>
+                             </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" onchange="window.toggleGroupSpam('${groupId}', this.checked)" class="sr-only peer" ${group.spamFilter ? 'checked' : ''} ${!isAdmin ? 'disabled' : ''}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-500"></div>
+                        </label>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Group Members (${group.users.length})</h4>
+                            <button onclick="window.exportMessages('${groupId}')" class="text-[10px] font-bold text-blue-500 hover:underline uppercase tracking-widest"><i class="fa-solid fa-download mr-1"></i> Export Chats</button>
+                        </div>
+                        <div class="space-y-1 bg-slate-50 dark:bg-slate-900/40 p-2 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+                            ${membersHtml}
+                        </div>
+                    </div>
+                </div>
+                ${isAdmin ? `
+                    <div class="p-5 border-t border-gray-100 dark:border-[#222] bg-slate-50 dark:bg-[#0a0a0a]">
+                        <button onclick="window.saveGroupSettings('${groupId}')" class="w-full py-3 bg-black text-white dark:bg-white dark:text-black rounded-2xl font-bold shadow-lg hover:opacity-90 active:scale-95 transition text-sm">Save Changes</button>
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+};
+
+window.toggleGroupMember = async (groupId, uid, isMember) => {
+    try {
+        await updateDoc(doc(db, "group_chats", groupId), {
+            users: isMember ? arrayRemove(uid) : arrayUnion(uid)
+        });
+        showToast(isMember ? "Member removed" : "Member added", "success");
+        document.getElementById('group-settings-modal')?.remove();
+        openGroupSettings();
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+window.toggleGroupAdmin = async (groupId, uid, isGroupAdmin) => {
+    try {
+        await updateDoc(doc(db, "group_chats", groupId), {
+            admins: isGroupAdmin ? arrayRemove(uid) : arrayUnion(uid)
+        });
+        showToast(isGroupAdmin ? "Admin role removed" : "User appointed as Admin", "success");
+        document.getElementById('group-settings-modal')?.remove();
+        openGroupSettings();
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+window.toggleGroupSpam = async (groupId, enabled) => {
+    try {
+        await updateDoc(doc(db, "group_chats", groupId), { spamFilter: enabled });
+        showToast(`AI Spam Filter ${enabled ? 'Enabled' : 'Disabled'}`, enabled ? "success" : "info");
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+window.uploadGroupPic = async (input, groupId) => {
+    const file = input.files[0];
+    if (!file) return;
+    
+    showToast("Updating picture...", "info");
+    const filename = `group_${groupId}_${Date.now()}`;
+    const storageRef = ref(window.storage, `groups/${filename}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on('state_changed', null, (e) => showToast(e.message, "error"), async () => {
+        const url = await getDownloadURL(uploadTask.snapshot.ref);
+        await updateDoc(doc(db, "group_chats", groupId), { photoUrl: url });
+        const picEl = document.getElementById('group-settings-pic');
+        if (picEl) picEl.innerHTML = `<img src="${url}" class="w-full h-full object-cover">`;
+        showToast("Picture updated!", "success");
+        if (window.currentChatContext === 'group_' + groupId) {
+             document.getElementById('active-chat-avatar').innerHTML = `<img src="${url}" class="w-full h-full object-cover">`;
+        }
+    });
+};
+
+window.saveGroupSettings = async (groupId) => {
+    const newName = document.getElementById('edit-group-name').value.trim();
+    if (!newName) return;
+    try {
+        await updateDoc(doc(db, "group_chats", groupId), { name: newName });
+        showToast("Settings saved!", "success");
+        document.getElementById('group-settings-modal')?.remove();
+        window.fetchChatUsers();
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+window.exportMessages = async (groupId) => {
+    showToast("Preparing export...", "info");
+    const q = query(collection(db, "group_chats", groupId, "messages"), orderBy("createdAt", "asc"));
+    const snap = await getDocs(q);
+    const msgs = snap.docs.map(d => {
+        const data = d.data();
+        let timestamp = 'N/A';
+        try { timestamp = data.createdAt?.toDate().toISOString(); } catch(err) {}
+        return `"${data.sender || data.email}","${(data.text || '').replace(/"/g, '""')}","${timestamp}"`;
+    });
+    
+    const csv = "Sender,Message,Timestamp\n" + msgs.join("\n");
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `group_chat_${groupId}.csv`;
+    a.click();
+};
+
+// Wrappers for HTML modal buttons
+window.exportChatMessages = () => {
+    const ctx = window.currentChatContext;
+    if (!ctx.startsWith('group_')) return showToast("Export only available for groups", "info");
+    window.exportMessages(ctx.replace('group_', ''));
+};
+
+window.saveGroupName = async () => {
+    const ctx = window.currentChatContext;
+    if (!ctx.startsWith('group_')) return;
+    const groupId = ctx.replace('group_', '');
+    const nameInput = document.getElementById('group-settings-name');
+    const newName = nameInput?.value?.trim();
+    if (!newName) return showToast("Enter a group name", "error");
+    try {
+        await updateDoc(doc(db, "group_chats", groupId), { name: newName });
+        showToast("Group name updated!", "success");
+        document.getElementById('active-chat-name').textContent = newName;
+        window.fetchChatUsers();
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+window.toggleSpamFilter = async (enabled) => {
+    const ctx = window.currentChatContext;
+    if (!ctx.startsWith('group_')) return;
+    const groupId = ctx.replace('group_', '');
+    window.toggleGroupSpam(groupId, enabled);
 };

@@ -107,6 +107,50 @@ service cloud.firestore {
       allow delete: if isCompanyAdmin(resource.data.companyId) || isMasterAdmin();
     }
 
+    // Email SaaS: Custom Domains
+    match /custom_domains/{domainId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.domain is string
+        && request.resource.data.domain.size() >= 3
+        && request.resource.data.verified is bool
+        && request.resource.data.createdAt != null;
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.domain == resource.data.domain
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.verified is bool
+        && request.resource.data.status is string;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Email SaaS: Mailboxes
+    match /mailboxes/{mailboxId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.domainId is string
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+        && request.resource.data.createdAt != null
+        && exists(/databases/$(database)/documents/custom_domains/$(request.resource.data.domainId))
+        && get(/databases/$(database)/documents/custom_domains/$(request.resource.data.domainId)).data.userId == request.auth.uid
+        && get(/databases/$(database)/documents/custom_domains/$(request.resource.data.domainId)).data.verified == true;
+      allow update: if false;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Email SaaS: Received mail is write-only by backend service account, read-only by owner
+    match /received_emails/{emailId} {
+      allow read: if isSignedIn()
+        && resource.data.mailboxId is string
+        && exists(/databases/$(database)/documents/mailboxes/$(resource.data.mailboxId))
+        && get(/databases/$(database)/documents/mailboxes/$(resource.data.mailboxId)).data.userId == request.auth.uid;
+      allow create, update, delete: if false;
+    }
+
     // Personal Vault & Financial Accounts: Strict User Isolation
     match /personal_vault/{itemId} {
       allow read, write: if isOwner(resource == null ? request.resource.data.uid : resource.data.uid);

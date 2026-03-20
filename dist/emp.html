@@ -20,7 +20,8 @@
         content="Use Emp on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
     <meta name="keywords" content="Explyra, Employee, Expense, Claims, Reimbursement, Mitanshu Bhasin, Explyra">
     <meta name="author" content="Mitanshu Bhasin, Explyra">
-    <link rel="canonical" href="https://explyra.me/emp.html">
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -550,6 +551,87 @@
         }
         .vercel-card:hover .sparkline-svg { opacity: 0.6; }
 
+        /* Quick filters + compact mode */
+        .emp-quick-filter {
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #6b7280;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .emp-quick-filter:hover {
+            border-color: #9ca3af;
+            color: #111827;
+        }
+
+        .emp-quick-filter.active {
+            background: #111827;
+            color: #fff;
+            border-color: #111827;
+        }
+
+        .dark .emp-quick-filter {
+            background: #0a0a0a;
+            border-color: #333;
+            color: #9ca3af;
+        }
+
+        .dark .emp-quick-filter.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .emp-compact #main-view-dashboard {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        .emp-compact .vercel-card {
+            border-radius: 10px;
+        }
+
+        .emp-compact #expenses-list .vercel-card,
+        .emp-compact #emp-tasks-list .vercel-card,
+        .emp-compact #financial-accounts-list .vercel-card {
+            padding: 0.75rem !important;
+        }
+
+        #emp-scroll-top {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.9);
+            color: #111827;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 45;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(6px);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        #emp-scroll-top:hover {
+            transform: translateY(-2px);
+        }
+
+        .dark #emp-scroll-top {
+            background: rgba(10, 10, 10, 0.88);
+            color: #fff;
+            border-color: #333;
+        }
+
         @media (max-width: 767px) {
             #modal-chat {
                 padding: 0;
@@ -917,6 +999,13 @@
                         class="ml-auto bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
                 </a>
 
+                <a href="#" onclick="toggleMainView('dashboard'); toggleEmpView('scheduler'); return false;"
+                    class="sidebar-item group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#111] transition-all">
+                    <i
+                        class="fa-solid fa-calendar-days w-6 text-center text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors"></i>
+                    <span class="truncate">Scheduler</span>
+                </a>
+
                 <div class="pt-6 px-3 mb-2">
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Account</p>
                 </div>
@@ -1141,6 +1230,10 @@
                             class="hidden flex-1 py-3 text-sm font-medium transition-all rounded-md text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
                             <i class="fa-solid fa-building-columns mr-2 text-xs"></i> Accounts
                         </button>
+                        <button onclick="toggleEmpView('scheduler')" id="btn-view-scheduler"
+                            class="flex-1 py-3 text-sm font-medium transition-all rounded-md text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                            <i class="fa-solid fa-calendar-week mr-2 text-xs"></i> Schedule
+                        </button>
                     </div>
 
                     <!-- Personal Vault Header (Shown only in Personal Mode) -->
@@ -1227,6 +1320,14 @@
                                 <!-- Accounts will be injected here -->
                             </div>
                         </div>
+
+                        <!-- Scheduler View -->
+                        <div id="section-scheduler" class="hidden flex flex-col h-full min-h-[500px]">
+                            <div class="p-4 border-b border-[#eaeaea] dark:border-[#333] bg-gray-50/50 dark:bg-black">
+                                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400">Team Schedule</h3>
+                            </div>
+                            <div id="emp-calendar-container" class="flex-1 p-4"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -1268,7 +1369,9 @@
                             class="p-4 sm:p-5 border-b border-[#eaeaea] dark:border-[#333] flex justify-between items-center bg-white dark:bg-black">
                             <h3 class="font-bold tracking-tight text-black dark:text-white">Conversations</h3>
                             <div class="flex items-center gap-2">
-                                <button onclick="window.openCreateGroupModal()" class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center" title="Create Group"><i class="fa-solid fa-plus"></i></button>
+                                <button onclick="window.openCreateGroupModal()"
+                                    class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center"
+                                    title="Create Group"><i class="fa-solid fa-plus"></i></button>
                                 <button onclick="fetchChatUsers()"
                                     class="w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-[#111] text-gray-500 transition-colors flex items-center justify-center">
                                     <i class="fa-solid fa-arrows-rotate text-xs"></i>
@@ -1322,37 +1425,85 @@
                                     title="Video Call">
                                     <i class="fa-solid fa-video text-xs"></i>
                                 </button>
+                                <button onclick="openGroupSettings()" id="btn-group-settings"
+                                    class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#111] text-slate-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-[#222] transition flex items-center justify-center shadow-sm hidden"
+                                    title="Group Settings">
+                                    <i class="fa-solid fa-gear text-xs"></i>
+                                </button>
                             </div>
                         </div>
                         <div id="chat-messages-emp" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 relative">
                             <div class="flex justify-center py-10"><i
                                     class="fa-solid fa-circle-notch fa-spin text-gray-300"></i></div>
                         </div>
-                        <form onsubmit="sendChatMessage(event)"
+
+                        <!-- Reply Preview Area -->
+                        <div id="reply-preview-container" class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden flex items-center gap-3">
+                            <div class="w-1 bg-green-500 h-10 rounded-full"></div>
+                            <div class="flex-1 min-w-0">
+                                <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
+                                <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
+                            </div>
+                            <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">
+                                <i class="fa-solid fa-xmark text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Voice Recorder UI (Floating/Inline overlay) -->
+                        <div id="voice-recorder-ui" class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden items-center gap-4 animate-in slide-in-from-bottom-2 duration-200">
+                             <div class="flex items-center gap-2 text-red-500 animate-pulse">
+                                 <i class="fa-solid fa-microphone"></i>
+                                 <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
+                             </div>
+                             <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                 <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width: 0%"></div>
+                             </div>
+                             <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
+                             <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition">
+                                 <i class="fa-solid fa-paper-plane"></i>
+                             </button>
+                        </div>
+
+                        <form onsubmit="sendChatMessage(event)" id="chat-form-emp"
                             class="p-4 border-t border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black flex gap-3 shrink-0 items-center">
                             
+                            <input type="hidden" id="reply-message-id">
+
                             <!-- Hidden File Input -->
-                            <input type="file" id="chat-file-emp-1" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
-                            
+                            <input type="file" id="chat-file-emp-1" class="hidden"
+                                onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
+
                             <!-- Attachment Button -->
                             <button type="button" onclick="document.getElementById('chat-file-emp-1').click()"
-                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file from Google Drive">
+                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0"
+                                title="Attach file from Google Drive">
                                 <i class="fa-solid fa-paperclip"></i>
                             </button>
 
-                             <!-- Location Button -->
+                            <!-- Location Button -->
                             <button type="button" onclick="sendLocationMessage()"
-                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-blue-500 flex items-center justify-center transition shadow-sm shrink-0" title="Share Current Location">
+                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-blue-500 flex items-center justify-center transition shadow-sm shrink-0"
+                                title="Share Current Location">
                                 <i class="fa-solid fa-location-dot"></i>
                             </button>
 
                             <div class="flex-1 relative">
                                 <input type="text" id="chat-input-emp" class="input-geist w-full text-sm py-2 px-3"
                                     placeholder="Type a message or @mention..." autocomplete="off">
-                                
+
                                 <!-- Mentions Dropdown -->
-                                <div id="mentions-dropdown-emp" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-[#eaeaea] dark:border-[#333] rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar"></div>
+                                <div id="mentions-dropdown-emp"
+                                    class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-[#eaeaea] dark:border-[#333] rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar">
+                                </div>
                             </div>
+                            
+                            <!-- Voice Recording Trigger -->
+                            <button type="button" onclick="startVoiceRecord()" id="btn-voice-record"
+                                class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shadow-sm shrink-0"
+                                title="Record Voice Message">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+
                             <button type="submit" class="btn-geist-primary px-5 py-2 shrink-0">
                                 Send
                             </button>
@@ -1607,9 +1758,11 @@
                                 class="flex-1 py-4 border border-dashed border-[#eaeaea] dark:border-[#333] rounded-md text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-all">
                                 <i class="fa-solid fa-plus-circle mr-2 text-xs"></i> Add Expense Item
                             </button>
-                            <label class="flex-1 py-4 border border-dashed border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-md text-[10px] font-bold uppercase tracking-widest text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer transition-all flex items-center justify-center">
+                            <label
+                                class="flex-1 py-4 border border-dashed border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-md text-[10px] font-bold uppercase tracking-widest text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer transition-all flex items-center justify-center">
                                 <i class="fa-solid fa-wand-magic-sparkles mr-2 text-xs"></i> Auto-Scan Receipt (AI)
-                                <input type="file" accept="image/*" class="hidden" onchange="window.scanReceiptAI(this)">
+                                <input type="file" accept="image/*" class="hidden"
+                                    onchange="window.scanReceiptAI(this)">
                             </label>
                         </div>
                     </div>
@@ -1848,26 +2001,124 @@
                     </div>
                 </div>
 
-                <div class="pt-4 flex flex-col gap-3 border-t border-slate-100 dark:border-slate-800 mt-2">
-                    
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 mt-2">
+                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-file-export"></i> Data Export
+                    </h5>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <button type="button" onclick="exportUserExpenses(currentUser.uid, 'CSV', userData.name)" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-csv text-green-600"></i> Export CSV
+                        </button>
+                        <button type="button" onclick="exportUserExpenses(currentUser? currentUser.uid : '', 'SHEETS', userData? userData.name : 'Me')" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-google-drive text-blue-500"></i> Export to Sheets
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex flex-col gap-3">
                     <div>
-                        <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <h5
+                            class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
                             <i class="fa-brands fa-google-drive"></i> Integrations
                         </h5>
-                        <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between">
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" class="w-5 h-5">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"
+                                        alt="Google Drive" class="w-5 h-5">
                                 </div>
                                 <div>
                                     <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Drive</h6>
-                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gdrive-status-text">Not connected</p>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gdrive-status-text">Not
+                                        connected</p>
                                 </div>
                             </div>
-                            <button type="button" id="btn-emp-gdrive-connect" onclick="window.GDriveService && window.GDriveService.authenticate()"
+                            <button type="button" id="btn-emp-gdrive-connect"
+                                onclick="window.GDriveService && window.GDriveService.authenticate()"
                                 class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                                 <i class="fa-solid fa-link"></i> Connect
                             </button>
+                        </div>
+                        
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Google_Sheets_logo_%282014-2020%29.svg"
+                                        alt="Google Sheets" class="w-5 h-5">
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Sheets</h6>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-gsheets-status-text">Not
+                                        connected</p>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-emp-gsheets-connect"
+                                onclick="window.GDriveService && window.GDriveService.authenticate()"
+                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-link"></i> Connect
+                            </button>
+                        </div>
+                        
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                    <img src="https://www.gstatic.com/images/branding/product/1x/maps_96dp.png"
+                                        alt="Google Maps" class="w-5 h-5">
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Maps</h6>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-maps-status-text">Not active</p>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-emp-maps-connect"
+                                onclick="window.enableMaps && window.enableMaps()"
+                                class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <i class="fa-solid fa-power-off"></i> Enable
+                            </button>
+                        </div>
+                        
+                        <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-3 mt-2">
+                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Google Workspace</h6>
+                            
+                            <!-- Calendar -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-5 h-5">
+                                    </div>
+                                    <div>
+                                        <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Calendar</h6>
+                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gcalendar-status-text">Not connected</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="btn-emp-gcalendar-connect" onclick="window.GDriveService && window.GDriveService.authenticate(null, true)" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                    <i class="fa-solid fa-link"></i> Connect
+                                </button>
+                            </div>
+
+                            <div class="h-[1px] bg-slate-200 dark:bg-slate-800"></div>
+
+                            <!-- Meet -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" alt="Google Meet" class="w-full h-full object-contain">
+                                    </div>
+                                    <div>
+                                        <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Meet</h6>
+                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gmeet-status-text">Not connected</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="btn-emp-gmeet-connect" onclick="window.GDriveService && window.GDriveService.authenticate(null, true)" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                    <i class="fa-solid fa-link"></i> Connect
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -1884,11 +2135,80 @@
                         <div>
                             <label
                                 class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Theme</label>
-                            <button type="button" onclick="toggleTheme()" aria-label="Toggle theme"
-                                class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-moon theme-toggle-icon"></i> Toggle
+                            <button onclick="toggleTheme()"
+                                class="w-full py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 flex justify-between items-center px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                <span>Dark/Light</span>
+                                <i class="fa-solid fa-moon theme-toggle-icon"></i>
                             </button>
                         </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI Empowerment</label>
+                            <label class="relative inline-flex items-center cursor-pointer w-full">
+                                <input type="checkbox" id="pref-ai-enabled" checked
+                                    onchange="window.toggleAIFeatures && window.toggleAIFeatures(this.checked)"
+                                    class="sr-only peer">
+                                <div
+                                    class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600">
+                                </div>
+                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable AI</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Currency</label>
+                            <select id="emp-base-currency" onchange="window.updateBaseCurrency && window.updateBaseCurrency(this.value)"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs text-slate-700 dark:text-slate-200 outline-none">
+                                <option value="INR">INR (₹)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4 mb-2">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <h6 class="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest">Two-Step Verification</h6>
+                                <p class="text-[9px] text-slate-500 font-medium">Extra security with a 4-digit PIN.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="profile-2fa-enabled" class="sr-only peer" onchange="document.getElementById('profile-2fa-pin-container').classList.toggle('hidden', !this.checked)">
+                                <div class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div id="profile-2fa-pin-container" class="hidden">
+                            <input type="password" id="profile-2fa-pin" maxlength="4" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-center text-lg tracking-[1em] font-bold outline-none focus:border-green-500" placeholder="••••">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div
+                            class="flex items-center gap-2 p-2 px-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg">
+                            <input type="checkbox" id="voice-control-toggle"
+                                onchange="window.toggleWebSpeech(this.checked)"
+                                class="w-4 h-4 rounded border-slate-300">
+                            <label for="voice-control-toggle"
+                                class="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-tight">Voice
+                                Control</label>
+                        </div>
+                        <button type="button" onclick="toggleTheme()" aria-label="Toggle theme"
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-moon theme-toggle-icon"></i> Theme
+                        </button>
+                    </div>
+
+                    <div id="speech-guide"
+                        class="hidden p-3 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-lg animate-fade-in">
+                        <h6 class="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase mb-1">Voice Commands
+                            Guide</h6>
+                        <ul class="text-[9px] text-blue-600 dark:text-blue-300 space-y-1 list-disc pl-3">
+                            <li>"Go to Expenses" / "Go to Tasks"</li>
+                            <li>"Show Scheduler" / "Open Messages"</li>
+                            <li>"New Claim" / "Logout"</li>
+                        </ul>
                     </div>
 
                     <button type="button"
@@ -1907,6 +2227,11 @@
                             Save Changes
                         </button>
                     </div>
+
+                    <button type="button" onclick="window.location.href='admin.html'"
+                        class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg mb-2">
+                        <i class="fa-solid fa-shuffle"></i> Switch to Admin Portal
+                    </button>
 
                     <div class="grid grid-cols-2 gap-3 mt-1">
                         <button type="button" onclick="handleLogout()"
@@ -2075,7 +2400,9 @@
                         <i class="fa-solid fa-comments text-green-600"></i> Chats
                     </h3>
                     <div class="flex items-center gap-2">
-                        <button onclick="window.openCreateGroupModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 transition flex items-center justify-center" title="Create Group"><i class="fa-solid fa-plus"></i></button>
+                        <button onclick="window.openCreateGroupModal()"
+                            class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 transition flex items-center justify-center"
+                            title="Create Group"><i class="fa-solid fa-plus"></i></button>
                         <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
                             class="md:hidden w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 transition flex items-center justify-center">
                             <i class="fa-solid fa-xmark"></i>
@@ -2137,20 +2464,26 @@
                                 Chat</p>
                         </div>
                     </div>
-                    <div id="chat-call-actions" class="flex items-center gap-2 hidden shrink-0 ml-2">
-                        <button onclick="initiateCall('voice')"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
-                            <i class="fa-solid fa-phone"></i>
+                    <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
+                        <div id="chat-call-actions" class="flex items-center gap-1 sm:gap-2 hidden">
+                            <button onclick="initiateCall('voice')"
+                                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <button onclick="initiateCall('video')"
+                                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                        </div>
+                        <button id="btn-chat-group-settings" onclick="window.openGroupSettings && window.openGroupSettings()"
+                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition flex items-center justify-center hidden">
+                            <i class="fa-solid fa-gear"></i>
                         </button>
-                        <button onclick="initiateCall('video')"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-green-50 hover:text-green-600 dark:hover:bg-brand-900/30 dark:hover:text-green-400 text-slate-500 dark:text-slate-300 transition flex items-center justify-center">
-                            <i class="fa-solid fa-video"></i>
+                        <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
+                            class="hidden md:flex w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition items-center justify-center">
+                            <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <button onclick="document.getElementById('modal-chat').classList.add('hidden')"
-                        class="hidden md:flex w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition items-center justify-center shrink-0 ml-2">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
                 </div>
 
                 <div id="chat-messages-emp"
@@ -2159,30 +2492,43 @@
                             class="fa-solid fa-circle-notch fa-spin text-slate-300 dark:text-slate-600 text-2xl"></i>
                     </div>
                 </div>
-
-                <div
-                    class="p-3 sm:p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                    <form onsubmit="sendChatMessage(event)" class="relative flex items-center gap-2">
-                        <!-- Hidden File Input -->
-                        <input type="file" id="chat-file-emp-2" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input-emp-2')">
-                        
-                        <!-- Attachment Button -->
-                        <button type="button" onclick="document.getElementById('chat-file-emp-2').click()"
-                            class="w-[42px] h-[42px] rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file from Google Drive">
-                            <i class="fa-solid fa-paperclip px-1"></i>
-                        </button>
-
-                        <div class="relative flex-1">
-                            <input type="text" id="chat-input-emp-2"
-                                class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-5 pr-12 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-green-500 transition outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400"
-                                placeholder="Type a message..." autocomplete="off">
-                            <button type="submit"
-                                class="absolute right-[5px] top-[5px] w-[38px] h-[38px] bg-green-600 hover:bg-brand-700 text-white rounded-full shadow-md flex items-center justify-center transition active:scale-95 z-10">
-                                <i class="fa-solid fa-paper-plane text-xs translate-x-[-1px] translate-y-[1px]"></i>
-                            </button>
-                        </div>
-                    </form>
+                <!-- Reply Preview -->
+                <div id="reply-preview-container" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden items-center gap-3">
+                    <div class="w-1 bg-green-500 h-10 rounded-full shrink-0"></div>
+                    <div class="flex-1 min-w-0">
+                        <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
+                        <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
+                    </div>
+                    <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
+
+                <!-- Voice Recorder UI -->
+                <div id="voice-recorder-ui" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 hidden items-center gap-3">
+                    <div class="flex items-center gap-2 text-red-500 animate-pulse">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
+                    </div>
+                    <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width:0%"></div>
+                    </div>
+                    <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">Cancel</button>
+                    <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form onsubmit="sendChatMessage(event)" id="chat-form-emp" class="p-3 sm:p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 shrink-0 flex items-center gap-2">
+                    <input type="file" id="chat-file-emp-1" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
+                    <button type="button" onclick="document.getElementById('chat-file-emp-1').click()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition shrink-0" title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
+
+                    <div class="relative flex-1">
+                        <input type="text" id="chat-input-emp" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-4 pr-4 py-3 text-sm focus:ring-2 focus:ring-green-500 transition outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400" placeholder="Type a message or @mention..." autocomplete="off">
+                        <div id="mentions-dropdown-emp" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1"></div>
+                    </div>
+
+                    <button type="button" onclick="startVoiceRecord()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 text-slate-500 flex items-center justify-center transition shrink-0" title="Voice Message"><i class="fa-solid fa-microphone"></i></button>
+
+                    <button type="submit" class="w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition active:scale-95 shrink-0"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                </form>
             </div>
         </div>
     </div>
@@ -2394,6 +2740,15 @@
     <script type="module">
         import { EmpAI } from './emp/ai.js';
 
+        window.toggleAIFeatures = (enabled) => {
+            localStorage.setItem('explyra_ai_enabled', enabled);
+            const trigger = document.getElementById('emp-ai-trigger');
+            if (trigger) trigger.style.display = enabled ? 'flex' : 'none';
+            if (!enabled && window.empAI && window.empAI.isOpen) {
+                window.empAI.toggle(false);
+            }
+        };
+
         window.addEventListener('load', () => {
             // Wait for other data to load
             setTimeout(() => {
@@ -2459,8 +2814,11 @@
     <div class="kbd-overlay" id="kbd-overlay">
         <div class="kbd-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                <h3 style="font-size:14px;font-weight:800;color:#000;margin:0"><i class="fa-solid fa-keyboard" style="margin-right:8px;color:#22c55e"></i>Keyboard Shortcuts</h3>
-                <button onclick="closeKbdOverlay()" style="background:none;border:none;color:#999;cursor:pointer;font-size:16px"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="font-size:14px;font-weight:800;color:#000;margin:0"><i class="fa-solid fa-keyboard"
+                        style="margin-right:8px;color:#22c55e"></i>Keyboard Shortcuts</h3>
+                <button onclick="closeKbdOverlay()"
+                    style="background:none;border:none;color:#999;cursor:pointer;font-size:16px"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="dark:text-white" style="color:#000">
                 <div class="kbd-row"><span>Show this panel</span><span class="kbd-key"><kbd>?</kbd></span></div>
@@ -2468,49 +2826,53 @@
                 <div class="kbd-row"><span>Toggle dark mode</span><span class="kbd-key"><kbd>T</kbd></span></div>
                 <div class="kbd-row"><span>View notifications</span><span class="kbd-key"><kbd>B</kbd></span></div>
                 <div class="kbd-row"><span>Open profile</span><span class="kbd-key"><kbd>P</kbd></span></div>
-                <div class="kbd-row"><span>Switch to tasks</span><span class="kbd-key"><kbd>Shift</kbd> + <kbd>T</kbd></span></div>
+                <div class="kbd-row"><span>Switch to tasks</span><span class="kbd-key"><kbd>Shift</kbd> +
+                        <kbd>T</kbd></span></div>
                 <div class="kbd-row"><span>Open messages</span><span class="kbd-key"><kbd>M</kbd></span></div>
+                <div class="kbd-row"><span>Toggle compact mode</span><span class="kbd-key"><kbd>D</kbd></span></div>
                 <div class="kbd-row"><span>Close / Escape</span><span class="kbd-key"><kbd>Esc</kbd></span></div>
             </div>
-            <p style="font-size:10px;color:#999;margin-top:14px;text-align:center;font-weight:500">Press <kbd style="padding:1px 5px;border:1px solid #ddd;border-radius:3px;font-size:9px;background:#f9fafb">?</kbd> anytime to show this panel</p>
+            <p style="font-size:10px;color:#999;margin-top:14px;text-align:center;font-weight:500">Press <kbd
+                    style="padding:1px 5px;border:1px solid #ddd;border-radius:3px;font-size:9px;background:#f9fafb">?</kbd>
+                anytime to show this panel</p>
         </div>
     </div>
 
     <!-- ═══════════ EMPLOYEE NEW FEATURES JS ═══════════ -->
     <script>
-    (function() {
-        // ── Helper: Time Ago ──
-        function getTimeAgo(date) {
-            if (!date) return 'Recently';
-            const now = new Date();
-            const past = date instanceof Date ? date : (date.toDate ? date.toDate() : new Date(date));
-            const diff = Math.floor((now - past) / 1000);
-            if (diff < 60) return 'Just now';
-            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-            return `${Math.floor(diff / 86400)}d ago`;
-        }
+        (function () {
+            // ── Helper: Time Ago ──
+            function getTimeAgo(date) {
+                if (!date) return 'Recently';
+                const now = new Date();
+                const past = date instanceof Date ? date : (date.toDate ? date.toDate() : new Date(date));
+                const diff = Math.floor((now - past) / 1000);
+                if (diff < 60) return 'Just now';
+                if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+                return `${Math.floor(diff / 86400)}d ago`;
+            }
 
-        // ── Greeting Banner ──
-        function renderEmpGreeting() {
-            const container = document.getElementById('emp-greeting-container');
-            if (!container) return;
-            const hour = new Date().getHours();
-            let greeting = 'Good Evening';
-            let icon = 'fa-moon';
-            let motivational = 'Wind down and review your day.';
-            if (hour < 12) { greeting = 'Good Morning'; icon = 'fa-sun'; motivational = 'Start your day strong with a clear overview.'; }
-            else if (hour < 17) { greeting = 'Good Afternoon'; icon = 'fa-cloud-sun'; motivational = 'Stay focused — you\'re doing great!'; }
-            const nameEl = document.getElementById('sidebar-user-name');
-            const name = nameEl?.textContent?.trim() || (window.userData ? window.userData.name : 'Employee');
-            const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            // ── Greeting Banner ──
+            function renderEmpGreeting() {
+                const container = document.getElementById('emp-greeting-container');
+                if (!container) return;
+                const hour = new Date().getHours();
+                let greeting = 'Good Evening';
+                let icon = 'fa-moon';
+                let motivational = 'Wind down and review your day.';
+                if (hour < 12) { greeting = 'Good Morning'; icon = 'fa-sun'; motivational = 'Start your day strong with a clear overview.'; }
+                else if (hour < 17) { greeting = 'Good Afternoon'; icon = 'fa-cloud-sun'; motivational = 'Stay focused — you\'re doing great!'; }
+                const nameEl = document.getElementById('sidebar-user-name');
+                const name = nameEl?.textContent?.trim() || (window.userData ? window.userData.name : 'Employee');
+                const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
-            // Calculate real stats
-            const claims = window.expensesData || [];
-            const pendingCount = claims.filter(c => !['PAID', 'REJECTED', 'DRAFT'].includes(c.status)).length;
-            const paidCount = claims.filter(c => c.status === 'PAID').length;
+                // Calculate real stats
+                const claims = window.expensesData || [];
+                const pendingCount = claims.filter(c => !['PAID', 'REJECTED', 'DRAFT'].includes(c.status)).length;
+                const paidCount = claims.filter(c => c.status === 'PAID').length;
 
-            container.innerHTML = `
+                container.innerHTML = `
                 <div class="emp-greeting-banner">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
                         <div style="animation:empSlideUp 0.5s ease forwards">
@@ -2538,20 +2900,20 @@
                     </div>
                 </div>
             `;
-        }
+            }
 
-        // ── Recent Activity Feed ──
-        function injectActivityFeed() {
-            const statsContainer = document.getElementById('stats-container');
-            if (!statsContainer) return;
-            // Ensure container exists
-            let feedCard = document.getElementById('emp-activity-feed-card');
-            if (!feedCard) {
-                feedCard = document.createElement('div');
-                feedCard.id = 'emp-activity-feed-card';
-                feedCard.className = 'vercel-card mb-8 animate-fade-in';
-                feedCard.style.cssText = 'padding:0;overflow:hidden;animation-delay:0.15s';
-                feedCard.innerHTML = `
+            // ── Recent Activity Feed ──
+            function injectActivityFeed() {
+                const statsContainer = document.getElementById('stats-container');
+                if (!statsContainer) return;
+                // Ensure container exists
+                let feedCard = document.getElementById('emp-activity-feed-card');
+                if (!feedCard) {
+                    feedCard = document.createElement('div');
+                    feedCard.id = 'emp-activity-feed-card';
+                    feedCard.className = 'vercel-card mb-8 animate-fade-in';
+                    feedCard.style.cssText = 'padding:0;overflow:hidden;animation-delay:0.15s';
+                    feedCard.innerHTML = `
                     <div style="padding:12px 18px;border-bottom:1px solid #eaeaea;display:flex;justify-content:space-between;align-items:center">
                         <div style="display:flex;align-items:center;gap:8px">
                             <div style="width:26px;height:26px;border-radius:6px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">
@@ -2565,60 +2927,60 @@
                         <div id="emp-activity-list"></div>
                     </div>
                 `;
-                statsContainer.parentNode.insertBefore(feedCard, statsContainer.nextSibling);
-            }
+                    statsContainer.parentNode.insertBefore(feedCard, statsContainer.nextSibling);
+                }
 
-            const list = document.getElementById('emp-activity-list');
-            if (!list) return;
+                const list = document.getElementById('emp-activity-list');
+                if (!list) return;
 
-            // Gather real activities
-            const activities = [];
-            
-            // 1. Recent Expenses
-            (window.expensesData || []).forEach(e => {
-                let action = 'submitted';
-                let icon = 'fa-receipt';
-                let color = '#3b82f6';
-                if (e.status === 'PAID') { action = 'paid'; color = '#22c55e'; icon = 'fa-check-circle'; }
-                else if (e.status === 'REJECTED') { action = 'rejected'; color = '#ef4444'; icon = 'fa-xmark-circle'; }
-                else if (e.status.includes('PENDING')) { action = 'processing'; color = '#f59e0b'; }
+                // Gather real activities
+                const activities = [];
 
-                activities.push({
-                    ts: e.createdAt?.toDate ? e.createdAt.toDate() : new Date(e.createdAt || 0),
-                    icon, color,
-                    text: `Claim "${e.title || 'Untitled'}" ${action}`,
-                    sub: `${window.getSymbol ? window.getSymbol(e.currency) : '₹'}${parseFloat(e.totalAmount || 0).toLocaleString()}`
+                // 1. Recent Expenses
+                (window.expensesData || []).forEach(e => {
+                    let action = 'submitted';
+                    let icon = 'fa-receipt';
+                    let color = '#3b82f6';
+                    if (e.status === 'PAID') { action = 'paid'; color = '#22c55e'; icon = 'fa-check-circle'; }
+                    else if (e.status === 'REJECTED') { action = 'rejected'; color = '#ef4444'; icon = 'fa-xmark-circle'; }
+                    else if (e.status.includes('PENDING')) { action = 'processing'; color = '#f59e0b'; }
+
+                    activities.push({
+                        ts: e.createdAt?.toDate ? e.createdAt.toDate() : new Date(e.createdAt || 0),
+                        icon, color,
+                        text: `Claim "${e.title || 'Untitled'}" ${action}`,
+                        sub: `${window.getSymbol ? window.getSymbol(e.currency) : '₹'}${parseFloat(e.totalAmount || 0).toLocaleString()}`
+                    });
                 });
-            });
 
-            // 2. Recent Tasks
-            (window.empTasksData || []).forEach(t => {
-                let action = 'assigned to you';
-                let icon = 'fa-list-check';
-                let color = '#8b5cf6';
-                if (t.status === 'COMPLETED') { action = 'completed'; color = '#22c55e'; icon = 'fa-check-double'; }
+                // 2. Recent Tasks
+                (window.empTasksData || []).forEach(t => {
+                    let action = 'assigned to you';
+                    let icon = 'fa-list-check';
+                    let color = '#8b5cf6';
+                    if (t.status === 'COMPLETED') { action = 'completed'; color = '#22c55e'; icon = 'fa-check-double'; }
 
-                activities.push({
-                    ts: t.createdAt?.toDate ? t.createdAt.toDate() : new Date(t.createdAt || 0),
-                    icon, color,
-                    text: `Task "${t.title || 'Untitled'}" ${action}`,
-                    sub: t.assignedBy || 'Manager'
+                    activities.push({
+                        ts: t.createdAt?.toDate ? t.createdAt.toDate() : new Date(t.createdAt || 0),
+                        icon, color,
+                        text: `Task "${t.title || 'Untitled'}" ${action}`,
+                        sub: t.assignedBy || 'Manager'
+                    });
                 });
-            });
 
-            // Sort by TS desc
-            activities.sort((a,b) => b.ts - a.ts);
-            
-            // Limit to 4
-            const recent = activities.slice(0, 4);
+                // Sort by TS desc
+                activities.sort((a, b) => b.ts - a.ts);
 
-            if (recent.length === 0) {
-                list.innerHTML = `<div style="text-align:center;padding:20px;font-size:11px;color:#9ca3af">No recent activity detected.</div>`;
-                return;
-            }
+                // Limit to 4
+                const recent = activities.slice(0, 4);
 
-            list.innerHTML = recent.map((a, i) => `
-                <div class="emp-feed-item" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;animation-delay:${i*0.06}s">
+                if (recent.length === 0) {
+                    list.innerHTML = `<div style="text-align:center;padding:20px;font-size:11px;color:#9ca3af">No recent activity detected.</div>`;
+                    return;
+                }
+
+                list.innerHTML = recent.map((a, i) => `
+                <div class="emp-feed-item" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;animation-delay:${i * 0.06}s">
                     <div style="width:28px;height:28px;border-radius:6px;background:${a.color}12;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                         <i class="fa-solid ${a.icon}" style="font-size:10px;color:${a.color}"></i>
                     </div>
@@ -2628,44 +2990,44 @@
                     </div>
                 </div>
             `).join('');
-        }
+            }
 
-        // ── Sparkline SVGs for stat cards ──
-        function addSparklines() {
-            const sparkData = {
-                'stat-card-paid': [20, 35, 28, 45, 38, 55, 48],
-                'stat-card-pending': [10, 15, 8, 22, 18, 12, 20],
-            };
-            Object.entries(sparkData).forEach(([id, values]) => {
-                const card = document.getElementById(id);
-                if (!card || card.querySelector('.sparkline-svg')) return;
-                const max = Math.max(...values);
-                const w = 80, h = 30;
-                const points = values.map((v, i) => `${(i / (values.length - 1)) * w},${h - (v / max) * h}`).join(' ');
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-                svg.setAttribute('width', w);
-                svg.setAttribute('height', h);
-                svg.classList.add('sparkline-svg');
-                svg.innerHTML = `<polyline fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>`;
-                card.style.position = 'relative';
-                card.appendChild(svg);
-            });
-        }
+            // ── Sparkline SVGs for stat cards ──
+            function addSparklines() {
+                const sparkData = {
+                    'stat-card-paid': [20, 35, 28, 45, 38, 55, 48],
+                    'stat-card-pending': [10, 15, 8, 22, 18, 12, 20],
+                };
+                Object.entries(sparkData).forEach(([id, values]) => {
+                    const card = document.getElementById(id);
+                    if (!card || card.querySelector('.sparkline-svg')) return;
+                    const max = Math.max(...values);
+                    const w = 80, h = 30;
+                    const points = values.map((v, i) => `${(i / (values.length - 1)) * w},${h - (v / max) * h}`).join(' ');
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+                    svg.setAttribute('width', w);
+                    svg.setAttribute('height', h);
+                    svg.classList.add('sparkline-svg');
+                    svg.innerHTML = `<polyline fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}"/>`;
+                    card.style.position = 'relative';
+                    card.appendChild(svg);
+                });
+            }
 
-        // ── Claim Lifecycle Stepper ──
-        window.showClaimStepper = function(currentStep) {
-            const container = document.getElementById('emp-claim-stepper-container');
-            if (!container) return;
-            const steps = [
-                { label: 'Submitted', icon: 'fa-paper-plane' },
-                { label: 'Manager', icon: 'fa-user-tie' },
-                { label: 'Finance', icon: 'fa-building-columns' },
-                { label: 'Treasury', icon: 'fa-vault' },
-                { label: 'Paid', icon: 'fa-check-double' },
-            ];
-            container.classList.remove('hidden');
-            container.innerHTML = `
+            // ── Claim Lifecycle Stepper ──
+            window.showClaimStepper = function (currentStep) {
+                const container = document.getElementById('emp-claim-stepper-container');
+                if (!container) return;
+                const steps = [
+                    { label: 'Submitted', icon: 'fa-paper-plane' },
+                    { label: 'Manager', icon: 'fa-user-tie' },
+                    { label: 'Finance', icon: 'fa-building-columns' },
+                    { label: 'Treasury', icon: 'fa-vault' },
+                    { label: 'Paid', icon: 'fa-check-double' },
+                ];
+                container.classList.remove('hidden');
+                container.innerHTML = `
                 <div class="vercel-card" style="padding:20px">
                     <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px">
                         <i class="fa-solid fa-route" style="font-size:10px;color:#9ca3af"></i>
@@ -2673,33 +3035,33 @@
                     </div>
                     <div class="claim-stepper">
                         ${steps.map((s, i) => {
-                            let cls = '';
-                            if (i < currentStep) cls = 'completed';
-                            else if (i === currentStep) cls = 'active';
-                            const line = i < steps.length - 1 ? `<div class="claim-step-line ${i < currentStep ? 'done' : ''}"></div>` : '';
-                            return `
+                    let cls = '';
+                    if (i < currentStep) cls = 'completed';
+                    else if (i === currentStep) cls = 'active';
+                    const line = i < steps.length - 1 ? `<div class="claim-step-line ${i < currentStep ? 'done' : ''}"></div>` : '';
+                    return `
                                 <div class="claim-step ${cls}">
                                     <div class="step-dot"><i class="fa-solid ${s.icon}" style="font-size:10px"></i></div>
                                     <span class="step-label">${s.label}</span>
                                 </div>
                                 ${line}
                             `;
-                        }).join('')}
+                }).join('')}
                     </div>
                 </div>
             `;
-        };
-        window.hideClaimStepper = function() {
-            const c = document.getElementById('emp-claim-stepper-container');
-            if (c) c.classList.add('hidden');
-        };
+            };
+            window.hideClaimStepper = function () {
+                const c = document.getElementById('emp-claim-stepper-container');
+                if (c) c.classList.add('hidden');
+            };
 
-        // ── Empty State Helper ──
-        window.renderEmpEmptyState = function(targetId, opts) {
-            const el = document.getElementById(targetId);
-            if (!el) return;
-            const color = opts.color || '#22c55e';
-            el.innerHTML = `
+            // ── Empty State Helper ──
+            window.renderEmpEmptyState = function (targetId, opts) {
+                const el = document.getElementById(targetId);
+                if (!el) return;
+                const color = opts.color || '#22c55e';
+                el.innerHTML = `
                 <div class="emp-empty-state">
                     <div class="empty-icon" style="background:${color}10;border-color:${color}">
                         <i class="fa-solid ${opts.icon || 'fa-inbox'}" style="font-size:28px;color:${color}"></i>
@@ -2709,173 +3071,312 @@
                     ${opts.action ? `<button onclick="${opts.action}" style="margin-top:14px;padding:8px 18px;border-radius:8px;background:${color};color:#fff;border:none;font-size:11px;font-weight:700;cursor:pointer;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1"><i class="fa-solid fa-plus" style="margin-right:4px"></i>${opts.actionText || 'Create'}</button>` : ''}
                 </div>
             `;
-        };
+            };
 
-        // ── Keyboard Shortcuts ──
-        window.openKbdOverlay = function() {
-            document.getElementById('kbd-overlay')?.classList.add('open');
-        };
-        window.closeKbdOverlay = function() {
-            document.getElementById('kbd-overlay')?.classList.remove('open');
-        };
+            // ── Keyboard Shortcuts ──
+            window.openKbdOverlay = function () {
+                document.getElementById('kbd-overlay')?.classList.add('open');
+            };
+            window.closeKbdOverlay = function () {
+                document.getElementById('kbd-overlay')?.classList.remove('open');
+            };
 
-        document.addEventListener('keydown', (e) => {
-            // Ignore if typing in an input
-            const tag = e.target.tagName;
-            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+            document.addEventListener('keydown', (e) => {
+                // Ignore if typing in an input
+                const tag = e.target.tagName;
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
-            const dashScreen = document.getElementById('dashboard-screen');
-            if (!dashScreen || dashScreen.classList.contains('hidden')) return;
+                const dashScreen = document.getElementById('dashboard-screen');
+                if (!dashScreen || dashScreen.classList.contains('hidden')) return;
 
-            if (e.key === '?') {
-                e.preventDefault();
-                openKbdOverlay();
-            }
-            if (e.key === 'Escape') {
-                closeKbdOverlay();
-            }
-            if (e.key === 'n' || e.key === 'N') {
-                if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+                if (e.key === '?') {
                     e.preventDefault();
-                    if (typeof openCreateModal === 'function') openCreateModal('EXPENSE');
+                    openKbdOverlay();
                 }
-            }
-            if (e.key === 't' && !e.shiftKey && !e.ctrlKey) {
-                e.preventDefault();
-                if (typeof toggleTheme === 'function') toggleTheme();
-            }
-            if (e.key === 'T' && e.shiftKey) {
-                e.preventDefault();
-                if (typeof toggleEmpView === 'function') toggleEmpView('tasks');
-            }
-            if (e.key === 'b' || e.key === 'B') {
-                if (!e.ctrlKey && !e.metaKey) {
-                    e.preventDefault();
-                    if (typeof openNotifList === 'function') openNotifList();
+                if (e.key === 'Escape') {
+                    closeKbdOverlay();
                 }
-            }
-            if (e.key === 'p' || e.key === 'P') {
-                if (!e.ctrlKey && !e.metaKey) {
-                    e.preventDefault();
-                    if (typeof openProfileModal === 'function') openProfileModal();
-                }
-            }
-            if (e.key === 'm' || e.key === 'M') {
-                if (!e.ctrlKey && !e.metaKey) {
-                    e.preventDefault();
-                    if (typeof toggleMainView === 'function') toggleMainView('messages');
-                }
-            }
-        });
-
-        // ── Drag-and-Drop Upload Enhancement ──
-        function enhanceDragDrop() {
-            document.addEventListener('dragover', (e) => {
-                const label = e.target.closest('.receipt-label, label[for]');
-                if (label) {
-                    e.preventDefault();
-                    label.classList.add('drop-zone-active');
-                }
-            });
-            document.addEventListener('dragleave', (e) => {
-                const label = e.target.closest('.receipt-label, label[for]');
-                if (label) label.classList.remove('drop-zone-active');
-            });
-            document.addEventListener('drop', (e) => {
-                const label = e.target.closest('.receipt-label, label[for]');
-                if (label) {
-                    label.classList.remove('drop-zone-active');
-                    const fileInput = label.querySelector('input[type=file]');
-                    if (fileInput && e.dataTransfer?.files?.length) {
+                if (e.key === 'n' || e.key === 'N') {
+                    if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
                         e.preventDefault();
-                        fileInput.files = e.dataTransfer.files;
-                        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        if (typeof openCreateModal === 'function') openCreateModal('EXPENSE');
+                    }
+                }
+                if (e.key === 't' && !e.shiftKey && !e.ctrlKey) {
+                    e.preventDefault();
+                    if (typeof toggleTheme === 'function') toggleTheme();
+                }
+                if (e.key === 'T' && e.shiftKey) {
+                    e.preventDefault();
+                    if (typeof toggleEmpView === 'function') toggleEmpView('tasks');
+                }
+                if (e.key === 'b' || e.key === 'B') {
+                    if (!e.ctrlKey && !e.metaKey) {
+                        e.preventDefault();
+                        if (typeof openNotifList === 'function') openNotifList();
+                    }
+                }
+                if (e.key === 'p' || e.key === 'P') {
+                    if (!e.ctrlKey && !e.metaKey) {
+                        e.preventDefault();
+                        if (typeof openProfileModal === 'function') openProfileModal();
+                    }
+                }
+                if (e.key === 'm' || e.key === 'M') {
+                    if (!e.ctrlKey && !e.metaKey) {
+                        e.preventDefault();
+                        if (typeof toggleMainView === 'function') toggleMainView('messages');
+                    }
+                }
+                if (e.key === 'd' || e.key === 'D') {
+                    if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
+                        e.preventDefault();
+                        const compact = localStorage.getItem('emp-ui-density') === 'compact';
+                        applyEmpDensity(compact ? 'comfortable' : 'compact');
                     }
                 }
             });
-        }
 
-        // ── Dashboard Auto-Refresh (Real-time sync) ──
-        function refreshDashboardFeatures() {
-            renderEmpGreeting();
-            injectActivityFeed();
-            
-            // Auto-stepper: show progress of the most recent pending claim
-            const pendingClaims = (window.expensesData || [])
-                .filter(c => !['PAID', 'REJECTED', 'DRAFT'].includes(c.status))
-                .sort((a,b) => {
-                    const da = a.updatedAt?.toDate ? a.updatedAt.toDate() : new Date();
-                    const db = b.updatedAt?.toDate ? b.updatedAt.toDate() : new Date();
-                    return db - da;
+            // ── Drag-and-Drop Upload Enhancement ──
+            function enhanceDragDrop() {
+                document.addEventListener('dragover', (e) => {
+                    const label = e.target.closest('.receipt-label, label[for]');
+                    if (label) {
+                        e.preventDefault();
+                        label.classList.add('drop-zone-active');
+                    }
                 });
-            
-            if (pendingClaims.length > 0) {
-                const latest = pendingClaims[0];
-                const stageMap = { 'PENDING_MANAGER': 1, 'PENDING_FINANCE': 2, 'FINANCE_APPROVED': 2, 'PENDING_TREASURY': 3, 'PAID': 4 };
-                const step = stageMap[latest.status] || 0;
-                window.showClaimStepper(step);
-            } else {
-                window.hideClaimStepper();
+                document.addEventListener('dragleave', (e) => {
+                    const label = e.target.closest('.receipt-label, label[for]');
+                    if (label) label.classList.remove('drop-zone-active');
+                });
+                document.addEventListener('drop', (e) => {
+                    const label = e.target.closest('.receipt-label, label[for]');
+                    if (label) {
+                        label.classList.remove('drop-zone-active');
+                        const fileInput = label.querySelector('input[type=file]');
+                        if (fileInput && e.dataTransfer?.files?.length) {
+                            e.preventDefault();
+                            fileInput.files = e.dataTransfer.files;
+                            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+                });
             }
-        }
 
-        // ── Init all features ──
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                refreshDashboardFeatures();
-                addSparklines();
-                enhanceDragDrop();
-            }, 1200);
-            
-            // Periodic refresh to keep TS and real data in sync
-            setInterval(refreshDashboardFeatures, 5000);
-        });
+            function injectExpenseQuickFilters() {
+                const toolbar = document.querySelector('#section-claims > div.p-4');
+                if (!toolbar || document.getElementById('emp-quick-filters')) return;
 
-        // Re-render features on dashboard show
-        const dashObs = new MutationObserver(() => {
-            const greeting = document.getElementById('emp-greeting-container');
-            if (greeting && !greeting.children.length) {
-                setTimeout(refreshDashboardFeatures, 200);
+                const wrapper = document.createElement('div');
+                wrapper.id = 'emp-quick-filters';
+                wrapper.className = 'flex flex-wrap items-center gap-2 mt-2';
+                wrapper.innerHTML = `
+                    <button class="emp-quick-filter active" data-filter="ALL">All</button>
+                    <button class="emp-quick-filter" data-filter="PENDING">Pending</button>
+                    <button class="emp-quick-filter" data-filter="PAID">Paid</button>
+                    <button class="emp-quick-filter" data-filter="REJECTED">Rejected</button>
+                `;
+                toolbar.appendChild(wrapper);
+
+                wrapper.addEventListener('click', (event) => {
+                    const btn = event.target.closest('.emp-quick-filter');
+                    if (!btn) return;
+                    applyExpenseQuickFilter(btn.getAttribute('data-filter'));
+                });
             }
-        });
-        const dashMain = document.getElementById('main-view-dashboard');
-        if (dashMain) dashObs.observe(dashMain, { childList: true, subtree: false });
-    })();
+
+            function applyExpenseQuickFilter(filterKey) {
+                const searchInput = document.getElementById('emp-search');
+                const map = {
+                    ALL: '',
+                    PENDING: 'pending',
+                    PAID: 'paid',
+                    REJECTED: 'rejected'
+                };
+
+                document.querySelectorAll('#emp-quick-filters .emp-quick-filter').forEach((btn) => {
+                    btn.classList.toggle('active', btn.getAttribute('data-filter') === filterKey);
+                });
+
+                if (searchInput) searchInput.value = map[filterKey] || '';
+                if (typeof filterExpenses === 'function') {
+                    filterExpenses(map[filterKey] || '');
+                }
+
+                const list = document.getElementById('expenses-list');
+                if (!list) return;
+                const items = Array.from(list.children || []);
+                items.forEach((item) => {
+                    if (filterKey === 'ALL') {
+                        item.classList.remove('hidden');
+                        return;
+                    }
+
+                    const text = (item.textContent || '').toUpperCase();
+                    let visible = false;
+                    if (filterKey === 'PENDING') visible = /(PENDING|PROCESS|MANAGER|FINANCE|TREASURY)/.test(text);
+                    if (filterKey === 'PAID') visible = /PAID/.test(text);
+                    if (filterKey === 'REJECTED') visible = /REJECTED/.test(text);
+                    item.classList.toggle('hidden', !visible);
+                });
+            }
+
+            function applyEmpDensity(mode) {
+                const compact = mode === 'compact';
+                document.body.classList.toggle('emp-compact', compact);
+                localStorage.setItem('emp-ui-density', compact ? 'compact' : 'comfortable');
+                const icon = document.querySelector('#emp-density-toggle i');
+                if (icon) {
+                    icon.className = compact ? 'fa-solid fa-compress text-sm text-gray-500 dark:text-gray-400' : 'fa-solid fa-expand text-sm text-gray-500 dark:text-gray-400';
+                }
+            }
+
+            function injectDensityToggle() {
+                const headerActions = document.querySelector('header .flex.items-center.gap-1.sm\\:gap-2');
+                if (!headerActions || document.getElementById('emp-density-toggle')) return;
+
+                const btn = document.createElement('button');
+                btn.id = 'emp-density-toggle';
+                btn.type = 'button';
+                btn.title = 'Toggle compact view';
+                btn.className = 'w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors';
+                btn.innerHTML = '<i class="fa-solid fa-expand text-sm text-gray-500 dark:text-gray-400"></i>';
+                btn.addEventListener('click', () => {
+                    const compact = localStorage.getItem('emp-ui-density') === 'compact';
+                    applyEmpDensity(compact ? 'comfortable' : 'compact');
+                });
+
+                headerActions.prepend(btn);
+            }
+
+            function initScrollTopButton() {
+                if (document.getElementById('emp-scroll-top')) return;
+
+                const btn = document.createElement('button');
+                btn.id = 'emp-scroll-top';
+                btn.setAttribute('aria-label', 'Back to top');
+                btn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+                document.body.appendChild(btn);
+
+                const host = document.getElementById('main-view-dashboard');
+                if (!host) return;
+
+                host.addEventListener('scroll', () => {
+                    btn.style.display = host.scrollTop > 280 ? 'flex' : 'none';
+                }, { passive: true });
+
+                btn.addEventListener('click', () => {
+                    host.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // ── Dashboard Auto-Refresh (Real-time sync) ──
+            function refreshDashboardFeatures() {
+                renderEmpGreeting();
+                injectActivityFeed();
+                injectExpenseQuickFilters();
+
+                // Auto-stepper: show progress of the most recent pending claim
+                const pendingClaims = (window.expensesData || [])
+                    .filter(c => !['PAID', 'REJECTED', 'DRAFT'].includes(c.status))
+                    .sort((a, b) => {
+                        const da = a.updatedAt?.toDate ? a.updatedAt.toDate() : new Date();
+                        const db = b.updatedAt?.toDate ? b.updatedAt.toDate() : new Date();
+                        return db - da;
+                    });
+
+                if (pendingClaims.length > 0) {
+                    const latest = pendingClaims[0];
+                    const stageMap = { 'PENDING_MANAGER': 1, 'PENDING_FINANCE': 2, 'FINANCE_APPROVED': 2, 'PENDING_TREASURY': 3, 'PAID': 4 };
+                    const step = stageMap[latest.status] || 0;
+                    window.showClaimStepper(step);
+                } else {
+                    window.hideClaimStepper();
+                }
+
+                if (!document.querySelector('#emp-quick-filters .emp-quick-filter.active')) {
+                    applyExpenseQuickFilter('ALL');
+                }
+            }
+
+            // ── Init all features ──
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    refreshDashboardFeatures();
+                    addSparklines();
+                    enhanceDragDrop();
+                    injectDensityToggle();
+                    initScrollTopButton();
+                    applyEmpDensity(localStorage.getItem('emp-ui-density') === 'compact' ? 'compact' : 'comfortable');
+                }, 1200);
+
+                // Periodic refresh to keep TS and real data in sync
+                setInterval(refreshDashboardFeatures, 5000);
+            });
+
+            // Re-render features on dashboard show
+            const dashObs = new MutationObserver(() => {
+                const greeting = document.getElementById('emp-greeting-container');
+                if (greeting && !greeting.children.length) {
+                    setTimeout(refreshDashboardFeatures, 200);
+                }
+            });
+            const dashMain = document.getElementById('main-view-dashboard');
+            if (dashMain) dashObs.observe(dashMain, { childList: true, subtree: false });
+        })();
     </script>
     </script>
-    
+
     <!-- P2P Video Call Modal -->
-    <div id="modal-video-call" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
+    <div id="modal-video-call"
+        class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[300] hidden flex flex-col pt-10 pb-4 px-4 animate-fade-in">
         <div class="absolute top-4 right-4 flex gap-2">
-            <button onclick="window.leaveVideoCall()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i class="fa-solid fa-phone-slash ml-1"></i></button>
+            <button onclick="window.leaveVideoCall()"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Leave Call <i
+                    class="fa-solid fa-phone-slash ml-1"></i></button>
         </div>
         <div class="flex-1 min-h-0 flex flex-col gap-4 items-center justify-center p-4">
             <!-- Grid for remote videos -->
-            <div id="video-grid" class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory hide-scroll flex-nowrap md:justify-center">
+            <div id="video-grid"
+                class="w-full h-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory hide-scroll flex-nowrap md:justify-center">
             </div>
         </div>
         <!-- Local Video and Controls -->
-        <div class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
-            <div class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
-                <video id="local-video" playsinline autoplay muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+        <div
+            class="h-auto md:h-32 shrink-0 bg-[#111] rounded-2xl border border-[#333] p-4 flex flex-col md:flex-row gap-4 items-center justify-between mx-auto w-full max-w-4xl shadow-2xl">
+            <div
+                class="w-32 md:w-48 h-24 md:h-full bg-black rounded-lg overflow-hidden shrink-0 relative border border-[#222]">
+                <video id="local-video" playsinline autoplay muted
+                    class="w-full h-full object-cover transform scale-x-[-1]"></video>
                 <div class="absolute bottom-1 left-1 bg-black/50 text-[10px] text-white px-1.5 py-0.5 rounded">You</div>
             </div>
             <div class="flex items-center gap-4">
-                <button id="btn-toggle-audio" onclick="window.toggleAudio()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-microphone"></i></button>
-                <button id="btn-toggle-video" onclick="window.toggleVideo()" class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i class="fa-solid fa-video"></i></button>
-                <button id="btn-screen-share" onclick="window.toggleScreenShare()" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg" title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
-                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()" class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg" title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
+                <button id="btn-toggle-audio" onclick="window.toggleAudio()"
+                    class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i
+                        class="fa-solid fa-microphone"></i></button>
+                <button id="btn-toggle-video" onclick="window.toggleVideo()"
+                    class="w-12 h-12 rounded-full bg-[#222] hover:bg-[#333] text-white flex items-center justify-center transition shadow-lg"><i
+                        class="fa-solid fa-video"></i></button>
+                <button id="btn-screen-share" onclick="window.toggleScreenShare()"
+                    class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-lg"
+                    title="Share Screen"><i class="fa-solid fa-desktop"></i></button>
+                <button id="btn-add-member-call" onclick="window.showAddMemberToCallModal()"
+                    class="w-12 h-12 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center transition shadow-lg"
+                    title="Add members to call"><i class="fa-solid fa-user-plus"></i></button>
             </div>
             <div class="w-32 md:w-48 hidden md:block"></div>
         </div>
     </div>
 
     <!-- Add Member to Call Modal -->
-    <div id="modal-add-member-call" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
+    <div id="modal-add-member-call"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[310] hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up">
             <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Add Member to Call</h3>
-                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <button onclick="document.getElementById('modal-add-member-call').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -2888,6 +3389,104 @@
     <!-- P2P Dependencies -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="js/emp-p2p.js" type="module"></script>
+    <!-- Group Settings Modal -->
+    <div id="modal-group-settings" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Group Settings</h3>
+                <button onclick="document.getElementById('modal-group-settings').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Group Identity -->
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('group-pic-input').click()">
+                        <div id="group-settings-pic" class="w-24 h-24 rounded-3xl bg-brand-500 flex items-center justify-center text-white text-3xl shadow-xl overflow-hidden">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <input type="file" id="group-pic-input" class="hidden" accept="image/*" onchange="window.uploadGroupPic && window.uploadGroupPic(this)">
+                    </div>
+                    <div class="w-full">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">Group Name</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="group-settings-name" class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="window.saveGroupName && window.saveGroupName()" class="bg-black dark:bg-white text-white dark:text-black px-4 rounded-xl font-bold text-xs hover:scale-105 transition">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Controls -->
+                <div id="group-admin-only-settings" class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">AI Spam Filter</h4>
+                            <p class="text-[10px] text-slate-500">Auto-delete spam messages</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="group-spam-filter-toggle" class="sr-only peer" onchange="window.toggleSpamFilter && window.toggleSpamFilter(this.checked)">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Members Section -->
+                <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">Members</h4>
+                        <button id="btn-add-member" onclick="window.showAddMemberModal && window.showAddMemberModal()" class="text-brand-600 dark:text-brand-400 text-[10px] font-bold hover:underline">Add Member</button>
+                    </div>
+                    <div id="group-settings-members" class="space-y-2">
+                        <!-- Members list here -->
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <button onclick="window.exportChatMessages && window.exportChatMessages()" class="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-file-export"></i> Export Chat History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Seen Info Modal -->
+    <div id="modal-seen-info" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[260] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-scale-up flex flex-col">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                <h3 class="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Message Info</h3>
+                <button onclick="document.getElementById('modal-seen-info').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="seen-info-list" class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+                <!-- Seen users list here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Two-Factor Verification Modal -->
+    <div id="modal-2fa-verify" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-slate-100 dark:border-slate-700">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-lock text-2xl text-green-600 dark:text-green-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Identity Check</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">Please enter your secondary 4-digit PIN.</p>
+            
+            <div class="flex justify-center gap-3 mb-8">
+                <input type="password" maxlength="4" id="verify-2fa-pin" oninput="if(this.value.length === 4) verify2FAPin()" class="w-48 py-3 text-center text-3xl tracking-[1em] font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-green-500 focus:ring-0 outline-none transition-all" placeholder="••••" autofocus>
+            </div>
+            
+            <button onclick="verify2FAPin()" id="btn-verify-2fa" class="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl shadow-lg transition-all active:scale-95">
+                Verify Identity
+            </button>
+
+            <button onclick="auth.signOut().then(() => window.location.reload())" class="mt-6 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                Back to Login
+            </button>
+        </div>
+    </div>
 </body>
 
 </html>

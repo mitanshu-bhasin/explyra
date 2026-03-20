@@ -817,6 +817,7 @@
   ]
 }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
 
 <body
@@ -962,6 +963,12 @@
                         Name <span class="text-red-500">*</span></label>
                     <input type="text" id="project-name-input" class="input-primary"
                         placeholder="e.g. Q1 Marketing Campaign" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Project
+                        Budget (₹)</label>
+                    <input type="number" id="project-budget-input" class="input-primary"
+                        placeholder="e.g. 500000">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Details /
@@ -1778,11 +1785,6 @@
                 <button onclick="switchTab('workflow')" id="nav-workflow" class="sidebar-item w-full hidden"
                     data-tab="workflow">
                     <i class="fa-solid fa-route"></i> Workflow
-                </button>
-                <button onclick="switchTab('budgets')" id="nav-budgets" class="sidebar-item w-full" data-tab="budgets">
-                    <i class="fa-solid fa-coins"></i> Budgets
-                </button>
-
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-6">Analytics
                 </div>
                 <button onclick="switchTab('reports')" id="nav-reports" class="sidebar-item w-full"
@@ -2463,6 +2465,9 @@
     <script src="components/loader.js"></script>
     <script src="js/common.js"></script>
     <script type="module" src="js/admin-logic.js"></script>
+    <script type="module" src="js/spam-filter.js"></script>
+    <script type="module" src="js/chat-ai-helper.js"></script>
+    <script type="module" src="js/emp-chat.js"></script>
     <script>
         // Load components after DOM is ready
         document.addEventListener("DOMContentLoaded", () => {

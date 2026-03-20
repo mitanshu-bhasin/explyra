@@ -212,6 +212,7 @@ export class EmpAI {
         const trigger = document.createElement('div');
         trigger.className = 'emp-ai-trigger';
         trigger.id = 'emp-ai-trigger';
+        if (localStorage.getItem('explyra_ai_enabled') === 'false') trigger.style.display = 'none';
         trigger.innerHTML = '<i class="fa-solid fa-robot"></i>';
         document.body.appendChild(trigger);
         this.trigger = trigger;

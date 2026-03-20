@@ -19,6 +19,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Explyra Pricing Plans — Affordable Premium Tools for Teams</title>
+    <meta name="description"
+        content="Compare Explyra pricing plans for individuals, startups, and enterprises with flexible billing and full-suite access." />
+    <link rel="canonical" href="https://explyra.me/pricing.html" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Explyra Pricing Plans — Affordable Premium Tools for Teams" />
+    <meta property="og:description"
+        content="Compare Explyra pricing plans for individuals, startups, and enterprises with flexible billing and full-suite access." />
+    <meta property="og:url" content="https://explyra.me/pricing.html" />
+    <meta property="og:image" content="https://explyra.me/assets/images/explyra_logo.png" />
+    <meta name="twitter:title" content="Explyra Pricing Plans — Affordable Premium Tools for Teams" />
+    <meta name="twitter:description"
+        content="Compare Explyra pricing plans for individuals, startups, and enterprises with flexible billing and full-suite access." />
+    <meta name="twitter:url" content="https://explyra.me/pricing.html" />
+    <meta name="twitter:image" content="https://explyra.me/assets/images/explyra_logo.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
@@ -919,6 +934,60 @@
             background: var(--blue-g)
         }
 
+        .btn-p-crypto {
+            margin-top: .7rem;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #E2E8F0;
+            border: 1px solid rgba(148, 163, 184, .45);
+        }
+
+        .btn-p-crypto:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .25);
+        }
+
+        .btn-p-loading {
+            opacity: .72;
+            pointer-events: none;
+        }
+
+        .crypto-note {
+            margin: -2rem auto 2.4rem;
+            max-width: 900px;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: .9rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: .6rem;
+            flex-wrap: wrap;
+            font-size: .82rem;
+            color: var(--ink2);
+            box-shadow: var(--s1);
+        }
+
+        .crypto-note strong {
+            color: var(--teal);
+        }
+
+        .crypto-company-id {
+            margin: -1.8rem auto 2rem;
+            max-width: 900px;
+            border: 1px dashed var(--bdr);
+            border-radius: 10px;
+            padding: .72rem .9rem;
+            font-size: .82rem;
+            color: var(--ink2);
+            background: color-mix(in srgb, var(--surf) 85%, transparent);
+            text-align: center;
+        }
+
+        .crypto-company-id strong {
+            color: var(--ink);
+        }
+
         /* ═══════════════════════════════════════════
    FEATURE COMPARISON
 ═══════════════════════════════════════════ */
@@ -1762,6 +1831,8 @@
             opacity: 0;
             transition: all .35s cubic-bezier(.4, 0, .2, 1);
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-overlay.show .modal-box {
@@ -1939,15 +2010,40 @@
         }
     </style>
 
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Does Explyra offer a free plan?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Explyra includes a free tier for individuals and early-stage teams so you can evaluate core features before upgrading."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I upgrade or downgrade my plan later?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. You can switch plans as your organization grows, with pricing designed to support startup-to-enterprise scaling."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Do enterprise plans include custom support?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Enterprise plans can include priority onboarding, technical support, and custom workflow options based on your team requirements."
+            }
+        }
+    ]
+}
+        </script>
 
-
-
-
-    <meta name="description"
-        content="Compare Explyra's flexible pricing plans. From free tools for individuals to enterprise-grade solutions for large organizations and dev teams.">
-
-
-    <script type="application/ld+json">
+        <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
@@ -2365,6 +2461,14 @@
             <button class="toggle-btn" data-period="yearly">Yearly <span>Save 20%</span></button>
         </div>
 
+        <div class="crypto-note">
+            <span>Crypto payments are auto-verified within 1-5 minutes.</span>
+            <span><strong>Recommended:</strong> USDT (TRC20) for low network fees.</span>
+        </div>
+        <div id="cryptoCompanyIndicator" class="crypto-company-id" aria-live="polite">
+            Company ID required for crypto checkout.
+        </div>
+
         <div class="pricing-grid reveal">
             <!-- STARTER -->
             <div class="p-card">
@@ -2392,6 +2496,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Free Custom Domain Linking</li>
                 </ul>
                 <button onclick="buyPlan('Starter')" class="btn-p btn-p-sec">Buy Plan</button>
+                <button onclick="payWithCrypto('Starter', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
 
             <!-- GROWTH (MOST POPULAR) -->
@@ -2422,6 +2527,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Free Custom Domain Linking</li>
                 </ul>
                 <button onclick="buyPlan('Growth')" class="btn-p btn-p-primary">Buy Plan</button>
+                <button onclick="payWithCrypto('Growth', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
 
             <!-- SCALE -->
@@ -2454,6 +2560,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Multi-domain Custom Linking</li>
                 </ul>
                 <button onclick="buyPlan('Scale')" class="btn-p btn-p-sec">Buy Plan</button>
+                <button onclick="payWithCrypto('Scale', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
 
             <!-- ENTERPRISE -->
@@ -2481,6 +2588,7 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Multi-domain Custom Linking</li>
                 </ul>
                 <button onclick="buyPlan('Enterprise')" class="btn-p btn-p-sec">Contact Sales</button>
+                <button onclick="payWithCrypto('Enterprise', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
             </div>
         </div>
     </section>
@@ -2916,6 +3024,178 @@
             document.getElementById('buyModal').classList.add('show');
         }
 
+        const PLAN_PRICES = {
+            Starter: { monthly: 999, yearly: 799 },
+            Growth: { monthly: 2499, yearly: 1999 },
+            Scale: { monthly: 6999, yearly: 5599 },
+            Enterprise: { monthly: 9999, yearly: 7999 }
+        };
+        const EXPLYRA_PUBLIC_IDENTIFIER = '00bdcfb7-b255-4283-a9b8-b6409f27ad52';
+        const PAYMENT_COMPANY_ID_KEYS = ['companyId', 'company_id', 'explyraCompanyId'];
+
+        function getSelectedPeriod() {
+            const activeToggle = document.querySelector('.toggle-btn.active');
+            return activeToggle?.getAttribute('data-period') === 'yearly' ? 'yearly' : 'monthly';
+        }
+
+        function getPaymentsApiBase() {
+            const host = window.location.hostname;
+            const isLocal = host === 'localhost' || host === '127.0.0.1';
+
+            // When opened via Live Server (e.g. :5500/:5502), call the local payments backend.
+            if (isLocal && window.location.port !== '8787') {
+                return 'http://localhost:8787';
+            }
+
+            return '';
+        }
+
+        function getCurrentUserId() {
+            if (window.EXPLYRA_USER?.uid) return window.EXPLYRA_USER.uid;
+
+            const directKeys = ['explyraUserId', 'userId', 'uid'];
+            for (const key of directKeys) {
+                const val = localStorage.getItem(key);
+                if (val && typeof val === 'string' && val.trim()) return val.trim();
+            }
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i) || '';
+                if (!key.startsWith('firebase:authUser:')) continue;
+                try {
+                    const data = JSON.parse(localStorage.getItem(key) || '{}');
+                    if (data?.uid) return data.uid;
+                } catch (_) {
+                    // Ignore malformed localStorage entries.
+                }
+            }
+
+            return null;
+        }
+
+        function normalizeCompanyId(value) {
+            if (typeof value !== 'string') return '';
+            return value.trim();
+        }
+
+        function getStoredCompanyId() {
+            const fromWindow = normalizeCompanyId(window.EXPLYRA_PAYMENT_COMPANY_ID || '');
+            if (fromWindow) return fromWindow;
+
+            for (const key of PAYMENT_COMPANY_ID_KEYS) {
+                const stored = normalizeCompanyId(localStorage.getItem(key) || '');
+                if (stored) return stored;
+            }
+
+            return '';
+        }
+
+        function persistCompanyId(companyId, sourceLabel) {
+            const normalized = normalizeCompanyId(companyId);
+            if (!normalized) return '';
+
+            window.EXPLYRA_PAYMENT_COMPANY_ID = normalized;
+            PAYMENT_COMPANY_ID_KEYS.forEach((key) => localStorage.setItem(key, normalized));
+            updateCryptoCompanyIndicator(normalized, sourceLabel || 'manual');
+            return normalized;
+        }
+
+        function updateCryptoCompanyIndicator(companyId, sourceLabel) {
+            const indicator = document.getElementById('cryptoCompanyIndicator');
+            if (!indicator) return;
+
+            const normalized = normalizeCompanyId(companyId);
+            if (!normalized) {
+                indicator.textContent = 'Company ID required for crypto checkout.';
+                return;
+            }
+
+            const sourceText = sourceLabel ? ` (${sourceLabel})` : '';
+            indicator.innerHTML = `Using Company ID: <strong>${normalized}</strong>${sourceText}`;
+        }
+
+        window.updateCryptoCompanyIndicator = updateCryptoCompanyIndicator;
+
+        async function resolveCompanyIdForPayment() {
+            const existing = getStoredCompanyId();
+            if (existing) {
+                return persistCompanyId(existing, 'saved');
+            }
+
+            if (typeof window.EXPLYRA_FETCH_COMPANY_ID === 'function') {
+                try {
+                    const fetched = normalizeCompanyId(await window.EXPLYRA_FETCH_COMPANY_ID());
+                    if (fetched) {
+                        return persistCompanyId(fetched, 'profile');
+                    }
+                } catch (_) {
+                    // Continue to manual entry when profile fetch is unavailable.
+                }
+            }
+
+            const typed = window.prompt('Enter your Company ID for crypto checkout (example: CMP_12345):', '');
+            const normalized = normalizeCompanyId(typed || '');
+            if (!normalized) return '';
+
+            return persistCompanyId(normalized, 'manual');
+        }
+
+        async function payWithCrypto(planName, triggerButton) {
+            const period = getSelectedPeriod();
+            const selectedPlanPrice = PLAN_PRICES[planName]?.[period];
+
+            if (!selectedPlanPrice) {
+                alert('Unable to start crypto checkout for this plan right now.');
+                return;
+            }
+
+            const originalLabel = triggerButton.textContent;
+            triggerButton.classList.add('btn-p-loading');
+            triggerButton.textContent = 'Creating Invoice...';
+
+            try {
+                const apiBase = getPaymentsApiBase();
+                const userId = getCurrentUserId();
+                const companyId = await resolveCompanyIdForPayment();
+
+                if (!companyId) {
+                    throw new Error('Company ID is required to continue crypto checkout.');
+                }
+
+                const response = await fetch(`${apiBase}/create-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plan: planName,
+                        period,
+                        user_id: userId,
+                        company_id: companyId,
+                        selectedPlanPrice,
+                        public_identifier: EXPLYRA_PUBLIC_IDENTIFIER
+                    })
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.invoice_url) {
+                    if (response.status === 405 && apiBase === '') {
+                        throw new Error('Payment backend is not running on this host. Start API on localhost:8787.');
+                    }
+                    throw new Error(data.error || 'Failed to create crypto payment invoice.');
+                }
+
+                window.location.href = data.invoice_url;
+            } catch (error) {
+                alert(error.message || 'Payment setup failed. Please try again in a moment.');
+            } finally {
+                triggerButton.classList.remove('btn-p-loading');
+                triggerButton.textContent = originalLabel;
+            }
+        }
+
+        updateCryptoCompanyIndicator(getStoredCompanyId(), 'saved');
+
         function closeBuyModal() {
             document.getElementById('buyModal').classList.remove('show');
         }
@@ -2958,7 +3238,8 @@
     <!-- Firebase Logic for Companies Dropdown -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
             apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
@@ -2970,7 +3251,66 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+
+        function normalizeCompanyId(value) {
+            return typeof value === 'string' ? value.trim() : '';
+        }
+
+        function extractCompanyId(data) {
+            if (!data || typeof data !== 'object') return '';
+            return normalizeCompanyId(
+                data.companyId ||
+                data.company_id ||
+                data.company?.id ||
+                ''
+            );
+        }
+
+        async function fetchCompanyIdFromUserDoc(user) {
+            if (!user?.uid) return '';
+
+            try {
+                const snap = await getDoc(doc(db, 'users', user.uid));
+                if (!snap.exists()) return '';
+                return extractCompanyId(snap.data());
+            } catch {
+                return '';
+            }
+        }
+
+        async function resolveCompanyIdFromAuthSession() {
+            const current = auth.currentUser;
+            if (current) {
+                const fromProfile = await fetchCompanyIdFromUserDoc(current);
+                if (fromProfile) return fromProfile;
+            }
+
+            if (typeof window.getCurrentUserId === 'function') {
+                const uid = window.getCurrentUserId();
+                if (uid) {
+                    const fromStoredUser = await fetchCompanyIdFromUserDoc({ uid });
+                    if (fromStoredUser) return fromStoredUser;
+                }
+            }
+
+            return '';
+        }
+
+        window.EXPLYRA_FETCH_COMPANY_ID = async function EXPLYRA_FETCH_COMPANY_ID() {
+            const companyId = await resolveCompanyIdFromAuthSession();
+
+            if (companyId && typeof window.updateCryptoCompanyIndicator === 'function') {
+                window.EXPLYRA_PAYMENT_COMPANY_ID = companyId;
+                localStorage.setItem('companyId', companyId);
+                localStorage.setItem('company_id', companyId);
+                localStorage.setItem('explyraCompanyId', companyId);
+                window.updateCryptoCompanyIndicator(companyId, 'profile');
+            }
+
+            return companyId;
+        };
 
         async function loadCompanies() {
             const select = document.getElementById('buyCompany');
@@ -2999,6 +3339,11 @@
             }
         }
         loadCompanies();
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return;
+            await window.EXPLYRA_FETCH_COMPANY_ID();
+        });
     </script>
 </body>
 

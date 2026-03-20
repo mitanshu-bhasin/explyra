@@ -362,9 +362,13 @@ window.toggleMobileSidebar = () => {
 let empCalendar = null;
 window.renderEmpScheduler = () => {
     const calendarEl = document.getElementById('emp-calendar-container');
-    if (!calendarEl) return;
+    if (!calendarEl || typeof FullCalendar === 'undefined') return;
+    
     if (empCalendar) {
-        empCalendar.render(); // Just re-render if exists
+        setTimeout(() => {
+            empCalendar.updateSize();
+            empCalendar.render();
+        }, 100);
         return;
     }
 

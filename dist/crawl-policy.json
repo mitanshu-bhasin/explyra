@@ -1,7 +1,7 @@
 {
     "crawl-policy": {
         "version": "1.0",
-        "updated": "2026-03-10",
+        "updated": "2026-03-18",
         "owner": "Explyra",
         "policy": "Open Access",
         "crawl-delay": 0,
@@ -69,9 +69,18 @@
             "indexing": "permitted"
         },
         "sitemaps": [
+            "https://explyra.me/sitemap-index.xml",
             "https://explyra.me/sitemap.xml",
             "https://explyra.me/images.xml",
-            "https://explyra.me/feed.xml"
+            "https://explyra.me/compare/sitemap.xml",
+            "https://explyra.me/integrations/sitemap.xml",
+            "https://explyra.me/health-manager/sitemap.xml",
+            "https://status.explyra.me/sitemap.xml",
+            "https://direc.explyra.me/sitemap.xml",
+            "https://skill.explyra.me/sitemap.xml",
+            "https://explyra.me/feed.xml",
+            "https://explyra.me/rss.xml",
+            "https://explyra.me/atom.xml"
         ]
     }
 }

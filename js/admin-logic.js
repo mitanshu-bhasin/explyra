@@ -1301,7 +1301,6 @@ window.switchTab = (tab, options = {}) => {
     if (normalizedTab === 'workflow') renderWorkflow();
     if (normalizedTab === 'roles') renderRoles();
     if (normalizedTab === 'scheduler') renderScheduler();
-    if (normalizedTab === 'scheduler') renderScheduler();
 
     const skipHistory = !!options.skipHistory;
     const replaceHistory = !!options.replaceHistory;
@@ -3419,7 +3418,13 @@ function renderUserRows(usersList) {
                                     ${u.name || 'Unnamed User'}
                                     ${u.id === currentUser.uid ? '<span class="ml-1 text-[9px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded-full font-bold">YOU</span>' : ''}
                                 </h4>
-                                <p class="text-[10px] text-slate-400 truncate max-w-[150px] font-medium">${u.email || 'No Email'}</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-[10px] text-slate-400 truncate max-w-[150px] font-medium">${u.email || 'No Email'}</p>
+                                    <span class="flex items-center gap-1 text-[9px] font-bold ${u.lastLogin ? 'text-green-500' : 'text-orange-400'} uppercase tracking-tighter">
+                                        <i class="fa-solid fa-circle text-[4px]"></i>
+                                        ${u.lastLogin ? 'Active' : 'Pending Setup'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <span class="px-2 py-0.5 rounded text-[9px] font-bold tracking-widest ${u.role === 'ADMIN' ? 'bg-purple-50 text-purple-600 border border-purple-100' : 'bg-slate-50 text-slate-500 border border-slate-100'} uppercase">
@@ -3447,11 +3452,18 @@ function renderUserRows(usersList) {
                             <button onclick="exportUserExpenses('${u.id}', 'SHEETS', '${u.name || u.email}')" title="Export to Google Sheets" class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-green-600 hover:bg-green-50 flex items-center justify-center transition focus:ring-2 focus:ring-green-500 outline-none"><i class="fa-brands fa-google-drive"></i></button>
                         </div>
                         ${canEdit ? `
-                            <button onclick="editUser('${u.id}')" class="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-green-50 hover:text-green-600 transition uppercase tracking-widest border border-slate-100 dark:border-slate-700">Edit Profile</button>
-                            ${u.email !== currentUser?.email ? `
-                                <button onclick="toggleUserStatus('${u.id}', '${u.status || 'ACTIVE'}')" class="px-3 py-1.5 text-[10px] font-bold ${u.status === 'BLOCKED' ? 'text-green-600 bg-green-50' : 'text-orange-400 bg-orange-50/10'} rounded-lg transition uppercase tracking-widest">${u.status === 'BLOCKED' ? 'Unblock' : 'Block'}</button>
-                                <button onclick="showDeleteModal('${u.id}', '${u.name || u.email}')" class="px-3 py-1.5 text-[10px] font-bold text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition uppercase tracking-widest">Delete</button>
-                            ` : ''}
+                            <div class="flex flex-col gap-1 w-full">
+                                <div class="flex gap-1 w-full">
+                                    <button onclick="editUser('${u.id}')" class="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-600 dark:text-slate-300 rounded-lg hover:bg-green-50 hover:text-green-600 transition uppercase tracking-widest border border-slate-100 dark:border-slate-700">Edit</button>
+                                    <button onclick="resetUserPassword('${u.email}')" title="Send Password Reset Email" class="px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold text-blue-600 rounded-lg hover:bg-blue-50 transition border border-slate-100 dark:border-slate-700 uppercase tracking-widest"><i class="fa-solid fa-key mr-1"></i> Reset</button>
+                                </div>
+                                <div class="flex gap-1 w-full">
+                                    ${u.email !== currentUser?.email ? `
+                                        <button onclick="toggleUserStatus('${u.id}', '${u.status || 'ACTIVE'}')" class="flex-1 px-3 py-1.5 text-[10px] font-bold ${u.status === 'BLOCKED' ? 'text-green-600 bg-green-50' : 'text-orange-400 bg-orange-50/10'} rounded-lg transition uppercase tracking-widest">${u.status === 'BLOCKED' ? 'Unblock' : 'Block'}</button>
+                                        <button onclick="showDeleteModal('${u.id}', '${u.name || u.email}')" class="px-3 py-1.5 text-[10px] font-bold text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition uppercase tracking-widest">Delete</button>
+                                    ` : ''}
+                                </div>
+                            </div>
                         ` : `
                             <div class="flex-1 text-center py-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest italic opacity-50"><i class="fa-solid fa-lock mr-2"></i> Restricted Access</div>
                         `}
@@ -4345,6 +4357,18 @@ window.renderProjects = async () => {
         const snap = await safeFirebaseFetch(getDocs(pQ));
         const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
+        // Fetch all expenses to calculate spent budget
+        const eQ = query(collection(db, "expenses"), where("companyId", "==", userData.companyId || 'N/A'));
+        const eSnap = await safeFirebaseFetch(getDocs(eQ));
+        const expenses = eSnap.docs.map(d => d.data());
+
+        const spentByProject = {};
+        expenses.forEach(e => {
+            if (e.projectCode && e.status !== 'REJECTED' && e.status !== 'DRAFT') {
+                spentByProject[e.projectCode] = (spentByProject[e.projectCode] || 0) + (parseFloat(e.totalAmount) || 0);
+            }
+        });
+
         content.innerHTML = `
                     <div class="fade-in space-y-6">
                         <div class="flex justify-between items-center">
@@ -4354,15 +4378,22 @@ window.renderProjects = async () => {
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="exportProjectsCSV()" class="text-xs bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-download mr-1"></i> Export</button>
-                                <button onclick="showProjectModal()" class="text-xs bg-slate-900 text-white px-4 py-2 rounded-xl font-bold hover:opacity-90 transition shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add Project</button>
+                                <button onclick="openProjectModal()" class="text-xs bg-slate-900 text-white px-4 py-2 rounded-xl font-bold hover:opacity-90 transition shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add Project</button>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             ${projects.length === 0 ? '<div class="col-span-full p-12 text-center text-slate-400 text-sm bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">No projects found. Add one to get started.</div>' : ''}
-                            ${projects.map(p => `
+                            ${projects.map(p => {
+                                const spent = spentByProject[p.code] || 0;
+                                const total = parseFloat(p.budget) || 0;
+                                const left = total - spent;
+                                const percent = total > 0 ? (spent / total) * 100 : 0;
+                                
+                                return `
                                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition group relative overflow-hidden">
-                                     <div class="absolute top-0 right-0 p-3">
+                                     <div class="absolute top-0 right-0 p-3 flex gap-2">
+                                         <button onclick="openProjectModal('${p.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 transition"><i class="fa-solid fa-pen"></i></button>
                                          <span class="px-2 py-0.5 rounded text-[9px] font-bold tracking-widest ${p.active !== false ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-slate-50 text-slate-400 border border-slate-100'}">
                                             ${p.active !== false ? 'ACTIVE' : 'INACTIVE'}
                                          </span>
@@ -4377,6 +4408,23 @@ window.renderProjects = async () => {
                                          </div>
                                      </div>
                                      <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 h-8">${p.details || 'No additional details provided for this project.'}</p>
+                                     
+                                     ${total > 0 ? `
+                                     <div class="space-y-2 mb-4 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl">
+                                         <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider">
+                                             <span class="text-slate-400">Project Budget</span>
+                                             <span class="${left < 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}">₹${spent.toLocaleString()} / ₹${total.toLocaleString()}</span>
+                                         </div>
+                                         <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                             <div class="h-full rounded-full transition-all duration-500 ${percent > 90 ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : percent > 70 ? 'bg-orange-500' : 'bg-green-500'}" style="width: ${Math.min(percent, 100)}%"></div>
+                                         </div>
+                                         <div class="flex justify-between text-[9px] font-medium">
+                                             <span class="text-slate-400">${percent.toFixed(1)}% Used</span>
+                                             <span class="${left < 0 ? 'text-red-500 font-bold' : 'text-slate-500'}">${left < 0 ? 'Over' : 'Left'}: ₹${Math.abs(left).toLocaleString()}</span>
+                                         </div>
+                                     </div>
+                                     ` : ''}
+
                                      <div class="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-700/50">
                                          <div class="flex items-center gap-2">
                                              <button onclick="toggleProjectStatus('${p.id}', ${p.active !== false})" class="text-[10px] font-bold ${p.active !== false ? 'text-orange-500' : 'text-green-600'} hover:underline uppercase tracking-wider">
@@ -4386,7 +4434,8 @@ window.renderProjects = async () => {
                                          <button onclick="deleteProject('${p.id}')" class="text-[10px] font-bold text-red-400 hover:text-red-500 hover:underline uppercase tracking-wider">Delete</button>
                                      </div>
                                 </div>
-                            `).join('')}
+                                `;
+                            }).join('')}
                         </div>
                     </div>
                 `;
@@ -4396,11 +4445,36 @@ window.renderProjects = async () => {
 };
 
 // Modal Functions
-window.showProjectModal = () => {
-    document.getElementById('project-modal').classList.remove('hidden');
-    document.getElementById('project-code-input').value = '';
-    document.getElementById('project-name-input').value = '';
-    document.getElementById('project-details-input').value = '';
+window.openProjectModal = async (projectId = null) => {
+    const modal = document.getElementById('project-modal');
+    const title = document.getElementById('project-modal-title');
+    const idInput = document.getElementById('project-id');
+    const codeInput = document.getElementById('project-code-input');
+    const nameInput = document.getElementById('project-name-input');
+    const budgetInput = document.getElementById('project-budget-input');
+    const detailsInput = document.getElementById('project-details-input');
+
+    if (projectId) {
+        title.textContent = "Edit Project";
+        const docSnap = await getDoc(doc(db, "projects", projectId));
+        const data = docSnap.data();
+        idInput.value = projectId;
+        codeInput.value = data.code || '';
+        codeInput.readOnly = true; // Code shouldn't change as it's the cost code reference
+        nameInput.value = data.name || '';
+        budgetInput.value = data.budget || '';
+        detailsInput.value = data.details || '';
+    } else {
+        title.textContent = "Add Project";
+        idInput.value = '';
+        codeInput.value = '';
+        codeInput.readOnly = false;
+        nameInput.value = '';
+        budgetInput.value = '';
+        detailsInput.value = '';
+    }
+    
+    modal.classList.remove('hidden');
     setTimeout(() => {
         document.getElementById('project-modal-content').classList.remove('scale-95', 'opacity-0');
         document.getElementById('project-modal-content').classList.add('scale-100', 'opacity-100');
@@ -5512,7 +5586,7 @@ async function renderChat() {
                                     <p id="active-chat-status" class="text-xs text-green-500 truncate">Company Wide</p>
                                 </div>
                             </div>
-                            <div id="chat-cal-actions" class="flex items-center gap-2 hidden transition-all">
+                            <div id="chat-call-actions" class="flex items-center gap-2 hidden transition-all">
                                 <button onclick="initiateCall('voice')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center shadow-sm" title="Voice Call">
                                     <i class="fa-solid fa-phone text-xs"></i>
                                 </button>
@@ -5520,34 +5594,38 @@ async function renderChat() {
                                     <i class="fa-solid fa-video text-xs"></i>
                                 </button>
                             </div>
+                            <button id="btn-chat-group-settings" onclick="window.openGroupSettings && window.openGroupSettings()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition hidden items-center justify-center shadow-sm" title="Group Settings"><i class="fa-solid fa-gear text-xs"></i></button>
                         </div>
-                        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                        <div id="chat-messages-emp" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                             <div class="flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500"></i></div>
                         </div>
-                        <form onsubmit="sendChatMessage(event)" class="p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0 items-center">
-                            
-                            <!-- Hidden File Input -->
-                            <input type="file" id="chat-file" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input')">
-                            
-                            <!-- Attachment Button -->
-                            <button type="button" onclick="document.getElementById('chat-file').click()"
-                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file">
+                        <!-- Reply Preview -->
+                        <div id="reply-preview-container" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden items-center gap-3">
+                            <div class="w-1 bg-green-500 h-10 rounded-full shrink-0"></div>
+                            <div class="flex-1 min-w-0">
+                                <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
+                                <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
+                            </div>
+                            <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
+                        </div>
+                        <!-- Voice Recorder -->
+                        <div id="voice-recorder-ui" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 hidden items-center gap-3">
+                            <div class="flex items-center gap-2 text-red-500 animate-pulse"><i class="fa-solid fa-microphone"></i><span id="voice-timer" class="text-xs font-mono font-bold">0:00</span></div>
+                            <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden"><div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width:0%"></div></div>
+                            <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
+                            <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                        <form onsubmit="window.sendChatMessage(event)" id="chat-form-emp" class="p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2 shrink-0 items-center">
+                            <input type="file" id="chat-file-emp" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
+                            <button type="button" onclick="document.getElementById('chat-file-emp').click()"
+                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 flex items-center justify-center transition shadow-sm shrink-0" title="Attach file">
                                 <i class="fa-solid fa-paperclip"></i>
                             </button>
-
-                            <!-- Location Sharing Button -->
-                            <button type="button" onclick="sendLocationMessage()"
-                                class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-blue-500 dark:text-blue-400 flex items-center justify-center transition shadow-sm shrink-0" title="Share Location">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </button>
-
                             <div class="flex-1 relative">
-                                <input type="text" id="chat-input" class="w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700 px-3 bg-white dark:bg-slate-800 text-sm outline-none focus:border-green-500" placeholder="Type a message or @mention..." autocomplete="off">
-                                
-                                <!-- Mentions Dropdown -->
-                                <div id="mentions-dropdown" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar"></div>
+                                <input type="text" id="chat-input-emp" class="w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700 px-3 bg-white dark:bg-slate-800 text-sm outline-none focus:border-green-500" placeholder="Type a message or @mention..." autocomplete="off">
+                                <div id="mentions-dropdown-emp" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar"></div>
                             </div>
-                            
+                            <button type="button" onclick="startVoiceRecord()" class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 text-slate-500 flex items-center justify-center transition shadow-sm shrink-0" title="Voice Message"><i class="fa-solid fa-microphone"></i></button>
                             <button type="submit" class="bg-green-600 hover:bg-brand-700 text-white px-4 sm:px-6 py-2 rounded-lg font-bold transition shadow-sm flex items-center justify-center min-w-[60px] shrink-0">
                                 <i class="fa-solid fa-paper-plane"></i>
                             </button>
@@ -5556,13 +5634,13 @@ async function renderChat() {
                 </div>
             `;
 
-    loadChatUsers();
-    selectChat(null);
+    if (typeof window.fetchChatUsers === 'function') window.fetchChatUsers();
+    if (typeof window.selectChat === 'function') window.selectChat('global');
 
     // Mentions Setup
     setTimeout(() => {
-        const input = document.getElementById('chat-input');
-        const dropdown = document.getElementById('mentions-dropdown');
+        const input = document.getElementById('chat-input-emp');
+        const dropdown = document.getElementById('mentions-dropdown-emp');
         if (!input || !dropdown) return;
 
         input.addEventListener('input', (e) => {
@@ -5600,7 +5678,6 @@ async function renderChat() {
 
         window.insertMention = (name) => {
             if (name === '*') return;
-            // sanitize name for mention
             const validName = name.replace(/[^a-zA-Z0-9_]/g, '');
             const val = input.value;
             const cursorStart = input.selectionStart;
@@ -5623,6 +5700,34 @@ async function renderChat() {
             }
         });
     }, 500);
+}
+
+// --- Admin Scheduler ---
+let adminSchedulerCal = null;
+function renderScheduler() {
+    document.getElementById('page-title').textContent = "Team Scheduler";
+    const content = document.getElementById('content-area');
+    content.innerHTML = `
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">📅 Team Calendar</h3>
+            </div>
+            <div id="admin-calendar-container" style="min-height:500px;"></div>
+        </div>
+    `;
+    setTimeout(() => {
+        const el = document.getElementById('admin-calendar-container');
+        if (!el || typeof FullCalendar === 'undefined') return;
+        adminSchedulerCal = new FullCalendar.Calendar(el, {
+            initialView: 'dayGridMonth',
+            headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
+            height: 'auto',
+            themeSystem: 'standard',
+            nowIndicator: true,
+            events: [],
+        });
+        adminSchedulerCal.render();
+    }, 100);
 }
 
 async function loadChatUsers() {
@@ -5740,7 +5845,7 @@ async function loadChatUsers() {
     }
 }
 
-window.selectChat = (userObj) => {
+window.oldSelectChat = (userObj) => {
     if (typeof userObj === 'string') {
         if (userObj === 'global_chat') {
             currentChatUser = null;
@@ -6006,7 +6111,7 @@ function loadMessages() {
     }
 }
 
-window.sendChatMessage = async (e) => {
+window.oldSendChatMessage = async (e) => {
     e.preventDefault();
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
@@ -6113,7 +6218,7 @@ window.sendChatMessage = async (e) => {
     }
 };
 
-window.sendLocationMessage = () => {
+window.oldSendLocationMessage = () => {
     if (!navigator.geolocation) {
         showToast("Geolocation is not supported by your browser", "error");
         return;
@@ -6145,7 +6250,7 @@ window.sendLocationMessage = () => {
     );
 };
 
-window.deleteChatMessage = async (msgId) => {
+window.oldDeleteChatMessage = async (msgId) => {
     if (!confirm("Delete this message?")) return;
     try {
         const path = currentChatId === 'global_chat' ? `global_chat/${msgId}` : `chats/${currentChatId}/messages/${msgId}`;
@@ -6170,13 +6275,19 @@ window.switchTab = (tab, options = {}) => {
 
 window.toggleAIFeatures = (enabled) => {
     localStorage.setItem('explyra_ai_enabled', enabled);
-    const floatBtn = document.getElementById('ai-floating-btn');
+    const wrapper = document.getElementById('aiAssistantWrapper');
     const navAi = document.getElementById('nav-ai');
     
-    if (floatBtn) floatBtn.classList.toggle('hidden', !enabled);
+    if (wrapper) {
+        wrapper.style.display = enabled ? 'block' : 'none';
+        // Also hide the chat window if it's open and AI is being disabled
+        const chatWin = document.getElementById('aiChatWindow');
+        if (!enabled && chatWin) chatWin.classList.remove('active');
+    }
+    
     if (navAi) {
         if (!enabled) navAi.classList.add('hidden');
-        else if (window.hasAccessTo('ai')) navAi.classList.remove('hidden');
+        else navAi.classList.remove('hidden');
     }
     
     // Also update preference toggle in modal if open
@@ -7427,4 +7538,15 @@ window.navigateToAI = () => {
         }));
     }
     window.location.href = 'attendance/company/ai-agent.html';
+};
+
+window.resetUserPassword = async (email) => {
+    if (!email) return;
+    if (!await confirm(`An email will be sent to ${email} with instructions to reset their password. Continue?`)) return;
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showToast("Password reset email sent!", "success");
+    } catch (e) {
+        showToast("Error: " + e.message, "error");
+    }
 };
