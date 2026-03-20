@@ -129,6 +129,8 @@ try {
     const cached = localStorage.getItem('explyra_admin_data_cache');
     if (cached) {
         userData = JSON.parse(cached);
+        window.userData = userData;
+        window.companyId = userData.companyId || null;
         currentUser = { email: userData.email, uid: userData.uid };
         document.addEventListener('DOMContentLoaded', () => {
             const authSc = document.getElementById('auth-screen');
@@ -372,6 +374,8 @@ onAuthStateChanged(auth, async (user) => {
             if (!snap.empty) {
                 userData = snap.docs[0].data();
                 userData.docId = snap.docs[0].id; // crucial for updates
+                window.userData = userData;
+                window.companyId = userData.companyId || null;
                 localStorage.setItem('explyra_admin_data_cache', JSON.stringify(userData));
 
                 // --- MAINTENANCE MODE CHECK ---
@@ -583,7 +587,8 @@ onAuthStateChanged(auth, async (user) => {
                                         }
                                     }
                                     // Also refresh user list if chat modal is open to update last message/sort
-                                    if (document.getElementById('modal-chat').classList.contains('hidden')) {
+                                    const chatModal = document.getElementById('modal-chat');
+                                    if (!chatModal || chatModal.classList.contains('hidden')) {
                                         if (typeof loadChatUsers === 'function') loadChatUsers();
                                     }
                                 }
@@ -688,6 +693,8 @@ onAuthStateChanged(auth, async (user) => {
                         companyId: 'GLOBAL', // Special identifier for master access
                         status: 'ACTIVE'
                     };
+                    window.userData = userData;
+                    window.companyId = userData.companyId || null;
 
                     // Update global var
                     currentUser = user;
@@ -1231,6 +1238,8 @@ window.checkAccess = async () => {
     // --- GLOBAL VISIBILITY OVERRIDE ---
     // Double check specific toggles that might have been missed or are generic
     ['overview', 'approvals', 'tasks', 'crm', 'ai', 'attendance', 'salary', 'chat', 'invoices', 'reports', 'audit', 'users', 'roles', 'projects', 'workflow', 'settings'].forEach(id => {
+        // Keep settings reachable for admin users even if sidebar prefs were changed.
+        if (id === 'settings' && userData.role === 'ADMIN') return;
         if (!isTabVisibleInPrefs(id)) {
             const el = document.getElementById(`nav-${id}`) || (id === 'overview' ? document.querySelector('.sidebar-item[onclick*="overview"]') : null);
             if (el) el.classList.add('hidden');
