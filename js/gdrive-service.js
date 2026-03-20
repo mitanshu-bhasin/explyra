@@ -388,10 +388,96 @@ const GDriveService = {
             if (window.showToast) window.showToast(error.message || 'Failed to create meeting', 'error');
             throw error;
         }
+    },
+
+    /**
+     * Upload DOCX file to Google Drive
+     */
+    async uploadDocxToDrive(blob, filename) {
+        if (!this.isConnected()) {
+            throw new Error("Google Drive is not connected. Please connect from your Profile first.");
+        }
+
+        try {
+            if (window.showToast) window.showToast(`Uploading to Google Drive: ${filename}...`, 'info');
+
+            const metadata = {
+                name: filename,
+                mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            };
+
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', blob);
+
+            const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,name', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.accessToken
+                },
+                body: form
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Google Drive upload error:', errorData);
+                if (response.status === 401) {
+                    this.disconnect();
+                    throw new Error('Connection expired. Please reconnect Google.');
+                }
+                throw new Error('Upload failed: ' + (errorData.error?.message || response.statusText));
+            }
+
+            const result = await response.json();
+            if (window.showToast) window.showToast(`Document saved to Google Drive! 📄`, 'success');
+
+            return {
+                fileId: result.id,
+                fileLink: result.webViewLink,
+                fileName: result.name
+            };
+        } catch (error) {
+            console.error('Error uploading DOCX:', error);
+            if (window.showToast) window.showToast(error.message || 'Failed to upload document', 'error');
+            throw error;
+        }
     }
 };
 
-// Expose to window
+// Expose to window - upload function wrapper
+window.uploadExpenseToGoogleDrive = async (expense, expenseId, portalLabel, downloadedBy) => {
+    try {
+        if (!window.docx || !window.Packer) {
+            if (window.showToast) window.showToast('DOCX library not loaded. Please refresh.', 'error');
+            return;
+        }
+
+        if (!GDriveService.isConnected()) {
+            if (window.showToast) window.showToast('Please connect Google Drive from settings first.', 'warning');
+            return;
+        }
+
+        // Create DOCX using the docx-export utilities
+        const doc = window.buildExpenseDocx(expense, expenseId, portalLabel, downloadedBy);
+        if (!doc) {
+            if (window.showToast) window.showToast('Failed to create document.', 'error');
+            return;
+        }
+
+        const blob = await window.Packer.toBlob(doc);
+        const filename = `expense_detail_${expenseId}_${new Date().toISOString().split('T')[0]}.docx`;
+
+        const result = await GDriveService.uploadDocxToDrive(blob, filename);
+        if (window.showToast) {
+            window.showToast(`Expense saved to Google Drive!\n<a href="${result.fileLink}" target="_blank" class="text-blue-500 underline">Open Document</a>`, 'success');
+        }
+    } catch (err) {
+        console.error('Failed to upload to Google Drive:', err);
+        if (window.showToast) window.showToast('Failed to save to Google Drive: ' + err.message, 'error');
+    }
+};
+
+// Expose GDriveService to window
 window.GDriveService = GDriveService;
 
 // Load GAPI and GIS scripts dynamically if not already loaded

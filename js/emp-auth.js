@@ -27,15 +27,128 @@ window.companyId = null;
 window.currentUser = null;
 window.userData = null;
 
+const empUrlParams = new URLSearchParams(window.location.search);
+const empModeParam = (empUrlParams.get('mode') || '').toLowerCase();
+window.IS_DEMO_MODE = window.IS_DEMO_MODE || ['demo', 'sandbox', 'readonly'].includes(empModeParam) || localStorage.getItem('explyra_demo_mode') === 'true';
+
+const renderEmployeeDemoBanner = () => {
+    if (!window.IS_DEMO_MODE) return;
+    if (document.getElementById('demo-mode-banner-emp')) return;
+    const dash = document.getElementById('dashboard-screen');
+    if (!dash) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'demo-mode-banner-emp';
+    banner.className = 'mx-4 mt-3 mb-1 px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-semibold flex items-center gap-2 shadow-sm';
+    banner.innerHTML = '<i class="fa-solid fa-flask-vial"></i><span>Demo mode is active. Some actions are intentionally restricted.</span>';
+    dash.insertBefore(banner, dash.firstChild);
+};
+
+const ensureFieldHint = (inputEl, hintId) => {
+    if (!inputEl) return null;
+    let hint = document.getElementById(hintId);
+    if (!hint) {
+        hint = document.createElement('p');
+        hint.id = hintId;
+        hint.className = 'mt-1 text-[11px] font-medium text-slate-500 dark:text-slate-400';
+        inputEl.insertAdjacentElement('afterend', hint);
+    }
+    return hint;
+};
+
+const setFieldValidationState = (inputEl, isValid, message, hintId) => {
+    if (!inputEl) return;
+    inputEl.setAttribute('aria-invalid', isValid ? 'false' : 'true');
+    inputEl.classList.toggle('border-red-400', !isValid);
+    inputEl.classList.toggle('focus:ring-red-400/30', !isValid);
+    const hint = ensureFieldHint(inputEl, hintId);
+    if (hint) {
+        hint.textContent = message || '';
+        hint.classList.toggle('text-red-500', !isValid && !!message);
+        hint.classList.toggle('text-slate-500', isValid || !message);
+    }
+};
+
+const safeWithRetry = (operation, options) => (typeof window.withRetry === 'function' ? window.withRetry(operation, options) : operation());
+const safeWithTimeout = (promise, timeoutMs, timeoutMessage) => (typeof window.withTimeout === 'function' ? window.withTimeout(promise, timeoutMs, timeoutMessage) : promise);
+const authMessage = (error, fallback) => (typeof window.getFriendlyAuthMessage === 'function' ? window.getFriendlyAuthMessage(error, fallback) : (fallback || error?.message || 'Request failed.'));
+
+const validateEnterprisePassword = (password) => {
+    const value = String(password || '');
+    if (value.length < 8) return 'Password must be at least 8 characters.';
+    if (!/[A-Z]/.test(value)) return 'Password must include at least 1 uppercase letter.';
+    if (!/[0-9]/.test(value)) return 'Password must include at least 1 number.';
+    if (!/[^A-Za-z0-9]/.test(value)) return 'Password must include at least 1 special character.';
+    return null;
+};
+
+const setAuthButtonsLoading = (isLoading, activeLabel = 'Processing...') => {
+    const buttons = Array.from(document.querySelectorAll('#login-form button, #google-signin-container button'));
+    buttons.forEach((button) => {
+        if (!button.dataset.defaultHtml) {
+            button.dataset.defaultHtml = button.innerHTML;
+        }
+        button.disabled = !!isLoading;
+    });
+
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.innerHTML = isLoading
+            ? `<i class="fa-solid fa-circle-notch fa-spin"></i> ${activeLabel}`
+            : (loginBtn.dataset.defaultHtml || 'Sign In');
+    }
+};
+
+const initAuthFieldValidation = () => {
+    const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    const signupEmail = document.getElementById('signup-email');
+    const signupPassword = document.getElementById('signup-password');
+
+    loginEmail?.addEventListener('input', () => {
+        const isValid = /.+@.+\..+/.test((loginEmail.value || '').trim());
+        setFieldValidationState(loginEmail, isValid, isValid ? '' : 'Enter a valid work email address.', 'login-email-hint');
+    });
+
+    loginPassword?.addEventListener('input', () => {
+        const isValid = String(loginPassword.value || '').length >= 6;
+        setFieldValidationState(loginPassword, isValid, isValid ? '' : 'Use at least 6 characters for sign-in.', 'login-password-hint');
+    });
+
+    signupPassword?.addEventListener('input', () => {
+        const error = validateEnterprisePassword(signupPassword.value || '');
+        setFieldValidationState(signupPassword, !error, error || 'Strong password looks good.', 'signup-password-hint');
+    });
+
+    signupEmail?.addEventListener('input', () => {
+        const isValid = /.+@.+\..+/.test((signupEmail.value || '').trim());
+        setFieldValidationState(signupEmail, isValid, isValid ? '' : 'Use a valid company email to activate account.', 'signup-email-hint');
+    });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAuthFieldValidation);
+} else {
+    initAuthFieldValidation();
+}
+
+if (window.__empAuthInitialized) {
+    console.info('[emp-auth] Initialization already completed, skipping duplicate listener setup.');
+} else {
+    window.__empAuthInitialized = true;
+
 // The requested Employee Architecture logic
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             const q = query(collection(db, "users"), where("email", "==", user.email));
-            const snap = await getDocs(q);
+            const snap = await safeWithRetry(
+                () => safeWithTimeout(getDocs(q), 12000, 'User lookup timed out. Please retry.'),
+                { maxRetries: 2 }
+            );
 
             if (!snap.empty) {
-                window.userData = snap.docs[0].data();
+                window.userData = snap.docs[0].data() || {};
                 window.userData.docId = snap.docs[0].id; // store docId for updates
                 window.companyId = window.userData.companyId;
                 window.currentUser = user;
@@ -58,7 +171,10 @@ onAuthStateChanged(auth, async (user) => {
                 }
 
                 try {
-                    const compSnap = await getDoc(doc(db, "companies", window.companyId));
+                    const compSnap = await safeWithRetry(
+                        () => safeWithTimeout(getDoc(doc(db, "companies", window.companyId)), 10000, 'Company status check timed out.'),
+                        { maxRetries: 1 }
+                    );
                     if (compSnap.exists() && compSnap.data().status === "suspended") {
                         window.showToast("Your company account is suspended. Please contact Explyra Support.", "error");
                         auth.signOut();
@@ -86,6 +202,7 @@ onAuthStateChanged(auth, async (user) => {
             }
         } catch (error) {
             console.error("Auth state error:", error);
+            window.showToast(authMessage(error, 'Unable to validate your session. Please sign in again.'), 'error');
         }
     } else {
         // User is signed out, show auth screen
@@ -97,6 +214,7 @@ onAuthStateChanged(auth, async (user) => {
         }
     }
 });
+}
 
 function showEmployeeDashboard() {
     const authSc = document.getElementById('auth-screen');
@@ -105,6 +223,7 @@ function showEmployeeDashboard() {
         authSc.classList.add('hidden');
         dashSc.classList.remove('hidden');
     }
+    renderEmployeeDemoBanner();
 
     // Update Profile UI
     const nameD = document.getElementById('user-name-display');
@@ -219,14 +338,17 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-password').value;
     const btn = document.getElementById('login-btn');
-
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+    setAuthButtonsLoading(true, 'Authenticating...');
     try {
-        await signInWithEmailAndPassword(auth, email, pass);
+        await safeWithRetry(
+            () => safeWithTimeout(signInWithEmailAndPassword(auth, email, pass), 12000, 'Login request timed out.'),
+            { maxRetries: 1 }
+        );
         window.showToast('Login successful!', 'success');
     } catch (err) {
-        window.showToast("Login Failed: " + err.message, "error");
-        btn.innerHTML = 'Sign In';
+        window.showToast(authMessage(err, 'Login failed. Please try again.'), 'error');
+    } finally {
+        setAuthButtonsLoading(false);
     }
 });
 
@@ -236,15 +358,19 @@ window.handleGoogleLogin = async () => {
     provider.addScope('profile');
 
     try {
-        const result = await signInWithPopup(auth, provider);
+        setAuthButtonsLoading(true, 'Opening Google...');
+        const result = await safeWithRetry(
+            () => safeWithTimeout(signInWithPopup(auth, provider), 15000, 'Google sign-in timed out.'),
+            { maxRetries: 1 }
+        );
         const user = result.user;
 
         const q = query(collection(db, "users"), where("email", "==", user.email));
-        let snap = await getDocs(q);
+        let snap = await safeWithTimeout(getDocs(q), 12000, 'Account lookup timed out.');
 
         if (snap.empty) {
             try {
-                const allUsersSnap = await getDocs(collection(db, "users"));
+                const allUsersSnap = await safeWithTimeout(getDocs(collection(db, "users")), 12000, 'Account verification timed out.');
                 const foundDoc = allUsersSnap.docs.find(doc => doc.data().email?.trim().toLowerCase() === user.email.trim().toLowerCase());
                 if (foundDoc) {
                     snap = { empty: false, docs: [foundDoc] };
@@ -269,7 +395,9 @@ window.handleGoogleLogin = async () => {
 
         window.showToast("Login successful!", "success");
     } catch (error) {
-        window.showToast("Google Sign-In Failed: " + error.message, "error");
+        window.showToast(authMessage(error, 'Google sign-in failed. Please try again.'), "error");
+    } finally {
+        setAuthButtonsLoading(false);
     }
 };
 
@@ -280,15 +408,19 @@ window.handleMicrosoftLogin = async () => {
     provider.addScope('profile');
 
     try {
-        const result = await signInWithPopup(auth, provider);
+        setAuthButtonsLoading(true, 'Opening Microsoft...');
+        const result = await safeWithRetry(
+            () => safeWithTimeout(signInWithPopup(auth, provider), 15000, 'Microsoft sign-in timed out.'),
+            { maxRetries: 1 }
+        );
         const user = result.user;
 
         const q = query(collection(db, "users"), where("email", "==", user.email));
-        let snap = await getDocs(q);
+        let snap = await safeWithTimeout(getDocs(q), 12000, 'Account lookup timed out.');
 
         if (snap.empty) {
             try {
-                const allUsersSnap = await getDocs(collection(db, "users"));
+                const allUsersSnap = await safeWithTimeout(getDocs(collection(db, "users")), 12000, 'Account verification timed out.');
                 const normalizedEmail = (user.email || '').trim().toLowerCase();
                 const foundDoc = allUsersSnap.docs.find(d => (d.data().email || '').trim().toLowerCase() === normalizedEmail);
                 if (foundDoc) {
@@ -314,7 +446,9 @@ window.handleMicrosoftLogin = async () => {
 
         window.showToast("Login successful!", "success");
     } catch (error) {
-        window.showToast("Microsoft Sign-In Failed: " + error.message, "error");
+        window.showToast(authMessage(error, 'Microsoft sign-in failed. Please try again.'), "error");
+    } finally {
+        setAuthButtonsLoading(false);
     }
 };
 
@@ -342,12 +476,17 @@ window.toggleAuthMode = (mode) => {
 
 window.handleAccountActivation = async (e) => {
     e.preventDefault();
-    const email = document.getElementById('signup-email').value;
-    const pass = document.getElementById('signup-password').value;
+    if (window.IS_DEMO_MODE) {
+        window.showToast('Account activation is disabled in demo mode.', 'warning');
+        return;
+    }
+    const email = (document.getElementById('signup-email').value || '').trim().toLowerCase();
+    const pass = document.getElementById('signup-password').value || '';
     const btn = document.getElementById('signup-btn');
 
     if (!email || !pass) return window.showToast("Please fill in all fields", "error");
-    if (pass.length < 6) return window.showToast("Password must be at least 6 characters", "warning");
+    const passwordError = validateEnterprisePassword(pass);
+    if (passwordError) return window.showToast(passwordError, "warning");
 
     const originalBtnContent = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Activating...';
@@ -355,24 +494,31 @@ window.handleAccountActivation = async (e) => {
 
     try {
         const q = query(collection(db, "users"), where("email", "==", email));
-        const snap = await getDocs(q);
+        const snap = await safeWithRetry(
+            () => safeWithTimeout(getDocs(q), 12000, 'Activation lookup timed out.'),
+            { maxRetries: 1 }
+        );
 
         if (snap.empty) throw new Error("Email not found in employee database.");
 
         const userDoc = snap.docs[0];
         if (userDoc.data().uid) throw new Error("Account already activated. Please login.");
 
-        const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+        const userCred = await safeWithRetry(
+            () => safeWithTimeout(createUserWithEmailAndPassword(auth, email, pass), 15000, 'Account activation timed out.'),
+            { maxRetries: 1 }
+        );
 
-        await updateDoc(doc(db, "users", userDoc.id), {
+        await safeWithTimeout(updateDoc(doc(db, "users", userDoc.id), {
             uid: userCred.user.uid,
             updatedAt: serverTimestamp(),
             status: 'ACTIVE'
-        });
+        }), 12000, 'Profile update timed out.');
 
         window.showToast("Account activated successfully!", "success");
     } catch (err) {
-        window.showToast(err.message, "error");
+        window.showToast(authMessage(err, 'Unable to activate account right now.'), "error");
+    } finally {
         btn.innerHTML = originalBtnContent;
         btn.disabled = false;
     }
@@ -386,7 +532,7 @@ window.forgotPassword = async () => {
             window.showToast('Password reset email sent!', 'success');
         }
     } catch (e) {
-        window.showToast(e.message, "error");
+        window.showToast(authMessage(e, 'Unable to send reset email right now.'), "error");
     }
 };
 

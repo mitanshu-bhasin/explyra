@@ -27,6 +27,65 @@ window.showToast = (message, type = 'info') => {
     setTimeout(() => toast.remove(), 3000);
 };
 
+window.getFriendlyAuthMessage = (error, fallback = 'Something went wrong. Please try again.') => {
+    const code = String(error?.code || '').toLowerCase();
+    const messageByCode = {
+        'auth/invalid-email': 'Please enter a valid work email address.',
+        'auth/user-not-found': 'Account not found. Contact your admin to get access.',
+        'auth/wrong-password': 'Incorrect password. Please try again.',
+        'auth/invalid-credential': 'Invalid login credentials. Please verify your email and password.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a minute and try again.',
+        'auth/popup-closed-by-user': 'Sign-in popup was closed before completion.',
+        'auth/popup-blocked': 'Your browser blocked the popup. Allow popups and try again.',
+        'auth/network-request-failed': 'Network issue detected. Please check your internet and retry.',
+        'permission-denied': 'You do not have permission for this action.',
+        'unavailable': 'Service is temporarily unavailable. Please try again shortly.',
+        'deadline-exceeded': 'The request took too long. Please retry.'
+    };
+
+    if (code && messageByCode[code]) return messageByCode[code];
+    if (code.includes('network') || code.includes('unavailable') || code.includes('deadline')) {
+        return 'Network issue detected. Please check your internet and retry.';
+    }
+    return fallback;
+};
+
+window.withTimeout = (promise, timeoutMs = 12000, timeoutMessage = 'Request timed out. Please try again.') => {
+    let timeoutHandle;
+    const timeoutPromise = new Promise((_, reject) => {
+        timeoutHandle = setTimeout(() => {
+            const timeoutErr = new Error(timeoutMessage);
+            timeoutErr.code = 'deadline-exceeded';
+            reject(timeoutErr);
+        }, timeoutMs);
+    });
+
+    return Promise.race([promise, timeoutPromise]).finally(() => {
+        clearTimeout(timeoutHandle);
+    });
+};
+
+window.withRetry = async (operation, options = {}) => {
+    const maxRetries = Number.isInteger(options.maxRetries) ? options.maxRetries : 2;
+    const initialDelayMs = Number.isInteger(options.initialDelayMs) ? options.initialDelayMs : 450;
+    const retryableCodes = options.retryableCodes || ['unavailable', 'deadline-exceeded', 'network-request-failed', 'resource-exhausted'];
+
+    let attempt = 0;
+    while (attempt <= maxRetries) {
+        try {
+            return await operation();
+        } catch (error) {
+            const code = String(error?.code || '').toLowerCase();
+            const isRetryable = retryableCodes.some((entry) => code.includes(entry));
+            if (!isRetryable || attempt === maxRetries) throw error;
+
+            const delay = initialDelayMs * Math.pow(2, attempt);
+            await new Promise((resolve) => setTimeout(resolve, delay));
+            attempt += 1;
+        }
+    }
+};
+
 let inputModalResolve = null;
 window.showInputPromise = (title, message, placeholder = '', type = 'text', defaultValue = '') => {
     if (inputModalResolve) {
@@ -129,6 +188,59 @@ function updateEmpLangUI(lang) {
 
 let currentEmpModalId = null;
 let isApplyingEmpHistoryState = false;
+let activeEmpModalKeydownHandler = null;
+let lastFocusedElementBeforeModal = null;
+
+const getFocusableModalElements = (modal) => {
+    if (!modal) return [];
+    const selectors = [
+        'a[href]',
+        'button:not([disabled])',
+        'textarea:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+    return Array.from(modal.querySelectorAll(selectors)).filter((el) => {
+        return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+    });
+};
+
+const releaseModalKeydownHandler = () => {
+    if (activeEmpModalKeydownHandler) {
+        document.removeEventListener('keydown', activeEmpModalKeydownHandler);
+        activeEmpModalKeydownHandler = null;
+    }
+};
+
+const attachModalFocusTrap = (modal) => {
+    releaseModalKeydownHandler();
+    activeEmpModalKeydownHandler = (event) => {
+        if (event.key === 'Escape' && currentEmpModalId) {
+            event.preventDefault();
+            window.closeModal(currentEmpModalId);
+            return;
+        }
+
+        if (event.key !== 'Tab') return;
+        const focusableElements = getFocusableModalElements(modal);
+        if (!focusableElements.length) return;
+
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && active === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    };
+
+    document.addEventListener('keydown', activeEmpModalKeydownHandler);
+};
 
 window.getEmpNavState = () => ({
     empMainView: document.getElementById('main-view-messages')?.classList.contains('hidden') ? 'dashboard' : 'messages',
@@ -155,8 +267,16 @@ window.pushEmpNavState = ({ replace = false } = {}) => {
 window.openModalWithHistory = (id) => {
     const modal = document.getElementById(id);
     if (!modal) return;
+    lastFocusedElementBeforeModal = document.activeElement;
     modal.classList.remove('hidden');
     currentEmpModalId = id;
+    attachModalFocusTrap(modal);
+
+    setTimeout(() => {
+        const focusableElements = getFocusableModalElements(modal);
+        if (focusableElements.length) focusableElements[0].focus();
+    }, 0);
+
     window.pushEmpNavState();
 };
 
@@ -177,14 +297,22 @@ window.applyEmpHistoryState = (state) => {
         if (currentEmpModalId && currentEmpModalId !== nextModal) {
             const currentModalEl = document.getElementById(currentEmpModalId);
             if (currentModalEl) currentModalEl.classList.add('hidden');
+            releaseModalKeydownHandler();
         }
 
         if (nextModal) {
             const nextModalEl = document.getElementById(nextModal);
-            if (nextModalEl) nextModalEl.classList.remove('hidden');
+            if (nextModalEl) {
+                lastFocusedElementBeforeModal = document.activeElement;
+                nextModalEl.classList.remove('hidden');
+                attachModalFocusTrap(nextModalEl);
+                const focusableElements = getFocusableModalElements(nextModalEl);
+                if (focusableElements.length) focusableElements[0].focus();
+            }
             currentEmpModalId = nextModal;
         } else {
             currentEmpModalId = null;
+            releaseModalKeydownHandler();
         }
     } finally {
         isApplyingEmpHistoryState = false;
@@ -276,7 +404,14 @@ window.closeModal = (id) => {
 
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
-    if (currentEmpModalId === id) currentEmpModalId = null;
+    if (currentEmpModalId === id) {
+        currentEmpModalId = null;
+        releaseModalKeydownHandler();
+        if (lastFocusedElementBeforeModal && typeof lastFocusedElementBeforeModal.focus === 'function') {
+            lastFocusedElementBeforeModal.focus();
+        }
+        lastFocusedElementBeforeModal = null;
+    }
 };
 
 window.toggleMainView = (viewId, options = {}) => {

@@ -22,6 +22,10 @@
     <meta name="author" content="Mitanshu Bhasin, Explyra">
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+    <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -104,6 +108,7 @@
     <script src="js/theme.js"></script>
     <script src="js/ai-config.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/docx-export.js" defer></script>
     <script src="js/gdrive-service.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link
@@ -652,6 +657,24 @@
 
             #chat-messages-emp {
                 padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
@@ -1845,6 +1868,14 @@
 
             <div id="modal-view-footer"
                 class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex justify-end gap-3 shrink-0">
+                <button onclick="window.downloadEmployeeExpenseDocx && window.downloadEmployeeExpenseDocx()"
+                    class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold transition flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-file-word text-blue-500"></i> Download DOCX
+                </button>
+                <button onclick="window.downloadEmployeeExpensePdf && window.downloadEmployeeExpensePdf()"
+                    class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold transition flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-file-pdf text-red-500"></i> Download PDF
+                </button>
                 <button onclick="closeModal('modal-view')"
                     class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold transition">Close</button>
             </div>
@@ -1941,14 +1972,15 @@
     </template>
 
     <!-- Profile Modal (Updated) -->
-    <div id="modal-profile"
+    <div id="modal-profile" role="dialog" aria-modal="true" aria-labelledby="my-profile-title"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div
             class="bg-white/95 dark:bg-slate-800/95 w-full max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-700 ring-1 ring-white/60 dark:ring-slate-700/60 shadow-2xl flex flex-col max-h-[90vh] animate-[slideUp_0.2s_ease-out]">
             <div
                 class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shrink-0 rounded-t-3xl">
-                <h3 class="text-lg md:text-xl font-black text-slate-800 dark:text-slate-100">My Profile</h3>
+                <h3 id="my-profile-title" class="text-lg md:text-xl font-black text-slate-800 dark:text-slate-100">My Profile</h3>
                 <button onclick="closeModal('modal-profile')"
+                    aria-label="Close profile"
                     class="w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 transition flex items-center justify-center hover:bg-white/80 dark:hover:bg-slate-800">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -1962,6 +1994,7 @@
                     </div>
                     <span id="profile-company-verify-badge" class="px-1.5 py-0.5 rounded-full border border-slate-300 bg-slate-100 text-slate-500 text-[8px] font-bold uppercase tracking-wide">Unverified</span>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Full

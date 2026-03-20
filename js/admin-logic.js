@@ -26,6 +26,32 @@ window.auth = auth;
 window.db = db;
 window.storage = storage;
 
+const adminUrlParams = new URLSearchParams(window.location.search);
+const adminModeParam = (adminUrlParams.get('mode') || '').toLowerCase();
+window.IS_DEMO_MODE = window.IS_DEMO_MODE || ['demo', 'sandbox', 'readonly'].includes(adminModeParam) || localStorage.getItem('explyra_demo_mode') === 'true';
+window.guardDemoMutation = (label = 'This action') => {
+    if (!window.IS_DEMO_MODE) return false;
+    if (typeof window.showToast === 'function') {
+        window.showToast(`${label} is disabled in demo mode.`, 'warning');
+    }
+    return true;
+};
+
+window.renderDemoModeBanner = () => {
+    if (!window.IS_DEMO_MODE) return;
+    if (document.getElementById('demo-mode-banner')) return;
+
+    const dashboard = document.getElementById('dashboard-screen');
+    if (!dashboard) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'demo-mode-banner';
+    banner.className = 'mx-4 mt-3 mb-1 px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-semibold flex items-center gap-2 shadow-sm';
+    banner.innerHTML = '<i class="fa-solid fa-flask-vial"></i><span>Demo mode is active. Data-changing actions are intentionally restricted.</span>';
+
+    dashboard.insertBefore(banner, dashboard.firstChild);
+};
+
 let messaging = null;
 try {
     messaging = getMessaging(app);
@@ -87,22 +113,33 @@ window.formatDateUtc = (dateInput) => {
         return Intl.DateTimeFormat(undefined, { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
     } catch (e) { return formatDateUtc(dateInput); }
 };
-window.safeFirebaseFetch = async (fetchPromise) => {
-    try {
-        return await fetchPromise;
-    } catch (error) {
-        console.error("Firebase Network Error:", error);
-        const code = error?.code || '';
-        const isLikelyNetworkIssue = [
-            'unavailable',
-            'deadline-exceeded',
-            'network-request-failed',
-            'resource-exhausted'
-        ].some((c) => code.includes(c));
-        if (isLikelyNetworkIssue && typeof showToast === 'function') {
-            showToast("Slow network or offline. Please try again.", "warning");
+window.safeFirebaseFetch = async (fetchInput, options = {}) => {
+    const maxRetries = Number.isInteger(options.maxRetries) ? options.maxRetries : 0;
+    const retryDelayMs = Number.isInteger(options.retryDelayMs) ? options.retryDelayMs : 450;
+    const retryableCodes = ['unavailable', 'deadline-exceeded', 'network-request-failed', 'resource-exhausted'];
+
+    const runFetch = () => (typeof fetchInput === 'function' ? fetchInput() : fetchInput);
+
+    let attempt = 0;
+    while (attempt <= maxRetries) {
+        try {
+            return await runFetch();
+        } catch (error) {
+            const code = String(error?.code || '').toLowerCase();
+            const isLikelyNetworkIssue = retryableCodes.some((c) => code.includes(c));
+            const isLastAttempt = attempt >= maxRetries;
+
+            if (!isLikelyNetworkIssue || isLastAttempt) {
+                if (isLikelyNetworkIssue && typeof showToast === 'function') {
+                    showToast('Network issue detected. Please retry in a few seconds.', 'warning');
+                }
+                console.error('Firebase fetch failed:', error);
+                throw error;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, retryDelayMs * Math.pow(2, attempt)));
+            attempt += 1;
         }
-        throw error;
     }
 };
 // ================================================================
@@ -165,6 +202,7 @@ try {
 let userToDelete = null;
 let activeListeners = []; // Store active listeners to unsubscribe
 let approvalSearchTerm = '';
+let approvalSearchDebounceTimer = null;
 let aiAssistant = null;
 let lastDashboardContext = null;
 let overviewSortBy = 'date';
@@ -1171,6 +1209,7 @@ function showLogin() {
 function showDashboard() {
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('dashboard-screen').classList.remove('hidden');
+    window.renderDemoModeBanner && window.renderDemoModeBanner();
 
     const initUI = () => {
         const nameEl = document.getElementById('current-user-name');
@@ -2201,6 +2240,7 @@ window.filterAdminTasks = () => {
 
 window.handleCreateTask = async (e) => {
     e.preventDefault();
+    if (window.guardDemoMutation('Task creation')) return;
     const btn = document.getElementById('btn-create-task');
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
     btn.disabled = true;
@@ -2238,6 +2278,7 @@ window.deleteTask = async (taskId, status) => {
         showToast("Completed tasks cannot be deleted.", "error");
         return;
     }
+    if (window.guardDemoMutation('Task deletion')) return;
     if (!await showInputPromise("Delete Task", "Are you sure you want to delete this task?", "", "none")) return;
     try {
         await deleteDoc(doc(db, "tasks", taskId));
@@ -2249,6 +2290,7 @@ window.deleteTask = async (taskId, status) => {
 
 window.updateTaskStatus = async (taskId, newStatus) => {
     try {
+        if (window.guardDemoMutation('Task status update')) return;
         await updateDoc(doc(db, "tasks", taskId), {
             status: newStatus,
             updatedAt: serverTimestamp()
@@ -2770,6 +2812,19 @@ window.updateAdminEmail = async () => {
 window.selectedApprovals = new Set();
 window.currentFilteredApprovalIds = [];
 let approvalsData = []; // Store for filtering
+let approvalsCurrentPage = 1;
+const approvalsPerPage = 12;
+
+window.handleApprovalSearchInput = (value) => {
+    approvalSearchTerm = String(value || '').toLowerCase().trim();
+    approvalsCurrentPage = 1;
+    if (approvalSearchDebounceTimer) clearTimeout(approvalSearchDebounceTimer);
+    approvalSearchDebounceTimer = setTimeout(() => {
+        if (typeof window.applyApprovalFilters === 'function') {
+            window.applyApprovalFilters();
+        }
+    }, 220);
+};
 
 async function renderApprovals() {
     document.getElementById('page-title').textContent = "Pending Approvals";
@@ -2795,19 +2850,19 @@ async function renderApprovals() {
                         <div class="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                              <div class="relative flex min-w-[240px]">
                                 <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                <input type="text" id="approval-search" onkeyup="if(event.key === 'Enter') applyApprovalFilters()" class="w-full bg-slate-50 dark:bg-slate-900 border border-r-0 border-slate-200 dark:border-slate-700 rounded-l-lg py-2 pl-9 pr-3 text-xs focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Search by name, ID, amount...">
+                                <input type="text" id="approval-search" oninput="window.handleApprovalSearchInput(this.value)" onkeyup="if(event.key === 'Enter') applyApprovalFilters()" class="w-full bg-slate-50 dark:bg-slate-900 border border-r-0 border-slate-200 dark:border-slate-700 rounded-l-lg py-2 pl-9 pr-3 text-xs focus:ring-1 focus:ring-brand-500 outline-none" placeholder="Search by name, ID, amount...">
                                 <button onclick="applyApprovalFilters()" class="bg-green-600 hover:bg-brand-700 text-white px-3 py-2 rounded-r-lg text-xs font-bold transition border border-green-600"><i class="fa-solid fa-search"></i></button>
                             </div>
-                            <select id="filter-project" onchange="applyApprovalFilters()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none">
+                            <select id="filter-project" onchange="window.goToApprovalsPage(1)" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none">
                                 ${projectOptions}
                             </select>
-                            <select id="filter-amount" onchange="applyApprovalFilters()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none">
+                            <select id="filter-amount" onchange="window.goToApprovalsPage(1)" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none">
                                 <option value="">Any Amount</option>
                                 <option value="small">< ₹1,000</option>
                                 <option value="medium">₹1k - ₹10k</option>
                                 <option value="large">> ₹10k</option>
                             </select>
-                            <select id="sort-order" onchange="applyApprovalFilters()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none font-bold text-slate-600 dark:text-slate-300">
+                            <select id="sort-order" onchange="window.goToApprovalsPage(1)" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none font-bold text-slate-600 dark:text-slate-300">
                                 <option value="date_desc">Newest First</option>
                                 <option value="date_asc">Oldest First</option>
                                 <option value="amount_desc">Highest Amount</option>
@@ -2904,9 +2959,9 @@ async function renderApprovals() {
 
 window.applyApprovalFilters = () => {
     const list = document.getElementById('approvals-list');
-    const search = document.getElementById('approval-search').value.toLowerCase();
-    const project = document.getElementById('filter-project').value;
-    const amountType = document.getElementById('filter-amount').value;
+    const search = (document.getElementById('approval-search')?.value || approvalSearchTerm || '').toLowerCase();
+    const project = document.getElementById('filter-project')?.value || '';
+    const amountType = document.getElementById('filter-amount')?.value || '';
 
     const filtered = approvalsData.filter(d => {
         const term = (d.title + d.projectCode + d.userName + d.totalAmount + (d.id || '')).toLowerCase();
@@ -2923,7 +2978,7 @@ window.applyApprovalFilters = () => {
     });
 
     // Sorting Logic
-    const sortOrder = document.getElementById('sort-order').value;
+    const sortOrder = document.getElementById('sort-order')?.value || 'date_desc';
     filtered.sort((a, b) => {
         const dateA = new Date(a.createdAt?.toDate ? a.createdAt.toDate() : a.createdAt);
         const dateB = new Date(b.createdAt?.toDate ? b.createdAt.toDate() : b.createdAt);
@@ -2949,9 +3004,15 @@ window.applyApprovalFilters = () => {
         return;
     }
 
+    const totalPages = Math.max(1, Math.ceil(filtered.length / approvalsPerPage));
+    if (approvalsCurrentPage > totalPages) approvalsCurrentPage = totalPages;
+    if (approvalsCurrentPage < 1) approvalsCurrentPage = 1;
+    const startIndex = (approvalsCurrentPage - 1) * approvalsPerPage;
+    const pageItems = filtered.slice(startIndex, startIndex + approvalsPerPage);
+
     // Render List
     list.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in pb-10">
-                        ${filtered.map(d => {
+                        ${pageItems.map(d => {
         const date = d.createdAt?.toDate ? d.createdAt.toDate() : (d.createdAt ? new Date(d.createdAt) : new Date());
         const ageDays = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
         const agingClass = ageDays >= 7
@@ -3006,9 +3067,22 @@ window.applyApprovalFilters = () => {
                                 </div>
                             `;
     }).join('')}
+                    </div>
+                    <div class="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800 pt-3">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Showing ${startIndex + 1}-${Math.min(startIndex + pageItems.length, filtered.length)} of ${filtered.length}</p>
+                        <div class="flex items-center gap-2">
+                            <button onclick="window.goToApprovalsPage(${approvalsCurrentPage - 1})" ${approvalsCurrentPage <= 1 ? 'disabled' : ''} class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-bold ${approvalsCurrentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 dark:hover:bg-slate-800'}">Prev</button>
+                            <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Page ${approvalsCurrentPage} / ${totalPages}</span>
+                            <button onclick="window.goToApprovalsPage(${approvalsCurrentPage + 1})" ${approvalsCurrentPage >= totalPages ? 'disabled' : ''} class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-bold ${approvalsCurrentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 dark:hover:bg-slate-800'}">Next</button>
+                        </div>
                     </div>`;
 
     updateBulkUI();
+};
+
+window.goToApprovalsPage = (nextPage) => {
+    approvalsCurrentPage = Number(nextPage) || 1;
+    window.applyApprovalFilters();
 };
 
 window.toggleSelectAllApprovals = (checked) => {
@@ -3053,6 +3127,7 @@ function updateBulkUI() {
 
 window.handleBulkAction = async (action) => {
     if (window.selectedApprovals.size === 0) return;
+    if (window.guardDemoMutation('Bulk approval action')) return;
     if (!await confirm(`Are you sure you want to ${action} ${window.selectedApprovals.size} items ? `)) return;
 
     const evt = window.event;
@@ -4068,6 +4143,196 @@ window.exportReport = async (format) => {
     }
 };
 
+const escapePdfText = (value) => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const getSafeDateText = (value) => {
+    const date = value?.toDate ? value.toDate() : (value ? new Date(value) : null);
+    return date && !Number.isNaN(date.getTime()) ? date.toLocaleString() : 'N/A';
+};
+
+const buildExpenseDetailPdfHtml = (expense, expenseId, portalLabel, downloadedBy) => {
+    const statusText = escapePdfText((expense.status || 'N/A').replace(/_/g, ' '));
+    const titleText = escapePdfText(expense.title || 'Expense Report');
+    const employeeText = escapePdfText(expense.employeeName || expense.userName || expense.userEmail || 'N/A');
+    const notesText = escapePdfText((expense.notes || '').trim() || 'No notes provided.');
+    const amountText = `${getSymbol(expense.currency || 'INR')}${Number(expense.totalAmount || 0).toLocaleString()}`;
+    const submittedEmail = escapePdfText(expense.userEmail || expense.employeeEmail || 'N/A');
+    const downloadedByText = escapePdfText(downloadedBy || 'N/A');
+    const generatedAt = new Date();
+    const lineItems = Array.isArray(expense.lineItems) ? expense.lineItems : [];
+    const history = Array.isArray(expense.history) ? expense.history : [];
+
+    const auditFields = [
+        { label: 'Submitted By Email', value: submittedEmail },
+        { label: 'Downloaded By', value: downloadedByText },
+        { label: 'Downloaded At', value: escapePdfText(generatedAt.toLocaleString()) },
+        { label: 'Created At', value: escapePdfText(getSafeDateText(expense.createdAt)) },
+        { label: 'Updated At', value: escapePdfText(getSafeDateText(expense.updatedAt)) },
+        { label: 'Last Status At', value: escapePdfText(getSafeDateText(expense.statusUpdatedAt || expense.lastUpdatedAt || expense.approvedAt || expense.rejectedAt)) }
+    ];
+
+    const auditRowsHtml = auditFields.map((field) => `
+        <div style="padding:4px;border:1px solid #e2e8f0;border-radius:4px;background:#f8fafc;">
+            <p style="margin:0 0 2px 0;font-size:7px;color:#64748b;text-transform:uppercase;font-weight:700;">${escapePdfText(field.label)}</p>
+            <p style="margin:0;font-size:9px;font-weight:600;line-height:1.25;overflow-wrap:anywhere;">${field.value}</p>
+        </div>
+    `).join('');
+
+    const lineItemsHtml = lineItems.length ? lineItems.map((item, idx) => {
+        const receipt = item?.receiptUrl || 'N/A';
+        return `
+        <tr>
+                <td style="padding:4px;border:1px solid #e5e7eb;">${idx + 1}</td>
+                <td style="padding:4px;border:1px solid #e5e7eb;">${escapePdfText(item?.category || 'N/A')}</td>
+                <td style="padding:4px;border:1px solid #e5e7eb;overflow-wrap:anywhere;word-break:break-word;">${escapePdfText(item?.description || item?.desc || 'No description')}</td>
+                <td style="padding:4px;border:1px solid #e5e7eb;">${escapePdfText(item?.date || 'N/A')}</td>
+                <td style="padding:4px;border:1px solid #e5e7eb;">${getSymbol(expense.currency || 'INR')}${Number(item?.amount || 0).toLocaleString()}</td>
+                <td style="padding:4px;border:1px solid #e5e7eb;overflow-wrap:anywhere;word-break:break-word;font-size:7px;">${escapePdfText(receipt)}</td>
+            </tr>
+        `;
+    }).join('') : '<tr><td colspan="6" style="padding:12px;border:1px solid #e5e7eb;text-align:center;color:#6b7280;">No line items</td></tr>';
+
+    const historyHtml = history.length ? history.map((h, idx) => `
+        <tr>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${idx + 1}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${escapePdfText((h?.action || 'UPDATED').replace(/_/g, ' '))}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${escapePdfText(h?.by || 'System')}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;font-size:7px;">${getSafeDateText(h?.date)}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;overflow-wrap:anywhere;word-break:break-word;">${escapePdfText(h?.comment || h?.remarks || '-')}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="padding:12px;border:1px solid #e5e7eb;text-align:center;color:#6b7280;">No history found</td></tr>';
+
+    return `
+        <div style="font-family:Inter,Arial,sans-serif;color:#0f172a;padding:6px 5px;margin:0;box-sizing:border-box;overflow:visible;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:8px;">
+                <div style="flex:1;">
+                    <h2 style="margin:0 0 1px 0;font-size:14px;font-weight:800;line-height:1.2;">Expense Detail Report</h2>
+                    <p style="margin:2px 0 0 0;font-size:9px;color:#475569;">${escapePdfText(portalLabel)} • Generated on ${generatedAt.toLocaleString()}</p>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    <p style="margin:0;font-size:8px;color:#64748b;font-weight:700;">Report ID</p>
+                    <p style="margin:1px 0 0 0;font-size:10px;font-weight:700;word-break:break-all;">${escapePdfText(expenseId || expense.id || 'N/A')}</p>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Title</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${titleText}</p>
+                </div>
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Status</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${statusText}</p>
+                </div>
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Employee</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${employeeText}</p>
+                </div>
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Amount</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${amountText}</p>
+                </div>
+            </div>
+
+            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;margin-bottom:8px;">
+                <p style="margin:0 0 3px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Notes / Description</p>
+                <p style="margin:0;font-size:10px;line-height:1.4;white-space:pre-wrap;">${notesText}</p>
+            </div>
+
+            <h3 style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#475569;margin:8px 0 4px;">Audit Metadata</h3>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-bottom:8px;">
+                ${auditRowsHtml}
+            </div>
+
+            <h3 style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#475569;margin:8px 0 4px;">Line Items</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:8px;table-layout:fixed;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:5%;">#</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:14%;">Category</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:30%;">Description</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:12%;">Date</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:11%;">Amount</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:28%;">Receipt / Proof</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${lineItemsHtml}
+                </tbody>
+            </table>
+
+            <h3 style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#475569;margin:8px 0 4px;">Status History</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:8px;table-layout:fixed;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:5%;">#</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:15%;">Action</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:18%;">By</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:18%;">Date</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:44%;">Comments</th>
+                    </tr>
+                </thead>
+                <tbody>${historyHtml}</tbody>
+            </table>
+        </div>
+    `;
+};
+
+window.downloadCurrentExpensePdf = async () => {
+    const expense = window.currentExpenseData;
+    const expenseId = window.currentExpenseId || expense?.id || 'expense';
+    if (!expense) {
+        showToast('Open an expense first to download its PDF.', 'warning');
+        return;
+    }
+    if (typeof html2pdf === 'undefined') {
+        showToast('PDF engine not loaded. Please refresh and retry.', 'error');
+        return;
+    }
+
+    const container = document.createElement('div');
+    const downloaderIdentity = currentUser?.email || auth.currentUser?.email || 'Admin User';
+    container.innerHTML = buildExpenseDetailPdfHtml(expense, expenseId, 'Admin Portal', downloaderIdentity);
+    container.style.background = '#ffffff';
+    container.style.width = '730px';
+    container.style.margin = '0';
+    container.style.padding = '0';
+    container.style.boxSizing = 'border-box';
+    container.style.overflow = 'visible';
+
+    try {
+        showToast('Preparing detailed PDF...', 'info');
+        await html2pdf().set({
+            margin: [15, 12, 15, 12],
+            filename: `expense_detail_${expenseId}_${new Date().toISOString().split('T')[0]}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 1.2, useCORS: true, windowWidth: 730, allowTaint: true, logging: false, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'] }
+        }).from(container).save();
+        showToast('Detailed expense PDF downloaded.', 'success');
+    } catch (err) {
+        console.error(err);
+        showToast('Failed to export detailed PDF: ' + err.message, 'error');
+    }
+};
+
+window.downloadCurrentExpenseDocx = async () => {
+    const expense = window.currentExpenseData;
+    const expenseId = window.currentExpenseId || expense?.id || 'expense';
+    if (!expense) {
+        showToast('Open an expense first to download its DOCX.', 'warning');
+        return;
+    }
+    const downloaderIdentity = currentUser?.email || auth.currentUser?.email || 'Admin User';
+    await window.downloadExpenseAsDocx(expense, expenseId, 'Admin Portal', downloaderIdentity);
+};
+
 window.openExpenseModal = (id) => {
     const modal = document.getElementById('modal-expense');
     modal.classList.remove('hidden');
@@ -4077,7 +4342,7 @@ window.openExpenseModal = (id) => {
     onSnapshot(doc(db, "expenses", id), (snap) => {
         if (!snap.exists()) return;
         const data = snap.data();
-        window.currentExpenseData = data;
+        window.currentExpenseData = { id, ...data };
         window.currentExpenseId = id;
 
         // Get employee name

@@ -841,9 +841,187 @@ window.deleteExpense = async (id) => {
     }
 };
 
+const escapeEmpPdfText = (value) => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const getEmpPdfDate = (value) => {
+    const date = value?.toDate ? value.toDate() : (value ? new Date(value) : null);
+    return date && !Number.isNaN(date.getTime()) ? date.toLocaleString() : 'N/A';
+};
+
+const buildEmployeeExpensePdfHtml = (data, downloadedBy) => {
+    const lineItems = Array.isArray(data.lineItems) ? data.lineItems : [];
+    const history = Array.isArray(data.history) ? data.history : [];
+    const currencySymbol = window.getSymbol ? window.getSymbol(data.currency || 'INR') : '₹';
+    const generatedAt = new Date();
+
+    const auditFields = [
+        { label: 'Submitted By Email', value: escapeEmpPdfText(data.userEmail || 'N/A') },
+        { label: 'Downloaded By', value: escapeEmpPdfText(downloadedBy || 'N/A') },
+        { label: 'Downloaded At', value: escapeEmpPdfText(generatedAt.toLocaleString()) },
+        { label: 'Created At', value: escapeEmpPdfText(getEmpPdfDate(data.createdAt)) },
+        { label: 'Updated At', value: escapeEmpPdfText(getEmpPdfDate(data.updatedAt)) },
+        { label: 'Last Status At', value: escapeEmpPdfText(getEmpPdfDate(data.statusUpdatedAt || data.lastUpdatedAt || data.approvedAt || data.rejectedAt)) }
+    ];
+
+    const auditRows = auditFields.map((field) => `
+        <div style="padding:4px;border:1px solid #e2e8f0;border-radius:4px;background:#f8fafc;">
+            <p style="margin:0 0 2px 0;font-size:7px;color:#64748b;text-transform:uppercase;font-weight:700;">${escapeEmpPdfText(field.label)}</p>
+            <p style="margin:0;font-size:9px;font-weight:600;line-height:1.25;overflow-wrap:anywhere;">${field.value}</p>
+        </div>
+    `).join('');
+
+    const lineItemRows = lineItems.length ? lineItems.map((item, idx) => `
+        <tr>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${idx + 1}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${escapeEmpPdfText(item?.category || 'N/A')}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;overflow-wrap:anywhere;word-break:break-word;">${escapeEmpPdfText(item?.description || item?.desc || 'No description')}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${escapeEmpPdfText(item?.date || 'N/A')}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${currencySymbol}${Number(item?.amount || 0).toLocaleString()}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;overflow-wrap:anywhere;word-break:break-word;font-size:7px;">${escapeEmpPdfText(item?.receiptUrl || 'N/A')}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="6" style="padding:12px;border:1px solid #e5e7eb;text-align:center;color:#64748b;">No line items added</td></tr>';
+
+    const historyRows = history.length ? history.map((h, idx) => `
+        <tr>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${idx + 1}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${escapeEmpPdfText((h?.action || 'UPDATED').replace(/_/g, ' '))}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;">${escapeEmpPdfText(h?.by || 'System')}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;font-size:7px;">${getEmpPdfDate(h?.date)}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;overflow-wrap:anywhere;word-break:break-word;">${escapeEmpPdfText(h?.comment || h?.remarks || '-')}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="padding:12px;border:1px solid #e5e7eb;text-align:center;color:#64748b;">No history available</td></tr>';
+
+    return `
+        <div style="font-family:Inter,Arial,sans-serif;color:#0f172a;padding:6px 5px;margin:0;box-sizing:border-box;overflow:visible;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:8px;">
+                <div style="flex:1;">
+                    <h2 style="margin:0 0 1px 0;font-size:14px;font-weight:800;line-height:1.2;">Expense Detail Report</h2>
+                    <p style="margin:2px 0 0 0;font-size:9px;color:#475569;">Employee Portal • Generated on ${generatedAt.toLocaleString()}</p>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    <p style="margin:0;font-size:8px;color:#64748b;font-weight:700;">Report ID</p>
+                    <p style="margin:1px 0 0 0;font-size:10px;font-weight:700;word-break:break-all;">${escapeEmpPdfText(data.id || 'N/A')}</p>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Title</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${escapeEmpPdfText(data.title || 'N/A')}</p>
+                </div>
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Status</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${escapeEmpPdfText((data.status || 'N/A').replace(/_/g, ' '))}</p>
+                </div>
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Project</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${escapeEmpPdfText(data.projectCode || 'No Project')}</p>
+                </div>
+                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;">
+                    <p style="margin:0 0 2px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Total Amount</p>
+                    <p style="margin:0;font-size:11px;font-weight:700;">${currencySymbol}${Number(data.totalAmount || 0).toLocaleString()}</p>
+                </div>
+            </div>
+
+            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px;margin-bottom:8px;">
+                <p style="margin:0 0 3px 0;font-size:8px;color:#64748b;text-transform:uppercase;font-weight:700;">Notes / Description</p>
+                <p style="margin:0;font-size:10px;line-height:1.4;white-space:pre-wrap;">${escapeEmpPdfText((data.notes || '').trim() || 'No notes provided.')}</p>
+            </div>
+
+            <h3 style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#475569;margin:8px 0 4px;">Audit Metadata</h3>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-bottom:8px;">
+                ${auditRows}
+            </div>
+
+            <h3 style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#475569;margin:8px 0 4px;">Line Items</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:8px;table-layout:fixed;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:5%;">#</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:14%;">Category</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:30%;">Description</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:12%;">Date</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:11%;">Amount</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:28%;">Receipt / Proof</th>
+                    </tr>
+                </thead>
+                <tbody>${lineItemRows}</tbody>
+            </table>
+
+            <h3 style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#475569;margin:8px 0 4px;">Status History</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:8px;table-layout:fixed;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:5%;">#</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:15%;">Action</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:18%;">By</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:18%;">Date</th>
+                        <th style="padding:4px;border:1px solid #e5e7eb;width:44%;">Comments</th>
+                    </tr>
+                </thead>
+                <tbody>${historyRows}</tbody>
+            </table>
+        </div>
+    `;
+};
+
+window.downloadEmployeeExpensePdf = async () => {
+    const data = window.currentViewedExpenseData;
+    if (!data) {
+        window.showToast('Open an expense first to download detailed PDF.', 'warning');
+        return;
+    }
+    if (typeof html2pdf === 'undefined') {
+        window.showToast('PDF engine not loaded. Please refresh and retry.', 'error');
+        return;
+    }
+
+    const container = document.createElement('div');
+    const downloaderIdentity = window.userData?.email || window.currentUser?.email || 'Employee User';
+    container.innerHTML = buildEmployeeExpensePdfHtml(data, downloaderIdentity);
+    container.style.background = '#ffffff';
+    container.style.width = '730px';
+    container.style.margin = '0';
+    container.style.padding = '0';
+    container.style.boxSizing = 'border-box';
+    container.style.overflow = 'visible';
+
+    try {
+        window.showToast('Preparing detailed PDF...', 'info');
+        await html2pdf().set({
+            margin: [15, 12, 15, 12],
+            filename: `expense_detail_${data.id || 'expense'}_${new Date().toISOString().split('T')[0]}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 1.2, useCORS: true, windowWidth: 730, allowTaint: true, logging: false, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'] }
+        }).from(container).save();
+        window.showToast('Detailed expense PDF downloaded.', 'success');
+    } catch (e) {
+        console.error(e);
+        window.showToast('PDF export failed: ' + e.message, 'error');
+    }
+};
+
+window.downloadEmployeeExpenseDocx = async () => {
+    const data = window.currentViewedExpenseData;
+    if (!data) {
+        window.showToast('Open an expense first to download detailed DOCX.', 'warning');
+        return;
+    }
+    const downloaderIdentity = window.userData?.email || window.currentUser?.email || 'Employee User';
+    await window.downloadExpenseAsDocx(data, data.id, 'Employee Portal', downloaderIdentity);
+};
+
 window.viewReportHistory = (input) => {
     const data = (typeof input === 'string') ? window.expensesData.find(e => e.id === input) : input;
     if (!data) return;
+    window.currentViewedExpenseData = data;
 
     const modal = document.getElementById('modal-view');
     if (!modal) return;
