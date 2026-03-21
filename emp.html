@@ -59,6 +59,7 @@
             });
         })();
     </script>
+    <link rel="stylesheet" href="/css/responsive-fixes.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -988,6 +989,7 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
+            <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden lg:hidden" onclick="toggleMobileSidebar()"></div>
 
             <nav class="flex-1 px-3 space-y-1">
                 <div class="px-3 mb-2">

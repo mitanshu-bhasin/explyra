@@ -329,9 +329,10 @@ function renderChatUserSearch(term, globalLastText = "Company wide chat", chatMe
 }
 
 window.selectChat = (contextId) => {
+    if (!contextId) return;
     window.currentChatContext = contextId;
     
-    if (contextId === 'global') {
+    if (contextId === 'global' || contextId === 'global_chat') {
         window.currentChatUser = null;
         window.currentGroupChat = null;
     } else if (contextId.startsWith('group_')) {
@@ -347,7 +348,7 @@ window.selectChat = (contextId) => {
     const mainArea = document.getElementById('chat-main-area');
     if (mainArea) {
         mainArea.classList.remove('translate-x-full');
-        mainArea.classList.add('translate-x-0');
+        mainArea.classList.add('translate-x-0', 'active');
     }
 
     // Header Update

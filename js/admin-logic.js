@@ -333,19 +333,23 @@ async function loadCompanyBranding(companyId) {
             const data = settingsSnap.data();
 
             if (data.companyName) {
-                document.getElementById('login-company-name').textContent = data.companyName;
-                document.getElementById('sidebar-company-name').innerHTML = data.companyName.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
+                const loginName = document.getElementById('login-company-name');
+                if (loginName) loginName.textContent = data.companyName;
+                const sidebarName = document.getElementById('sidebar-company-name');
+                if (sidebarName) sidebarName.innerHTML = data.companyName.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
             }
 
             if (data.logo) {
                 const logoImg = document.getElementById('login-logo-img');
                 const logoFallback = document.getElementById('login-logo-fallback');
-                logoImg.src = data.logo;
-                logoImg.classList.remove('hidden');
-                logoFallback.classList.add('hidden');
+                if (logoImg) {
+                    logoImg.src = data.logo;
+                    logoImg.classList.remove('hidden');
+                    if (logoFallback) logoFallback.classList.add('hidden');
+                }
 
                 // Update sidebar logo
-                const sidebarLogo = document.querySelector('.fa-bolt').parentElement;
+                const sidebarLogo = document.querySelector('.fa-bolt')?.parentElement;
                 if (sidebarLogo) {
                     sidebarLogo.innerHTML = `<img src="${data.logo}" class="w-6 h-6 object-contain mr-2">`;
                 }
@@ -356,17 +360,21 @@ async function loadCompanyBranding(companyId) {
             if (cmpSnap.exists()) {
                 const cmpData = cmpSnap.data();
                 if (cmpData.name) {
-                    document.getElementById('login-company-name').textContent = cmpData.name;
-                    document.getElementById('sidebar-company-name').innerHTML = cmpData.name.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
+                    const loginName = document.getElementById('login-company-name');
+                    if (loginName) loginName.textContent = cmpData.name;
+                    const sidebarName = document.getElementById('sidebar-company-name');
+                    if (sidebarName) sidebarName.innerHTML = cmpData.name.replace(/(\S+)/, '$1<span class="text-green-500">Portal</span>');
                 }
                 if (cmpData.logo) {
                     const logoImg = document.getElementById('login-logo-img');
                     const logoFallback = document.getElementById('login-logo-fallback');
-                    logoImg.src = cmpData.logo;
-                    logoImg.classList.remove('hidden');
-                    logoFallback.classList.add('hidden');
+                    if (logoImg) {
+                        logoImg.src = cmpData.logo;
+                        logoImg.classList.remove('hidden');
+                        if (logoFallback) logoFallback.classList.add('hidden');
+                    }
 
-                    const sidebarLogo = document.querySelector('.fa-bolt').parentElement;
+                    const sidebarLogo = document.querySelector('.fa-bolt')?.parentElement;
                     if (sidebarLogo) {
                         sidebarLogo.innerHTML = `<img src="${cmpData.logo}" class="w-6 h-6 object-contain mr-2">`;
                     }

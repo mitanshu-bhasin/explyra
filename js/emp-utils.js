@@ -480,13 +480,18 @@ window.toggleMainView = (viewId, options = {}) => {
 
 window.toggleMobileSidebar = () => {
     const sidebar = document.getElementById('main-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
     if (sidebar) {
-        if (sidebar.classList.contains('hidden')) {
+        if (sidebar.classList.contains('hidden') || sidebar.style.display === 'none') {
             sidebar.classList.remove('hidden');
-            sidebar.classList.add('flex', 'absolute', 'z-50', 'h-full', 'left-0');
+            sidebar.classList.add('flex', 'fixed', 'z-50', 'h-full', 'left-0');
+            sidebar.style.display = 'flex';
+            if (overlay) overlay.classList.remove('hidden');
         } else {
             sidebar.classList.add('hidden');
-            sidebar.classList.remove('flex', 'absolute', 'z-50', 'h-full', 'left-0');
+            sidebar.classList.remove('flex', 'fixed', 'z-50', 'h-full', 'left-0');
+            sidebar.style.display = 'none';
+            if (overlay) overlay.classList.add('hidden');
         }
     }
 };
