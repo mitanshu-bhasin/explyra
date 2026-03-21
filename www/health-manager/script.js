@@ -9,7 +9,7 @@ if (typeof __firebase_config !== 'undefined') {
 } else {
         // Fallback to user provided config for local testing (Localhost)
         firebaseConfig = {
-        apiKey: "AIzaSyAoDQhHlUbiUl57azSrst5M2eGDeQ8EydA",
+        apiKey: "REDACTED_KEY_2",
         authDomain: "mitanshusupport.firebaseapp.com",
         projectId: "mitanshusupport",
         storageBucket: "mitanshusupport.firebasestorage.app",
@@ -48,7 +48,7 @@ let FOOD_DB = [];
 let EXERCISE_DB = []; // Will be loaded from CSV
 
 // --- AI CONFIGURATION ---
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = "REDACTED_GROQ_API_KEY_3";
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const AI_MODEL = "llama-3.3-70b-versatile"; 
 

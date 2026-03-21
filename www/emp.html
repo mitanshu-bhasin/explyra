@@ -278,7 +278,7 @@
 
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
+    <script>emailjs.init((window.EXPLYRA_CONFIG?.emailjs?.publicKey || ""));</script>
 
 
     

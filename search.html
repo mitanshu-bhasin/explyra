@@ -377,7 +377,7 @@
             try {
                 // Use global config if available, otherwise fallback to hardcoded new values
                 const apiBase = window.AI_CONFIG?.url || 'https://api.groq.com/openai/v1/chat/completions';
-                const apiKey = window.AI_CONFIG?.apiKey || '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';
+                const apiKey = window.AI_CONFIG?.apiKey || 'REDACTED_GROQ_API_KEY_2';
                 const apiModel = window.AI_CONFIG?.model || 'moonshotai/kimi-k2-instruct';
 
                 const res = await fetch(apiBase, {

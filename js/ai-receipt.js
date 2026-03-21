@@ -53,7 +53,7 @@ window.scanReceiptAI = async (input) => {
             const LOCAL_HOSTS = ['localhost', '127.0.0.1'];
             if (LOCAL_HOSTS.includes(window.location.hostname)) {
                 console.info("Using Direct Gemini API Fallback for Local Dev...");
-                const DEV_KEY = 'AIzaSyDVSn3L5_JyFOol8IsnGDktYiv1znqFmdA';
+                const DEV_KEY = (window.EXPLYRA_CONFIG?.ai?.geminiKey || "REDACTED");
                 const MODEL = 'gemini-flash-latest';
                 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${DEV_KEY}`;
                 

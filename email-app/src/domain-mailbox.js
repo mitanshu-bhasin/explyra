@@ -17,7 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+  apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
   authDomain: "explyras.firebaseapp.com",
   projectId: "explyras",
   storageBucket: "explyras.firebasestorage.app",

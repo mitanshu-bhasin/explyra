@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    apiKey: ""+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

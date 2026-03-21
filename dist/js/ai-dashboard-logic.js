@@ -189,7 +189,7 @@ export class AIDashboard {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer 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`
+                    'Authorization': `Bearer REDACTED_GROQ_API_KEY_2`
                 },
                 body: JSON.stringify({
                     model: 'moonshotai/kimi-k2-instruct-0905',

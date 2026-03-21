@@ -2,7 +2,7 @@
 import { collection, query, where, orderBy, limit, getDocs, addDoc, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const AI_CONFIG = window.AI_CONFIG || {
-    apiKey: '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',
+    apiKey: (window.EXPLYRA_CONFIG?.ai?.apiKey || "REDACTED"),
     url: 'https://api.groq.com/openai/v1/chat/completions',
     model: 'moonshotai/kimi-k2-instruct-0905'
 };

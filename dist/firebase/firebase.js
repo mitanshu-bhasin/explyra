@@ -1,6 +1,6 @@
 // Firebase Configuration relocated for DNS system
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    apiKey: ""+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

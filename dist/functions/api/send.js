@@ -26,8 +26,8 @@ export async function onRequest(context) {
     }
 
     // Environment variables with fallback for local dev/initial deploy
-    const RESEND_KEY = env.RESEND_API_KEY || 're_frUajX2k_7oWbz3faKEkzYcH4hfJetQnw';
-    const FIREBASE_API_KEY = env.FIREBASE_API_KEY || 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0';
+    const RESEND_KEY = env.RESEND_API_KEY || 'REDACTED_RESEND_KEY';
+    const FIREBASE_API_KEY = env.FIREBASE_API_KEY || '"+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"';
     
     if (!RESEND_KEY) {
       return new Response(JSON.stringify({ error: 'RESEND_API_KEY is not configured' }), { status: 500, headers });

@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
     }
 
     // Environment variables
-    const RESEND_KEY = process.env.RESEND_API_KEY || 're_frUajX2k_7oWbz3faKEkzYcH4hfJetQnw';
+    const RESEND_KEY = process.env.RESEND_API_KEY || 'REDACTED_RESEND_KEY';
     const fromAddress = from || 'Mitanshu <mitanshu@explyra.me>';
 
     const response = await fetch('https://api.resend.com/emails', {
@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
       // Save to Firestore "emails" collection for the "Sent" folder
       try {
         const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'explyras';
-        const API_KEY = process.env.FIREBASE_API_KEY || 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0';
+        const API_KEY = process.env.FIREBASE_API_KEY || '"+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"';
         const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/emails?key=${API_KEY}`;
 
         await fetch(firestoreUrl, {

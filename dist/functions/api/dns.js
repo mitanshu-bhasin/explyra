@@ -14,7 +14,7 @@ export async function onRequest(context) {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const CLOUDFLARE_API_TOKEN = env.CLOUDFLARE_API_TOKEN || 'YgjDGPr4Kt2A2lnTVI71vaJqDPs70LAue9c1ZGMK';
+  const CLOUDFLARE_API_TOKEN = env.CLOUDFLARE_API_TOKEN || 'REDACTED_CLOUDFLARE_TOKEN';
   const CLOUDFLARE_ZONE_ID = env.CLOUDFLARE_ZONE_ID || '17279e3699e4721a9952206ddbe8b1ee';
   
   const cfBaseUrl = `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/dns_records`;

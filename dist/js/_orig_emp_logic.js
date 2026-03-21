@@ -77,7 +77,7 @@ const IMGBB_KEY = "dbcb9de125850fefa4337db8d1f37ab6";
 const IMGBB_URL = "https://api.imgbb.com/1/upload";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    apiKey: ""+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

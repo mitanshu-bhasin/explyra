@@ -5,7 +5,7 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

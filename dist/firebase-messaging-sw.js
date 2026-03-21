@@ -3,7 +3,7 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-comp
 
 // Service workers cannot access window.ENV, so config is hardcoded here
 const firebaseConfig = {
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    apiKey: ""+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

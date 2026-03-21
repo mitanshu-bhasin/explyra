@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const { type, name, content, ttl, proxied, action } = req.body;
 
-  const CLOUDFLARE_API_TOKEN = 'YgjDGPr4Kt2A2lnTVI71vaJqDPs70LAue9c1ZGMK';
+  const CLOUDFLARE_API_TOKEN = 'REDACTED_CLOUDFLARE_TOKEN';
   const CLOUDFLARE_ZONE_ID = '17279e3699e4721a9952206ddbe8b1ee';
 
   try {

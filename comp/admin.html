@@ -836,8 +836,8 @@
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
         const IMAGEKIT_URL = window.EXPLYRA_CONFIG?.imagekit?.url || "https://upload.imagekit.io/api/v1/files/upload";
-        const IMAGEKIT_PUBLIC_KEY = window.EXPLYRA_CONFIG?.imagekit?.publicKey || "public_A7ZHxCiIBfl/fxzXlk1tXUUR+B4=";
-        const IMAGEKIT_PRIVATE_KEY = window.EXPLYRA_CONFIG?.imagekit?.privateKey || "private_m7Ie0ZXD/4WpBlly116odVbWhhM=";
+        const IMAGEKIT_PUBLIC_KEY = window.EXPLYRA_CONFIG?.imagekit?.publicKey || (window.EXPLYRA_CONFIG?.imagekit?.publicKey || "");
+        const IMAGEKIT_PRIVATE_KEY = window.EXPLYRA_CONFIG?.imagekit?.privateKey || "REDACTED";
     </script>
     <script type="module">
         import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
@@ -870,7 +870,7 @@
 
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init("i1GEROAXLarlKvxnp");</script>
+    <script>emailjs.init((window.EXPLYRA_CONFIG?.emailjs?.publicKey || ""));</script>
 
 
 

@@ -1,6 +1,6 @@
 // Explyra AI Configuration
 const AI_CONFIG = {
-    apiKey: window.EXPLYRA_CONFIG?.ai?.apiKey || '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',
+    apiKey: window.EXPLYRA_CONFIG?.ai?.apiKey || 'REDACTED_GROQ_API_KEY_2',
     url: 'https://api.groq.com/openai/v1/chat/completions',
     model: 'moonshotai/kimi-k2-instruct-0905'
 };

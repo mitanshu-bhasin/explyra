@@ -1,6 +1,6 @@
 
 const PROJECT_ID = 'explyras';
-const API_KEY = 'AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0';
+const API_KEY = (window.EXPLYRA_CONFIG?.firebase?.apiKey || "");
 const EMAIL = 'explyras@gmail.com';
 
 async function findUserId() {

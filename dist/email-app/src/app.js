@@ -30,7 +30,7 @@ import {
 // 🔧 Firebase Config
 // ============================
 const firebaseConfig = {
-  apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+  apiKey: ""+"(window.EXPLYRA_CONFIG?.firebase?.apiKey || "")+"",
   authDomain: "explyras.firebaseapp.com",
   projectId: "explyras",
   storageBucket: "explyras.firebasestorage.app",
