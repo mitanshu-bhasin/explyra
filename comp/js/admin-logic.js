@@ -460,8 +460,10 @@ onAuthStateChanged(auth, async (user) => {
                 userData.docId = snap.docs[0].id; // crucial for updates
                 const urlCompanyId = window.ExplyraTenant?.getCompanyIdFromPath() || null;
                 if (urlCompanyId && userData.companyId && urlCompanyId !== userData.companyId) {
-                    showToast('Company access mismatch. Please use your own workspace link.', 'error');
-                    await signOut(auth);
+                    showToast('Company access mismatch. Redirecting to your workspace...', 'error');
+                    setTimeout(() => {
+                        window.location.href = window.ExplyraTenant?.buildTenantUrl('admin.html', userData.companyId) || '/admin.html';
+                    }, 1500);
                     return;
                 }
                 if (urlCompanyId && !userData.companyId) {
@@ -2593,6 +2595,13 @@ async function renderSettings() {
                             <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Billing / Cost</p>
                                 <p class="text-slate-800 dark:text-slate-100 font-semibold">${costText}${durationText}</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 md:col-span-2">
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Workspace URL</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-slate-800 dark:text-slate-100 font-mono text-xs max-w-[300px] truncate break-all" title="https://comp.explyra.me/${userData.companyId}/admin.html">https://comp.explyra.me/${userData.companyId}/admin.html</p>
+                                    <button onclick="navigator.clipboard.writeText('https://comp.explyra.me/${userData.companyId}/admin.html'); showToast('Workspace URL copied!', 'success');" class="text-blue-600 hover:text-blue-800 transition flex-shrink-0"><i class="fa-regular fa-copy"></i></button>
+                                </div>
                             </div>
                             ${endsAtDate ? `
                             <div class="p-4 ${isTrial ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30' : 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800/30'} rounded-xl border md:col-span-2 flex items-start gap-3">
