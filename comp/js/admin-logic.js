@@ -67,9 +67,44 @@ try {
     console.warn("FCM error:", e);
 }
 
-let currentUser = null;
+// Workspace URL helper with copy feedback animation
+window.copyWorkspaceUrl = function(companyId, showFeedback = true) {
+    if (!window.ExplyraTenant?.isCompanyId(companyId)) {
+        if (showFeedback) showToast('Invalid company ID format', 'error');
+        return false;
+    }
+    const url = window.ExplyraTenant.generateWorkspaceUrl(companyId);
+    if (!url) {
+        if (showFeedback) showToast('Failed to generate workspace URL', 'error');
+        return false;
+    }
+    navigator.clipboard.writeText(url).then(() => {
+        if (showFeedback) {
+            showToast('Workspace URL copied to clipboard! ✓', 'success');
+            const btn = document.querySelector('[data-workspace-copy]');
+            if (btn) {
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fa-solid fa-check text-green-600';
+                    setTimeout(() => { icon.className = 'fa-regular fa-copy'; }, 2000);
+                }
+            }
+        }
+    }).catch(err => {
+        console.error('Copy failed:', err);
+        if (showFeedback) showToast('Copy failed. Try manual selection.', 'error');
+    });
+    return true;
+};
 
-// ======== INJECTED INTERNATIONALIZATION & ERROR HELPERS ========
+// Generate workspace URL display
+window.getWorkspaceUrlDisplay = function(companyId) {
+    if (!window.ExplyraTenant?.isCompanyId(companyId)) return null;
+    const url = window.ExplyraTenant.generateWorkspaceUrl(companyId);
+    return url || `https://comp.explyra.me/${companyId}/admin.html`;
+};
+
+
 // ======== EXCHANGE RATE CACHE & HELPERS ========
 window.exchangeRates = null;
 window.baseCurrency = 'INR'; // Default, will be loaded from settings
@@ -460,10 +495,13 @@ onAuthStateChanged(auth, async (user) => {
                 userData.docId = snap.docs[0].id; // crucial for updates
                 const urlCompanyId = window.ExplyraTenant?.getCompanyIdFromPath() || null;
                 if (urlCompanyId && userData.companyId && urlCompanyId !== userData.companyId) {
-                    showToast('Company access mismatch. Redirecting to your workspace...', 'error');
-                    setTimeout(() => {
-                        window.location.href = window.ExplyraTenant?.buildTenantUrl('admin.html', userData.companyId) || '/admin.html';
-                    }, 1500);
+                    // Company ID mismatch - redirect to user's actual workspace
+                    if (!window.__redirectedFromMismatch) {
+                        window.__redirectedFromMismatch = true;
+                        showToast(`Workspace mismatch. Redirecting to ${userData.companyId.substring(4, 8)}...`, 'warning');
+                        const targetUrl = window.ExplyraTenant?.generateWorkspaceUrl(userData.companyId) || '/admin.html';
+                        setTimeout(() => { window.location.href = targetUrl; }, 1500);
+                    }
                     return;
                 }
                 if (urlCompanyId && !userData.companyId) {
@@ -2596,12 +2634,16 @@ async function renderSettings() {
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Billing / Cost</p>
                                 <p class="text-slate-800 dark:text-slate-100 font-semibold">${costText}${durationText}</p>
                             </div>
-                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 md:col-span-2">
-                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Workspace URL</p>
-                                <div class="flex items-center gap-2">
-                                    <p class="text-slate-800 dark:text-slate-100 font-mono text-xs max-w-[300px] truncate break-all" title="https://comp.explyra.me/${userData.companyId}/admin.html">https://comp.explyra.me/${userData.companyId}/admin.html</p>
-                                    <button onclick="navigator.clipboard.writeText('https://comp.explyra.me/${userData.companyId}/admin.html'); showToast('Workspace URL copied!', 'success');" class="text-blue-600 hover:text-blue-800 transition flex-shrink-0"><i class="fa-regular fa-copy"></i></button>
+                            <div class="p-4 md:p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/10 rounded-xl border-2 border-blue-200 dark:border-blue-700/50 md:col-span-3 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-start justify-between gap-3 mb-2">
+                                    <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider"><i class="fa-solid fa-link mr-1"></i>Workspace Share Link</p>
+                                    <span class="px-2 py-0.5 bg-blue-200 dark:bg-blue-700 text-blue-700 dark:text-blue-200 text-xs font-bold rounded-full">PRODUCTION</span>
                                 </div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <code id="workspace-url-display" class="flex-1 text-xs md:text-sm bg-white dark:bg-slate-800 p-2.5 rounded border border-blue-200 dark:border-blue-600 text-blue-900 dark:text-blue-300 font-mono overflow-x-auto break-words whitespace-pre-wrap">https://comp.explyra.me/${userData.companyId}/admin.html</code>
+                                    <button onclick="window.copyWorkspaceUrl('${userData.companyId}', true)" data-workspace-copy class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition flex-shrink-0 flex items-center gap-1.5"><i class="fa-regular fa-copy"></i><span class="hidden sm:inline text-xs">Copy</span></button>
+                                </div>
+                                <p class="text-xs text-blue-700 dark:text-blue-400"><i class="fa-solid fa-info-circle mr-1"></i>Share this link with team members to access the workspace</p>
                             </div>
                             ${endsAtDate ? `
                             <div class="p-4 ${isTrial ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30' : 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800/30'} rounded-xl border md:col-span-2 flex items-start gap-3">

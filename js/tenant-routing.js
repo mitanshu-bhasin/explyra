@@ -186,6 +186,11 @@
         window.location.href = buildTenantUrl(targetPath, companyId);
     }
 
+    function generateWorkspaceUrl(companyId, page = 'admin.html') {
+        if (!isCompanyId(companyId)) return null;
+        return buildTenantUrl(page, companyId);
+    }
+
     window.ExplyraTenant = {
         isCompanyId,
         getCompanyIdFromPath,
@@ -198,7 +203,8 @@
         applyTenantLinkTransform,
         toTenantAwareNavigationUrl,
         enforceTenantNavigation,
-        redirectToTenantPath
+        redirectToTenantPath,
+        generateWorkspaceUrl
     };
 
     const autoCompanyId = getCompanyIdFromPath();
