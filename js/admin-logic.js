@@ -67,6 +67,8 @@ try {
     console.warn("FCM error:", e);
 }
 
+let currentUser = null;
+
 // Workspace URL helper with copy feedback animation
 window.copyWorkspaceUrl = function(companyId, showFeedback = true) {
     if (!window.ExplyraTenant?.isCompanyId(companyId)) {
