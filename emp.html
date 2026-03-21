@@ -7,6 +7,7 @@
     <meta name="twitter:site" content="@explyras" />
     <meta name="twitter:creator" content="@explyras" />
     <meta charset="UTF-8">
+    <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="theme-color" content="#1546C0">
@@ -45,19 +46,22 @@
 
 
     <title>Emp — Free Explyra Suite Tool | Fast & Secure</title>
+    <script src="js/tenant-routing.js"></script>
     <script>
-        (function () {
+        function initTheme() {
             const theme = localStorage.getItem('explyra-theme') || 'light';
-            if (theme === 'dark') document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+        }
 
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'explyra-theme') {
-                    if (e.newValue === 'dark') document.documentElement.classList.add('dark');
-                    else document.documentElement.classList.remove('dark');
-                }
-            });
-        })();
+        window.toggleTheme = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            localStorage.setItem('explyra-theme', newTheme);
+            document.documentElement.classList.toggle('dark', newTheme === 'dark');
+            if (window.showToast) window.showToast(`Switched to ${newTheme} mode`, 'info');
+        };
+
+        initTheme();
     </script>
     <link rel="stylesheet" href="/css/responsive-fixes.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -678,6 +682,47 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* Password Strength Meter */
+        .strength-meter {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            height: 5px;
+        }
+        .strength-bar {
+            flex: 1;
+            height: 100%;
+            background: #f1f5f9;
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .strength-bar {
+            background: #1e293b;
+        }
+        .password-rules {
+            margin-top: 12px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            transition: all 0.3s;
+        }
+        .rule-item i {
+            font-size: 10px;
+            opacity: 0.4;
+        }
+        .rule-item.met {
+            color: #10b981;
+        }
+        .rule-item.met i {
+            color: #10b981;
+            opacity: 1;
+        }
     </style>
     <link rel="manifest" href="manifest.json">
     <script>
@@ -752,25 +797,24 @@
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2"></div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full h-[100dvh] flex flex-col relative overflow-y-auto overflow-x-hidden">
-        <!-- Card Container - Uses flex-1 to push footer down -->
-        <div
-            class="w-full flex-1 flex flex-col items-center justify-center p-4 py-12 relative z-10 transition-all duration-500">
+    <div id="auth-screen" class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black transition-colors duration-500">
+        <!-- Premium Background Gradients -->
+        <div class="fixed inset-0 z-0 pointer-events-none">
+            <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[120px] animate-pulse"></div>
+            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s"></div>
+        </div>
 
-            <div
-                class="card p-6 md:p-8 rounded-2xl w-full max-w-md z-10 relative bg-white/90 dark:bg-slate-800/90 backdrop-blur mb-8 shadow-xl border border-slate-100 dark:border-slate-700">
-                <div class="text-center mb-8">
+        <div class="w-full flex-1 flex flex-col items-center justify-center p-6 relative z-10 transition-all duration-500">
+            <div class="vercel-card p-8 md:p-10 rounded-3xl w-full max-w-md bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl mb-8 shadow-2xl border border-slate-100 dark:border-white/5 animate-fade-in">
+                <div class="text-center mb-10">
                     <div id="login-logo-container"
-                        class="w-20 h-20 bg-black dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl overflow-hidden">
+                        class="w-20 h-20 bg-black dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl overflow-hidden group transition-transform hover:scale-105">
                         <img id="login-logo-img" class="w-full h-full object-contain hidden"
                             src="assets/images/explyra_logo.png" alt="Company Logo">
-                        <i id="login-logo-fallback" class="fa-solid fa-bolt text-3xl text-white dark:text-black"></i>
+                        <i id="login-logo-fallback" class="fa-solid fa-bolt text-3xl text-white dark:text-black group-hover:rotate-12 transition-transform"></i>
                     </div>
-                    <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100" id="login-company-name">Explyra
-                        Expense Manager
-                    </h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Sign in to manage your corporate expenses
-                    </p>
+                    <h1 class="text-3xl font-black tracking-tighter text-slate-800 dark:text-slate-100" id="login-company-name">Explyra Expense Portal</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">Sign in to manage your corporate expenses</p>
                 </div>
 
                 <form id="login-form" class="space-y-4">
@@ -833,6 +877,28 @@
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-3 top-3.5 text-slate-400"></i>
                             <input type="password" id="signup-password"
+                                class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm" placeholder="••••••••"
+                                oninput="updateStrength(this.value)" autocomplete="new-password" required>
+                        </div>
+                        <div class="strength-meter">
+                            <div class="strength-bar" id="bar-1"></div>
+                            <div class="strength-bar" id="bar-2"></div>
+                            <div class="strength-bar" id="bar-3"></div>
+                        </div>
+                        <div class="password-rules">
+                            <div class="rule-item" id="rule-len"><i class="fa-solid fa-circle"></i> 8+ characters</div>
+                            <div class="rule-item" id="rule-cap"><i class="fa-solid fa-circle"></i> Uppercase letter</div>
+                            <div class="rule-item" id="rule-low"><i class="fa-solid fa-circle"></i> Lowercase letter</div>
+                            <div class="rule-item" id="rule-num"><i class="fa-solid fa-circle"></i> A number</div>
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Confirm
+                            Password</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-shield-check absolute left-3 top-3.5 text-slate-400"></i>
+                            <input type="password" id="confirm-password"
                                 class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm" placeholder="••••••••"
                                 autocomplete="new-password" required>
                         </div>
@@ -989,7 +1055,9 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden lg:hidden" onclick="toggleMobileSidebar()"></div>
+            <div id="mobile-sidebar-overlay"
+                class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden lg:hidden"
+                onclick="toggleMobileSidebar()"></div>
 
             <nav class="flex-1 px-3 space-y-1">
                 <div class="px-3 mb-2">
@@ -1072,10 +1140,17 @@
                         <i class="fa-solid fa-bars-staggered"></i>
                     </button>
 
+                    <!-- Theme Toggle -->
+                    <button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors" 
+                            onclick="toggleTheme()" title="Toggle Theme">
+                        <i class="fa-solid fa-moon dark:hidden text-slate-600"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-slate-300"></i>
+                    </button>
+
                     <!-- Search Bar -->
                     <div class="max-w-md w-full relative hidden sm:block">
                         <i
-                            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs text-slate-400"></i>
                         <input type="text" placeholder="Search claims, tasks..." class="input-geist pl-9 w-full"
                             id="global-search-input" onkeyup="filterExpenses(this.value)">
                     </div>
@@ -1107,10 +1182,7 @@
                                 class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-black hidden"></span>
                         </button>
 
-                        <button onclick="toggleTheme()" aria-label="Toggle theme"
-                            class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors">
-                            <i class="fa-solid fa-moon theme-toggle-icon text-sm text-gray-500 dark:text-gray-400"></i>
-                        </button>
+
 
                         <div class="h-6 w-[1px] bg-[#eaeaea] dark:border-[#333] mx-1"></div>
 
@@ -1468,35 +1540,42 @@
                         </div>
 
                         <!-- Reply Preview Area -->
-                        <div id="reply-preview-container" class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden flex items-center gap-3">
+                        <div id="reply-preview-container"
+                            class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden flex items-center gap-3">
                             <div class="w-1 bg-green-500 h-10 rounded-full"></div>
                             <div class="flex-1 min-w-0">
-                                <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
+                                <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying
+                                    to...</p>
                                 <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
                             </div>
-                            <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">
+                            <button onclick="cancelReply()"
+                                class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">
                                 <i class="fa-solid fa-xmark text-xs"></i>
                             </button>
                         </div>
 
                         <!-- Voice Recorder UI (Floating/Inline overlay) -->
-                        <div id="voice-recorder-ui" class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden items-center gap-4 animate-in slide-in-from-bottom-2 duration-200">
-                             <div class="flex items-center gap-2 text-red-500 animate-pulse">
-                                 <i class="fa-solid fa-microphone"></i>
-                                 <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
-                             </div>
-                             <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                 <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width: 0%"></div>
-                             </div>
-                             <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
-                             <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition">
-                                 <i class="fa-solid fa-paper-plane"></i>
-                             </button>
+                        <div id="voice-recorder-ui"
+                            class="px-4 py-2 border-t border-[#eaeaea] dark:border-[#333] bg-[#fafafa] dark:bg-black hidden items-center gap-4 animate-in slide-in-from-bottom-2 duration-200">
+                            <div class="flex items-center gap-2 text-red-500 animate-pulse">
+                                <i class="fa-solid fa-microphone"></i>
+                                <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
+                            </div>
+                            <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75"
+                                    style="width: 0%"></div>
+                            </div>
+                            <button onclick="cancelVoiceRecord()"
+                                class="text-xs font-bold text-slate-500 hover:text-slate-800">Cancel</button>
+                            <button onclick="stopAndSendVoice()"
+                                class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
                         </div>
 
                         <form onsubmit="sendChatMessage(event)" id="chat-form-emp"
                             class="p-4 border-t border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black flex gap-3 shrink-0 items-center">
-                            
+
                             <input type="hidden" id="reply-message-id">
 
                             <!-- Hidden File Input -->
@@ -1526,7 +1605,7 @@
                                     class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-[#eaeaea] dark:border-[#333] rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1 custom-scrollbar">
                                 </div>
                             </div>
-                            
+
                             <!-- Voice Recording Trigger -->
                             <button type="button" onclick="startVoiceRecord()" id="btn-voice-record"
                                 class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition shadow-sm shrink-0"
@@ -1980,21 +2059,26 @@
             class="bg-white/95 dark:bg-slate-800/95 w-full max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-700 ring-1 ring-white/60 dark:ring-slate-700/60 shadow-2xl flex flex-col max-h-[90vh] animate-[slideUp_0.2s_ease-out]">
             <div
                 class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shrink-0 rounded-t-3xl">
-                <h3 id="my-profile-title" class="text-lg md:text-xl font-black text-slate-800 dark:text-slate-100">My Profile</h3>
-                <button onclick="closeModal('modal-profile')"
-                    aria-label="Close profile"
+                <h3 id="my-profile-title" class="text-lg md:text-xl font-black text-slate-800 dark:text-slate-100">My
+                    Profile</h3>
+                <button onclick="closeModal('modal-profile')" aria-label="Close profile"
                     class="w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 transition flex items-center justify-center hover:bg-white/80 dark:hover:bg-slate-800">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <form id="profile-form" onsubmit="window.submitProfile(event)" class="p-6 space-y-4 overflow-y-auto">
-                <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4 py-3 flex items-center justify-between gap-3 shadow-sm">
+                <div
+                    class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4 py-3 flex items-center justify-between gap-3 shadow-sm">
                     <div class="min-w-0">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Work Identity</p>
-                        <span id="profile-company-display" class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate block">Company Name</span>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                            Work Identity</p>
+                        <span id="profile-company-display"
+                            class="text-sm font-bold text-slate-700 dark:text-slate-200 truncate block">Company
+                            Name</span>
                     </div>
-                    <span id="profile-company-verify-badge" class="px-1.5 py-0.5 rounded-full border border-slate-300 bg-slate-100 text-slate-500 text-[8px] font-bold uppercase tracking-wide">Unverified</span>
+                    <span id="profile-company-verify-badge"
+                        class="px-1.5 py-0.5 rounded-full border border-slate-300 bg-slate-100 text-slate-500 text-[8px] font-bold uppercase tracking-wide">Unverified</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2049,14 +2133,18 @@
                 </div>
 
                 <div class="pt-4 border-t border-slate-100 dark:border-slate-800 mt-2">
-                    <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <h5
+                        class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-file-export"></i> Data Export
                     </h5>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                        <button type="button" onclick="exportUserExpenses(currentUser.uid, 'CSV', userData.name)" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                        <button type="button" onclick="exportUserExpenses(currentUser.uid, 'CSV', userData.name)"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-file-csv text-green-600"></i> Export CSV
                         </button>
-                        <button type="button" onclick="exportUserExpenses(currentUser? currentUser.uid : '', 'SHEETS', userData? userData.name : 'Me')" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
+                        <button type="button"
+                            onclick="exportUserExpenses(currentUser? currentUser.uid : '', 'SHEETS', userData? userData.name : 'Me')"
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
                             <i class="fa-brands fa-google-drive text-blue-500"></i> Export to Sheets
                         </button>
                     </div>
@@ -2088,7 +2176,7 @@
                                 <i class="fa-solid fa-link"></i> Connect
                             </button>
                         </div>
-                        
+
                         <div
                             class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
                             <div class="flex items-center gap-3">
@@ -2109,7 +2197,7 @@
                                 <i class="fa-solid fa-link"></i> Connect
                             </button>
                         </div>
-                        
+
                         <div
                             class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex items-center justify-between mt-2">
                             <div class="flex items-center gap-3">
@@ -2120,7 +2208,8 @@
                                 </div>
                                 <div>
                                     <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Google Maps</h6>
-                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-maps-status-text">Not active</p>
+                                    <p class="text-[9px] text-slate-500 font-medium" id="emp-maps-status-text">Not
+                                        active</p>
                                 </div>
                             </div>
                             <button type="button" id="btn-emp-maps-connect"
@@ -2129,22 +2218,29 @@
                                 <i class="fa-solid fa-power-off"></i> Enable
                             </button>
                         </div>
-                        
-                        <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-3 mt-2">
-                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Google Workspace</h6>
-                            
+
+                        <div
+                            class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-3 mt-2">
+                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Google
+                                Workspace</h6>
+
                             <!-- Calendar -->
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-5 h-5">
+                                    <div
+                                        class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
+                                            alt="Google Calendar" class="w-5 h-5">
                                     </div>
                                     <div>
                                         <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Calendar</h6>
-                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gcalendar-status-text">Not connected</p>
+                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gcalendar-status-text">
+                                            Not connected</p>
                                     </div>
                                 </div>
-                                <button type="button" id="btn-emp-gcalendar-connect" onclick="window.GDriveService && window.GDriveService.authenticate(null, true)" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <button type="button" id="btn-emp-gcalendar-connect"
+                                    onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                                     <i class="fa-solid fa-link"></i> Connect
                                 </button>
                             </div>
@@ -2154,15 +2250,20 @@
                             <!-- Meet -->
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" alt="Google Meet" class="w-full h-full object-contain">
+                                    <div
+                                        class="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm p-1">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg"
+                                            alt="Google Meet" class="w-full h-full object-contain">
                                     </div>
                                     <div>
                                         <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Meet</h6>
-                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gmeet-status-text">Not connected</p>
+                                        <p class="text-[9px] text-slate-500 font-medium" id="emp-gmeet-status-text">Not
+                                            connected</p>
                                     </div>
                                 </div>
-                                <button type="button" id="btn-emp-gmeet-connect" onclick="window.GDriveService && window.GDriveService.authenticate(null, true)" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                <button type="button" id="btn-emp-gmeet-connect"
+                                    onclick="window.GDriveService && window.GDriveService.authenticate(null, true)"
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-sm">
                                     <i class="fa-solid fa-link"></i> Connect
                                 </button>
                             </div>
@@ -2191,7 +2292,9 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI Empowerment</label>
+                            <label
+                                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">AI
+                                Empowerment</label>
                             <label class="relative inline-flex items-center cursor-pointer w-full">
                                 <input type="checkbox" id="pref-ai-enabled" checked
                                     onchange="window.toggleAIFeatures && window.toggleAIFeatures(this.checked)"
@@ -2199,13 +2302,16 @@
                                 <div
                                     class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600">
                                 </div>
-                                <span class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable AI</span>
+                                <span
+                                    class="ml-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Enable
+                                    AI</span>
                             </label>
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Currency</label>
-                            <select id="emp-base-currency" onchange="window.updateBaseCurrency && window.updateBaseCurrency(this.value)"
+                            <select id="emp-base-currency"
+                                onchange="window.updateBaseCurrency && window.updateBaseCurrency(this.value)"
                                 class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs text-slate-700 dark:text-slate-200 outline-none">
                                 <option value="INR">INR (₹)</option>
                                 <option value="USD">USD ($)</option>
@@ -2215,19 +2321,27 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4 mb-2">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4 mb-2">
                         <div class="flex items-center justify-between mb-3">
                             <div>
-                                <h6 class="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest">Two-Step Verification</h6>
+                                <h6
+                                    class="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest">
+                                    Two-Step Verification</h6>
                                 <p class="text-[9px] text-slate-500 font-medium">Extra security with a 4-digit PIN.</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="profile-2fa-enabled" class="sr-only peer" onchange="document.getElementById('profile-2fa-pin-container').classList.toggle('hidden', !this.checked)">
-                                <div class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                <input type="checkbox" id="profile-2fa-enabled" class="sr-only peer"
+                                    onchange="document.getElementById('profile-2fa-pin-container').classList.toggle('hidden', !this.checked)">
+                                <div
+                                    class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                                </div>
                             </label>
                         </div>
                         <div id="profile-2fa-pin-container" class="hidden">
-                            <input type="password" id="profile-2fa-pin" maxlength="4" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-center text-lg tracking-[1em] font-bold outline-none focus:border-green-500" placeholder="••••">
+                            <input type="password" id="profile-2fa-pin" maxlength="4"
+                                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-center text-lg tracking-[1em] font-bold outline-none focus:border-green-500"
+                                placeholder="••••">
                         </div>
                     </div>
 
@@ -2526,7 +2640,8 @@
                                 <i class="fa-solid fa-video"></i>
                             </button>
                         </div>
-                        <button id="btn-chat-group-settings" onclick="window.openGroupSettings && window.openGroupSettings()"
+                        <button id="btn-chat-group-settings"
+                            onclick="window.openGroupSettings && window.openGroupSettings()"
                             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition flex items-center justify-center hidden">
                             <i class="fa-solid fa-gear"></i>
                         </button>
@@ -2544,41 +2659,61 @@
                     </div>
                 </div>
                 <!-- Reply Preview -->
-                <div id="reply-preview-container" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden items-center gap-3">
+                <div id="reply-preview-container"
+                    class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden items-center gap-3">
                     <div class="w-1 bg-green-500 h-10 rounded-full shrink-0"></div>
                     <div class="flex-1 min-w-0">
                         <p id="reply-to-name" class="text-[10px] font-bold text-green-600 uppercase">Replying to...</p>
                         <p id="reply-to-content" class="text-xs text-slate-500 truncate">Message content...</p>
                     </div>
-                    <button onclick="cancelReply()" class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0"><i class="fa-solid fa-xmark text-xs"></i></button>
+                    <button onclick="cancelReply()"
+                        class="w-6 h-6 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0"><i
+                            class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
 
                 <!-- Voice Recorder UI -->
-                <div id="voice-recorder-ui" class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 hidden items-center gap-3">
+                <div id="voice-recorder-ui"
+                    class="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 hidden items-center gap-3">
                     <div class="flex items-center gap-2 text-red-500 animate-pulse">
                         <i class="fa-solid fa-microphone"></i>
                         <span id="voice-timer" class="text-xs font-mono font-bold">0:00</span>
                     </div>
                     <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width:0%"></div>
+                        <div id="voice-waveform" class="h-full bg-red-500 transition-all duration-75" style="width:0%">
+                        </div>
                     </div>
-                    <button onclick="cancelVoiceRecord()" class="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">Cancel</button>
-                    <button onclick="stopAndSendVoice()" class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                    <button onclick="cancelVoiceRecord()"
+                        class="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">Cancel</button>
+                    <button onclick="stopAndSendVoice()"
+                        class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition shrink-0"><i
+                            class="fa-solid fa-paper-plane"></i></button>
                 </div>
 
                 <!-- Chat Input Form -->
-                <form onsubmit="sendChatMessage(event)" id="chat-form-emp" class="p-3 sm:p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 shrink-0 flex items-center gap-2">
-                    <input type="file" id="chat-file-emp-1" class="hidden" onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
-                    <button type="button" onclick="document.getElementById('chat-file-emp-1').click()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition shrink-0" title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
+                <form onsubmit="sendChatMessage(event)" id="chat-form-emp"
+                    class="p-3 sm:p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 shrink-0 flex items-center gap-2">
+                    <input type="file" id="chat-file-emp-1" class="hidden"
+                        onchange="handleChatAttachmentSelect(this, 'chat-input-emp')">
+                    <button type="button" onclick="document.getElementById('chat-file-emp-1').click()"
+                        class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 flex items-center justify-center transition shrink-0"
+                        title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
 
                     <div class="relative flex-1">
-                        <input type="text" id="chat-input-emp" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-4 pr-4 py-3 text-sm focus:ring-2 focus:ring-green-500 transition outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400" placeholder="Type a message or @mention..." autocomplete="off">
-                        <div id="mentions-dropdown-emp" class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1"></div>
+                        <input type="text" id="chat-input-emp"
+                            class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-4 pr-4 py-3 text-sm focus:ring-2 focus:ring-green-500 transition outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400"
+                            placeholder="Type a message or @mention..." autocomplete="off">
+                        <div id="mentions-dropdown-emp"
+                            class="absolute bottom-full left-0 mb-2 w-48 max-h-40 overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl hidden z-50 p-1 flex-col gap-1">
+                        </div>
                     </div>
 
-                    <button type="button" onclick="startVoiceRecord()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 text-slate-500 flex items-center justify-center transition shrink-0" title="Voice Message"><i class="fa-solid fa-microphone"></i></button>
+                    <button type="button" onclick="startVoiceRecord()"
+                        class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-red-50 hover:text-red-500 text-slate-500 flex items-center justify-center transition shrink-0"
+                        title="Voice Message"><i class="fa-solid fa-microphone"></i></button>
 
-                    <button type="submit" class="w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition active:scale-95 shrink-0"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    <button type="submit"
+                        class="w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition active:scale-95 shrink-0"><i
+                            class="fa-solid fa-paper-plane text-xs"></i></button>
                 </form>
             </div>
         </div>
@@ -3441,43 +3576,60 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="js/emp-p2p.js" type="module"></script>
     <!-- Group Settings Modal -->
-    <div id="modal-group-settings" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up flex flex-col max-h-[90vh]">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Group Settings</h3>
-                <button onclick="document.getElementById('modal-group-settings').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <div id="modal-group-settings"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-up flex flex-col max-h-[90vh]">
+            <div
+                class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Group
+                    Settings</h3>
+                <button onclick="document.getElementById('modal-group-settings').classList.add('hidden')"
+                    class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto p-6 space-y-6">
                 <!-- Group Identity -->
                 <div class="flex flex-col items-center gap-4">
-                    <div class="relative group cursor-pointer" onclick="document.getElementById('group-pic-input').click()">
-                        <div id="group-settings-pic" class="w-24 h-24 rounded-3xl bg-brand-500 flex items-center justify-center text-white text-3xl shadow-xl overflow-hidden">
+                    <div class="relative group cursor-pointer"
+                        onclick="document.getElementById('group-pic-input').click()">
+                        <div id="group-settings-pic"
+                            class="w-24 h-24 rounded-3xl bg-brand-500 flex items-center justify-center text-white text-3xl shadow-xl overflow-hidden">
                             <i class="fa-solid fa-users"></i>
                         </div>
-                        <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                        <div
+                            class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
                             <i class="fa-solid fa-camera"></i>
                         </div>
-                        <input type="file" id="group-pic-input" class="hidden" accept="image/*" onchange="window.uploadGroupPic && window.uploadGroupPic(this)">
+                        <input type="file" id="group-pic-input" class="hidden" accept="image/*"
+                            onchange="window.uploadGroupPic && window.uploadGroupPic(this)">
                     </div>
                     <div class="w-full">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">Group Name</label>
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">Group
+                            Name</label>
                         <div class="flex gap-2">
-                            <input type="text" id="group-settings-name" class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-brand-500 outline-none">
-                            <button onclick="window.saveGroupName && window.saveGroupName()" class="bg-black dark:bg-white text-white dark:text-black px-4 rounded-xl font-bold text-xs hover:scale-105 transition">Save</button>
+                            <input type="text" id="group-settings-name"
+                                class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-brand-500 outline-none">
+                            <button onclick="window.saveGroupName && window.saveGroupName()"
+                                class="bg-black dark:bg-white text-white dark:text-black px-4 rounded-xl font-bold text-xs hover:scale-105 transition">Save</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Admin Controls -->
-                <div id="group-admin-only-settings" class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div id="group-admin-only-settings"
+                    class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                     <div class="flex items-center justify-between">
                         <div>
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">AI Spam Filter</h4>
                             <p class="text-[10px] text-slate-500">Auto-delete spam messages</p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="group-spam-filter-toggle" class="sr-only peer" onchange="window.toggleSpamFilter && window.toggleSpamFilter(this.checked)">
-                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                            <input type="checkbox" id="group-spam-filter-toggle" class="sr-only peer"
+                                onchange="window.toggleSpamFilter && window.toggleSpamFilter(this.checked)">
+                            <div
+                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -3486,7 +3638,9 @@
                 <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">Members</h4>
-                        <button id="btn-add-member" onclick="window.showAddMemberModal && window.showAddMemberModal()" class="text-brand-600 dark:text-brand-400 text-[10px] font-bold hover:underline">Add Member</button>
+                        <button id="btn-add-member" onclick="window.showAddMemberModal && window.showAddMemberModal()"
+                            class="text-brand-600 dark:text-brand-400 text-[10px] font-bold hover:underline">Add
+                            Member</button>
                     </div>
                     <div id="group-settings-members" class="space-y-2">
                         <!-- Members list here -->
@@ -3495,7 +3649,8 @@
 
                 <!-- Export Section -->
                 <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <button onclick="window.exportChatMessages && window.exportChatMessages()" class="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                    <button onclick="window.exportChatMessages && window.exportChatMessages()"
+                        class="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                         <i class="fa-solid fa-file-export"></i> Export Chat History
                     </button>
                 </div>
@@ -3504,11 +3659,16 @@
     </div>
 
     <!-- Message Seen Info Modal -->
-    <div id="modal-seen-info" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[260] hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-scale-up flex flex-col">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
-                <h3 class="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Message Info</h3>
-                <button onclick="document.getElementById('modal-seen-info').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+    <div id="modal-seen-info"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[260] hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-scale-up flex flex-col">
+            <div
+                class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                <h3 class="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest">Message Info
+                </h3>
+                <button onclick="document.getElementById('modal-seen-info').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="seen-info-list" class="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
                 <!-- Seen users list here -->
@@ -3517,27 +3677,68 @@
     </div>
 
     <!-- Two-Factor Verification Modal -->
-    <div id="modal-2fa-verify" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-slate-100 dark:border-slate-700">
-            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+    <div id="modal-2fa-verify"
+        class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-slate-100 dark:border-slate-700">
+            <div
+                class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fa-solid fa-lock text-2xl text-green-600 dark:text-green-400"></i>
             </div>
             <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Identity Check</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">Please enter your secondary 4-digit PIN.</p>
-            
+
             <div class="flex justify-center gap-3 mb-8">
-                <input type="password" maxlength="4" id="verify-2fa-pin" oninput="if(this.value.length === 4) verify2FAPin()" class="w-48 py-3 text-center text-3xl tracking-[1em] font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-green-500 focus:ring-0 outline-none transition-all" placeholder="••••" autofocus>
+                <input type="password" maxlength="4" id="verify-2fa-pin"
+                    oninput="if(this.value.length === 4) verify2FAPin()"
+                    class="w-48 py-3 text-center text-3xl tracking-[1em] font-bold bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-green-500 focus:ring-0 outline-none transition-all"
+                    placeholder="••••" autofocus>
             </div>
-            
-            <button onclick="verify2FAPin()" id="btn-verify-2fa" class="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl shadow-lg transition-all active:scale-95">
+
+            <button onclick="verify2FAPin()" id="btn-verify-2fa"
+                class="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl shadow-lg transition-all active:scale-95">
                 Verify Identity
             </button>
 
-            <button onclick="auth.signOut().then(() => window.location.reload())" class="mt-6 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+            <button onclick="auth.signOut().then(() => window.location.reload())"
+                class="mt-6 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
                 Back to Login
             </button>
         </div>
-    </div>
+    <script>
+        window.currentPasswordStrength = 0;
+        window.updateStrength = function(p) {
+            const rules = {
+                len: p.length >= 8,
+                cap: /[A-Z]/.test(p),
+                low: /[a-z]/.test(p),
+                num: /[0-9]/.test(p)
+            };
+            
+            Object.keys(rules).forEach(r => {
+                const el = document.getElementById('rule-' + r);
+                if(el) el.classList.toggle('met', rules[r]);
+            });
+
+            let strength = 0;
+            if(rules.len && rules.cap && rules.low && rules.num) strength = 3;
+            else if(rules.len && (rules.cap || rules.low) && rules.num) strength = 2;
+            else if(p.length > 0) strength = 1;
+
+            window.currentPasswordStrength = strength;
+
+            ['bar-1', 'bar-2', 'bar-3'].forEach((id, i) => {
+                const b = document.getElementById(id);
+                if(!b) return;
+                b.style.background = '';
+                if(i < strength) {
+                    if(strength === 1) b.style.background = '#ef4444';
+                    else if(strength === 2) b.style.background = '#f59e0b';
+                    else b.style.background = '#10b981';
+                }
+            });
+        };
+    </script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
     <meta property="og:site_name" content="Explyra" />
@@ -18,55 +18,33 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Explyra — Create Your Professional Developer Account</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <title>Create Your Account — Join the Suite | Explyra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Core Firebase loaded via modular SDK in script below -->
 
     <style>
         :root {
-            /* Light */
-            --bg: #F8F7F4;
-            --bg2: #FFFFFF;
-            --bg3: #F1EFE9;
-            --bg4: #E9E6E0;
-            --surf: #FFFFFF;
-            --bdr: #E4E1DB;
-            --bdr2: #CCC8C0;
-            --ink: #0D1117;
-            --ink2: #2A3141;
-            --ink3: #586070;
-            --ink4: #939BAC;
-            /* Accents */
-            --blue: #1546C0;
-            --blue2: #5B8AF5;
-            --blue-g: rgba(21, 70, 192, 0.08);
-            --blue-b: rgba(21, 70, 192, 0.2);
-            --r: 8px;
-            --t: 0.2s ease;
-            --s2: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-overlay: rgba(255, 255, 255, 0.85);
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent-color: #000000;
+            --border-color: #e5e7eb;
+            --card-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-md: 1.25rem;
+            --transition: all 0.3s ease;
         }
 
-        [data-theme="dark"] {
-            --bg: #080B14;
-            --bg2: #0E1220;
-            --bg3: #141928;
-            --bg4: #1B2235;
-            --surf: #141928;
-            --bdr: rgba(255, 255, 255, 0.07);
-            --bdr2: rgba(255, 255, 255, 0.14);
-            --ink: #EEF0F8;
-            --ink2: #C4CCDC;
-            --ink3: #8290A8;
-            --ink4: #4E5A70;
-            --blue: #5B8AF5;
-            --blue2: #93B4FF;
-            --blue-g: rgba(91, 138, 245, 0.12);
-            --blue-b: rgba(91, 138, 245, 0.25);
-            --s2: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
+        .dark {
+            --bg-primary: #000000;
+            --bg-secondary: #111827;
+            --bg-overlay: rgba(0, 0, 0, 0.75);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-color: #ffffff;
+            --border-color: #1f2937;
+            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         *,
@@ -78,125 +56,141 @@
         }
 
         body {
-            background: var(--bg);
-            color: var(--ink);
-            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
-            transition: background 0.4s, color 0.4s;
+            padding: 1.5rem;
+            transition: background-color 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #10b981 0%, #6366f1 100%);
+            filter: blur(100px);
+            opacity: 0.1;
+            z-index: 0;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .blob-1 { top: -100px; right: -100px; }
+        .blob-2 { bottom: -100px; left: -100px; }
 
         .auth-container {
             width: 100%;
             max-width: 440px;
-            background: var(--surf);
-            border: 1px solid var(--bdr);
-            border-radius: 16px;
-            padding: 2.5rem;
-            box-shadow: var(--s2);
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-overlay);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 2.5rem 2rem;
+            box-shadow: var(--card-shadow);
             text-align: center;
-        }
-
-        [data-theme="dark"] .auth-container {
-            box-shadow: var(--s2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .auth-logo {
-            width: 48px;
-            height: 48px;
-            background: var(--blue);
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+            background: var(--accent-color);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
 
-        .auth-logo svg {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2.2;
-            stroke-linecap: round;
+        .auth-logo img {
+            width: 32px;
+            height: 32px;
+            filter: invert(1);
         }
+        .dark .auth-logo img { filter: none; }
 
         .auth-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
             margin-bottom: 0.5rem;
         }
 
         .auth-desc {
-            font-size: 0.95rem;
-            color: var(--ink3);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
             margin-bottom: 2rem;
-            font-weight: 300;
         }
 
         .form-group {
             text-align: left;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-label {
             display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--ink2);
-            margin-bottom: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .form-input {
             width: 100%;
-            padding: 0.8rem 1rem;
-            background: var(--bg);
-            border: 1px solid var(--bdr);
-            border-radius: var(--r);
-            color: var(--ink);
+            height: 44px;
+            padding: 0 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
             font-family: inherit;
-            font-size: 0.95rem;
-            transition: all var(--t);
+            font-size: 14px;
+            transition: var(--transition);
             outline: none;
         }
 
         .form-input:focus {
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px var(--blue-g);
+            border-color: var(--text-primary);
+            background: var(--bg-primary);
         }
 
         .btn-submit {
             width: 100%;
-            background: var(--blue);
-            color: #fff;
-            padding: 0.9rem;
-            border-radius: var(--r);
-            font-size: 0.95rem;
-            font-weight: 600;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
             border: none;
             cursor: pointer;
-            transition: all var(--t);
+            transition: var(--transition);
             margin-top: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .btn-submit:hover {
-            filter: brightness(1.1);
+            opacity: 0.9;
             transform: translateY(-1px);
         }
 
         .btn-submit:disabled {
-            opacity: 0.7;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
@@ -204,21 +198,20 @@
         .auth-footer {
             margin-top: 2rem;
             font-size: 0.85rem;
-            color: var(--ink3);
+            color: var(--text-secondary);
         }
 
         .auth-footer a {
-            color: var(--blue);
-            font-weight: 600;
+            color: var(--text-primary);
+            font-weight: 700;
             text-decoration: none;
-            transition: color var(--t);
+            transition: var(--transition);
         }
 
         .auth-footer a:hover {
-            color: var(--blue2);
+            text-decoration: underline;
         }
 
-        /* Toast Styles from existing app */
         #toast-container {
             position: fixed;
             bottom: 20px;
@@ -235,116 +228,68 @@
             color: white;
             font-size: 0.9rem;
             font-weight: 500;
-            box-shadow: var(--s2);
+            box-shadow: var(--card-shadow);
             display: flex;
             align-items: center;
             gap: 10px;
             animation: slideIn 0.3s ease forwards;
         }
 
-        .toast.success {
-            background: #10B981;
-        }
-
-        .toast.error {
-            background: #EF4444;
-        }
+        .toast.success { background: #000; border: 1px solid #333; }
+        .toast.error { background: #EF4444; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
+
+        /* Password Strength Meter */
+        .strength-meter {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            height: 4px;
+        }
+
+        .strength-meter div {
+            flex: 1;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .strength-meter.weak div:nth-child(1) { background: #ef4444; }
+        .strength-meter.moderate div:nth-child(1),
+        .strength-meter.moderate div:nth-child(2) { background: #f59e0b; }
+        .strength-meter.strong div { background: #10b981; }
+
+        .password-rules {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rule-item.met { color: #10b981; }
+        .rule-item.met i { display: inline-block !important; }
     </style>
-
-    
-    
-    
-    
-        <meta name="description" content="Start your journey with Explyra today. Get access to a complete suite of developer tools, expense trackers, and team management utilities for free.">
-        <link rel="canonical" href="https://explyra.me/signup.html" />
-        <meta name="robots" content="noindex, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Join Explyra — Create Your Professional Developer Account" />
-        <meta property="og:description"
-            content="Create your Explyra account to access developer tools, workspace automation, and team collaboration features." />
-        <meta property="og:url" content="https://explyra.me/signup.html" />
-        <meta property="og:image" content="https://explyra.me/assets/images/explyra_logo.png" />
-        <meta name="twitter:title" content="Join Explyra — Create Your Professional Developer Account" />
-        <meta name="twitter:description"
-            content="Create your Explyra account to access developer tools, workspace automation, and team collaboration features." />
-        <meta name="twitter:url" content="https://explyra.me/signup.html" />
-        <meta name="twitter:image" content="https://explyra.me/assets/images/explyra_logo.png" />
-
-    
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "alternateName": "Explyra Suite",
-      "url": "https://explyra.me/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://explyra.me/assets/images/explyra_logo.png",
-        "width": 512,
-        "height": 512
-      },
-      "sameAs": [
-        "https://x.com/explyras",
-        "https://www.facebook.com/profile.php?id=61584891033070",
-        "https://www.instagram.com/explyras",
-        "https://www.youtube.com/@explyras",
-        "https://www.linkedin.com/company/explyra/",
-        "https://www.threads.com/@explyras",
-        "https://github.com/Explyra",
-        "https://ipecconsulting.org/"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+91-8076108584",
-          "contactType": "customer service",
-          "email": "explyra@gmail.com",
-          "availableLanguage": [
-            "en",
-            "hi"
-          ]
-        }
-      ],
-      "founder": {
-        "@type": "Person",
-        "name": "Mitanshu Bhasin",
-        "url": "https://explyra.me/mitanshu.html"
-      },
-      "foundingDate": "2024"
-    }
-  ]
-}
-    </script>
 </head>
 
 <body>
 
     <div class="auth-container">
         <div class="auth-logo">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-            </svg>
+            <img src="assets/images/explyra_logo.png" alt="Explyra">
         </div>
-        <h1 class="auth-title">Create Explyra Account</h1>
-        <p class="auth-desc">Join the ecosystem. Set up your workspace in minutes.</p>
+        <h1 class="auth-title">Join Explyra</h1>
+        <p class="auth-desc">Start your professional developer journey today.</p>
 
         <form id="signupForm">
             <div class="form-group">
@@ -356,13 +301,24 @@
                 <input type="email" id="email" class="form-input" placeholder="you@company.com" required>
             </div>
             <div class="form-group">
-                <label class="form-label" for="password">Password *</label>
-                <input type="password" id="password" class="form-input" placeholder="Min 6 characters" required
-                    minlength="6">
+                <label class="form-label" for="password">Create Password *</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                <div class="strength-meter" id="strengthMeter">
+                    <div></div><div></div><div></div>
+                </div>
+                <div class="password-rules">
+                    <div class="rule-item" id="rule-length"><i class="fa-solid fa-circle-check hidden"></i> 8+ characters</div>
+                    <div class="rule-item" id="rule-case"><i class="fa-solid fa-circle-check hidden"></i> Upper & lowercase</div>
+                    <div class="rule-item" id="rule-number"><i class="fa-solid fa-circle-check hidden"></i> At least one number</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">
-                Continue to Explyra <i class="fa-solid fa-arrow-right"></i>
+                Create Account <i class="fa-solid fa-arrow-right"></i>
             </button>
         </form>
 
@@ -401,31 +357,76 @@
             setTimeout(() => toast.remove(), 3000);
         };
 
+        // Password Validation Logic
+        const passInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirmPassword');
+        const meter = document.getElementById('strengthMeter');
+        
+        function updateStrength() {
+            const val = passInput.value;
+            let score = 0;
+            
+            const hasUpper = /[A-Z]/.test(val);
+            const hasLower = /[a-z]/.test(val);
+            const hasNumber = /[0-9]/.test(val);
+            const isLong = val.length >= 8;
+
+            document.getElementById('rule-length').classList.toggle('met', isLong);
+            document.getElementById('rule-length').querySelector('i').classList.toggle('hidden', !isLong);
+            
+            document.getElementById('rule-case').classList.toggle('met', hasUpper && hasLower);
+            document.getElementById('rule-case').querySelector('i').classList.toggle('hidden', !(hasUpper && hasLower));
+            
+            document.getElementById('rule-number').classList.toggle('met', hasNumber);
+            document.getElementById('rule-number').querySelector('i').classList.toggle('hidden', !hasNumber);
+
+            if (isLong) score++;
+            if (hasUpper && hasLower && hasNumber) score += 2; // Moderate or Strong based on others
+
+            meter.className = 'strength-meter';
+            if (val.length > 0) {
+                if (score === 1) meter.classList.add('weak');
+                else if (score === 2 || (isLong && (hasUpper || hasNumber))) meter.classList.add('moderate');
+                if (isLong && hasUpper && hasLower && hasNumber) {
+                    meter.className = 'strength-meter strong';
+                }
+            }
+        }
+
+        passInput.addEventListener('input', updateStrength);
+
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
             const btn = document.getElementById('submitBtn');
 
             if (!name || !email || !password) return showToast('Please fill all required fields', 'error');
+
+            // Final Validation
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            if (password.length < 8) return showToast('Password must be at least 8 characters', 'error');
+            if (!hasUpper || !hasLower || !hasNumber) return showToast('Password must include upper, lower letters and a number', 'error');
+            if (password !== confirmPass) return showToast('Passwords do not match', 'error');
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
 
             try {
-                // Create Auth User
                 const userCred = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCred.user;
 
-                // Temporarily store in users collection with no companyId bounds yet
-                // The actual role/company will be set when they create the company on the next screen.
                 await setDoc(doc(db, "users", user.uid), {
                     uid: user.uid,
                     name: name,
                     email: email,
-                    role: 'pending', // Will become owner
-                    companyId: null, // No company yet
+                    role: 'pending',
+                    companyId: null,
                     status: 'ACTIVE',
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
@@ -440,7 +441,7 @@
                 console.error("Signup error:", error);
                 showToast(error.message, 'error');
                 btn.disabled = false;
-                btn.innerHTML = 'Continue to Explyra <i class="fa-solid fa-arrow-right"></i>';
+                btn.innerHTML = 'Create Account <i class="fa-solid fa-arrow-right"></i>';
             }
         });
     </script>
