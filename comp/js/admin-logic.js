@@ -505,7 +505,10 @@ onAuthStateChanged(auth, async (user) => {
                     if (!window.__redirectedFromMismatch) {
                         window.__redirectedFromMismatch = true;
                         showToast(`Workspace mismatch. Redirecting to ${userData.companyId.substring(4, 8)}...`, 'warning');
-                        const targetUrl = window.ExplyraTenant?.generateWorkspaceUrl(userData.companyId) || '/admin.html';
+                        const effectiveCompanyId = userData.companyId || urlCompanyId || window.companyId || window.ExplyraTenant?.getCompanyIdFromStorage?.();
+                        const targetUrl = window.ExplyraTenant?.generateWorkspaceUrl(effectiveCompanyId, 'admin')
+                            || window.ExplyraTenant?.toTenantAwareNavigationUrl('/admin', effectiveCompanyId)
+                            || '/admin';
                         setTimeout(() => { window.location.href = targetUrl; }, 1500);
                     }
                     return;

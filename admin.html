@@ -1778,7 +1778,7 @@
                         </div>
                     </form>
 
-                    <button type="button" onclick="window.location.href='emp.html'"
+                    <button type="button" onclick="if(window.ExplyraTenant){window.location.href=window.ExplyraTenant.buildTenantUrl('emp', window.companyId || window.userData?.companyId || window.ExplyraTenant.getCurrentCompanyId());}else{window.location.href='emp.html';}"
                         class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg mb-4">
                         <i class="fa-solid fa-shuffle"></i> Switch to Employee Portal
                     </button>
@@ -1908,7 +1908,7 @@
                         <i class="fa-brands fa-microsoft text-[#00A4EF]"></i>
                         Sign in with Microsoft
                     </button>
-                    <button type="button" onclick="window.location.href='emp.html'"
+                    <button type="button" onclick="if(window.ExplyraTenant){window.location.href=window.ExplyraTenant.buildTenantUrl('emp', window.companyId || window.userData?.companyId || window.ExplyraTenant.getCurrentCompanyId());}else{window.location.href='emp.html';}"
                         class="w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition flex items-center justify-center gap-2 shadow-sm border border-transparent">
                         <i class="fa-solid fa-user-tie text-slate-500"></i>
                         Login as Employee

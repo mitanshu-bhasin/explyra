@@ -1,8 +1,7 @@
 // js/emp-utils.js
 import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-export const IMGBB_KEY = "dbcb9de125850fefa4337db8d1f37ab6";
-export const IMGBB_URL = "https://api.imgbb.com/1/upload";
+export const IMGBB_URL = "/api/imgbb";
 
 window.showToast = (message, type = 'info') => {
     const container = document.getElementById('toast-container');

@@ -379,10 +379,20 @@
                     showToast('Login successful! Redirecting...', 'success');
 
                     setTimeout(() => {
+                        const destination = (role === 'owner' || role === 'admin') ? 'admin' : 'emp';
+                        const resolvedCompanyId = userData.companyId || window.ExplyraTenant?.getCompanyIdFromPath?.() || window.ExplyraTenant?.getCompanyIdFromStorage?.();
                         if (role === 'owner' || role === 'admin') {
-                            window.location.href = 'admin.html';
+                            if (window.ExplyraTenant && resolvedCompanyId) {
+                                window.location.href = window.ExplyraTenant.buildTenantUrl(destination, resolvedCompanyId);
+                            } else {
+                                window.location.href = 'admin.html';
+                            }
                         } else {
-                            window.location.href = 'emp.html';
+                            if (window.ExplyraTenant && resolvedCompanyId) {
+                                window.location.href = window.ExplyraTenant.buildTenantUrl(destination, resolvedCompanyId);
+                            } else {
+                                window.location.href = 'emp.html';
+                            }
                         }
                     }, 800);
                 } else {

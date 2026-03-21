@@ -2389,7 +2389,7 @@
                         </button>
                     </div>
 
-                    <button type="button" onclick="window.location.href='admin.html'"
+                    <button type="button" onclick="if(window.ExplyraTenant){window.location.href=window.ExplyraTenant.buildTenantUrl('admin', window.companyId || window.userData?.companyId || window.ExplyraTenant.getCurrentCompanyId());}else{window.location.href='admin.html';}"
                         class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg mb-2">
                         <i class="fa-solid fa-shuffle"></i> Switch to Admin Portal
                     </button>
