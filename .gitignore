@@ -1,6 +1,7 @@
 # ── Environment Variables ────────────────────────
 .env
 js/env.js
+env.js.backup
 
 # ── IDE / Editor ─────────────────────────────────
 .vscode/

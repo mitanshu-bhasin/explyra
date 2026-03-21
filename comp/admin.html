@@ -1225,6 +1225,16 @@
                             <label class="block font-bold text-slate-400 uppercase mb-1">Manager ID</label>
                             <p class="font-mono text-slate-700 dark:text-slate-300 font-medium" id="ac-manager">...</p>
                         </div>
+                        <div class="col-span-2">
+                            <label class="block font-bold text-slate-400 uppercase mb-1">Workspace Link</label>
+                            <div class="flex items-center gap-2">
+                                <p id="ac-workspace-url" class="flex-1 font-mono text-slate-700 dark:text-slate-300 break-all font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-2">...</p>
+                                <button id="ac-workspace-copy-btn" onclick="window.copyWorkspaceUrl(userData?.companyId, true)" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition flex-shrink-0 flex items-center gap-1.5" title="Copy workspace link">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span class="hidden sm:inline text-xs">Copy</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

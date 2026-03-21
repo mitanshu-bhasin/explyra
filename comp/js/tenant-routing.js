@@ -48,13 +48,25 @@
         return getCompanyIdFromPath() || getCompanyIdFromStorage();
     }
 
+    function normalizeWorkspaceTargetPath(path) {
+        const value = String(path || '').replace(/^\/+/, '');
+        if (!value) return value;
+
+        if (/^admin\.html(?:[?#].*)?$/i.test(value)) return value.replace(/^admin\.html/i, 'admin');
+        if (/^emp\.html(?:[?#].*)?$/i.test(value)) return value.replace(/^emp\.html/i, 'emp');
+        if (/^benifits\.html(?:[?#].*)?$/i.test(value)) return value.replace(/^benifits\.html/i, 'benifits');
+        if (/^crm\/index\.html(?:[?#].*)?$/i.test(value)) return value.replace(/^crm\/index\.html/i, 'crm');
+
+        return value;
+    }
+
     function buildTenantPath(targetPath, companyId) {
         const cid = companyId || getCurrentCompanyId();
         if (!isCompanyId(cid)) return normalizePath(targetPath);
 
-        const cleanTarget = String(targetPath || '')
+        const cleanTarget = normalizeWorkspaceTargetPath(String(targetPath || '')
             .replace(/^\/+/, '')
-            .replace(/^cmp_[a-z0-9]+\//i, '');
+            .replace(/^cmp_[a-z0-9]+\//i, ''));
 
         return `/${cid}/${cleanTarget}`;
     }
@@ -217,5 +229,21 @@
             applyTenantLinkTransform({ companyId: autoCompanyId, forcePrefix: true });
         }
         enforceTenantNavigation({ companyId: autoCompanyId });
+        return;
+    }
+
+    if (shouldEnforceTenantRouting()) {
+        const storedCompanyId = getCompanyIdFromStorage();
+        const currentPath = normalizePath(window.location.pathname || '/');
+        const isWorkspacePathWithoutTenant = /^\/(admin|admin\.html|emp|emp\.html|benifits|benifits\.html)(?:\/)?$/i.test(currentPath);
+
+        if (isCompanyId(storedCompanyId) && isWorkspacePathWithoutTenant) {
+            const normalizedTarget = normalizeWorkspaceTargetPath(currentPath.replace(/^\//, ''));
+            const tenantPath = buildTenantPath(normalizedTarget, storedCompanyId);
+            const finalUrl = `${tenantPath}${window.location.search || ''}${window.location.hash || ''}`;
+            if (finalUrl !== `${currentPath}${window.location.search || ''}${window.location.hash || ''}`) {
+                window.location.replace(finalUrl);
+            }
+        }
     }
 })();

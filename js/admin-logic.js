@@ -69,13 +69,19 @@ try {
 
 let currentUser = null;
 
+window.getWorkspaceShareUrl = function(companyId, page = 'admin.html') {
+    if (!window.ExplyraTenant?.isCompanyId(companyId)) return null;
+    const safePage = String(page || 'admin.html').replace(/^\/+/, '') || 'admin.html';
+    return `https://comp.explyra.me/${companyId}/${safePage}`;
+};
+
 // Workspace URL helper with copy feedback animation
 window.copyWorkspaceUrl = function(companyId, showFeedback = true) {
     if (!window.ExplyraTenant?.isCompanyId(companyId)) {
         if (showFeedback) showToast('Invalid company ID format', 'error');
         return false;
     }
-    const url = window.ExplyraTenant.generateWorkspaceUrl(companyId);
+    const url = window.getWorkspaceShareUrl(companyId);
     if (!url) {
         if (showFeedback) showToast('Failed to generate workspace URL', 'error');
         return false;
@@ -101,9 +107,7 @@ window.copyWorkspaceUrl = function(companyId, showFeedback = true) {
 
 // Generate workspace URL display
 window.getWorkspaceUrlDisplay = function(companyId) {
-    if (!window.ExplyraTenant?.isCompanyId(companyId)) return null;
-    const url = window.ExplyraTenant.generateWorkspaceUrl(companyId);
-    return url || `https://comp.explyra.me/${companyId}/admin.html`;
+    return window.getWorkspaceShareUrl(companyId);
 };
 
 
@@ -7043,6 +7047,18 @@ window.openAccountCenter = async () => {
     // Convert firestore timestamp safely
     document.getElementById('ac-join').textContent = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString() : (u.createdAt ? formatDateUtc(u.createdAt) : 'N/A');
     document.getElementById('ac-avatar').textContent = u.name ? u.name[0].toUpperCase() : 'U';
+
+    const acWorkspaceUrl = document.getElementById('ac-workspace-url');
+    const acWorkspaceCopyBtn = document.getElementById('ac-workspace-copy-btn');
+    if (acWorkspaceUrl) {
+        const workspaceUrl = window.getWorkspaceUrlDisplay(u.companyId);
+        acWorkspaceUrl.textContent = workspaceUrl || 'Not available';
+    }
+    if (acWorkspaceCopyBtn) {
+        acWorkspaceCopyBtn.disabled = !window.ExplyraTenant?.isCompanyId(u.companyId);
+        acWorkspaceCopyBtn.classList.toggle('opacity-50', acWorkspaceCopyBtn.disabled);
+        acWorkspaceCopyBtn.classList.toggle('cursor-not-allowed', acWorkspaceCopyBtn.disabled);
+    }
 
     document.getElementById('ac-phone').value = u.altPhone || '';
     document.getElementById('ac-alt-email').value = u.altEmail || '';

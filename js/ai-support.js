@@ -7,8 +7,7 @@
  * EXPORT_REPORT, SHOW_USER_INFO, ASSIGN_TASK, TOGGLE_THEME
  */
 
-const GROQ_API_KEY = (window.EXPLYRA_CONFIG?.ai?.apiKey || "REDACTED");
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const API_URL = '/api/ai/groq';
 
 export class AISupport {
     constructor(userContext = {}, containerId = null) {
@@ -744,8 +743,7 @@ Monthly Trend: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${GROQ_API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     model: window.AI_CONFIG?.model || 'moonshotai/kimi-k2-instruct-0905',

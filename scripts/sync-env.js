@@ -32,14 +32,16 @@ function sync() {
         },
         ai: {
             model: 'moonshotai/kimi-k2-instruct-0905',
-            apiKey: env.GROQ_API_KEY || "",
-            geminiKey: env.GEMINI_API_KEY || ""
+            // API Keys are SECURELY handled by Cloudflare Functions /api/ai/groq
+            apiKey: "HANDLED_BY_PROXY",
+            geminiKey: "HANDLED_BY_PROXY"
         },
         analyticsId: env.GA_MEASUREMENT_ID || "G-TFBZ5GZ22C",
         emailApp: {
             cloudflareZoneId: env.CLOUDFLARE_ZONE_ID || "",
-            cloudflareToken: env.CLOUDFLARE_TOKEN || "",
-            resendKey: env.RESEND_API_KEY || ""
+            // Token and Key are SECURELY handled in worker/functions env
+            cloudflareToken: "HANDLED_BY_PROXY",
+            resendKey: "HANDLED_BY_PROXY"
         },
         imagekit: {
             publicKey: env.IMAGEKIT_PUBLIC_KEY || "",
@@ -50,12 +52,15 @@ function sync() {
         }
     };
 
-    const outputContent = `// Environment Configuration
+    const outputContent = `// Environment Configuration (Auto-generated)
+// Generated from .env file.
+// SECURE: AI and Cloudflare Secrets are handled via Proxy, not exposed here.
+
 window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
     fs.writeFileSync(outputPath, outputContent);
-    console.log('✓ Successfully synced .env to js/env.js without hardcoded secrets!');
+    console.log('✓ Successfully synced .env to js/env.js (Secure mode active)');
 }
 
 sync();

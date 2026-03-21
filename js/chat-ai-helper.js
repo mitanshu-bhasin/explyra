@@ -2,8 +2,7 @@
 import { collection, query, where, orderBy, limit, getDocs, addDoc, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const AI_CONFIG = window.AI_CONFIG || {
-    apiKey: (window.EXPLYRA_CONFIG?.ai?.apiKey || "REDACTED"),
-    url: 'https://api.groq.com/openai/v1/chat/completions',
+    url: '/api/ai/groq',
     model: 'moonshotai/kimi-k2-instruct-0905'
 };
 
@@ -81,7 +80,6 @@ export async function handleAIChatRequest(db, userData, companyId, currentChatCo
         const response = await fetch(AI_CONFIG.url, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${AI_CONFIG.apiKey}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({

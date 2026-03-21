@@ -1,18 +1,25 @@
-# Ignore heavy development artifacts for Pages direct uploads
+# Hard ignore all large/irrelevant directories
 node_modules/
-**/node_modules/
-
-# Local build/dev caches
+.git/
 .retired/
 retired/
-**/.next/
-**/.next/**
-
-# Tooling/work dirs
-.git/
-.vscode/
+dist/
+explyra-next/
 .wrangler/
+.vscode/
+build/
+
+# Ignore nested next build artifacts
+**/.next/
+**/.next/*
+**/.svelte-kit/
+**/.nuxt/
 
 # Logs and temp
 *.log
 *.tmp
+wrangler-*.log
+all_keys.txt
+out.txt
+out_check.txt
+env.js.backup

@@ -185,11 +185,10 @@ export class AIDashboard {
                 { role: "user", content: query }
             ];
 
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            const response = await fetch('/api/ai/groq', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer REDACTED_GROQ_API_KEY`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     model: 'moonshotai/kimi-k2-instruct-0905',

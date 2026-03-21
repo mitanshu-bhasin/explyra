@@ -7,12 +7,13 @@ https://explyra.pages.dev/* https://explyra.me/:splat 301
 /mail /email-app/src/index.html 200
 
 # Tenant workspace rewrites
+/cmp_:companyId/admin.html /cmp_:companyId/admin 301
+/cmp_:companyId/emp.html /cmp_:companyId/emp 301
+/cmp_:companyId/benifits.html /cmp_:companyId/benifits 301
+
 /cmp_:companyId/admin /admin.html 200
-/cmp_:companyId/admin.html /admin.html 200
 /cmp_:companyId/emp /emp.html 200
-/cmp_:companyId/emp.html /emp.html 200
 /cmp_:companyId/benifits /benifits.html 200
-/cmp_:companyId/benifits.html /benifits.html 200
 /cmp_:companyId/crm /crm/index.html 200
 /cmp_:companyId/crm/* /crm/:splat 200
 /cmp_:companyId/attendance/company/login /attendance/company/login.html 200

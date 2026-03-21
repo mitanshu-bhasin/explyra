@@ -1,5 +1,0 @@
-{
-  "currency": 19,
-  "date": 11,
-  "firebase": 37
-}
