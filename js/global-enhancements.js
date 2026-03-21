@@ -564,6 +564,7 @@
         isInitialized = true;
 
         injectStyles();
+        setupRuntimePerformance();
         setupCookieBanner();
         setupFooterSearch();
         setupLanguageTranslate();
@@ -793,6 +794,48 @@
         }
     }
 
+    function setupRuntimePerformance() {
+        const supportsNativeLazy = 'loading' in HTMLImageElement.prototype;
+
+        const images = document.querySelectorAll('img:not([loading])');
+        images.forEach((img, idx) => {
+            img.decoding = 'async';
+            if (idx > 1 || !img.closest('header, .hero, .banner')) {
+                if (supportsNativeLazy) img.loading = 'lazy';
+            } else {
+                img.fetchPriority = 'high';
+            }
+        });
+
+        const iframes = document.querySelectorAll('iframe:not([loading])');
+        iframes.forEach((iframe) => {
+            iframe.loading = 'lazy';
+        });
+
+        // Warm likely next page quickly during idle time to improve navigation speed.
+        const prefetchLikelyLinks = () => {
+            const links = Array.from(document.querySelectorAll('a[href]'))
+                .map((a) => a.getAttribute('href'))
+                .filter((href) => href && href.startsWith('/') && !href.startsWith('//'))
+                .slice(0, 5);
+
+            links.forEach((href) => {
+                if (document.querySelector(`link[rel="prefetch"][href="${href}"]`)) return;
+                const l = document.createElement('link');
+                l.rel = 'prefetch';
+                l.as = 'document';
+                l.href = href;
+                document.head.appendChild(l);
+            });
+        };
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(prefetchLikelyLinks, { timeout: 1800 });
+        } else {
+            setTimeout(prefetchLikelyLinks, 1200);
+        }
+    }
+
     function setupLanguageTranslate() {
         // 0. Ensure Font Awesome is present for icons
         if (!document.querySelector('link[href*="font-awesome"]')) {
@@ -969,11 +1012,29 @@
                     document.body.style.setProperty('top', '0px', 'important');
                 }
             };
-
-
-
             cleanBranding();
-            setInterval(cleanBranding, 800);
+
+            // Use DOM mutation signals instead of constant polling to reduce CPU/battery drain.
+            const runCleanBranding = () => {
+                if (window.__explyraBrandingCleanScheduled) return;
+                window.__explyraBrandingCleanScheduled = true;
+                requestAnimationFrame(() => {
+                    window.__explyraBrandingCleanScheduled = false;
+                    cleanBranding();
+                });
+            };
+
+            const observer = new MutationObserver(runCleanBranding);
+            observer.observe(document.documentElement, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) runCleanBranding();
+            }, { passive: true });
         };
 
 

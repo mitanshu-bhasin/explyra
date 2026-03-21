@@ -1,6 +1,6 @@
 // emp-auth.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
@@ -81,6 +81,45 @@ const safeWithRetry = (operation, options) => (typeof window.withRetry === 'func
 const safeWithTimeout = (promise, timeoutMs, timeoutMessage) => (typeof window.withTimeout === 'function' ? window.withTimeout(promise, timeoutMs, timeoutMessage) : promise);
 const authMessage = (error, fallback) => (typeof window.getFriendlyAuthMessage === 'function' ? window.getFriendlyAuthMessage(error, fallback) : (fallback || error?.message || 'Request failed.'));
 
+const asDate = (value) => {
+    if (!value) return null;
+    if (value?.toDate) return value.toDate();
+    if (value instanceof Date) return value;
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const cleanupExpiredDelegateAccount = async (delegateDocId, delegateData, authUser) => {
+    try {
+        const delegationId = delegateData?.delegation?.delegationId;
+        if (delegationId) {
+            await updateDoc(doc(db, 'account_delegations', delegationId), {
+                status: 'EXPIRED',
+                expiredAt: serverTimestamp(),
+                updatedAt: serverTimestamp()
+            });
+        }
+
+        if (delegateDocId) {
+            await updateDoc(doc(db, 'users', delegateDocId), {
+                status: 'INACTIVE',
+                delegationStatus: 'EXPIRED',
+                updatedAt: serverTimestamp()
+            });
+        }
+
+        if (authUser) {
+            try {
+                await deleteUser(authUser);
+            } catch (err) {
+                console.warn('Delegate auth self-delete failed', err);
+            }
+        }
+    } catch (err) {
+        console.error('Expired delegate cleanup failed', err);
+    }
+};
+
 const validateEnterprisePassword = (password) => {
     const value = String(password || '');
     if (value.length < 8) return 'Password must be at least 8 characters.';
@@ -156,8 +195,59 @@ onAuthStateChanged(auth, async (user) => {
             );
 
             if (!snap.empty) {
-                window.userData = snap.docs[0].data() || {};
-                window.userData.docId = snap.docs[0].id; // store docId for updates
+                const signedInDoc = snap.docs[0];
+                const signedInData = signedInDoc.data() || {};
+                let resolvedUserData = { ...signedInData, docId: signedInDoc.id };
+                const isDelegate = (signedInData.role || '').toUpperCase() === 'DELEGATE';
+                if (isDelegate) {
+                    const delegation = signedInData.delegation || {};
+                    const expiry = asDate(delegation.expiresAt);
+                    const isExpired = !expiry || expiry.getTime() <= Date.now();
+                    const isActive = (delegation.status || '').toUpperCase() === 'ACTIVE';
+
+                    if (!isActive || isExpired || !delegation.sourceUserDocId) {
+                        await cleanupExpiredDelegateAccount(signedInDoc.id, signedInData, user);
+                        await signOut(auth);
+                        window.showToast('Delegated account expired. Ask owner to generate a new one.', 'warning');
+                        return;
+                    }
+
+                    const sourceSnap = await safeWithRetry(
+                        () => safeWithTimeout(getDoc(doc(db, 'users', delegation.sourceUserDocId)), 10000, 'Delegated source account lookup timed out.'),
+                        { maxRetries: 1 }
+                    );
+
+                    if (!sourceSnap.exists()) {
+                        await cleanupExpiredDelegateAccount(signedInDoc.id, signedInData, user);
+                        await signOut(auth);
+                        window.showToast('Delegate source account not found. Contact admin.', 'error');
+                        return;
+                    }
+
+                    resolvedUserData = {
+                        ...sourceSnap.data(),
+                        docId: sourceSnap.id,
+                        delegatedSession: true,
+                        delegateAccount: {
+                            delegateDocId: signedInDoc.id,
+                            delegateUid: user.uid,
+                            delegateEmail: user.email,
+                            expiresAt: delegation.expiresAt,
+                            delegationId: delegation.delegationId || null
+                        }
+                    };
+
+                    window.delegateSession = {
+                        delegateDocId: signedInDoc.id,
+                        sourceUserDocId: sourceSnap.id,
+                        expiresAt: delegation.expiresAt,
+                        delegationId: delegation.delegationId || null
+                    };
+                } else {
+                    window.delegateSession = null;
+                }
+
+                window.userData = resolvedUserData;
                 const urlCompanyId = window.ExplyraTenant?.getCompanyIdFromPath() || null;
                 if (urlCompanyId && window.userData.companyId && urlCompanyId !== window.userData.companyId) {
                     window.showToast('Company access mismatch. Please sign in using your company link.', 'error');

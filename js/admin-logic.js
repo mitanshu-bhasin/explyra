@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, RecaptchaVerifier, PhoneAuthProvider, updatePhoneNumber, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, RecaptchaVerifier, PhoneAuthProvider, updatePhoneNumber, signInWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, collectionGroup, query, where, getDocs, getCountFromServer, doc, updateDoc, addDoc, onSnapshot, serverTimestamp, setDoc, orderBy, getDoc, deleteDoc, writeBatch, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
@@ -260,6 +260,267 @@ let currentAdminTab = null;
 let currentAdminModalId = null;
 let adminPhoneRecaptchaVerifier = null;
 let adminPhoneVerificationId = null;
+const ADMIN_DELEGATE_APP_NAME = 'admin-delegate-auth-worker';
+
+const getAdminDelegateAuth = () => {
+    let workerApp = getApps().find((entry) => entry.name === ADMIN_DELEGATE_APP_NAME);
+    if (!workerApp) {
+        workerApp = initializeApp(firebaseConfig, ADMIN_DELEGATE_APP_NAME);
+    }
+    return getAuth(workerApp);
+};
+
+const randomToken = (len = 8) => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    let out = '';
+    for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
+};
+
+const normalizeDateEnd = (dateValue) => {
+    if (!dateValue) return null;
+    const dt = new Date(`${dateValue}T23:59:59`);
+    if (Number.isNaN(dt.getTime())) return null;
+    return dt;
+};
+
+const toLocalDateInput = (value) => {
+    const date = value?.toDate ? value.toDate() : (value instanceof Date ? value : (value ? new Date(value) : null));
+    if (!date || Number.isNaN(date.getTime())) return '';
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+};
+
+window.removeAccountDelegate = async (delegationDocId, silent = false) => {
+    if (!delegationDocId) return;
+
+    const delegationRef = doc(db, 'account_delegations', delegationDocId);
+    const delegationSnap = await getDoc(delegationRef);
+    if (!delegationSnap.exists()) {
+        if (!silent) showToast('Delegation record not found.', 'warning');
+        return;
+    }
+
+    const delegation = delegationSnap.data() || {};
+
+    if (!silent) {
+        const ok = confirm('Remove this delegate account now?');
+        if (!ok) return;
+    }
+
+    await updateDoc(delegationRef, {
+        status: 'REVOKED',
+        revokedAt: serverTimestamp(),
+        revokedByDocId: userData?.docId || null,
+        updatedAt: serverTimestamp()
+    });
+
+    if (delegation.delegateUserDocId) {
+        try {
+            await updateDoc(doc(db, 'users', delegation.delegateUserDocId), {
+                status: 'INACTIVE',
+                delegationStatus: 'REVOKED',
+                updatedAt: serverTimestamp()
+            });
+        } catch (err) {
+            console.warn('Failed to mark delegate user inactive', err);
+        }
+    }
+
+    const workerAuth = getAdminDelegateAuth();
+    if (delegation.delegateEmail && delegation.generatedPassword) {
+        try {
+            await signInWithEmailAndPassword(workerAuth, delegation.delegateEmail, delegation.generatedPassword);
+            if (workerAuth.currentUser) {
+                await deleteUser(workerAuth.currentUser);
+            }
+        } catch (err) {
+            console.warn('Delegate auth deletion failed', err);
+        }
+    }
+
+    try {
+        await signOut(workerAuth);
+    } catch (err) {
+        console.warn('Worker auth signout failed', err);
+    }
+
+    if (typeof window.loadAccountDelegations === 'function') {
+        await window.loadAccountDelegations();
+    }
+    if (!silent) showToast('Delegate access removed.', 'success');
+};
+
+window.loadAccountDelegations = async () => {
+    const listEl = document.getElementById('ac-delegate-list');
+    if (!listEl || !userData?.docId) return;
+
+    listEl.innerHTML = '<div class="text-[10px] text-slate-500">Loading delegates...</div>';
+    try {
+        const snap = await getDocs(query(collection(db, 'account_delegations'), where('sourceUserDocId', '==', userData.docId)));
+        if (snap.empty) {
+            listEl.innerHTML = '<div class="text-[10px] text-slate-500">No active delegate accounts.</div>';
+            return;
+        }
+
+        const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        rows.sort((a, b) => {
+            const aDate = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+            const bDate = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+            return bDate - aDate;
+        });
+
+        for (const entry of rows) {
+            const expiry = entry.expiresAt?.toDate ? entry.expiresAt.toDate() : (entry.expiresAt ? new Date(entry.expiresAt) : null);
+            if (entry.status === 'ACTIVE' && expiry && expiry.getTime() < Date.now()) {
+                await window.removeAccountDelegate(entry.id, true);
+            }
+        }
+
+        const activeRows = (await getDocs(query(collection(db, 'account_delegations'), where('sourceUserDocId', '==', userData.docId)))).docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .sort((a, b) => {
+                const aDate = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+                const bDate = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+                return bDate - aDate;
+            });
+
+        listEl.innerHTML = activeRows.length ? activeRows.map((entry) => {
+            const expiry = entry.expiresAt?.toDate ? entry.expiresAt.toDate() : (entry.expiresAt ? new Date(entry.expiresAt) : null);
+            const expText = expiry ? expiry.toLocaleString() : 'N/A';
+            const isActive = entry.status === 'ACTIVE';
+            return `
+                <div class="rounded-lg border ${isActive ? 'border-slate-200 dark:border-slate-700' : 'border-slate-100 dark:border-slate-800'} bg-white dark:bg-slate-900 p-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-bold text-slate-700 dark:text-slate-200 truncate">${entry.delegateEmail || 'delegate'}</p>
+                            <p class="text-[9px] text-slate-500">Expires: ${expText}</p>
+                            <p class="text-[9px] ${isActive ? 'text-green-600' : 'text-slate-500'} font-semibold">${entry.status || 'UNKNOWN'}</p>
+                        </div>
+                        <button type="button" onclick="removeAccountDelegate('${entry.id}')"
+                            class="px-2 py-1 rounded border border-red-200 text-red-600 text-[10px] font-bold hover:bg-red-50 transition">
+                            Remove
+                        </button>
+                    </div>
+                </div>`;
+        }).join('') : '<div class="text-[10px] text-slate-500">No delegate records.</div>';
+    } catch (err) {
+        console.error(err);
+        listEl.innerHTML = '<div class="text-[10px] text-red-500">Failed to load delegates.</div>';
+    }
+};
+
+window.generateAccountDelegate = async () => {
+    if (!userData?.docId || !userData?.companyId) {
+        showToast('User profile not ready.', 'error');
+        return;
+    }
+
+    const expiryInput = document.getElementById('ac-delegate-expiry');
+    const btn = document.getElementById('ac-delegate-generate-btn');
+    const credEl = document.getElementById('ac-delegate-cred');
+    const expiry = normalizeDateEnd(expiryInput?.value || '');
+
+    if (!expiry) {
+        showToast('Please choose a valid expiration date.', 'warning');
+        return;
+    }
+    if (expiry.getTime() <= Date.now()) {
+        showToast('Expiration must be in future.', 'warning');
+        return;
+    }
+
+    const originalBtn = btn?.innerHTML || '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Generating...';
+    }
+
+    try {
+        const workerAuth = getAdminDelegateAuth();
+        const email = `delegate.${Date.now()}.${Math.floor(Math.random() * 9999)}@explyra-delegate.com`;
+        const password = `${randomToken(6)}${randomToken(6)}`;
+        const credential = await createUserWithEmailAndPassword(workerAuth, email, password);
+
+        const delegateUserRef = doc(collection(db, 'users'));
+        const employeeId = `DLG-${String(Date.now()).slice(-6)}`;
+        const delegatedRole = (userData.role || 'EMPLOYEE').toUpperCase();
+
+        await setDoc(delegateUserRef, {
+            uid: credential.user.uid,
+            email,
+            name: `${userData.name || 'User'} Delegate`,
+            role: 'DELEGATE',
+            delegatedRole,
+            status: 'ACTIVE',
+            companyId: userData.companyId,
+            companyName: userData.companyName || '',
+            department: userData.department || 'Delegated Access',
+            employeeId,
+            delegationStatus: 'ACTIVE',
+            delegation: {
+                sourceUserDocId: userData.docId,
+                sourceUserUid: userData.uid || currentUser?.uid || null,
+                sourceUserName: userData.name || 'User',
+                sourceRole: userData.role || 'EMPLOYEE',
+                expiresAt: expiry,
+                status: 'ACTIVE',
+                generatedPassword: password,
+                createdByDocId: userData.docId
+            },
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+
+        const delegationRef = await addDoc(collection(db, 'account_delegations'), {
+            sourceUserDocId: userData.docId,
+            sourceCompanyId: userData.companyId,
+            sourceUserName: userData.name || 'User',
+            delegateUid: credential.user.uid,
+            delegateUserDocId: delegateUserRef.id,
+            delegateEmail: email,
+            generatedPassword: password,
+            status: 'ACTIVE',
+            expiresAt: expiry,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+
+        await updateDoc(delegateUserRef, {
+            delegation: {
+                sourceUserDocId: userData.docId,
+                sourceUserUid: userData.uid || currentUser?.uid || null,
+                sourceUserName: userData.name || 'User',
+                sourceRole: userData.role || 'EMPLOYEE',
+                expiresAt: expiry,
+                status: 'ACTIVE',
+                generatedPassword: password,
+                createdByDocId: userData.docId,
+                delegationId: delegationRef.id
+            },
+            updatedAt: serverTimestamp()
+        });
+
+        await signOut(workerAuth);
+
+        if (credEl) {
+            credEl.classList.remove('hidden');
+            credEl.textContent = `Email: ${email} | Password: ${password} | Expires: ${expiry.toLocaleString()}`;
+        }
+        showToast('Delegate account generated.', 'success');
+        await window.loadAccountDelegations();
+    } catch (err) {
+        console.error(err);
+        showToast('Delegate generation failed: ' + (err.message || 'Unknown error'), 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalBtn;
+        }
+    }
+};
 
 const roleRank = {
     'ADMIN': 7,
@@ -285,11 +546,31 @@ const isTabVisibleInPrefs = (tabId) => {
     } catch (e) { return true; }
 };
 
-window.updateSidebarVisibilityPref = (tabId, isVisible) => {
+window.updateSidebarVisibilityPref = async (tabId, isVisible) => {
     try {
+        // Update localStorage
         const prefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
         prefs[tabId] = isVisible;
         localStorage.setItem('explyra_sidebar_visibility', JSON.stringify(prefs));
+
+        // Update Firebase if user is logged in
+        if (window.userData?.docId && window.db) {
+            try {
+                const userDocRef = doc(window.db, "users", window.userData.docId);
+                const userSnap = await getDoc(userDocRef);
+                if (userSnap.exists()) {
+                    const currentPrefs = userSnap.data()?.modulePreferences || {};
+                    currentPrefs[tabId] = isVisible;
+                    await updateDoc(userDocRef, {
+                        modulePreferences: currentPrefs,
+                        updatedAt: serverTimestamp()
+                    });
+                    console.log(`[Preferences] Firebase saved: ${tabId} = ${isVisible}`);
+                }
+            } catch (fbErr) {
+                console.warn('[Preferences] Firebase save failed (non-blocking):', fbErr);
+            }
+        }
 
         // Instant Feedback: apply to current UI
         const el = document.getElementById(`nav-${tabId}`) || (tabId === 'overview' ? document.querySelector('.sidebar-item[onclick*="overview"]') : null);
@@ -303,6 +584,69 @@ window.updateSidebarVisibilityPref = (tabId, isVisible) => {
         }
         showToast(`${tabId.charAt(0).toUpperCase() + tabId.slice(1)} visibility updated`, "success");
     } catch (e) { console.error(e); }
+};
+
+window.loadModulePreferencesFromFirebase = async () => {
+    if (!window.userData?.docId || !window.db) {
+        console.log('[Preferences] Skipping Firebase load: no user/db');
+        return;
+    }
+
+    try {
+        const userDocRef = doc(window.db, "users", window.userData.docId);
+        const userSnap = await getDoc(userDocRef);
+        
+        if (userSnap.exists()) {
+            const modulePrefs = userSnap.data()?.modulePreferences || {};
+            console.log('[Preferences] Loaded from Firebase:', modulePrefs);
+            
+            // Apply to UI checkboxes and sidebar
+            const moduleMap = {
+                'crm': 'pref-vis-crm',
+                'ai': 'pref-vis-ai',
+                'attendance': 'pref-vis-attendance',
+                'salary': 'pref-vis-salary'
+            };
+            
+            for (const [moduleId, prefId] of Object.entries(moduleMap)) {
+                const isEnabled = modulePrefs[moduleId];
+                const checkbox = document.getElementById(prefId);
+                
+                // Set checkbox state
+                if (checkbox) {
+                    checkbox.checked = !!isEnabled;
+                    console.log(`[Preferences] Set checkbox ${prefId} = ${!!isEnabled}`);
+                }
+                
+                // Apply to sidebar button
+                const sidebarBtn = document.getElementById(`nav-${moduleId}`);
+                if (sidebarBtn) {
+                    if (isEnabled) {
+                        sidebarBtn.classList.remove('hidden');
+                    } else {
+                        sidebarBtn.classList.add('hidden');
+                    }
+                    console.log(`[Preferences] Applied sidebar ${moduleId}: ${isEnabled ? 'visible' : 'hidden'}`);
+                }
+            }
+        } else {
+            console.log('[Preferences] User doc not found');
+        }
+    } catch (err) {
+        console.error('[Preferences] Failed to load from Firebase:', err);
+    }
+};
+
+window.initModulePreferencesDefaults = () => {
+    // Hide modules by default if not already set
+    const defaultHidden = ['crm', 'ai', 'attendance', 'salary'];
+    defaultHidden.forEach((moduleId) => {
+        const btn = document.getElementById(`nav-${moduleId}`);
+        if (btn && !btn.classList.contains('hidden')) {
+            btn.classList.add('hidden');
+            console.log(`[Preferences] Default hidden: ${moduleId}`);
+        }
+    });
 };
 
 
@@ -609,6 +953,9 @@ onAuthStateChanged(auth, async (user) => {
                 }
 
                 currentUser = user;
+
+                // Load module preferences from Firebase
+                await window.loadModulePreferencesFromFirebase();
 
                 // Initialize AI with 5-second delay to ensure all data is ready
                 setTimeout(() => {
@@ -7065,6 +7412,16 @@ window.openAccountCenter = async () => {
 
     document.getElementById('ac-phone').value = u.altPhone || '';
     document.getElementById('ac-alt-email').value = u.altEmail || '';
+    const delegateExpiryInput = document.getElementById('ac-delegate-expiry');
+    if (delegateExpiryInput && !delegateExpiryInput.value) {
+        const nextWeek = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
+        delegateExpiryInput.value = toLocalDateInput(nextWeek);
+    }
+    const delegateCredEl = document.getElementById('ac-delegate-cred');
+    if (delegateCredEl) {
+        delegateCredEl.classList.add('hidden');
+        delegateCredEl.textContent = '';
+    }
     
     // Populate 2FA
     const twoFaToggle = document.getElementById('ac-2fa-enabled');
@@ -7203,6 +7560,8 @@ window.openAccountCenter = async () => {
             document.getElementById('ac-stat-claims').textContent = snap.size;
         });
     } catch (e) { console.warn(e); }
+
+    window.loadAccountDelegations();
 };
 
 window.sendAdminPhoneOtp = async () => {

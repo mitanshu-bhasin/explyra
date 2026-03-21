@@ -418,6 +418,9 @@ window.handleProofUpload = async (input) => {
     let imageUrl = '';
 
     try {
+        const formData = new FormData();
+        formData.append('image', file);
+
         const response = await fetch(IMGBB_URL, {
             method: 'POST',
             body: formData,

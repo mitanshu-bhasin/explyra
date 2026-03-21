@@ -49,6 +49,10 @@ function sync() {
         },
         emailjs: {
             publicKey: env.EMAILJS_PUBLIC_KEY || ""
+        },
+        imgbb: {
+            url: "/api/imgbb",
+            apiKey: "HANDLED_BY_PROXY"
         }
     };
 

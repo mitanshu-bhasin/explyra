@@ -285,11 +285,31 @@ const isTabVisibleInPrefs = (tabId) => {
     } catch (e) { return true; }
 };
 
-window.updateSidebarVisibilityPref = (tabId, isVisible) => {
+window.updateSidebarVisibilityPref = async (tabId, isVisible) => {
     try {
+        // Update localStorage
         const prefs = JSON.parse(localStorage.getItem('explyra_sidebar_visibility') || '{}');
         prefs[tabId] = isVisible;
         localStorage.setItem('explyra_sidebar_visibility', JSON.stringify(prefs));
+
+        // Update Firebase if user is logged in
+        if (window.userData?.docId && window.db) {
+            try {
+                const userDocRef = doc(window.db, "users", window.userData.docId);
+                const userSnap = await getDoc(userDocRef);
+                if (userSnap.exists()) {
+                    const currentPrefs = userSnap.data()?.modulePreferences || {};
+                    currentPrefs[tabId] = isVisible;
+                    await updateDoc(userDocRef, {
+                        modulePreferences: currentPrefs,
+                        updatedAt: serverTimestamp()
+                    });
+                    console.log(`[Preferences] Firebase saved: ${tabId} = ${isVisible}`);
+                }
+            } catch (fbErr) {
+                console.warn('[Preferences] Firebase save failed (non-blocking):', fbErr);
+            }
+        }
 
         // Instant Feedback: apply to current UI
         const el = document.getElementById(`nav-${tabId}`) || (tabId === 'overview' ? document.querySelector('.sidebar-item[onclick*="overview"]') : null);
@@ -303,6 +323,69 @@ window.updateSidebarVisibilityPref = (tabId, isVisible) => {
         }
         showToast(`${tabId.charAt(0).toUpperCase() + tabId.slice(1)} visibility updated`, "success");
     } catch (e) { console.error(e); }
+};
+
+window.loadModulePreferencesFromFirebase = async () => {
+    if (!window.userData?.docId || !window.db) {
+        console.log('[Preferences] Skipping Firebase load: no user/db');
+        return;
+    }
+
+    try {
+        const userDocRef = doc(window.db, "users", window.userData.docId);
+        const userSnap = await getDoc(userDocRef);
+        
+        if (userSnap.exists()) {
+            const modulePrefs = userSnap.data()?.modulePreferences || {};
+            console.log('[Preferences] Loaded from Firebase:', modulePrefs);
+            
+            // Apply to UI checkboxes and sidebar
+            const moduleMap = {
+                'crm': 'pref-vis-crm',
+                'ai': 'pref-vis-ai',
+                'attendance': 'pref-vis-attendance',
+                'salary': 'pref-vis-salary'
+            };
+            
+            for (const [moduleId, prefId] of Object.entries(moduleMap)) {
+                const isEnabled = modulePrefs[moduleId];
+                const checkbox = document.getElementById(prefId);
+                
+                // Set checkbox state
+                if (checkbox) {
+                    checkbox.checked = !!isEnabled;
+                    console.log(`[Preferences] Set checkbox ${prefId} = ${!!isEnabled}`);
+                }
+                
+                // Apply to sidebar button
+                const sidebarBtn = document.getElementById(`nav-${moduleId}`);
+                if (sidebarBtn) {
+                    if (isEnabled) {
+                        sidebarBtn.classList.remove('hidden');
+                    } else {
+                        sidebarBtn.classList.add('hidden');
+                    }
+                    console.log(`[Preferences] Applied sidebar ${moduleId}: ${isEnabled ? 'visible' : 'hidden'}`);
+                }
+            }
+        } else {
+            console.log('[Preferences] User doc not found');
+        }
+    } catch (err) {
+        console.error('[Preferences] Failed to load from Firebase:', err);
+    }
+};
+
+window.initModulePreferencesDefaults = () => {
+    // Hide modules by default if not already set
+    const defaultHidden = ['crm', 'ai', 'attendance', 'salary'];
+    defaultHidden.forEach((moduleId) => {
+        const btn = document.getElementById(`nav-${moduleId}`);
+        if (btn && !btn.classList.contains('hidden')) {
+            btn.classList.add('hidden');
+            console.log(`[Preferences] Default hidden: ${moduleId}`);
+        }
+    });
 };
 
 
@@ -609,6 +692,9 @@ onAuthStateChanged(auth, async (user) => {
                 }
 
                 currentUser = user;
+
+                // Load module preferences from Firebase
+                await window.loadModulePreferencesFromFirebase();
 
                 // Initialize AI with 5-second delay to ensure all data is ready
                 setTimeout(() => {

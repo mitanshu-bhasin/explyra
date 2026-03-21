@@ -73,8 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ImgBB Config
-const IMGBB_KEY = "dbcb9de125850fefa4337db8d1f37ab6";
-const IMGBB_URL = "https://api.imgbb.com/1/upload";
+const IMGBB_URL = "/api/imgbb";
 
 const firebaseConfig = {
     apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
@@ -420,7 +419,6 @@ window.handleProofUpload = async (input) => {
 
     try {
         const formData = new FormData();
-        formData.append('key', IMGBB_KEY);
         formData.append('image', file);
 
         const response = await fetch(IMGBB_URL, {

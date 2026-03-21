@@ -1,7 +1,7 @@
 // js/emp-expenses.js
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, onSnapshot, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { checkSpam } from './spam-filter.js';
-import { IMGBB_KEY, IMGBB_URL } from './emp-utils.js';
+import { IMGBB_URL } from './emp-utils.js';
 
 window.expensesData = [];
 window.expensesUnsub = null;
@@ -689,10 +689,8 @@ window.handleFileSelect = async (input) => {
     const removeBtn = el.querySelector('.btn-remove-img');
     const orig = label.innerHTML;
 
-    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
     try {
         const fd = new FormData();
-        fd.append('key', IMGBB_KEY);
         fd.append('image', file);
         const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
         const data = await res.json();
@@ -752,11 +750,9 @@ window.handleProofUpload = async (input) => {
     const urlInput = document.getElementById('approval-proof-url');
     const label = document.getElementById('proof-upload-label');
     const removeBtn = document.getElementById('btn-remove-proof');
-    const orig = label.innerHTML;
     label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
     try {
         const fd = new FormData();
-        fd.append('key', IMGBB_KEY);
         fd.append('image', file);
         const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
         const data = await res.json();

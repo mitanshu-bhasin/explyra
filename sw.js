@@ -1,122 +1,159 @@
-// 🚀 Explyra Advanced PWA Service Worker v8.0
-// Features: Advanced Caching, Background Sync, Push Notifications, PWA Widgets
-// Updated for maximum performance and reliability
+// Explyra PWA Service Worker v9.2
+// Production-tuned for faster loads across Android, iOS, Windows, Linux, and macOS.
 
-const VERSION = 'v8.0';
-const CACHE_NAME = `explyra-core-${VERSION}`;
+const VERSION = 'v9.2';
+const CORE_CACHE = `explyra-core-${VERSION}`;
+const ASSET_CACHE = `explyra-assets-${VERSION}`;
+const CDN_CACHE = `explyra-cdn-${VERSION}`;
 const OFFLINE_URL = './offline.html';
 
-// Toggle for Development (set to false for production)
-const DEV_MODE = true; 
-
-// Assets to precache immediately
 const PRECACHE_ASSETS = [
     './',
     './index.html',
     './offline.html',
     './manifest.json',
     './assets/images/explyra_logo.png',
-    './css/common.css',
-    './js/theme.js'
+    './android-chrome-192x192.png',
+    './android-chrome-512x512.png'
 ];
 
-// ── INSTALL EVENT ──────────────────────────────────────────
+const CDN_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'cdnjs.cloudflare.com', 'cdn.jsdelivr.net', 'unpkg.com'];
+const API_HOST_HINTS = ['firestore.googleapis.com', 'identitytoolkit.googleapis.com', 'securetoken.googleapis.com'];
+const STATIC_EXT_RE = /\.(?:css|js|mjs|png|jpg|jpeg|webp|avif|svg|gif|ico|woff|woff2|ttf|eot|json|xml|txt)$/i;
+
 self.addEventListener('install', (event) => {
-    console.log('[SW] Install Event:', VERSION);
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW] Precaching app shell...');
-            return cache.addAll(PRECACHE_ASSETS);
-        }).then(() => self.skipWaiting())
-    );
-});
-
-// ── ACTIVATE EVENT ─────────────────────────────────────────
-self.addEventListener('activate', (event) => {
-    console.log('[SW] Activate Event:', VERSION);
-    event.waitUntil(
-        Promise.all([
-            // Clean up old caches
-            caches.keys().then((keys) => {
-                return Promise.all(keys.map((key) => {
-                    if (key !== CACHE_NAME) {
-                        console.log('[SW] Removing old cache:', key);
-                        return caches.delete(key);
+    event.waitUntil((async () => {
+        const cache = await caches.open(CORE_CACHE);
+        await Promise.allSettled(
+            PRECACHE_ASSETS.map(async (asset) => {
+                try {
+                    const res = await fetch(asset, { cache: 'no-cache' });
+                    if (res && res.ok) {
+                        await cache.put(asset, res);
                     }
-                }));
-            }),
-            // Enable Navigation Preload
-            self.registration.navigationPreload ? self.registration.navigationPreload.enable() : Promise.resolve(),
-            // Take immediate control
-            self.clients.claim()
-        ])
-    );
+                } catch (err) {
+                    // Ignore optional precache misses to avoid install failure.
+                }
+            })
+        );
+        await self.skipWaiting();
+    })());
 });
 
-// ── FETCH EVENT ────────────────────────────────────────────
+self.addEventListener('activate', (event) => {
+    event.waitUntil((async () => {
+        const keep = new Set([CORE_CACHE, ASSET_CACHE, CDN_CACHE]);
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => (keep.has(key) ? Promise.resolve() : caches.delete(key))));
+
+        if (self.registration.navigationPreload) {
+            await self.registration.navigationPreload.enable();
+        }
+
+        await self.clients.claim();
+    })());
+});
+
 self.addEventListener('fetch', (event) => {
     const { request } = event;
+    if (request.method !== 'GET') return;
+
     const url = new URL(request.url);
+    if (!url.protocol.startsWith('http')) return;
 
-    // Skip non-GET and non-HTTP requests
-    if (request.method !== 'GET' || !url.protocol.startsWith('http')) return;
+    // Skip chrome extension URLs, range requests, and explicit no-store requests.
+    if (url.protocol === 'chrome-extension:' || request.headers.has('range')) return;
+    if (request.cache === 'no-store') return;
 
-    // 🚧 DEVELOPMENT MODE: Network Only for local assets to avoid stale files
-    if (DEV_MODE && url.origin === self.location.origin) {
-        return; // Let browser handle normally
+    const isApiLike = API_HOST_HINTS.some((host) => url.hostname.includes(host)) || url.pathname.startsWith('/api/');
+    if (isApiLike) {
+        event.respondWith(fetch(request));
+        return;
     }
 
-    // ── Strategy: Navigation ──
     if (request.mode === 'navigate') {
         event.respondWith(handleNavigation(event));
         return;
     }
 
-    // ── Strategy: CDN & Third Party ──
-    const isCDN = ['fonts.googleapis.com', 'cdnjs.cloudflare.com', 'unpkg.com'].some(d => url.hostname.includes(d));
+    const isCDN = CDN_HOSTS.some((host) => url.hostname.includes(host));
     if (isCDN) {
-        event.respondWith(staleWhileRevalidate(request, 'explyra-cdn-cache'));
+        event.respondWith(staleWhileRevalidate(request, CDN_CACHE));
         return;
     }
 
-    // ── Strategy: Local Assets ──
-    event.respondWith(staleWhileRevalidate(request, CACHE_NAME));
-});
+    if (STATIC_EXT_RE.test(url.pathname)) {
+        event.respondWith(staleWhileRevalidate(request, ASSET_CACHE));
+        return;
+    }
 
-// ──────── HELPERS ──────────
+    event.respondWith(networkFirst(request, CORE_CACHE, 3000));
+});
 
 async function handleNavigation(event) {
     try {
-        // Try Navigation Preload first
         const preloadResponse = await event.preloadResponse;
-        if (preloadResponse) return preloadResponse;
+        if (preloadResponse) {
+            const cache = await caches.open(CORE_CACHE);
+            cache.put(event.request, preloadResponse.clone());
+            return preloadResponse;
+        }
+    } catch (err) {
+        // Continue to network-first fallback.
+    }
 
-        // Try Network
-        const networkResponse = await fetch(event.request);
+    const response = await networkFirst(event.request, CORE_CACHE, 4000);
+    if (response) return response;
+
+    const cache = await caches.open(CORE_CACHE);
+    return (await cache.match(OFFLINE_URL)) || Response.error();
+}
+
+async function networkFirst(request, cacheName, timeoutMs) {
+    const cache = await caches.open(cacheName);
+
+    try {
+        const networkResponse = await fetchWithTimeout(request, timeoutMs);
+        if (networkResponse && networkResponse.ok) {
+            cache.put(request, networkResponse.clone());
+        }
         return networkResponse;
-    } catch (e) {
-        // Offline Fallback
-        const cache = await caches.open(CACHE_NAME);
-        const cachedResponse = await cache.match(event.request);
-        return cachedResponse || cache.match(OFFLINE_URL);
+    } catch (err) {
+        return cache.match(request);
     }
 }
 
 async function staleWhileRevalidate(request, cacheName) {
     const cache = await caches.open(cacheName);
-    const cachedResponse = await cache.match(request);
+    const cached = await cache.match(request);
 
-    const networkFetch = fetch(request).then((res) => {
-        if (res.ok) cache.put(request, res.clone());
-        return res;
-    }).catch(() => cachedResponse);
+    const networkPromise = fetch(request)
+        .then((response) => {
+            if (response && response.ok) {
+                cache.put(request, response.clone());
+            }
+            return response;
+        })
+        .catch(() => cached);
 
-    return cachedResponse || networkFetch;
+    return cached || networkPromise;
 }
 
-// ── EXTRA FEATURES ─────────────────────────────────────────
+function fetchWithTimeout(request, timeoutMs) {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('Network timeout')), timeoutMs);
+        fetch(request)
+            .then((res) => {
+                clearTimeout(timer);
+                resolve(res);
+            })
+            .catch((err) => {
+                clearTimeout(timer);
+                reject(err);
+            });
+    });
+}
 
-// 1. Background Sync (Offline form submission)
 self.addEventListener('sync', (event) => {
     if (event.tag === 'sync-expenses') {
         event.waitUntil(processPendingExpenses());
@@ -124,10 +161,9 @@ self.addEventListener('sync', (event) => {
 });
 
 async function processPendingExpenses() {
-    console.log('[SW] Processing background sync...');
+    // Placeholder for offline queue replay.
 }
 
-// 2. Push Notifications
 self.addEventListener('push', (event) => {
     const data = event.data ? event.data.json() : { title: 'Explyra Update', body: 'New notification!' };
     const options = {
@@ -143,28 +179,10 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
     event.waitUntil(
-        clients.matchAll({ type: 'window' }).then((clientList) => {
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             if (clientList.length > 0) return clientList[0].focus();
             return clients.openWindow(event.notification.data.url);
         })
     );
-});
-
-// 3. PWA Widgets Interactivity
-self.addEventListener('widgetclick', (event) => {
-    if (event.action === 'refresh') {
-        event.waitUntil(updateWidgets());
-    }
-});
-
-async function updateWidgets() {
-    // Implementation for updating widget data
-}
-
-// 4. Periodic Background Sync
-self.addEventListener('periodicsync', (event) => {
-    if (event.tag === 'content-update') {
-        event.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(PRECACHE_ASSETS)));
-    }
 });
 

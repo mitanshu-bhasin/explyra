@@ -1120,7 +1120,7 @@
             <div class="p-4 border-t border-[#eaeaea] dark:border-[#333]">
                 <div class="vercel-card p-3 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-[#111] flex items-center justify-center text-xs font-bold"
-                        id="sidebar-user-avatar">?</div>
+                        id="sidebar-user-avatar" data-avatar-display>?</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold text-black dark:text-white truncate" id="sidebar-user-name">
                             Loading...</p>
@@ -1189,7 +1189,7 @@
                         <button onclick="openProfileModal()"
                             class="w-9 h-9 rounded-full overflow-hidden border border-[#eaeaea] dark:border-[#333] hover:ring-2 hover:ring-black dark:hover:ring-white transition-all">
                             <div id="header-profile-avatar"
-                                class="w-full h-full bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center text-xs font-bold">
+                                class="w-full h-full bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center text-xs font-bold" data-avatar-display>
                                 <i class="fa-solid fa-user-circle text-lg text-gray-400"></i>
                             </div>
                         </button>
@@ -2068,6 +2068,23 @@
             </div>
 
             <form id="profile-form" onsubmit="window.submitProfile(event)" class="p-6 space-y-4 overflow-y-auto">
+                <!-- Avatar Management Section -->
+                <div class="rounded-2xl border border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 via-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:via-blue-900/10 dark:to-indigo-900/10 p-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 flex-1">
+                        <div id="profile-avatar-display" class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg flex-shrink-0" data-avatar-display>
+                            ?
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Profile Avatar</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Visible across the platform</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="window.openAvatarPickerModal?.()"
+                        class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition shadow-md flex items-center gap-2 shrink-0">
+                        <i class="fa-solid fa-image"></i> Change
+                    </button>
+                </div>
+
                 <div
                     class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-r from-sky-50 via-indigo-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4 py-3 flex items-center justify-between gap-3 shadow-sm">
                     <div class="min-w-0">
@@ -2372,6 +2389,39 @@
                         </ul>
                     </div>
 
+                    <div id="profile-delegate-owner-panel"
+                        class="border border-indigo-200/70 dark:border-indigo-900/70 rounded-xl p-3 bg-indigo-50/60 dark:bg-indigo-900/10">
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <h6 class="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-shield"></i> Account Delegate Access
+                            </h6>
+                            <span class="text-[9px] text-indigo-600 dark:text-indigo-300 font-semibold">Temporary Login</span>
+                        </div>
+                        <p class="text-[10px] text-indigo-700/80 dark:text-indigo-200/80 mb-2">Generate delegate credentials with expiry. Expired or removed delegates are revoked and deletion is attempted automatically.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                            <div>
+                                <label class="block text-[9px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider mb-1">Expiration Date</label>
+                                <input type="date" id="profile-delegate-expiry"
+                                    class="input-field w-full rounded-lg p-2 text-xs bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800 outline-none"
+                                    min="2026-01-01">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" id="profile-delegate-generate-btn" onclick="generateProfileDelegateAccess()"
+                                    class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Delegate
+                                </button>
+                            </div>
+                        </div>
+                        <div id="profile-delegate-cred"
+                            class="hidden text-[10px] font-mono bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-800 rounded-lg p-2 text-indigo-700 dark:text-indigo-200 break-all"></div>
+                        <div id="profile-delegate-list" class="mt-2 space-y-2"></div>
+                    </div>
+
+                    <div id="profile-delegate-banner"
+                        class="hidden p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-[10px] text-amber-800 dark:text-amber-200 font-semibold">
+                        Delegated session active. This login is temporary and scoped to delegated access.
+                    </div>
+
                     <button type="button"
                         onclick="if(window.aiAssistant) window.aiAssistant.toggleChat(); closeModal('modal-profile');"
                         class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
@@ -2548,8 +2598,43 @@
     <script type="module" src="js/emp-calls.js"></script>
     <script type="module" src="js/emp-auth.js"></script>
     <script type="module" src="js/ai-receipt.js"></script>
+    <script src="js/avatar-manager.js"></script>
 
+    <!-- Avatar System Styles -->
+    <style>
+        [data-avatar-display] {
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
 
+        [data-avatar-display] img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .receipt-label.drop-zone-active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        #modal-avatar-picker {
+            animation: slideUp 0.2s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 
     <!-- Split Pane Chat Modal -->
     <div id="modal-chat"
