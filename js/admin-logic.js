@@ -269,10 +269,27 @@ function normalizeAdminTab(tab) {
     return ADMIN_TABS.has(tab) ? tab : 'overview';
 }
 
+function navigateTenantAware(target) {
+    const companyId = window.companyId || userData?.companyId || tenantCompanyFromPath;
+    if (window.ExplyraTenant) {
+        const rewritten = window.ExplyraTenant.toTenantAwareHref(target, { companyId, forcePrefix: true });
+        window.location.href = rewritten || target;
+        return;
+    }
+    window.location.href = target;
+}
+
+window.navigateTenantAware = navigateTenantAware;
+
 function buildAdminTabUrl(tab) {
     const url = new URL(window.location.href);
     url.searchParams.set('tab', tab);
-    return `${url.pathname}${url.search}${url.hash}`;
+    const raw = `${url.pathname}${url.search}${url.hash}`;
+    if (window.ExplyraTenant) {
+        const companyId = window.companyId || userData?.companyId || tenantCompanyFromPath;
+        return window.ExplyraTenant.toTenantAwareNavigationUrl(raw, companyId) || raw;
+    }
+    return raw;
 }
 
 function pushAdminModalState(modalId) {
@@ -490,7 +507,7 @@ onAuthStateChanged(auth, async (user) => {
                         if (window.ExplyraTenant) {
                             window.ExplyraTenant.redirectToTenantPath('emp.html', window.companyId || userData.companyId);
                         } else {
-                            window.location.href = 'emp.html';
+                            navigateTenantAware('emp.html');
                         }
                     }, 2000);
                     return;
@@ -498,7 +515,7 @@ onAuthStateChanged(auth, async (user) => {
 
                 // If management but no company assigned, go to setup
                 if (!userData.companyId && !['explyra@gmail.com', 'epxlyra@gmail.com', 'info@fouralpha.org'].includes(user.email.toLowerCase())) {
-                    window.location.href = 'company.html';
+                    navigateTenantAware('company.html');
                     return;
                 }
 
@@ -1637,7 +1654,7 @@ async function renderOverview() {
                     <div class="relative z-10 flex flex-wrap gap-3 w-full md:w-auto">
                         <button onclick="switchTab('users')" class="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg font-bold text-sm transition shadow flex items-center"><i class="fa-solid fa-user-plus mr-2"></i> Invite Team</button>
                         <button onclick="window.open('Utilites/index.html','_blank')" class="bg-blue-700 hover:bg-blue-900 border border-blue-500 px-4 py-2 rounded-lg font-bold text-sm text-white transition shadow flex items-center"><i class="fa-solid fa-rocket mr-2"></i> Explore Tools</button>
-                        <button onclick="window.location.href='pricing.html'" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-bold text-sm text-white transition shadow flex items-center"><i class="fa-solid fa-crown mr-2"></i> Upgrade Plan</button>
+                        <button onclick="window.navigateTenantAware('pricing.html')" class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-bold text-sm text-white transition shadow flex items-center"><i class="fa-solid fa-crown mr-2"></i> Upgrade Plan</button>
                     </div>
                 </div>
             `;
@@ -8326,7 +8343,7 @@ window.navigateToAttendance = () => {
             userId: userData.name || userData.email.split('@')[0]
         }));
     }
-    window.location.href = 'attendance/company/attendance.html';
+    navigateTenantAware('attendance/company/attendance.html');
 };
 
 window.navigateToSalary = () => {
@@ -8337,7 +8354,7 @@ window.navigateToSalary = () => {
             userId: userData.name || userData.email.split('@')[0]
         }));
     }
-    window.location.href = 'attendance/company/salary.html';
+    navigateTenantAware('attendance/company/salary.html');
 };
 
 window.navigateToAI = () => {
@@ -8348,7 +8365,7 @@ window.navigateToAI = () => {
             userId: userData.name || userData.email.split('@')[0]
         }));
     }
-    window.location.href = 'attendance/company/ai-agent.html';
+    navigateTenantAware('attendance/company/ai-agent.html');
 };
 
 window.resetUserPassword = async (email) => {
