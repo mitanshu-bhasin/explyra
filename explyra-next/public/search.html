@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search — Free Explyra Suite Tool | Fast & Secure</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        :root {
+            --blue: #1a0dab;
+            --blue-h: #1546C0;
+            --surf: #ffffff;
+            --bdr: #dadce0;
+            --ink: #202124;
+            --ink3: #4d5156;
+            --bg3: #f1f3f4;
+            --glass: rgba(255, 255, 255, 0.95);
+            --ai-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --surf: #0D1117;
+            --bdr: #3c4043;
+            --ink: #e8eaed;
+            --ink3: #bdc1c6;
+            --bg3: #303134;
+            --blue: #8ab4f8;
+            --glass: rgba(13, 17, 23, 0.95);
+            --ai-bg: #1e1e1e;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', arial, sans-serif;
+            background: var(--surf); color: var(--ink);
+            transition: background 0.2s; overflow-x: hidden;
+        }
+
+        .search-app { min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HERO VIEW */
+        .home-hero {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 12vh;
+            animation: fadeIn 0.5s ease;
+        }
+        .hero-logo {
+            font-size: clamp(3.5rem, 12vw, 7.5rem); font-weight: 800; margin-bottom: 2.5rem; letter-spacing: -4px;
+            background: linear-gradient(135deg, #1A0DAB 0%, #1546C0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent; cursor: pointer;
+        }
+
+        /* HEADER VIEW */
+        .search-header {
+            position: sticky; top: 0; z-index: 1000; background: var(--glass); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--bdr); display: none; padding: 15px 160px; align-items: center; gap: 40px;
+        }
+        .results-mode .search-header { display: flex; }
+        .results-mode .home-hero { display: none; }
+
+        .logo-s { font-size: 1.6rem; font-weight: 800; color: var(--blue); cursor: pointer; }
+
+        /* BARS */
+        .bar-container { width: 100%; max-width: 690px; }
+        .bar-wrap {
+            display: flex; align-items: center; background: var(--surf); border: 1px solid var(--bdr);
+            border-radius: 28px; padding: 2px 20px; transition: box-shadow 0.2s;
+        }
+        .bar-wrap:focus-within { box-shadow: 0 1px 6px rgba(32,33,36,0.28); border-color: transparent; }
+        .s-input {
+            flex: 1; border: none; background: transparent; font-size: 1.05rem; padding: 12px 0;
+            color: var(--ink) !important; outline: none;
+        }
+
+        /* TABS */
+        .tabs-row { border-bottom: 1px solid var(--bdr); background: var(--surf); display: none; }
+        .results-mode .tabs-row { display: block; }
+        .tabs-inner { max-width: 1200px; margin: 0 auto; padding: 0 160px; display: flex; gap: 24px; }
+        .tab { padding: 14px 4px; font-size: 0.88rem; color: var(--ink3); cursor: pointer; position: relative; font-weight: 500; }
+        .tab.active { color: var(--blue); }
+        .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background: var(--blue); }
+
+        /* AI OVERVIEW - ADVANCED */
+        .ai-section {
+            background: var(--ai-bg); border-radius: 24px; padding: 28px; margin-bottom: 35px;
+            border: 1px solid var(--bdr); position: relative; overflow: hidden;
+            display: none; transition: all 0.3s ease;
+        }
+        .ai-section::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+            background: linear-gradient(to bottom, #1a73e8, #4285f4);
+        }
+        .ai-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .ai-badge { display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1a73e8; font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase; }
+        .ai-body { font-size: 1.15rem; line-height: 1.8; color: var(--ink); }
+        
+        .ai-btn-call { 
+            background: #1a73e8; color: white; border: none; padding: 10px 24px; border-radius: 20px; 
+            font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .ai-btn-call:hover { background: #1557b0; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,115,232,0.25); }
+
+        .ai-loader { display: flex; align-items: center; gap: 15px; color: var(--ink3); }
+        .pulse-dot { width: 10px; height: 10px; background: #1a73e8; border-radius: 50%; animation: pulse 1s infinite alternate; }
+
+        @keyframes pulse { from { opacity: 0.2; transform: scale(0.8); } to { opacity: 1; transform: scale(1.1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* RESULTS */
+        .main-view { flex: 1; padding: 20px 160px; max-width: 1200px; display: none; }
+        .results-mode .main-view { display: block; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 360px; gap: 60px; }
+
+        @media (max-width: 1100px) {
+            .search-header, .tabs-inner, .main-view { padding-left: 20px; padding-right: 20px; }
+            .grid-layout { grid-template-columns: 1fr; }
+            .side-profile { display: none; }
+        }
+
+        .result-card { margin-bottom: 35px; display: flex; gap: 24px; animation: fadeIn 0.3s ease; }
+        .res-img-box { width: 92px; height: 92px; flex-shrink: 0; border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; background: var(--bg3); display: flex; align-items: center; justify-content: center; }
+        .res-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .res-url { color: var(--ink3); font-size: 0.85rem; margin-bottom: 5px; display: block; }
+        .res-title { color: var(--blue); font-size: 1.3rem; line-height: 1.3; font-weight: 500; text-decoration: none; display: block; margin-bottom: 6px; }
+        .res-title:hover { text-decoration: underline; }
+        .res-desc { font-size: 0.95rem; line-height: 1.6; color: var(--ink3); }
+
+        .side-profile { border:1px solid var(--bdr); border-radius:20px; padding:24px; background:var(--surf); position: sticky; top: 100px; }
+        .prof-img { width:100%; border-radius:14px; margin-bottom:20px; border:1px solid var(--bdr); aspect-ratio:1; object-fit:cover; }
+
+        .loading-spinner { width: 30px; height: 30px; border: 3px solid var(--bg3); border-top: 3px solid var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 40px auto; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+
+    
+    
+    
+    
+        <meta name="description" content="Use Search on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    }
+  ]
+}
+    </script>
+</head>
+
+<body>
+    <div class="search-app home-mode" id="app">
+        <!-- Home -->
+        <div class="home-hero">
+            <div class="hero-logo" onclick="location.reload()">Explyra</div>
+            <div class="bar-container">
+                <div class="bar-wrap">
+                    <input type="text" class="s-input" id="barHome" placeholder="Ask AI or search..." autofocus autocomplete="off">
+                    <button class="action-btn" id="btnHome" style="padding:10px;"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="search-header">
+            <div class="logo-s" onclick="location.href='/search.html'">Explyra</div>
+            <div class="bar-container">
+                <div class="bar-wrap">
+                    <input type="text" class="s-input" id="barHeader" autocomplete="off">
+                    <button class="action-btn" id="btnHeader" style="padding:10px;"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn" onclick="toggleTheme()"><i class="fas fa-adjust"></i></button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs-row">
+            <div class="tabs-inner">
+                <div class="tab active" data-cat="all">All</div>
+                <div class="tab" data-cat="ai">AI Search</div>
+                <div class="tab" data-cat="updates">Updates</div>
+                <div class="tab" data-cat="docs">Docs</div>
+                <div class="tab" data-cat="solutions">Solutions</div>
+                <div class="tab" data-cat="web">Web</div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <main class="main-view">
+            <!-- AI Overview Section -->
+            <div id="aiSection" class="ai-section">
+                <div class="ai-title-row">
+                    <div class="ai-badge">
+                        <i class="fas fa-sparkles"></i>
+                        <span>AI SEARCH INSIGHT</span>
+                    </div>
+                </div>
+                <div id="aiBody" class="ai-body">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <p style="margin:0; font-size:0.95rem; color:var(--ink3);">AI can analyze and summarize the ecosystem for "${state.query}".</p>
+                        <button class="ai-btn-call" id="invokeAI">
+                            <i class="fas fa-magic"></i> Generate Summary
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading" class="loading-spinner"></div>
+
+            <div class="grid-layout">
+                <div id="list"></div>
+                <aside id="side"></aside>
+            </div>
+
+            <div id="noRes" style="display:none; text-align:center; padding-top:100px;">
+                <i class="fas fa-search" style="font-size:3rem; color:var(--bg3); margin-bottom:20px;"></i>
+                <h2>No results found in the universe</h2>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI CONFIG SCRIPT -->
+    <script src="/js/ai-config.js"></script>
+    <script>
+        const state = { query: '', category: 'all', db: [], results: [], theme: 'light', aiController: null };
+
+        const PEOPLE = {
+            "mitanshu": { name: "Mitanshu Bhasin", role: "Founder & Lead Architect", img: "https://media.licdn.com/dms/image/v2/D5603AQGXL6bEmLqpLg/profile-displayphoto-crop_800_800/B56ZyksQsRI0AI-/0/1772289593451?e=1774483200&v=beta&t=ZPxSKtR4s4mSYZoHjBXwJHYpQXMY2boI2lrVzqL5SPo", bio: "Visionary CEO and architect. Leading technical strategy and AI development." },
+            "rohan": { name: "Rohan", role: "Co-Founder", img: "https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1774483200&v=beta&t=WVtSMFZ2b1oTk5yU7RVfMj8q_V0tZij7BJekgO33IO8", bio: "Expert data operator managing core architecture and secure processing." }
+        };
+
+        async function init() {
+            state.theme = localStorage.getItem('s-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', state.theme);
+
+            loadIndex();
+
+            const p = new URLSearchParams(window.location.search);
+            const q = p.get('q');
+            if (q) {
+                document.getElementById('barHome').value = q;
+                document.getElementById('barHeader').value = q;
+                triggerSearch(q);
+            }
+
+            const sync = (e) => {
+                document.getElementById('barHome').value = e.target.value;
+                document.getElementById('barHeader').value = e.target.value;
+            };
+
+            ['barHome', 'barHeader'].forEach(id => {
+                const el = document.getElementById(id);
+                el.oninput = sync;
+                el.onkeydown = (e) => e.key === 'Enter' && triggerSearch(el.value);
+            });
+
+            document.getElementById('btnHome').onclick = () => triggerSearch(document.getElementById('barHome').value);
+            document.getElementById('btnHeader').onclick = () => triggerSearch(document.getElementById('barHeader').value);
+
+            document.querySelectorAll('.tab').forEach(t => {
+                t.onclick = () => {
+                    document.querySelectorAll('.tab').forEach(v => v.classList.remove('active'));
+                    t.classList.add('active');
+                    state.category = t.dataset.cat;
+                    render();
+                };
+            });
+        }
+
+        async function loadIndex() {
+            try {
+                const r = await fetch('/ecosystem-index.json');
+                state.db = await r.json();
+            } catch(e) { console.error(e); }
+        }
+
+        async function triggerSearch(q) {
+            if (!q.trim()) return;
+            state.query = q.trim().toLowerCase();
+            document.getElementById('app').className = 'search-app results-mode';
+            window.history.replaceState({}, '', '?q=' + encodeURIComponent(state.query));
+
+            if (state.aiController) state.aiController.abort();
+
+            // Refresh AI Section to Pre-call State
+            const aiBox = document.getElementById('aiSection');
+            aiBox.style.display = 'block';
+            document.getElementById('aiBody').innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <p style="margin:0; font-size:0.95rem; color:var(--ink3);">Explyra AI can synthesize a detailed overview for "${state.query}".</p>
+                    <button class="ai-btn-call" onclick="runAI()">
+                        <i class="fas fa-magic"></i> Generate Summary
+                    </button>
+                </div>
+            `;
+
+            performLocal();
+        }
+
+        function performLocal() {
+            if (state.db.length === 0) { setTimeout(performLocal, 100); return; }
+            document.getElementById('loading').style.display = 'block';
+            const terms = state.query.split(' ');
+            state.results = state.db.map(i => {
+                let s = 0;
+                const txt = (i.title + " " + (i.desc || "") + " " + (i.content || "")).toLowerCase();
+                terms.forEach(t => { if (txt.includes(t)) s += 1; if (i.title.toLowerCase().includes(t)) s += 10; });
+                return { ...i, s };
+            }).filter(i => i.s > 0).sort((a,b) => b.s - a.s);
+
+            render();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('noRes').style.display = state.results.length === 0 ? 'block' : 'none';
+        }
+
+        async function runAI() {
+            const body = document.getElementById('aiBody');
+            body.innerHTML = `<div class="ai-loader"><div class="pulse-dot"></div><span>Consulting the universe...</span></div>`;
+            
+            state.aiController = new AbortController();
+            
+            let context = "";
+            if (state.query.includes('mitanshu')) context += `Mitanshu: ${PEOPLE.mitanshu.bio}\n`;
+            if (state.query.includes('rohan')) context += `Rohan: ${PEOPLE.rohan.bio}\n`;
+            
+            const top = state.results.slice(0, 3);
+            context += top.map(r => `PAGE: ${r.title}\nCONTENT: ${r.content || r.desc}`).join('\n\n');
+
+            try {
+                // Use global config if available, otherwise fallback to hardcoded new values
+                const apiBase = window.AI_CONFIG?.url || 'https://api.groq.com/openai/v1/chat/completions';
+                const apiKey = window.AI_CONFIG?.apiKey || 'REDACTED_GROQ_API_KEY_2';
+                const apiModel = window.AI_CONFIG?.model || 'moonshotai/kimi-k2-instruct';
+
+                const res = await fetch(apiBase, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${apiKey}` 
+                    },
+                    signal: state.aiController.signal,
+                    body: JSON.stringify({
+                        model: apiModel,
+                        messages: [{role: 'user', content: `Summarize "${state.query}" for Explyra ecosystem. Context:\n${context}`}],
+                        temperature: 0.5,
+                        max_tokens: 350
+                    })
+                });
+                const data = await res.json();
+                const txt = data.choices[0].message.content;
+                body.innerHTML = txt.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            } catch(e) {
+                if (e.name === 'AbortError') return;
+                body.innerHTML = `<span style="color:var(--ink3)">Summary generation failed. Check results below.</span>`;
+            }
+        }
+
+        function render() {
+            let filtered = state.results || [];
+            if (state.category !== 'all' && state.category !== 'ai') filtered = filtered.filter(i => i.type === state.category);
+            const page = filtered.slice(0, 12);
+            document.getElementById('list').innerHTML = page.map(i => `
+                <div class="result-card">
+                    ${i.image ? `<div class="res-img-box"><img src="${i.image}" class="res-img" onerror="this.parentElement.style.display='none'"></div>` : ''}
+                    <div class="result-content">
+                        <a href="${i.url}" class="res-link">
+                            <span class="res-url">explyra.me &rsaquo; ${i.url}</span>
+                            <div class="res-title">${i.title} <span class="type-badge" style="font-size:0.6rem; background:var(--bg3); padding:2px 6px; border-radius:4px; margin-left:8px; border:1px solid var(--bdr);">${i.type}</span></div>
+                        </a>
+                        <div class="res-desc">${i.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            const side = document.getElementById('side');
+            let p = state.query.includes('mitanshu') ? PEOPLE.mitanshu : (state.query.includes('rohan') ? PEOPLE.rohan : null);
+            if (p) {
+                side.innerHTML = `<div class="side-profile"><img src="${p.img}" class="prof-img"><div style="font-weight:700; color:var(--blue); font-size:1.4rem;">${p.name}</div><div style="font-size:0.9rem; color:var(--ink3); font-weight:600; margin-bottom:12px;">${p.role}</div><p style="font-size:0.85rem; line-height:1.7; color:var(--ink3);">${p.bio}</p></div>`;
+            } else if (page.length > 0) {
+                const f = page[0];
+                side.innerHTML = `<div class="side-profile"><h4 style="margin:0 0 15px 0; font-size:0.7rem; color:var(--ink3); text-transform:uppercase;">Top Match</h4>${f.image ? `<img src="${f.image}" class="prof-img" onerror="this.style.display='none'">` : ''}<div style="font-weight:700; color:var(--blue); font-size:1.15rem; margin-bottom:8px;">${f.title}</div><p style="font-size:0.85rem; line-height:1.6; color:var(--ink3);">${f.desc}</p></div>`;
+            } else { side.innerHTML = ''; }
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', state.theme);
+            localStorage.setItem('s-theme', state.theme);
+        }
+
+        init();
+    </script>
+</body>
+</html>

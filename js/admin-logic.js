@@ -207,7 +207,6 @@ async function sendSystemEmail(type, data) {
             new_status: data.new_status || 'UPDATED',
             message: data.message || 'Your expense status has been updated.'
         });
-        console.log(`[EmailJS] ${type} notification sent to ${data.to_email}`);
         showToast("Email Notification Sent Successfully", "success");
     } catch (err) {
         // Gracefully handle 200/month limit or any EmailJS errors
@@ -565,7 +564,6 @@ window.updateSidebarVisibilityPref = async (tabId, isVisible) => {
                         modulePreferences: currentPrefs,
                         updatedAt: serverTimestamp()
                     });
-                    console.log(`[Preferences] Firebase saved: ${tabId} = ${isVisible}`);
                 }
             } catch (fbErr) {
                 console.warn('[Preferences] Firebase save failed (non-blocking):', fbErr);
@@ -588,7 +586,6 @@ window.updateSidebarVisibilityPref = async (tabId, isVisible) => {
 
 window.loadModulePreferencesFromFirebase = async () => {
     if (!window.userData?.docId || !window.db) {
-        console.log('[Preferences] Skipping Firebase load: no user/db');
         return;
     }
 
@@ -598,7 +595,6 @@ window.loadModulePreferencesFromFirebase = async () => {
         
         if (userSnap.exists()) {
             const modulePrefs = userSnap.data()?.modulePreferences || {};
-            console.log('[Preferences] Loaded from Firebase:', modulePrefs);
             
             // Apply to UI checkboxes and sidebar
             const moduleMap = {
@@ -615,7 +611,6 @@ window.loadModulePreferencesFromFirebase = async () => {
                 // Set checkbox state
                 if (checkbox) {
                     checkbox.checked = !!isEnabled;
-                    console.log(`[Preferences] Set checkbox ${prefId} = ${!!isEnabled}`);
                 }
                 
                 // Apply to sidebar button
@@ -626,11 +621,9 @@ window.loadModulePreferencesFromFirebase = async () => {
                     } else {
                         sidebarBtn.classList.add('hidden');
                     }
-                    console.log(`[Preferences] Applied sidebar ${moduleId}: ${isEnabled ? 'visible' : 'hidden'}`);
                 }
             }
         } else {
-            console.log('[Preferences] User doc not found');
         }
     } catch (err) {
         console.error('[Preferences] Failed to load from Firebase:', err);
@@ -644,7 +637,6 @@ window.initModulePreferencesDefaults = () => {
         const btn = document.getElementById(`nav-${moduleId}`);
         if (btn && !btn.classList.contains('hidden')) {
             btn.classList.add('hidden');
-            console.log(`[Preferences] Default hidden: ${moduleId}`);
         }
     });
 };
@@ -983,7 +975,6 @@ onAuthStateChanged(auth, async (user) => {
                         try {
                             const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
                             await updateDoc(doc(window.db, "users", userData.docId), { gdriveConnected: isConnected });
-                            console.log("GDrive connection state synced to cloud.");
                         } catch (e) {
                             console.error("Failed to sync GDrive state to Firestore", e);
                         }
@@ -1013,7 +1004,6 @@ onAuthStateChanged(auth, async (user) => {
                         }
 
                         onMessage(messaging, (payload) => {
-                            console.log('FCM Foreground Message received: ', payload);
                             showToast(payload.notification.title + " - " + payload.notification.body, 'info');
                         });
                     } catch (e) {
@@ -1182,7 +1172,6 @@ onAuthStateChanged(auth, async (user) => {
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
                 if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes(user.email.toLowerCase()) || user.email.toLowerCase().endsWith('@explyra.com')) {
-                    console.log('[Auth] Explyra admin detected, bypassing normal auth checks.');
 
                     // Create mock userData for the master admin so the dashboard can load
                     userData = {
@@ -1419,7 +1408,6 @@ window.handleGoogleLogin = async () => {
 
         if (snap.empty) {
             if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes(user.email.toLowerCase()) || user.email.toLowerCase().endsWith('@explyra.com')) {
-                console.log('[Auth] Explyra admin Google login — skipping admin portal.');
                 return;
             }
             await signOut(auth);
@@ -1500,7 +1488,6 @@ window.handleMicrosoftLogin = async () => {
 
         if (snap.empty) {
             if (['explyra@gmail.com', 'epxlyra@gmail.com'].includes((user.email || '').toLowerCase()) || (user.email || '').toLowerCase().endsWith('@explyra.com')) {
-                console.log('[Auth] Explyra admin Microsoft login - skipping admin portal.');
                 return;
             }
             await signOut(auth);
@@ -2529,7 +2516,6 @@ window.uploadAuditCSV = (input) => {
     reader.onload = (e) => {
         const text = e.target.result;
         const rows = text.split("\n").slice(1);
-        console.log("Parsed rows:", rows.length);
         showToast(`Successfully processed ${rows.length} records (Simulation)`, 'success');
         input.value = '';
     };
@@ -5676,7 +5662,7 @@ window.renderWorkflow = async () => {
         try {
             const snap = await safeFirebaseFetch(getDoc(doc(db, "settings", "workflow_config")));
             if (snap.exists()) existingConfig = snap.data();
-        } catch (e) { console.log("No existing workflow config found, using defaults."); }
+        } catch (e) { /* use defaults */ }
 
         const defaults = {
             defaultFlow: [
@@ -6613,7 +6599,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install declaration: ${outcome}`);
                 deferredPrompt = null;
                 btn.classList.add('hidden');
             }
@@ -6928,7 +6913,7 @@ async function loadChatUsers() {
     }
 }
 
-window.oldSelectChat = (userObj) => {
+window.selectChat = (userObj) => {
     if (typeof userObj === 'string') {
         if (userObj === 'global_chat') {
             currentChatUser = null;
@@ -8052,7 +8037,7 @@ function showIncomingCall(callId, data) {
         }
     }, 10);
     const ringer = document.getElementById('incoming-ringtone');
-    if (ringer) ringer.play().catch(e => console.log('Autoplay prevented', e));
+    if (ringer) ringer.play().catch(() => {});
 }
 
 window.initiateCall = async (type) => {
@@ -8069,7 +8054,7 @@ window.initiateCall = async (type) => {
 
         // Play outgoing ringing sound
         const outRinger = document.getElementById('outgoing-ringtone');
-        if (outRinger) outRinger.play().catch(e => console.log('Autoplay prevented', e));
+        if (outRinger) outRinger.play().catch(() => {});
 
         peerConnection = new RTCPeerConnection(servers);
         localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
@@ -8756,7 +8741,7 @@ window.openUserModal = async (uId = null) => {
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js') // Ensure sw.js is in root
-        .then(reg => console.log('Service Worker Registered'))
+        .then(() => {})
         .catch(err => console.error('Service Worker Error', err));
 }
 

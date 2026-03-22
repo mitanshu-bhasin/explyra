@@ -273,7 +273,6 @@ window.toggleStatus = async (compId, newStatus) => {
 };
 
 window.openEditPlan = (compId, name, currentPlan) => {
-    console.log("[Explyra] Opening edit plan for:", compId, name, currentPlan);
     const comp = allCompanies.find(c => c.id === compId) || {};
     
     const planValue = (currentPlan || "starter").toLowerCase();
@@ -385,7 +384,6 @@ window.switchTab = (tabId) => {
 window.toggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('explyra-theme', isDark ? 'dark' : 'light');
-    console.log("[Explyra] Theme toggled. Dark Mode:", isDark);
 };
 
 // Add Admin functionality

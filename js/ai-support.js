@@ -802,7 +802,6 @@ Monthly Trend: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 
 
     // ══════════════ COMMAND EXECUTION ENGINE ══════════════
     handleCommand(command, payload) {
-        console.log(`[AdminAI Agent] Executing: ${command}`, payload);
 
         switch (command) {
             case 'SWITCH_TAB':

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-TFBZ5GZ22C');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account — Join the Suite | Explyra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-overlay: rgba(255, 255, 255, 0.85);
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent-color: #000000;
+            --border-color: #e5e7eb;
+            --card-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-md: 1.25rem;
+            --transition: all 0.3s ease;
+        }
+
+        .dark {
+            --bg-primary: #000000;
+            --bg-secondary: #111827;
+            --bg-overlay: rgba(0, 0, 0, 0.75);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-color: #ffffff;
+            --border-color: #1f2937;
+            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: background-color 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #10b981 0%, #6366f1 100%);
+            filter: blur(100px);
+            opacity: 0.1;
+            z-index: 0;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .blob-1 { top: -100px; right: -100px; }
+        .blob-2 { bottom: -100px; left: -100px; }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-overlay);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 2.5rem 2rem;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .auth-logo {
+            width: 56px;
+            height: 56px;
+            background: var(--accent-color);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .auth-logo img {
+            width: 32px;
+            height: 32px;
+            filter: invert(1);
+        }
+        .dark .auth-logo img { filter: none; }
+
+        .auth-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--text-primary);
+            background: var(--bg-primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-footer a {
+            color: var(--text-primary);
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .toast.success { background: #000; border: 1px solid #333; }
+        .toast.error { background: #EF4444; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Password Strength Meter */
+        .strength-meter {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            height: 4px;
+        }
+
+        .strength-meter div {
+            flex: 1;
+            height: 100%;
+            background: var(--border-color);
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .strength-meter.weak div:nth-child(1) { background: #ef4444; }
+        .strength-meter.moderate div:nth-child(1),
+        .strength-meter.moderate div:nth-child(2) { background: #f59e0b; }
+        .strength-meter.strong div { background: #10b981; }
+
+        .password-rules {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rule-item.met { color: #10b981; }
+        .rule-item.met i { display: inline-block !important; }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <div class="auth-logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+            </svg>
+        </div>
+        <h1 class="auth-title">Join Explyra</h1>
+        <p class="auth-desc">Start your professional developer journey today.</p>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label class="form-label" for="name">Full Name *</label>
+                <input type="text" id="name" class="form-input" placeholder="Mitanshu Bhasin" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Work Email *</label>
+                <input type="email" id="email" class="form-input" placeholder="you@company.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Create Password *</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                <div class="strength-meter" id="strengthMeter">
+                    <div></div><div></div><div></div>
+                </div>
+                <div class="password-rules">
+                    <div class="rule-item" id="rule-length"><i class="fa-solid fa-circle-check hidden"></i> 8+ characters</div>
+                    <div class="rule-item" id="rule-case"><i class="fa-solid fa-circle-check hidden"></i> Upper & lowercase</div>
+                    <div class="rule-item" id="rule-number"><i class="fa-solid fa-circle-check hidden"></i> At least one number</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                Create Account <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="login.html">Sign In</a>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="js/env.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.showToast = (msg, type = 'success') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        };
+
+        // Password Validation Logic
+        const passInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirmPassword');
+        const meter = document.getElementById('strengthMeter');
+        
+        function updateStrength() {
+            const val = passInput.value;
+            let score = 0;
+            
+            const hasUpper = /[A-Z]/.test(val);
+            const hasLower = /[a-z]/.test(val);
+            const hasNumber = /[0-9]/.test(val);
+            const isLong = val.length >= 8;
+
+            document.getElementById('rule-length').classList.toggle('met', isLong);
+            document.getElementById('rule-length').querySelector('i').classList.toggle('hidden', !isLong);
+            
+            document.getElementById('rule-case').classList.toggle('met', hasUpper && hasLower);
+            document.getElementById('rule-case').querySelector('i').classList.toggle('hidden', !(hasUpper && hasLower));
+            
+            document.getElementById('rule-number').classList.toggle('met', hasNumber);
+            document.getElementById('rule-number').querySelector('i').classList.toggle('hidden', !hasNumber);
+
+            if (isLong) score++;
+            if (hasUpper && hasLower && hasNumber) score += 2; // Moderate or Strong based on others
+
+            meter.className = 'strength-meter';
+            if (val.length > 0) {
+                if (score === 1) meter.classList.add('weak');
+                else if (score === 2 || (isLong && (hasUpper || hasNumber))) meter.classList.add('moderate');
+                if (isLong && hasUpper && hasLower && hasNumber) {
+                    meter.className = 'strength-meter strong';
+                }
+            }
+        }
+
+        passInput.addEventListener('input', updateStrength);
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const btn = document.getElementById('submitBtn');
+
+            if (!name || !email || !password) return showToast('Please fill all required fields', 'error');
+
+            // Final Validation
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            if (password.length < 8) return showToast('Password must be at least 8 characters', 'error');
+            if (!hasUpper || !hasLower || !hasNumber) return showToast('Password must include upper, lower letters and a number', 'error');
+            if (password !== confirmPass) return showToast('Passwords do not match', 'error');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+
+            try {
+                const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCred.user;
+
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    name: name,
+                    email: email,
+                    role: 'pending',
+                    companyId: null,
+                    status: 'ACTIVE',
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+
+                showToast('Account created! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'company.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error("Signup error:", error);
+                showToast(error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account <i class="fa-solid fa-arrow-right"></i>';
+            }
+        });
+    </script>
+</body>
+
+</html>

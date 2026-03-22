@@ -81,7 +81,6 @@ const GDriveService = {
 
     checkReady() {
         if (this.gapiInited && this.gisInited) {
-            console.log("Google Drive Service Ready");
         }
     },
 
@@ -111,7 +110,6 @@ const GDriveService = {
             // We set the flag so the UI shows "Connected", but we'll need a user click to get a fresh token
             // because browser security prevents popups without user action.
             localStorage.setItem('gdrive_connected', 'true');
-            console.log("GDrive connection flag restored from cloud.");
         }
         
         // Signal UI update

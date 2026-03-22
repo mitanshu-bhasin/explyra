@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /generator.html
+
+Sitemap: https://direc.explyra.me/sitemap.xml

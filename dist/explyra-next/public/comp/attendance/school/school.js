@@ -1,0 +1,125 @@
+/* school.js - Logic for Isolated School Attendance Module */
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    initAuth();
+});
+
+// App Data Structure
+function getAppData() {
+    let data = localStorage.getItem('school_attendance_data');
+    if (!data) {
+        data = { schools: {}, teachers: {}, students: {}, attendance: {}, calendar: {} };
+        saveAppData(data);
+    } else {
+        data = JSON.parse(data);
+    }
+    return data;
+}
+
+function saveAppData(data) {
+    localStorage.setItem('school_attendance_data', JSON.stringify(data));
+}
+
+// Session Management
+function getSession() {
+    return JSON.parse(localStorage.getItem('school_session'));
+}
+
+function saveSession(session) {
+    localStorage.setItem('school_session', JSON.stringify(session));
+}
+
+function initAuth() {
+    const session = getSession();
+    const authModal = document.getElementById('auth-modal');
+
+    if (!session) {
+        if (authModal) {
+            authModal.classList.remove('hidden');
+        } else if (!window.location.pathname.endsWith('dashboard.html')) {
+            window.location.href = 'dashboard.html';
+        }
+    } else {
+        if (authModal) {
+            authModal.classList.add('hidden');
+        }
+        updateUIForRole(session.role);
+
+        // Display user info
+        const userNameEl = document.getElementById('sidebar-user-name');
+        if (userNameEl) userNameEl.textContent = session.userId;
+        const userRoleEl = document.getElementById('sidebar-user-role');
+        if (userRoleEl) userRoleEl.textContent = session.role;
+        const schoolNameEl = document.getElementById('sidebar-school-name');
+        if (schoolNameEl) {
+            const data = getAppData();
+            schoolNameEl.textContent = data.schools[session.schoolId]?.name || session.schoolId;
+        }
+    }
+}
+
+// Roles & Access Control
+function updateUIForRole(role) {
+    const principalOnly = document.querySelectorAll('.principal-only');
+    const teacherAuth = document.querySelectorAll('.teacher-auth');
+
+    if (role === 'Student') {
+        principalOnly.forEach(el => el.style.display = 'none');
+        teacherAuth.forEach(el => el.style.display = 'none');
+    } else if (role === 'Teacher') {
+        principalOnly.forEach(el => el.style.display = 'none');
+        teacherAuth.forEach(el => el.style.display = '');
+    } else if (role === 'Principal') {
+        principalOnly.forEach(el => el.style.display = '');
+        teacherAuth.forEach(el => el.style.display = '');
+    }
+}
+
+function hasAccess(requiredRoles) {
+    const session = getSession();
+    if (!session) return false;
+    return requiredRoles.includes(session.role);
+}
+
+// Authentication / Login Function
+function handleLogin(e) {
+    e.preventDefault();
+    const schoolId = document.getElementById('login-school').value.trim();
+    const userId = document.getElementById('login-user').value.trim();
+    const role = document.getElementById('login-role').value;
+
+    if (!schoolId || !userId) return alert("Please fill details");
+
+    const data = getAppData();
+
+    if (!data.schools[schoolId]) {
+        if (role === 'Principal') {
+            data.schools[schoolId] = { name: schoolId, registeredAt: new Date().toISOString() };
+            data.teachers[schoolId] = [];
+            data.students[schoolId] = [];
+            data.attendance[schoolId] = {};
+            data.calendar[schoolId] = {};
+            saveAppData(data);
+            alert("New school workspace registered successfully.");
+        } else {
+            alert("School not registered. Please ask the Principal to register it first.");
+            return;
+        }
+    }
+
+    saveSession({ schoolId, role, userId });
+    window.location.reload();
+}
+
+function logout() {
+    localStorage.removeItem('school_session');
+    window.location.href = 'dashboard.html';
+}
+
+// Attendance Core Utils
+function isHoliday(dateStr, schoolId) {
+    const data = getAppData();
+    const cal = data.calendar[schoolId] || {};
+    return cal[dateStr] === 'Holiday';
+}

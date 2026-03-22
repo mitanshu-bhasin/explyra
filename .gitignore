@@ -2,6 +2,11 @@
 .env
 js/env.js
 env.js.backup
+all_keys.txt
+**/.wrangler/
+**/.dev.vars
+**/kv_*.json
+api-e/worker/.wrangler/
 
 # ── IDE / Editor ─────────────────────────────────
 .vscode/

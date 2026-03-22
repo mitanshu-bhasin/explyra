@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Generate icons — Free Explyra Suite Tool | Fast & Secure</title>
+
+    
+
+    
+    
+    
+        <meta name="description" content="Use Generate icons on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/www/Utilites/P2P/icons/generate-icons.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Www",
+          "item": "https://explyra.me/www/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Utilites",
+          "item": "https://explyra.me/www/Utilites/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "P2P",
+          "item": "https://explyra.me/www/Utilites/P2P/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Icons",
+          "item": "https://explyra.me/www/Utilites/P2P/icons/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+
+<body>
+    <h2>Right-click each icon and "Save image as..." to the icons folder</h2>
+    <p>Or just use the app - the SVG icon will work</p>
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        sizes.forEach(size => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Background
+            const radius = size * 0.15;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fillStyle = '#2563eb';
+            ctx.fill();
+
+            // Letter M
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${size * 0.55}px Inter, Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('M', size / 2, size / 2 + size * 0.02);
+
+            // Small P2P text
+            ctx.font = `bold ${size * 0.12}px Inter, Arial, sans-serif`;
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fillText('P2P', size / 2, size * 0.82);
+
+            const div = document.createElement('div');
+            div.style.margin = '10px';
+            div.style.display = 'inline-block';
+            div.innerHTML = `<p>${size}x${size}</p>`;
+            const img = new Image();
+            img.src = canvas.toDataURL('image/png');
+            img.style.border = '1px solid #ccc';
+            div.appendChild(img);
+
+            // Auto download
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL('image/png');
+            a.download = `icon-${size}x${size}.png`;
+            a.textContent = `Download ${size}x${size}`;
+            a.style.display = 'block';
+            div.appendChild(a);
+
+            document.body.appendChild(div);
+        });
+    </script>
+</body>
+
+</html>

@@ -7,7 +7,9 @@
         "start": "npx serve .",
         "start:payments": "node api/crypto-payments-server.js",
         "test": "node _test.js",
-        "build": "node scripts/sync-env.js && powershell -Command \"if (-not (Test-Path dist)) { New-Item -Path dist -ItemType Directory | Out-Null }; npx -y minify index.html | Out-File -FilePath dist/index.html -Encoding utf8; Get-ChildItem -Path . -File | Where-Object { $_.Name -ne 'index.html' -and $_.Name -ne 'package-lock.json' -and $_.Name -ne 'package.json' -and -not $_.Name.StartsWith('.') -and $_.Extension -ne '.log' -and $_.Name -ne 'Expense Tracker.code-workspace' } | ForEach-Object { Copy-Item $_.FullName -Destination dist/ -Force }; Get-ChildItem -Path . -Directory | Where-Object { @('node_modules','.git','dist','www','.firebase','.wrangler','android') -notcontains $_.Name } | ForEach-Object { Copy-Item $_.FullName -Destination dist -Recurse -Force -ErrorAction SilentlyContinue }; Get-ChildItem -Path dist -Directory -Recurse -ErrorAction SilentlyContinue | Where-Object { @('node_modules','.git','.wrangler','.next') -contains $_.Name } | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }\""
+        "env:sync": "node scripts/sync-env.js",
+        "build": "node scripts/sync-env.js && node scripts/build-dist.mjs",
+        "build:win": "node scripts/sync-env.js && powershell -Command \"if (-not (Test-Path dist)) { New-Item -Path dist -ItemType Directory | Out-Null }; npx -y minify index.html | Out-File -FilePath dist/index.html -Encoding utf8; Get-ChildItem -Path . -File | Where-Object { $_.Name -ne 'index.html' -and $_.Name -ne 'package-lock.json' -and $_.Name -ne 'package.json' -and -not $_.Name.StartsWith('.') -and $_.Extension -ne '.log' -and $_.Name -ne 'Expense Tracker.code-workspace' } | ForEach-Object { Copy-Item $_.FullName -Destination dist/ -Force }; Get-ChildItem -Path . -Directory | Where-Object { @('node_modules','.git','dist','www','.firebase','.wrangler','android') -notcontains $_.Name } | ForEach-Object { Copy-Item $_.FullName -Destination dist -Recurse -Force -ErrorAction SilentlyContinue }; Get-ChildItem -Path dist -Directory -Recurse -ErrorAction SilentlyContinue | Where-Object { @('node_modules','.git','.wrangler','.next') -contains $_.Name } | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }\""
     },
     "keywords": [
         "expense",
@@ -28,6 +30,7 @@
     "devDependencies": {
         "@capacitor/assets": "^3.0.5",
         "@capacitor/cli": "^6.1.2",
+        "html-minifier-terser": "^7.2.0",
         "minify": "^11.0.0",
         "postal-mime": "^2.7.3",
         "wrangler": "^4.72.0"

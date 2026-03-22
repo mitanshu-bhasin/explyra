@@ -30,7 +30,6 @@ window.initNotifications = async () => {
         }
 
         onMessage(messaging, (payload) => {
-            console.log('FCM Message:', payload);
             window.showToast(payload.notification.title + ": " + payload.notification.body, 'info');
             // Show dot
             const dot = document.getElementById('header-notif-dot');

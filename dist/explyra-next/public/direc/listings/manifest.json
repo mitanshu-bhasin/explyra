@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Nexus Marketing Agency",
+        "filename": "direc-agency.html",
+        "description": "A full-stack digital marketing agency specializing in SaaS growth and SEO optimization for tech companies.",
+        "category": "Marketing",
+        "logo": "https://api.dicebear.com/7.x/identicon/svg?seed=nexus"
+    },
+    {
+        "name": "CloudNine SaaS",
+        "filename": "direc-saas.html",
+        "description": "Next-generation cloud infrastructure management tool for modern dev teams and startups.",
+        "category": "SaaS",
+        "logo": "https://api.dicebear.com/7.x/identicon/svg?seed=cloudnine"
+    },
+    {
+        "name": "Creative Pixel Studio",
+        "filename": "direc-studio.html",
+        "description": "Boutique design studio creating high-converting UI/UX and visual identities for premium brands.",
+        "category": "Design",
+        "logo": "https://api.dicebear.com/7.x/identicon/svg?seed=pixel"
+    }
+]

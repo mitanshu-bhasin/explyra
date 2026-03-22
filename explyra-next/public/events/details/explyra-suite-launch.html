@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra suite launch — Free Explyra Suite Tool | Fast & Secure</title>
+    
+    <!-- SEO & Social -->
+    <meta name="description" content="Use Explyra suite launch on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <meta property="og:title" content="Explyra Suite Product Launch">
+    <meta property="og:type" content="event">
+    <meta property="og:image" content="../assets/thumbnails/suite-launch.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .hero-banner {
+            height: 70vh;
+            min-height: 500px;
+            background: linear-gradient(rgba(8,11,20,0.6), var(--bg)), url('../assets/thumbnails/suite-launch.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 5vw;
+        }
+        .hero-content { max-width: 800px; z-index: 2; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            padding: 5rem 5vw;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .event-info h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 1.5rem; line-height: 1.1; }
+        .event-meta-large { display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 3rem; color: var(--ink2); font-weight: 500; justify-content: center; }
+        .event-meta-large span { display: flex; align-items: center; gap: 0.5rem; background: var(--bg2); padding: 0.8rem 1.2rem; border-radius: 100px; border: 1px solid var(--bdr); }
+        .event-meta-large i { color: var(--blue); }
+        .section-title { font-size: 1.8rem; margin: 4rem 0 2rem; border-left: 5px solid var(--blue); padding-left: 1.5rem; color: var(--ink); }
+        
+        .highlights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .item-card { background: var(--bg2); padding: 2rem; border-radius: 24px; border: 1px solid var(--bdr); transition: var(--t); display: flex; flex-direction: column; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: var(--s2); border-color: var(--blue); }
+        .item-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--blue-g); color: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.4rem; }
+
+        .feature-list { list-style: none; padding: 0; margin-top: 1rem; }
+        .feature-list li { margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.8rem; color: var(--ink3); font-size: 0.9rem; }
+        .feature-list li i { color: var(--teal); font-size: 0.8rem; }
+
+        .agenda-item { display: flex; gap: 2.5rem; margin-bottom: 2rem; position: relative; padding-left: 2rem; }
+        .agenda-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--bdr2); }
+        .agenda-item::after { content: ''; position: absolute; left: -4px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px var(--blue-g); }
+        .agenda-time { font-weight: 700; color: var(--blue); min-width: 90px; font-size: 1.1rem; }
+
+        /* Early Access Section */
+        .benefits-section { background: var(--blue-g); border: 1px solid var(--blue-b); border-radius: 24px; padding: 2.5rem; margin-top: 3rem; }
+        .benefit-item { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .benefit-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); margin-top: 0.6rem; flex-shrink: 0; }
+
+        .sidebar-card { background: var(--bg2); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--bdr); position: sticky; top: 120px; box-shadow: var(--s3); }
+        .btn-register { 
+            display: block; 
+            width: 100%; 
+            padding: 1.3rem; 
+            background: linear-gradient(135deg, var(--blue), var(--blue2)); 
+            color: #fff; 
+            text-align: center; 
+            border-radius: 16px; 
+            font-weight: 700; 
+            margin-bottom: 1.5rem; 
+            box-shadow: 0 10px 25px var(--blue-b); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+        }
+        .btn-register:hover { transform: translateY(-5px); filter: brightness(1.1); box-shadow: 0 18px 35px var(--blue-b); }
+        .btn-share { 
+            display: block; 
+            width: 100%; 
+            padding: 1.1rem; 
+            background: var(--bg);
+            border: 1px solid var(--bdr); 
+            color: var(--ink2);
+            text-align: center; 
+            border-radius: 16px; 
+            font-weight: 600; 
+            transition: all 0.3s; 
+            cursor: pointer;
+        }
+        .btn-share:hover { border-color: var(--blue); color: var(--blue); }
+
+        @media (max-width: 950px) { 
+            .detail-grid { grid-template-columns: 1fr; } 
+            .hero-banner { height: 50vh; }
+            .event-info h1 { font-size: 2.8rem; }
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/events/details/explyra-suite-launch.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Events",
+          "item": "https://explyra.me/events/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Details",
+          "item": "https://explyra.me/events/details/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-logo">
+            <a href="../../index.html" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                <span class="nav-logo-text">Explyra</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../index.html">Events</a></li>
+            <li><a href="../../team.html">Company</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="theme-pill" id="themePill">
+                <span class="theme-pill-label" id="themeLabel">Dark</span>
+                <div class="theme-pill-toggle"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-banner">
+        <div class="hero-content reveal">
+            <span class="event-type" style="margin-bottom: 2rem; display: inline-block;">Product Launch</span>
+            <h1 style="color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,0.5);">Explyra Suite <span class="grad">Launch</span></h1>
+            <div class="event-meta-large" style="margin-top: 3rem;">
+                <span><i class="far fa-calendar"></i> September 5, 2026</span>
+                <span><i class="far fa-clock"></i> 6:00 PM EST</span>
+                <span><i class="fas fa-broadcast-tower"></i> Live</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="detail-grid">
+        <div class="event-info reveal">
+            <p class="hero-desc" style="text-align: left; margin: 0; color: var(--ink2); font-size: 1.2rem; line-height: 1.8;">The next generation of professional tools is here. Explyra is proud to unveil its comprehensive suite of productivity, communication, and engineering utilities. Join us for a first look at the unified ecosystem that transforms how teams work.</p>
+
+            <h2 class="section-title">Suite Ecosystem</h2>
+            <div class="highlights-grid">
+                <div class="item-card">
+                    <div class="item-icon"><i class="fas fa-tasks"></i></div>
+                    <h4 style="margin: 0; color: var(--ink);">Explyra Flow</h4>
+                    <p style="margin: 0.5rem 0 1rem; font-size: 0.9rem; color: var(--ink3);">Integrated project management and task automation.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> AI-powered scheduling</li>
+                        <li><i class="fas fa-check-circle"></i> Resource tracking</li>
+                        <li><i class="fas fa-check-circle"></i> Multi-team sync</li>
+                    </ul>
+                </div>
+                <div class="item-card">
+                    <div class="item-icon"><i class="fas fa-video"></i></div>
+                    <h4 style="margin: 0; color: var(--ink);">Explyra Meet</h4>
+                    <p style="margin: 0.5rem 0 1rem; font-size: 0.9rem; color: var(--ink3);">Next-gen conferencing with built-in collaboration.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Live transcription</li>
+                        <li><i class="fas fa-check-circle"></i> Shared workspace docs</li>
+                        <li><i class="fas fa-check-circle"></i> 4K Video streaming</li>
+                    </ul>
+                </div>
+                <div class="item-card">
+                    <div class="item-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4 style="margin: 0; color: var(--ink);">Guardian Admin</h4>
+                    <p style="margin: 0.5rem 0 1rem; font-size: 0.9rem; color: var(--ink3);">Enterprise security and identity management.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Zero-trust architecture</li>
+                        <li><i class="fas fa-check-circle"></i> Single Sign-On (SSO)</li>
+                        <li><i class="fas fa-check-circle"></i> Compliance reports</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="section-title">Launch Agenda</h2>
+            <div class="agenda-item">
+                <div class="agenda-time">06:00 PM</div>
+                <div>
+                    <h4 style="margin: 0; color: var(--ink);">The Keynote Premiere</h4>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Witness the cinematic reveal of the entire Explyra Suite.</p>
+                </div>
+            </div>
+            <div class="agenda-item">
+                <div class="agenda-time">06:30 PM</div>
+                <div>
+                    <h4 style="margin: 0; color: var(--ink);">Live Demo: The Unified Core</h4>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Hands-on look at how Flow, Meet, and Guardian work together.</p>
+                </div>
+            </div>
+            <div class="agenda-item">
+                <div class="agenda-time">07:15 PM</div>
+                <div>
+                    <h4 style="margin: 0; color: var(--ink);">Founders Fireside Chat</h4>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--ink3);">Direct Q&A with the people who built the future of Explyra.</p>
+                </div>
+            </div>
+
+            <div class="benefits-section">
+                <h3 style="color: var(--blue); margin-bottom: 2rem;">Why Register for Early Access?</h3>
+                <div class="benefit-item">
+                    <div class="benefit-dot"></div>
+                    <div>
+                        <h4 style="margin: 0; color: var(--ink);">Founding Membership</h4>
+                        <p style="margin: 0.3rem 0 0; font-size: 0.9rem; color: var(--ink3);">Get a permanent "Founder" badge on your profile and special billing terms.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-dot"></div>
+                    <div>
+                        <h4 style="margin: 0; color: var(--ink);">Beta Selection Priority</h4>
+                        <p style="margin: 0.3rem 0 0; font-size: 0.9rem; color: var(--ink3);">Be first in line to test the upcoming Explyra VR workspace integrations.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-dot"></div>
+                    <div>
+                        <h4 style="margin: 0; color: var(--ink);">Unlimited Storage Upgrade</h4>
+                        <p style="margin: 0.3rem 0 0; font-size: 0.9rem; color: var(--ink3);">Early registrants get 1TB of cloud storage for life instead of the standard 50GB.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div style="margin-top: 2rem;">
+                <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--bdr); padding-bottom: 1rem;">
+                    <h4 style="color: var(--ink2); margin-bottom: 0.5rem;">When is the official release?</h4>
+                    <p style="color: var(--ink3); font-size: 0.9rem;">Following the launch event on September 5, public access will roll out in phases starting September 15.</p>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--ink2); margin-bottom: 0.5rem;">Will my current Explyra data migrate?</h4>
+                    <p style="color: var(--ink3); font-size: 0.9rem;">Yes, all existing developer accounts and data will be seamlessly upgraded to the new Suite architecture.</p>
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar reveal">
+            <div class="sidebar-card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--ink);">Save your Spot</h3>
+                <button class="btn-register">Get Notified</button>
+                <button class="btn-share" id="btnShare"><i class="fas fa-share-alt"></i> Share Launch</button>
+                <div style="margin-top: 2rem; padding: 1.2rem; background: var(--blue-g); border-radius: 16px; border: 1px solid var(--blue-b);">
+                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--blue); margin: 0; text-align: center;">Waitlist Rank: #4,291</p>
+                </div>
+                <p style="font-size: 0.72rem; text-align: center; margin-top: 1.2rem; color: var(--ink4);">Join 12,000+ others already signed up.</p>
+            </div>
+        </aside>
+    </main>
+
+    <footer style="padding: 80px 5vw; border-top: 1px solid var(--bdr); text-align: center; background: var(--bg2);">
+        <p style="color: var(--ink4); font-size: 0.9rem;">© 2026 Explyra · Built with ♥ by Mitanshu Bhasin · All rights reserved.</p>
+    
+        <div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;">
+            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+            <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a>
+            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://ipecconsulting.org/" target="_blank" rel="noopener noreferrer">IPEC Consulting</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
+            const saved = localStorage.getItem('explyra-theme') || 'dark';
+            
+            const updateTheme = (theme) => {
+                html.setAttribute('data-theme', theme);
+                if(lbl) lbl.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+                localStorage.setItem('explyra-theme', theme);
+            };
+
+            updateTheme(saved);
+
+            if(pill) pill.addEventListener('click', () => {
+                const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
+                updateTheme(nxt);
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+            }, 100);
+
+            const btnShare = document.getElementById('btnShare');
+            if(btnShare) {
+                btnShare.addEventListener('click', async () => {
+                    const shareData = {
+                        title: 'Explyra Suite Product Launch',
+                        text: 'Explyra Suite is launching! Witness the future of productivity.',
+                        url: window.location.href
+                    };
+                    if (navigator.share) {
+                        try { await navigator.share(shareData); } catch (err) { }
+                    } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        const originalText = btnShare.innerHTML;
+                        btnShare.innerHTML = '<i class="fas fa-check"></i> Link Copied!';
+                        setTimeout(() => btnShare.innerHTML = originalText, 2000);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "healthzen-pro",
+  "version": "1.0.0",
+  "description": "AI-Powered Holistic Health Ecosystem PWA",
+  "main": "main.html",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "health",
+    "ai",
+    "pwa",
+    "fitness",
+    "tracker"
+  ],
+  "author": "Mitanshu Bhasin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mitanshu-bhasin/mitanshubhasin.github.io.git"
+  }
+}

@@ -1,0 +1,159 @@
+{
+    "last_updated": "2026-03-12T16:15:00+05:30",
+    "overall_status": "operational",
+    "groups": [
+        {
+            "name": "Core Platform Services",
+            "services": [
+                {
+                    "id": "website",
+                    "name": "Website",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "api",
+                    "name": "API",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "auth",
+                    "name": "Authentication",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "db",
+                    "name": "Database",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                }
+            ]
+        },
+        {
+            "name": "Product Systems",
+            "services": [
+                {
+                    "id": "meetings",
+                    "name": "Meetings",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "booking",
+                    "name": "Booking System",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "attendance",
+                    "name": "Attendance System",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "crm",
+                    "name": "CRM",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "expense",
+                    "name": "Expense Manager",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "notifications",
+                    "name": "Notifications",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "retired",
+                    "name": "Explyra Retired",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "pro",
+                    "name": "Explyra Pro",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "skill",
+                    "name": "Skill Hub",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "exchange",
+                    "name": "Explyra Exchange",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "p2p",
+                    "name": "P2P Marketplace",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "developer",
+                    "name": "Developer Portal",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "ai",
+                    "name": "Explyra AI Engine",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                }
+            ]
+        },
+        {
+            "name": "Infrastructure",
+            "services": [
+                {
+                    "id": "firebase",
+                    "name": "Firebase Services",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "video",
+                    "name": "Video Signaling",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "storage",
+                    "name": "Storage",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                },
+                {
+                    "id": "messaging",
+                    "name": "Realtime Messaging",
+                    "status": "operational",
+                    "last_checked": "2026-03-12T16:10:00Z"
+                }
+            ]
+        }
+    ],
+    "incidents": [
+        {
+            "date": "March 12",
+            "title": "Systems migration completed successfully",
+            "status": "Resolved"
+        },
+        {
+            "date": "March 10",
+            "title": "Core platform performance optimization",
+            "status": "Completed"
+        }
+    ]
+}

@@ -62,7 +62,7 @@ function showIncomingCallUI(callId, data) {
     }, 10);
 
     const ringer = document.getElementById('incoming-ringtone');
-    if (ringer) ringer.play().catch(e => console.log('Autoplay prevented', e));
+    if (ringer) ringer.play().catch(() => {});
 }
 
 window.initiateCall = async (type) => {
@@ -91,7 +91,7 @@ window.initiateCall = async (type) => {
 
         // Play outgoing ringing sound
         const outRinger = document.getElementById('outgoing-ringtone');
-        if (outRinger) outRinger.play().catch(e => console.log('Autoplay prevented', e));
+        if (outRinger) outRinger.play().catch(() => {});
 
         const db = window.db;
         peerConnection = new RTCPeerConnection(servers);

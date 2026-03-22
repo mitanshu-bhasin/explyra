@@ -1,0 +1,37 @@
+// Minimal client config for local dev before running: node scripts/sync-env.js
+// Copy to js/env.js or run sync-env (Cloudflare Pages build runs sync-env from dashboard env).
+// SECURE: AI and Cloudflare secrets are handled via Functions proxy, not exposed here.
+
+window.EXPLYRA_CONFIG = {
+    firebase: {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: "",
+        measurementId: ""
+    },
+    ai: {
+        model: "moonshotai/kimi-k2-instruct-0905",
+        apiKey: "HANDLED_BY_PROXY",
+        geminiKey: "HANDLED_BY_PROXY"
+    },
+    analyticsId: "",
+    emailApp: {
+        cloudflareZoneId: "",
+        cloudflareToken: "HANDLED_BY_PROXY",
+        resendKey: "HANDLED_BY_PROXY"
+    },
+    imagekit: {
+        publicKey: "",
+        url: "https://upload.imagekit.io/api/v1/files/upload"
+    },
+    emailjs: {
+        publicKey: ""
+    },
+    imgbb: {
+        url: "/api/imgbb",
+        apiKey: "HANDLED_BY_PROXY"
+    }
+};

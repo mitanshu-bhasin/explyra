@@ -1096,7 +1096,6 @@ window.viewReportHistory = (input) => {
 };
 
 window.createExpenseFromAI = async (data) => {
-    console.log('Creating expense from AI:', data);
     window.openCreateModal('EXPENSE');
     await new Promise(r => setTimeout(r, 200));
 

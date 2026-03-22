@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production — Free Explyra Suite Tool | Fast & Secure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+
+    
+    
+    
+    
+        <meta name="description" content="Use Production on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/manufacturing/production.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Manufacturing",
+          "item": "https://explyra.me/manufacturing/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+    <div class="sidebar"></div>
+
+    <main class="main-content">
+        <header class="reveal">
+            <div>
+                <h1>Production <span class="grad">Planning</span></h1>
+                <p style="color: var(--text-muted);">Configure batches, assign resources, and monitor floor progress.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showActionModal('production')"><i class="fas fa-plus"></i> Create New Batch</button>
+        </header>
+
+        <section class="stat-grid reveal" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            <div class="glass-card">
+                <div class="stat-label">Total Batches</div>
+                <div class="stat-value" id="totalBatches">0</div>
+            </div>
+            <div class="glass-card">
+                <div class="stat-label">In Progress</div>
+                <div class="stat-value" id="inProgressBatches">0</div>
+            </div>
+            <div class="glass-card">
+                <div class="stat-label">Units Targeted (Today)</div>
+                <div class="stat-value" id="targetUnits">0</div>
+            </div>
+        </section>
+
+        <section class="glass-card reveal">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Active Production Batches</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="Search product..." class="btn" style="padding: 0.5rem 1rem; width: 250px; text-align: left;">
+                    <select class="btn" style="padding: 0.5rem 1rem;">
+                        <option>All Status</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="productionTable">
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Product</th>
+                            <th>Machine</th>
+                            <th>Lead Worker</th>
+                            <th>Target</th>
+                            <th>Progress</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/data-handler.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const data = await DataHandler.fetchData('production');
+            
+            document.getElementById('totalBatches').textContent = data.length;
+            document.getElementById('inProgressBatches').textContent = data.filter(d => d.status === 'In Progress').length;
+            document.getElementById('targetUnits').textContent = data.reduce((acc, curr) => acc + curr.target, 0).toLocaleString();
+
+            const tableBody = document.querySelector('#productionTable tbody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td><strong>${item.id}</strong></td>
+                    <td>${item.product}</td>
+                    <td><i class="fas fa-microchip" style="margin-right: 8px;"></i>${item.machine}</td>
+                    <td>${item.worker}</td>
+                    <td>${item.target}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="flex: 1; height: 6px; background: var(--bg4); border-radius: 10px;">
+                                <div style="width: ${item.progress}%; height: 100%; background: ${item.progress === 100 ? 'var(--success)' : 'var(--accent)'}; border-radius: 10px;"></div>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 600;">${item.progress}%</span>
+                        </div>
+                    </td>
+                    <td><span class="badge ${item.status === 'Completed' ? 'badge-active' : 'badge-idle'}">${item.status}</span></td>
+                    <td>
+                        <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('Edit feature coming soon!', 'info')"><i class="fas fa-edit"></i></button>
+                        <button class="btn" style="padding: 5px 10px; color: var(--danger);" onclick="deleteItem('production', 'id', '${item.id}')"><i class="fas fa-stop"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        });
+    </script>
+</body>
+</html>

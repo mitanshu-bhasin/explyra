@@ -16,11 +16,13 @@ kv_namespaces = [
   { binding = "EXPLYRA_EXPENSES", id = "4fd89ac22641494d9dd02aeba3496403" }
 ]
 
+# Public Firebase project id (safe in vars). FIREBASE_API_KEY is a client-style key but
+# prefer `wrangler secret put FIREBASE_API_KEY` if you want it out of git-backed config.
 [vars]
 FIREBASE_PROJECT_ID = "explyras"
 FIREBASE_API_KEY = "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0"
 
-# [secrets]
-# WEBHOOK_SECRET
-# JWT_SECRET
-# Run 'wrangler secret put <NAME>' to set these
+# Required secrets (never commit values):
+#   wrangler secret put JWT_SECRET
+#   wrangler secret put WEBHOOK_SECRET
+# Optional: wrangler secret put FIREBASE_API_KEY  # overrides [vars] if you migrate off plain vars

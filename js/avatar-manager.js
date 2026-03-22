@@ -447,7 +447,6 @@ class AvatarManager {
             const modal = this.createAvatarPickerModal();
             if (!document.getElementById('modal-avatar-picker')) {
                 document.body.appendChild(modal);
-                console.log('Avatar picker modal created and injected');
             }
 
             // Setup file input with delay for DOM readiness
@@ -462,8 +461,6 @@ class AvatarManager {
                 this.updateAllAvatarDisplays();
             });
 
-            console.log('✅ Avatar manager initialized successfully');
-            
             // Make methods globally accessible
             window.openAvatarPickerModal = () => {
                 const modal = document.getElementById('modal-avatar-picker');
@@ -500,14 +497,4 @@ if (document.readyState === 'loading') {
 // Fallback on window load
 window.addEventListener('load', initAvatarSystem);
 
-// Debug function
-window.debugAvatarSystem = () => {
-    console.log('🎭 Avatar System Debug Info:');
-    console.log('✓ Avatar Manager:', window.avatarManager ? '✅ Loaded' : '❌ Missing');
-    console.log('✓ openAvatarPickerModal:', typeof window.openAvatarPickerModal);
-    console.log('✓ Modal element:', document.getElementById('modal-avatar-picker') ? '✅ Exists' : '❌ Missing');
-    console.log('✓ Sidebar avatar:', document.getElementById('sidebar-user-avatar') ? '✅ Found' : '❌ Missing');
-    console.log('✓ Header avatar:', document.getElementById('header-avatar-img') ? '✅ Found' : '❌ Missing');
-    console.log('\nTry: window.openAvatarPickerModal() to open avatar picker');
-};
-
+window.AvatarManager = AvatarManager;

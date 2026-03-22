@@ -1,0 +1,34 @@
+# Domain Redirects
+https://explyra.pages.dev/* https://explyra.me/:splat 301
+
+# Rewrites
+/booking/:username /booking/booking-page.html?u=:username 200
+/mailbox /email-app/src/index.html 200
+/mail /email-app/src/index.html 200
+
+# Tenant workspace rewrites
+/cmp_:companyId/admin.html /cmp_:companyId/admin 301
+/cmp_:companyId/emp.html /cmp_:companyId/emp 301
+/cmp_:companyId/benifits.html /cmp_:companyId/benifits 301
+
+/cmp_:companyId/admin /admin.html 200
+/cmp_:companyId/emp /emp.html 200
+/cmp_:companyId/benifits /benifits.html 200
+/cmp_:companyId/crm /crm/index.html 200
+/cmp_:companyId/crm/* /crm/:splat 200
+/cmp_:companyId/attendance/company/login /attendance/company/login.html 200
+/cmp_:companyId/attendance/company/register /attendance/company/register.html 200
+/cmp_:companyId/attendance/company/dashboard /attendance/company/dashboard.html 200
+/cmp_:companyId/attendance/company/employees /attendance/company/employees.html 200
+/cmp_:companyId/attendance/company/salary /attendance/company/salary.html 200
+
+# Tenant asset passthrough
+/cmp_:companyId/js/* /js/:splat 200
+/cmp_:companyId/css/* /css/:splat 200
+/cmp_:companyId/assets/* /assets/:splat 200
+/cmp_:companyId/emp/* /emp/:splat 200
+/cmp_:companyId/attendance/* /attendance/:splat 200
+
+# Redirects
+/firestore.rules /404.html 404
+/sw.js /sw.js 200

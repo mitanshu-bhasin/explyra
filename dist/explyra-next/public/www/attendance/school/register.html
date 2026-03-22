@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register — Free Explyra Suite Tool | Fast & Secure</title>
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="school.css">
+
+    <!-- Logic -->
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth('school', true);
+        });
+
+        function onRegisterSubmit(e) {
+            handleSchoolRegister(e);
+        }
+    </script>
+
+    
+    
+    
+    
+        <meta name="description" content="Use Register on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/www/attendance/school/register.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Www",
+          "item": "https://explyra.me/www/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Attendance",
+          "item": "https://explyra.me/www/attendance/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "School",
+          "item": "https://explyra.me/www/attendance/school/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+
+<body
+    class="bg-indigo-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] min-h-screen flex items-center justify-center p-4 transition-colors duration-300">
+
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-4">
+        <a href="../index.html"
+            class="text-sm font-bold text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-white dark:bg-slate-800 px-4 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Back
+        </a>
+        <button onclick="toggleTheme()"
+            class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+            <i class="fa-solid fa-moon dark:hidden"></i>
+            <i class="fa-solid fa-sun hidden dark:block"></i>
+        </button>
+    </div>
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div
+            class="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-indigo-200/40 dark:bg-indigo-900/20 rounded-full blur-3xl">
+        </div>
+        <div
+            class="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-purple-200/40 dark:bg-purple-900/20 rounded-full blur-3xl">
+        </div>
+    </div>
+
+    <div
+        class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 dark:border-slate-700 relative z-10 animate-fade-in overflow-hidden hover:shadow-indigo-900/10 transition-shadow mt-10 mb-10">
+        <div class="absolute -right-10 -bottom-10 text-indigo-50 dark:text-indigo-900/20 text-9xl pointer-events-none">
+            <i class="fa-solid fa-school-flag"></i>
+        </div>
+
+        <div class="text-center mb-8 relative z-10">
+            <div
+                class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white text-3xl shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-school-circle-check"></i>
+            </div>
+            <h1 class="text-3xl font-black tracking-tight mb-2">Create Workspace</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm">Register your school and principal account</p>
+        </div>
+
+        <form onsubmit="onRegisterSubmit(event)" class="space-y-5 relative z-10">
+            <div>
+                <label
+                    class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1">School
+                    / Institution Name</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <input type="text" id="reg-school-name"
+                        class="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all font-medium"
+                        placeholder="e.g. Springfield High" required>
+                </div>
+            </div>
+
+            <div>
+                <label
+                    class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Principal
+                    Email Address</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <input type="email" id="reg-email"
+                        class="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all font-medium"
+                        placeholder="principal@school.edu" required>
+                </div>
+            </div>
+
+            <div>
+                <label
+                    class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Principal
+                    Password</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <input type="password" id="reg-password"
+                        class="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all font-medium"
+                        placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 mt-4 text-sm tracking-wide">
+                <span>Complete Registration</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="mt-8 text-center relative z-10 border-t border-slate-100 dark:border-slate-700 pt-6">
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Already registered? <a href="login.html"
+                    class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">Log in here</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>

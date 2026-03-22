@@ -263,7 +263,6 @@ onAuthStateChanged(auth, async (user) => {
                         try {
                             const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
                             await updateDoc(doc(window.db, "users", window.userData.docId), { gdriveConnected: isConnected });
-                            console.log("Employee GDrive state synced to cloud.");
                         } catch (e) {
                             console.error("GDrive cloud sync failed:", e);
                         }
@@ -298,7 +297,6 @@ onAuthStateChanged(auth, async (user) => {
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
                 if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
-                    console.log('[Auth] Explyra admin detected on emp portal, skipping.');
                 } else {
                     window.showToast("User record not found. Contact Admin.", "error");
                     auth.signOut();
@@ -371,7 +369,6 @@ function showEmployeeDashboard() {
         window.toggleMode('company'); // will call fetchExpenses
     } else if (window.fetchEmpTasks) window.fetchEmpTasks();
     if (window.initNotifications) window.initNotifications();
-    console.log("Employee Dashboard Loaded for:", window.userData.name);
 
     // Role handling for managers (extra manager view)
     if (window.userData.role === "MANAGER" || window.userData.role === "FINANCE_MANAGER") {

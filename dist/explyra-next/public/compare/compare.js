@@ -1,0 +1,48 @@
+/* ═══════════════════════════════════════════
+   THEME LOGIC
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+    const html = document.documentElement;
+    const pill = document.getElementById('themePill');
+    const lbl = document.getElementById('themeLabel');
+
+    // Load saved theme
+    const saved = localStorage.getItem('explyra-theme') || 'light';
+    html.setAttribute('data-theme', saved);
+    if (lbl) lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
+
+    // Toggle theme
+    if (pill) {
+        pill.addEventListener('click', () => {
+            const cur = html.getAttribute('data-theme');
+            const nxt = cur === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', nxt);
+            if (lbl) lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light';
+            localStorage.setItem('explyra-theme', nxt);
+        });
+    }
+
+    /* ═══════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════ */
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ═══════════════════════════════════════════
+       BACK TO HOME LINK
+    ═══════════════════════════════════════════ */
+    // Add any specific interactions for comparison cards or tables here
+});

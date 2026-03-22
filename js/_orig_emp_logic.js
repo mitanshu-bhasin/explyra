@@ -130,7 +130,6 @@ let personalUnsub = null;
 
 window.toggleMode = (mode) => {
     currentMode = mode;
-    console.log("Mode switch triggered. Target mode:", currentMode);
 
     // UI Elements
     const statsContainer = document.getElementById('stats-container') || document.querySelector('.grid.grid-cols-1.md\\:grid-cols-3');
@@ -148,14 +147,12 @@ window.toggleMode = (mode) => {
     const secClaims = document.getElementById('section-claims');
     const secTasks = document.getElementById('section-tasks');
 
-    console.log("Status check:", { statsContainer: !!statsContainer, tabsContainer: !!tabsContainer, vaultHeader: !!vaultHeader });
 
     // Clear list immediately to prevent showing old data
     const list = document.getElementById('expenses-list');
     if (list) list.innerHTML = '';
 
     if (currentMode === 'personal') {
-        console.log("Applying Personal Mode UI changes...");
         if (statsContainer) statsContainer.classList.add('hidden');
         if (tabsContainer) tabsContainer.classList.add('hidden');
         if (vaultHeader) vaultHeader.classList.remove('hidden');
@@ -176,7 +173,6 @@ window.toggleMode = (mode) => {
 
         fetchPersonalVault();
     } else {
-        console.log("Applying Company Mode UI changes...");
         if (statsContainer) statsContainer.classList.remove('hidden');
         if (tabsContainer) tabsContainer.classList.remove('hidden');
         if (vaultHeader) vaultHeader.classList.add('hidden');
@@ -209,7 +205,6 @@ window.toggleMode = (mode) => {
 
         fetchExpenses();
     }
-    console.log("toggleMode completed. currentMode is now:", currentMode);
 };
 
 window.fetchPersonalVault = () => {
@@ -664,16 +659,13 @@ window.forgotPassword = async () => {
 };
 
 window.handleGoogleLogin = async () => {
-    console.log("Starting Google Sign-In...");
     const provider = new GoogleAuthProvider();
     provider.addScope('email');
     provider.addScope('profile');
 
     try {
-        console.log("Attempting signInWithPopup...");
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        console.log("Google Sign-In successful for:", user.email);
 
         // 1. Fetch only email from Google and verify in our records
         const q = query(collection(db, "users"), where("email", "==", user.email));
@@ -900,7 +892,6 @@ window.handleFileSelect = async (input) => {
 
             const data = await response.json();
             imageUrl = data.data.url;
-            console.log("Uploaded to ImgBB:", imageUrl);
 
         } catch (ikError) {
             console.warn("ImgBB failed, trying Firebase Storage...", ikError);
@@ -919,12 +910,10 @@ window.handleFileSelect = async (input) => {
 
                 await uploadString(storageRef, dataUrl, 'data_url');
                 imageUrl = await getDownloadURL(storageRef);
-                console.log("Uploaded to Firebase:", imageUrl);
             } catch (fbErr) {
                 console.warn("Firebase Storage upload also failed, using local compression fallback", fbErr);
                 // 3. Fallback to Local Compression
                 imageUrl = await compressImage(file);
-                console.log("Using Local Compression");
             }
         }
 
@@ -1372,7 +1361,6 @@ window.addLineItem = () => {
 };
 
 window.createExpenseFromAI = async (data) => {
-    console.log("Creating expense from AI:", data);
 
     // Open modal in EXPENSE mode
     openCreateModal('EXPENSE');
@@ -2177,7 +2165,7 @@ function showIncomingCallUI(callId, data) {
         }
     }, 10);
     const ringer = document.getElementById('incoming-ringtone');
-    if (ringer) ringer.play().catch(e => console.log('Autoplay prevented', e));
+    if (ringer) ringer.play().catch(() => {});
 }
 
 window.initiateCall = async (type) => {
@@ -2194,7 +2182,7 @@ window.initiateCall = async (type) => {
 
         // Play outgoing ringing sound
         const outRinger = document.getElementById('outgoing-ringtone');
-        if (outRinger) outRinger.play().catch(e => console.log('Autoplay prevented', e));
+        if (outRinger) outRinger.play().catch(() => {});
 
         peerConnection = new RTCPeerConnection(servers);
         localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
@@ -2647,7 +2635,6 @@ onAuthStateChanged(auth, async (user) => {
                     });
                 }
 
-                console.log("Logged in as:", userData.email);
 
                 // Show Dashboard, Hide Auth
                 document.getElementById('auth-screen').classList.add('hidden');
@@ -2721,7 +2708,6 @@ onAuthStateChanged(auth, async (user) => {
                         }
 
                         onMessage(messaging, (payload) => {
-                            console.log('FCM Foreground Message received: ', payload);
                             showToast(payload.notification.title + " - " + payload.notification.body, 'info');
                         });
                     } catch (e) {

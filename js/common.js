@@ -58,7 +58,7 @@ if (typeof tailwind !== 'undefined') {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-            .then(reg => console.log('Service Worker Registered'))
+            .then(() => {})
             .catch(err => console.error('Service Worker Error', err));
     });
 }

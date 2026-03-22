@@ -21,12 +21,10 @@ async function initPeerJS() {
         });
 
         peer.on('open', (id) => {
-            console.log('My peer ID is: ' + id);
             resolve(peer);
         });
 
         peer.on('call', (call) => {
-            console.log('Receiving call from', call.peer);
             call.answer(localStream);
             
             call.on('stream', (remoteStream) => {
@@ -123,7 +121,6 @@ window.startGroupCall = async () => {
 
 function initiateCallToTarget(targetPeerId) {
     if (!peer || !localStream) return;
-    console.log('Initiating call to', targetPeerId);
     
     const call = peer.call(targetPeerId, localStream);
     

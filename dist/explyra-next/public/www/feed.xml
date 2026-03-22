@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Explyra Suite - Updates</title>
+    <link>https://explyra.me/</link>
+    <description>Latest news, feature updates, and releases from Explyra.</description>
+    <language>en-us</language>
+    <atom:link href="https://explyra.me/feed.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 08 Mar 2026 00:00:00 GMT</lastBuildDate>
+    <copyright>Copyright 2026 Explyra</copyright>
+    <image>
+       <url>https://explyra.me/assets/images/explyra_logo.png</url>
+       <title>Explyra</title>
+       <link>https://explyra.me/</link>
+    </image>
+
+    <item>
+      <title>Industry Solutions Hub Now Live</title>
+      <link>https://explyra.me/solutions/suite.html</link>
+      <pubDate>Tue, 10 Mar 2026 10:00:00 GMT</pubDate>
+      <description>We've launched a comprehensive Solutions Hub featuring dedicated landing pages for Expense Management, CRM, Health, Learning, Developers, and our new Invoice Software.</description>
+      <guid>https://explyra.me/solutions/suite.html</guid>
+    </item>
+
+    <item>
+      <title>Contact Us Page Now Live</title>
+      <link>https://explyra.me/contact.html</link>
+      <pubDate>Sun, 08 Mar 2026 17:30:00 GMT</pubDate>
+      <description>Get in touch with the Explyra team. Reach out for support, partnerships, bug reports, or any inquiries about the Explyra Suite. Form submissions are saved securely via Firebase.</description>
+      <guid>https://explyra.me/contact.html</guid>
+    </item>
+
+    <item>
+      <title>Support Explyra — Donation Page Launched</title>
+      <link>https://explyra.me/donation.html</link>
+      <pubDate>Sun, 08 Mar 2026 17:15:00 GMT</pubDate>
+      <description>Support the Explyra Suite by donating via WhatsApp. Every contribution fuels server costs, new AI integrations, and scaling the ecosystem.</description>
+      <guid>https://explyra.me/donation.html</guid>
+    </item>
+
+    <item>
+      <title>Explyra Developer Tools Hub Launched</title>
+      <link>https://explyra.me/developers/index.html</link>
+      <pubDate>Sat, 08 Mar 2026 09:00:00 GMT</pubDate>
+      <description>The Explyra Developers Hub is now live with Code Minifier, Hash Generator, Password Generator, Link Shortener, Online IDE, and more tools.</description>
+      <guid>https://explyra.me/developers/index.html</guid>
+    </item>
+
+    <item>
+      <title>Explyra Health Manager Now Available</title>
+      <link>https://explyra.me/health-manager/index.html</link>
+      <pubDate>Fri, 07 Mar 2026 10:00:00 GMT</pubDate>
+      <description>Track workouts, sleep, nutrition, and mental wellness with AI-powered recommendations and live weather integration.</description>
+      <guid>https://explyra.me/health-manager/index.html</guid>
+    </item>
+
+    <item>
+      <title>Explyra Learning Platform Launched</title>
+      <link>https://explyra.me/explyra-learning/index.html</link>
+      <pubDate>Fri, 07 Mar 2026 12:00:00 GMT</pubDate>
+      <description>Expert-curated courses on Agentic AI, Prompt Engineering, and SEO — built for the next generation of digital professionals.</description>
+      <guid>https://explyra.me/explyra-learning/index.html</guid>
+    </item>
+
+    <item>
+      <title>Welcome to the New Explyra Platform</title>
+      <link>https://explyra.me/</link>
+      <pubDate>Mon, 15 Feb 2026 09:00:00 GMT</pubDate>
+      <description>We have launched our new PWA-enabled SaaS platform for enhanced productivity, robust developer utilities, and business management.</description>
+      <guid>https://explyra.me/#launch</guid>
+    </item>
+
+    <item>
+      <title>Meet Our Technical Team</title>
+      <link>https://explyra.me/mitanshu.html</link>
+      <pubDate>Mon, 15 Feb 2026 10:30:00 GMT</pubDate>
+      <description>Spotlight on Mitanshu Bhasin, our lead developer driving cybersecurity and innovation at Explyra.</description>
+      <guid>https://explyra.me/mitanshu.html</guid>
+    </item>
+  </channel>
+</rss>

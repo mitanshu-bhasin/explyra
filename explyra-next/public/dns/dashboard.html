@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Free Explyra Suite Tool | Fast & Secure</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    
+
+    
+    
+    
+        <meta name="description" content="Use Dashboard on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ]
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/dns/dashboard.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Dns",
+          "item": "https://explyra.me/dns/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">E</div>
+                <span class="logo-text">Explyra</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <li class="nav-item active" data-view="dashboard">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span class="nav-text">Dashboard</span>
+                </li>
+                <li class="nav-item" data-view="subdomains">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    <span class="nav-text">Subdomains</span>
+                </li>
+                <li class="nav-item" data-view="dns">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <span class="nav-text">DNS Manager</span>
+                </li>
+                <li class="nav-item" data-view="customDomains">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    <span class="nav-text">Custom Domains</span>
+                </li>
+                <li class="nav-item" data-view="registerDomain">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="nav-text">New Domain</span>
+                </li>
+            </nav>
+
+            <div class="sidebar-footer">
+                <li class="nav-item" id="logoutBtn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span class="nav-text">Sign Out</span>
+                </li>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Navbar -->
+            <header class="navbar">
+                <div class="flex items-center gap-2">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <div class="search-container">
+                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" placeholder="Search domains...">
+                    </div>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                        <svg id="moonIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        <svg id="sunIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </button>
+                    <div class="user-avatar" id="userInitial">U</div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="content">
+                <!-- Dashboard View -->
+                <section id="dashboardView" class="page-view active">
+                    <div class="header-section">
+                        <h1>Overview</h1>
+                        <p>Welcome back, <span id="userName">User</span>. Here's what's happening today.</p>
+                    </div>
+
+                    <div class="grid-container">
+                        <div class="card">
+                            <p class="card-title">Total Subdomains</p>
+                            <div class="card-value" id="subdomainCount">0</div>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">DNS Records</p>
+                            <div class="card-value" id="dnsRecordCount">0</div>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">Account Status</p>
+                            <div class="card-value" style="color: #22c55e; font-size: 1.5rem;">Verified</div>
+                        </div>
+                    </div>
+
+                    <!-- Deploy Project Card -->
+                    <div class="card mb-6" style="margin-bottom: 2.5rem;">
+                        <h2 class="card-title">Deploy Project</h2>
+                        <div id="deployComponent">
+                            <!-- Step 1: Connect GitHub -->
+                            <div id="githubConnectStep" class="flex flex-col items-center justify-center p-8 gap-4 border-2 border-dashed border-bdr rounded-xl coming-soon-container">
+                                <div class="coming-soon-overlay">
+                                    <span class="coming-soon-badge">Coming Soon</span>
+                                </div>
+                                <div id="githubLoggedOut" class="flex flex-col items-center gap-4">
+                                    <svg style="width: 48px; height: 48px; color: var(--text-dim);" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                                    <div class="text-center">
+                                        <h3 style="font-weight: 600; margin-bottom: 0.25rem;">Connect to GitHub</h3>
+                                        <p class="text-dim text-sm" style="margin-bottom: 1rem; color: var(--text-dim);">Link your account to import repositories and deploy to Vercel.</p>
+                                        <button class="btn btn-primary" id="connectGithubBtn">
+                                            Connect GitHub
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="githubLoggedIn" class="hidden flex items-center gap-4 w-full">
+                                    <img id="githubAvatar" src="" alt="Avatar" style="width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--primary);">
+                                    <div style="flex: 1;">
+                                        <h3 id="githubUsername" style="font-weight: 700; margin-bottom: 0.1rem;">Username</h3>
+                                        <p id="githubId" class="text-dim text-sm" style="color: var(--text-dim);">ID: 0000000</p>
+                                    </div>
+                                    <button class="btn btn-primary" id="startDeployBtn">Deploy a Project</button>
+                                    <button class="btn btn-ghost" id="githubLogoutBtn" title="Logout GitHub">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Select Repo & Deploy -->
+                            <div id="repoDeployStep" class="hidden">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Select Repository</label>
+                                        <select id="repoSelector">
+                                            <option value="" disabled selected>Loading repositories...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Subdomain to Use</label>
+                                        <select id="deploySubdomainSelector">
+                                            <!-- Dynamic -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Framework Detection</label>
+                                        <div id="frameworkInfo" style="padding: 0.625rem 1rem; border-radius: 8px; border: 1px solid var(--border); background-color: var(--bg); font-size: 0.875rem; color: var(--text-dim);">
+                                            Auto-detecting...
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center mt-4">
+                                    <div id="deployStatus" style="font-size: 0.875rem;"></div>
+                                    <div class="flex gap-2">
+                                        <button class="btn btn-ghost" id="disconnectGithubBtn">Disconnect</button>
+                                        <button class="btn btn-primary" id="deployBtn">Deploy to Vercel</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Deployment Status -->
+                            <div id="deploymentLoadingStep" class="hidden flex flex-col items-center justify-center p-8 gap-4">
+                                <div class="loader"></div>
+                                <div class="text-center">
+                                    <h3 id="deploymentStatusTitle" style="font-weight: 600; margin-bottom: 0.25rem;">Deploying Project</h3>
+                                    <p id="deploymentStatusDesc" class="text-dim text-sm" style="color: var(--text-dim);">Please wait while we set up your production environment.</p>
+                                </div>
+                                <div id="deploymentLogs"></div>
+                            </div>
+
+                            <!-- Step 4: Success -->
+                            <div id="deploySuccessStep" class="hidden flex flex-col items-center justify-center p-8 gap-4">
+                                <div style="width: 48px; height: 48px; background: #22c55e; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <div class="text-center">
+                                    <h3 style="font-weight: 600; margin-bottom: 0.25rem;">Deployment Ready!</h3>
+                                    <p class="text-dim text-sm" style="margin-bottom: 1rem; color: var(--text-dim);">Your project has been successfully deployed and linked.</p>
+                                    <div class="flex gap-2 justify-center">
+                                        <a id="visitSiteBtn" href="#" target="_blank" class="btn btn-primary">Visit Site</a>
+                                        <button class="btn btn-ghost" onclick="window.location.reload()">New Deployment</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h2>Recent Activity</h2>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Last Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityTable">
+                                <!-- Dynamic dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Subdomains View -->
+                <section id="subdomainsView" class="page-view">
+                    <div class="header-section flex items-center justify-between">
+                        <div>
+                            <h1>Subdomains</h1>
+                            <p>Manage your domains on mitanshu.tech</p>
+                        </div>
+                        <button class="btn btn-primary" id="openCreateModal">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Create Subdomain
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subdomain</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subdomainsTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- DNS Manager View -->
+                <section id="dnsView" class="page-view">
+                    <div class="header-section">
+                        <h1>DNS Manager</h1>
+                        <p>Manage records for your sub-subdomains.</p>
+                    </div>
+
+                    <div class="card mb-6" style="margin-bottom: 2rem;">
+                        <h2 class="card-title">Add New Record</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Record Type</label>
+                                <select id="recordType">
+                                    <option value="A">A</option>
+                                    <option value="CNAME">CNAME</option>
+                                    <option value="TXT">TXT</option>
+                                    <option value="MX">MX</option>
+                                    <option value="AAAA">AAAA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Subdomain</label>
+                                <select id="addRecordSubdomainSelector">
+                                    <!-- Dynamic -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" id="recordName" placeholder="e.g., api">
+                            </div>
+                            <div class="form-group">
+                                <label>Value</label>
+                                <input type="text" id="recordContent" placeholder="e.g., 1.1.1.1">
+                            </div>
+                            <div class="form-group">
+                                <label>TTL</label>
+                                <select id="recordTTL">
+                                    <option value="1">Automatic</option>
+                                    <option value="60">1 min</option>
+                                    <option value="300">5 mins</option>
+                                    <option value="3600">1 hour</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div id="dnsStatus" style="font-size: 0.875rem;"></div>
+                            <button class="btn btn-primary" id="addRecordBtn">Add Record</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <div class="flex items-center gap-4">
+                                <label style="font-size: 0.875rem; font-weight: 600;">Subdomain:</label>
+                                <select id="subdomainSelector" style="padding: 0.25rem 0.5rem;"></select>
+                            </div>
+                            <button class="btn btn-ghost" id="refreshDns">Refresh</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Content</th>
+                                    <th>TTL</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dnsRecordsTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Custom Domains View -->
+                <section id="customDomainsView" class="page-view coming-soon-container">
+                    <div class="coming-soon-overlay">
+                        <span class="coming-soon-badge">Coming Soon</span>
+                    </div>
+                    <div class="header-section">
+                        <h1>Connect Your Custom Domain</h1>
+                        <p>Use your own brand with our hosting infrastructure.</p>
+                    </div>
+
+                    <div class="card mb-6">
+                        <h2 class="card-title">Add New Domain</h2>
+                        <div class="flex gap-4">
+                            <input type="text" id="customDomainInput" placeholder="yourdomain.com" style="flex: 1;">
+                            <button class="btn btn-primary" id="addCustomDomainBtn">Add Domain</button>
+                        </div>
+                        <div id="addDomainStatus" class="mt-2 text-sm"></div>
+                    </div>
+
+                    <!-- Domain Status Tracker (Visible when a domain is selected) -->
+                    <div id="domainStatusTracker" class="hidden mb-6">
+                        <div class="grid-container" style="grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                            <div class="card status-card p-4" id="statusPending">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">Verification</p>
+                                <p class="text-sm font-bold">Pending</p>
+                            </div>
+                            <div class="card status-card p-4" id="statusVerified">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">Ownership</p>
+                                <p class="text-sm font-bold opacity-50">Verified</p>
+                            </div>
+                            <div class="card status-card p-4" id="statusConnected">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">DNS Setup</p>
+                                <p class="text-sm font-bold opacity-50">Connected</p>
+                            </div>
+                            <div class="card status-card p-4" id="statusLive">
+                                <p class="text-xs uppercase font-bold text-dim mb-1">Platform</p>
+                                <p class="text-sm font-bold opacity-50">Live</p>
+                            </div>
+                        </div>
+
+                        <!-- Verification Step -->
+                        <div id="verificationStep" class="card mb-6 bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30">
+                            <h2 class="card-title" style="color: #b45309;">Verify Domain Ownership</h2>
+                            <p class="text-sm text-dim mb-4">Add the following TXT record to your domain's DNS settings.</p>
+                            
+                            <div class="p-4 bg-white dark:bg-black/20 rounded-lg border border-bdr mb-4">
+                                <div class="grid grid-cols-3 gap-4 text-xs font-bold text-dim uppercase mb-2">
+                                    <div>Type</div>
+                                    <div>Name</div>
+                                    <div>Value</div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm font-mono">
+                                    <div>TXT</div>
+                                    <div>_explyra-verification</div>
+                                    <div id="verificationTokenValue" class="break-all">explyra-XXXXXX</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <button class="btn btn-primary" id="verifyDomainBtn">Verify Domain</button>
+                                <p id="verificationStatus" class="text-sm"></p>
+                            </div>
+                        </div>
+
+                        <!-- Connection Step (A/CNAME) -->
+                        <div id="connectionStep" class="hidden card mb-6 bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30">
+                            <h2 class="card-title" style="color: #15803d;">Connect DNS Records</h2>
+                            <p class="text-sm text-dim mb-4">Your domain is verified! Now point it to our servers.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="p-4 bg-white dark:bg-black/20 rounded-lg border border-bdr">
+                                    <p class="text-xs font-bold text-dim uppercase mb-2">For Root Domain (@)</p>
+                                    <div class="grid grid-cols-3 gap-4 text-sm font-mono">
+                                        <div>A</div>
+                                        <div>@</div>
+                                        <div>76.76.21.21</div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-white dark:bg-black/20 rounded-lg border border-bdr">
+                                    <p class="text-xs font-bold text-dim uppercase mb-2">For WWW Subdomain</p>
+                                    <div class="grid grid-cols-3 gap-4 text-sm font-mono">
+                                        <div>CNAME</div>
+                                        <div>www</div>
+                                        <div>cname.vercel-dns.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h2>Your Domains</h2>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>Status</th>
+                                    <th>Project</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customDomainsTable">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- New Domain View -->
+                <section id="registerDomainView" class="page-view">
+                    <div class="header-section">
+                        <h1>Register a New Domain</h1>
+                        <p>Follow these steps to secure your unique identity on the web.</p>
+                    </div>
+
+                    <div class="card mb-6">
+                        <h2 class="card-title">How to Buy a Domain</h2>
+                        <div class="steps-container">
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <p class="step-title">Choose a Registrar</p>
+                                    <p class="text-dim text-sm">Select a trusted domain registrar from our list below or use your favorite platform.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <p class="step-title">Search Domain</p>
+                                    <p class="text-dim text-sm">Use the registrar's search tool to find your preferred name and extension (.com, .io, etc).</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <p class="step-title">Complete Purchase</p>
+                                    <p class="text-dim text-sm">Add to cart, review pricing (watch for renewal rates), and complete the checkout process.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <p class="step-title">Privacy Protection</p>
+                                    <p class="text-dim text-sm">Ensure WHOIS privacy protection is enabled to hide your personal contact information.</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <p class="step-title">Connect to Explyra</p>
+                                    <p class="text-dim text-sm">Once purchased, use our DNS Manager to point your domain here using A or CNAME records.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 class="card-title" style="margin-top: 2.5rem;">Popular Domain Registrars</h2>
+                    <div class="registrar-grid">
+                        <!-- Cloudflare -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">CF</div>
+                            <div class="registrar-info">
+                                <h3>Cloudflare Registrar</h3>
+                                <p class="text-dim text-sm">Cheapest domain renewals and world-class strong DNS integration.</p>
+                                <a href="https://www.cloudflare.com/products/registrar/" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Namecheap -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">NC</div>
+                            <div class="registrar-info">
+                                <h3>Namecheap</h3>
+                                <p class="text-dim text-sm">Beginner friendly and affordable domains with great support.</p>
+                                <a href="https://www.namecheap.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- GoDaddy -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">GD</div>
+                            <div class="registrar-info">
+                                <h3>GoDaddy</h3>
+                                <p class="text-dim text-sm">Widely used global registrar with extensive service offerings.</p>
+                                <a href="https://www.godaddy.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Google Domains -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">GG</div>
+                            <div class="registrar-info">
+                                <h3>Google Domains</h3>
+                                <p class="text-dim text-sm">Simple interface and seamless integration with Google services.</p>
+                                <a href="https://domains.google" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Porkbun -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">PB</div>
+                            <div class="registrar-info">
+                                <h3>Porkbun</h3>
+                                <p class="text-dim text-sm">Low cost domains and free WHOIS privacy forever.</p>
+                                <a href="https://porkbun.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Dynadot -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">DD</div>
+                            <div class="registrar-info">
+                                <h3>Dynadot</h3>
+                                <p class="text-dim text-sm">Robust tools for bulk domain management and auctions.</p>
+                                <a href="https://dynadot.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Hover -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">HV</div>
+                            <div class="registrar-info">
+                                <h3>Hover</h3>
+                                <p class="text-dim text-sm">Clean, simple UI focused purely on domain names.</p>
+                                <a href="https://hover.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- IONOS -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">IO</div>
+                            <div class="registrar-info">
+                                <h3>IONOS</h3>
+                                <p class="text-dim text-sm">Business domains and robust hosting bundles for professional use.</p>
+                                <a href="https://www.ionos.com" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Bluehost -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">BH</div>
+                            <div class="registrar-info">
+                                <h3>Bluehost Domains</h3>
+                                <p class="text-dim text-sm">Highly recommended for WordPress users and startups.</p>
+                                <a href="https://www.bluehost.com/domains" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                        <!-- Hostinger -->
+                        <div class="registrar-card">
+                            <div class="registrar-logo">HI</div>
+                            <div class="registrar-info">
+                                <h3>Hostinger</h3>
+                                <p class="text-dim text-sm">Extremely cheap domains optimized for startups and developers.</p>
+                                <a href="https://www.hostinger.com/domains" target="_blank" class="btn btn-ghost mt-4 w-full justify-center">Visit Website</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals (Simplified for now) -->
+    <div id="createModal" class="modal-overlay hidden">
+        <div class="card" style="width: 100%; max-width: 450px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">Create Subdomain</h2>
+            <div class="form-group">
+                <label>Desired Name</label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="subdomainInput" placeholder="my-app" style="flex: 1;">
+                    <span style="font-weight: 600; color: var(--text-dim);">.mitanshu.tech</span>
+                </div>
+            </div>
+            <div id="subdomainStatus" style="font-size: 0.875rem; margin-top: 1rem;"></div>
+            <div class="mt-4 flex gap-2 justify-end">
+                <button class="btn btn-ghost" id="closeCreateModal">Cancel</button>
+                <button class="btn btn-primary" id="createSubdomainBtn">Claim Domain</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services & Scripts -->
+    <script src="../js/env.js"></script>
+    <script src="../firebase/firebase.js"></script>
+
+    <script src="cloudflareService.js"></script>
+    <script src="validateDomain.js"></script>
+    <script src="createSubdomain.js"></script>
+    <script src="createDnsRecord.js"></script>
+    <script src="listDnsRecords.js"></script>
+    <script src="deleteDnsRecord.js"></script>
+    <script src="editDnsRecord.js"></script>
+    <script src="deleteSubdomain.js"></script>
+    
+    <!-- Redesigned Logic -->
+    <script src="dashboard.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme Management
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            if (theme === 'light') {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+
+        // Mobile Menu
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // --- VERCEL & GITHUB DEPLOYMENT LOGIC ---
+        const VERCEL_API_TOKEN = 'vcp_0zWQzXOPjlxF1VBlhYPgBnhGkcYzDRTe5Yy4Ke2RH1c0dPebvl2zWDfl';
+        const GITHUB_CLIENT_ID = 'Ov23lidqZDfuS56EPqXy';
+        const OAUTH_REDIRECT_URL = 'https://explyra.me/dns/dashboard.html';
+
+        const connectGithubBtn = document.getElementById('connectGithubBtn');
+        const githubLogoutBtn = document.getElementById('githubLogoutBtn');
+        const startDeployBtn = document.getElementById('startDeployBtn');
+        const disconnectGithubBtn = document.getElementById('disconnectGithubBtn');
+        const deployBtn = document.getElementById('deployBtn');
+
+        const githubConnectStep = document.getElementById('githubConnectStep');
+        const githubLoggedOut = document.getElementById('githubLoggedOut');
+        const githubLoggedIn = document.getElementById('githubLoggedIn');
+        const githubAvatar = document.getElementById('githubAvatar');
+        const githubUsername = document.getElementById('githubUsername');
+        const githubId = document.getElementById('githubId');
+
+        const repoDeployStep = document.getElementById('repoDeployStep');
+        const deploymentLoadingStep = document.getElementById('deploymentLoadingStep');
+        const deploySuccessStep = document.getElementById('deploySuccessStep');
+        const repoSelector = document.getElementById('repoSelector');
+        const deploySubdomainSelector = document.getElementById('deploySubdomainSelector');
+        const frameworkInfo = document.getElementById('frameworkInfo');
+        const deployStatus = document.getElementById('deployStatus');
+        const visitSiteBtn = document.getElementById('visitSiteBtn');
+
+        const githubToken = localStorage.getItem('github_access_token');
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            handleGithubCallback(code);
+        } else if (githubToken) {
+            fetchGithubProfile(githubToken);
+        }
+
+        connectGithubBtn.addEventListener('click', () => {
+            const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=repo%20read:user`;
+            window.location.href = githubAuthUrl;
+        });
+
+        githubLogoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('github_access_token');
+            window.location.reload();
+        });
+
+        startDeployBtn.addEventListener('click', () => {
+            showRepoStep();
+        });
+
+        disconnectGithubBtn.addEventListener('click', () => {
+            repoDeployStep.classList.add('hidden');
+            githubConnectStep.classList.remove('hidden');
+        });
+
+        async function handleGithubCallback(authCode) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            githubLoggedOut.classList.add('hidden');
+            deploymentLoadingStep.classList.remove('hidden');
+            document.getElementById('deploymentStatusTitle').textContent = 'Connecting GitHub';
+
+            try {
+                const response = await fetch('/api/github-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: authCode })
+                });
+
+                const data = await response.json();
+                if (data.access_token) {
+                    localStorage.setItem('github_access_token', data.access_token);
+                    fetchGithubProfile(data.access_token);
+                } else {
+                    throw new Error(data.error || 'Failed to get access token');
+                }
+            } catch (error) {
+                alert('GitHub Connection Error: ' + error.message);
+                deploymentLoadingStep.classList.add('hidden');
+                githubLoggedOut.classList.remove('hidden');
+            }
+        }
+
+        async function fetchGithubProfile(token) {
+            try {
+                const response = await fetch('https://api.github.com/user', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = await response.json();
+                
+                if (user.login) {
+                    githubLoggedOut.classList.add('hidden');
+                    deploymentLoadingStep.classList.add('hidden');
+                    githubLoggedIn.classList.remove('hidden');
+                    
+                    githubAvatar.src = user.avatar_url;
+                    githubUsername.textContent = user.login;
+                    githubId.textContent = `ID: ${user.id}`;
+                } else {
+                    throw new Error('Invalid user profile');
+                }
+            } catch (error) {
+                console.error('Profile fetch error:', error);
+                localStorage.removeItem('github_access_token');
+                githubLoggedOut.classList.remove('hidden');
+            }
+        }
+
+        async function showRepoStep() {
+            githubConnectStep.classList.add('hidden');
+            deploymentLoadingStep.classList.add('hidden');
+            repoDeployStep.classList.remove('hidden');
+            fetchGithubRepos();
+            populateDeploySubdomainSelector();
+        }
+
+        async function fetchGithubRepos() {
+            const token = localStorage.getItem('github_access_token');
+            try {
+                const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const repos = await response.json();
+                
+                repoSelector.innerHTML = repos.map(repo => 
+                    `<option value="${repo.full_name}" data-repo-id="${repo.id}">${repo.full_name}</option>`
+                ).join('');
+                
+                updateFrameworkDetection();
+                repoSelector.addEventListener('change', updateFrameworkDetection);
+            } catch (error) {
+                repoSelector.innerHTML = '<option value="">Failed to load repositories</option>';
+            }
+        }
+
+        function populateDeploySubdomainSelector() {
+            const interval = setInterval(() => {
+                const subCount = document.getElementById('subdomainCount').textContent;
+                if (subCount !== '0') {
+                    // Try to get subdomains from the table or global if available
+                    // For now, let's assume dashboard.js marks window.userData
+                    if (window.userData && window.userData.subdomains) {
+                        deploySubdomainSelector.innerHTML = window.userData.subdomains.map(s => 
+                            `<option value="${s.subdomain}">${s.subdomain}.mitanshu.tech</option>`
+                        ).join('');
+                        clearInterval(interval);
+                    }
+                }
+            }, 500);
+        }
+
+        async function updateFrameworkDetection() {
+            const repo = repoSelector.value;
+            frameworkInfo.textContent = 'Analyzing...';
+            setTimeout(() => {
+                if (repo.toLowerCase().includes('next')) frameworkInfo.textContent = 'Next.js Detected';
+                else if (repo.toLowerCase().includes('react')) frameworkInfo.textContent = 'React Detected';
+                else frameworkInfo.textContent = 'Static Website Detected';
+            }, 800);
+        }
+
+        deployBtn.addEventListener('click', async () => {
+            const repoFullName = repoSelector.value;
+            const selectedOption = repoSelector.options[repoSelector.selectedIndex];
+            const repoId = selectedOption ? selectedOption.dataset.repoId : null;
+            const subdomain = deploySubdomainSelector.value;
+            const token = localStorage.getItem('github_access_token');
+
+            if (!repoFullName || !repoId || !subdomain) return alert('Select repo and subdomain');
+            if (!token) return alert('GitHub connection missing');
+
+            repoDeployStep.classList.add('hidden');
+            deploymentLoadingStep.classList.remove('hidden');
+            const statusTitle = document.getElementById('deploymentStatusTitle');
+            const statusDesc = document.getElementById('deploymentStatusDesc');
+            
+            try {
+                // 1. Fetch Repository Details (default_branch)
+                statusTitle.textContent = 'Fetching Repository Details';
+                statusDesc.textContent = `Analyzing ${repoFullName}...`;
+
+                const repoRes = await fetch(`https://api.github.com/repos/${repoFullName}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const repoInfo = await repoRes.json();
+                
+                if (!repoInfo.default_branch) {
+                    throw new Error('Could not retrieve repository default branch');
+                }
+
+                const defaultBranch = repoInfo.default_branch;
+                const projectName = repoFullName.split('/')[1];
+
+                // 2. Trigger Vercel Deployment
+                statusTitle.textContent = 'Deploying to Vercel';
+                statusDesc.textContent = `Importing ${repoFullName} (${defaultBranch})...`;
+
+                // Validation before deployment
+                const projectSettings = {
+                    framework: null,
+                    buildCommand: null,
+                    installCommand: null,
+                    outputDirectory: null,
+                    rootDirectory: null
+                };
+
+                if (!repoFullName || !repoId || !defaultBranch || !projectSettings) {
+                    throw new Error('Missing required deployment information (Repo/ID/Branch/Settings)');
+                }
+
+                const deployRes = await fetch('https://api.vercel.com/v13/deployments?skipAutoDetectionConfirmation=1', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name: projectName,
+                        gitSource: { 
+                            type: 'github', 
+                            repo: repoFullName,
+                            repoId: repoId,
+                            ref: defaultBranch 
+                        },
+                        projectSettings: projectSettings
+                    })
+                });
+
+                const deployData = await deployRes.json();
+                if (deployData.error) throw new Error(deployData.error.message);
+
+                const deploymentId = deployData.id;
+                const projectId = deployData.projectId;
+                const fullDomain = `${subdomain}.mitanshu.tech`;
+
+                // 3. Poll for Status (Building -> Ready)
+                await pollDeploymentStatus(deploymentId, statusTitle, statusDesc);
+
+                // 4. Attach Subdomain to Vercel Project
+                statusTitle.textContent = 'Configuring Domain';
+                statusDesc.textContent = `Linking ${fullDomain} to Vercel...`;
+
+                const domainRes = await fetch(`https://api.vercel.com/v9/projects/${projectId}/domains`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: fullDomain })
+                });
+
+                const domainData = await domainRes.json();
+                if (domainData.error) throw new Error(domainData.error.message);
+
+                // 5. Create DNS CNAME Record
+                statusTitle.textContent = 'Finalizing DNS';
+                statusDesc.textContent = `Pointing ${fullDomain} to Vercel edge...`;
+                
+                await window.createDnsRecord(fullDomain, 'CNAME', 'cname.vercel-dns.com', subdomain, '1');
+
+                // 6. Success
+                deploymentLoadingStep.classList.add('hidden');
+                deploySuccessStep.classList.remove('hidden');
+                visitSiteBtn.href = `https://${fullDomain}`;
+            } catch (error) {
+                console.error("[Deploy Error]", error);
+                alert('Deployment Failed: ' + error.message);
+                deploymentLoadingStep.classList.add('hidden');
+                repoDeployStep.classList.remove('hidden');
+            }
+        });
+
+        async function pollDeploymentStatus(id, titleEl, descEl) {
+            const logsContainer = document.getElementById('deploymentLogs');
+            logsContainer.innerHTML = '';
+            logsContainer.style.display = 'block';
+            
+            let lastEventId = null;
+            let isPollingLogs = true;
+
+            // Log polling helper
+            const pollLogs = async () => {
+                while (isPollingLogs) {
+                    try {
+                        const url = `https://api.vercel.com/v2/deployments/${id}/events${lastEventId ? `?since=${lastEventId}` : ''}`;
+                        const res = await fetch(url, {
+                            headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}` }
+                        });
+                        if (res.status === 200) {
+                            const events = await res.json();
+                            events.forEach(event => {
+                                if (event.text) {
+                                    const line = document.createElement('div');
+                                    line.className = 'log-line';
+                                    if (event.type === 'error') line.classList.add('log-error');
+                                    line.textContent = `[${new Date(event.created).toLocaleTimeString()}] ${event.text}`;
+                                    logsContainer.appendChild(line);
+                                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                                }
+                                lastEventId = event.created;
+                            });
+                        }
+                    } catch (e) {
+                        console.error("Log fetch error:", e);
+                    }
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+            };
+
+            pollLogs();
+
+            return new Promise((resolve, reject) => {
+                const interval = setInterval(async () => {
+                    try {
+                        const res = await fetch(`https://api.vercel.com/v13/deployments/${id}`, {
+                            headers: { 'Authorization': `Bearer ${VERCEL_API_TOKEN}` }
+                        });
+                        const data = await res.json();
+                        
+                        const state = data.readyState || data.status;
+
+                        if (state === 'READY') {
+                            clearInterval(interval);
+                            isPollingLogs = false;
+                            titleEl.textContent = 'Deployment Ready';
+                            descEl.textContent = 'Your project is live.';
+                            resolve(data);
+                        } else if (state === 'ERROR' || state === 'CANCELED') {
+                            clearInterval(interval);
+                            isPollingLogs = false;
+                            
+                            const errorMessage = data.error?.message || data.errorMessage || 'An error occurred during deployment';
+                            const errorCode = data.error?.code || data.errorCode || 'DEPLOYMENT_ERROR';
+                            
+                            titleEl.textContent = state === 'ERROR' ? 'Deployment Failed' : 'Deployment Canceled';
+                            descEl.innerHTML = `<span style="color: #ef4444;">${errorMessage} (${errorCode})</span>`;
+                            
+                            reject(new Error(errorMessage));
+                        } else {
+                            const stateMap = {
+                                'BUILDING': { title: 'Building Project', desc: 'Running build scripts...' },
+                                'INITIALIZING': { title: 'Initializing', desc: 'Preparing Vercel environment...' },
+                                'ANALYZING': { title: 'Analyzing', desc: 'Detecting project configuration...' }
+                            };
+                            const uiState = stateMap[state] || { title: state.charAt(0) + state.slice(1).toLowerCase(), desc: 'Processing deployment...' };
+                            titleEl.textContent = uiState.title;
+                            descEl.textContent = uiState.desc;
+                        }
+                    } catch (e) {
+                        clearInterval(interval);
+                        isPollingLogs = false;
+                        reject(e);
+                    }
+                }, 3000);
+            });
+        }
+    });
+</script>
+</body>
+</html>

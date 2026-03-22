@@ -39,13 +39,12 @@
     <link rel="dns-prefetch" href="//www.gstatic.com">
 
     <!-- Primary Meta Tags -->
-    <!-- Primary Meta Tags -->
-    <title>Explyra | The Unified SaaS Ecosystem for Teams & Enterprises</title>
+    <title>Explyra Suite | Unified SaaS for Teams &amp; Enterprises — explyra.me</title>
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    <meta name="title" content="Explyra | The Unified SaaS Ecosystem for Teams & Enterprises" />
+    <meta name="title" content="Explyra Suite | Unified SaaS for Teams &amp; Enterprises" />
     <meta name="description"
-        content="Manage expenses, CRM, health, AI learning, and developer tools in one unified workspace. Explyra is the ultimate productivity suite for the modern digital era—built for teams, enterprises, and independent developers." />
+        content="Explyra Suite: expense management, CRM, health, AI learning, and developer tools in one edge-fast workspace. The unified productivity suite for teams, enterprises, and builders — built for explyra.me." />
     <meta name="keywords"
         content="Explyra, SaaS ecosystem, unified productivity, expense tracker, CRM software, health manager, invoicing tool, developer utilities, AI learning platform, enterprise ERP" />
     <meta name="author" content="Mitanshu Bhasin" />
@@ -57,22 +56,28 @@
     <meta property="og:url" content="https://explyra.me/" />
     <meta property="og:site_name" content="Explyra" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:title" content="Explyra | The Unified SaaS Ecosystem for Teams & Enterprises" />
+    <meta property="og:title" content="Explyra Suite | Unified SaaS for Teams &amp; Enterprises" />
     <meta property="og:description"
-        content="One platform. Ten products. Unlimited potential. Experience the ultimate productivity suite with integrated expense management, CRM, AI learning, and more." />
+        content="Explyra Suite brings expense, CRM, health, learning, and dev tools together on the edge. One login, one workspace — built for speed at explyra.me." />
     <meta property="og:image" content="https://explyra.me/assets/images/explyra_screenshot_1.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Explyra Suite — unified SaaS dashboard" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://explyra.me/" />
     <meta property="twitter:site" content="@explyras" />
     <meta property="twitter:creator" content="@explyras" />
-    <meta property="twitter:title" content="Explyra | The Unified SaaS Ecosystem for Teams & Enterprises" />
+    <meta property="twitter:title" content="Explyra Suite | Unified SaaS for Teams &amp; Enterprises" />
     <meta property="twitter:description"
-        content="Manage your entire business workflow with Explyra. Integrated solutions for expenses, sales, learning, and developers." />
+        content="Run your business on Explyra Suite: expenses, CRM, health, learning, and developer tools in one fast, secure workspace." />
     <meta property="twitter:image" content="https://explyra.me/assets/images/explyra_screenshot_1.png" />
+    <meta name="twitter:image:alt" content="Explyra Suite — unified SaaS dashboard" />
 
     <!-- Icons & App Config -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
     <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
     <link rel="manifest" href="manifest.json" />
@@ -90,22 +95,18 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then(reg => {
-                        console.log('SW registered:', reg);
-                        // Optional: Handle updates
                         reg.onupdatefound = () => {
                             const installingWorker = reg.installing;
                             installingWorker.onstatechange = () => {
                                 if (installingWorker.state === 'installed') {
                                     if (navigator.serviceWorker.controller) {
-                                        console.log('New content available; please refresh.');
-                                    } else {
-                                        console.log('Content is cached for offline use.');
+                                        /* new version available */
                                     }
                                 }
                             };
                         };
                     })
-                    .catch(err => console.log('SW registration failed:', err));
+                    .catch(() => {});
             });
         }
 
@@ -122,22 +123,18 @@
         async function installPWA() {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to install prompt: ${outcome}`);
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
             const installBtn = document.getElementById('pwaInstallBtn');
             if (installBtn) installBtn.style.display = 'none';
         }
 
         window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed');
             deferredPrompt = null;
         });
     </script>
 
     <!-- JSON-LD Structured Data -->
-    <!-- JSON-LD Structured Data - Advanced SEO & Rich Results -->
-    <!-- JSON-LD Structured Data - Advanced SEO & Rich Results -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -289,7 +286,10 @@
           "name": "Explyra Suite",
           "operatingSystem": "Any",
           "applicationCategory": "BusinessApplication",
-          "screenshot": ["#", "#", "#"],
+          "screenshot": [
+            "https://explyra.me/assets/images/explyra_screenshot_1.png",
+            "https://explyra.me/assets/images/explyra_logo.png"
+          ],
           "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.9",
@@ -6987,11 +6987,11 @@
             // 5. Developer Tools
             const toolItems = document.querySelectorAll('.dev-sec .tool-item');
             const codePreviews = {
-                "Code Minifier": `// Minifying Assets...\nconst bundle = minify(['app.js', 'style.css']);\nconsole.log("Reduced size by 64%");`,
-                "Hash Generator": `// Generating Hashes...\nconst salt = genSalt(10);\nconst hash = bcrypt.hash("secret", salt);\nconsole.log(hash);`,
-                "Password Generator": `// Secure PassGen...\nconst pwd = generate({ \n  length: 24, \n  symbols: true \n});\nconsole.log(pwd);`,
-                "Link Shortener": `// Shortening URL...\nconst short = shorten("https://explyra.me/blog/ai");\nconsole.log("explyra.me/ai-blog");`,
-                "Online IDE": `// Explyra IDE v2.0\nfunction welcome() {\n  return "Happy Coding!";\n}\nconsole.log(welcome());`
+                "Code Minifier": `// Minifying Assets...\nconst bundle = minify(['app.js', 'style.css']);\n// → bundle size −64%`,
+                "Hash Generator": `// Generating Hashes...\nconst salt = genSalt(10);\nconst hash = bcrypt.hash("secret", salt);\n// → hash string`,
+                "Password Generator": `// Secure PassGen...\nconst pwd = generate({ \n  length: 24, \n  symbols: true \n});\n// → pwd ready`,
+                "Link Shortener": `// Shortening URL...\nconst short = shorten("https://explyra.me/blog/ai");\n// → explyra.me/ai-blog`,
+                "Online IDE": `// Explyra IDE v2.0\nfunction welcome() {\n  return "Happy Coding!";\n}\n// → "Happy Coding!"`
             };
 
             toolItems.forEach(item => {

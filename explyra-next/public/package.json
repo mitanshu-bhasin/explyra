@@ -1,0 +1,35 @@
+{
+    "name": "my-vanilla-project",
+    "version": "1.0.0",
+    "description": "Enterprise Expense Management System",
+    "main": "index.html",
+    "scripts": {
+        "start": "npx serve .",
+        "start:payments": "node api/crypto-payments-server.js",
+        "test": "node _test.js",
+        "build": "node scripts/sync-env.js && powershell -Command \"if (-not (Test-Path dist)) { New-Item -Path dist -ItemType Directory | Out-Null }; npx -y minify index.html | Out-File -FilePath dist/index.html -Encoding utf8; Get-ChildItem -Path . -File | Where-Object { $_.Name -ne 'index.html' -and $_.Name -ne 'package-lock.json' -and $_.Name -ne 'package.json' -and -not $_.Name.StartsWith('.') -and $_.Extension -ne '.log' -and $_.Name -ne 'Expense Tracker.code-workspace' } | ForEach-Object { Copy-Item $_.FullName -Destination dist/ -Force }; Get-ChildItem -Path . -Directory | Where-Object { @('node_modules','.git','dist','www','.firebase','.wrangler','android') -notcontains $_.Name } | ForEach-Object { Copy-Item $_.FullName -Destination dist -Recurse -Force -ErrorAction SilentlyContinue }; Get-ChildItem -Path dist -Directory -Recurse -ErrorAction SilentlyContinue | Where-Object { @('node_modules','.git','.wrangler','.next') -contains $_.Name } | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }\""
+    },
+    "keywords": [
+        "expense",
+        "tracker",
+        "admin",
+        "enterprise"
+    ],
+    "author": "Mitanshu Bhasin",
+    "license": "ISC",
+    "dependencies": {
+        "@capacitor/android": "^6.1.2",
+        "@capacitor/core": "^6.1.2",
+        "dotenv": "^16.6.1",
+        "express": "^4.22.1",
+        "firebase": "^12.10.0",
+        "serve": "^14.2.0"
+    },
+    "devDependencies": {
+        "@capacitor/assets": "^3.0.5",
+        "@capacitor/cli": "^6.1.2",
+        "minify": "^11.0.0",
+        "postal-mime": "^2.7.3",
+        "wrangler": "^4.72.0"
+    }
+}
