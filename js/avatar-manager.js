@@ -511,4 +511,3 @@ window.debugAvatarSystem = () => {
     console.log('\nTry: window.openAvatarPickerModal() to open avatar picker');
 };
 
-export { AvatarManager };
