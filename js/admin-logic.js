@@ -1087,7 +1087,8 @@ onAuthStateChanged(auth, async (user) => {
                                     // Also refresh user list if chat modal is open to update last message/sort
                                     const chatModal = document.getElementById('modal-chat');
                                     if (!chatModal || chatModal.classList.contains('hidden')) {
-                                        if (typeof loadChatUsers === 'function') loadChatUsers();
+                                        if (typeof window.fetchChatUsers === 'function') window.fetchChatUsers();
+                                        else if (typeof loadChatUsers === 'function') loadChatUsers();
                                     }
                                 }
                             }
@@ -1115,7 +1116,8 @@ onAuthStateChanged(auth, async (user) => {
                                         }
                                     }
                                 }
-                                if (typeof loadChatUsers === 'function') loadChatUsers();
+                                if (typeof window.fetchChatUsers === 'function') window.fetchChatUsers();
+                                else if (typeof loadChatUsers === 'function') loadChatUsers();
 
                                 // Toggle global unread dot
                                 if (currentChatId !== 'global_chat') {
@@ -6861,7 +6863,7 @@ async function loadChatUsers() {
         });
 
         let html = `
-                    <div onclick="selectChat('global_chat')" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 bg-green-50 dark:bg-brand-900/20 relative" id="chat-tgt-global_chat">
+                    <div onclick="window.selectChat('global')" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 bg-green-50 dark:bg-brand-900/20 relative" id="chat-tgt-global_chat">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-green-600 to-indigo-500 flex items-center justify-center text-white shrink-0 shadow-sm relative">
                             <i class="fa-solid fa-users text-xs"></i>
                         </div>
@@ -6876,7 +6878,7 @@ async function loadChatUsers() {
             const lastMsg = g.lastMessage || 'No messages';
             const safeJson = JSON.stringify(g).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             html += `
-                <div onclick="selectChat(JSON.parse('${safeJson}'))" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-group_${g.docId}">
+                <div onclick="window.selectChat('group_${g.docId}')" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-group_${g.docId}">
                     <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0 object-cover border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
                         <i class="fa-solid fa-user-group text-xs"></i>
                     </div>
@@ -6899,9 +6901,8 @@ async function loadChatUsers() {
                 unreadDot = `<span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span>`;
             }
 
-            const safeJson = JSON.stringify(u).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             html += `
-                        <div onclick="selectChat(JSON.parse('${safeJson}'))" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-${u.docId}">
+                        <div onclick="window.selectChat('${u.docId}')" class="cursor-pointer flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition mb-1 relative" id="chat-tgt-${u.docId}">
                             <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 font-bold flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0 object-cover border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden text-xs">
                                 ${u.photoUrl ? `<img src="${u.photoUrl}" class="w-full h-full object-cover">` : initial}
                             </div>
@@ -7059,8 +7060,12 @@ window.confirmCreateGroup = async () => {
         });
         document.getElementById('create-group-modal').remove();
         showToast("Group created!", "success");
-        loadChatUsers();
-        selectChat({ docId: groupRef.id, name: nameInput, isGroup: true, users: selectedUsers });
+        if (typeof window.fetchChatUsers === 'function') {
+            await window.fetchChatUsers();
+        } else {
+            loadChatUsers();
+        }
+        window.selectChat('group_' + groupRef.id);
     } catch (e) {
         console.error(e);
         showToast("Failed to create group", "error");
