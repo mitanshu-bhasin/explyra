@@ -1274,6 +1274,7 @@ async function updatePendingCount() {
             const snap = await safeFirebaseFetch(getDocs(q));
             const count = snap.size;
             const pendingEl = document.getElementById('pending-count');
+            if (!pendingEl) return;
             if (count > 0) {
                 pendingEl.classList.remove('hidden');
             } else {
@@ -6875,6 +6876,7 @@ async function loadChatUsers() {
                 `;
 
         window.adminGroupChats.forEach(g => {
+            if (!g) return;
             const lastMsg = g.lastMessage || 'No messages';
             const safeJson = JSON.stringify(g).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             html += `
