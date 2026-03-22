@@ -4861,7 +4861,7 @@ async function loadChatUsers() {
         const users = usersSnap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
 
         // Fetch chats for sorting and last message
-        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats")), where("users", "array-contains", userData.docId)));
+        const chatsSnap = await safeFirebaseFetch(getDocs(query(collection(db, "chats"), where("users", "array-contains", userData.docId))));
         const chatMeta = {};
         chatsSnap.forEach(docSnap => {
             const data = docSnap.data();
