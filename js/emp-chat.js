@@ -329,7 +329,7 @@ function renderChatUserSearch(term, globalLastText = "Company wide chat", chatMe
 }
 
 window.selectChat = (contextId) => {
-    if (!contextId) return;
+    if (!contextId || typeof contextId !== 'string') return;
     window.currentChatContext = contextId;
     
     if (contextId === 'global' || contextId === 'global_chat') {
