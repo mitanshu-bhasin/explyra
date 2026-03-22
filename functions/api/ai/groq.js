@@ -37,6 +37,7 @@ export async function onRequest(context) {
 
         const data = await response.json();
         return new Response(JSON.stringify(data), {
+            status: response.status,
             headers: corsHeadersForRequest(request, env),
         });
     } catch (error) {

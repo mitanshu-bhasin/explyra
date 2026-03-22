@@ -1163,8 +1163,11 @@ onAuthStateChanged(auth, async (user) => {
 
                 // --- 2FA CHECK ---
                 if (userData.twoFactorEnabled && sessionStorage.getItem('explyra_2fa_verified') !== (userData.twoFactorPin || 'true')) {
-                    document.getElementById('modal-2fa-verify').classList.remove('hidden');
-                    return; // Stop here, wait for 2FA
+                    const modal2fa = document.getElementById('modal-2fa-verify');
+                    if (modal2fa) {
+                        modal2fa.classList.remove('hidden');
+                        return; // Stop here, wait for 2FA
+                    }
                 }
 
                 showDashboard();
@@ -1245,6 +1248,7 @@ window.getAllowedStatusesForRole = async (role) => {
 
 async function updatePendingCount() {
     try {
+        if (!userData || !userData.companyId) return;
         let q;
         if (userData.role === 'ADMIN') {
             q = query(collection(db, "expenses"), where("companyId", "==", userData.companyId), where("status", "not-in", ["PAID", "REJECTED", "AUDITED"]));
@@ -1263,12 +1267,15 @@ async function updatePendingCount() {
             const snap = await safeFirebaseFetch(getDocs(q));
             const count = snap.size;
             const pendingEl = document.getElementById('pending-count');
-            if (!pendingEl) return;
-            if (count > 0) {
-                pendingEl.classList.remove('hidden');
-            } else {
-                pendingEl.classList.add('hidden');
+            if (pendingEl) {
+                if (count > 0) {
+                    pendingEl.classList.remove('hidden');
+                } else {
+                    pendingEl.classList.add('hidden');
+                }
             }
+            const heroPending = document.getElementById('hero-pending-count');
+            if (heroPending) heroPending.textContent = String(count);
         }
     } catch (e) {
         console.error("Error updating pending count:", e);

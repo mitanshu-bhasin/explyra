@@ -99,12 +99,23 @@
         const typingIndicator = showTyping();
         
         try {
-            const response = await fetch(window.AI_CONFIG.url, {
+            const url = window.AI_CONFIG?.url || '/api/ai/groq';
+            const apiKey = window.AI_CONFIG?.apiKey;
+            const headers = { 'Content-Type': 'application/json' };
+            const isSameOriginProxy =
+                typeof url === 'string' &&
+                (url.startsWith('/') || url.startsWith(window.location.origin));
+            const keyOk =
+                apiKey &&
+                apiKey !== 'HANDLED_BY_PROXY' &&
+                apiKey !== 'undefined';
+            if (!isSameOriginProxy && keyOk) {
+                headers['Authorization'] = `Bearer ${apiKey}`;
+            }
+
+            const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${window.AI_CONFIG.apiKey}`,
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify({
                     model: window.AI_CONFIG.model,
                     messages: [
@@ -129,11 +140,28 @@ PERSONALITY:
                 })
             });
 
-            const data = await response.json();
-            const aiText = data.choices[0].message.content;
-            
+            const data = await response.json().catch(() => ({}));
+            const choiceText = data?.choices?.[0]?.message?.content;
+            const apiErr =
+                (typeof data?.error === 'string' ? data.error : null) ||
+                data?.error?.message ||
+                data?.message;
+
             typingIndicator.remove();
-            addMessage(aiText, 'bot');
+
+            if (!choiceText) {
+                let msg =
+                    apiErr ||
+                    (response.status === 503
+                        ? 'AI is not available on this deployment yet.'
+                        : response.status === 401 || response.status === 403
+                          ? 'AI access could not be verified. Please try again later.'
+                          : 'The AI service returned an error. Please try again shortly.');
+                addMessage(msg, 'bot');
+                return;
+            }
+
+            addMessage(choiceText, 'bot');
             if (!isMuted) speak(aiText);
 
         } catch (error) {

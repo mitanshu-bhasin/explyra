@@ -753,17 +753,22 @@ Monthly Trend: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 
                 })
             });
 
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                throw new Error(`${response.status}: ${errData.error?.message || response.statusText}`);
-            }
-
-            const data = await response.json();
+            const data = await response.json().catch(() => ({}));
             typing.style.display = 'none';
 
-            if (data.choices?.[0]?.message) {
-                let reply = data.choices[0].message.content;
+            if (!response.ok) {
+                const msg =
+                    (typeof data?.error === 'string' ? data.error : null) ||
+                    data?.error?.message ||
+                    data?.message ||
+                    'Request failed';
+                throw new Error(`${response.status}: ${msg}`);
+            }
 
+            const choiceMsg = data?.choices?.[0]?.message;
+            const reply = typeof choiceMsg?.content === 'string' ? choiceMsg.content : '';
+
+            if (reply) {
                 // Extract and execute ALL commands
                 const cmdRegex = /\[COMMAND:([A-Z_]+):(.*?)\]/g;
                 let match;
@@ -782,7 +787,14 @@ Monthly Trend: ${JSON.stringify(this.userContext.dashboardData?.monthlyTrend || 
                 if (this.chatHistory.length > 24) this.chatHistory = this.chatHistory.slice(-24);
                 this.saveHistory();
             } else {
-                this.addMessage("I'm having trouble processing that request right now.", 'ai');
+                const errHint =
+                    (typeof data?.error === 'string' ? data.error : null) ||
+                    data?.error?.message ||
+                    data?.message;
+                this.addMessage(
+                    errHint || "I couldn't get a reply from the AI service. Please try again in a moment.",
+                    'ai'
+                );
             }
 
         } catch (error) {
