@@ -1,7 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
 # Primary production static host: Cloudflare Pages. netlify.toml / firebase.json are optional secondary configs.
 name = "explyra"
-pages_build_output_dir = "."
+pages_build_output_dir = "minify_xx"
 # Keep in sync with Workers runtime; bump when adopting new APIs.
 compatibility_date = "2025-11-01"
 
