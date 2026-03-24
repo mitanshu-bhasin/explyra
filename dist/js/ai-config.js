@@ -1,7 +1,0 @@
-// Explyra AI Configuration (Groq key stays on server — /api/ai/groq proxy only)
-const AI_CONFIG = {
-    url: '/api/ai/groq',
-    model: 'moonshotai/kimi-k2-instruct-0905'
-};
-
-window.AI_CONFIG = AI_CONFIG;

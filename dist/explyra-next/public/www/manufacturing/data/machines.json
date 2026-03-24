@@ -1,6 +1,0 @@
-[
-    { "id": "M-001", "name": "Lathe A1", "status": "active", "capacity": "50 units/day", "lastMaintenance": "2025-11-20" },
-    { "id": "M-002", "name": "CNC Pro", "status": "maintenance", "capacity": "100 units/day", "lastMaintenance": "2025-10-05" },
-    { "id": "M-003", "name": "Milling M3", "status": "idle", "capacity": "40 units/day", "lastMaintenance": "2025-12-01" },
-    { "id": "M-004", "name": "Drill Press D4", "status": "active", "capacity": "200 units/day", "lastMaintenance": "2025-12-15" }
-]

@@ -1,5 +1,0 @@
-[
-    { "id": "B-001", "product": "Alloy Wheels", "batchSize": 50, "machine": "Lathe A1", "worker": "John Doe", "progress": 85, "target": 50, "status": "In Progress" },
-    { "id": "B-002", "product": "Exhaust Pipes", "batchSize": 100, "machine": "Milling M3", "worker": "Sarah Smith", "progress": 40, "target": 100, "status": "In Progress" },
-    { "id": "B-003", "product": "Engine Pistons", "batchSize": 200, "machine": "CNC Pro", "worker": "Mike Ross", "progress": 100, "target": 200, "status": "Completed" }
-]

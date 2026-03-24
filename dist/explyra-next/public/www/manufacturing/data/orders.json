@@ -1,5 +1,0 @@
-[
-    { "id": "ORD-101", "product": "Alloy Wheels", "quantity": 200, "dueDate": "2026-03-25", "status": "Pending", "batchId": "B-001" },
-    { "id": "ORD-102", "product": "Engine Pistons", "quantity": 500, "dueDate": "2026-04-05", "status": "Active", "batchId": "B-003" },
-    { "id": "ORD-103", "product": "Brake Discs", "quantity": 300, "dueDate": "2026-03-15", "status": "Delayed", "batchId": "N/A" }
-]

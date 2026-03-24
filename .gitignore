@@ -25,8 +25,20 @@ Desktop.ini
 ehthumbs.db
 
 # ── Node (for /functions) ────────────────────────
-node_modules/
-functions/node_modules/
+**/node_modules/
+.next/
+**/dist/
+**/build/
+.firebase/
+.vercel/
+.wrangler/
+
+# ── Large Assets / Binary ────────────────────────
+*.exe
+*.zip
+*.pdf
+*.m4a
+*.mp4
 
 # ── Logs ─────────────────────────────────────────
 *.log

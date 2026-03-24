@@ -38,6 +38,40 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
+    <meta name="keywords"
+        content="Explyra pricing, SaaS pricing plans, affordable business tools, CRM price, expense manager cost, developer API pricing, monthly yearly subscriptions" />
+
+    <!-- JSON-LD Structured Data for Pricing -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PriceSpecification",
+      "name": "Explyra Pricing Plans",
+      "description": "Flexible pricing for startups and growing enterprises.",
+      "priceCurrency": "INR",
+      "url": "https://explyra.me/pricing.html",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Starter Plan",
+          "price": "299",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "name": "Growth Plan",
+          "price": "999",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "name": "Scale Plan",
+          "price": "2499",
+          "priceCurrency": "INR"
+        }
+      ]
+    }
+    </script>
     <style>
         /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -185,7 +219,202 @@
             backdrop-filter: blur(20px) saturate(160%);
             border-bottom: 1px solid var(--bdr);
             transition: background .4s, border-color .4s;
-            gap: 2rem
+            gap: 1.5rem;
+            /* Reduced from 2rem */
+        }
+
+        .prod-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 20px;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* PREMIUM CUSTOM DROPDOWN */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 0.8rem;
+            user-select: none;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg2);
+            border: 2px solid var(--bdr);
+            padding: 1rem 1.2rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ink);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--s1);
+        }
+
+        .custom-select-trigger:hover {
+            border-color: var(--blue2);
+            transform: translateY(-2px);
+            box-shadow: var(--s2);
+        }
+
+        .custom-select-trigger.active {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px var(--blue-g), var(--s2);
+        }
+
+        .custom-select-trigger span {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .custom-select-trigger::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 0.8rem;
+            color: var(--ink4);
+            transition: transform 0.3s;
+        }
+
+        .custom-select-trigger.active::after {
+            transform: rotate(180deg);
+        }
+
+        .custom-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: var(--bg2);
+            border: 2px solid var(--bdr);
+            border-radius: 14px;
+            box-shadow: var(--s4);
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 0.6rem;
+        }
+
+        .custom-select-trigger.active+.custom-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .custom-option {
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .custom-option:hover {
+            background: var(--blue-g);
+        }
+
+        .custom-option.selected {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .custom-option .opt-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .custom-option .opt-price {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        .custom-option.selected .opt-price {
+            color: #fff;
+        }
+
+        /* ENHANCED PROD FEATURES */
+        .prod-features-mini {
+            list-style: none;
+            padding: 0;
+            margin: 1.2rem 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .prod-features-mini li {
+            font-size: 0.85rem;
+            color: var(--ink2);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-weight: 600;
+            padding: 0.4rem 0.6rem;
+            background: var(--bg3);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .prod-features-mini li i {
+            color: var(--teal);
+            font-size: 0.8rem;
+            background: var(--teal-g);
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .prod-footer {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .prod-footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 0 0.5rem;
+            border-top: 1px solid var(--bdr);
+        }
+
+        /* PREMIUM STYLING FOR EXPENSE */
+        .prod-card.premium {
+            border: 2px solid transparent;
+            background: linear-gradient(var(--surf), var(--surf)) padding-box,
+                linear-gradient(135deg, var(--blue), var(--purp)) border-box;
+            position: relative;
+        }
+
+        .prod-card.premium::after {
+            content: 'PREMIUM CHOICE';
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--blue), var(--purp));
+            color: #fff;
+            padding: 5px 16px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            z-index: 10;
+            white-space: nowrap;
         }
 
         [data-theme="dark"] nav {
@@ -227,7 +456,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2.2rem;
+            gap: 1.5rem;
+            /* Reduced from 2.2rem */
             list-style: none;
             flex: 1;
         }
@@ -511,9 +741,17 @@
             font-weight: 700;
         }
 
-        .nav-item-dropdown:nth-of-type(1) .dropdown-content { left: 42%; }
-        .nav-item-dropdown:nth-of-type(2) .dropdown-content { left: 48%; }
-        .nav-item-dropdown:nth-of-type(3) .dropdown-content { left: 55%; }
+        .nav-item-dropdown:nth-of-type(1) .dropdown-content {
+            left: 42%;
+        }
+
+        .nav-item-dropdown:nth-of-type(2) .dropdown-content {
+            left: 48%;
+        }
+
+        .nav-item-dropdown:nth-of-type(3) .dropdown-content {
+            left: 55%;
+        }
 
         .dropdown-content::before {
             content: '';
@@ -527,9 +765,17 @@
             filter: drop-shadow(0 -1px 1px var(--bdr));
         }
 
-        .nav-item-dropdown:nth-of-type(1) .dropdown-content::before { left: 31%; }
-        .nav-item-dropdown:nth-of-type(2) .dropdown-content::before { left: 36%; }
-        .nav-item-dropdown:nth-of-type(3) .dropdown-content::before { left: 45%; }
+        .nav-item-dropdown:nth-of-type(1) .dropdown-content::before {
+            left: 31%;
+        }
+
+        .nav-item-dropdown:nth-of-type(2) .dropdown-content::before {
+            left: 36%;
+        }
+
+        .nav-item-dropdown:nth-of-type(3) .dropdown-content::before {
+            left: 45%;
+        }
 
         [data-theme="dark"] .dropdown-content {
             background: rgba(18, 22, 38, 0.98);
@@ -690,64 +936,76 @@
         .pricing-toggle {
             display: inline-flex;
             align-items: center;
-            background: var(--bg3);
-            border: 1px solid var(--bdr);
-            padding: .3rem;
+            background: var(--bg2);
+            border: 2px solid var(--bdr);
+            padding: 0.4rem;
             border-radius: 100px;
             margin: 0 auto 4rem;
             position: relative;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .03)
+            box-shadow: var(--s2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .pricing-toggle:hover {
+            box-shadow: var(--s3);
+            border-color: var(--blue-b);
         }
 
         [data-theme="dark"] .pricing-toggle {
-            background: var(--bg4)
+            background: var(--bg3);
+            border-color: var(--bdr2);
         }
 
         .toggle-btn {
-            padding: .6rem 1.2rem;
-            font-size: .85rem;
-            font-weight: 600;
+            padding: 0.75rem 2.2rem;
+            font-size: 0.95rem;
+            font-weight: 700;
             color: var(--ink3);
             border-radius: 100px;
-            transition: all var(--t);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            z-index: 2
+            z-index: 2;
         }
 
         .toggle-btn.active {
-            color: var(--ink)
-        }
-
-        .toggle-btn span {
-            font-size: .65rem;
-            background: var(--teal-g);
-            color: var(--teal);
-            padding: .2rem .5rem;
-            border-radius: 100px;
-            margin-left: .4rem;
-            font-weight: 700;
-            border: 1px solid var(--teal-b)
+            color: var(--blue);
         }
 
         [data-theme="dark"] .toggle-btn.active {
-            color: var(--ink)
+            color: var(--blue2);
+        }
+
+        .toggle-btn span {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 0.6rem;
+            background: linear-gradient(135deg, var(--teal), var(--teal2));
+            color: #fff;
+            padding: 0.15rem 0.6rem;
+            border-radius: 100px;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(4, 120, 87, 0.3);
+            border: none;
         }
 
         .toggle-pill {
             position: absolute;
-            top: .3rem;
-            bottom: .3rem;
-            left: .3rem;
-            width: calc(50% - .3rem);
-            background: var(--surf);
+            top: 0.4rem;
+            bottom: 0.4rem;
+            left: 0.4rem;
+            width: calc(50% - 0.4rem);
+            background: var(--blue-g);
+            border: 1px solid var(--blue-b);
             border-radius: 100px;
-            box-shadow: var(--s1);
-            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
-            z-index: 1
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1;
         }
 
         [data-theme="dark"] .toggle-pill {
-            background: var(--bg2)
+            background: rgba(91, 138, 245, 0.12);
+            border-color: rgba(91, 138, 245, 0.25);
         }
 
         /* Pricing Cards Array */
@@ -1311,8 +1569,249 @@
         }
 
         /* ═══════════════════════════════════════════
-   CTA (Mirrored from index)
-═══════════════════════════════════════════ */
+           PURCHASE SEPARATELY (NEW)
+        ═══════════════════════════════════════════ */
+        .separate-sec {
+            padding: 6rem 5vw;
+            background: var(--bg2);
+            border-top: 1px solid var(--bdr);
+            text-align: center;
+        }
+
+        .separate-h {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
+
+        .separate-h em {
+            font-style: italic;
+            color: var(--blue);
+        }
+
+        .separate-sub {
+            font-size: 1.1rem;
+            color: var(--ink3);
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem 2rem;
+            max-width: 1250px;
+            margin: 2rem auto 0;
+            padding-top: 1.5rem;
+        }
+
+        .prod-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            overflow: visible;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .prod-card.premium {
+            border: 2px solid var(--blue);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 10px 40px rgba(50, 100, 255, 0.1);
+        }
+
+        .prod-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--s3);
+            border-color: var(--blue-b);
+        }
+
+        .prod-img {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            background: var(--bg3);
+            position: relative;
+        }
+
+        .prod-img img {
+            width: 100%;
+            height: 100%;
+            padding: 1.2rem;
+            object-fit: contain;
+            transition: transform 0.5s;
+        }
+
+        .prod-card:hover .prod-img img {
+            transform: scale(1.05);
+        }
+
+        .prod-info {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-sizing: border-box;
+        }
+
+        .prod-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+
+        .prod-desc {
+            font-size: 0.85rem;
+            color: var(--ink3);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .prod-footer {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .prod-footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--bdr);
+        }
+
+        .prod-price {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .prod-price span:first-child {
+            font-size: 0.75rem;
+            color: var(--ink4);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .prod-price span:last-child {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .btn-add-cart {
+            background: var(--blue-g);
+            color: var(--blue);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ═══════════════════════════════════════════
+           CRYPTO LOCK UI
+        ═══════════════════════════════════════════ */
+        .crypto-lock-wrapper {
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .btn-p-crypto.disabled {
+            background: var(--bg3) !important;
+            color: var(--ink4) !important;
+            border: 1px dashed var(--bdr) !important;
+            cursor: not-allowed !important;
+            opacity: 0.7;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .lock-msg {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 5px;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .crypto-lock-wrapper:hover .lock-msg {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .crypto-lock-wrapper:not(.locked) .lock-msg {
+            display: none;
+        }
+
+        .btn-add-cart:hover {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        /* FLOATING CART BUTTON */
+        .floating-cart {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--blue);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 100px;
+            box-shadow: var(--s4);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .floating-cart.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .floating-cart:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .cart-count {
+            background: #fff;
+            color: var(--blue);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
         .cta-banner {
             padding: 6rem 5vw;
             text-align: center;
@@ -2010,7 +2509,7 @@
         }
     </style>
 
-        <script type="application/ld+json">
+    <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -2043,7 +2542,7 @@
 }
         </script>
 
-        <script type="application/ld+json">
+    <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
@@ -2051,46 +2550,89 @@
       "@type": "Organization",
       "@id": "https://explyra.me/#organization",
       "name": "Explyra",
-      "alternateName": "Explyra Suite",
       "url": "https://explyra.me/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://explyra.me/assets/images/explyra_logo.png",
-        "width": 512,
-        "height": 512
-      },
+      "logo": "https://explyra.me/assets/images/explyra_logo.png",
       "sameAs": [
-        "https://x.com/explyras",
-        "https://www.facebook.com/profile.php?id=61584891033070",
-        "https://www.instagram.com/explyras",
-        "https://www.youtube.com/@explyras",
-        "https://www.linkedin.com/company/explyra/",
-        "https://www.threads.com/@explyras",
-        "https://github.com/Explyra",
-        "https://ipecconsulting.org/"
-      ],
-      "contactPoint": [
+        "https://linkedin.com/company/explyra",
+        "https://x.com/explyra",
+        "https://wellfound.com/company/explyra",
+        "https://medium.com/@explyra",
+        "https://crunchbase.com/organization/explyra",
+        "https://www.quora.com/profile/Explyra",
+        "https://share.google/7CUitGHv7NUx2LoA9",
+        "https://f6s.com/explyra",
+        "https://e27.co/startup/explyra",
+        "https://github.com/explyra",
+        "https://discord.gg/explyra",
+        "https://dev.to/explyra",
+        "https://peerlist.io/explyra",
+        "https://indiehackers.com/explyra",
+        "https://forem.com/explyra",
+        "https://www.kaggle.com/explyra",
+        "https://youtube.com/@explyras",
+        "https://bsky.app/profile/explyra.bsky.social",
+        "https://instagram.com/explyra",
+        "https://www.snapchat.com/add/explyra",
+        "https://t.me/explyra",
+        "https://facebook.com/people/explyra",
+        "https://threads.net/@explyras",
+        "https://whatsapp.com/channel/0029Vb7iW4Y5Ejxu8YxXQo2N",
+        "https://explyra.blogspot.com",
+        "https://g2.com/products/explyra",
+        "https://capterra.com/p/explyra",
+        "https://producthunt.com/products/explyra",
+        "https://alternativeto.net/software/explyra",
+        "https://betalist.com/startups/explyra",
+        "https://lu.ma/explyra",
+        "https://sites.google.com/view/explyra",
+        "https://linktr.ee/explyra",
+        "https://open.spotify.com/episode/2koPs0nutBjLEUIK5YQgMy?si=zibzsoF2Twey9dMkoJATWA"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://explyra.me/#software",
+      "name": "Explyra Suite",
+      "operatingSystem": "Any",
+      "applicationCategory": "BusinessApplication",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "1250"
+      },
+      "offers": [
         {
-          "@type": "ContactPoint",
-          "telephone": "+91-8076108584",
-          "contactType": "customer service",
-          "email": "explyra@gmail.com",
-          "availableLanguage": [
-            "en",
-            "hi"
-          ]
+          "@type": "Offer",
+          "name": "Starter Plan",
+          "price": "299",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "name": "Growth Plan",
+          "price": "999",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "name": "Scale Plan",
+          "price": "2499",
+          "priceCurrency": "INR"
         }
       ],
-      "founder": {
-        "@type": "Person",
-        "name": "Mitanshu Bhasin",
-        "url": "https://explyra.me/mitanshu.html"
-      },
-      "foundingDate": "2024"
+      "featureList": [
+        "Expense Management (from ₹149)",
+        "Explyra CRM (from ₹249)",
+        "AI Learning (from ₹99)",
+        "Developer API (from ₹99)",
+        "Health Management (from ₹249)"
+      ]
     }
   ]
 }
     </script>
+
+    
 </head>
 
 <body>
@@ -2118,9 +2660,12 @@
                                 </div>
                             </div>
                             <div class="hero-side-items">
-                                <a href="dns/index.html" class="side-link"><i class="fa-solid fa-globe"></i> DNS Manager</a>
-                                <a href="email-app/src/index.html" class="side-link"><i class="fa-solid fa-envelope"></i> MailBox Ecosystem</a>
-                                <a href="manufacturing/index.html" class="side-link"><i class="fa-solid fa-industry"></i> Explyra ERP</a>
+                                <a href="dns/index.html" class="side-link"><i class="fa-solid fa-globe"></i> DNS
+                                    Manager</a>
+                                <a href="email-app/src/index.html" class="side-link"><i
+                                        class="fa-solid fa-envelope"></i> MailBox Ecosystem</a>
+                                <a href="manufacturing/index.html" class="side-link"><i
+                                        class="fa-solid fa-industry"></i> Explyra ERP</a>
                             </div>
                         </div>
                         <div class="dropdown-main-zone">
@@ -2129,28 +2674,32 @@
                                     <span class="mega-column-h">Business</span>
                                     <div class="mega-items">
                                         <a href="index.html#expense" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">💼</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1); color:var(--blue);">💼</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Expense</span>
                                                 <span class="mega-item-desc">Smart tracking</span>
                                             </div>
                                         </a>
                                         <a href="crm/index.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📈</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1); color:var(--blue);">📈</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">CRM</span>
                                                 <span class="mega-item-desc">Pipeline tool</span>
                                             </div>
                                         </a>
                                         <a href="Ino software/ino.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📄</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1); color:var(--blue);">📄</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Invoice</span>
                                                 <span class="mega-item-desc">Billing v2</span>
                                             </div>
                                         </a>
                                         <a href="attendance/index.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">✅</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1); color:var(--blue);">✅</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Attendance</span>
                                                 <span class="mega-item-desc">Geofenced check-in</span>
@@ -2162,28 +2711,32 @@
                                     <span class="mega-column-h">Utilities</span>
                                     <div class="mega-items">
                                         <a href="health-manager/index.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(0,128,128,0.1); color:var(--teal);">🏃</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(0,128,128,0.1); color:var(--teal);">🏃</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Health</span>
                                                 <span class="mega-item-desc">AI companion</span>
                                             </div>
                                         </a>
                                         <a href="https://book.explyra.me" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📅</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1); color:var(--blue);">📅</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Booking</span>
                                                 <span class="mega-item-desc">Auto-scheduling</span>
                                             </div>
                                         </a>
                                         <a href="explyra-learning/index.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(255,191,0,0.1); color:var(--amber);">📚</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(255,191,0,0.1); color:var(--amber);">📚</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Learning</span>
                                                 <span class="mega-item-desc">Master future skills</span>
                                             </div>
                                         </a>
                                         <a href="index.html#developers" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(128,0,128,0.1); color:var(--purp);">⚡</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(128,0,128,0.1); color:var(--purp);">⚡</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Developers</span>
                                                 <span class="mega-item-desc">Utils & APIs</span>
@@ -2193,14 +2746,17 @@
                                 </div>
                             </div>
                             <div class="dropdown-footer">
-                                <a href="updates/index.html" class="footer-action"><span>New:</span> Explyra AI meeting v1.0 &rarr;</a>
-                                <a href="admin.html" class="footer-action"><i class="fa-solid fa-shield-halved"></i> Admin Portal</a>
+                                <a href="updates/index.html" class="footer-action"><span>New:</span> Explyra AI meeting
+                                    v1.0 &rarr;</a>
+                                <a href="admin.html" class="footer-action"><i class="fa-solid fa-shield-halved"></i>
+                                    Admin Portal</a>
                             </div>
                         </div>
                     </div>
                 </li>
                 <li class="nav-item-dropdown">
-                    <a href="solutions/index.html" class="dropdown-trigger">Solutions <i class="fa-solid fa-chevron-down"></i></a>
+                    <a href="solutions/index.html" class="dropdown-trigger">Solutions <i
+                            class="fa-solid fa-chevron-down"></i></a>
                     <div class="dropdown-content mega-menu">
                         <div class="dropdown-hero">
                             <div class="hero-main">
@@ -2213,9 +2769,12 @@
                                 </div>
                             </div>
                             <div class="hero-side-items">
-                                <a href="solutions/suite.html" class="side-link"><i class="fa-solid fa-layer-group"></i> Full Suite Access</a>
-                                <a href="solutions/custom.html" class="side-link"><i class="fa-solid fa-code-merge"></i> Custom Integration</a>
-                                <a href="solutions/utilities.html" class="side-link"><i class="fa-solid fa-wrench"></i> Infrastructure Utils</a>
+                                <a href="solutions/suite.html" class="side-link"><i class="fa-solid fa-layer-group"></i>
+                                    Full Suite Access</a>
+                                <a href="solutions/custom.html" class="side-link"><i class="fa-solid fa-code-merge"></i>
+                                    Custom Integration</a>
+                                <a href="solutions/utilities.html" class="side-link"><i class="fa-solid fa-wrench"></i>
+                                    Infrastructure Utils</a>
                             </div>
                         </div>
                         <div class="dropdown-main-zone">
@@ -2224,28 +2783,32 @@
                                     <span class="mega-column-h">Internal Systems</span>
                                     <div class="mega-items">
                                         <a href="solutions/expense-manager.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">💼</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">💼</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Expense Admin</span>
                                                 <span class="mega-item-desc">Finance operations</span>
                                             </div>
                                         </a>
                                         <a href="solutions/attendance-system.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">✅</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">✅</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Attendance Hub</span>
                                                 <span class="mega-item-desc">HR & Security</span>
                                             </div>
                                         </a>
                                         <a href="solutions/manufacturing.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🏭</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">🏭</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Manufacturing</span>
                                                 <span class="mega-item-desc">Supply chain ERP</span>
                                             </div>
                                         </a>
                                         <a href="solutions/health.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(0,128,128,0.1);">🏃</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(0,128,128,0.1);">🏃</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Corporate Health</span>
                                                 <span class="mega-item-desc">Wellness suite</span>
@@ -2257,28 +2820,32 @@
                                     <span class="mega-column-h">Infrastructure</span>
                                     <div class="mega-items">
                                         <a href="solutions/crm.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📈</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">📈</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Enterprise CRM</span>
                                                 <span class="mega-item-desc">Sales & Ops v2</span>
                                             </div>
                                         </a>
                                         <a href="solutions/booking-system.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📅</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">📅</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Booking Hub</span>
                                                 <span class="mega-item-desc">Service providers</span>
                                             </div>
                                         </a>
                                         <a href="solutions/dns.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🌐</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">🌐</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Global DNS</span>
                                                 <span class="mega-item-desc">Edge infrastructure</span>
                                             </div>
                                         </a>
                                         <a href="solutions/developers.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(128,0,128,0.1);">⚡</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(128,0,128,0.1);">⚡</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Dev Cloud</span>
                                                 <span class="mega-item-desc">Custom APIs</span>
@@ -2288,8 +2855,10 @@
                                 </div>
                             </div>
                             <div class="dropdown-footer">
-                                <a href="contact.html" class="footer-action"><span>Talk to Sales:</span> Scaling with Explyra &rarr;</a>
-                                <a href="solutions/learning.html" class="footer-action"><i class="fa-solid fa-graduation-cap"></i> Training Portal</a>
+                                <a href="contact.html" class="footer-action"><span>Talk to Sales:</span> Scaling with
+                                    Explyra &rarr;</a>
+                                <a href="solutions/learning.html" class="footer-action"><i
+                                        class="fa-solid fa-graduation-cap"></i> Training Portal</a>
                             </div>
                         </div>
                     </div>
@@ -2308,9 +2877,12 @@
                                 </div>
                             </div>
                             <div class="hero-side-items">
-                                <a href="docs/index.html" class="side-link"><i class="fa-solid fa-book"></i> Documentation</a>
-                                <a href="compare/index.html" class="side-link"><i class="fa-solid fa-scale-balanced"></i> Comparisons</a>
-                                <a href="status/index.html" class="side-link"><i class="fa-solid fa-signal"></i> System Status</a>
+                                <a href="docs/index.html" class="side-link"><i class="fa-solid fa-book"></i>
+                                    Documentation</a>
+                                <a href="compare/index.html" class="side-link"><i
+                                        class="fa-solid fa-scale-balanced"></i> Comparisons</a>
+                                <a href="status/index.html" class="side-link"><i class="fa-solid fa-signal"></i> System
+                                    Status</a>
                             </div>
                         </div>
                         <div class="dropdown-main-zone">
@@ -2319,14 +2891,16 @@
                                     <span class="mega-column-h">Ecosystem</span>
                                     <div class="mega-items">
                                         <a href="events/index.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📅</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">📅</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Events</span>
                                                 <span class="mega-item-desc">Community meetups</span>
                                             </div>
                                         </a>
                                         <a href="updates/index.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">📢</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">📢</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Updates</span>
                                                 <span class="mega-item-desc">What's new in Explyra</span>
@@ -2338,21 +2912,24 @@
                                     <span class="mega-column-h">Company</span>
                                     <div class="mega-items">
                                         <a href="pricing.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">💰</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">💰</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Pricing</span>
                                                 <span class="mega-item-desc">Flexible plans for teams</span>
                                             </div>
                                         </a>
                                         <a href="support.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🎧</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">🎧</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Help Desk</span>
                                                 <span class="mega-item-desc">24/7 technical support</span>
                                             </div>
                                         </a>
                                         <a href="team.html" class="mega-item">
-                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">🤝</span>
+                                            <span class="mega-item-icon"
+                                                style="background:rgba(21,70,192,0.1);">🤝</span>
                                             <div class="mega-item-info">
                                                 <span class="mega-item-title">Our Team</span>
                                                 <span class="mega-item-desc">Meet the engineers</span>
@@ -2362,8 +2939,10 @@
                                 </div>
                             </div>
                             <div class="dropdown-footer">
-                                <a href="community-hub/index.html" class="footer-action"><span>Join Discord:</span> Explyra&trade; Dev Community &rarr;</a>
-                                <a href="careers.html" class="footer-action"><i class="fa-solid fa-briefcase"></i> Careers</a>
+                                <a href="community-hub/index.html" class="footer-action"><span>Join Discord:</span>
+                                    Explyra&trade; Dev Community &rarr;</a>
+                                <a href="careers.html" class="footer-action"><i class="fa-solid fa-briefcase"></i>
+                                    Careers</a>
                             </div>
                         </div>
                     </div>
@@ -2441,9 +3020,11 @@
             <div class="mobile-menu-footer">
                 <a href="company.html" class="btn-try coming-soon-trigger" style="text-align:center;">Request Access</a>
                 <div class="mobile-socials">
-                    <a href="https://github.com/mitanshu-bhasin" aria-label="Github"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://github.com/mitanshu-bhasin" aria-label="Github"><i
+                            class="fa-brands fa-github"></i></a>
                     <a href="https://x.com/explyra" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="https://instagram.com/explyra" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://instagram.com/explyra" aria-label="Instagram"><i
+                            class="fa-brands fa-instagram"></i></a>
                 </div>
             </div>
         </div>
@@ -2479,7 +3060,7 @@
                 </div>
                 <div class="p-price">
                     <span class="p-currency">₹</span>
-                    <span class="p-amount" data-monthly="999" data-yearly="799">999</span>
+                    <span class="p-amount" data-monthly="299" data-yearly="239">299</span>
                     <span class="p-period">/ month</span>
                 </div>
                 <ul class="p-features">
@@ -2496,7 +3077,12 @@
                     <li class="p-feature"><span class="pf-check">✓</span> Free Custom Domain Linking</li>
                 </ul>
                 <button onclick="buyPlan('Starter')" class="btn-p btn-p-sec">Buy Plan</button>
-                <button onclick="payWithCrypto('Starter', this)" class="btn-p btn-p-crypto">Pay with Crypto</button>
+                <div class="crypto-lock-wrapper" id="crypto-lock-Starter">
+                    <button onclick="payWithCrypto('Starter', this)" class="btn-p btn-p-crypto disabled" disabled>
+                        <i class="fas fa-lock"></i> Pay with Crypto
+                    </button>
+                    <div class="lock-msg">Add ₹251 more to unlock crypto checkout</div>
+                </div>
             </div>
 
             <!-- GROWTH (MOST POPULAR) -->
@@ -2509,7 +3095,7 @@
                 </div>
                 <div class="p-price">
                     <span class="p-currency">₹</span>
-                    <span class="p-amount" data-monthly="2499" data-yearly="1999">2,499</span>
+                    <span class="p-amount" data-monthly="999" data-yearly="799">999</span>
                     <span class="p-period">/ month</span>
                 </div>
                 <ul class="p-features">
@@ -2539,7 +3125,7 @@
                 </div>
                 <div class="p-price">
                     <span class="p-currency">₹</span>
-                    <span class="p-amount" data-monthly="6999" data-yearly="5599">6,999</span>
+                    <span class="p-amount" data-monthly="2499" data-yearly="1999">2,499</span>
                     <span class="p-period">/ month</span>
                 </div>
                 <ul class="p-features">
@@ -2727,7 +3313,8 @@
         <div class="testi-grid">
             <div class="t-card">
                 <div class="t-stars">★★★★★</div>
-                <p class="t-text">"Explyra&trade; completely changed how our team manages resources. Integrating expenses with
+                <p class="t-text">"Explyra&trade; completely changed how our team manages resources. Integrating
+                    expenses with
                     AI tools in one dashboard saves us hours every week."</p>
                 <div class="t-auth">
                     <div class="t-av">
@@ -2790,7 +3377,8 @@
                     <div class="faq-q">Is my company data secure? <div class="faq-icon"></div>
                     </div>
                     <div class="faq-a">
-                        <div class="faq-a-inner">Yes, Explyra&trade; uses secure, hardened cloud infrastructure backed by
+                        <div class="faq-a-inner">Yes, Explyra&trade; uses secure, hardened cloud infrastructure backed
+                            by
                             Google Firebase. All P2P interactions are encrypted end-to-end, and regular backups ensure
                             zero data loss.</div>
                     </div>
@@ -2801,6 +3389,520 @@
                     <div class="faq-a">
                         <div class="faq-a-inner">We accept all major credit cards, UPI (for Indian residents), and wire
                             transfers for Enterprise scale accounts.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+       PURCHASE SEPARATELY (NEW)
+    ═══════════════════════════════════════════ -->
+    <section class="separate-sec" id="individual-products">
+        <div class="reveal">
+            <h2 class="separate-h">Purchase Products <em>Separately</em></h2>
+            <p class="separate-sub">Choose exactly what you need. Scale your business with individual Explyra tools at
+                the most affordable rates.</p>
+        </div>
+
+        <div class="product-grid">
+            <!-- CRM -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/crm-pipeline-ui.png" alt="Explyra CRM"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Explyra CRM</h3>
+                    <p class="prod-desc">Manage leads, pipelines, and customer relations with ease. The most affordable
+                        CRM for growing teams.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Basic (₹249)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="249" data-plan="Basic"
+                                    data-features="1 Pipeline,500 Leads,1 User,Daily Reports,Email Support"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Basic</div>
+                                    <div class="opt-price">₹249 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="799" data-plan="Pro"
+                                    data-features="5 Pipelines,5k Leads,10 Users,Weekly Analytics,Priority Support"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Pro</div>
+                                    <div class="opt-price">₹799 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="1999" data-plan="Enterprise"
+                                    data-features="Unlimited Pipelines,50k Leads,API Access,Custom Roles,24/7 Phone"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Enterprise</div>
+                                    <div class="opt-price">₹1999 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>1 Pipeline</span></li>
+                            <li><i class="fas fa-check"></i> <span>500 Leads</span></li>
+                            <li><i class="fas fa-check"></i> <span>1 User</span></li>
+                            <li><i class="fas fa-check"></i> <span>Daily Reports</span></li>
+                            <li><i class="fas fa-check"></i> <span>Email Support</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹249</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Explyra CRM', 249, 'assets/images/crm-pipeline-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Expense Manager -->
+            <div class="prod-card premium">
+                <div class="prod-img"><img src="assets/images/expense-manager-ui.png" alt="Explyra Expense"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Explyra Expense</h3>
+                    <p class="prod-desc">Track every penny, automate reports, and manage budgets in a single premium
+                        dashboard.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Basic (₹149)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="149" data-plan="Basic"
+                                    data-features="5 Categories,PDF Export,1 Month History,Mobile App,Basic Backup"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Basic</div>
+                                    <div class="opt-price">₹149 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="599" data-plan="Pro"
+                                    data-features="Unlimited Categories,AI Scanning,1 Year History,Web + Mobile,Advanced Reports"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Pro</div>
+                                    <div class="opt-price">₹599 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="1199" data-plan="Premium"
+                                    data-features="Budgeting,Multi-Currency,Cloud Sync,AI Insights,Team Access"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Premium</div>
+                                    <div class="opt-price">₹1199 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>5 Categories</span></li>
+                            <li><i class="fas fa-check"></i> <span>PDF Export</span></li>
+                            <li><i class="fas fa-check"></i> <span>1 Month History</span></li>
+                            <li><i class="fas fa-check"></i> <span>Mobile App</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic Backup</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹149</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Explyra Expense', 149, 'assets/images/expense-manager-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Health Manager -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/health-manager-ui.png" alt="Explyra Health"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Explyra Health</h3>
+                    <p class="prod-desc">Comprehensive health data tracking and management for personal or clinic use.
+                    </p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Essential (₹249)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="249" data-plan="Essential"
+                                    data-features="Step Tracking,Diet Log,Weekly Stats,Sleep Monitor,Personal Profile"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Essential</div>
+                                    <div class="opt-price">₹249 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="699" data-plan="Medical"
+                                    data-features="Vitals Export,Doctor Portal,Health history,Family Sharing,Allergy Alerts"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Medical</div>
+                                    <div class="opt-price">₹699 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="1499" data-plan="Clinic"
+                                    data-features="Patient Mgmt,Lab Integrations,Multi-User,Telemedicine,Inventory"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Clinic</div>
+                                    <div class="opt-price">₹1499 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>Step Tracking</span></li>
+                            <li><i class="fas fa-check"></i> <span>Diet Log</span></li>
+                            <li><i class="fas fa-check"></i> <span>Weekly Stats</span></li>
+                            <li><i class="fas fa-check"></i> <span>Sleep Monitor</span></li>
+                            <li><i class="fas fa-check"></i> <span>Personal Profile</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹249</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Explyra Health', 249, 'assets/images/health-manager-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Learning DNS -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/learning-platform-ui.png" alt="Explyra Learning"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Explyra Learning</h3>
+                    <p class="prod-desc">Master industry-standard skills with our AI-powered platform. Comprehensive
+                        courses with hands-on labs and certifications.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Personal (₹99)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="99" data-plan="Personal"
+                                    data-features="5+ Core Courses,AI Teacher Support,Verifiable Certificates,Hands-on Training,Progress Tracking"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Personal</div>
+                                    <div class="opt-price">₹99 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="349" data-plan="Professional"
+                                    data-features="20+ Courses,Mentorship,Project Reviews,Job Referrals,Mock Interviews"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Professional</div>
+                                    <div class="opt-price">₹349 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="799" data-plan="Enterprise"
+                                    data-features="Unlimited Team Logins,Custom Roadmaps,LMS Integration,Dedicated Success Mgr,Private Workshops"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Enterprise</div>
+                                    <div class="opt-price">₹799 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>5+ Core Courses</span></li>
+                            <li><i class="fas fa-check"></i> <span>AI Teacher Support</span></li>
+                            <li><i class="fas fa-check"></i> <span>Verifiable Certificates</span></li>
+                            <li><i class="fas fa-check"></i> <span>Hands-on Training</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹99</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Explyra Learning', 99, 'assets/images/learning-platform-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DNS Manager -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/utility-tools-ui.png" alt="DNS Manager"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">DNS Manager</h3>
+                    <p class="prod-desc">Manage DNS records with advanced features and robust security for your domains.
+                    </p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Starter (₹99)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="99" data-plan="Starter"
+                                    data-features="1 Domain,DNSSEC,Anycast DNS,Basic DDOS,Live Analytics"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Starter</div>
+                                    <div class="opt-price">₹99 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="349" data-plan="Advanced"
+                                    data-features="10 Domains,Traffic Steering,Secondary DNS,Advanced DDOS,Real-time Log"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Advanced</div>
+                                    <div class="opt-price">₹349 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="799" data-plan="Enterprise"
+                                    data-features="Unlimited Dom,Load Balancing,China Direct,Custom TTL,White-label"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Enterprise</div>
+                                    <div class="opt-price">₹799 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>1 Domain</span></li>
+                            <li><i class="fas fa-check"></i> <span>DNSSEC</span></li>
+                            <li><i class="fas fa-check"></i> <span>Anycast DNS</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic DDOS</span></li>
+                            <li><i class="fas fa-check"></i> <span>Live Analytics</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹99</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('DNS Manager', 99, 'assets/images/utility-tools-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ERP Booking -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/booking-system-ui.png" alt="Explyra Booking"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">ERP Booking</h3>
+                    <p class="prod-desc">Advanced enterprise resource planning with a focus on seamless booking and
+                        scheduling.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Monthly (₹249)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="249" data-plan="Monthly"
+                                    data-features="100 Appointments,SMS alerts,1 Staff,Mobile App,Basic Analytics"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Monthly</div>
+                                    <div class="opt-price">₹249 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="999" data-plan="Yearly"
+                                    data-features="Unlimited Bookings,WhatsApp alerts,10 Staff,Custom Branding,Pro Analytics"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Yearly</div>
+                                    <div class="opt-price">₹999 / year</div>
+                                </div>
+                                <div class="custom-option" data-value="3999" data-plan="One-time"
+                                    data-features="Life License,Self-Hosted,Priority Fixes,Source Access,Enterprise Support"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">One-time / Life</div>
+                                    <div class="opt-price">₹3999 / Once</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>100 Appointments</span></li>
+                            <li><i class="fas fa-check"></i> <span>SMS alerts</span></li>
+                            <li><i class="fas fa-check"></i> <span>1 Staff</span></li>
+                            <li><i class="fas fa-check"></i> <span>Mobile App</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic Analytics</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹249</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('ERP Booking', 249, 'assets/images/booking-system-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Developer API -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/developers-api-ui.png" alt="Explyra API"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Developer API</h3>
+                    <p class="prod-desc">Robust APIs for developers to build and scale on the Explyra ecosystem
+                        effortlessly.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Starter (₹99)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="99" data-plan="Starter"
+                                    data-features="10k Requests/mo,1 App ID,Basic Docs,Community Support,Standard Rate-limit"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Starter</div>
+                                    <div class="opt-price">₹99 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="7999" data-plan="Pro"
+                                    data-features="1M Requests/mo,5 App IDs,Dev Support,SLA Guarantee,High Rate-limit"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Pro</div>
+                                    <div class="opt-price">₹7999 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="19999" data-plan="Enterprise"
+                                    data-features="Unlimited Req,White-label,Custom Node,On-Premise Opt,Dedicated Engineer"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Enterprise</div>
+                                    <div class="opt-price">₹19999 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>10k Requests/mo</span></li>
+                            <li><i class="fas fa-check"></i> <span>1 App ID</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic Docs</span></li>
+                            <li><i class="fas fa-check"></i> <span>Community Support</span></li>
+                            <li><i class="fas fa-check"></i> <span>Standard Rate-limit</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹99</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Developer API', 99, 'assets/images/developers-api-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Explyra Invoice -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/invoice-software-ui.png" alt="Explyra Invoice"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Explyra Invoice</h3>
+                    <p class="prod-desc">Professional invoicing made simple. Generate, track, and manage invoices
+                        instantly.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Standard (₹199)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="199" data-plan="Standard"
+                                    data-features="10 Invoices/mo,Basic Templates,1 User,PDF Export,WhatsApp Send"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Standard</div>
+                                    <div class="opt-price">₹199 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="449" data-plan="Pro"
+                                    data-features="Unlimited Invoices,Custom Branding,5 Users,Auto-Reminders,Payment Links"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Pro</div>
+                                    <div class="opt-price">₹449 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="899" data-plan="Ultimate"
+                                    data-features="Automation,Multi-Currency,10 Users,Expense Sync,Client Portal"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Ultimate</div>
+                                    <div class="opt-price">₹899 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>10 Invoices/mo</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic Templates</span></li>
+                            <li><i class="fas fa-check"></i> <span>1 User</span></li>
+                            <li><i class="fas fa-check"></i> <span>PDF Export</span></li>
+                            <li><i class="fas fa-check"></i> <span>WhatsApp Send</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹199</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Explyra Invoice', 199, 'assets/images/invoice-software-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Payroll & Attendance -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/attendance-system-ui.png" alt="Payroll & Attendance">
+                </div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Payroll & Attendance</h3>
+                    <p class="prod-desc">Complete HR solution for managing employee attendance and automated payroll
+                        processing.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Basic (₹249)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="249" data-plan="Basic"
+                                    data-features="10 Employees,Auto-Calculations,Mobile App,Basic Attendance,CSV Export"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Basic</div>
+                                    <div class="opt-price">₹249 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="799" data-plan="Business"
+                                    data-features="50 Employees,Attendance Module,Loans & Advance,Geo-Fencing,Leave Mgmt"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Business</div>
+                                    <div class="opt-price">₹799 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="1499" data-plan="Enterprise"
+                                    data-features="Unlimited Emp,HR Analytics,Exit Mgmt,Custom Workflows,Integration API"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Enterprise</div>
+                                    <div class="opt-price">₹1499 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>10 Employees</span></li>
+                            <li><i class="fas fa-check"></i> <span>Auto-Calculations</span></li>
+                            <li><i class="fas fa-check"></i> <span>Mobile App</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic Attendance</span></li>
+                            <li><i class="fas fa-check"></i> <span>CSV Export</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹249</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Payroll & Attendance', 249, 'assets/images/attendance-system-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Explyra Mail -->
+            <div class="prod-card">
+                <div class="prod-img"><img src="assets/images/saas-suite-ui.png" alt="Explyra Mail"></div>
+                <div class="prod-info">
+                    <h3 class="prod-name">Explyra Mail</h3>
+                    <p class="prod-desc">Secure, private, and premium business email for you and your entire team.</p>
+                    <div class="prod-footer">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select-trigger" onclick="toggleCustomSelect(this)">
+                                <span>Solo (₹79)</span>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="79" data-plan="Solo"
+                                    data-features="5GB Storage,1 User,Webmail Access,Custom Domain,Basic Filter"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Solo</div>
+                                    <div class="opt-price">₹79 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="299" data-plan="Team"
+                                    data-features="50GB Storage,10 Users,IMAP/SMTP,Shared Calendars,Global Contacts"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Team</div>
+                                    <div class="opt-price">₹299 / month</div>
+                                </div>
+                                <div class="custom-option" data-value="799" data-plan="Nexus"
+                                    data-features="Unlimited Storage,Vault,Advanced Security,eDiscovery,Admin Console"
+                                    onclick="selectCustomOption(this)">
+                                    <div class="opt-title">Nexus</div>
+                                    <div class="opt-price">₹799 / month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="prod-features-mini">
+                            <li><i class="fas fa-check"></i> <span>5GB Storage</span></li>
+                            <li><i class="fas fa-check"></i> <span>1 User</span></li>
+                            <li><i class="fas fa-check"></i> <span>Webmail Access</span></li>
+                            <li><i class="fas fa-check"></i> <span>Custom Domain</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic Filter</span></li>
+                        </ul>
+                        <div class="prod-footer-bottom">
+                            <div class="prod-price"><span>/ month</span><span>₹79</span></div>
+                            <button class="btn-add-cart"
+                                onclick="addToCart('Explyra Mail', 79, 'assets/images/saas-suite-ui.png', this)">
+                                <i class="fas fa-cart-plus"></i> Add
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2818,6 +3920,13 @@
             </div>
         </div>
     </section>
+
+    <!-- Floating Cart -->
+    <div id="floatingCart" class="floating-cart" onclick="goToCart()">
+        <i class="fas fa-shopping-basket"></i>
+        <span>View Cart</span>
+        <div id="cartCount" class="cart-count">0</div>
+    </div>
 
     <!-- BUY MODAL -->
     <div class="modal-overlay" id="buyModal">
@@ -2910,14 +4019,15 @@
                 </ul>
             </div>
         </div>
-        
+
         <!-- The footer search box will be injected here by global-enhancements.js -->
         <div class="foot-socials-wrapper">
-             <p>Follow our journey</p>
-             <div class="foot-socials">
+            <p>Follow our journey</p>
+            <div class="foot-socials">
                 <a href="https://github.com/mitanshu-bhasin" aria-label="Github"><i class="fa-brands fa-github"></i></a>
                 <a href="https://x.com/explyra" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="https://instagram.com/explyra" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://instagram.com/explyra" aria-label="Instagram"><i
+                        class="fa-brands fa-instagram"></i></a>
                 <a href="mailto:explyra@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
             </div>
         </div>
@@ -2975,8 +4085,31 @@
                     amt.style.opacity = '0';
                     setTimeout(() => {
                         const val = amt.getAttribute(isYearly ? 'data-yearly' : 'data-monthly');
-                        amt.textContent = parseInt(val).toLocaleString();
+                        const price = parseInt(val);
+                        amt.textContent = price.toLocaleString();
                         amt.style.opacity = '1';
+
+                        // Unlock/Lock Crypto for this card
+                        const card = amt.closest('.p-card');
+                        const cryptoBtn = card.querySelector('.btn-p-crypto');
+                        const lockWrapper = card.querySelector('.crypto-lock-wrapper');
+
+                        if (cryptoBtn && lockWrapper) {
+                            if (price < 1000) {
+                                cryptoBtn.classList.add('disabled');
+                                cryptoBtn.disabled = true;
+                                cryptoBtn.innerHTML = '<i class="fas fa-lock"></i> Pay with Crypto';
+                                lockWrapper.classList.add('locked');
+                                const needed = 1000 - price;
+                                const msgEl = lockWrapper.querySelector('.lock-msg');
+                                if (msgEl) msgEl.textContent = `Add ₹${needed} more to unlock crypto checkout`;
+                            } else {
+                                cryptoBtn.classList.remove('disabled');
+                                cryptoBtn.disabled = false;
+                                cryptoBtn.innerHTML = 'Pay with Crypto';
+                                lockWrapper.classList.remove('locked');
+                            }
+                        }
                     }, 150);
                 });
             });
@@ -3025,10 +4158,10 @@
         }
 
         const PLAN_PRICES = {
-            Starter: { monthly: 999, yearly: 799 },
-            Growth: { monthly: 2499, yearly: 1999 },
-            Scale: { monthly: 6999, yearly: 5599 },
-            Enterprise: { monthly: 9999, yearly: 7999 }
+            Starter: { monthly: 299, yearly: 239 },
+            Growth: { monthly: 999, yearly: 799 },
+            Scale: { monthly: 2499, yearly: 1999 },
+            Enterprise: { monthly: 4999, yearly: 3999 }
         };
         const EXPLYRA_PUBLIC_IDENTIFIER = '00bdcfb7-b255-4283-a9b8-b6409f27ad52';
         const PAYMENT_COMPANY_ID_KEYS = ['companyId', 'company_id', 'explyraCompanyId'];
@@ -3233,6 +4366,117 @@
                 showComingSoon();
             });
         });
+
+        /* CART & CUSTOM SELECT CORE LOGIC */
+        let cart = JSON.parse(localStorage.getItem('explyra_cart') || '[]');
+
+        window.updateCartUI = function () {
+            const btn = document.getElementById('viewCartBtn');
+            const count = document.getElementById('cartCount');
+            if (cart.length > 0) {
+                btn.classList.add('visible');
+                count.textContent = cart.length;
+            } else {
+                btn.classList.remove('visible');
+            }
+        }
+
+        window.toggleCustomSelect = function (trigger) {
+            document.querySelectorAll('.custom-select-trigger').forEach(el => {
+                if (el !== trigger) el.classList.remove('active');
+            });
+            trigger.classList.toggle('active');
+        }
+
+        window.selectCustomOption = function (option) {
+            const wrapper = option.closest('.custom-select-wrapper');
+            const trigger = wrapper.querySelector('.custom-select-trigger');
+            const card = option.closest('.prod-card');
+
+            wrapper.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+
+            trigger.querySelector('span').textContent = option.querySelector('.opt-title').textContent + ' (' + option.querySelector('.opt-price').textContent.split(' ')[0] + ')';
+            trigger.classList.remove('active');
+
+            const priceValue = option.getAttribute('data-value');
+            const features = option.getAttribute('data-features');
+
+            const priceDisplay = card.querySelector('.prod-price span:last-child');
+            priceDisplay.textContent = '₹' + priceValue;
+
+            const featuresUl = card.querySelector('.prod-features-mini');
+            if (featuresUl && features) {
+                const featureArray = features.split(',');
+                featuresUl.innerHTML = featureArray.map(f => `<li><i class="fas fa-check"></i> <span>${f}</span></li>`).join('');
+                featuresUl.style.opacity = '0';
+                setTimeout(() => featuresUl.style.opacity = '1', 100);
+            }
+            priceDisplay.style.transform = 'scale(1.15)';
+            setTimeout(() => priceDisplay.style.transform = 'scale(1)', 200);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-select-wrapper')) {
+                document.querySelectorAll('.custom-select-trigger').forEach(el => el.classList.remove('active'));
+            }
+        });
+
+        window.addToCart = function (name, price, img, btn) {
+            const card = btn ? btn.closest('.prod-card') : null;
+            let finalName = name;
+            let finalPrice = price;
+
+            if (card) {
+                const selectedOpt = card.querySelector('.custom-option.selected');
+                if (selectedOpt) {
+                    finalName = `${name} (${selectedOpt.getAttribute('data-plan')})`;
+                    finalPrice = parseInt(selectedOpt.getAttribute('data-value'));
+                }
+            }
+
+            const exists = cart.find(item => item.name === finalName);
+            if (exists) {
+                window.location.href = 'cart.html';
+                return;
+            }
+
+            cart.push({ name: finalName, price: finalPrice, img });
+            localStorage.setItem('explyra_cart', JSON.stringify(cart));
+            updateCartUI();
+
+            const toast = document.getElementById('exToast');
+            if (toast) {
+                const inner = toast.querySelector('span');
+                const old = inner.textContent;
+                inner.textContent = `Added ${finalName} to cart!`;
+                toast.classList.add('visible');
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                    setTimeout(() => inner.textContent = old, 400);
+                }, 2000);
+            }
+        }
+
+        window.goToCart = function () {
+            // Check if user is logged in
+            const user = localStorage.getItem('explyra_user') || sessionStorage.getItem('explyra_user');
+            if (!user) {
+                window.location.href = 'login.html?redirect=cart.html';
+            } else {
+                window.location.href = 'cart.html';
+            }
+        }
+
+        updateCartUI();
+        document.addEventListener('DOMContentLoaded', updateCartUI);
+
+        // Update EXISTING buyPlan to use cart
+        window.buyPlan = function (planName) {
+            const period = typeof getSelectedPeriod === 'function' ? getSelectedPeriod() : 'monthly';
+            const price = (typeof PLAN_PRICES !== 'undefined' && PLAN_PRICES[planName]) ? PLAN_PRICES[planName][period] : 0;
+            window.addToCart(`${planName} Plan (${period})`, price, 'assets/images/explyra_logo.png');
+        }
     </script>
 
     <!-- Firebase Logic for Companies Dropdown -->

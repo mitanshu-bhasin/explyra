@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart — Explyra</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* DESIGN TOKENS (Mirrored from pricing.html) */
+        :root {
+            --bg: #F8F7F4;
+            --bg2: #FFFFFF;
+            --bg3: #F1EFE9;
+            --surf: #FFFFFF;
+            --bdr: #E4E1DB;
+            --ink: #0D1117;
+            --ink2: #2A3141;
+            --ink3: #586070;
+            --ink4: #939BAC;
+            --blue: #1546C0;
+            --blue-g: rgba(21, 70, 192, .08);
+            --blue-b: rgba(21, 70, 192, .2);
+            --s1: 0 1px 3px rgba(0, 0, 0, .06);
+            --s2: 0 4px 16px rgba(0, 0, 0, .08);
+            --s3: 0 12px 40px rgba(0, 0, 0, .10);
+            --s4: 0 24px 72px rgba(0, 0, 0, .12);
+        }
+
+        [data-theme="dark"] {
+            --bg: #080B14;
+            --bg2: #0E1220;
+            --bg3: #141928;
+            --surf: #141928;
+            --bdr: rgba(255, 255, 255, .07);
+            --ink: #EEF0F8;
+            --ink2: #C4CCDC;
+            --ink3: #8290A8;
+            --ink4: #4E5A70;
+            --blue: #5B8AF5;
+        }
+
+        /* BASE styles */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            padding: 1.5rem 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--bdr);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        /* CART CONTAINER */
+        .cart-page {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 5vw;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .cart-page { grid-template-columns: 1fr; }
+        }
+
+        .cart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            grid-column: 1 / -1;
+        }
+
+        /* ITEMS LIST */
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .cart-item {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .item-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: var(--bg3);
+        }
+
+        .item-details { flex: 1; }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--blue);
+            font-size: 1.1rem;
+        }
+
+        .btn-remove {
+            background: transparent;
+            border: none;
+            color: var(--rose, #ff4d4f);
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .btn-remove:hover { opacity: 1; }
+
+        /* SUMMARY / CHECKOUT */
+        .cart-summary {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 20px;
+            padding: 2rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            box-shadow: var(--s2);
+        }
+
+        .summary-h {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--bdr);
+            padding-bottom: 1rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .summary-total {
+            border-top: 2px solid var(--bdr);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        /* COUPON */
+        .coupon-box {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .coupon-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            background: var(--bg);
+            font-family: inherit;
+        }
+
+        .btn-apply {
+            background: var(--ink);
+            color: #fff;
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* PAYMENT BUTTONS */
+        .payment-methods {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .btn-wa { background: #25D366; color: #fff; }
+        .btn-wa:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3); }
+
+        .btn-crypto { background: var(--blue); color: #fff; }
+        .btn-crypto:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(21, 70, 192, 0.3); }
+
+        .btn-crypto.disabled {
+            background: var(--bg3);
+            color: var(--ink4);
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+            border: 1px dashed var(--bdr);
+        }
+
+        .lock-msg-cart {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: -0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .btn-crypto.disabled + .lock-msg-cart {
+            display: block;
+        }
+
+        /* EMPTY STATE */
+        .empty-cart {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 6rem 0;
+            display: none;
+        }
+
+        .empty-cart i { font-size: 4rem; color: var(--ink4); margin-bottom: 1.5rem; }
+        .btn-return {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: var(--blue);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        /* ITEM HOVER */
+        .cart-item:hover {
+            transform: translateX(5px);
+            border-color: var(--blue-b);
+            box-shadow: var(--s2);
+        }
+
+        /* TOAST */
+        #cartToast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--blue);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        #cartToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .btn-pay i { font-size: 1.2rem; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(8, 11, 20, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 440px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: all 0.3s;
+            text-align: center;
+            box-shadow: var(--s4);
+        }
+        .modal-overlay.show .modal-content { transform: scale(1); }
+
+        .modal-h { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem; }
+        .modal-p { color: var(--ink3); font-size: 0.95rem; margin-bottom: 2rem; }
+        .modal-input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid var(--bg3);
+            background: var(--bg);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s;
+        }
+        .modal-input:focus { border-color: var(--blue); outline: none; }
+        .btn-save-id {
+            width: 100%;
+            padding: 1rem;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* RECENT ORDERS */
+        .recent-orders {
+            grid-column: 1 / -1;
+            margin-top: 4rem;
+            border-top: 1px solid var(--bdr);
+            padding-top: 3rem;
+        }
+        .orders-h {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .order-card {
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-info h4 { margin-bottom: 0.3rem; }
+        .order-date { font-size: 0.85rem; color: var(--ink4); }
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: var(--blue-g);
+            color: var(--blue);
+        }
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "url": "https://explyra.me/",
+      "logo": "https://explyra.me/assets/images/explyra_logo.png",
+      "sameAs": [
+        "https://linkedin.com/company/explyra",
+        "https://x.com/explyra",
+        "https://wellfound.com/company/explyra",
+        "https://medium.com/@explyra",
+        "https://crunchbase.com/organization/explyra",
+        "https://www.quora.com/profile/Explyra",
+        "https://share.google/7CUitGHv7NUx2LoA9",
+        "https://f6s.com/explyra",
+        "https://e27.co/startup/explyra",
+        "https://github.com/explyra",
+        "https://discord.gg/explyra",
+        "https://dev.to/explyra",
+        "https://peerlist.io/explyra",
+        "https://indiehackers.com/explyra",
+        "https://forem.com/explyra",
+        "https://www.kaggle.com/explyra",
+        "https://youtube.com/@explyras",
+        "https://bsky.app/profile/explyra.bsky.social",
+        "https://instagram.com/explyra",
+        "https://www.snapchat.com/add/explyra",
+        "https://t.me/explyra",
+        "https://facebook.com/people/explyra",
+        "https://threads.net/@explyras",
+        "https://whatsapp.com/channel/0029Vb7iW4Y5Ejxu8YxXQo2N",
+        "https://explyra.blogspot.com",
+        "https://g2.com/products/explyra",
+        "https://capterra.com/p/explyra",
+        "https://producthunt.com/products/explyra",
+        "https://alternativeto.net/software/explyra",
+        "https://betalist.com/startups/explyra",
+        "https://lu.ma/explyra",
+        "https://sites.google.com/view/explyra",
+        "https://linktr.ee/explyra",
+        "https://open.spotify.com/episode/2koPs0nutBjLEUIK5YQgMy?si=zibzsoF2Twey9dMkoJATWA"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://explyra.me/#software",
+      "name": "Explyra Suite",
+      "operatingSystem": "Any",
+      "applicationCategory": "BusinessApplication",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "1250"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Starter Plan",
+          "price": "299",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "name": "Growth Plan",
+          "price": "999",
+          "priceCurrency": "INR"
+        },
+        {
+          "@type": "Offer",
+          "name": "Scale Plan",
+          "price": "2499",
+          "priceCurrency": "INR"
+        }
+      ],
+      "featureList": [
+        "Expense Management (from ₹149)",
+        "Explyra CRM (from ₹249)",
+        "AI Learning (from ₹99)",
+        "Developer API (from ₹99)",
+        "Health Management (from ₹249)"
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Explyra</a>
+        <a href="pricing.html" style="color:var(--ink3); text-decoration:none; font-size:0.9rem; font-weight: 600">
+            <i class="fas fa-arrow-left" style="margin-right: 5px"></i> Back to Products
+        </a>
+    </header>
+
+    <main class="cart-page">
+        <h1 class="cart-title">Your <em>Shopping Cart</em></h1>
+        
+        <div id="itemsContainer" class="items-list">
+            <!-- Items injected via JS -->
+        </div>
+
+        <div id="cartSummary" class="cart-summary">
+            <h2 class="summary-h">Order Summary</h2>
+            
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0</span>
+            </div>
+            
+            <div class="coupon-box">
+                <input type="text" id="couponCode" class="coupon-input" placeholder="Coupon Code">
+                <button onclick="applyCoupon()" class="btn-apply">Apply</button>
+            </div>
+
+            <div id="discountRow" class="summary-row" style="display:none; color: #047857">
+                <span id="discountLabel">Discount</span>
+                <span id="discountText">-₹0</span>
+            </div>
+
+            <div class="summary-row summary-total">
+                <span>Total</span>
+                <span id="totalAmount">₹0</span>
+            </div>
+
+            <div class="payment-methods">
+                <button onclick="payManual()" class="btn-pay btn-wa">
+                    <i class="fab fa-whatsapp"></i> Checkout via WhatsApp
+                </button>
+                <button id="cryptoBtn" onclick="payCrypto()" class="btn-pay btn-crypto">
+                    <i class="fab fa-bitcoin"></i> Pay with Crypto
+                </button>
+                <div id="cryptoLockMsg" class="lock-msg-cart">Add ₹0 more to unlock crypto checkout</div>
+                <p style="font-size: 0.72rem; color: var(--ink4); text-align: center; margin-top: 0.5rem">
+                    <i class="fas fa-shield-alt"></i> Secure checkout powered by Explyra Pay
+                </p>
+            </div>
+        </div>
+
+        <div id="emptyState" class="empty-cart">
+            <i class="fas fa-shopping-basket"></i>
+            <h2>Your cart is empty</h2>
+            <p>Seems like you haven't added any products yet.</p>
+            <a href="pricing.html" class="btn-return">Explore Products</a>
+        </div>
+
+        <!-- RECENT ORDERS SECTION -->
+        <section class="recent-orders" id="recentOrdersSection" style="display:none">
+            <h2 class="orders-h"><i class="fas fa-history"></i> Your Recent Orders</h2>
+            <div id="ordersContainer">
+                <p style="color:var(--ink4)">Loading your order history...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Company ID Modal -->
+    <div id="idModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-h">Connect Company</h2>
+            <p class="modal-p">To process CRM or Expense products, please enter your Explyra Company ID.</p>
+            <input type="text" id="companyIdInput" class="modal-input" placeholder="e.g. CID-12345">
+            <button onclick="saveCompanyId()" class="btn-save-id">Continue to Checkout</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:var(--ink4); margin-top:1rem; cursor:pointer; font-size:0.85rem">Cancel</button>
+        </div>
+    </div>
+
+    <div id="cartToast">Coupon applied successfully!</div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('explyra_cart') || '[]');
+        let discount = 0;
+        let pendingCheckout = null;
+
+        function showToast(msg, color = "#1546C0") {
+            const toast = document.getElementById('cartToast');
+            toast.textContent = msg;
+            toast.style.background = color;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function renderCart() {
+            const container = document.getElementById('itemsContainer');
+            const summary = document.getElementById('cartSummary');
+            const empty = document.getElementById('emptyState');
+
+            if (cart.length === 0) {
+                container.style.display = 'none';
+                summary.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'flex';
+            summary.style.display = 'block';
+            empty.style.display = 'none';
+
+            container.innerHTML = cart.map((item, idx) => `
+                <div class="cart-item">
+                    <img src="${item.img}" class="item-img" alt="${item.name}">
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">₹${item.price}</div>
+                    </div>
+                    <button onclick="removeItem(${idx})" class="btn-remove" title="Remove Item">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            updateTotals();
+        }
+
+        function removeItem(idx) {
+            cart.splice(idx, 1);
+            localStorage.setItem('explyra_cart', JSON.stringify(cart));
+            renderCart();
+            showToast("Item removed from cart", "#BE185D");
+        }
+
+        function updateTotals() {
+            const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+            const total = subtotal - discount;
+
+            document.getElementById('subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('totalAmount').textContent = `₹${total}`;
+            
+            if (discount > 0) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('discountText').textContent = `-₹${discount}`;
+            } else {
+                document.getElementById('discountRow').style.display = 'none';
+            }
+
+            // Crypto Lock Logic
+            const cryptoBtn = document.getElementById('cryptoBtn');
+            const cryptoMsg = document.getElementById('cryptoLockMsg');
+            if (total < 1000) {
+                cryptoBtn.classList.add('disabled');
+                cryptoBtn.disabled = true;
+                cryptoBtn.innerHTML = '<i class="fas fa-lock"></i> Pay with Crypto (Locked)';
+                const needed = 1000 - total;
+                cryptoMsg.textContent = `Add ₹${needed} more to unlock this payment option`;
+                cryptoMsg.style.display = 'block';
+            } else {
+                cryptoBtn.classList.remove('disabled');
+                cryptoBtn.disabled = false;
+                cryptoBtn.innerHTML = '<i class="fab fa-bitcoin"></i> Pay with Crypto';
+                cryptoMsg.style.display = 'none';
+            }
+        }
+
+        function applyCoupon() {
+            const codeInput = document.getElementById('couponCode');
+            const code = codeInput.value.toUpperCase();
+            const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+
+            if (code === 'EXPLYRA10') {
+                discount = Math.floor(subtotal * 0.1);
+                showToast("10% Discount Applied!");
+            } else if (code === 'WELCOME50') {
+                discount = Math.min(50, subtotal);
+                showToast("₹50 Discount Applied!");
+            } else if (code === 'BETAUSER') {
+                discount = Math.floor(subtotal * 0.2);
+                showToast("20% Beta Discount Applied!");
+            } else {
+                showToast("Invalid Coupon Code", "#BE185D");
+                return;
+            }
+            updateTotals();
+            codeInput.value = "";
+        }
+
+        // --- MODAL LOGIC ---
+        function needsCompanyId() {
+            return cart.some(item => 
+                item.name.toLowerCase().includes('crm') || 
+                item.name.toLowerCase().includes('expense')
+            );
+        }
+
+        function checkoutFlow(type) {
+            const storedId = localStorage.getItem('companyId') || localStorage.getItem('explyra_company_id');
+            if (needsCompanyId() && !storedId) {
+                pendingCheckout = type;
+                document.getElementById('idModal').classList.add('show');
+                return false;
+            }
+            return true;
+        }
+
+        function saveCompanyId() {
+            const val = document.getElementById('companyIdInput').value.trim();
+            if (!val) {
+                showToast("Please enter a valid Company ID", "#BE185D");
+                return;
+            }
+            localStorage.setItem('companyId', val);
+            localStorage.setItem('explyra_company_id', val);
+            closeModal();
+            showToast("Company ID saved!");
+            
+            if (pendingCheckout === 'manual') payManual();
+            else if (pendingCheckout === 'crypto') payCrypto();
+            pendingCheckout = null;
+        }
+        function closeModal() {
+            document.getElementById('idModal').classList.remove('show');
+            pendingCheckout = null;
+        }
+
+        renderCart();
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('explyra_user', user.uid);
+                fetchOrderHistory(user.uid);
+            } else {
+                localStorage.removeItem('explyra_user');
+                window.location.href = 'login.html?redirect=cart.html';
+            }
+        });
+
+        async function fetchOrderHistory(uid) {
+            const ordersSection = document.getElementById('recentOrdersSection');
+            const container = document.getElementById('ordersContainer');
+            
+            try {
+                const q = query(
+                    collection(db, `users/${uid}/orderHistory`),
+                    orderBy("timestamp", "desc")
+                );
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p style="color:var(--ink4)">No orders found yet. Start your journey today!</p>';
+                } else {
+                    container.innerHTML = querySnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'Recent';
+                        return `
+                            <div class="order-card">
+                                <div class="order-info">
+                                    <h4>${data.items.length} Product(s)</h4>
+                                    <p class="order-date">${date} • ₹${data.total}</p>
+                                </div>
+                                <div class="order-status">${data.status || 'Processing'}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                ordersSection.style.display = 'block';
+            } catch (e) {
+                console.error("Error fetching orders:", e);
+                container.innerHTML = '<p style="color:var(--ink4)">Unable to load order history.</p>';
+            }
+        }
+
+        window.saveOrderToFirestore = async function() {
+            if (!currentUser) return;
+            
+            const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+            const total = subtotal - discount;
+            const cid = localStorage.getItem('companyId') || 'N/A';
+
+            try {
+                await addDoc(collection(db, `users/${currentUser.uid}/orderHistory`), {
+                    items: cart,
+                    total: total,
+                    discount: discount,
+                    companyId: cid,
+                    timestamp: Timestamp.now(),
+                    status: 'Pending Payment'
+                });
+                console.log("Order saved to Firestore");
+                localStorage.removeItem('explyra_cart');
+                cart = [];
+                renderCart();
+            } catch (e) {
+                console.error("Error saving order:", e);
+            }
+        };
+
+        // Re-implement payment functions with Firestore integration
+        window.payManual = async function() {
+            if (!checkoutFlow('manual')) return;
+            
+            const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+            const total = subtotal - discount;
+            const itemsList = cart.map(item => `• ${item.name} (₹${item.price})`).join('%0A');
+            const cid = localStorage.getItem('companyId') || 'N/A';
+            
+            await window.saveOrderToFirestore();
+
+            const message = `Halo Explyra Team! I want to complete my purchase:%0A%0A${itemsList}%0A%0A--------------------%0ASubtotal: ₹${subtotal}%0ADiscount: -₹${discount}%0A*Total: ₹${total}*%0A--------------------%0ACompany ID: ${cid}%0A--------------------%0APlease share the manual payment details.`;
+            window.location.href = `https://wa.me/918076108584?text=${message}`;
+        };
+
+        async function createCryptoInvoice(amount) {
+            const EXPLYRA_PUBLIC_IDENTIFIER = '41c73ac7-202d-4876-8051-5121ae4339e3';
+            const apiBase = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://pay.explyra.me';
+            const companyId = localStorage.getItem('companyId') || 'MANUAL_EXPLYRA';
+
+            try {
+                const response = await fetch(`${apiBase}/create-payment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        plan: 'Cart Purchase',
+                        selectedPlanPrice: amount,
+                        company_id: companyId,
+                        public_identifier: EXPLYRA_PUBLIC_IDENTIFIER
+                    })
+                });
+                const data = await response.json();
+                if (data.invoice_url) window.location.href = data.invoice_url;
+                else throw new Error("API Failure");
+            } catch (e) {
+                alert("Crypto payment gateway is currently offline for direct cart checkouts. Please use WhatsApp checkout for crypto instructions.");
+            }
+        }
+
+        window.payCrypto = async function() {
+            if (!checkoutFlow('crypto')) return;
+
+            const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
+            const total = subtotal - discount;
+            const btn = document.getElementById('cryptoBtn');
+            
+            btn.disabled = true;
+            btn.textContent = "Connecting...";
+            
+            await window.saveOrderToFirestore();
+
+            setTimeout(() => {
+                createCryptoInvoice(total).finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fab fa-bitcoin"></i> Pay with Crypto';
+                });
+            }, 800);
+        };
+
+    </script>
+</body>
+</html>
