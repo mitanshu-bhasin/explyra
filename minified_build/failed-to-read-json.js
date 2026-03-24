@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t){const{path:e,message:n}=t;return`\nFailed to read JSON file at ${e}:\n\n${n}\n`.trimStart()};

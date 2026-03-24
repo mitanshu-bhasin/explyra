@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classStaticPrivateMethodGet;var _assertClassBrand=require("./assertClassBrand.js");function _classStaticPrivateMethodGet(e,t,s){return(0,_assertClassBrand.default)(t,e),s}

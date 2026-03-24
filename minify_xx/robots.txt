@@ -1,0 +1,11 @@
+# https://explyra.me — Explyra Suite
+User-agent: *
+Allow: /
+
+# Static & marketing
+Disallow: /api-e/
+Disallow: /email-app/email-worker/
+Disallow: /.env
+Disallow: /.git/
+
+Sitemap: https://explyra.me/sitemap.xml

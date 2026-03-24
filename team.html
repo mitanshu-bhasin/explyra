@@ -13,6 +13,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <style>
         /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -2491,6 +2493,200 @@
             margin-bottom: 0.2rem;
         }
 
+            .prod-inner,
+            .prod-inner.rev {
+                grid-template-columns: 1fr;
+                direction: ltr
+            }
+
+            .support-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .nav-links {
+                display: none
+            }
+
+            .menu-btn {
+                display: flex;
+            }
+
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:640px) {
+
+            .ov-grid,
+            .support-grid,
+            .p2p-features {
+                grid-template-columns: 1fr
+            }
+
+            .dash-kpis {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .hc-metrics,
+            .tool-grid {
+                grid-template-columns: 1fr
+            }
+
+            .founder-inner {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start
+            }
+        }
+
+
+        /* Mission & Values */
+        .mission-sec {
+            padding: 100px 5vw;
+            background: var(--bg2);
+            text-align: center;
+            border-top: 1px solid var(--bdr);
+        }
+
+        .mission-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .values-sec {
+            padding: 80px 5vw;
+            background: var(--bg);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 40px auto 0;
+        }
+
+        .value-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all .3s;
+        }
+
+        [data-theme="dark"] .value-card {
+            background: var(--bg3);
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--s3);
+            border-color: var(--blue);
+        }
+
+        .value-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--blue-g);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .value-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.8rem;
+        }
+
+        .value-desc {
+            font-size: 0.92rem;
+            color: var(--ink3);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Team specific styles */
+        .team-hero {
+            padding: 150px 5vw 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(248, 247, 244, 0.92), rgba(255, 255, 255, 0.95)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
+        }
+
+        [data-theme="dark"] .team-hero {
+            background: linear-gradient(135deg, rgba(8, 11, 20, 0.85), rgba(8, 11, 20, 0.95)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 5vw 8rem;
+        }
+
+        .team-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 14px;
+            padding: 2rem;
+            text-align: center;
+            transition: all .28s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        [data-theme="dark"] .team-card {
+            background: var(--bg3);
+            border-color: var(--bdr);
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--s3);
+            border-color: var(--blue);
+        }
+
+        .team-img-wrap {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 4px solid var(--bg);
+            box-shadow: var(--s2);
+        }
+
+        .team-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.2rem;
+        }
+
         .team-role {
             font-size: 0.85rem;
             font-weight: 700;
@@ -2536,338 +2732,143 @@
         }
     </style>
 
-    
-
-    
-    
-    
-        <meta name="description" content="Use Team on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
-
-    
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "url": "https://explyra.me/",
-      "logo": "https://explyra.me/assets/images/explyra_logo.png",
-      "sameAs": [
-        "https://linkedin.com/company/explyra",
-        "https://x.com/explyra",
-        "https://wellfound.com/company/explyra",
-        "https://medium.com/@explyra",
-        "https://crunchbase.com/organization/explyra",
-        "https://www.quora.com/profile/Explyra",
-        "https://share.google/7CUitGHv7NUx2LoA9",
-        "https://f6s.com/explyra",
-        "https://e27.co/startup/explyra",
-        "https://github.com/explyra",
-        "https://discord.gg/explyra",
-        "https://dev.to/explyra",
-        "https://peerlist.io/explyra",
-        "https://indiehackers.com/explyra",
-        "https://forem.com/explyra",
-        "https://www.kaggle.com/explyra",
-        "https://youtube.com/@explyras",
-        "https://bsky.app/profile/explyra.bsky.social",
-        "https://instagram.com/explyra",
-        "https://www.snapchat.com/add/explyra",
-        "https://t.me/explyra",
-        "https://facebook.com/people/explyra",
-        "https://threads.net/@explyras",
-        "https://whatsapp.com/channel/0029Vb7iW4Y5Ejxu8YxXQo2N",
-        "https://explyra.blogspot.com",
-        "https://g2.com/products/explyra",
-        "https://capterra.com/p/explyra",
-        "https://producthunt.com/products/explyra",
-        "https://alternativeto.net/software/explyra",
-        "https://betalist.com/startups/explyra",
-        "https://lu.ma/explyra",
-        "https://sites.google.com/view/explyra",
-        "https://linktr.ee/explyra",
-        "https://open.spotify.com/episode/2koPs0nutBjLEUIK5YQgMy?si=zibzsoF2Twey9dMkoJATWA"
-      ]
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": "https://explyra.me/#software",
-      "name": "Explyra Suite",
-      "operatingSystem": "Any",
-      "applicationCategory": "BusinessApplication",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "ratingCount": "1250"
-      },
-      "offers": [
-        {
-          "@type": "Offer",
-          "name": "Starter Plan",
-          "price": "299",
-          "priceCurrency": "INR"
-        },
-        {
-          "@type": "Offer",
-          "name": "Growth Plan",
-          "price": "999",
-          "priceCurrency": "INR"
-        },
-        {
-          "@type": "Offer",
-          "name": "Scale Plan",
-          "price": "2499",
-          "priceCurrency": "INR"
-        }
-      ],
-      "featureList": [
-        "Expense Management (from ₹149)",
-        "Explyra CRM (from ₹249)",
-        "AI Learning (from ₹99)",
-        "Developer API (from ₹99)",
-        "Health Management (from ₹249)"
-      ]
-    }
-  ]
-}
-    </script>
-
-    
-</head>
-
-<body>
-    <nav>
-
-        <a href="#" class="nav-logo">
-            <div class="nav-logo-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                </svg>
-            </div>
-            <span class="nav-logo-text">Explyra&trade;</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="index.html#expense">Expense</a></li>
-            <li><a href="index.html#health">Health</a></li>
-            <li><a href="index.html#learning">Learning</a></li>
-            <li><a href="index.html#developers">Developers</a></li>
-            <li><a href="index.html#utility">Utility</a></li>
-            <li><a href="index.html#support">Support</a></li>
-            <li><a href="team.html">Team</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-        </ul>
-        <div class="nav-right">
-            <div class="theme-pill" id="themePill">
-                <span class="theme-pill-label" id="themeLabel">Light</span>
-                <div class="theme-pill-toggle"></div>
-            </div>
-            <a href="#contact" class="btn-try">Get Early Access</a>
-            <button class="menu-btn" id="menuBtn">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-
-    </nav>
-
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-header">
-            <span class="nav-logo-text">Explyra&trade;</span>
-            <button class="close-menu-btn" id="closeMenuBtn">&times;</button>
-        </div>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html#expense">Expense</a></li>
-            <li><a href="index.html#health">Health</a></li>
-            <li><a href="index.html#learning">Learning</a></li>
-            <li><a href="index.html#developers">Developers</a></li>
-            <li><a href="index.html#utility">Utility</a></li>
-            <li><a href="index.html#support">Support</a></li>
-            <li><a href="team.html">Team</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-            <li><a href="emp.html" style="color:var(--blue)">Sign In</a></li>
-        </ul>
+    <div class="scroll-progress" aria-hidden="true">
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
     </div>
-    <div class="menu-overlay" id="menuOverlay"></div>
 
-    <main>
-        <div class="team-hero reveal">
-            <div class="hero-badge">
-                <div class="badge-pulse"></div>
-                Visionaries & Experts
-            </div>
-            <h1 class="sec-h display">Meet the <em class="grad">Leadership</em></h1>
-            <p class="sec-p">Driving process excellence, innovation, and global standards.</p>
-        </div>
-
-        <section class="mission-sec reveal">
-            <div class="mission-inner">
-                <div class="eyebrow">Our Purpose</div>
-                <h2 class="sec-h">Empowering the <em class="grad">Global Workforce</em></h2>
-                <p class="sec-p">Explyra&trade; was founded on a simple premise: technology should simplify, not complicate. We build tools that bridge the gap between complex data and actionable intelligence, enabling teams and individuals to reach their full potential.</p>
-            </div>
-        </section>
-
-        <section class="values-sec reveal">
-            <div class="ov-header">
-                <div class="eyebrow">Our DNA</div>
-                <h2 class="sec-h">Core <em class="grad">Values</em></h2>
-                <p class="sec-p">The principles that guide every feature we ship and every decision we make.</p>
-            </div>
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon">🛡️</div>
-                    <div class="value-title">Privacy First</div>
-                    <p class="value-desc">Security isn't a feature; it's our foundation. We implement military-grade encryption for all user data.</p>
+    <!-- HEADER & NAV -->
+    <header>
+        <nav class="main-nav" aria-label="Main Navigation">
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <img src="nobg.png" alt="Explyra">
                 </div>
-                <div class="value-card">
-                    <div class="value-icon">✨</div>
-                    <div class="value-title">Peak Innovation</div>
-                    <p class="value-desc">We don't just follow trends; we set them. Our AI-driven approach redefines productivity standards.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">🤝</div>
-                    <div class="value-title">Radical Transparency</div>
-                    <p class="value-desc">Open communication and honest partnerships are at the heart of our operational excellence.</p>
-                </div>
-            </div>
-        </section>
-
-        <div class="ov-header reveal" style="margin-top: 100px;">
-            <div class="eyebrow">The Architects</div>
-            <h2 class="sec-h">Global <em class="grad">Leadership</em></h2>
-        </div>
-
-        <div class="team-grid reveal d1">
-            <!-- Mitanshu -->
-            <div class="team-card">
-                <div class="team-img-wrap">
-                    <img src="https://media.licdn.com/dms/image/v2/D5603AQGXL6bEmLqpLg/profile-displayphoto-crop_800_800/B56ZyksQsRI0AI-/0/1772289593451?e=1774483200&v=beta&t=ZPxSKtR4s4mSYZoHjBXwJHYpQXMY2boI2lrVzqL5SPo"
-                        alt="Mitanshu Bhasin">
-                </div>
-                <div class="team-name">Mitanshu Bhasin</div>
-                <div class="team-role">Founder & Chief Architect</div>
-                <div class="team-bio">
-                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize digital workflows. With expertise in AI system design and full-stack architecture, he oversees the global product roadmap and technical vision.
-                </div>
-                <a href="https://mitanshu.explyra.me" target="_blank" class="team-portfolio-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                    View Portfolio
-                </a>
-            </div>
-
-            <!-- Rohan -->
-            <div class="team-card">
-                <div class="team-img-wrap">
-                    <img src="https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1774483200&v=beta&t=WVtSMFZ2b1oTk5yU7RVfMj8q_V0tZij7BJekgO33IO8"
-                        alt="Rohan Krishnagoudar">
-                </div>
-                <div class="team-name">Rohan Krishnagoudar</div>
-                <div class="team-role">Co-Founder & Head of Data</div>
-                <div class="team-bio">
-                    Rohan specializes in large-scale data systems and security operations. He is responsible for the integrity, scalability, and performance of the Explyra&trade; data warehouse, ensuring that every user's information is secure and accessible.
-                </div>
-                <a href="https://rohan.explyra.me" target="_blank" class="team-portfolio-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                    View Portfolio
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-
-        <div class="foot-left">
-            <span class="foot-logo">Explyra&trade;</span>
-            <span class="foot-tagline">One Platform. Everything.</span>
-        </div>
-        <p class="foot-copy">© 2026 Explyra&trade; · Founded by Mitanshu Bhasin · All rights reserved.</p>
-        <div class="foot-links">
-            <a href="index.html#expense">Expense</a>
-            <a href="index.html#health">Health</a>
-            <a href="index.html#learning">Learning</a>
-            <a href="developers/index.html">Developers</a>
-
-            <a href="index.html#support">Support</a>
-            <a href="team.html">Team</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="mailto:mfskufgu@gmail.com">Contact</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms</a>
-            <a href="license.html">License</a>
-            <a href="refund.html">Refund Policy</a>
-        </div>
-
-
-        <div class="foot-socials-wrapper"
-            style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136, 136, 136, 0.2); padding-top: 20px;">
-            <p
-                style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">
-                Follow Us</p>
-            <div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;">
-            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
-            <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a>
-            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a>
-            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://ipecconsulting.org/" target="_blank" rel="noopener noreferrer">IPEC Consulting</a>
-        </div>
-        </div>
-    </footer>
-
-    <script>
-        /* THEME */
-
-        const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
-        const saved = localStorage.getItem('explyra-theme') || 'light';
-        html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
-        pill.addEventListener('click', () => {
-            const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', nxt); lbl.textContent = nxt === 'dark' ? 'Dark' : 'Light';
-            localStorage.setItem('explyra-theme', nxt);
-        });
-
-        /* REVEAL */
-        const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .08 });
-        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-        /* SMOOTH SCROLL */
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', e => {
-                const t = document.querySelector(a.getAttribute('href'));
-                if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
-            });
-        });
-
-        /* MOBILE MENU */
-        const menuBtn = document.getElementById('menuBtn');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const menuOverlay = document.getElementById('menuOverlay');
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
-
-        function toggleMenu() {
-            mobileMenu.classList.toggle('open');
-            menuOverlay.classList.toggle('open');
-            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
-        }
-
-        if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
-        if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
-        if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
-        mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
-
-    </script>
-</body>
-
-</html>
+                <span class="nav-logo-text">Explyra</span>
+            </a>
+            <ul class="nav-links">
+                <li class="nav-item-dropdown">
+                    <a href="#" class="dropdown-trigger">Products <i class="fa-solid fa-chevron-down"></i></a>
+                    <div class="dropdown-content mega-menu">
+                        <div class="dropdown-hero">
+                            <div class="hero-main">
+                                <div class="hero-logo">
+                                    <img src="nobg.png" alt="Explyra Logo">
+                                </div>
+                                <div class="hero-text">
+                                    <h4>Explyra Suite</h4>
+                                    <p>The operating system for modern teams and creators.</p>
+                                </div>
+                            </div>
+                            <div class="hero-side-items">
+                                <a href="dns/index.html" class="side-link"><i class="fa-solid fa-globe"></i> DNS Manager</a>
+                                <a href="email-app/src/index.html" class="side-link"><i class="fa-solid fa-envelope"></i> MailBox Ecosystem</a>
+                                <a href="manufacturing/index.html" class="side-link"><i class="fa-solid fa-industry"></i> Explyra ERP</a>
+                            </div>
+                        </div>
+                        <div class="dropdown-main-zone">
+                            <div class="dropdown-body">
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Business</span>
+                                    <div class="mega-items">
+                                        <a href="#expense" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">💼</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Expense</span>
+                                                <span class="mega-item-desc">Smart tracking</span>
+                                            </div>
+                                        </a>
+                                        <a href="crm/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📈</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">CRM</span>
+                                                <span class="mega-item-desc">Pipeline tool</span>
+                                            </div>
+                                        </a>
+                                        <a href="Ino software/ino.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📄</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Invoice</span>
+                                                <span class="mega-item-desc">Billing v2</span>
+                                            </div>
+                                        </a>
+                                        <a href="attendance/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">✅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Attendance</span>
+                                                <span class="mega-item-desc">Geofenced check-in</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Utilities</span>
+                                    <div class="mega-items">
+                                        <a href="health-manager/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(0,128,128,0.1); color:var(--teal);">🏃</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Health</span>
+                                                <span class="mega-item-desc">AI companion</span>
+                                            </div>
+                                        </a>
+                                        <a href="https://book.explyra.me" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1); color:var(--blue);">📅</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Booking</span>
+                                                <span class="mega-item-desc">Auto-scheduling</span>
+                                            </div>
+                                        </a>
+                                        <a href="explyra-learning/index.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(255,191,0,0.1); color:var(--amber);">📚</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Learning</span>
+                                                <span class="mega-item-desc">Master future skills</span>
+                                            </div>
+                                        </a>
+                                        <a href="#developers" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(128,0,128,0.1); color:var(--purp);">⚡</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Developers</span>
+                                                <span class="mega-item-desc">Utils & APIs</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-footer">
+                                <a href="updates/index.html" class="footer-action"><span>New:</span> Explyra AI meeting v1.0 &rarr;</a>
+                                <a href="admin.html" class="footer-action"><i class="fa-solid fa-shield-halved"></i> Admin Portal</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item-dropdown">
+                    <a href="solutions/index.html" class="dropdown-trigger">Solutions <i class="fa-solid fa-chevron-down"></i></a>
+                    <div class="dropdown-content mega-menu">
+                        <div class="dropdown-hero">
+                            <div class="hero-main">
+                                <div class="hero-logo">
+                                    <img src="nobg.png" alt="Explyra Logo">
+                                </div>
+                                <div class="hero-text">
+                                    <h4>Solutions</h4>
+                                    <p>Bespoke digital transformation for scaling organizations.</p>
+                                </div>
+                            </div>
+                            <div class="hero-side-items">
+                                <a href="solutions/suite.html" class="side-link"><i class="fa-solid fa-layer-group"></i> Full Suite Access</a>
+                                <a href="solutions/custom.html" class="side-link"><i class="fa-solid fa-code-merge"></i> Custom Integration</a>
+                                <a href="solutions/utilities.html" class="side-link"><i class="fa-solid fa-wrench"></i> Infrastructure Utils</a>
+                            </div>
+                        </div>
+                        <div class="dropdown-main-zone">
+                            <div class="dropdown-body">
+                                <div class="mega-column">
+                                    <span class="mega-column-h">Internal Systems</span>
+                                    <div class="mega-items">
+                                        <a href="solutions/expense-manager.html" class="mega-item">
+                                            <span class="mega-item-icon" style="background:rgba(21,70,192,0.1);">💼</span>
+                                            <div class="mega-item-info">
+                                                <span class="mega-item-title">Expense Admin</span>
+                                                <span class="mega-item-desc">Finance operations</span>
+                                            </div>
+                

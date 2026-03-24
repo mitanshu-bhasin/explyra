@@ -1,0 +1,18 @@
+/* TEAM */
+  Creator: Mitanshu Bhasin
+  Role: Full Stack Developer & AI Engineer
+  Contact: https://mitanshusupport.netlify.app
+  Location: Delhi, India
+
+/* SITE */
+  Last update: 2026/02/08
+  Language: English
+  Doctype: HTML5
+  Platform: Progressive Web App (PWA)
+
+/* TECHNOLOGY */
+  Frontend: HTML5, Tailwind CSS, Vanilla JS
+  Backend: Google Firebase (Auth, Firestore)
+  AI Engine: Groq API (Llama 3)
+  Hosting: Netlify
+  Tools: VS Code, Git

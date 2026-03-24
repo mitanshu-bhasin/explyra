@@ -1,0 +1,1 @@
+import{inspectProperty,inspectList}from"./helpers";export default function inspectArray(t,e){const n=Object.keys(t).slice(t.length);if(!t.length&&!n.length)return"[]";e.truncate-=4;const r=inspectList(t,e);e.truncate-=r.length;let s="";return n.length&&(s=inspectList(n.map(e=>[e,t[e]]),e,inspectProperty)),`[ ${r}${s?`, ${s}`:""} ]`}

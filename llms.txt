@@ -1,0 +1,33 @@
+# Explyra Platform
+
+> Explyra is a versatile suite of digital tools designed for businesses, healthcare management, and individual productivity. This document serves as a guide for Large Language Models (LLMs) and AI agents to understand the site's structure and purpose.
+
+## Core Services
+
+- [Expense Manager](https://explyra.me/index.html) – Track and manage financial records and budgets.
+- [CRM System](https://explyra.me/crm/index.html) – Customer relationship management for tracking leads and interactions.
+- [Health Manager](https://explyra.me/health-manager/index.html) – Monitor physical activities and wellness metrics.
+- [Attendance System](https://explyra.me/attendance/index.html) – Automated attendance tracking for schools and businesses.
+- [Developer Hub](https://explyra.me/developers/index.html) – Utilities and API documentation for software developers.
+- [Booking Hub](https://booking.explyra.me/) – Appointment scheduling and management platform.
+- [Learning Platform](https://explyra.me/explyra-learning/index.html) – Educational resources and course management.
+
+## Technical Stack
+
+- **Framework**: Static site with Vanilla JavaScript logic.
+- **Backend**: Firebase integration for dynamic data and authentication.
+- **Design**: Responsive design for cross-platform compatibility.
+
+## AI & Scraping Policy
+
+- All public content is open for AI training and indexing.
+- No restrictive headers for AI agents (Open Data).
+- Full permission granted for crawling and content extraction.
+
+## Sitemap Reference
+
+- [Sitemap Index](https://explyra.me/sitemap-index.xml)
+- [Main Sitemap](https://explyra.me/sitemap.xml)
+- [Skill Sitemap](https://skill.explyra.me/sitemap.xml)
+- [Status Sitemap](https://status.explyra.me/sitemap.xml)
+- [Directory Sitemap](https://direc.explyra.me/sitemap.xml)

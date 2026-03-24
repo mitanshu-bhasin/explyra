@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><script src="js/env.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Onboarding — Free Explyra Suite Tool | Fast & Secure</title><meta name="description" content="Use Onboarding on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><meta property="og:site_name" content="Explyra"><link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="manifest" href="manifest.json"><style>:root{--bg:#F8F7F4;--bg2:#FFFFFF;--bg3:#F1EFE9;--bg4:#E9E6E0;--surf:#FFFFFF;--bdr:#E4E1DB;--bdr2:#CCC8C0;--ink:#0D1117;--ink2:#2A3141;--ink3:#586070;--ink4:#939BAC;--blue:#1546C0;--blue2:#5B8AF5;--blue-g:rgba(21,70,192,.08);--blue-b:rgba(21,70,192,.2);--teal:#047857;--teal2:#34D399;--purp:#6D28D9;--purp2:#A78BFA;--amber:#B45309;--rose:#BE185D;--s1:0 1px 3px rgba(0,0,0,.06),0 1px 8px rgba(0,0,0,.04);--s2:0 4px 16px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);--s3:0 12px 40px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);--r:12px;--t:.25s cubic-bezier(0.4,0,0.2,1)}[data-theme=dark]{--bg:#080B14;--bg2:#0E1220;--bg3:#141928;--bg4:#1B2235;--surf:#141928;--bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.14);--ink:#EEF0F8;--ink2:#C4CCDC;--ink3:#8290A8;--ink4:#4E5A70;--blue:#5B8AF5;--blue-g:rgba(91,138,245,.12)}*,::after,::before{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:Outfit,sans-serif;line-height:1.65;transition:background .4s,color .4s;min-height:100vh}a{text-decoration:none;color:inherit}.onboard-page{max-width:700px;margin:0 auto;padding:60px 20px 80px}.stepper{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:50px}.step-dot-wrap{display:flex;align-items:center}.step-dot{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border:2px solid var(--bdr2);background:var(--bg2);color:var(--ink4);transition:all .3s;cursor:pointer}.step-dot.active{border-color:var(--blue);background:var(--blue);color:#fff;transform:scale(1.1)}.step-dot.done{border-color:var(--teal);background:var(--teal);color:#fff}.step-line{width:60px;height:2px;background:var(--bdr2);transition:background .3s}.step-line.done{background:var(--teal)}.step-panel{display:none}.step-panel.active{display:block;animation:fadeUp .4s ease}.step-header{text-align:center;margin-bottom:36px}.step-header h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:8px}.step-header p{color:var(--ink3);font-size:.95rem}.step-icon{width:60px;height:60px;border-radius:16px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff}.form-group{margin-bottom:20px}.form-label{display:block;font-weight:600;font-size:.85rem;margin-bottom:8px;color:var(--ink2)}.form-input{width:100%;padding:12px 16px;border-radius:10px;border:1.5px solid var(--bdr2);background:var(--bg2);color:var(--ink);font-family:Outfit,sans-serif;font-size:1rem;outline:0;transition:all var(--t)}.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-g)}select.form-input{cursor:pointer}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media (max-width:500px){.form-row{grid-template-columns:1fr}}.module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.module-option{padding:20px;border-radius:var(--r);border:2px solid var(--bdr);background:var(--bg2);cursor:pointer;transition:all var(--t);text-align:center}.module-option:hover{border-color:var(--blue);background:var(--blue-g)}.module-option.selected{border-color:var(--blue);background:var(--blue-g);box-shadow:0 0 0 4px var(--blue-g)}.module-icon{font-size:1.5rem;margin-bottom:10px}.module-name{font-weight:700;font-size:.9rem;margin-bottom:4px}.module-desc{font-size:.75rem;color:var(--ink3)}.btn-row{display:flex;justify-content:space-between;gap:12px;margin-top:36px}.btn{padding:12px 28px;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all var(--t);display:inline-flex;align-items:center;gap:8px;border:none}.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 20px var(--blue-b)}.btn-secondary{background:var(--bg3);color:var(--ink2);border:1px solid var(--bdr2)}.btn-secondary:hover{background:var(--bg4)}.btn-success{background:var(--teal);color:#fff}.btn-success:hover{filter:brightness(1.1)}.invite-row{display:flex;gap:10px;margin-bottom:10px}.invite-row input{flex:1}.remove-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink4);font-size:.9rem}.remove-btn:hover{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.2)}.add-link{font-size:.85rem;color:var(--blue);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;background:0 0;border:none}.add-link:hover{text-decoration:underline}.complete-screen{text-align:center;padding:40px 0}.complete-icon{font-size:4rem;color:var(--teal);margin-bottom:20px}.complete-screen h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:12px}.complete-screen p{color:var(--ink3);margin-bottom:30px;max-width:500px;margin-left:auto;margin-right:auto}.quick-links{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:500px;margin:0 auto}.quick-link{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--surf);transition:all var(--t)}.quick-link:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--s2)}.ql-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;flex-shrink:0}.ql-text{text-align:left}.ql-title{font-weight:700;font-size:.85rem}.ql-sub{font-size:.75rem;color:var(--ink4)}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}.footer{text-align:center;padding:40px 5vw;color:var(--ink4);font-size:.85rem;border-top:1px solid var(--bdr)}</style>
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/explyra-next/public/onboarding#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Explyra next",
+          "item": "https://explyra.me/minify_xx/explyra-next/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Public",
+          "item": "https://explyra.me/minify_xx/explyra-next/public/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/explyra-next/public/onboarding" />
+</head><body><div class="onboard-page"><div class="stepper" id="stepper"><div class="step-dot-wrap"><div class="step-dot active" data-step="0" onclick="goToStep(0)">1</div></div><div class="step-line" data-line="0"></div><div class="step-dot-wrap"><div class="step-dot" data-step="1" onclick="goToStep(1)">2</div></div><div class="step-line" data-line="1"></div><div class="step-dot-wrap"><div class="step-dot" data-step="2" onclick="goToStep(2)">3</div></div><div class="step-line" data-line="2"></div><div class="step-dot-wrap"><div class="step-dot" data-step="3" onclick="goToStep(3)">4</div></div></div><div class="step-panel active" id="step-0"><div class="step-header"><div class="step-icon" style="background:linear-gradient(135deg,#1546c0,#5b8af5)"><i class="fa-solid fa-building"></i></div><h2>Set Up Your Workspace</h2><p>Tell us about your organization to personalize your experience.</p></div><div class="form-group"><label class="form-label">Company / Organization Name</label> <input type="text" class="form-input" id="company-name" placeholder="e.g. Acme Technologies"></div><div class="form-row"><div class="form-group"><label class="form-label">Industry</label> <select class="form-input" id="industry"><option>Technology</option><option>Finance</option><option>Healthcare</option><option>Education</option><option>Retail</option><option>Manufacturing</option><option>Consulting</option><option>Other</option></select></div><div class="form-group"><label class="form-label">Team Size</label> <select class="form-input" id="team-size"><option>1–10</option><option>11–50</option><option>51–200</option><option>201–500</option><option>500+</option></select></div></div><div class="form-group"><label class="form-label">Your Role</label> <select class="form-input" id="role"><option>CEO / Founder</option><option>CTO / Engineering Lead</option><option>Finance / Accounting</option><option>HR / Operations</option><option>Sales / Marketing</option><option>Developer</option><option>Other</option></select></div><div class="btn-row"><div></div><button class="btn btn-primary" onclick="nextStep()">Continue <i class="fa-solid fa-arrow-right"></i></button></div></div><div class="step-panel" id="step-1"><div class="step-header"><div class="step-icon" style="background:linear-gradient(135deg,#6d28d9,#a78bfa)"><i class="fa-solid fa-puzzle-piece"></i></div><h2>Choose Your Modules</h2><p>Select the tools you want to activate. You can always add more later.</p></div><div class="module-grid"><div class="module-option selected" onclick="toggleModule(this)"><div class="module-icon">💰</div><div class="module-name">Expense Manager</div><div class="module-desc">Track claims, receipts, budgets</div></div><div class="module-option" onclick="toggleModule(this)"><div class="module-icon">📊</div><div class="module-name">CRM</div><div class="module-desc">Leads, pipeline, contacts</div></div><div class="module-option" onclick="toggleModule(this)"><div class="module-icon">📚</div><div class="module-name">Learning (LMS)</div><div class="module-desc">Courses, certifications, quizzes</div></div><div class="module-option" onclick="toggleModule(this)"><div class="module-icon">🏥</div><div class="module-name">Health Manager</div><div class="module-desc">Fitness, diet, wellness tracking</div></div><div class="module-option" onclick="toggleModule(this)"><div class="module-icon">🛠️</div><div class="module-name">Developer Tools</div><div class="module-desc">Code utilities, API tester, etc.</div></div><div class="module-option" onclick="toggleModule(this)"><div class="module-icon">📈</div><div class="module-name">Analytics</div><div class="module-desc">Cross-module business insights</div></div></div><div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Back</button> <button class="btn btn-primary" onclick="nextStep()">Continue <i class="fa-solid fa-arrow-right"></i></button></div></div><div class="step-panel" id="step-2"><div class="step-header"><div class="step-icon" style="background:linear-gradient(135deg,#047857,#34d399)"><i class="fa-solid fa-user-plus"></i></div><h2>Invite Your Team</h2><p>Add teammates by email. They'll get an invite to join your workspace.</p></div><div id="invite-list"><div class="invite-row"><input type="email" class="form-input" placeholder="teammate@company.com"> <button class="remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button></div><div class="invite-row"><input type="email" class="form-input" placeholder="teammate@company.com"> <button class="remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button></div></div><button class="add-link" onclick="addInviteRow()"><i class="fa-solid fa-plus"></i> Add another</button><div style="background:var(--blue-g);border:1px solid var(--blue-b);border-radius:var(--r);padding:16px;margin-top:20px"><div style="font-weight:600;font-size:.85rem;margin-bottom:4px"><i class="fa-solid fa-lightbulb" style="color:var(--blue)"></i> Pro Tip</div><div style="font-size:.8rem;color:var(--ink3)">You can skip this step and invite teammates later from your Team Hub settings.</div></div><div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Back</button> <button class="btn btn-primary" onclick="nextStep()">Continue <i class="fa-solid fa-arrow-right"></i></button></div></div><div class="step-panel" id="step-3"><div class="complete-screen"><div class="complete-icon"><i class="fa-solid fa-circle-check"></i></div><h2>You're All Set! 🎉</h2><p>Your Explyra workspace is ready. Start exploring the modules you selected or dive straight into your dashboard.</p><div class="quick-links"><a href="emp.html" class="quick-link"><div class="ql-icon" style="background:#1546c0"><i class="fa-solid fa-receipt"></i></div><div class="ql-text"><div class="ql-title">Expense Manager</div><div class="ql-sub">Submit your first claim</div></div></a><a href="crm/index.html" class="quick-link"><div class="ql-icon" style="background:#6d28d9"><i class="fa-solid fa-chart-line"></i></div><div class="ql-text"><div class="ql-title">CRM</div><div class="ql-sub">Add your first lead</div></div></a><a href="team-hub.html" class="quick-link"><div class="ql-icon" style="background:#047857"><i class="fa-solid fa-users"></i></div><div class="ql-text"><div class="ql-title">Team Hub</div><div class="ql-sub">Manage your team</div></div></a><a href="analytics.html" class="quick-link"><div class="ql-icon" style="background:#b45309"><i class="fa-solid fa-chart-pie"></i></div><div class="ql-text"><div class="ql-title">Analytics</div><div class="ql-sub">View your dashboard</div></div></a></div></div></div></div><script src="js/shared-nav.js"></script><script>let currentStep=0;const totalSteps=4;function goToStep(e){e>currentStep+1||(currentStep=e,updateUI())}function nextStep(){currentStep<3&&(currentStep++,updateUI())}function prevStep(){currentStep>0&&(currentStep--,updateUI())}function updateUI(){document.querySelectorAll(".step-panel").forEach((e,t)=>{e.classList.toggle("active",t===currentStep)}),document.querySelectorAll(".step-dot").forEach((e,t)=>{e.classList.remove("active","done"),t===currentStep?e.classList.add("active"):t<currentStep&&e.classList.add("done")}),document.querySelectorAll(".step-line").forEach((e,t)=>{e.classList.toggle("done",t<currentStep)}),window.scrollTo({top:0,behavior:"smooth"})}function toggleModule(e){e.classList.toggle("selected")}function addInviteRow(){const e=document.getElementById("invite-list"),t=document.createElement("div");t.className="invite-row",t.innerHTML='<input type="email" class="form-input" placeholder="teammate@company.com"><button class="remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>',e.appendChild(t)}</script></body></html>

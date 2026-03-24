@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=buildMatchMemberExpression;var _matchesPattern=require("./matchesPattern.js");function buildMatchMemberExpression(e,t){const r=e.split(".");return e=>(0,_matchesPattern.default)(e,r,t)}

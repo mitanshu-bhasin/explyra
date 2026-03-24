@@ -1,0 +1,1 @@
+var getName=require("get-func-name"),loupe=require("loupe"),config=require("../config");function inspect(e,r,n,o){var t={colors:o,depth:void 0===n?2:n,showHidden:r,truncate:config.truncateThreshold?config.truncateThreshold:1/0};return loupe.inspect(e,t)}module.exports=inspect;

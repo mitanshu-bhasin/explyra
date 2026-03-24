@@ -1,0 +1,1 @@
+import{truncate}from"./helpers";export default function inspectDate(t,e){const n=t.toJSON();if(null===n)return"Invalid Date";const r=n.split("T"),a=r[0];return e.stylize(`${a}T${truncate(r[1],e.truncate-a.length-1)}`,"date")}

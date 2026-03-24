@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_inheritsLoose;var _setPrototypeOf=require("./setPrototypeOf.js");function _inheritsLoose(e,t){e.prototype=Object.create(t.prototype),e.prototype.constructor=e,(0,_setPrototypeOf.default)(e,t)}

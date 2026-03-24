@@ -1,0 +1,1 @@
+export const minNodeVersion=10;export const parseVersion=r=>{const[,o,e,n]=/^v([0-9]+)\.([0-9]+)\.([0-9]+)/.exec(r)||[];return{major:Number(o),minor:Number(e),patch:Number(n)}};export const compareVersion=(r,o)=>r.major-o.major||r.minor-o.minor||r.patch-o.patch;

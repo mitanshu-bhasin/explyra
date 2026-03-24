@@ -1,0 +1,1 @@
+"use strict";function finalize(e){return Object.freeze(e)}function flattenToSet(e){const t=new Set,n=[e];for(;n.length>0;)for(const e of n.pop())Array.isArray(e)?n.push(e):t.add(e);return t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.finalize=finalize,exports.flattenToSet=flattenToSet;

@@ -1,0 +1,1 @@
+"use strict";function _setPrototypeOf(t,e){return exports.default=_setPrototypeOf=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(t,e){return t.__proto__=e,t},_setPrototypeOf(t,e)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_setPrototypeOf;

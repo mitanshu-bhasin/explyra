@@ -1,0 +1,1 @@
+"use strict";function inherit(e,t,r){t&&r&&(t[e]=Array.from(new Set([].concat(t[e],r[e]).filter(Boolean))))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=inherit;

@@ -1,0 +1,1 @@
+import{Transform}from"./transform";import{inherits}from"util";inherits(PassThrough,Transform);export default PassThrough;export function PassThrough(r){if(!(this instanceof PassThrough))return new PassThrough(r);Transform.call(this,r)}PassThrough.prototype._transform=function(r,o,s){s(null,r)};

@@ -1,0 +1,1 @@
+"use strict";function shallowEqual(e,t){const o=Object.keys(t);for(const r of o)if(e[r]!==t[r])return!1;return!0}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=shallowEqual;

@@ -1,0 +1,1 @@
+"use strict";function _initializerWarningHelper(e,r){throw new Error("Decorating class property failed. Please ensure that transform-class-properties is enabled and runs after the decorators transform.")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_initializerWarningHelper;

@@ -1,5 +1,5 @@
 {
-  "name": "Explyra — The All-in-One SaaS Ecosystem",
+  "name": "Explyra — The All-in-One SaaS Ecosystem for Developers & Teams",
   "short_name": "Explyra",
   "id": "/?source=pwa",
   "description": "The official portal for Explyra. Streamline your operations with our secure, efficient tools for expense management, CRM, and team productivity.",
@@ -8,13 +8,56 @@
   "display": "standalone",
   "display_override": [
     "window-controls-overlay",
+    "tabbed",
     "minimal-ui"
   ],
   "orientation": "any",
   "background_color": "#f8fafc",
   "theme_color": "#1546C0",
   "prefer_related_applications": false,
-  "related_applications": [],
+  "related_applications": [
+    {
+      "platform": "windows",
+      "url": "https://www.microsoft.com/store/apps/9N23DH28DJ4V",
+      "id": "9N23DH28DJ4V"
+    }
+  ],
+  "iarc_rating_id": "e58c735d-dead-4f2e-836e-58742d1396a5",
+  "scope_extensions": [
+    { "origin": "https://explyra.me" },
+    { "origin": "https://www.explyra.me" },
+    { "origin": "https://dashboard.explyra.me" }
+  ],
+  "file_handlers": [
+    {
+      "action": "/emp.html?action=import",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"]
+      },
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+explyra",
+      "url": "/?url=%s"
+    },
+    {
+      "protocol": "mailto",
+      "url": "/contact.html?email=%s"
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "/emp.html?action=new-note"
+  },
   "handle_links": "preferred",
   "categories": [
     "productivity",
@@ -23,8 +66,6 @@
     "developer tools",
     "utilities"
   ],
-  "lang": "en-US",
-  "dir": "ltr",
   "icons": [
     {
       "src": "favicon-32x32.png",
@@ -60,17 +101,24 @@
   "screenshots": [
     {
       "src": "assets/images/explyra_screenshot_1.png",
-      "sizes": "1280x720",
+      "sizes": "640x640",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Explyra Dashboard on Desktop"
     },
     {
       "src": "assets/images/explyra_screenshot_2.png",
-      "sizes": "720x1280",
+      "sizes": "640x640",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Explyra Mobile Experience"
+    },
+    {
+      "src": "assets/images/explyra_screenshot_3.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Explyra Advanced Features"
     }
   ],
   "shortcuts": [
@@ -138,4 +186,5 @@
     }
   }
 }
+
 

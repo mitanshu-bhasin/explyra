@@ -1,0 +1,1 @@
+module.exports=["[project]/booking/node_modules/@firebase/firestore/dist/common-abbd8850.node.mjs [app-ssr] (ecmascript) <export b4 as getFirestore>",e=>{"use strict";e.s(["getFirestore",()=>o.b4]);var o=e.i("[project]/booking/node_modules/@firebase/firestore/dist/common-abbd8850.node.mjs [app-ssr] (ecmascript)")}];

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline generator — Free Explyra Suite Tool | Fast & Secure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .form-input { 
+            width: 100%;
+            border: 2px solid #9ca3af; /* gray-400 - much darker */
+            background-color: #f9fafb; /* subtle light gray */
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            outline: none;
+            transition: all 0.2s;
+            color: #111827; /* gray-900 */
+        }
+        .form-input:focus {
+            border-color: #2563eb; /* blue-600 */
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+        label { 
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #4b5563; /* gray-600 */
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            margin-left: 0.25rem;
+        }
+    </style>
+
+    
+
+    
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/direc/offline-generator#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Direc",
+          "item": "https://explyra.me/minify_xx/direc/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900">Offline Generator 🚀</h1>
+                <p class="text-gray-500">Create listing pages without internet/Firebase</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetForm()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300 transition">Reset</button>
+                <div class="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold uppercase flex items-center gap-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Local Mode
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Input Form -->
+            <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-6">
+                <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-edit text-blue-500"></i> Business Details</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label>Business Name</label>
+                        <input type="text" id="name" class="form-input" placeholder="e.g. Coffee Hub" oninput="updateFilename()">
+                    </div>
+                    <div>
+                        <label>Category</label>
+                        <input type="text" id="category" class="form-input" placeholder="e.g. Cafe, Tech, Agency">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label>Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="contact@business.com">
+                    </div>
+                    <div>
+                        <label>Phone</label>
+                        <input type="text" id="phone" class="form-input" placeholder="+91 00000 00000">
+                    </div>
+                </div>
+
+                <div>
+                    <label>Website URL</label>
+                    <input type="url" id="website" class="form-input" placeholder="https://business.com">
+                </div>
+
+                <div>
+                    <label>Logo Image URL</label>
+                    <input type="text" id="logo" class="form-input" placeholder="https://path-to-logo.png">
+                </div>
+
+                <div>
+                    <label>Short Description</label>
+                    <input type="text" id="description" class="form-input" placeholder="Brief tagline of your business">
+                </div>
+
+                <div>
+                    <label>Full Services / Long Description</label>
+                    <textarea id="longDescription" class="form-input h-32" placeholder="Detail your services, history, etc."></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label>Address / Location</label>
+                        <input type="text" id="address" class="form-input" placeholder="Full address">
+                    </div>
+                    <div>
+                        <label>Opening Hours</label>
+                        <input type="text" id="openingHours" class="form-input" placeholder="Mo-Fr 09:00-17:00">
+                    </div>
+                </div>
+
+                <div>
+                    <label>Social Links (Comma separated)</label>
+                    <input type="text" id="sameAs" class="form-input" placeholder="https://fb.com/page, https://ig.com/user">
+                </div>
+
+                <div class="pt-4">
+                    <label>Custom Filename</label>
+                    <input type="text" id="filename" class="form-input font-mono text-sm bg-gray-50" placeholder="direc-business.html">
+                </div>
+
+                <button onclick="generate()" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700 transition shadow-xl shadow-blue-200 transform hover:-translate-y-1 active:scale-95">
+                    <i class="fas fa-magic mr-2"></i> PREPARE HTML CODE
+                </button>
+            </div>
+
+            <!-- Output Area -->
+            <div class="flex flex-col gap-6">
+                <!-- Preview Canvas (Optional Concept) -->
+                <div class="bg-gray-900 p-6 rounded-[2.5rem] shadow-2xl border border-gray-800 flex flex-col h-full min-h-[600px]">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            </div>
+                            <span class="text-gray-500 text-xs font-mono ml-2">generated_output.html</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="copyCode()" class="p-2 text-gray-400 hover:text-white transition" title="Copy"><i class="fas fa-copy"></i></button>
+                            <button onclick="downloadCode()" class="p-2 text-gray-400 hover:text-green-400 transition" title="Download"><i class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <textarea id="code-output" class="flex-grow bg-transparent text-blue-300 font-mono text-xs outline-none resize-none p-2 border border-gray-800 rounded-xl" readonly placeholder="Click 'Prepare HTML Code' to see the magic..."></textarea>
+                    
+                    <div class="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                        <p class="text-[10px] text-blue-300 leading-relaxed font-mono">
+                            <i class="fas fa-info-circle mr-1"></i> No internet needed. This tool works locally. Just fill the fields, copy the code, and save it as an .html file in your /listings folder.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generator Script -->
+    <script>
+        function updateFilename() {
+            const name = document.getElementById('name').value;
+            const filenameInput = document.getElementById('filename');
+            if (name) {
+                const slug = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+                filenameInput.value = `direc-${slug}.html`;
+            }
+        }
+
+        function generate() {
+            const data = {
+                name: document.getElementById('name').value || 'Business Name',
+                category: document.getElementById('category').value || 'Category',
+                email: document.getElementById('email').value || '',
+                phone: document.getElementById('phone').value || '',
+                website: document.getElementById('website').value || '',
+                logo: document.getElementById('logo').value || 'https://direc.explyra.me/assets/default-logo.png',
+                description: document.getElementById('description').value || 'No description provided.',
+                longDescription: document.getElementById('longDescription').value || '',
+                address: document.getElementById('address').value || '',
+                openingHours: document.getElementById('openingHours').value || 'Mo-Fr 09:00-17:00',
+                sameAs: document.getElementById('sameAs').value || ''
+            };
+
+            const filename = document.getElementById('filename').value || 'direc-business.html';
+            const title = `${data.name} | Explyra Directories`;
+            const desc = `${data.name} – Find services, contact details, business hours, website and more on Explyra Directories.`;
+            const keys = `${data.name}, ${data.category}, services, explyra directory`;
+            const url = `https://direc.explyra.me/listings/${filename}`;
+
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "LocalBusiness",
+                "name": data.name,
+                "image": data.logo,
+                "description": data.longDescription || data.description,
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": data.address,
+                    "addressLocality": data.address ? data.address.split(',')[0] : ""
+                },
+                "telephone": data.phone,
+                "url": data.website,
+                "openingHours": data.openingHours
+            };
+            if (data.sameAs) schema.sameAs = data.sameAs.split(',').map(u => u.trim());
+
+            const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="Use Offline generator on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <meta name="keywords" content="${keys}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://explyra.me/minify_xx/direc/offline-generator" />
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${desc}">
+    <meta property="og:image" content="${data.logo}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${desc}">
+    <meta name="twitter:image" content="${data.logo}">
+    
+</body>
+</html>

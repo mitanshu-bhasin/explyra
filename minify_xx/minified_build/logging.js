@@ -1,0 +1,1 @@
+"use strict";module.exports={info(...o){console.log(...o)},error(...o){console.error(...o)}};

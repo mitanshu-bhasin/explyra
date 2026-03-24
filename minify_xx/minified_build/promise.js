@@ -1,0 +1,1 @@
+let getPromiseValue=()=>"Promise{…}";try{const{getPromiseDetails:e,kPending:r,kRejected:i}=process.binding("util");Array.isArray(e(Promise.resolve()))&&(getPromiseValue=(s,t)=>{const[o,n]=e(s);return o===r?"Promise{<pending>}":`Promise${o===i?"!":""}{${t.inspect(n,t)}}`})}catch(e){}export default getPromiseValue;

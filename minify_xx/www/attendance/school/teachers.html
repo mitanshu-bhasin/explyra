@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Teachers — Free Explyra Suite Tool | Fast & Secure</title><script src="https://cdn.tailwindcss.com"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../css/common.css"><link rel="stylesheet" href="../shared/shared.css"><link rel="stylesheet" href="school.css"><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../../js/firebase-config.js" defer="defer"></script><script src="../shared/utils.js"></script><script src="../shared/auth.js"></script><script>document.addEventListener("DOMContentLoaded",()=>{initAuth("school"),hasAccess(["Principal"],"school")?setTimeout(renderTeachers,200):document.body.innerHTML='<div class="flex items-center justify-center h-screen bg-slate-50 text-slate-500 font-bold text-xl">Access Denied. Only Principals can manage Teachers. <a href="dashboard.html" class="text-indigo-600 ml-2 underline">Go back</a></div>'});let cachedTeachers=[];async function renderTeachers(){const e=getSession("school_session");if(!e)return;const t=document.getElementById("teachers-tbody");t.innerHTML='<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading teachers...</td></tr>';let a=[];if(void 0!==window.db&&e.schoolId)try{(await window.db.collection("employees").where("companyId","==",e.schoolId).get()).forEach(e=>a.push({firebaseId:e.id,...e.data()}))}catch(e){console.error("Firestore get teachers error",e)}else{const t=getAppData("school_attendance_data",{});a=t.teachers?.[e.schoolId]||[]}cachedTeachers=a,t.innerHTML="",0!==a.length?a.forEach((e,a)=>{const n=e.id||e.firebaseId,s=document.createElement("tr");s.className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition animate-fade-in",s.style.animationDelay=.05*a+"s",s.innerHTML=`\n                    <td class="px-6 py-4 font-mono text-sm">${n}</td>\n                    <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">\n                        <div class="flex items-center gap-3">\n                            <div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 flex items-center justify-center font-bold text-xs shadow-sm">${(e.name||"?").charAt(0)}</div>\n                            ${e.name||""}\n                        </div>\n                    </td>\n                    <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">${e.subject||""}</td>\n                    <td class="px-6 py-4 font-mono text-sm text-slate-500">${e.phone||"-"}</td>\n                    <td class="px-6 py-4">\n                        <div class="flex items-center gap-3">\n                            <button onclick="editTeacher('${n}')" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>\n                            <button onclick="deleteTeacher('${n}')" class="text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300 transition" title="Delete"><i class="fa-solid fa-trash-can"></i></button>\n                        </div>\n                    </td>\n                `,t.appendChild(s)}):t.innerHTML='<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No teachers found. Click \'Add Teacher\' to create one.</td></tr>'}function toggleModal(e){const t=document.getElementById("teacher-modal");e?(t.classList.remove("hidden"),document.getElementById("teacher-id").focus()):(t.classList.add("hidden"),document.getElementById("teacher-form").reset(),document.getElementById("teacher-id").readOnly=!1)}let currentEditingFirebaseId=null;async function handleSaveTeacher(e){e.preventDefault();const t=getSession("school_session"),a={id:document.getElementById("teacher-id").value.trim()||generateId(t.schoolId,"tch"),name:document.getElementById("teacher-name").value.trim(),subject:document.getElementById("teacher-subject").value.trim(),phone:document.getElementById("teacher-phone").value.trim(),companyId:t.schoolId},n=document.querySelector('#teacher-form button[type="submit"]'),s=n.innerHTML;if(n.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...',n.disabled=!0,void 0!==window.db&&t.schoolId)try{const e=window.db.collection("employees");if(currentEditingFirebaseId)await e.doc(currentEditingFirebaseId).set(a,{merge:!0});else{const n=await e.where("companyId","==",t.schoolId).where("id","==",a.id).get();n.empty?await e.add(a):await e.doc(n.docs[0].id).set(a,{merge:!0})}}catch(e){console.error("Firestore save teacher error",e)}else{const e=getAppData("school_attendance_data",{});e.teachers[t.schoolId]||(e.teachers[t.schoolId]=[]);const n=e.teachers[t.schoolId].findIndex(e=>e.id===a.id);n>=0?e.teachers[t.schoolId][n]=a:e.teachers[t.schoolId].push(a),saveAppData("school_attendance_data",e)}n.innerHTML=s,n.disabled=!1,toggleModal(!1),renderTeachers()}function editTeacher(e){const t=cachedTeachers.find(t=>t.id===e||t.firebaseId===e);t&&(currentEditingFirebaseId=t.firebaseId?t.firebaseId:null,document.getElementById("teacher-id").value=t.id||t.firebaseId||"",document.getElementById("teacher-id").readOnly=!0,document.getElementById("teacher-name").value=t.name||"",document.getElementById("teacher-subject").value=t.subject||"",document.getElementById("teacher-phone").value=t.phone||"",toggleModal(!0))}async function deleteTeacher(e){if(confirm("Are you sure you want to remove this teacher?")){const t=getSession("school_session"),a=cachedTeachers.find(t=>t.id===e||t.firebaseId===e);if(void 0!==window.db&&t.schoolId&&a?.firebaseId)try{await window.db.collection("employees").doc(a.firebaseId).delete()}catch(e){console.error("Firestore delete error",e)}else{const a=getAppData("school_attendance_data",{});a.teachers[t.schoolId]&&(a.teachers[t.schoolId]=a.teachers[t.schoolId].filter(t=>t.id!==e),saveAppData("school_attendance_data",a))}renderTeachers()}}</script><meta name="description" content="Use Teachers on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/www/attendance/school/teachers#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Www",
+          "item": "https://explyra.me/minify_xx/www/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Attendance",
+          "item": "https://explyra.me/minify_xx/www/attendance/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "School",
+          "item": "https://explyra.me/minify_xx/www/attendance/school/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/www/attendance/school/teachers" />
+</head><body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-['Outfit'] h-screen overflow-hidden flex transition-colors duration-300"><div id="teacher-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center hidden"><div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100 dark:border-slate-700 animate-fade-in relative"><button onclick="toggleModal(!1)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button><h2 class="text-2xl font-bold mb-6">Teacher Details</h2><form id="teacher-form" onsubmit="handleSaveTeacher(event)" class="space-y-4"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Teacher ID</label> <input type="text" id="teacher-id" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-teal-500 outline-none text-sm placeholder:text-slate-400 font-mono" placeholder="Auto-generated if blank"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label> <input type="text" id="teacher-name" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-teal-500 outline-none text-sm" required></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Primary Subject / Role</label> <input type="text" id="teacher-subject" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-teal-500 outline-none text-sm placeholder:text-slate-400" placeholder="e.g. Mathematics"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Contact Phone</label> <input type="text" id="teacher-phone" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-teal-500 outline-none text-sm font-mono placeholder:text-slate-400" placeholder="+1..."></div><div class="pt-4 flex justify-end gap-3"><button type="button" onclick="toggleModal(!1)" class="px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">Cancel</button> <button type="submit" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white text-sm font-bold rounded-lg shadow-md transition">Save Teacher</button></div></form></div></div><aside class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0 hidden md:flex z-20"><div class="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-700"><i class="fa-solid fa-graduation-cap text-indigo-600 text-xl mr-3"></i> <span class="font-bold text-lg tracking-tight">Edu Workspace</span></div><div class="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/20"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Active School</p><p id="sidebar-org-name" class="font-bold text-slate-700 dark:text-slate-200 truncate">Loading...</p></div><nav class="flex-1 p-4 space-y-1 overflow-y-auto"><a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition"><i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard </a><a href="teachers.html" class="principal-only flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-bold transition"><i class="fa-solid fa-chalkboard-user w-5 text-center"></i> Teachers </a><a href="students.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition"><i class="fa-solid fa-users w-5 text-center"></i> Students </a><a href="attendance.html" class="teacher-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition"><i class="fa-regular fa-calendar-check w-5 text-center"></i> Attendance </a><a href="analytics.html" class="teacher-auth flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition"><i class="fa-solid fa-chart-line w-5 text-center"></i> Analytics</a></nav><div class="p-4 border-t border-slate-200 dark:border-slate-700"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold"><i class="fa-solid fa-user"></i></div><div class="overflow-hidden"><p id="sidebar-user-name" class="text-sm font-bold truncate">User</p><p id="sidebar-user-role" class="text-[10px] font-bold uppercase text-slate-400 truncate">Role</p></div></div><button onclick='doLogout("school")' class="w-full flex items-center justify-center gap-2 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button></div></aside><main class="flex-1 flex flex-col h-screen overflow-hidden relative"><header class="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 shrink-0 z-10"><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><div class="flex items-center gap-3"><h1 class="text-lg font-bold">Manage Teachers</h1></div><div class="flex items-center gap-4"><button onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-moon dark:hidden"></i> <i class="fa-solid fa-sun hidden dark:block"></i></button></div></header><div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6"><div class="flex items-center justify-between animate-fade-in" style="animation-delay:.1s"><div><h2 class="text-2xl font-bold">Staff Directory</h2><p class="text-slate-500 text-sm mt-1">Add, edit, or remove teaching staff from the system.</p></div><button onclick="toggleModal(!0)" class="bg-teal-600 hover:bg-teal-500 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-teal-500/20 transition flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add Teacher</button></div><div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden animate-fade-in" style="animation-delay:.2s"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 font-bold"><tr><th class="px-6 py-4">ID / Staff Hash</th><th class="px-6 py-4">Name</th><th class="px-6 py-4">Role / Subject</th><th class="px-6 py-4">Contact</th><th class="px-6 py-4 w-24">Actions</th></tr></thead><tbody id="teachers-tbody" class="text-sm"></tbody></table></div></div></div></main></body></html>

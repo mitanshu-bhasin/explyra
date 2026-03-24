@@ -1,0 +1,1 @@
+"use strict";function _readOnlyError(r){throw new TypeError('"'+r+'" is read-only')}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_readOnlyError;

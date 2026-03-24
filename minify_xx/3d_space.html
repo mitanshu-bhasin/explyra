@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>3d_space — Free Explyra Suite Tool | Fast & Secure</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet"><style>:root{--accent:#00f2ff;--bg:#000000}body{margin:0;padding:0;overflow:hidden;background-color:var(--bg);font-family:Outfit,sans-serif;color:#fff}#canvas-container{width:100vw;height:100vh}#ui-layer{position:absolute;top:30px;left:30px;pointer-events:none;z-index:100}.title-group{border-left:4px solid var(--accent);padding-left:20px;background:linear-gradient(90deg,rgba(0,242,255,.1),transparent)}.title{font-size:24px;font-weight:900;letter-spacing:5px;text-transform:uppercase;text-shadow:0 0 20px rgba(0,242,255,.5)}.subtitle{font-size:12px;font-weight:400;letter-spacing:2px;opacity:.7;margin-top:5px}#controls{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;gap:20px;z-index:100;pointer-events:auto}.action-btn{background:rgba(0,0,0,.6);border:1px solid rgba(0,242,255,.3);color:#fff;padding:12px 30px;border-radius:50px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;cursor:pointer;backdrop-filter:blur(15px);transition:all .4s cubic-bezier(.175, .885, .32, 1.275);display:flex;align-items:center;gap:10px}.action-btn:hover{border-color:var(--accent);box-shadow:0 0 30px rgba(0,242,255,.4);transform:translateY(-5px) scale(1.05)}.action-btn.active{background:var(--accent);color:#000;border-color:#fff;box-shadow:0 0 40px rgba(0,242,255,.6)}#watermark{position:absolute;bottom:40px;right:40px;text-align:right;pointer-events:none;z-index:100}.wm-text{font-size:10px;letter-spacing:3px;opacity:.5;text-transform:uppercase}.wm-name{font-size:18px;font-weight:900;letter-spacing:6px;text-transform:uppercase;background:linear-gradient(45deg,#fff,var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(0, 242, 255, .5))}#hint{position:absolute;top:50%;left:30px;transform:translateY(-50%);display:none;flex-direction:column;gap:10px;opacity:.8}.hint-key{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:5px 10px;border-radius:4px;font-size:12px;width:40px;text-align:center}#crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;display:none;pointer-events:none;opacity:.6}#crosshair::after,#crosshair::before{content:'';position:absolute;background:var(--accent)}#crosshair::before{left:50%;top:0;width:2px;height:100%;transform:translateX(-50%)}#crosshair::after{top:50%;left:0;height:2px;width:100%;transform:translateY(-50%)}#overlay-fx{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;background:radial-gradient(circle,transparent 40%,rgba(0,0,0,.6));z-index:50}#loader{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;transition:opacity 1s ease}.loader-bar{width:200px;height:2px;background:rgba(255,255,255,.1);margin-top:20px;position:relative;overflow:hidden}.loader-progress{position:absolute;width:0%;height:100%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:load 4s forwards}@keyframes load{0%{width:0%}50%{width:70%}100%{width:100%}}#tooltip{position:absolute;background:rgba(0,5,10,.9);border:1px solid var(--accent);padding:15px;border-radius:4px;display:none;z-index:200;pointer-events:none;backdrop-filter:blur(10px);font-size:13px;line-height:1.5;box-shadow:0 20px 40px rgba(0,0,0,.8)}</style><meta name="description" content="Use 3d_space on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/3d_space#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/3d_space" />
+</head><body><div id="loader"><div class="title" style="font-size:18px">System Initializing</div><div class="loader-bar"><div class="loader-progress"></div></div></div><div id="overlay-fx"></div><div id="ui-layer"><div class="title-group"><div class="title">Explyra Prime</div><div class="subtitle">Deep Space Colony Alpha • Cinematic UI</div></div></div><div id="controls"><button id="btn-orbit" class="action-btn active"><span>🔭</span> Orbit View</button> <button id="btn-explore" class="action-btn"><span>🚀</span> Land to Explore</button></div><div id="hint"><div style="display:flex;align-items:center;gap:10px"><div class="hint-key">W</div>forward</div><div style="display:flex;align-items:center;gap:10px"><div class="hint-key">A</div>left</div><div style="display:flex;align-items:center;gap:10px"><div class="hint-key">S</div>backward</div><div style="display:flex;align-items:center;gap:10px"><div class="hint-key">D</div>right</div><div style="display:flex;align-items:center;gap:10px;margin-top:20px"><div class="hint-key" style="width:auto">ESC</div>exit menu</div></div><div id="crosshair"></div><div id="watermark"><div class="wm-text">Platform Genesis</div><div class="wm-name">Mitanshu Bhasin</div></div><div id="tooltip"></div><div id="canvas-container"></div><script type="importmap">{
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }</script><script type="module">import*as THREE from"three";import{OrbitControls}from"three/addons/controls/OrbitControls.js";import{PointerLockControls}from"three/addons/controls/PointerLockControls.js";import{EffectComposer}from"three/addons/postprocessing/EffectComposer.js";import{RenderPass}from"three/addons/postprocessing/RenderPass.js";import{UnrealBloomPass}from"three/addons/postprocessing/UnrealBloomPass.js";const ASSETS={facade1:"facade_1.png",facade2:"facade_2.png",facade3:"facade_3.png",billboard:"billboard.png",sky:"skybox.png"},PRODUCT_ZONES=[{name:"Explyra Suite",color:3900150,icon:"⚡",pos:{x:-70,z:-60}},{name:"Expense Manager",color:2278750,icon:"💰",pos:{x:-80,z:50}},{name:"Mailbox",color:15485081,icon:"📫",pos:{x:-40,z:-90}},{name:"Booking / CRM",color:16096779,icon:"📅",pos:{x:70,z:-70}},{name:"Developer Tools",color:440020,icon:"🛠️",pos:{x:90,z:60}},{name:"Learning Platform",color:9133302,icon:"🎓",pos:{x:50,z:90}},{name:"Cloud Tools",color:959977,icon:"☁️",pos:{x:-35,z:80}}];let scene,camera,renderer,composer,orbitControls,fpControls,clock=new THREE.Clock,mouse=new THREE.Vector2,raycaster=new THREE.Raycaster,isExplorer=!1,landing=!1,moveForward=!1,moveBackward=!1,moveLeft=!1,moveRight=!1,velocity=new THREE.Vector3,direction=new THREE.Vector3;const buildings=[],textures={},worldGroup=new THREE.Group;async function init(){scene=new THREE.Scene,camera=new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,.1,5e3),camera.position.set(200,150,200),renderer=new THREE.WebGLRenderer({antialias:!0,logarithmicDepthBuffer:!0}),renderer.setSize(window.innerWidth,window.innerHeight),renderer.setPixelRatio(Math.min(window.devicePixelRatio,2)),renderer.toneMapping=THREE.ACESFilmicToneMapping,renderer.toneMappingExposure=1,renderer.shadowMap.enabled=!0,renderer.shadowMap.type=THREE.PCFSoftShadowMap,document.getElementById("canvas-container").appendChild(renderer.domElement);const e=new RenderPass(scene,camera),o=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),1.5,.4,.85);o.threshold=.2,o.strength=1.2,o.radius=.55,composer=new EffectComposer(renderer),composer.addPass(e),composer.addPass(o),orbitControls=new OrbitControls(camera,renderer.domElement),orbitControls.enableDamping=!0,orbitControls.dampingFactor=.05,orbitControls.autoRotate=!0,orbitControls.autoRotateSpeed=.2,orbitControls.maxDistance=800,orbitControls.minDistance=100,fpControls=new PointerLockControls(camera,document.body),scene.add(fpControls.getObject());const t=new THREE.TextureLoader;for(const e in ASSETS)textures[e]=t.load(ASSETS[e]),e.includes("facade")&&(textures[e].wrapS=textures[e].wrapT=THREE.RepeatWrapping,textures[e].anisotropy=16);const n=new THREE.AmbientLight(16777215,.4);scene.add(n);const r=new THREE.DirectionalLight(16777215,3);r.position.set(200,400,200),r.castShadow=!0,r.shadow.mapSize.set(2048,2048),scene.add(r);const a=new THREE.PointLight(62207,20,300);a.position.set(0,50,0),scene.add(a),createSkybox(),createIsland(),createCity(),createProductDistricts(),createDrones(),scene.add(worldGroup),setupEvents(),animate(),setTimeout(()=>{document.getElementById("loader").style.opacity="0",setTimeout(()=>document.getElementById("loader").remove(),1e3)},4e3)}function createSkybox(){const e=new THREE.SphereGeometry(2500,60,40);e.scale(-1,1,1);const o=new THREE.MeshBasicMaterial({map:textures.sky}),t=new THREE.Mesh(e,o);scene.add(t)}function createIsland(){const e=new THREE.Group,o=new THREE.MeshPhysicalMaterial({color:659487,metalness:1,roughness:.1,reflectivity:1,clearcoat:1});for(let t=0;t<8;t++){const n=180-20*t,r=15,a=6+t,s=new THREE.Mesh(new THREE.CylinderGeometry(n,1.1*n,r,a),o);s.position.y=-r/2-20*t,s.rotation.y=.5*t,e.add(s);const i=new THREE.Mesh(new THREE.TorusGeometry(n,.6,8,64),new THREE.MeshBasicMaterial({color:62207}));i.rotation.x=Math.PI/2,i.position.y=-20*t-r,e.add(i)}const t=new THREE.Mesh(new THREE.CylinderGeometry(175,175,4,64),new THREE.MeshStandardMaterial({color:132631,metalness:.9,roughness:.1}));t.receiveShadow=!0,e.add(t);const n=new THREE.Mesh(new THREE.TorusGeometry(140,6,8,64),new THREE.MeshPhysicalMaterial({color:62207,transmission:.5,opacity:.8,transparent:!0}));n.rotation.x=Math.PI/2,n.position.y=2.5,e.add(n),worldGroup.add(e)}function createCity(){const e=["facade1","facade2","facade3"];for(let o=0;o<70;o++){const t=o/70*Math.PI*2,n=40+80*Math.random(),r=8+8*Math.random(),a=40+80*Math.random(),s=e[Math.floor(3*Math.random())],i=createBuilding(r,a,textures[s],s);i.position.set(Math.cos(t)*n,0,Math.sin(t)*n),worldGroup.add(i),buildings.push(i)}const o=createFounderSpire();worldGroup.add(o),buildings.push(o)}function createBuilding(e,o,t,n){const r=new THREE.Group,a=new THREE.BoxGeometry(e,o,e),s=new THREE.MeshPhysicalMaterial({map:t.clone(),metalness:.8,roughness:.1,bumpMap:t,bumpScale:.05,reflectivity:1});s.map.repeat.set(1,o/20);const i=new THREE.Mesh(a,s);if(i.position.y=o/2,i.castShadow=!0,r.add(i),Math.random()>.7){const e=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.billboard,transparent:!0,opacity:.8}));e.scale.set(20,10,1),e.position.y=o+10,r.add(e)}return r.userData={name:"Quantum Node",desc:"Hyper-realized data structure executing Explyra logic."},r}function createFounderSpire(){const e=new THREE.Group;for(let o=0;o<6;o++){const t=30,n=20-3*o,r=new THREE.Mesh(new THREE.BoxGeometry(n,t,n),new THREE.MeshPhysicalMaterial({map:textures.facade2.clone(),metalness:1,roughness:0}));r.material.map.repeat.set(1,2),r.position.y=t*o+t/2,e.add(r);const a=new THREE.Mesh(new THREE.BoxGeometry(n+1,1,n+1),new THREE.MeshBasicMaterial({color:62207}));a.position.y=t*(o+1),e.add(a)}const o=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.billboard,transparent:!0}));return o.scale.set(40,20,1),o.position.y=200,e.add(o),e.userData={name:"The Zenith Spire",desc:"Founder: Mitanshu Bhasin • The architectural heart of Explyra."},e}function createProductDistricts(){PRODUCT_ZONES.forEach(e=>{const o=new THREE.Group;o.position.set(e.pos.x,0,e.pos.z);const t=createBuilding(20,80,textures.facade2,"luxury");t.userData={name:e.name,desc:`The official interstellar hub for ${e.name}.`},o.add(t),buildings.push(t);const n=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,500),new THREE.MeshBasicMaterial({color:e.color,transparent:!0,opacity:.3}));n.position.y=250,o.add(n),worldGroup.add(o)})}function createDrones(){for(let e=0;e<50;e++){const e=new THREE.Mesh(new THREE.SphereGeometry(.5,8,8),new THREE.MeshBasicMaterial({color:62207}));e.userData={angle:Math.random()*Math.PI*2,speed:.01+.02*Math.random(),radius:140+20*Math.random(),h:5+30*Math.random()},worldGroup.add(e),vehicles.push(e)}}function setupEvents(){window.addEventListener("resize",()=>{camera.aspect=window.innerWidth/window.innerHeight,camera.updateProjectionMatrix(),renderer.setSize(window.innerWidth,window.innerHeight),composer.setSize(window.innerWidth,window.innerHeight)}),document.getElementById("btn-explore").addEventListener("click",()=>{fpControls.lock()}),document.getElementById("btn-orbit").addEventListener("click",()=>{isExplorer=!1,orbitControls.enabled=!0,camera.position.set(200,150,200),document.getElementById("btn-explore").classList.remove("active"),document.getElementById("btn-orbit").classList.add("active"),document.getElementById("hint").style.display="none",document.getElementById("crosshair").style.display="none"}),fpControls.addEventListener("lock",()=>{isExplorer=!0,orbitControls.enabled=!1,landing=!0,document.getElementById("btn-orbit").classList.remove("active"),document.getElementById("btn-explore").classList.add("active"),document.getElementById("hint").style.display="flex",document.getElementById("crosshair").style.display="block"}),document.addEventListener("keydown",e=>{"KeyW"===e.code&&(moveForward=!0),"KeyS"===e.code&&(moveBackward=!0),"KeyA"===e.code&&(moveLeft=!0),"KeyD"===e.code&&(moveRight=!0)}),document.addEventListener("keyup",e=>{"KeyW"===e.code&&(moveForward=!1),"KeyS"===e.code&&(moveBackward=!1),"KeyA"===e.code&&(moveLeft=!1),"KeyD"===e.code&&(moveRight=!1)}),window.addEventListener("mousemove",e=>{if(isExplorer)return;mouse.x=e.clientX/window.innerWidth*2-1,mouse.y=-e.clientY/window.innerHeight*2+1,raycaster.setFromCamera(mouse,camera);const o=raycaster.intersectObjects(buildings,!0);if(o.length>0){let t=o[0].object;for(;t.parent&&!buildings.includes(t);)t=t.parent;const n=document.getElementById("tooltip");n.style.display="block",n.style.left=e.clientX+20+"px",n.style.top=e.clientY+20+"px",n.innerHTML=`<b style="color:var(--accent)">${t.userData.name}</b><br>${t.userData.desc}`}else document.getElementById("tooltip").style.display="none"})}function animate(){requestAnimationFrame(animate);const e=clock.getDelta(),o=clock.getElapsedTime();if(isExplorer&&fpControls.isLocked)if(landing)camera.position.y-=.1*(camera.position.y-7),Math.abs(camera.position.y-7)<.1&&(landing=!1);else{velocity.x-=10*velocity.x*e,velocity.z-=10*velocity.z*e,direction.z=Number(moveForward)-Number(moveBackward),direction.x=Number(moveRight)-Number(moveLeft),direction.normalize(),(moveForward||moveBackward)&&(velocity.z-=400*direction.z*e),(moveLeft||moveRight)&&(velocity.x-=400*direction.x*e),fpControls.moveRight(-velocity.x*e),fpControls.moveForward(-velocity.z*e);Math.sqrt(camera.position.x**2+camera.position.z**2)>170&&camera.position.setLength(170)}vehicles.forEach(e=>{e.userData.angle+=e.userData.speed,e.position.x=Math.cos(e.userData.angle)*e.userData.radius,e.position.z=Math.sin(e.userData.angle)*e.userData.radius,e.position.y=e.userData.h+5*Math.sin(o+e.userData.angle)}),worldGroup.position.y=4*Math.sin(.5*o),isExplorer||orbitControls.update(),composer.render()}init()</script></body></html>

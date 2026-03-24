@@ -1,0 +1,1 @@
+import{WorkerEntrypoint}from"cloudflare:workers";var RPCProxyWorker=class extends WorkerEntrypoint{async fetch(r){return this.env.ROUTER_WORKER.fetch(r)}};export{RPCProxyWorker as default};

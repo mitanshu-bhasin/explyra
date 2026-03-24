@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Inventory — Free Explyra Suite Tool | Fast & Secure</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../js/firebase-config.js"></script><meta name="description" content="Use Inventory on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/explyra-next/public/manufacturing/inventory#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Explyra next",
+          "item": "https://explyra.me/minify_xx/explyra-next/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Public",
+          "item": "https://explyra.me/minify_xx/explyra-next/public/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Manufacturing",
+          "item": "https://explyra.me/minify_xx/explyra-next/public/manufacturing/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/explyra-next/public/manufacturing/inventory" />
+</head><body><div class="sidebar"></div><main class="main-content"><header class="reveal"><div><h1>Inventory <span class="grad">Management</span></h1><p style="color:var(--text-muted)">Track materials, components, and replenishment cycles.</p></div><div style="display:flex;gap:10px"><button class="btn"><i class="fas fa-barcode"></i> Scan Item</button> <button class="btn btn-primary" onclick='showActionModal("inventory")'><i class="fas fa-plus"></i> Add Material</button></div></header><section id="alertsContainer" class="reveal" style="margin-bottom:1.5rem"></section><section class="stat-grid reveal"><div class="glass-card"><div class="stat-label">Total Items</div><div class="stat-value" id="totalItems">0</div></div><div class="glass-card"><div class="stat-label">Low Stock Alerts</div><div class="stat-value" style="color:var(--danger)" id="lowStockCount">0</div></div><div class="glass-card"><div class="stat-label">Warehouse Capacity</div><div class="stat-value" id="warehouseCapacity">0%</div></div></section><section class="glass-card reveal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3>Stock Inventory</h3><div style="display:flex;gap:10px"><input type="text" placeholder="Filter materials..." class="btn" style="padding:.5rem 1rem;width:250px;text-align:left"></div></div><div class="table-container"><table id="inventoryTable"><thead><tr><th>Material Name</th><th>Type</th><th>Stock Quantity</th><th>Status</th><th>Supplier</th><th>Last Updated</th><th>Actions</th></tr></thead><tbody></tbody></table></div></section></main><script src="js/data-handler.js"></script><script src="js/main.js"></script><script>document.addEventListener("DOMContentLoaded",async()=>{const t=await DataHandler.fetchData("inventory"),e=t.filter(t=>t.quantity<t.reorderLevel);document.getElementById("totalItems").textContent=t.length,document.getElementById("lowStockCount").textContent=e.length;const n=Math.min(100,Math.round(t.length/20*100));document.getElementById("warehouseCapacity").textContent=`${n}%`;const o=document.getElementById("alertsContainer");e.length>0&&(o.innerHTML=e.map(t=>`\n                    <div class="glass-card" style="border-left: 4px solid var(--danger); padding: 1rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; background: rgba(239, 68, 68, 0.05);">\n                        <div style="display: flex; align-items: center; gap: 15px;">\n                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>\n                            <div>\n                                <div style="font-weight: 600;">Low Stock Alert: ${t.name}</div>\n                                <div style="font-size: 0.8rem; color: var(--text-muted);">Current level: ${t.quantity} | Reorder at: ${t.reorderLevel}</div>\n                            </div>\n                        </div>\n                        <button class="btn" style="font-size: 0.8rem;" onclick="reorderItem('${t.name}')">Reorder Now</button>\n                    </div>\n                `).join(""));document.querySelector("#inventoryTable tbody").innerHTML=t.map(t=>{const e=t.quantity<t.reorderLevel;return`\n                    <tr>\n                        <td><strong>${t.name}</strong></td>\n                        <td><span style="font-size: 0.8rem; background: var(--bg4); padding: 2px 8px; border-radius: 4px;">${t.type}</span></td>\n                        <td>${t.quantity} <span style="color: var(--text-muted); font-size: 0.8rem;">/ ${t.reorderLevel}</span></td>\n                        <td><span class="badge ${e?"badge-maintenance":"badge-active"}">${e?"Low Stock":"Optimal"}</span></td>\n                        <td>${t.supplier}</td>\n                        <td>${t.lastUpdated}</td>\n                        <td>\n                            <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('History feature coming soon!', 'info')"><i class="fas fa-history"></i></button>\n                            <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('Edit feature coming soon!', 'info')"><i class="fas fa-edit"></i></button>\n                            <button class="btn" style="padding: 5px 10px; color: var(--danger);" onclick="deleteItem('inventory', 'name', '${t.name}')"><i class="fas fa-trash"></i></button>\n                        </td>\n                    </tr>\n                `}).join("")}),window.reorderItem=t=>{window.showToast?window.showToast(`Purchase order sent for ${t}`,"success"):alert(`Purchase order sent for ${t}`)}</script></body></html>

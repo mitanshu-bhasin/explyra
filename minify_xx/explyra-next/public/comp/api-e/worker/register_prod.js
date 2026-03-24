@@ -1,0 +1,1 @@
+const url="https://explyra-api-e.mitanshu-bhasin.workers.dev/admin/register-company",body={id:"cmp_ksi8vqw87",admin_email:"explyras@gmail.com",admin_password:"mitanshu"};fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(e=>e.json()).then(e=>{console.log("Success:",e)}).catch(e=>{console.error("Error:",e)});

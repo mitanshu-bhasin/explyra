@@ -1,0 +1,1 @@
+"use strict";function _instanceof(e,n){return null!=n&&"undefined"!=typeof Symbol&&n[Symbol.hasInstance]?!!n[Symbol.hasInstance](e):e instanceof n}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_instanceof;

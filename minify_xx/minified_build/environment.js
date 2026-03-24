@@ -1,0 +1,1 @@
+"use strict";function getEnv(e="development"){return process.env.BABEL_ENV||process.env.NODE_ENV||e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getEnv=getEnv;

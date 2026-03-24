@@ -1,0 +1,1 @@
+"use strict";class LRUCache{constructor(){this.max=1e3,this.map=new Map}get(e){const t=this.map.get(e);return void 0===t?void 0:(this.map.delete(e),this.map.set(e,t),t)}delete(e){return this.map.delete(e)}set(e,t){if(!this.delete(e)&&void 0!==t){if(this.map.size>=this.max){const e=this.map.keys().next().value;this.delete(e)}this.map.set(e,t)}return this}}module.exports=LRUCache;

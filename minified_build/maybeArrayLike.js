@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_maybeArrayLike;var _arrayLikeToArray=require("./arrayLikeToArray.js");function _maybeArrayLike(r,e,a){if(e&&!Array.isArray(e)&&"number"==typeof e.length){var t=e.length;return(0,_arrayLikeToArray.default)(e,void 0!==a&&a<t?a:t)}return r(e,a)}

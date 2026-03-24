@@ -1,0 +1,1 @@
+"use strict";const DecorativeCursor=require("./decorative-cursor");module.exports=class extends DecorativeCursor{constructor(e,r){super(e),this.predicate=r}moveNext(){const e=this.predicate;for(;super.moveNext();)if(e(this.current))return!0;return!1}};

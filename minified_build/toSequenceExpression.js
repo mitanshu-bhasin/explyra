@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=toSequenceExpression;var _gatherSequenceExpressions=require("./gatherSequenceExpressions.js");function toSequenceExpression(e,s){if(null==e||!e.length)return;const r=[],n=(0,_gatherSequenceExpressions.default)(e,r);if(n){for(const e of r)s.push(e);return n}}

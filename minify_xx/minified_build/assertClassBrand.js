@@ -1,0 +1,1 @@
+"use strict";function _assertClassBrand(e,t,r){if("function"==typeof e?e===t:e.has(t))return arguments.length<3?t:r;throw new TypeError("Private element is not present on this object")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_assertClassBrand;

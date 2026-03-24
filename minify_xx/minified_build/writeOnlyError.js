@@ -1,0 +1,1 @@
+"use strict";function _writeOnlyError(r){throw new TypeError('"'+r+'" is write-only')}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_writeOnlyError;

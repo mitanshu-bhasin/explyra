@@ -1,0 +1,314 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Link shortener — Free Explyra Developer Hub Tool | Fast & Secure</title><meta name="description" content="Use Link shortener on Explyra Developer Hub. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><script src="https://unpkg.com/react@18/umd/react.production.min.js"></script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><style>:root{--bg:#F8F7F4;--bg2:#FFFFFF;--bg3:#F1EFE9;--bg4:#E9E6E0;--surf:#FFFFFF;--bdr:#E4E1DB;--bdr2:#CCC8C0;--ink:#0D1117;--ink2:#2A3141;--ink3:#586070;--ink4:#939BAC;--blue:#1546C0;--purp:#6D28D9;--r:12px;--t:.25s ease}[data-theme=dark]{--bg:#080B14;--bg2:#0E1220;--bg3:#141928;--bg4:#1B2235;--surf:#141928;--bdr:rgba(255, 255, 255, .07);--bdr2:rgba(255, 255, 255, .14);--ink:#EEF0F8;--ink2:#C4CCDC;--ink3:#8290A8;--ink4:#4E5A70;--blue:#5B8AF5;--purp:#A78BFA}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:Outfit,sans-serif;transition:background .4s,color .4s;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}nav{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;background:var(--bg2);border-bottom:1px solid var(--bdr)}.nav-logo{font-family:'Playfair Display',serif;font-weight:700;text-decoration:none;color:inherit;font-size:1.2rem}.back-link{font-size:.85rem;color:var(--ink3);transition:color .2s;text-decoration:none}.back-link:hover{color:var(--blue)}main{max-width:800px;margin:40px auto;padding:0 5vw;width:100%;flex:1}.tool-header{text-align:center;margin-bottom:3rem}.tool-header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem, 5vw, 3rem);margin-bottom:.5rem}.tool-header p{color:var(--ink3);font-weight:300}.card{background:var(--surf);border:1px solid var(--bdr);border-radius:20px;padding:2.5rem;box-shadow:0 10px 30px rgba(0,0,0,.02);position:relative;overflow:hidden}[data-theme=dark] .card{box-shadow:0 10px 30px rgba(0,0,0,.2)}.card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--blue),var(--purp))}.input-group{margin-bottom:2rem;position:relative}label{display:block;font-size:.8rem;font-weight:700;color:var(--ink4);text-transform:uppercase;margin-bottom:.8rem;letter-spacing:.05em}input{width:100%;padding:1.2rem 1.5rem;border-radius:12px;border:1px solid var(--bdr);background:var(--bg3);color:var(--ink2);font-family:inherit;font-size:1rem;outline:0;transition:border-color .2s,box-shadow .2s}input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(21,70,192,.1)}.btn-primary{width:100%;padding:1.2rem;border-radius:12px;border:none;background:var(--blue);color:#fff;font-weight:700;font-size:1.1rem;cursor:pointer;transition:transform .2s,filter .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(21,70,192,.3)}.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(21,70,192,.4)}.btn-primary:active{transform:translateY(0)}.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}.result-box{margin-top:2.5rem;padding-top:2.5rem;border-top:1px solid var(--bdr)}.short-url-container{display:flex;align-items:center;gap:1rem;background:var(--bg3);padding:1rem 1.5rem;border-radius:12px;border:1px dashed var(--bdr2)}code{font-family:monospace;font-size:1.1rem;font-weight:700;color:var(--blue);word-break:break-all;flex:1}.copy-btn{background:var(--surf);border:1px solid var(--bdr2);padding:.6rem 1.2rem;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s}.copy-btn.copied{background:#10b981;color:#fff;border-color:#10b981}.loader{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin 1s linear infinite;margin-right:10px}@keyframes spin{to{transform:rotate(360deg)}}.error-msg{margin-top:1rem;padding:1rem;border-radius:8px;background:rgba(239,68,68,.1);color:#ef4444;font-size:.85rem;font-weight:500;text-align:center}footer{padding:40px 5vw;text-align:center;border-top:1px solid var(--bdr);font-size:.85rem;color:var(--ink4)}.stats{margin-top:2rem;font-weight:600;font-size:.9rem;color:var(--ink3);display:flex;align-items:center;justify-content:center;gap:8px}.stats span{color:var(--blue)}[data-theme=dark] .history-item{border-color:rgba(255,255,255,.05)}.history{margin-top:3rem;background:var(--surf);padding:2rem;border-radius:20px;border:1px solid var(--bdr)}.history h3{font-size:.9rem;text-transform:uppercase;color:var(--ink4);margin-bottom:1.5rem;letter-spacing:.05em}.history-list{display:flex;flex-direction:column;gap:1rem}.history-item{display:flex;justify-content:space-between;align-items:center;padding:1.2rem;background:var(--bg3);border-radius:12px;font-size:.9rem}.history-url{font-weight:700;color:var(--blue);font-family:monospace}.history-orig{font-size:.75rem;color:var(--ink3);display:block;margin-top:4px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.history-copy-sm{background:var(--surf);border:1px solid var(--bdr2);padding:6px 12px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s}</style>
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/www/developers/link-shortener/index#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Www",
+          "item": "https://explyra.me/minify_xx/www/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Developers",
+          "item": "https://explyra.me/minify_xx/www/developers/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Link shortener",
+          "item": "https://explyra.me/minify_xx/www/developers/link-shortener/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://explyra.me/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Explyra?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Explyra is an all-in-one SaaS ecosystem designed for developers, companies, and teams to manage expenses, leads, health, and learning in one unified platform."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Explyra free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Explyra offers a comprehensive free tier for individual developers and small teams, with professional plans available for larger enterprises."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which platforms does Explyra support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Explyra is a cross-platform suite available on Web, Android, and iOS, providing a seamless experience across all devices."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/www/developers/link-shortener/index" />
+</head><body><nav><a href="../index.html" class="nav-logo">Explyra Devs</a> <a href="../index.html" class="back-link">← Back to Tools</a></nav><main id="root"></main><footer><p>&copy; 2026 Explyra Devs • Powered by LinkShortify Technology</p><div class="foot-socials-wrapper" style="margin-top:30px;text-align:center;border-top:1px solid rgba(136,136,136,.2);padding-top:20px"><p style="font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-2,#888);margin-bottom:12px">Follow Us</p><div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;">
+            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+            <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a>
+            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://ipecconsulting.org/" target="_blank" rel="noopener noreferrer">IPEC Consulting</a>
+        </div></div></footer><script type="text/babel" data-type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "REDACTED_KEY_2",
+            authDomain: "mitanshusupport.firebaseapp.com",
+            projectId: "mitanshusupport",
+            storageBucket: "mitanshusupport.firebasestorage.app",
+            messagingSenderId: "490917500459",
+            appId: "1:490917500459:web:139ebcf55996d4a28f3c6e",
+            measurementId: "G-SFPLDCXR66"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        function LinkShortener() {
+            const [longUrl, setLongUrl] = React.useState('');
+            const [shortCode, setShortCode] = React.useState(null);
+            const [loading, setLoading] = React.useState(false);
+            const [error, setError] = React.useState('');
+            const [copied, setCopied] = React.useState(false);
+            const [totalLinks, setTotalLinks] = React.useState(0);
+            const [user, setUser] = React.useState(null);
+            const [history, setHistory] = React.useState([]);
+
+            React.useEffect(() => {
+                const email = "mfskufgu@gmail.com";
+                const password = "Mitanshu@2009";
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((creds) => setUser(creds.user))
+                    .catch((err) => setError('Login failure: ' + err.message));
+
+                const statsRef = doc(db, 'metadata', 'stats');
+                getDoc(statsRef).then(snap => {
+                    if (snap.exists()) setTotalLinks(snap.data().lastIndex || 0);
+                });
+
+                const saved = JSON.parse(localStorage.getItem('explyra-link-history') || '[]');
+                setHistory(saved);
+            }, []);
+
+            const handleShorten = async (e) => {
+                e.preventDefault();
+                if (!longUrl) return;
+                setError('');
+                setShortCode(null);
+                setLoading(true);
+
+                let formatted = longUrl;
+                if (!/^https?:\/\//i.test(longUrl)) formatted = 'https://' + longUrl;
+
+                try {
+                    const newCode = await runTransaction(db, async (txn) => {
+                        const statsRef = doc(db, 'metadata', 'stats');
+                        const statsDoc = await txn.get(statsRef);
+                        let nextIndex = 10;
+                        if (statsDoc.exists()) {
+                            const current = statsDoc.data().lastIndex;
+                            nextIndex = (current < 10) ? 10 : current + 1;
+                        }
+                        const codeStr = nextIndex.toString();
+                        const linkRef = doc(db, 'shortLinks', codeStr);
+                        txn.set(statsRef, { lastIndex: nextIndex }, { merge: true });
+                        txn.set(linkRef, {
+                            originalUrl: formatted,
+                            createdAt: serverTimestamp(),
+                            createdBy: user ? user.uid : 'anon',
+                        });
+                        return codeStr;
+                    });
+
+                    setShortCode(newCode);
+                    setTotalLinks(parseInt(newCode));
+
+                    const newHistory = [{
+                        code: newCode,
+                        original: formatted,
+                        timestamp: Date.now()
+                    }, ...history].slice(0, 5);
+                    setHistory(newHistory);
+                    localStorage.setItem('explyra-link-history', JSON.stringify(newHistory));
+                } catch (err) {
+                    setError('Error: ' + err.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const copyToClipboard = (code, event) => {
+                const fullShortLink = `m78.netlify.app/${code}`;
+                navigator.clipboard.writeText(fullShortLink);
+                if (!event) setCopied(true);
+                const btn = event ? event.target : document.querySelector('.copy-btn');
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                if (!event) setTimeout(() => setCopied(false), 2000);
+                else setTimeout(() => btn.textContent = orig, 2000);
+            };
+
+            return (
+                <div>
+                    <div className="tool-header">
+                        <h1>Link Shortener</h1>
+                        <p>Generate clean, professional short links for any URL. Scalable and secure.</p>
+                    </div>
+
+                    <div className="card">
+                        <form onSubmit={handleShorten}>
+                            <div className="input-group">
+                                <label>Target URL</label>
+                                <input
+                                    type="text"
+                                    placeholder="paste your long link here..."
+                                    value={longUrl}
+                                    onChange={(e) => setLongUrl(e.target.value)}
+                                />
+                            </div>
+
+                            <button className="btn-primary" type="submit" disabled={loading || !longUrl}>
+                                {loading && <span className="loader"></span>}
+                                {loading ? 'Creating Link...' : 'Generate Short Link'}
+                            </button>
+                        </form>
+
+                        {error && <div className="error-msg">{error}</div>}
+
+                        {shortCode && (
+                            <div className="result-box">
+                                <label>Short Link Ready</label>
+                                <div className="short-url-container">
+                                    <code>m78.netlify.app/{shortCode}</code>
+                                    <button
+                                        className={`copy-btn ${copied ? 'copied' : ''}`}
+                                        onClick={() => copyToClipboard(shortCode)}
+                                    >
+                                        {copied ? 'Copied!' : 'Copy Link'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="stats">
+                        ⚡ Last created link internal index: <span>#{totalLinks}</span>
+                    </div>
+
+                    {history.length > 0 && (
+                        <div className="history">
+                            <h3>Recently Created Links</h3>
+                            <div className="history-list">
+                                {history.map((item, idx) => (
+                                    <div className="history-item" key={idx}>
+                                        <div>
+                                            <span className="history-url">m78.netlify.app/{item.code}</span>
+                                            <span className="history-orig">{item.original}</span>
+                                        </div>
+                                        <button className="history-copy-sm" onClick={(e) => copyToClipboard(item.code, e)}>Copy</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<LinkShortener />);
+
+        const savedTheme = localStorage.getItem('explyra-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);</script></body></html>

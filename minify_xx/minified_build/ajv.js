@@ -1,0 +1,1 @@
+"use strict";const Ajv=require("ajv"),metaSchema=require("ajv/lib/refs/json-schema-draft-04.json");module.exports=(e={})=>{const a=new Ajv({meta:!1,useDefaults:!0,validateSchema:!1,missingRefs:"ignore",verbose:!0,schemaId:"auto",...e});return a.addMetaSchema(metaSchema),a._opts.defaultMeta=metaSchema.id,a};

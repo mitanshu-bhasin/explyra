@@ -1,0 +1,1 @@
+var test=require("tape"),equal=require("../");test("0 values",function(e){e.ok(equal(0,0)," 0 ===  0"),e.ok(equal(0,0)," 0 === +0"),e.ok(equal(0,0),"+0 === +0"),e.ok(equal(-0,-0),"-0 === -0"),e.notOk(equal(-0,0),"-0 !==  0"),e.notOk(equal(-0,0),"-0 !== +0"),e.end()});

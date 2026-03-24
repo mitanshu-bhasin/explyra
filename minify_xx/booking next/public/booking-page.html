@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Booking page — Free Explyra Suite Tool | Fast & Secure</title><script>"dark"===(localStorage.getItem("explyra-theme")||"light")&&document.documentElement.classList.add("dark")</script><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="booking.css"><script src="js/env.js"></script><meta name="description" content="Use Booking page on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/booking next/public/booking-page#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Booking next",
+          "item": "https://explyra.me/minify_xx/booking next/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Public",
+          "item": "https://explyra.me/minify_xx/booking next/public/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/booking next/public/booking-page" />
+</head><body class="booking-page"><div class="booking-container"><div class="booking-layout"><div class="vercel-card profile-sidebar"><div class="profile-pic"><i class="fa-solid fa-user"></i></div><h2 id="ownerName" class="font-bold" style="font-size:1.15rem;margin-bottom:.25rem">Loading...</h2><p id="meetingDuration" style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem"><i class="fa-solid fa-clock"></i> -- min meeting</p><div style="text-align:left;font-size:.8rem;color:var(--text-secondary);margin-bottom:1.5rem;line-height:1.5">Select a date and time to schedule your meeting.</div><div style="border-top:1px solid var(--border-color);padding-top:1.25rem"><a href="track.html" style="color:var(--info);font-size:.8rem;font-weight:500"><i class="fa-solid fa-magnifying-glass"></i> Track Your Booking</a></div></div><div class="vercel-card"><div id="selection-view"><h3 class="font-bold" style="font-size:.95rem;margin-bottom:1.25rem">Select Date</h3><div id="dates-container" class="date-picker"></div><h3 class="font-bold" style="font-size:.95rem;margin-bottom:1.25rem">Select Time</h3><div id="slots-container" class="slot-grid"><div style="grid-column:1/-1;color:var(--text-secondary);font-size:.85rem;font-style:italic">Select a date first</div></div></div><div id="details-view" style="display:none"><button class="btn-ghost" style="margin-bottom:1.25rem;padding:.3rem .75rem" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Change Time</button><h3 class="font-bold" style="font-size:.95rem;margin-bottom:1.25rem">Enter Your Details</h3><form id="bookingForm"><div class="form-group"><label class="form-label">Full Name</label> <input type="text" id="cust-name" class="form-input" placeholder="Your Name" required></div><div class="form-group"><label class="form-label">Email Address</label> <input type="email" id="cust-email" class="form-input" placeholder="you@example.com" required></div><div class="form-group"><label class="form-label">Message (Optional)</label> <textarea id="cust-message" class="form-input" style="height:90px;resize:none" placeholder="Anything you'd like to share?"></textarea></div><div style="background:var(--bg-secondary);padding:1rem;border-radius:8px;margin-bottom:1.25rem;border:1px solid var(--border-color)"><div style="font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em">Meeting with <span id="summary-owner">...</span></div><div class="font-bold" style="margin-top:.25rem" id="summary-time">...</div></div><button type="submit" class="btn-primary btn-full btn-lg">Confirm Booking</button></form></div></div></div></div><div id="successOverlay" class="confirmation-overlay"><div style="font-size:3.5rem;color:var(--success);margin-bottom:1.25rem"><i class="fa-solid fa-circle-check"></i></div><h1 class="font-bold" style="font-size:1.5rem;margin-bottom:.75rem">Booking Confirmed!</h1><p style="color:var(--text-secondary);max-width:400px;margin-bottom:1.5rem;font-size:.9rem">Your meeting has been scheduled. A confirmation email placeholder has been sent.</p><div style="background:var(--bg-secondary);padding:1.25rem 2.5rem;border-radius:var(--radius-md);border:1px dashed var(--border-color)"><div style="font-size:.75rem;color:var(--text-secondary);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.05em">Your Booking Code</div><div id="bookingCode" style="font-size:1.75rem;font-weight:800;color:var(--text-primary);letter-spacing:2px">BOOK-XXXXX</div></div><div style="margin-top:1.5rem;display:flex;gap:.75rem"><button class="btn-secondary btn-lg" onclick="window.location.reload()">Book Another</button> <a href="track.html" class="btn-primary btn-lg" style="text-decoration:none">Track Now</a></div></div><script type="module">import{db,saveBooking,getProfileByUsername}from"./booking.js";import{generateSlots,getAvailableDates}from"./calendar.js";import{collection,query,where,getDocs}from"https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";const urlParams=new URLSearchParams(window.location.search);let username=urlParams.get("u");if(!username){const e=window.location.pathname.split("/").filter(e=>e);e.length>0&&("booking"===e[0]&&e[1]?username=e[1].replace(".html",""):"booking"!==e[0]&&(username=e[0].replace(".html","")),["dashboard","login","track","index","booking-page"].includes(username)&&(username=null))}let profile=null,selectedDate=null,selectedSlot=null;async function initPage(){profile=await getProfileByUsername(username),profile?(document.getElementById("ownerName").innerText=profile.displayName,document.getElementById("summary-owner").innerText=profile.displayName,document.getElementById("meetingDuration").innerHTML=`<i class="fa-solid fa-clock"></i> ${profile.meetingDuration} min meeting`,renderDates()):document.body.innerHTML='<div style="text-align:center; padding:5rem; color: var(--text-primary);"><h1 style="font-weight:700;">User Not Found</h1><p style="color: var(--text-secondary); margin-top: 0.5rem;">This booking page does not exist.</p></div>'}function renderDates(){const e=document.getElementById("dates-container");getAvailableDates(profile.availableSlots.days).forEach(t=>{const n=new Date(t),o=document.createElement("div");o.className="date-btn",o.innerHTML=`\n                    <div style="font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">${n.toLocaleDateString("en-US",{weekday:"short"})}</div>\n                    <div style="font-size: 1.1rem; font-weight: 700; margin: 0.125rem 0;">${n.getDate()}</div>\n                    <div style="font-size: 0.65rem; color: var(--text-secondary);">${n.toLocaleDateString("en-US",{month:"short"})}</div>\n                `,o.onclick=()=>selectDate(t,o),e.appendChild(o)})}async function selectDate(e,t){selectedDate=e,document.querySelectorAll(".date-btn").forEach(e=>e.classList.remove("active")),t.classList.add("active");const n=query(collection(db,"bookings"),where("userId","==",profile.id),where("status","==","upcoming")),o=await getDocs(n),a=[];o.forEach(t=>{const n=t.data();n.scheduledAt.startsWith(e)&&a.push(n.scheduledAt)}),renderSlots(a)}function renderSlots(e){const t=document.getElementById("slots-container");t.innerHTML="";const n=generateSlots(profile.availableSlots.start,profile.availableSlots.end,profile.meetingDuration,e);0!==n.length?n.forEach(e=>{const n=document.createElement("button");n.className="slot-btn",n.innerText=e,n.onclick=()=>selectSlot(e),t.appendChild(n)}):t.innerHTML='<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem; font-style: italic;">No available slots for this day</div>'}function selectSlot(e){selectedSlot=e,document.getElementById("selection-view").style.display="none",document.getElementById("details-view").style.display="block";const t=new Date(selectedDate+"T"+selectedSlot).toLocaleString([],{weekday:"long",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"});document.getElementById("summary-time").innerText=t}username?initPage():document.body.innerHTML='<div style="text-align:center; padding:5rem; color: var(--text-primary);"><h1 style="font-weight:700;">Invalid Booking URL</h1><p style="color: var(--text-secondary); margin-top: 0.5rem;">Please check the link and try again.</p></div>',window.goBack=()=>{document.getElementById("selection-view").style.display="block",document.getElementById("details-view").style.display="none"},document.getElementById("bookingForm").addEventListener("submit",async e=>{e.preventDefault();const t=e.target.querySelector("button");t.disabled=!0,t.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Confirming...';const n={userId:profile.id,ownerName:profile.displayName,customerName:document.getElementById("cust-name").value,customerEmail:document.getElementById("cust-email").value,customerMessage:document.getElementById("cust-message").value,scheduledAt:selectedDate+"T"+selectedSlot,duration:profile.meetingDuration,meetingLink:""};try{const e=await saveBooking(n);document.getElementById("bookingCode").innerText=e,document.getElementById("successOverlay").classList.add("active"),console.log(`Notification: New booking created for ${profile.displayName} with ${n.customerName} at ${n.scheduledAt}. Code: ${e}`)}catch(e){console.error("Booking error:",e),alert("Failed to create booking. Please try again."),t.disabled=!1,t.innerText="Confirm Booking"}})</script></body></html>

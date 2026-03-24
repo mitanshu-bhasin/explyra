@@ -1,0 +1,1 @@
+"use strict";let Stringifier=require("./stringifier");function stringify(i,r){new Stringifier(r).stringify(i)}module.exports=stringify,stringify.default=stringify;

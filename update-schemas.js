@@ -49,9 +49,11 @@ try {
     process.exit(1);
 }
 
-const centralOrg = centralData["@graph"].find(i => i["@type"] === "Organization");
-const centralWebSite = centralData["@graph"].find(i => i["@type"] === "WebSite");
-const centralSoftware = centralData["@graph"].find(i => i["@type"] === "SoftwareApplication");
+const centralGraph = centralData["@graph"] || [];
+const centralOrg = centralGraph.find(i => i["@type"] === "Organization");
+const centralWebSite = centralGraph.find(i => i["@type"] === "WebSite");
+const centralApps = centralGraph.filter(i => i["@type"] === "SoftwareApplication");
+const centralVideo = centralGraph.find(i => i["@type"] === "VideoObject");
 
 const socialLinks = centralOrg.sameAs || [];
 
@@ -123,13 +125,30 @@ function updateFile(filePath) {
         try {
             let parsed = JSON.parse(match[1]);
             let items = parsed["@graph"] || (Array.isArray(parsed) ? parsed : [parsed]);
+            const CENTRAL_IDS = ["#organization", "#website", "#software", "#expense", "#crm", "#health", "#learning", "#trailer"];
             items = items.filter(item => {
-                const id = item["@id"] || "";
-                return !id.includes("#organization") && !id.includes("#website") && !id.includes("#software") && item["@type"] !== "BreadcrumbList";
+                const id = item["@id"] || item["id"] || "";
+                const isCentral = CENTRAL_IDS.some(cid => id.includes(cid));
+                return !isCentral && item["@type"] !== "BreadcrumbList";
+            });
+            items.forEach(item => {
+                if (item.id && !item["@id"]) {
+                    item["@id"] = item.id;
+                    delete item.id;
+                }
             });
             existingSchemas.push(...items);
         } catch (e) {}
     }
+
+    // Prepare Clean URL for Canonical and Breadcrumbs
+    let cleanPath = fileName;
+    if (isHome) {
+        cleanPath = '';
+    } else {
+        cleanPath = cleanPath.replace(/\.html$/, '');
+    }
+    const cleanUrl = `https://explyra.me/${cleanPath}`;
 
     // 2. Clear all existing JSON-LD tags
     content = content.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\n?/g, '');
@@ -138,13 +157,14 @@ function updateFile(filePath) {
     let pageGraph = [centralOrg];
     if (isHome) {
         if (centralWebSite) pageGraph.push(centralWebSite);
-        if (centralSoftware) pageGraph.push(centralSoftware);
+        if (centralApps.length > 0) pageGraph.push(...centralApps);
+        if (centralVideo) pageGraph.push(centralVideo);
     } else {
         const parts = fileName.split('/').filter(p => !p.endsWith('.html'));
         if (parts.length > 0) {
             const breadcrumb = {
                 "@type": "BreadcrumbList",
-                "@id": `https://explyra.me/${fileName}#breadcrumb`,
+                "@id": `${cleanUrl}#breadcrumb`,
                 "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://explyra.me/" }]
             };
             let currentUrl = "https://explyra.me/";
@@ -164,8 +184,10 @@ function updateFile(filePath) {
     pageGraph.push(...existingSchemas);
 
     const schemaTag = `\n    <script type="application/ld+json">\n${JSON.stringify({ "@context": "https://schema.org", "@graph": pageGraph }, null, 2)}\n    </script>\n`;
-    if (content.includes('</head>')) {
-        content = content.replace('</head>', schemaTag + '</head>');
+    // Ensure content matches the regex
+    const headEndRegex = /<\/head>/i;
+    if (headEndRegex.test(content)) {
+        content = content.replace(headEndRegex, schemaTag + '</head>');
     }
 
     // 4. UNIVERSAL HYPER-DETAILED METADATA
@@ -185,6 +207,14 @@ function updateFile(filePath) {
         content = content.replace(descRegex, `<meta name="description" content="${meta.desc}">`);
     } else if (content.includes('</head>')) {
         content = content.replace('</head>', `    <meta name="description" content="${meta.desc}">\n</head>`);
+    }
+
+    // Update Canonical
+    const canonicalRegex = /<link\s+rel=["']canonical["']\s+href=["'][^"']+["']\s*\/?>/i;
+    if (content.match(canonicalRegex)) {
+        content = content.replace(canonicalRegex, `<link rel="canonical" href="${cleanUrl}" />`);
+    } else if (content.includes('</head>')) {
+        content = content.replace('</head>', `    <link rel="canonical" href="${cleanUrl}" />\n</head>`);
     }
 
     // 5. Footer Socials

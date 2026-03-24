@@ -1,0 +1,1 @@
+"use strict";module.exports=require("./core").extend({implicit:[require("../type/timestamp"),require("../type/merge")],explicit:[require("../type/binary"),require("../type/omap"),require("../type/pairs"),require("../type/set")]});

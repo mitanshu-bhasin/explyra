@@ -1,0 +1,1 @@
+"use strict";function _classCheckPrivateStaticFieldDescriptor(e,t){if(void 0===e)throw new TypeError("attempted to "+t+" private static field before its declaration")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classCheckPrivateStaticFieldDescriptor;

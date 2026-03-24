@@ -1,0 +1,1 @@
+"use strict";module.exports=(e,t)=>{const s=e||[],l=[];let i={label:void 0,items:[s.first]};return s.forEach(e=>{const s=t(e);i.label!==s&&i.items.length?l.push(i={label:s,items:[e]}):i.items.push(e)}),l};

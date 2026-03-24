@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=toBindingIdentifierName;var _toIdentifier=require("./toIdentifier.js");function toBindingIdentifierName(e){return"eval"!==(e=(0,_toIdentifier.default)(e))&&"arguments"!==e||(e="_"+e),e}

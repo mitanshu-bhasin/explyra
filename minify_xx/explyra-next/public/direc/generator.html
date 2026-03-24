@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator — Free Explyra Suite Tool | Fast & Secure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.825rem; }
+    </style>
+
+    
+
+    
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/explyra-next/public/direc/generator#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Explyra next",
+          "item": "https://explyra.me/minify_xx/explyra-next/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Public",
+          "item": "https://explyra.me/minify_xx/explyra-next/public/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Direc",
+          "item": "https://explyra.me/minify_xx/explyra-next/public/direc/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <a href="admin.html" class="text-blue-600 font-bold mb-2 inline-block hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Admin</a>
+                <h1 class="text-3xl font-extrabold text-gray-900">Static Page Generator</h1>
+                <p class="text-gray-500">Generate SEO-optimized HTML for business listings</p>
+            </div>
+            <div id="status-badge" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-bold uppercase">
+                Loading Data...
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Source Data & Config -->
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-database text-blue-500"></i> Business Information</h3>
+                    <div id="form-preview" class="space-y-3 text-sm">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-cog text-blue-500"></i> Generation Options</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">File Name</label>
+                            <input type="text" id="filename-input" class="w-full border p-2 rounded-lg font-mono text-sm" placeholder="direc-acme.html">
+                        </div>
+                        <button id="generate-btn" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                            <i class="fas fa-magic mr-2"></i> Generate HTML Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Output -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold flex items-center gap-2"><i class="fas fa-code text-purple-500"></i> Generated Code</h3>
+                    <div class="flex gap-2">
+                        <button id="copy-btn" class="p-2 text-gray-500 hover:text-blue-600 transition" title="Copy Code"><i class="fas fa-copy"></i></button>
+                        <button id="download-btn" class="p-2 text-gray-500 hover:text-green-600 transition" title="Download File"><i class="fas fa-download"></i></button>
+                    </div>
+                </div>
+                <div class="flex-1 min-h-[400px]">
+                    <textarea id="code-output" class="w-full h-full bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-xs focus:outline-none" readonly></textarea>
+                </div>
+                <div class="mt-4 p-4 bg-yellow-50 border border-yellow-100 rounded-xl">
+                    <p class="text-xs text-yellow-800">
+                        <i class="fas fa-exclamation-triangle mr-1"></i> 
+                        <strong>Note:</strong> Static files must be saved in the <code>/listings</code> folder. After saving, remember to update the <code>manifest.json</code> and sitemap.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const businessId = urlParams.get('id');
+            const formPreview = document.getElementById('form-preview');
+            const filenameInput = document.getElementById('filename-input');
+            const codeOutput = document.getElementById('code-output');
+            const generateBtn = document.getElementById('generate-btn');
+            const statusBadge = document.getElementById('status-badge');
+            
+            let businessData = null;
+
+            if (!businessId) {
+                alert('No business ID provided.');
+                return;
+            }
+
+            // Fetch Data
+            try {
+                const doc = await db.collection('business_submissions').doc(businessId).get();
+                if (!doc.exists) throw new Error('Business not found');
+                businessData = doc.data();
+                statusBadge.textContent = businessData.name;
+                statusBadge.className = 'px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-bold uppercase';
+                
+                renderPreview(businessData);
+                
+                // Suggested Filename
+                const suggestedName = 'direc-' + businessData.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.html';
+                filenameInput.value = suggestedName;
+
+            } catch (error) {
+                console.error(error);
+                statusBadge.textContent = 'Error';
+                statusBadge.className = 'px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-bold uppercase';
+            }
+
+            function renderPreview(data) {
+                const fields = [
+                    { label: 'Name', value: data.name },
+                    { label: 'Category', value: data.category },
+                    { label: 'Email', value: data.email },
+                    { label: 'Phone', value: data.phone || 'N/A' },
+                    { label: 'Website', value: data.website || 'N/A' },
+                    { label: 'Address', value: data.address || 'N/A' },
+                    { label: 'Social', value: data.sameAs || 'N/A' },
+                    { label: 'Hours', value: data.openingHours || 'N/A' },
+                    { label: 'Description', value: data.description },
+                    { label: 'Long Desc', value: (data.longDescription || '').substring(0, 50) + '...' }
+                ];
+                
+                formPreview.innerHTML = fields.map(f => `
+                    <div class="flex justify-between border-b border-gray-50 pb-2">
+                        <span class="text-gray-400 uppercase font-bold text-[10px]">${f.label}</span>
+                        <span class="font-medium text-right text-xs truncate max-w-[200px]">${f.value}</span>
+                    </div>
+                `).join('');
+            }
+
+            generateBtn.addEventListener('click', () => {
+                const html = generateHTML(businessData);
+                codeOutput.value = html;
+            });
+
+            function generateHTML(data) {
+                const bId = data.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                const filename = `direc-${bId}.html`;
+                const title = `${data.name} | Explyra Directories`;
+                const desc = `${data.name} – Find services, contact details, business hours, website and more on Explyra Directories.`;
+                const keys = `${data.name}, ${data.category}, services, ${data.location || ''}, explyra directory`;
+                const url = `https://direc.explyra.me/listings/${filename}`;
+                
+                const schema = {
+                    "@context": "https://schema.org",
+                    "@type": "LocalBusiness",
+                    "name": data.name,
+                    "image": data.logo || "https://direc.explyra.me/assets/default-logo.png",
+                    "description": data.longDescription || data.description,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": data.address || "",
+                        "addressLocality": data.location ? data.location.split(',')[0] : "",
+                        "addressCountry": "US"
+                    },
+                    "telephone": data.phone || "",
+                    "url": data.website || "",
+                    "openingHours": data.openingHours || "Mo-Fr 09:00-17:00"
+                };
+
+                if (data.sameAs) schema.sameAs = data.sameAs.split(',').map(u => u.trim());
+
+                let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="Use Generator on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <meta name="keywords" content="${keys}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://explyra.me/minify_xx/explyra-next/public/direc/generator" />
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${desc}">
+    <meta property="og:image" content="${data.logo || ''}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${desc}">
+    <meta name="twitter:image" content="${data.logo || ''}">
+    
+</body>
+</html>

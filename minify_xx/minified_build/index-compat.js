@@ -1,0 +1,1 @@
+const{cac:cac,CAC:CAC,Command:Command}=require("./dist/index");module.exports=cac,Object.assign(module.exports,{default:cac,cac:cac,CAC:CAC,Command:Command});

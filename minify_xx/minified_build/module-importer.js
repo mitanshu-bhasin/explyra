@@ -1,0 +1,1 @@
+import{createRequire}from"module";import{fileURLToPath}from"url";import{dirname}from"path";const __filename=fileURLToPath(import.meta.url),__dirname=dirname(__filename),require=createRequire(__dirname+"/"),{ModuleImporter:ModuleImporter}=require("./module-importer.cjs");export{ModuleImporter};

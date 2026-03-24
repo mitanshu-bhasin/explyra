@@ -1,0 +1,1 @@
+import Variable from"./variable.js";class Definition{constructor(i,t,e,n,r,s){this.type=i,this.name=t,this.node=e,this.parent=n,this.index=r,this.kind=s}}class ParameterDefinition extends Definition{constructor(i,t,e,n){super(Variable.Parameter,i,t,null,e,null),this.rest=n}}export{ParameterDefinition,Definition};

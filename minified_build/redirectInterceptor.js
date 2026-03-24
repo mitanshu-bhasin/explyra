@@ -1,0 +1,1 @@
+"use strict";const RedirectHandler=require("../handler/RedirectHandler");function createRedirectInterceptor({maxRedirections:e}){return r=>function(t,n){const{maxRedirections:c=e}=t;if(!c)return r(t,n);const i=new RedirectHandler(r,c,t,n);return t={...t,maxRedirections:0},r(t,i)}}module.exports=createRedirectInterceptor;

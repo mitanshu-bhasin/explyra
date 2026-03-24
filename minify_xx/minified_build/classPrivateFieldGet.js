@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classPrivateFieldGet;var _classApplyDescriptorGet=require("classApplyDescriptorGet"),_classPrivateFieldGet2=require("classPrivateFieldGet2");function _classPrivateFieldGet(e,t){var r=_classPrivateFieldGet2(t,e);return _classApplyDescriptorGet(e,r)}

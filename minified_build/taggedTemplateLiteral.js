@@ -1,0 +1,1 @@
+"use strict";function _taggedTemplateLiteral(e,t){return t||(t=e.slice(0)),Object.freeze(Object.defineProperties(e,{raw:{value:Object.freeze(t)}}))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_taggedTemplateLiteral;

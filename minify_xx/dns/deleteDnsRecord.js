@@ -1,0 +1,1 @@
+const deleteDnsRecord=async(e,r)=>{if(!auth.currentUser)throw new Error("Authentication required");try{await cloudflareService.deleteRecord(r)}catch(e){console.error("Cloudflare deletion failed, proceeding with Firestore cleanup",e)}return await db.collection("dns_records").doc(e).delete(),!0};window.deleteDnsRecord=deleteDnsRecord;

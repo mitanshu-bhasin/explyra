@@ -1,0 +1,1 @@
+"use strict";function _identity(e){return e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_identity;

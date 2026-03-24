@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isLet;var _index=require("./generated/index.js"),BLOCK_SCOPED_SYMBOL=Symbol.for("var used to be block scoped");function isLet(e){return(0,_index.isVariableDeclaration)(e)&&("var"!==e.kind||e[BLOCK_SCOPED_SYMBOL])}

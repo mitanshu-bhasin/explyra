@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=toComputedKey;var _index=require("../validators/generated/index.js"),_index2=require("../builders/generated/index.js");function toComputedKey(e,r=e.key||e.property){return!e.computed&&(0,_index.isIdentifier)(r)&&(r=(0,_index2.stringLiteral)(r.name)),r}

@@ -1,0 +1,21 @@
+{
+  "name": "Explyra Console",
+  "short_name": "ExplyraOS",
+  "description": "Premium Ecosystem Operating System Mockup",
+  "start_url": "explyra-os.html",
+  "display": "standalone",
+  "background_color": "#05070A",
+  "theme_color": "#00F2FF",
+  "icons": [
+    {
+      "src": "nobg.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "nobg.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

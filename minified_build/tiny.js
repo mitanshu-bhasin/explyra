@@ -1,0 +1,1 @@
+import{HonoBase}from"../hono-base.js";import{PatternRouter}from"../router/pattern-router/index.js";var Hono=class extends HonoBase{constructor(o={}){super(o),this.router=new PatternRouter}};export{Hono};

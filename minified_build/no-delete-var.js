@@ -1,0 +1,1 @@
+"use strict";module.exports={meta:{type:"suggestion",docs:{description:"Disallow deleting variables",recommended:!0,url:"https://eslint.org/docs/latest/rules/no-delete-var"},schema:[],messages:{unexpected:"Variables should not be deleted."}},create:e=>({UnaryExpression(t){"delete"===t.operator&&"Identifier"===t.argument.type&&e.report({node:t,messageId:"unexpected"})}})};

@@ -1,0 +1,3 @@
+"use strict";const{maxUnsigned16Bit:maxUnsigned16Bit}=require("./constants");let crypto;try{crypto=require("crypto")}catch{}class WebsocketFrameSend{constructor(t){this.frameData=t,this.maskKey=crypto.randomBytes(4)}createFrame(t){const e=this.frameData?.byteLength??0;let s=e,a=6;e>maxUnsigned16Bit?(a+=8,s=127):e>125&&(a+=2,s=126);const r=Buffer.allocUnsafe(e+a);r[0]=r[1]=0,r[0]|=128,r[0]=(240&r[0])+t,
+/*! ws. MIT License. Einar Otto Stangvik <einaros@gmail.com> */
+r[a-4]=this.maskKey[0],r[a-3]=this.maskKey[1],r[a-2]=this.maskKey[2],r[a-1]=this.maskKey[3],r[1]=s,126===s?r.writeUInt16BE(e,2):127===s&&(r[2]=r[3]=0,r.writeUIntBE(e,4,6)),r[1]|=128;for(let t=0;t<e;t++)r[a+t]=this.frameData[t]^this.maskKey[t%4];return r}}module.exports={WebsocketFrameSend:WebsocketFrameSend};

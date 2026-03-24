@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classPrivateMethodInitSpec;var _checkPrivateRedeclaration=require("./checkPrivateRedeclaration.js");function _classPrivateMethodInitSpec(e,t){(0,_checkPrivateRedeclaration.default)(e,t),t.add(e)}

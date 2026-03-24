@@ -1,7 +1,7 @@
-// Explyra PWA Service Worker v9.2
+// Explyra PWA Service Worker v9.3
 // Production-tuned for faster loads across Android, iOS, Windows, Linux, and macOS.
 
-const VERSION = 'v9.2';
+const VERSION = 'v9.3';
 const CORE_CACHE = `explyra-core-${VERSION}`;
 const ASSET_CACHE = `explyra-assets-${VERSION}`;
 const CDN_CACHE = `explyra-cdn-${VERSION}`;
@@ -12,6 +12,9 @@ const PRECACHE_ASSETS = [
     './index.html',
     './offline.html',
     './manifest.json',
+    './css/main.css',
+    './css/index.css',
+    './js/main.js',
     './assets/images/explyra_logo.png',
     './android-chrome-192x192.png',
     './android-chrome-512x512.png'
@@ -154,14 +157,29 @@ function fetchWithTimeout(request, timeoutMs) {
     });
 }
 
+// Background Sync for replaying offline actions
 self.addEventListener('sync', (event) => {
     if (event.tag === 'sync-expenses') {
         event.waitUntil(processPendingExpenses());
     }
 });
 
+// Periodic Background Sync for data freshness
+self.addEventListener('periodicsync', (event) => {
+    if (event.tag === 'content-sync') {
+        event.waitUntil(updateContent());
+    }
+});
+
 async function processPendingExpenses() {
-    // Placeholder for offline queue replay.
+    console.log('[SW] Processing pending expenses...');
+    // Real implementation would involve IndexedDB or a queue.
+}
+
+async function updateContent() {
+    console.log('[SW] Performing periodic content sync...');
+    const cache = await caches.open(CORE_CACHE);
+    await cache.add('./index.html');
 }
 
 self.addEventListener('push', (event) => {
@@ -185,4 +203,5 @@ self.addEventListener('notificationclick', (event) => {
         })
     );
 });
+
 

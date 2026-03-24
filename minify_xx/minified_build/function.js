@@ -1,0 +1,1 @@
+import getFunctionName from"get-func-name";import{truncate}from"./helpers";export default function inspectFunction(t,n){const e=getFunctionName(t);return e?n.stylize(`[Function ${truncate(e,n.truncate-11)}]`,"special"):n.stylize("[Function]","special")}

@@ -1,0 +1,1 @@
+"use strict";module.exports=class{constructor(){this.current=null}getOneToken(){return this.moveNext()?this.current:null}getAllTokens(){const t=[];for(;this.moveNext();)t.push(this.current);return t}moveNext(){throw new Error("Not implemented.")}};

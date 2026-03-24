@@ -1,0 +1,1 @@
+import*as intrinsicElementTags from"./intrinsic-element/components.js";var jsxDEV=(e,n,t)=>("string"==typeof e&&intrinsicElementTags[e]&&(e=intrinsicElementTags[e]),{tag:e,type:e,props:n,key:t,ref:n.ref}),Fragment=e=>jsxDEV("",e,void 0);export{Fragment,jsxDEV};

@@ -1,0 +1,1 @@
+"use strict";const numeric=/^[0-9]+$/,compareIdentifiers=(e,r)=>{if("number"==typeof e&&"number"==typeof r)return e===r?0:e<r?-1:1;const t=numeric.test(e),i=numeric.test(r);return t&&i&&(e=+e,r=+r),e===r?0:t&&!i?-1:i&&!t?1:e<r?-1:1},rcompareIdentifiers=(e,r)=>compareIdentifiers(r,e);module.exports={compareIdentifiers:compareIdentifiers,rcompareIdentifiers:rcompareIdentifiers};

@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>3d — Free Explyra Suite Tool | Fast & Secure</title><style>body{margin:0;padding:0;overflow:hidden;background-color:#050810;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}#canvas-container{width:100vw;height:100vh}#ui-overlay{position:absolute;top:20px;left:20px;pointer-events:none;z-index:10}.label{color:#00f2ff;font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-shadow:0 0 10px rgba(0,242,255,.5);margin-bottom:5px}.sub-label{color:rgba(255,255,255,.5);font-size:12px;font-weight:400}#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;text-align:center;z-index:100;transition:opacity .5s ease}.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top:3px solid #00f2ff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}#tooltip{position:absolute;background:rgba(11,15,26,.9);border:1px solid #00f2ff;padding:8px 12px;color:#fff;font-size:12px;pointer-events:none;display:none;z-index:100;border-radius:4px;box-shadow:0 0 15px rgba(0,242,255,.3)}</style><meta name="description" content="Use 3d on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    
+    
+    
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://explyra.me/#organization",
+      "name": "Explyra",
+      "alternateName": "Explyra Suite",
+      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+      "url": "https://explyra.me/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://explyra.me/assets/images/explyra_logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Okhla Phase III",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110020",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://x.com/explyras",
+        "https://www.facebook.com/profile.php?id=61584891033070",
+        "https://www.instagram.com/explyras",
+        "https://www.youtube.com/@explyras",
+        "https://www.linkedin.com/company/explyra/",
+        "https://www.threads.com/@explyras",
+        "https://github.com/Explyra",
+        "https://ipecconsulting.org/"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8076108584",
+          "contactType": "customer service",
+          "email": "explyra@gmail.com",
+          "availableLanguage": [
+            "en",
+            "hi"
+          ],
+          "contactOption": "TollFree",
+          "areaServed": "IN"
+        }
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Mitanshu Bhasin",
+        "url": "https://explyra.me/mitanshu.html"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "New Delhi, India"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://explyra.me/minify_xx/3d#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://explyra.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Minify_xx",
+          "item": "https://explyra.me/minify_xx/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="canonical" href="https://explyra.me/minify_xx/3d" />
+</head><body><div id="loader"><div class="spinner"></div><div class="label">Assembling High-Detail City</div></div><div id="ui-overlay"><div class="label">Explyra Ecosystem Preview</div><div class="sub-label">Futuristic Tech City Ecosystem • High-Detail Architecture • v3.5.0</div></div><div id="tooltip"></div><div id="canvas-container"></div><script type="importmap">{
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }</script><script type="module">import*as THREE from"three";import{OrbitControls}from"three/addons/controls/OrbitControls.js";import{EffectComposer}from"three/addons/postprocessing/EffectComposer.js";import{RenderPass}from"three/addons/postprocessing/RenderPass.js";import{UnrealBloomPass}from"three/addons/postprocessing/UnrealBloomPass.js";const COLORS={bg:329744,primary:62207,secondary:7340287,accent:16777215,cityBase:1711662,grid:1712435,road:1382694,window:62207},PRODUCT_ZONES=[{name:"Explyra Suite",color:62207,pos:{x:-35,z:-25}},{name:"Expense Manager",color:65416,pos:{x:-40,z:15}},{name:"Mailbox",color:16711884,pos:{x:-15,z:-45}},{name:"Booking / CRM",color:16763904,pos:{x:35,z:-30}},{name:"Developer Tools",color:26367,pos:{x:45,z:20}},{name:"Learning Platform",color:11141375,pos:{x:15,z:45}},{name:"Cloud Tools",color:62207,pos:{x:-10,z:35}}];let scene,camera,renderer,composer,controls,raycaster,clock=new THREE.Clock,mouse=new THREE.Vector2,hoveredObject=null;const worldGroup=new THREE.Group,cityGroup=new THREE.Group,vehicleGroup=new THREE.Group,dataParticlesGroup=new THREE.Group,drones=[],buildings=[],shuttles=[];function init(){scene=new THREE.Scene,scene.background=new THREE.Color(COLORS.bg),scene.fog=new THREE.FogExp2(COLORS.bg,.01),camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,1e3),camera.position.set(70,50,70),renderer=new THREE.WebGLRenderer({antialias:!0}),renderer.setSize(window.innerWidth,window.innerHeight),renderer.setPixelRatio(window.devicePixelRatio),renderer.toneMapping=THREE.ReinhardToneMapping,renderer.toneMappingExposure=1.2,document.getElementById("canvas-container").appendChild(renderer.domElement),controls=new OrbitControls(camera,renderer.domElement),controls.enableDamping=!0,controls.dampingFactor=.05,controls.autoRotate=!0,controls.autoRotateSpeed=.2,controls.maxDistance=200,controls.minDistance=30,scene.add(new THREE.AmbientLight(16777215,.1));const e=new THREE.DirectionalLight(16777215,1.2);e.position.set(50,100,50),scene.add(e);const t=new THREE.PointLight(COLORS.primary,40,120);t.position.set(-50,30,-50),scene.add(t);const o=new THREE.PointLight(COLORS.secondary,30,120);o.position.set(50,30,50),scene.add(o);const n=new RenderPass(scene,camera),r=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),1.5,.4,.85);r.threshold=.15,r.strength=1.4,r.radius=.5,composer=new EffectComposer(renderer),composer.addPass(n),composer.addPass(r),raycaster=new THREE.Raycaster,createFloatingIsland(),createCentralCity(),createProductZones(),createRoads(),createSkyEffects(),scene.add(worldGroup),window.addEventListener("resize",onWindowResize),window.addEventListener("mousemove",onMouseMove),setTimeout(()=>{document.getElementById("loader").style.opacity="0",setTimeout(()=>document.getElementById("loader").remove(),500)},2500)}function createFloatingIsland(){const e=new THREE.CylinderGeometry(80,70,6,32),t=new THREE.MeshStandardMaterial({color:1053210,metalness:.9,roughness:.1}),o=new THREE.Mesh(e,t);o.position.y=-3,worldGroup.add(o);const n=new THREE.GridHelper(160,80,COLORS.primary,COLORS.grid);n.position.y=.1,n.material.opacity=.25,n.material.transparent=!0,worldGroup.add(n);const r=new THREE.ConeGeometry(78,30,32);r.translate(0,-15,0);const a=new THREE.MeshStandardMaterial({color:328968,roughness:1}),s=new THREE.Mesh(r,a);s.rotation.x=Math.PI,s.position.y=-6,worldGroup.add(s)}function createCentralCity(){for(let e=0;e<30;e++){const t=e/30*Math.PI*2,o=5+20*Math.random(),n=Math.cos(t)*o,r=Math.sin(t)*o,a=createDetailedBuilding(2.5+2*Math.random(),8+20*Math.random(),2.5+2*Math.random(),COLORS.primary);a.position.set(n,0,r),cityGroup.add(a),buildings.push(a)}const e=createFounderTower();e.position.set(0,0,0),cityGroup.add(e),buildings.push(e),worldGroup.add(cityGroup)}function createDetailedBuilding(e,t,o,n){const r=new THREE.Group,a=.7*t,s=new THREE.BoxGeometry(e,a,o),i=new THREE.MeshStandardMaterial({color:658452,metalness:1,roughness:.05}),d=new THREE.Mesh(s,i);d.position.y=a/2,r.add(d);const c=.3*t,l=new THREE.CylinderGeometry(.3*e,.5*e,c,4),E=new THREE.Mesh(l,i);E.position.y=a+c/2,E.rotation.y=Math.PI/4,r.add(E);const p=new THREE.BoxGeometry(e+.1,.1,o+.1),u=new THREE.MeshBasicMaterial({color:n});for(let e=1;e<6;e++){const t=new THREE.Mesh(p,u);t.position.y=a/6*e,r.add(t)}const h=new THREE.BoxGeometry(.8*e,.2,.8*o),w=new THREE.Mesh(h,i);w.position.y=a+.1,r.add(w);const m=new THREE.BoxGeometry(1.1*e,1.05*t,1.1*o),R=new THREE.MeshBasicMaterial({color:16777215,transparent:!0,opacity:0,wireframe:!0}),T=new THREE.Mesh(m,R);return T.position.y=t/2,T.name="hover_shell",r.add(T),r.userData={name:"City Hub Cluster",description:"Office Space for Registered Entities"},r}function createFounderTower(){const e=new THREE.Group;for(let t=0;t<4;t++){const o=10,n=5-.8*t,r=new THREE.CylinderGeometry(n-.5,n,o,4),a=new THREE.MeshStandardMaterial({color:1712435,metalness:1,roughness:.02}),s=new THREE.Mesh(r,a);s.position.y=o*t+o/2,s.rotation.y=Math.PI/4,e.add(s);const i=new THREE.TorusGeometry(n+.1,.05,8,32),d=new THREE.MeshBasicMaterial({color:16777215}),c=new THREE.Mesh(i,d);c.rotation.x=Math.PI/2,c.position.y=o*t,e.add(c)}const t=new THREE.Mesh(new THREE.CylinderGeometry(.05,.1,8),new THREE.MeshBasicMaterial({color:16777215}));t.position.y=44,e.add(t);const o=new THREE.Mesh(new THREE.BoxGeometry(6,48,6),new THREE.MeshBasicMaterial({transparent:!0,opacity:0,wireframe:!0}));o.name="hover_shell",o.position.y=20,e.add(o),e.userData={name:"Founder Tower: Mitanshu Bhasin",description:"Central Nexus of the Explyra Ecosystem"};const n=createLabel("Founder Tower");return n.position.set(0,50,0),e.add(n),e}function createProductZones(){PRODUCT_ZONES.forEach(e=>{const t=new THREE.Group;t.position.set(e.pos.x,0,e.pos.z);const o=12+8*Math.random(),n=createDetailedBuilding(4,o,4,e.color);n.userData={name:e.name,description:"Official Explyra "+e.name+" Hub"},t.add(n),buildings.push(n);const r=createLabel(e.name);r.position.set(0,o+5,0),t.add(r);const a=createUIPanel(e.color);a.position.set(4,.6*o,0),t.add(a),createDataFlow(new THREE.Vector3(e.pos.x,2,e.pos.z),new THREE.Vector3(0,2,0),e.color),worldGroup.add(t)})}function createDataFlow(e,t,o){const n=[];for(let o=0;o<=20;o++){const r=o/20,a=(new THREE.Vector3).lerpVectors(e,t,r);a.y+=2*Math.sin(r*Math.PI),n.push(a)}const r=new THREE.CatmullRomCurve3(n),a=(new THREE.BufferGeometry).setFromPoints(r.getPoints(50)),s=new THREE.LineBasicMaterial({color:o,transparent:!0,opacity:.1}),i=new THREE.Line(a,s);worldGroup.add(i);for(let e=0;e<3;e++){const e=new THREE.Mesh(new THREE.SphereGeometry(.2,8,8),new THREE.MeshBasicMaterial({color:o}));e.userData={curve:r,t:Math.random(),speed:.005+.01*Math.random()},dataParticlesGroup.add(e)}}function createRoads(){const e=new THREE.TorusGeometry(50,2,8,64),t=new THREE.MeshStandardMaterial({color:COLORS.road,roughness:.3}),o=new THREE.Mesh(e,t);o.rotation.x=Math.PI/2,o.position.y=.05,worldGroup.add(o);for(let e=0;e<20;e++){const e=createShuttleModel(Math.random()>.5?COLORS.primary:COLORS.secondary);e.userData={angle:Math.random()*Math.PI*2,speed:.004+.008*Math.random(),radius:50+2*(Math.random()-.5)},shuttles.push(e),vehicleGroup.add(e)}worldGroup.add(vehicleGroup),worldGroup.add(dataParticlesGroup)}function createShuttleModel(e){const t=new THREE.Group,o=new THREE.CylinderGeometry(.3,.5,2,8),n=new THREE.MeshStandardMaterial({color:2236979,metalness:1,roughness:.1}),r=new THREE.Mesh(o,n);r.rotation.x=Math.PI/2,t.add(r);const a=new THREE.SphereGeometry(.4,8,8),s=new THREE.MeshStandardMaterial({color:62207,transparent:!0,opacity:.6}),i=new THREE.Mesh(a,s);i.position.z=.8,i.position.y=.2,t.add(i);const d=new THREE.BoxGeometry(.1,.1,.1),c=new THREE.Mesh(d,new THREE.MeshBasicMaterial({color:16777215}));c.position.set(.2,0,1),t.add(c);const l=new THREE.Mesh(d,new THREE.MeshBasicMaterial({color:16711680}));return l.position.set(0,0,-1),t.add(l),t}function createSkyEffects(){const e=new THREE.BufferGeometry,t=[];for(let e=0;e<4e3;e++)t.push(500*(Math.random()-.5),500*(Math.random()-.5),500*(Math.random()-.5));e.setAttribute("position",new THREE.Float32BufferAttribute(t,3));const o=new THREE.PointsMaterial({color:16777215,size:.15});scene.add(new THREE.Points(e,o));for(let e=0;e<15;e++){const e=new THREE.Group;e.add(new THREE.Mesh(new THREE.OctahedronGeometry(.3),new THREE.MeshBasicMaterial({color:16777215,wireframe:!0})));const t=new THREE.PointLight(COLORS.primary,2,8);e.add(t),e.userData={pivot:new THREE.Vector3(120*(Math.random()-.5),30+30*Math.random(),120*(Math.random()-.5)),radius:10+20*Math.random(),speed:.01+.02*Math.random(),angle:Math.random()*Math.PI*2},drones.push(e),scene.add(e)}}function createLabel(e){const t=document.createElement("canvas"),o=t.getContext("2d");t.width=512,t.height=128,o.font="bold 36px Inter, sans-serif",o.textAlign="center",o.fillStyle="#00f2ff",o.shadowColor="#00f2ff",o.shadowBlur=10,o.fillText(e,256,70);const n=new THREE.CanvasTexture(t),r=new THREE.SpriteMaterial({map:n,transparent:!0}),a=new THREE.Sprite(r);return a.scale.set(16,4,1),a}function createUIPanel(e){const t=document.createElement("canvas"),o=t.getContext("2d");t.width=256,t.height=256,o.strokeStyle="#"+e.toString(16).padStart(6,"0"),o.lineWidth=6,o.strokeRect(10,10,236,236),o.fillStyle=o.strokeStyle+"22",o.fillRect(15,15,226,226);for(let e=0;e<6;e++)o.fillStyle=o.strokeStyle+"88",o.fillRect(30,40+30*e,196*Math.random(),12);const n=new THREE.CanvasTexture(t),r=new THREE.SpriteMaterial({map:n,transparent:!0}),a=new THREE.Sprite(r);return a.scale.set(6,6,1),a}function onMouseMove(e){mouse.x=e.clientX/window.innerWidth*2-1,mouse.y=-e.clientY/window.innerHeight*2+1,raycaster.setFromCamera(mouse,camera);const t=raycaster.intersectObjects(buildings,!0);if(t.length>0){let o=t[0].object;for(;o.parent&&!buildings.includes(o);)o=o.parent;hoveredObject!==o&&(hoveredObject&&setHighlight(hoveredObject,!1),hoveredObject=o,setHighlight(hoveredObject,!0),showTooltip(e.clientX,e.clientY,hoveredObject.userData.name,hoveredObject.userData.description))}else hoveredObject&&setHighlight(hoveredObject,!1),hoveredObject=null,hideTooltip()}function setHighlight(e,t){const o=e.getObjectByName("hover_shell");o&&(o.material.opacity=t?.3:0,o.material.color.set(t?62207:16777215))}function showTooltip(e,t,o,n){const r=document.getElementById("tooltip");r.style.display="block",r.style.left=e+15+"px",r.style.top=t+15+"px",r.innerHTML=`<strong>${o}</strong><br><small>${n}</small>`}function hideTooltip(){document.getElementById("tooltip").style.display="none"}function onWindowResize(){camera.aspect=window.innerWidth/window.innerHeight,camera.updateProjectionMatrix(),renderer.setSize(window.innerWidth,window.innerHeight),composer.setSize(window.innerWidth,window.innerHeight)}function animate(){requestAnimationFrame(animate);const e=clock.getElapsedTime();worldGroup.position.y=1.5*Math.sin(.4*e),worldGroup.rotation.z=.015*Math.sin(.15*e),shuttles.forEach(e=>{e.userData.angle+=e.userData.speed,e.position.x=Math.cos(e.userData.angle)*e.userData.radius,e.position.z=Math.sin(e.userData.angle)*e.userData.radius,e.rotation.y=-e.userData.angle,e.rotation.z=10*e.userData.speed}),dataParticlesGroup.children.forEach(e=>{e.userData.t=(e.userData.t+e.userData.speed)%1;const t=e.userData.curve.getPoint(e.userData.t);e.position.copy(t)}),drones.forEach(t=>{t.userData.angle+=t.userData.speed,t.position.x=t.userData.pivot.x+Math.cos(t.userData.angle)*t.userData.radius,t.position.z=t.userData.pivot.z+Math.sin(t.userData.angle)*t.userData.radius,t.position.y=t.userData.pivot.y+3*Math.sin(e+t.userData.angle)}),camera.position.x+=.01*(3*mouse.x-(camera.position.x-70)),camera.position.y+=.01*(3*mouse.y-(camera.position.y-50)),controls.update(),composer.render()}init(),animate()</script></body></html>

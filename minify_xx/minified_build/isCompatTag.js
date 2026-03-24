@@ -1,0 +1,1 @@
+"use strict";function isCompatTag(e){return!!e&&/^[a-z]/.test(e)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isCompatTag;

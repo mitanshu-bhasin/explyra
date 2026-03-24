@@ -1,0 +1,1 @@
+import{METHOD_NAME_ALL}from"../../router.js";var emptyParam=[];function match(t,r){const a=this.buildAllMatchers(),m=(t,r)=>{const m=a[t]||a[METHOD_NAME_ALL],e=m[2][r];if(e)return e;const n=r.match(m[0]);if(!n)return[[],emptyParam];const c=n.indexOf("",1);return[m[1][c],n]};return this.match=m,m(t,r)}export{emptyParam,match};

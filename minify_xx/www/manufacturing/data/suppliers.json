@@ -1,0 +1,5 @@
+[
+    { "name": "AluCorp", "contact": "+1-555-0199", "materials": "Aluminum", "deliveryTime": "3 days", "rating": 4.8 },
+    { "name": "SteelMasters", "contact": "+1-555-0122", "materials": "Steel", "deliveryTime": "5 days", "rating": 4.5 },
+    { "name": "LubriLink", "contact": "+1-555-0155", "materials": "Industrial Lubricants", "deliveryTime": "2 days", "rating": 4.9 }
+]

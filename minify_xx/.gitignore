@@ -1,0 +1,55 @@
+# ── Environment Variables ────────────────────────
+.env
+js/env.js
+env.js.backup
+all_keys.txt
+**/.wrangler/
+**/.dev.vars
+**/kv_*.json
+api-e/worker/.wrangler/
+
+# ── IDE / Editor ─────────────────────────────────
+.vscode/
+*.code-workspace
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── OS Files ─────────────────────────────────────
+Thumbs.db
+Desktop.ini
+.DS_Store
+ehthumbs.db
+
+# ── Node (for /functions) ────────────────────────
+**/node_modules/
+.next/
+**/dist/
+**/build/
+.firebase/
+.vercel/
+.wrangler/
+
+# ── Large Assets / Binary ────────────────────────
+*.exe
+*.zip
+*.pdf
+*.m4a
+*.mp4
+
+# ── Logs ─────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Python build scripts cache ───────────────────
+__pycache__/
+*.pyc
+*.pyo
+
+.vercel
+.env*.local

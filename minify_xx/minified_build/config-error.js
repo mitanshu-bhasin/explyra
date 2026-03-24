@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _rewriteStackTrace=require("./rewrite-stack-trace.js");class ConfigError extends Error{constructor(r,e){super(r),(0,_rewriteStackTrace.expectedError)(this),e&&(0,_rewriteStackTrace.injectVirtualStackFrame)(this,e)}}exports.default=ConfigError;

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=createFlowUnionType;var _index=require("../generated/index.js"),_removeTypeDuplicates=require("../../modifications/flow/removeTypeDuplicates.js");function createFlowUnionType(e){const t=(0,_removeTypeDuplicates.default)(e);return 1===t.length?t[0]:(0,_index.unionTypeAnnotation)(t)}

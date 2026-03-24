@@ -1,0 +1,1 @@
+module.exports=async(t,a)=>{try{return(await import("../email-app/api/verify-domain.js")).default(t,a)}catch(t){return a.status(500).json({error:"Verify endpoint bootstrap failed",details:t?.message||String(t)})}};

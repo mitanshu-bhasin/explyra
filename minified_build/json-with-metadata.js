@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t,e){return JSON.stringify({results:t,metadata:e})};

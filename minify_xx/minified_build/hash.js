@@ -1,0 +1,1 @@
+"use strict";const murmur=require("imurmurhash");function hash(r){return murmur(r).result().toString(36)}module.exports=hash;

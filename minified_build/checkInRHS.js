@@ -1,0 +1,1 @@
+"use strict";function _checkInRHS(e){if(Object(e)!==e)throw TypeError("right-hand side of 'in' should be an object, got "+(null!==e?typeof e:"null"));return e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_checkInRHS;

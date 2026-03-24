@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <!-- Core Landing Page -->
+   <url>
+      <loc>https://explyra.me/health-manager/</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+   </url>
+   
+   <!-- Main Application Interface -->
+   <url>
+      <loc>https://explyra.me/health-manager/main.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.9</priority>
+   </url>
+
+   <!-- Analytics & Reporting -->
+   <url>
+      <loc>https://explyra.me/health-manager/report.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+
+   <!-- Tools & Utilities -->
+   <url>
+      <loc>https://explyra.me/health-manager/td.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://explyra.me/health-manager/test.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.6</priority>
+   </url>
+
+   <!-- Legal & Privacy (Crucial for Trust) -->
+   <url>
+      <loc>https://explyra.me/health-manager/privacy.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://explyra.me/health-manager/terms.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+   </url>
+
+   <!-- PWA Offline Fallback -->
+   <url>
+      <loc>https://explyra.me/health-manager/offline.html</loc>
+      <lastmod>2026-02-10</lastmod>
+      <changefreq>yearly</changefreq>
+      <priority>0.4</priority>
+   </url>
+</urlset>

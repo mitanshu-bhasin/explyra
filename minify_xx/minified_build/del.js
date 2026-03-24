@@ -1,0 +1,1 @@
+var rimraf=require("rimraf").sync,fs=require("fs");module.exports=function(r){return!!fs.existsSync(r)&&(rimraf(r,{glob:!1}),!0)};

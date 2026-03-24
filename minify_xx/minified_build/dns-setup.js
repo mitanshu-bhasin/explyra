@@ -1,0 +1,1 @@
+module.exports=async(t,e)=>{try{return(await import("../email-app/api/dns-setup.js")).default(t,e)}catch(t){return e.status(500).json({error:"DNS setup endpoint bootstrap failed",details:t?.message||String(t)})}};

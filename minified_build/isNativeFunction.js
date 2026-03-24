@@ -1,0 +1,1 @@
+"use strict";function _isNativeFunction(t){try{return-1!==Function.toString.call(t).indexOf("[native code]")}catch(e){return"function"==typeof t}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_isNativeFunction;

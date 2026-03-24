@@ -1,0 +1,1 @@
+"undefined"!=typeof process&&"production"===process.env.NODE_ENV?module.exports=require("./dist/emnapi-core.cjs.min.js"):module.exports=require("./dist/emnapi-core.cjs.js");

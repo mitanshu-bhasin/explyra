@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+var parser=require(".."),fs=require("fs"),filename=process.argv[2];if(filename){var file=fs.readFileSync(filename,"utf8"),ast=parser.parse(file);console.log(JSON.stringify(ast,null,"  "))}else console.error("no filename specified");

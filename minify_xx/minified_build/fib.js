@@ -1,0 +1,1 @@
+"use strict";function fib(r){var f=[];f[0]=0,f[1]=1;for(var i=2;i<=r;i++)f[i]=f[i-2]+f[i-1]}module.exports=fib;

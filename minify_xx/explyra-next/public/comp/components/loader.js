@@ -1,0 +1,1 @@
+async function loadComponent(o,n){const t=document.getElementById(o);if(t)try{const o=await fetch(n);if(!o.ok)throw new Error(`HTTP ${o.status}`);t.innerHTML=await o.text()}catch(o){console.error(`[loader.js] Failed to load component "${n}":`,o)}else console.warn(`[loader.js] Element #${o} not found, skipping component load.`)}

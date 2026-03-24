@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classCheckPrivateStaticAccess;var _assertClassBrand=require("assertClassBrand");function _classCheckPrivateStaticAccess(s,e,a){return _assertClassBrand(e,s,a)}

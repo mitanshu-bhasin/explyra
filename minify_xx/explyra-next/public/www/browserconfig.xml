@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+  <msapplication>
+    <tile>
+      <square70x70logo src="assets/images/explyra_logo.png"/>
+      <square150x150logo src="assets/images/explyra_logo.png"/>
+      <wide310x150logo src="assets/images/explyra_logo.png"/>
+      <square310x310logo src="assets/images/explyra_logo.png"/>
+      <TileColor>#1546C0</TileColor>
+    </tile>
+    <notification>
+      <polling-uri  src="https://explyra.me/notifications.xml"/>
+      <frequency>30</frequency>
+      <cycle>1</cycle>
+    </notification>
+  </msapplication>
+</browserconfig>

@@ -1,0 +1,1 @@
+import{inspectList}from"./helpers";function inspectMapEntry([t,n],e){return e.truncate-=4,t=e.inspect(t,e),e.truncate-=t.length,`${t} => ${n=e.inspect(n,e)}`}function mapToEntries(t){const n=[];return t.forEach((t,e)=>{n.push([e,t])}),n}export default function inspectMap(t,n){return t.size-1<=0?"Map{}":(n.truncate-=7,`Map{ ${inspectList(mapToEntries(t),n,inspectMapEntry)} }`)}

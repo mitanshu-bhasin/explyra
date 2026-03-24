@@ -1,0 +1,1 @@
+import{parseAccept}from"../../utils/accept.js";var defaultMatch=(t,e)=>{const{supports:c,default:a}=e,r=t.sort((t,e)=>e.q-t.q).find(t=>c.includes(t.type));return r?r.type:a},accepts=(t,e)=>{const c=t.req.header(e.header);if(!c)return e.default;const a=parseAccept(c);return(e.match||defaultMatch)(a,e)};export{accepts,defaultMatch};

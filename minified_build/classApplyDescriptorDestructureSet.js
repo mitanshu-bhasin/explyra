@@ -1,0 +1,1 @@
+"use strict";function _classApplyDescriptorDestructureSet(e,t){if(t.set)return"__destrObj"in t||(t.__destrObj={set value(r){t.set.call(e,r)}}),t.__destrObj;if(!t.writable)throw new TypeError("attempted to set read only private field");return t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classApplyDescriptorDestructureSet;

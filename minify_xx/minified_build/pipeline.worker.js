@@ -1,0 +1,1 @@
+import{WorkerEntrypoint}from"cloudflare:workers";var Pipeline=class extends WorkerEntrypoint{async send(e){console.log("Request received",e)}};export{Pipeline as default};
