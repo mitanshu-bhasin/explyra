@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Yaml to json — Free Explyra Developer Hub Tool | Fast & Secure</title><meta name="description" content="Use Yaml to json on Explyra Developer Hub. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css">
-    
-    
-    
-    <script type="application/ld+json">
-{
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Yaml to json — Free Explyra Developer Hub Tool | Fast & Secure</title><meta name="description" content="Use Yaml to json on Explyra Developer Hub. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -61,7 +56,7 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://explyra.me/minify_xx/www/developers/tools/data-tools/yaml-to-json#breadcrumb",
+      "@id": "https://explyra.me/www/developers/tools/data-tools/yaml-to-json#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -72,37 +67,28 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Minify_xx",
-          "item": "https://explyra.me/minify_xx/"
+          "name": "Www",
+          "item": "https://explyra.me/www/"
         },
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Www",
-          "item": "https://explyra.me/minify_xx/www/"
+          "name": "Developers",
+          "item": "https://explyra.me/www/developers/"
         },
         {
           "@type": "ListItem",
           "position": 4,
-          "name": "Developers",
-          "item": "https://explyra.me/minify_xx/www/developers/"
+          "name": "Tools",
+          "item": "https://explyra.me/www/developers/tools/"
         },
         {
           "@type": "ListItem",
           "position": 5,
-          "name": "Tools",
-          "item": "https://explyra.me/minify_xx/www/developers/tools/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 6,
           "name": "Data tools",
-          "item": "https://explyra.me/minify_xx/www/developers/tools/data-tools/"
+          "item": "https://explyra.me/www/developers/tools/data-tools/"
         }
       ]
     }
   ]
-}
-    </script>
-    <link rel="canonical" href="https://explyra.me/minify_xx/www/developers/tools/data-tools/yaml-to-json" />
-</head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight:400;font-family:Outfit;font-size:.8rem;color:var(--ink3)">Developers</span></span></a></header><main class="container"><nav style="margin-bottom:20px;font-size:.9rem;color:var(--ink3)"><a href="../../index.html">Developers</a> / Data Tools / YAML to JSON</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">YAML to JSON Converter</h1><p class="tool-desc">Parse YAML content into a structured JSON object.</p></div><div class="input-group"><label for="input">Input YAML</label> <textarea id="input" placeholder="server:&#10;  port: 8080&#10;  host: localhost"></textarea></div><div class="btn-row"><button id="convertBtn" class="btn btn-primary">Convert to JSON</button> <button id="copyBtn" class="btn btn-secondary">Copy JSON</button> <button id="clearBtn" class="btn btn-secondary">Clear</button></div><div class="input-group"><label for="output">Generated JSON</label> <textarea id="output" readonly="readonly" placeholder="JSON output will appear here..." style="font-family:monospace"></textarea></div></div></main><script>const input=document.getElementById("input"),output=document.getElementById("output"),convertBtn=document.getElementById("convertBtn"),copyBtn=document.getElementById("copyBtn");function yamlToJson(t){const e=t.split("\n"),n={};let o=n;const u=[{obj:n,indent:-1}];return e.forEach(t=>{if(!t.trim()||t.startsWith("#"))return;const e=t.search(/\S/),[n,...c]=t.trim().split(":"),i=c.join(":").trim();for(;u.length>1&&e<=u[u.length-1].indent;)u.pop();if(o=u[u.length-1].obj,""===i){const t={};o[n]=t,u.push({obj:t,indent:e})}else{let t=i;isNaN(i)||""===i||(t=Number(i)),"true"===i.toLowerCase()&&(t=!0),"false"===i.toLowerCase()&&(t=!1),o[n]=t}}),JSON.stringify(n,null,2)}convertBtn.addEventListener("click",()=>{const t=input.value.trim();if(t)try{output.value=yamlToJson(t)}catch(t){output.value="Error parsing YAML. Note: This simple parser only supports basic key-value pairs and nesting."}}),copyBtn.addEventListener("click",()=>{output.select(),document.execCommand("copy"),copyBtn.textContent="Copied!",setTimeout(()=>copyBtn.textContent="Copy JSON",2e3)}),document.getElementById("clearBtn").addEventListener("click",()=>{input.value="",output.value=""})</script></body></html>
+}</script><link rel="canonical" href="https://explyra.me/www/developers/tools/data-tools/yaml-to-json"></head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight:400;font-family:Outfit;font-size:.8rem;color:var(--ink3)">Developers</span></span></a></header><main class="container"><nav style="margin-bottom:20px;font-size:.9rem;color:var(--ink3)"><a href="../../index.html">Developers</a> / Data Tools / YAML to JSON</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">YAML to JSON Converter</h1><p class="tool-desc">Parse YAML content into a structured JSON object.</p></div><div class="input-group"><label for="input">Input YAML</label> <textarea id="input" placeholder="server:&#10;  port: 8080&#10;  host: localhost"></textarea></div><div class="btn-row"><button id="convertBtn" class="btn btn-primary">Convert to JSON</button> <button id="copyBtn" class="btn btn-secondary">Copy JSON</button> <button id="clearBtn" class="btn btn-secondary">Clear</button></div><div class="input-group"><label for="output">Generated JSON</label> <textarea id="output" readonly="readonly" placeholder="JSON output will appear here..." style="font-family:monospace"></textarea></div></div></main><script>const input=document.getElementById("input"),output=document.getElementById("output"),convertBtn=document.getElementById("convertBtn"),copyBtn=document.getElementById("copyBtn");function yamlToJson(t){const e=t.split("\n"),n={};let o=n;const u=[{obj:n,indent:-1}];return e.forEach(t=>{if(!t.trim()||t.startsWith("#"))return;const e=t.search(/\S/),[n,...c]=t.trim().split(":"),i=c.join(":").trim();for(;u.length>1&&e<=u[u.length-1].indent;)u.pop();if(o=u[u.length-1].obj,""===i){const t={};o[n]=t,u.push({obj:t,indent:e})}else{let t=i;isNaN(i)||""===i||(t=Number(i)),"true"===i.toLowerCase()&&(t=!0),"false"===i.toLowerCase()&&(t=!1),o[n]=t}}),JSON.stringify(n,null,2)}convertBtn.addEventListener("click",()=>{const t=input.value.trim();if(t)try{output.value=yamlToJson(t)}catch(t){output.value="Error parsing YAML. Note: This simple parser only supports basic key-value pairs and nesting."}}),copyBtn.addEventListener("click",()=>{output.select(),document.execCommand("copy"),copyBtn.textContent="Copied!",setTimeout(()=>copyBtn.textContent="Copy JSON",2e3)}),document.getElementById("clearBtn").addEventListener("click",()=>{input.value="",output.value=""})</script></body></html>

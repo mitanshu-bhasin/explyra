@@ -185,11 +185,11 @@ header {
     transition: background .4s, border-color .4s;
     gap: 3.5rem;
     z-index: 2100;
-    app-region: drag;
+    -webkit-app-region: drag;
 }
 
 .nav-logo, .nav-links, .nav-right, .nav-item-dropdown {
-    app-region: no-drag;
+    -webkit-app-region: no-drag;
 }
 
 [data-theme="dark"] .main-nav {

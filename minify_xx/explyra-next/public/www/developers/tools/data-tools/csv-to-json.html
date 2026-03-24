@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Csv to json — Free Explyra Developer Hub Tool | Fast & Secure</title><meta name="description" content="Use Csv to json on Explyra Developer Hub. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css">
-    
-    
-    
-    <script type="application/ld+json">
-{
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Csv to json — Free Explyra Developer Hub Tool | Fast & Secure</title><meta name="description" content="Use Csv to json on Explyra Developer Hub. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../style.css"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -61,7 +56,7 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://explyra.me/minify_xx/explyra-next/public/www/developers/tools/data-tools/csv-to-json#breadcrumb",
+      "@id": "https://explyra.me/explyra-next/public/www/developers/tools/data-tools/csv-to-json#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -72,49 +67,40 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Minify_xx",
-          "item": "https://explyra.me/minify_xx/"
+          "name": "Explyra next",
+          "item": "https://explyra.me/explyra-next/"
         },
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Explyra next",
-          "item": "https://explyra.me/minify_xx/explyra-next/"
+          "name": "Public",
+          "item": "https://explyra.me/explyra-next/public/"
         },
         {
           "@type": "ListItem",
           "position": 4,
-          "name": "Public",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/"
+          "name": "Www",
+          "item": "https://explyra.me/explyra-next/public/www/"
         },
         {
           "@type": "ListItem",
           "position": 5,
-          "name": "Www",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/www/"
+          "name": "Developers",
+          "item": "https://explyra.me/explyra-next/public/www/developers/"
         },
         {
           "@type": "ListItem",
           "position": 6,
-          "name": "Developers",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/www/developers/"
+          "name": "Tools",
+          "item": "https://explyra.me/explyra-next/public/www/developers/tools/"
         },
         {
           "@type": "ListItem",
           "position": 7,
-          "name": "Tools",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/www/developers/tools/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 8,
           "name": "Data tools",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/www/developers/tools/data-tools/"
+          "item": "https://explyra.me/explyra-next/public/www/developers/tools/data-tools/"
         }
       ]
     }
   ]
-}
-    </script>
-    <link rel="canonical" href="https://explyra.me/minify_xx/explyra-next/public/www/developers/tools/data-tools/csv-to-json" />
-</head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight:400;font-family:Outfit;font-size:.8rem;color:var(--ink3)">Developers</span></span></a></header><main class="container"><nav style="margin-bottom:20px;font-size:.9rem;color:var(--ink3)"><a href="../../index.html">Developers</a> / Data Tools / CSV to JSON</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">CSV to JSON Converter</h1><p class="tool-desc">Paste your CSV data (including headers) to convert it into a JSON array.</p></div><div class="input-group"><label for="input">Input CSV</label> <textarea id="input" placeholder="id,name,email&#10;1,John Doe,john@example.com&#10;2,Jane Smith,jane@example.com"></textarea></div><div class="btn-row"><button id="convertBtn" class="btn btn-primary">Convert to JSON</button> <button id="copyBtn" class="btn btn-secondary">Copy JSON</button> <button id="clearBtn" class="btn btn-secondary">Clear</button></div><div class="input-group"><label for="output">Generated JSON</label> <textarea id="output" readonly="readonly" placeholder="JSON output will appear here..." style="font-family:monospace;font-size:.85rem"></textarea></div></div></main><script>const input=document.getElementById("input"),output=document.getElementById("output"),convertBtn=document.getElementById("convertBtn"),copyBtn=document.getElementById("copyBtn");function csvToJSON(t){const e=t.trim().split("\n");if(e.length<2)return"[]";const n=e[0].split(",").map(t=>t.trim()),o=[];for(let t=1;t<e.length;t++){const c={},u=e[t].split(",");n.forEach((t,e)=>{c[t]=u[e]?u[e].trim():""}),o.push(c)}return JSON.stringify(o,null,2)}convertBtn.addEventListener("click",()=>{const t=input.value.trim();if(t)try{output.value=csvToJSON(t)}catch(t){output.value="Error: Invalid CSV format."}}),copyBtn.addEventListener("click",()=>{output.select(),document.execCommand("copy"),copyBtn.textContent="Copied!",setTimeout(()=>copyBtn.textContent="Copy JSON",2e3)}),document.getElementById("clearBtn").addEventListener("click",()=>{input.value="",output.value=""})</script></body></html>
+}</script><link rel="canonical" href="https://explyra.me/explyra-next/public/www/developers/tools/data-tools/csv-to-json"></head><body><header><meta property="og:site_name" content="Explyra"><meta property="og:locale" content="en_US"><meta name="twitter:site" content="@explyras"><meta name="twitter:creator" content="@explyras"><meta name="twitter:card" content="summary_large_image"><a href="../../index.html" class="logo"><div class="logo-icon">E</div><span>Explyra <span style="font-weight:400;font-family:Outfit;font-size:.8rem;color:var(--ink3)">Developers</span></span></a></header><main class="container"><nav style="margin-bottom:20px;font-size:.9rem;color:var(--ink3)"><a href="../../index.html">Developers</a> / Data Tools / CSV to JSON</nav><div class="tool-card animate-fade"><div class="tool-header"><h1 class="tool-title">CSV to JSON Converter</h1><p class="tool-desc">Paste your CSV data (including headers) to convert it into a JSON array.</p></div><div class="input-group"><label for="input">Input CSV</label> <textarea id="input" placeholder="id,name,email&#10;1,John Doe,john@example.com&#10;2,Jane Smith,jane@example.com"></textarea></div><div class="btn-row"><button id="convertBtn" class="btn btn-primary">Convert to JSON</button> <button id="copyBtn" class="btn btn-secondary">Copy JSON</button> <button id="clearBtn" class="btn btn-secondary">Clear</button></div><div class="input-group"><label for="output">Generated JSON</label> <textarea id="output" readonly="readonly" placeholder="JSON output will appear here..." style="font-family:monospace;font-size:.85rem"></textarea></div></div></main><script>const input=document.getElementById("input"),output=document.getElementById("output"),convertBtn=document.getElementById("convertBtn"),copyBtn=document.getElementById("copyBtn");function csvToJSON(t){const e=t.trim().split("\n");if(e.length<2)return"[]";const n=e[0].split(",").map(t=>t.trim()),o=[];for(let t=1;t<e.length;t++){const c={},u=e[t].split(",");n.forEach((t,e)=>{c[t]=u[e]?u[e].trim():""}),o.push(c)}return JSON.stringify(o,null,2)}convertBtn.addEventListener("click",()=>{const t=input.value.trim();if(t)try{output.value=csvToJSON(t)}catch(t){output.value="Error: Invalid CSV format."}}),copyBtn.addEventListener("click",()=>{output.select(),document.execCommand("copy"),copyBtn.textContent="Copied!",setTimeout(()=>copyBtn.textContent="Copy JSON",2e3)}),document.getElementById("clearBtn").addEventListener("click",()=>{input.value="",output.value=""})</script></body></html>

@@ -1,7 +1,7 @@
 // Explyra PWA Service Worker v9.3
 // Production-tuned for faster loads across Android, iOS, Windows, Linux, and macOS.
 
-const VERSION = 'v9.3';
+const VERSION = 'v9.4';
 const CORE_CACHE = `explyra-core-${VERSION}`;
 const ASSET_CACHE = `explyra-assets-${VERSION}`;
 const CDN_CACHE = `explyra-cdn-${VERSION}`;
@@ -14,10 +14,14 @@ const PRECACHE_ASSETS = [
     './manifest.json',
     './css/main.css',
     './css/index.css',
+    './css/common.css',
     './js/main.js',
+    './js/env.js',
+    './js/global-enhancements.js',
     './assets/images/explyra_logo.png',
     './android-chrome-192x192.png',
-    './android-chrome-512x512.png'
+    './android-chrome-512x512.png',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
 const CDN_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'cdnjs.cloudflare.com', 'cdn.jsdelivr.net', 'unpkg.com'];

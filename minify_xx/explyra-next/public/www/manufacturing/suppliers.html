@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Suppliers — Free Explyra Suite Tool | Fast & Secure</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../js/firebase-config.js"></script><meta name="description" content="Use Suppliers on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
-    
-    
-    
-    <script type="application/ld+json">
-{
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Suppliers — Free Explyra Suite Tool | Fast & Secure</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script><script src="../js/firebase-config.js"></script><meta name="description" content="Use Suppliers on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem."><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -61,7 +56,7 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://explyra.me/minify_xx/explyra-next/public/www/manufacturing/suppliers#breadcrumb",
+      "@id": "https://explyra.me/explyra-next/public/www/manufacturing/suppliers#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -72,37 +67,28 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Minify_xx",
-          "item": "https://explyra.me/minify_xx/"
+          "name": "Explyra next",
+          "item": "https://explyra.me/explyra-next/"
         },
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Explyra next",
-          "item": "https://explyra.me/minify_xx/explyra-next/"
+          "name": "Public",
+          "item": "https://explyra.me/explyra-next/public/"
         },
         {
           "@type": "ListItem",
           "position": 4,
-          "name": "Public",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/"
+          "name": "Www",
+          "item": "https://explyra.me/explyra-next/public/www/"
         },
         {
           "@type": "ListItem",
           "position": 5,
-          "name": "Www",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/www/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 6,
           "name": "Manufacturing",
-          "item": "https://explyra.me/minify_xx/explyra-next/public/www/manufacturing/"
+          "item": "https://explyra.me/explyra-next/public/www/manufacturing/"
         }
       ]
     }
   ]
-}
-    </script>
-    <link rel="canonical" href="https://explyra.me/minify_xx/explyra-next/public/www/manufacturing/suppliers" />
-</head><body><div class="sidebar"></div><main class="main-content"><header class="reveal"><div><h1>Supplier <span class="grad">Management</span></h1><p style="color:var(--text-muted)">Manage vendor relationships and material procurement.</p></div><button class="btn btn-primary"><i class="fas fa-plus"></i> Add Supplier</button></header><section class="stat-grid reveal"><div class="glass-card"><div class="stat-label">Verified Suppliers</div><div class="stat-value" id="totalSuppliers">0</div></div><div class="glass-card"><div class="stat-label">Avg. Lead Time</div><div class="stat-value">3.4 Days</div></div><div class="glass-card"><div class="stat-label">Quality Score</div><div class="stat-value" style="color:var(--success)">98.2%</div></div></section><section class="glass-card reveal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3>Active Vendors</h3><div style="display:flex;gap:10px"><input type="text" placeholder="Search suppliers..." class="btn" style="padding:.5rem 1rem;width:250px;text-align:left"></div></div><div class="table-container"><table id="suppliersTable"><thead><tr><th>Supplier Name</th><th>Contact</th><th>Materials Supplied</th><th>Delivery Time</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div></section></main><script src="js/data-handler.js"></script><script src="js/main.js"></script><script>document.addEventListener("DOMContentLoaded",async()=>{const t=await DataHandler.fetchData("suppliers");document.getElementById("totalSuppliers").textContent=t.length;document.querySelector("#suppliersTable tbody").innerHTML=t.map(t=>`\n                <tr>\n                    <td><strong>${t.name}</strong></td>\n                    <td>${t.contact}</td>\n                    <td><span style="font-size: 0.8rem; background: var(--bg4); padding: 2px 8px; border-radius: 4px;">${t.materials}</span></td>\n                    <td>${t.deliveryTime}</td>\n                    <td>\n                        <div style="color: #F59E0B;">\n                            ${Array(Math.floor(t.rating)).fill('<i class="fas fa-star"></i>').join("")}\n                            <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 5px;">${t.rating}</span>\n                        </div>\n                    </td>\n                    <td><span class="badge badge-active">Active</span></td>\n                    <td>\n                        <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('Message feature coming soon!', 'info')"><i class="fas fa-envelope"></i></button>\n                        <button class="btn" style="padding: 5px 10px; color: var(--danger);" onclick="deleteItem('suppliers', 'name', '${t.name}')"><i class="fas fa-trash"></i></button>\n                    </td>\n                </tr>\n            `).join("")})</script></body></html>
+}</script><link rel="canonical" href="https://explyra.me/explyra-next/public/www/manufacturing/suppliers"></head><body><div class="sidebar"></div><main class="main-content"><header class="reveal"><div><h1>Supplier <span class="grad">Management</span></h1><p style="color:var(--text-muted)">Manage vendor relationships and material procurement.</p></div><button class="btn btn-primary"><i class="fas fa-plus"></i> Add Supplier</button></header><section class="stat-grid reveal"><div class="glass-card"><div class="stat-label">Verified Suppliers</div><div class="stat-value" id="totalSuppliers">0</div></div><div class="glass-card"><div class="stat-label">Avg. Lead Time</div><div class="stat-value">3.4 Days</div></div><div class="glass-card"><div class="stat-label">Quality Score</div><div class="stat-value" style="color:var(--success)">98.2%</div></div></section><section class="glass-card reveal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3>Active Vendors</h3><div style="display:flex;gap:10px"><input type="text" placeholder="Search suppliers..." class="btn" style="padding:.5rem 1rem;width:250px;text-align:left"></div></div><div class="table-container"><table id="suppliersTable"><thead><tr><th>Supplier Name</th><th>Contact</th><th>Materials Supplied</th><th>Delivery Time</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div></section></main><script src="js/data-handler.js"></script><script src="js/main.js"></script><script>document.addEventListener("DOMContentLoaded",async()=>{const t=await DataHandler.fetchData("suppliers");document.getElementById("totalSuppliers").textContent=t.length;document.querySelector("#suppliersTable tbody").innerHTML=t.map(t=>`\n                <tr>\n                    <td><strong>${t.name}</strong></td>\n                    <td>${t.contact}</td>\n                    <td><span style="font-size: 0.8rem; background: var(--bg4); padding: 2px 8px; border-radius: 4px;">${t.materials}</span></td>\n                    <td>${t.deliveryTime}</td>\n                    <td>\n                        <div style="color: #F59E0B;">\n                            ${Array(Math.floor(t.rating)).fill('<i class="fas fa-star"></i>').join("")}\n                            <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 5px;">${t.rating}</span>\n                        </div>\n                    </td>\n                    <td><span class="badge badge-active">Active</span></td>\n                    <td>\n                        <button class="btn" style="padding: 5px 10px;" onclick="window.showToast('Message feature coming soon!', 'info')"><i class="fas fa-envelope"></i></button>\n                        <button class="btn" style="padding: 5px 10px; color: var(--danger);" onclick="deleteItem('suppliers', 'name', '${t.name}')"><i class="fas fa-trash"></i></button>\n                    </td>\n                </tr>\n            `).join("")})</script></body></html>

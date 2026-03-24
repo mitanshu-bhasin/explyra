@@ -1,10 +1,12 @@
 {
   "name": "Explyra — The All-in-One SaaS Ecosystem for Developers & Teams",
   "short_name": "Explyra",
-  "id": "/?source=pwa",
-  "description": "The official portal for Explyra. Streamline your operations with our secure, efficient tools for expense management, CRM, and team productivity.",
+  "id": "/",
+  "description": "Explyra is the ultimate productivity suite for developers and teams. Manage expenses, crm, health, and developer tools in one unified workspace.",
   "start_url": "/?source=pwa",
   "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
   "display": "standalone",
   "display_override": [
     "window-controls-overlay",
@@ -12,21 +14,27 @@
     "minimal-ui"
   ],
   "orientation": "any",
-  "background_color": "#f8fafc",
+  "background_color": "#F8F7F4",
   "theme_color": "#1546C0",
   "prefer_related_applications": false,
   "related_applications": [
     {
       "platform": "windows",
-      "url": "https://www.microsoft.com/store/apps/9N23DH28DJ4V",
-      "id": "9N23DH28DJ4V"
+      "url": "https://www.microsoft.com/store/apps/Explyra",
+      "id": "explyra-pwa"
     }
   ],
   "iarc_rating_id": "e58c735d-dead-4f2e-836e-58742d1396a5",
   "scope_extensions": [
     { "origin": "https://explyra.me" },
     { "origin": "https://www.explyra.me" },
-    { "origin": "https://dashboard.explyra.me" }
+    { "origin": "https://*.explyra.me" }
+  ],
+  "categories": [
+    "finance",
+    "business",
+    "productivity",
+    "utilities"
   ],
   "file_handlers": [
     {
@@ -49,29 +57,22 @@
     {
       "protocol": "web+explyra",
       "url": "/?url=%s"
-    },
-    {
-      "protocol": "mailto",
-      "url": "/contact.html?email=%s"
     }
   ],
   "note_taking": {
     "new_note_url": "/emp.html?action=new-note"
   },
   "handle_links": "preferred",
-  "categories": [
-    "productivity",
-    "finance",
-    "business",
-    "developer tools",
-    "utilities"
-  ],
   "icons": [
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
     {
       "src": "favicon-32x32.png",
       "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "android-chrome-192x192.png",
@@ -100,25 +101,45 @@
   ],
   "screenshots": [
     {
-      "src": "assets/images/explyra_screenshot_1.png",
-      "sizes": "640x640",
+      "src": "assets/images/explyra_screenshot_3.png",
+      "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Explyra Dashboard on Desktop"
+    },
+    {
+      "src": "assets/images/s1.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Expense Management Analytics"
+    },
+    {
+      "src": "assets/images/s2.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CRM and Pipeline Visualization"
+    },
+    {
+      "src": "assets/images/s3.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Developer Tools and AI Suite"
+    },
+    {
+      "src": "assets/images/explyra_screenshot_1.png",
+      "sizes": "640x640",
+      "type": "image/png",
+      "label": "Unified Sidebar Experience"
     },
     {
       "src": "assets/images/explyra_screenshot_2.png",
       "sizes": "640x640",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Explyra Mobile Experience"
-    },
-    {
-      "src": "assets/images/explyra_screenshot_3.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Explyra Advanced Features"
+      "label": "Explyra Mobile Dashboard"
     }
   ],
   "shortcuts": [
@@ -126,27 +147,34 @@
       "name": "Submit Claim",
       "short_name": "New Claim",
       "description": "Create a new expense claim instantly",
-      "url": "./emp.html?action=create",
+      "url": "/emp.html?action=create",
       "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Admin Panel",
       "short_name": "Admin",
       "description": "Access administrative controls",
-      "url": "./admin.html",
+      "url": "/admin.html",
       "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "AI Assistant",
       "short_name": "AI",
       "description": "Chat with Explyra AI",
-      "url": "./ai-dashboard.html",
+      "url": "/ai-dashboard.html",
       "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
   "widgets": [
     {
       "name": "Recent Activity",
+      "short_name": "Activity",
       "description": "Quick view of your recent expenses.",
       "tag": "activity",
       "ms_ac_template": "expense-summary.json",
@@ -156,19 +184,12 @@
         {
           "src": "assets/images/explyra_logo.png",
           "sizes": "512x512",
-          "type": "image/png",
-          "label": "Widget Preview"
+          "type": "image/png"
         }
       ],
       "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "edge_side_panel": {
-    "preferred_width": 480
-  },
   "share_target": {
     "action": "./emp.html",
     "method": "POST",

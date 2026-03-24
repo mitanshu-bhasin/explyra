@@ -6,12 +6,21 @@
             "@id": "https://explyra.me/#organization",
             "name": "Explyra",
             "alternateName": "Explyra Suite",
+            "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
             "url": "https://explyra.me/",
             "logo": {
                 "@type": "ImageObject",
                 "url": "https://explyra.me/assets/images/explyra_logo.png",
                 "width": 512,
                 "height": 512
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "J-36, Beri Wala Bagh",
+                "addressLocality": "New Delhi",
+                "addressRegion": "Delhi",
+                "postalCode": "110064",
+                "addressCountry": "IN"
             },
             "sameAs": [
                 "https://x.com/explyras",
@@ -29,7 +38,9 @@
                     "telephone": "+91-8076108584",
                     "contactType": "customer service",
                     "email": "explyra@gmail.com",
-                    "availableLanguage": ["en", "hi"]
+                    "availableLanguage": ["en", "hi"],
+                    "contactOption": "TollFree",
+                    "areaServed": "IN"
                 }
             ],
             "founder": {
@@ -37,7 +48,8 @@
                 "name": "Mitanshu Bhasin",
                 "url": "https://explyra.me/mitanshu.html"
             },
-            "foundingDate": "2024"
+            "foundingDate": "2024",
+            "foundingLocation": "New Delhi, India"
         },
         {
             "@type": "WebSite",
@@ -58,7 +70,7 @@
             "@type": "SoftwareApplication",
             "@id": "https://explyra.me/#software",
             "name": "Explyra Suite",
-            "operatingSystem": "Any",
+            "operatingSystem": "Windows, macOS, Linux, Android, iOS",
             "applicationCategory": "BusinessApplication, DeveloperApplication",
             "description": "Streamline your operations with our secure, efficient tools including expense tracking and developer utilities.",
             "aggregateRating": {
@@ -72,7 +84,9 @@
             "offers": {
                 "@type": "Offer",
                 "price": "0",
-                "priceCurrency": "USD"
+                "priceCurrency": "USD",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock"
             }
         },
         {
@@ -80,7 +94,7 @@
             "@id": "https://explyra.me/#expense",
             "name": "Explyra Expense",
             "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Any",
+            "operatingSystem": "Windows, macOS, Linux, Android, iOS",
             "description": "AI-powered expense management system with Kimi AI for real-time spend insights and automated approvals.",
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -90,7 +104,9 @@
             "offers": {
                 "@type": "Offer",
                 "price": "149",
-                "priceCurrency": "INR"
+                "priceCurrency": "INR",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock"
             }
         },
         {
@@ -98,7 +114,7 @@
             "@id": "https://explyra.me/#crm",
             "name": "Explyra CRM",
             "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Any",
+            "operatingSystem": "Windows, macOS, Linux, Android, iOS",
             "description": "Enterprise-grade CRM with AI-powered win-rate forecasting and visual sales pipelines.",
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -108,7 +124,9 @@
             "offers": {
                 "@type": "Offer",
                 "price": "249",
-                "priceCurrency": "INR"
+                "priceCurrency": "INR",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock"
             }
         },
         {
@@ -116,7 +134,7 @@
             "@id": "https://explyra.me/#health",
             "name": "Explyra Health",
             "applicationCategory": "HealthApplication",
-            "operatingSystem": "Any",
+            "operatingSystem": "Windows, macOS, Linux, Android, iOS",
             "description": "AI Health companion that provides weather-aware workout and dietary recommendations.",
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -126,7 +144,9 @@
             "offers": {
                 "@type": "Offer",
                 "price": "249",
-                "priceCurrency": "INR"
+                "priceCurrency": "INR",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock"
             }
         },
         {
@@ -134,7 +154,7 @@
             "@id": "https://explyra.me/#learning",
             "name": "Explyra Learning",
             "applicationCategory": "EducationApplication",
-            "operatingSystem": "Any",
+            "operatingSystem": "Windows, macOS, Linux, Android, iOS",
             "description": "Expert-led AI and SEO courses with adaptive AI-powered learning paths.",
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -144,7 +164,9 @@
             "offers": {
                 "@type": "Offer",
                 "price": "99",
-                "priceCurrency": "INR"
+                "priceCurrency": "INR",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock"
             }
         },
         {
@@ -153,6 +175,7 @@
             "name": "Explyra Suite Trailer",
             "description": "Experience the ultimate unified productivity suite with integrated expense management, CRM, AI learning, and more.",
             "thumbnailUrl": "https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg",
+            "contentUrl": "https://www.youtube.com/watch?v=7Ti-C171jyw",
             "uploadDate": "2024-01-15",
             "duration": "PT2M",
             "embedUrl": "https://www.youtube.com/embed/7Ti-C171jyw",
