@@ -1,0 +1,7 @@
+assets/images/explyra_screenshot_1.png: 640x640
+assets/images/explyra_screenshot_2.png: 640x640
+assets/images/explyra_screenshot_3.png: 1920x1080
+assets/images/ios_dashboard_demo.png: 640x640
+assets/images/android_mockup.png: 640x640
+assets/images/ios_mockup.png: 640x640
+assets/images/saas-suite-ui.png: 640x640

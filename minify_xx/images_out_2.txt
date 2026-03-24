@@ -1,0 +1,6 @@
+assets/images/explyra_screenshot_1.png: 640x640
+assets/images/explyra_screenshot_2.png: 640x640
+assets/images/explyra_screenshot_3.png: 1920x1080
+assets/images/s1.png: 1920x1080
+assets/images/s2.png: 1920x1080
+assets/images/s3.png: 1920x1080
