@@ -4,7 +4,7 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   IgnorableNamespaces="uap">
 
-  <Identity Name="Explyra.Explyra" Publisher="CN=45999156-0880-44AD-BB00-5BF06F06845F" Version="1.0.1.0" />
+  <Identity Name="Explyra.Explyra" Publisher="CN=45999156-0880-44AD-BB00-5BF06F06845F" Version="1.0.2.0" />
 
   <Properties>
     <DisplayName>Explyra</DisplayName>
