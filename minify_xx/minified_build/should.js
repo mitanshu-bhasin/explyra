@@ -1,6 +1,0 @@
-/*!
- * chai
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-module.exports=function(t,n){var o=t.Assertion;function e(){Object.defineProperty(Object.prototype,"should",{set:function(t){Object.defineProperty(this,"should",{value:t,enumerable:!0,configurable:!0,writable:!0})},get:function t(){return this instanceof String||this instanceof Number||this instanceof Boolean||"function"==typeof Symbol&&this instanceof Symbol||"function"==typeof BigInt&&this instanceof BigInt?new o(this.valueOf(),null,t):new o(this,null,t)},configurable:!0});var n={fail:function(o,e,i,r){throw arguments.length<2&&(i=o,o=void 0),i=i||"should.fail()",new t.AssertionError(i,{actual:o,expected:e,operator:r},n.fail)},equal:function(t,n,e){new o(t,e).to.equal(n)},Throw:function(t,n,e,i){new o(t,i).to.Throw(n,e)},exist:function(t,n){new o(t,n).to.exist},not:{}};return n.not.equal=function(t,n,e){new o(t,e).to.not.equal(n)},n.not.Throw=function(t,n,e,i){new o(t,i).to.not.Throw(n,e)},n.not.exist=function(t,n){new o(t,n).to.not.exist},n.throw=n.Throw,n.not.throw=n.not.Throw,n}t.should=e,t.Should=e};

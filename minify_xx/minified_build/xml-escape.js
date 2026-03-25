@@ -1,1 +1,0 @@
-"use strict";module.exports=function(e){return`${e}`.replace(/[<>&"'\x00-\x1F\x7F\u0080-\uFFFF]/gu,e=>{switch(e){case"<":return"&lt;";case">":return"&gt;";case"&":return"&amp;";case'"':return"&quot;";case"'":return"&apos;";default:return`&#${e.charCodeAt(0)};`}})};

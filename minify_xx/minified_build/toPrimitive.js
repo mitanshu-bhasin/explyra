@@ -1,1 +1,0 @@
-"use strict";function toPrimitive(t,e){if("object"!=typeof t||!t)return t;var r=t[Symbol.toPrimitive];if(void 0!==r){var i=r.call(t,e||"default");if("object"!=typeof i)return i;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===e?String:Number)(t)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=toPrimitive;

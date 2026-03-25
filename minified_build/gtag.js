@@ -1,1 +1,0 @@
-!function(){const a=window.EXPLYRA_CONFIG?.analyticsId||"G-TFBZ5GZ22C",n=document.createElement("script");function t(){dataLayer.push(arguments)}n.async=!0,n.src=`https://www.googletagmanager.com/gtag/js?id=${a}`,document.head.appendChild(n),window.dataLayer=window.dataLayer||[],t("js",new Date),t("config",a),window.gtag=t}();

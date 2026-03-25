@@ -1,1 +1,0 @@
-"use strict";const compareBuild=require("./compare-build"),sort=(r,o)=>r.sort((r,e)=>compareBuild(r,e,o));module.exports=sort;

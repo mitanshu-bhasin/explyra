@@ -1,1 +1,0 @@
-import{truncate}from"./helpers";const isNaN=Number.isNaN||(e=>e!=e);export default function inspectNumber(e,t){return isNaN(e)?t.stylize("NaN","number"):e===1/0?t.stylize("Infinity","number"):e===-1/0?t.stylize("-Infinity","number"):0===e?t.stylize(1/e==1/0?"+0":"-0","number"):t.stylize(truncate(e,t.truncate),"number")}

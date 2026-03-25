@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=inheritInnerComments;var _inherit=require("../utils/inherit.js");function inheritInnerComments(e,t){(0,_inherit.default)("innerComments",e,t)}

@@ -1,1 +1,0 @@
-"use strict";class IdGenerator{constructor(t){this.prefix=String(t),this.n=0}next(){return this.n=1+this.n|0,this.n<0&&(this.n=1),this.prefix+this.n}}module.exports=IdGenerator;

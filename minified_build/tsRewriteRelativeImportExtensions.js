@@ -1,1 +1,0 @@
-"use strict";function tsRewriteRelativeImportExtensions(e,t){return"string"==typeof e&&/^\.\.?\//.test(e)?e.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+)?)\.([cm]?)ts$/i,function(e,s,r,o,i){return s?t?".jsx":".js":!r||o&&i?r+o+"."+i.toLowerCase()+"js":e}):e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=tsRewriteRelativeImportExtensions;

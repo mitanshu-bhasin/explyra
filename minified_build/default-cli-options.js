@@ -1,1 +1,0 @@
-"use strict";module.exports={configFile:null,baseConfig:!1,rulePaths:[],useEslintrc:!0,envs:[],globals:[],extensions:null,ignore:!0,ignorePath:void 0,cache:!1,cacheLocation:"",cacheFile:".eslintcache",cacheStrategy:"metadata",fix:!1,allowInlineConfig:!0,reportUnusedDisableDirectives:void 0,globInputPaths:!0};

@@ -1,1 +1,0 @@
-var DEFAULT_CONCURRENCY=1024,createPool=({concurrency:e,interval:t}={})=>{if(e||=DEFAULT_CONCURRENCY,e===1/0)return{run:async e=>e()};const r=new Set,n=async(o,c,a)=>{if(r.size>=e)return c||=new Promise(e=>a=e),setTimeout(()=>n(o,c,a)),c;const s={};r.add(s);const u=await o();return t?setTimeout(()=>r.delete(s),t):r.delete(s),a?(a(u),c):u};return{run:n}};export{createPool};

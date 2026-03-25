@@ -1,1 +1,0 @@
-"use strict";function addComments(e,t,n){if(!n||!e)return e;const o=`${t}Comments`;return e[o]?"leading"===t?e[o]=n.concat(e[o]):e[o].push(...n):e[o]=n,e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=addComments;

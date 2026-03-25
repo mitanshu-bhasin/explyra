@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=removePropertiesDeep;var _traverseFast=require("../traverse/traverseFast.js"),_removeProperties=require("./removeProperties.js");function removePropertiesDeep(e,r){return(0,_traverseFast.default)(e,_removeProperties.default,r),e}

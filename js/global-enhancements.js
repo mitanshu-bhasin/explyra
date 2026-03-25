@@ -673,9 +673,9 @@
 
         const searchForm = `
             <div class="fsb-container">
-                <form class="fsb-wrapper" id="footSearchForm" autocomplete="off">
-                    <input type="text" class="fsb-input" id="fsbInput" placeholder="Search everywhere..." required>
-                    <button type="submit" class="fsb-btn">
+                <form class="fsb-wrapper" id="footSearchForm" autocomplete="off" aria-label="Search Ecosystem">
+                    <input type="text" class="fsb-input" id="fsbInput" placeholder="Search everywhere..." required aria-label="Search query">
+                    <button type="submit" class="fsb-btn" aria-label="Submit Search">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -690,7 +690,7 @@
             </div>
         `;
 
-        const socials = footer.querySelector('.foot-socials-wrapper');
+        const socials = footer.querySelector('.foot-socials-wrapper, .foot-socials');
         if (socials) {
             socials.style.marginTop = '0';
             socials.style.borderTop = 'none';

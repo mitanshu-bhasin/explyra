@@ -1,1 +1,0 @@
-"use strict";module.exports=require("./failsafe").extend({implicit:[require("../type/null"),require("../type/bool"),require("../type/int"),require("../type/float")]});

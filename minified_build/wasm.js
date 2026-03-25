@@ -1,1 +1,0 @@
-let w;export const getWasm=()=>(w||(w=require("../../dist/wasm/nodejs/blake3_js")),w);

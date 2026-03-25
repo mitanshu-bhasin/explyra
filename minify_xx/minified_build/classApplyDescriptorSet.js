@@ -1,1 +1,0 @@
-"use strict";function _classApplyDescriptorSet(e,t,r){if(t.set)t.set.call(e,r);else{if(!t.writable)throw new TypeError("attempted to set read only private field");t.value=r}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classApplyDescriptorSet;

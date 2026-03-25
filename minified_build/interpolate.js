@@ -1,1 +1,0 @@
-"use strict";module.exports=(e,r)=>r?e.replace(/\{\{([^{}]+?)\}\}/gu,(e,t)=>{const s=t.trim();return s in r?r[s]:e}):e;

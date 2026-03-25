@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=inheritLeadingComments;var _inherit=require("../utils/inherit.js");function inheritLeadingComments(e,i){(0,_inherit.default)("leadingComments",e,i)}

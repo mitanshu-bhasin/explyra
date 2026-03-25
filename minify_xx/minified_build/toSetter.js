@@ -1,1 +1,0 @@
-"use strict";function _toSetter(e,t,r){t||(t=[]);var o=t.length++;return Object.defineProperty({},"_",{set:function(n){t[o]=n,e.apply(r,t)}})}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_toSetter;

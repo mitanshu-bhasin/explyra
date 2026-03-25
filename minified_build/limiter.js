@@ -1,1 +1,0 @@
-"use strict";const kDone=Symbol("kDone"),kRun=Symbol("kRun");class Limiter{constructor(s){this[kDone]=()=>{this.pending--,this[kRun]()},this.concurrency=s||1/0,this.jobs=[],this.pending=0}add(s){this.jobs.push(s),this[kRun]()}[kRun](){if(this.pending!==this.concurrency&&this.jobs.length){const s=this.jobs.shift();this.pending++,s(this[kDone])}}}module.exports=Limiter;

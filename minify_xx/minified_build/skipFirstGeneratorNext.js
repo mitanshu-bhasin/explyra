@@ -1,1 +1,0 @@
-"use strict";function _skipFirstGeneratorNext(e){return function(){var t=e.apply(this,arguments);return t.next(),t}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_skipFirstGeneratorNext;

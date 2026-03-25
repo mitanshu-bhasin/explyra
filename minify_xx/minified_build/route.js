@@ -1,1 +1,0 @@
-var R=require("../../chunks/[turbopack]_runtime.js")("server/app/sitemap.xml/route.js");R.c("server/chunks/[root-of-the-server]__0ja58sf._.js"),R.c("server/chunks/[root-of-the-server]__0cfs1is._.js"),R.c("server/chunks/booking__next-internal_server_app_sitemap_xml_route_actions_0.de_pq.js"),R.m(56305),module.exports=R.m(56305).exports;

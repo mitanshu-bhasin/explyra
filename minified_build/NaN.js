@@ -1,1 +1,0 @@
-var test=require("tape"),equal=require("../");test("NaN and 0 values",function(a){a.ok(equal(NaN,NaN)),a.notOk(equal(0,NaN)),a.ok(equal(0,0)),a.notOk(equal(0,1)),a.end()}),test("nested NaN values",function(a){a.ok(equal([NaN,1,NaN],[NaN,1,NaN])),a.end()});

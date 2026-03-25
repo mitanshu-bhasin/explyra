@@ -1,1 +1,0 @@
-module.exports=["[project]/booking/.next-internal/server/app/login/page/actions.js [app-rsc] (server actions loader, ecmascript)",(e,r,o)=>{}];

@@ -13,6 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -1921,67 +1922,211 @@
             background: var(--blue-g)
         }
 
-        /* ═══════════════════════════════════════════
-   CTA BANNER
-═══════════════════════════════════════════ */
-        .cta-banner {
-            padding: 6rem 5vw;
-            text-align: center;
+        /* ══�        /* ═══════════════════════════════════════════
+           FOOTER (NEW)
+        ═══════════════════════════════════════════ */
+        footer {
+            background: linear-gradient(to bottom, rgba(13, 17, 23, 0.92), rgba(13, 17, 23, 0.98)), url('assets/images/footer_bg.png') center/cover no-repeat;
+            color: #fff;
+            padding: 4rem 5vw 3rem;
+            border-top: 1px solid var(--bdr);
             position: relative;
-            overflow: hidden;
-            background: var(--bg2);
-            border-top: 1px solid var(--bdr)
         }
 
-        .cta-banner::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--blue) 8%, transparent) 0%, transparent 70%)
+        [data-theme="dark"] footer {
+            background: linear-gradient(to bottom, rgba(8, 11, 20, 0.95), rgba(8, 11, 20, 0.98)), url('assets/images/footer_bg.png') center/cover no-repeat;
         }
 
-        .cta-h {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            letter-spacing: -.02em;
-            color: var(--ink);
-            max-width: 650px;
-            margin: 0 auto 1.2rem
+        .foot-container {
+            max-width: 1250px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr repeat(6, 1fr);
+            gap: 2rem;
         }
 
-        .cta-h em {
-            font-style: italic;
-            color: var(--blue)
-        }
-
-        .cta-sub {
-            font-size: 1rem;
-            color: var(--ink3);
-            max-width: 500px;
-            margin: 0 auto 2.5rem;
-            font-weight: 300
-        }
-
-        .cta-contacts {
+        .foot-col-brand {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             gap: 1.2rem;
-            flex-wrap: wrap;
-            margin-top: 2.5rem
         }
 
-        .cta-c {
+        .foot-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .03em;
+        }
+
+        .foot-tagline {
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .5);
+            line-height: 1.6;
+        }
+
+        .foot-col h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: 1.5rem;
+            color: #fff;
             display: flex;
             align-items: center;
-            gap: .6rem;
-            background: var(--bg3);
-            border: 1px solid var(--bdr);
-            border-radius: 9px;
-            padding: .85rem 1.3rem;
+            justify-content: space-between;
+        }
+
+        .foot-col h4 i {
+            display: none;
+        }
+
+        .foot-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: .8rem;
+        }
+
+        .foot-col a {
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .5);
             transition: all .2s;
-            font-size: .84rem
+            display: inline-block;
+        }
+
+        .foot-col a:hover {
+            color: var(--blue2);
+            transform: translateX(3px);
+        }
+
+        .foot-compliance {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: .8rem;
+        }
+
+        .comp-badge {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .4rem .8rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 6px;
+            font-size: .62rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .7);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            white-space: nowrap;
+        }
+
+        .comp-badge i {
+            font-size: .8rem;
+            color: var(--blue2);
+        }
+
+        .foot-bottom {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, .05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .foot-copy {
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .4);
+        }
+
+        .foot-socials {
+            display: flex;
+            gap: 1.2rem;
+        }
+
+        .foot-socials a {
+            color: rgba(255, 255, 255, .4);
+            font-size: 1.1rem;
+            transition: all .2s;
+        }
+
+        .foot-socials a:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 992px) {
+            .foot-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .foot-container {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .foot-col-brand {
+                margin-bottom: 2rem;
+            }
+
+            .foot-col {
+                border-bottom: 1px solid rgba(255, 255, 255, .05);
+            }
+
+            .foot-col h4 {
+                margin-bottom: 0;
+                padding: 1.2rem 0;
+                cursor: pointer;
+            }
+
+            .foot-col h4 i {
+                display: block;
+                transition: transform .3s;
+                font-size: .7rem;
+                opacity: .5;
+            }
+
+            .foot-col.active h4 i {
+                transform: rotate(180deg);
+            }
+
+            .foot-col ul {
+                height: 0;
+                overflow: hidden;
+                transition: all .3s ease-out;
+            }
+
+            .foot-col.active ul {
+                height: auto;
+                padding-bottom: 1.5rem;
+            }
+
+            .foot-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        3);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: .85rem 1.3rem;
+        transition: all .2s;
+        font-size: .84rem 3);
+        border: 1px solid var(--bdr);
+        border-radius: 9px;
+        padding: .85rem 1.3rem;
+        transition: all .2s;
+        font-size: .84rem
         }
 
         .cta-c:hover {
@@ -2343,8 +2488,7 @@
             }
 
             footer {
-                flex-direction: column;
-                align-items: flex-start
+                /* No longer needed here as main footer controls base styles */
             }
         }
 
@@ -2508,6 +2652,14 @@
             margin-bottom: 1.5rem;
         }
 
+        .team-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: auto;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .team-portfolio-btn {
             display: inline-flex;
             align-items: center;
@@ -2536,14 +2688,22 @@
         }
     </style>
 
-    
 
-    
-    
-    
-        <meta name="description" content="Use Team on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
 
-    
+
+
+
+    <meta name="description"
+        content="Use Team on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+
+
+
+    <meta name="description"
+        content="Use Team on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+
+
+
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -2589,6 +2749,13 @@
         "https://sites.google.com/view/explyra",
         "https://linktr.ee/explyra",
         "https://open.spotify.com/episode/2koPs0nutBjLEUIK5YQgMy?si=zibzsoF2Twey9dMkoJATWA"
+      ],
+      "founder": [
+        { "@id": "https://explyra.me/#mitanshu" },
+        { "@id": "https://explyra.me/#rohan" }
+      ],
+      "employee": [
+        { "@id": "https://explyra.me/#sangeet" }
       ]
     },
     {
@@ -2629,12 +2796,50 @@
         "Developer API (from ₹99)",
         "Health Management (from ₹249)"
       ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://explyra.me/#mitanshu",
+      "name": "Mitanshu Bhasin",
+      "jobTitle": "Founder & Chief Architect",
+      "url": "https://mitanshu.explyra.me",
+      "image": "https://media.licdn.com/dms/image/v2/D5603AQGXL6bEmLqpLg/profile-displayphoto-crop_800_800/B56ZyksQsRI0AI-/0/1772289593451?e=1774483200&v=beta&t=ZPxSKtR4s4mSYZoHjBXwJHYpQXMY2boI2lrVzqL5SPo",
+      "sameAs": [
+        "https://www.linkedin.com/in/mitanshubahsin",
+        "https://mitanshu.explyra.me"
+      ],
+      "worksFor": { "@id": "https://explyra.me/#organization" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://explyra.me/#rohan",
+      "name": "Rohan Krishnagoudar",
+      "jobTitle": "Co-Founder & Head of Data",
+      "url": "https://rohan.explyra.me",
+      "image": "https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1774483200&v=beta&t=WVtSMFZ2b1oTk5yU7RVfMj8q_V0tZij7BJekgO33IO8",
+      "sameAs": [
+        "https://www.linkedin.com/in/rohan-krishnagoudar",
+        "https://rohan.explyra.me"
+      ],
+      "worksFor": { "@id": "https://explyra.me/#organization" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://explyra.me/#sangeet",
+      "name": "Sangeet Malhotra",
+      "jobTitle": "Product Advisor (Expense Manager)",
+      "image": "https://ipecconsulting.org/wp-content/uploads/2025/09/Artboard-16-1.png",
+      "sameAs": [
+        "https://www.linkedin.com/in/sangeet-servicedeliverylead/"
+      ],
+      "worksFor": { "@id": "https://explyra.me/#organization" }
     }
   ]
 }
     </script>
 
-    
+
+
 </head>
 
 <body>
@@ -2712,7 +2917,12 @@
             <div class="mission-inner">
                 <div class="eyebrow">Our Purpose</div>
                 <h2 class="sec-h">Empowering the <em class="grad">Global Workforce</em></h2>
-                <p class="sec-p">Explyra&trade; was founded on a simple premise: technology should simplify, not complicate. We build tools that bridge the gap between complex data and actionable intelligence, enabling teams and individuals to reach their full potential.</p>
+                <p class="sec-p">Explyra&trade; was founded on a simple premise: technology should simplify, not
+                    complicate. We build tools that bridge the gap between complex data and actionable intelligence,
+                    enabling teams and individuals to reach their full potential.</p>
+                <p class="sec-p">Explyra&trade; was founded on a simple premise: technology should simplify, not
+                    complicate. We build tools that bridge the gap between complex data and actionable intelligence,
+                    enabling teams and individuals to reach their full potential.</p>
             </div>
         </section>
 
@@ -2726,17 +2936,26 @@
                 <div class="value-card">
                     <div class="value-icon">🛡️</div>
                     <div class="value-title">Privacy First</div>
-                    <p class="value-desc">Security isn't a feature; it's our foundation. We implement military-grade encryption for all user data.</p>
+                    <p class="value-desc">Security isn't a feature; it's our foundation. We implement military-grade
+                        encryption for all user data.</p>
+                    <p class="value-desc">Security isn't a feature; it's our foundation. We implement military-grade
+                        encryption for all user data.</p>
                 </div>
                 <div class="value-card">
                     <div class="value-icon">✨</div>
                     <div class="value-title">Peak Innovation</div>
-                    <p class="value-desc">We don't just follow trends; we set them. Our AI-driven approach redefines productivity standards.</p>
+                    <p class="value-desc">We don't just follow trends; we set them. Our AI-driven approach redefines
+                        productivity standards.</p>
+                    <p class="value-desc">We don't just follow trends; we set them. Our AI-driven approach redefines
+                        productivity standards.</p>
                 </div>
                 <div class="value-card">
                     <div class="value-icon">🤝</div>
                     <div class="value-title">Radical Transparency</div>
-                    <p class="value-desc">Open communication and honest partnerships are at the heart of our operational excellence.</p>
+                    <p class="value-desc">Open communication and honest partnerships are at the heart of our operational
+                        excellence.</p>
+                    <p class="value-desc">Open communication and honest partnerships are at the heart of our operational
+                        excellence.</p>
                 </div>
             </div>
         </section>
@@ -2756,12 +2975,35 @@
                 <div class="team-name">Mitanshu Bhasin</div>
                 <div class="team-role">Founder & Chief Architect</div>
                 <div class="team-bio">
-                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize digital workflows. With expertise in AI system design and full-stack architecture, he oversees the global product roadmap and technical vision.
+                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize
+                    digital workflows. With expertise in AI system design and full-stack architecture, he oversees the
+                    global product roadmap and technical vision.
+                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize
+                    digital workflows. With expertise in AI system design and full-stack architecture, he oversees the
+                    global product roadmap and technical vision.
                 </div>
                 <a href="https://mitanshu.explyra.me" target="_blank" class="team-portfolio-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
                     View Portfolio
                 </a>
+                <div class="team-actions">
+                    <a href="https://mitanshu.explyra.me" target="_blank" class="team-portfolio-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        Portfolio
+                    </a>
+                    <a href="https://www.linkedin.com/in/mitanshubahsin" target="_blank" class="team-portfolio-btn">
+                        <i class="fab fa-linkedin" style="font-size: 1.1rem;"></i>
+                        LinkedIn
+                    </a>
+                </div>
             </div>
 
             <!-- Rohan -->
@@ -2773,55 +3015,194 @@
                 <div class="team-name">Rohan Krishnagoudar</div>
                 <div class="team-role">Co-Founder & Head of Data</div>
                 <div class="team-bio">
-                    Rohan specializes in large-scale data systems and security operations. He is responsible for the integrity, scalability, and performance of the Explyra&trade; data warehouse, ensuring that every user's information is secure and accessible.
+                    Rohan specializes in large-scale data systems and security operations. He is responsible for the
+                    integrity, scalability, and performance of the Explyra&trade; data warehouse, ensuring that every
+                    user's information is secure and accessible.
+                    Rohan specializes in large-scale data systems and security operations. He is responsible for the
+                    integrity, scalability, and performance of the Explyra&trade; data warehouse, ensuring that every
+                    user's information is secure and accessible.
                 </div>
                 <a href="https://rohan.explyra.me" target="_blank" class="team-portfolio-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
                     View Portfolio
                 </a>
+                <div class="team-actions">
+                    <a href="https://rohan.explyra.me" target="_blank" class="team-portfolio-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        Portfolio
+                    </a>
+                    <a href="https://www.linkedin.com/in/rohan-krishnagoudar" target="_blank"
+                        class="team-portfolio-btn">
+                        <i class="fab fa-linkedin" style="font-size: 1.1rem;"></i>
+                        LinkedIn
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sangeet -->
+            <div class="team-card">
+                <div class="team-img-wrap">
+                    <img src="https://ipecconsulting.org/wp-content/uploads/2025/09/Artboard-16-1.png"
+                        alt="Sangeet Malhotra">
+                </div>
+                <div class="team-name">Sangeet Malhotra</div>
+                <div class="team-role">Product Advisor (Expense Manager)</div>
+                <div class="team-bio">
+                    Sangeet provides crucial strategic direction specifically for the Explyra Expense Manager. His
+                    expertise in product advisory helps conceptualize, plan, and position new features, ensuring the
+                    expense tracking experience remains intuitive and powerful.
+                    Sangeet provides crucial strategic direction specifically for the Explyra Expense Manager. His
+                    expertise in product advisory helps conceptualize, plan, and position new features, ensuring the
+                    expense tracking experience remains intuitive and powerful.
+                </div>
+                <div class="team-actions">
+                    <a href="https://www.linkedin.com/in/sangeet-servicedeliverylead/" target="_blank"
+                        class="team-portfolio-btn">
+                        <i class="fab fa-linkedin" style="font-size: 1.1rem;"></i>
+                        LinkedIn
+                    </a>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer>
+    <footer id="mainFooter">
+        <div class="foot-container">
+            <div class="foot-col-brand">
+                <span class="foot-logo">Explyra&trade;</span>
+                <p class="foot-tagline">One Platform. Everything. The ultimate SaaS ecosystem for developers, teams, and
+                    enterprises.</p>
+                <p class="foot-tagline">One Platform. Everything. The ultimate SaaS ecosystem for developers, teams, and
+                    enterprises.</p>
+                <div class="foot-compliance">
+                    <a href="hippa.html" class="comp-badge"><i class="fas fa-shield-alt"></i> HIPAA READY Compliant</a>
+                    <a href="gdpr.html" class="comp-badge"><i class="fas fa-user-lock"></i> GDPR Compliant</a>
+                    <a href="ssl.html" class="comp-badge"><i class="fas fa-lock"></i> SSL Secured</a>
+                </div>
+            </div>
 
-        <div class="foot-left">
-            <span class="foot-logo">Explyra&trade;</span>
-            <span class="foot-tagline">One Platform. Everything.</span>
+            <div class="foot-col">
+                <h4>Solutions <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="index.html#expense">Expense Tracker</a></li>
+                    <li><a href="dns/index.html">Explyra&trade; DNS</a></li>
+                    <li><a href="crm/index.html">Explyra&trade; CRM</a></li>
+                    <li><a href="health-manager/index.html">Health Companion</a></li>
+                    <li><a href="explyra-learning/index.html">AI Learning</a></li>
+                    <li><a href="developers/index.html">Developer Tools</a></li>
+                    <li><a href="attendance/index.html">Attendance Portal</a></li>
+                    <li><a href="https://book.explyra.me">Service Booking</a></li>
+                    <li><a href="manufacturing/index.html">Explyra&trade; ERP</a></li>
+                    <li><a href="Ino software/ino.html">Invoice Software</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Compare <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="compare/explyra-vs-zoho.html">vs Zoho</a></li>
+                    <li><a href="compare/explyra-vs-hubspot.html">vs HubSpot</a></li>
+                    <li><a href="compare/explyra-vs-notion.html">vs Notion</a></li>
+                    <li><a href="compare/explyra-vs-clickup.html">vs ClickUp</a></li>
+                    <li><a href="compare/explyra-vs-google-workspace.html">vs Google</a></li>
+                    <li><a href="compare/explyra-vs-odoo.html">vs Odoo</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Resources <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="docs/index.html">Documentation</a></li>
+                    <li><a href="docs/api-e.html">API Reference</a></li>
+                    <li><a href="support.html">Help Desk</a></li>
+                    <li><a href="events/index.html">Events Portal</a></li>
+                    <li><a href="integrations/index.html">Integrations</a></li>
+                    <li><a href="status/index.html">System Status</a></li>
+                    <li><a href="compare/index.html">Compare Explyra&trade;</a></li>
+                    <li><a href="community-hub/index.html">Community Forum</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Company <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="team.html">Our Team</a></li>
+                    <li><a href="pricing.html">Pricing Plans</a></li>
+                    <li><a href="directories/submit.html" style="color:var(--purp); font-weight:700;">Submit Business
+                            (₹29)</a></li>
+                    <li><a href="directories/submit.html" style="color:var(--purp); font-weight:700;">Submit Business
+                            (₹29)</a></li>
+                    <li><a href="index.html#contact">Contact Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Legal <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="refund.html">Refund Policy</a></li>
+                    <li><a href="cookies.html">Cookie Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h4>Download <i class="fas fa-chevron-down"></i></h4>
+                <ul>
+                    <li><a href="android.html"><i class="fab fa-android"></i> Android</a></li>
+                    <li><a href="ios.html"><i class="fab fa-apple"></i> iOS</a></li>
+                </ul>
+            </div>
         </div>
-        <p class="foot-copy">© 2026 Explyra&trade; · Founded by Mitanshu Bhasin · All rights reserved.</p>
-        <div class="foot-links">
-            <a href="index.html#expense">Expense</a>
-            <a href="index.html#health">Health</a>
-            <a href="index.html#learning">Learning</a>
-            <a href="developers/index.html">Developers</a>
 
-            <a href="index.html#support">Support</a>
-            <a href="team.html">Team</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="mailto:mfskufgu@gmail.com">Contact</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms</a>
-            <a href="license.html">License</a>
-            <a href="refund.html">Refund Policy</a>
-        </div>
-
-
-        <div class="foot-socials-wrapper"
-            style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(136, 136, 136, 0.2); padding-top: 20px;">
-            <p
-                style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2, #888); margin-bottom: 12px;">
-                Follow Us</p>
-            <div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;">
-            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
-            <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a>
-            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a>
-            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://ipecconsulting.org/" target="_blank" rel="noopener noreferrer">IPEC Consulting</a>
-        </div>
+        <div class="foot-bottom">
+            <p class="foot-copy">© 2026 Explyra&trade; · Built with ♥ by Mitanshu Bhasin · All rights reserved.</p>
+            <p style="font-size:0.7rem; opacity:0.7; margin-top:0.4rem; letter-spacing:0.02em;">Software and Design
+                Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
+                strictly prohibited and subject to legal action.</p>
+            <p style="font-size:0.7rem; opacity:0.7; margin-top:0.4rem; letter-spacing:0.02em;">Software and Design
+                Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
+                strictly prohibited and subject to legal action.</p>
+            <div class="foot-socials">
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-x-twitter"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank"
+                    rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-threads"></i></a>
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-github"></i></a>
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-x-twitter"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank"
+                    rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-threads"></i></a>
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer"><i
+                        class="fab fa-github"></i></a>
+            </div>
         </div>
     </footer>
 
@@ -2866,6 +3247,19 @@
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
         if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
         mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        /* FOOTER ACCORDION */
+        document.querySelectorAll('.foot-col h4').forEach(header => {
+            header.addEventListener('click', () => {
+                const col = header.parentElement;
+                if (window.innerWidth <= 640) {
+                    col.classList.toggle('active');
+                    document.querySelectorAll('.foot-col').forEach(other => {
+                        if (other !== col) other.classList.remove('active');
+                    });
+                }
+            });
+        });
 
     </script>
 </body>

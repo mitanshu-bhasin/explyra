@@ -1,1 +1,0 @@
-"use strict";const SemVer=require("../classes/semver"),major=(e,r)=>new SemVer(e,r).major;module.exports=major;

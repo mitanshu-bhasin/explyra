@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK_CHUNK_LISTS||(globalThis.TURBOPACK_CHUNK_LISTS=[])).push({script:"object"==typeof document?document.currentScript:void 0,chunks:["static/chunks/043._0c22xhd._.js","static/chunks/booking_src_components_BookingClient_tsx_0ym0ohe._.js"],source:"dynamic"});

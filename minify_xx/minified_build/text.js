@@ -1,1 +1,0 @@
-import{TEXT_PLAIN}from"../../context.js";import{stream}from"./index.js";var streamText=(e,t,r)=>(e.header("Content-Type",TEXT_PLAIN),e.header("X-Content-Type-Options","nosniff"),e.header("Transfer-Encoding","chunked"),stream(e,t,r));export{streamText};

@@ -1,1 +1,0 @@
-"use strict";function _extends(){return exports.default=_extends=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},_extends.apply(null,arguments)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_extends;

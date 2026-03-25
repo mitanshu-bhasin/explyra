@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isType;var _index=require("../definitions/index.js");function isType(e,i){if(e===i)return!0;if(null==e)return!1;if(_index.ALIAS_KEYS[i])return!1;const n=_index.FLIPPED_ALIAS_KEYS[i];return!(null==n||!n.includes(e))}

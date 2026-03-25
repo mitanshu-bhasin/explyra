@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});const common=require("./common");class Reader{constructor(e,t){this._root=e,this._settings=t,this._root=common.replacePathSegmentSeparator(e,t.pathSegmentSeparator)}}exports.default=Reader;

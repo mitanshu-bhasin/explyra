@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=cloneWithoutLoc;var _cloneNode=require("./cloneNode.js");function cloneWithoutLoc(e){return(0,_cloneNode.default)(e,!1,!0)}

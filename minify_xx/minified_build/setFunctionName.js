@@ -1,1 +1,0 @@
-"use strict";function setFunctionName(e,t,n){"symbol"==typeof t&&(t=(t=t.description)?"["+t+"]":"");try{Object.defineProperty(e,"name",{configurable:!0,value:n?n+" "+t:t})}catch(e){}return e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=setFunctionName;

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isImmutable;var _isType=require("./isType.js"),_index=require("./generated/index.js");function isImmutable(e){return!!(0,_isType.default)(e.type,"Immutable")||!!(0,_index.isIdentifier)(e)&&"undefined"===e.name}

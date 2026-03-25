@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_superPropSet;var _set=require("./set.js"),_getPrototypeOf=require("./getPrototypeOf.js");function _superPropSet(e,t,r,o,p,s){return(0,_set.default)((0,_getPrototypeOf.default)(s?e.prototype:e),t,r,o,p)}

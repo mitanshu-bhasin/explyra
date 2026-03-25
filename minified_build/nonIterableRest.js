@@ -1,1 +1,0 @@
-"use strict";function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_nonIterableRest;

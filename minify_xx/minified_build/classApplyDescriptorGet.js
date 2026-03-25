@@ -1,1 +1,0 @@
-"use strict";function _classApplyDescriptorGet(e,t){return t.get?t.get.call(e):t.value}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_classApplyDescriptorGet;

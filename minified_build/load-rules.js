@@ -1,1 +1,0 @@
-"use strict";const fs=require("fs"),path=require("path"),rulesDirCache={};module.exports=function(e,r){const t=path.resolve(r,e);if(rulesDirCache[t])return rulesDirCache[t];const s=Object.create(null);return fs.readdirSync(t).forEach(e=>{".js"===path.extname(e)&&(s[e.slice(0,-3)]=require(path.join(t,e)))}),rulesDirCache[t]=s,s};

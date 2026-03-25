@@ -1,1 +1,0 @@
-"use strict";function _temporalUndefined(){}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_temporalUndefined;

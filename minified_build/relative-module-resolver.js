@@ -1,1 +1,0 @@
-"use strict";const{createRequire:createRequire}=require("module");module.exports={resolve(e,r){try{return createRequire(r).resolve(e)}catch(t){throw"object"==typeof t&&null!==t&&"MODULE_NOT_FOUND"===t.code&&!t.requireStack&&t.message.includes(e)&&(t.message+=`\nRequire stack:\n- ${r}`),t}}};

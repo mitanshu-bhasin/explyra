@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isScope;var _index=require("./generated/index.js");function isScope(e,i){return(!(0,_index.isBlockStatement)(e)||!(0,_index.isFunction)(i)&&!(0,_index.isCatchClause)(i))&&(!(!(0,_index.isPattern)(e)||!(0,_index.isFunction)(i)&&!(0,_index.isCatchClause)(i))||(0,_index.isScopable)(e))}

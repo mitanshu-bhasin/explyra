@@ -1,1 +1,0 @@
-import{checkOptionalParameter}from"../../utils/url.js";import{Node}from"./node.js";var TrieRouter=class{name="TrieRouter";#e;constructor(){this.#e=new Node}add(e,r,t){const o=checkOptionalParameter(r);if(o)for(let r=0,i=o.length;r<i;r++)this.#e.insert(e,o[r],t);else this.#e.insert(e,r,t)}match(e,r){return this.#e.search(e,r)}};export{TrieRouter};

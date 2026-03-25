@@ -3908,18 +3908,18 @@
             <button type="button" class="m-close" onclick="closeBuyModal()">&times;</button>
             <h3 class="m-title">Complete Purchase</h3>
             <form id="buyForm">
-                <label class="m-label">Company Name</label>
+                <label class="m-label" for="buyCompany">Company Name</label>
                 <select id="buyCompany" class="m-input" required>
                     <option value="" disabled selected>Loading companies...</option>
                 </select>
 
-                <label class="m-label">Full Name</label>
+                <label class="m-label" for="buyName">Full Name</label>
                 <input type="text" id="buyName" class="m-input" required placeholder="Your Name">
 
-                <label class="m-label">Email Address</label>
+                <label class="m-label" for="buyEmail">Email Address</label>
                 <input type="email" id="buyEmail" class="m-input" required placeholder="you@company.com">
 
-                <label class="m-label">Payment Method</label>
+                <label class="m-label" for="buyPayment">Payment Method</label>
                 <select id="buyPayment" class="m-input" required>
                     <option value="" disabled selected>Select method...</option>
                     <option value="Credit Card">Credit Card</option>
@@ -3927,7 +3927,7 @@
                     <option value="Wire Transfer">Wire Transfer</option>
                 </select>
 
-                <label class="m-label">Selected Plan</label>
+                <label class="m-label" for="buyPlanDisplay">Selected Plan</label>
                 <input type="text" id="buyPlanDisplay" class="m-input" readonly
                     style="background: var(--bg3); font-weight: bold; cursor: not-allowed; border-color: var(--bdr);">
 
@@ -3997,16 +3997,15 @@
         <!-- The footer search box will be injected here by global-enhancements.js -->
         <div class="foot-socials-wrapper">
             <p>Follow our journey</p>
-            <div class="foot-socials" style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.9rem;">
-            <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
-            <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer">YouTube</a>
-            <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer">Threads</a>
-            <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://ipecconsulting.org/" target="_blank" rel="noopener noreferrer">IPEC Consulting</a>
-        </div>
+            <div class="foot-socials" style="margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-size: 1.2rem;">
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            </div>
         </div>
 
         <div class="foot-bottom">

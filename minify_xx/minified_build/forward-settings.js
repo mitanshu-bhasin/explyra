@@ -1,1 +1,0 @@
-module.exports=async(t,r)=>{try{return(await import("../email-app/api/forward-settings.js")).default(t,r)}catch(t){return r.status(500).json({error:"Forward settings endpoint bootstrap failed",details:t?.message||String(t)})}};

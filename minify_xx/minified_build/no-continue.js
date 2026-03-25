@@ -1,1 +1,0 @@
-"use strict";module.exports={meta:{type:"suggestion",docs:{description:"Disallow `continue` statements",recommended:!1,url:"https://eslint.org/docs/latest/rules/no-continue"},schema:[],messages:{unexpected:"Unexpected use of continue statement."}},create:e=>({ContinueStatement(t){e.report({node:t,messageId:"unexpected"})}})};

@@ -1,1 +1,0 @@
-export default function inspectSymbol(o){return"description"in Symbol.prototype?o.description?`Symbol(${o.description})`:"Symbol()":o.toString()}

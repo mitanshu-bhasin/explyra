@@ -1,1 +1,0 @@
-"use strict";function _tdzError(e){throw new ReferenceError(e+" is not defined - temporal dead zone")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_tdzError;

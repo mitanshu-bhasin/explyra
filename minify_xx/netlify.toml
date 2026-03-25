@@ -1,6 +1,6 @@
 # Secondary host option; primary production is Cloudflare Pages (wrangler.toml).
 [build]
-  publish = "."  # Public directory (root)
+  publish = "minify_xx"  # Minified production directory
 
 [build.processing]
   skip_processing = false

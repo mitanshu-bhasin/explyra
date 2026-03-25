@@ -1,1 +1,0 @@
-"use strict";function _defineAccessor(e,r,t,c){var n={configurable:!0,enumerable:!0};return n[e]=c,Object.defineProperty(r,t,n)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_defineAccessor;

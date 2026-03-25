@@ -1,1 +1,0 @@
-const handler={scheme:"http",domainHost:!0,parse:function(t,r){return t.host||(t.error=t.error||"HTTP URIs must have a host."),t},serialize:function(t,r){const e="https"===String(t.scheme).toLowerCase();return t.port!==(e?443:80)&&""!==t.port||(t.port=void 0),t.path||(t.path="/"),t}};export default handler;

@@ -1,1 +1,0 @@
-"use strict";const fs=require("fs"),shebangCommand=require("shebang-command");function readShebang(e){const n=Buffer.alloc(150);let r;try{r=fs.openSync(e,"r"),fs.readSync(r,n,0,150,0),fs.closeSync(r)}catch(e){}return shebangCommand(n.toString())}module.exports=readShebang;

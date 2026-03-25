@@ -1,1 +1,0 @@
-var test=require("tape"),table=require("../");test("table",function(e){e.plan(1);var a=table([["master","0123456789abcdef"],["staging","fedcba9876543210"]]);e.equal(a,["master   0123456789abcdef","staging  fedcba9876543210"].join("\n"))});

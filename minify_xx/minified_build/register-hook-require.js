@@ -1,1 +1,0 @@
-require("./").install({hookRequire:!0});

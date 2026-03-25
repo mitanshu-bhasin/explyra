@@ -1,0 +1,84 @@
+#:schema node_modules/wrangler/config-schema.json
+# Primary production static host: Cloudflare Pages. netlify.toml / firebase.json are optional secondary configs.
+name = "explyra"
+pages_build_output_dir = "minify_xx"
+# Keep in sync with Workers runtime; bump when adopting new APIs.
+compatibility_date = "2025-11-01"
+
+[observability]
+enabled = true
+
+# ==============================
+# 🚀 SECURITY & CACHE HEADERS
+# ==============================
+[[headers]]
+pattern = "/*"
+[headers.values]
+  X-Frame-Options = "DENY"
+  X-XSS-Protection = "1; mode=block"
+  X-Content-Type-Options = "nosniff"
+  Referrer-Policy = "strict-origin-when-cross-origin"
+  Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+  Cache-Control = "public, max-age=0, must-revalidate"
+  Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+  Content-Security-Policy = "upgrade-insecure-requests; frame-ancestors 'none';"
+  X-Permitted-Cross-Domain-Policies = "none"
+
+[[headers]]
+pattern = "/assets/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+pattern = "/css/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+pattern = "/js/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+pattern = "/*.xml"
+[headers.values]
+  Cache-Control = "public, max-age=3600, must-revalidate"
+
+# ==============================
+# 🔗 REDIRECTS & REWRITES
+# ==============================
+[[redirects]]
+from = "https://explyra.pages.dev/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "https://explyra.fouralpha.org/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "https://explyras.web.app/*"
+to = "https://explyra.me/:splat"
+status = 301
+
+[[redirects]]
+from = "/booking/:username"
+to = "/booking/booking-page.html?u=:username"
+status = 200
+
+[[redirects]]
+from = "/mailbox"
+to = "/email-app/src/index.html"
+status = 200
+
+[[redirects]]
+from = "/mail"
+to = "/email-app/src/index.html"
+status = 200
+
+# Block access to firestore rules
+[[redirects]]
+from = "/firestore.rules"
+to = "/404.html"
+status = 404
