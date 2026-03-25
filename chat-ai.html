@@ -703,7 +703,7 @@
             const aiMsgId = addMessage('ai', '<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>');
             
             try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                const response = await fetch("/api/ai/groq", {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${getApiKey()}`,
