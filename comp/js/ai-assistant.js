@@ -51,6 +51,20 @@
     let isMuted = false;
     let isRecording = false;
 
+    // 7. Voice Output (TTS)
+    const speak = (text) => {
+        try {
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.5;
+            utterance.pitch = 1.05;
+            window.speechSynthesis.speak(utterance);
+        } catch (e) {
+            console.warn('Speech error:', e);
+        }
+    };
+
     // Rate Limiting (10 msgs per minute)
     const msgHistory = [];
     const checkRateLimit = () => {
@@ -129,12 +143,22 @@ PERSONALITY:
                 })
             });
 
-            const data = await response.json();
-            const aiText = data.choices[0].message.content;
+            const choiceText = data?.choices?.[0]?.message?.content;
+            const apiErr = 
+                (typeof data?.error === 'string' ? data.error : null) || 
+                data?.error?.message || 
+                data?.message;
             
             typingIndicator.remove();
-            addMessage(aiText, 'bot');
-            if (!isMuted) speak(aiText);
+            
+            if (!choiceText) {
+                let msg = apiErr || "AI error. Please try again.";
+                addMessage(msg, 'bot');
+                return;
+            }
+
+            addMessage(choiceText, 'bot');
+            if (!isMuted) speak(choiceText);
 
         } catch (error) {
             console.error('AI Error:', error);
@@ -200,14 +224,8 @@ PERSONALITY:
     }
 
     // 7. Voice Output (TTS)
-    const speak = (text) => {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel(); // Stop any current speech
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.5; // Fast and snappy
-        utterance.pitch = 1.05; 
-        window.speechSynthesis.speak(utterance);
-    };
+    // speak was moved up 
+
 
     muteBtn.addEventListener('click', () => {
         isMuted = !isMuted;
