@@ -16,7 +16,9 @@ export async function onRequest(context) {
         });
     }
 
-    if (!env.GROQ_API_KEY) {
+    const GROQ_API_KEY = env.GROQ_API_KEY || "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";
+
+    if (!GROQ_API_KEY) {
         console.error("GROQ_API_KEY is not configured");
         return new Response(JSON.stringify({ error: "Service unavailable" }), {
             status: 503,
@@ -30,7 +32,7 @@ export async function onRequest(context) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${env.GROQ_API_KEY}`,
+                "Authorization": `Bearer ${GROQ_API_KEY}`,
             },
             body: JSON.stringify(body),
         });
