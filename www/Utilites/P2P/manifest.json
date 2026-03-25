@@ -8,7 +8,12 @@
   "orientation": "any",
   "background_color": "#f8fafc",
   "theme_color": "#2563eb",
-  "categories": ["communication", "utilities", "productivity"],
+  "categories": [
+    "finance",
+    "business",
+    "productivity",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/mitanshu-p2p/icons/icon-72x72.png",
@@ -65,21 +70,139 @@
       "short_name": "Chat",
       "description": "Open encrypted P2P chat",
       "url": "/mitanshu-p2p/?tab=chat",
-      "icons": [{ "src": "/mitanshu-p2p/icons/icon-96x96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/mitanshu-p2p/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Video Call",
       "short_name": "Video",
       "description": "Start a P2P video call",
       "url": "/mitanshu-p2p/?tab=video",
-      "icons": [{ "src": "/mitanshu-p2p/icons/icon-96x96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/mitanshu-p2p/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "File Transfer",
       "short_name": "Files",
       "description": "Transfer files peer-to-peer",
       "url": "/mitanshu-p2p/?tab=files",
-      "icons": [{ "src": "/mitanshu-p2p/icons/icon-96x96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/mitanshu-p2p/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
-  ]
+  ],
+  "iarc_rating_id": "e58c735d-dead-4f2e-836e-58742d1396a5",
+  "scope_extensions": [
+    {
+      "origin": "https://explyra.me"
+    },
+    {
+      "origin": "https://www.explyra.me"
+    },
+    {
+      "origin": "https://*.explyra.me"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/emp.html?action=import",
+      "accept": {
+        "application/json": [
+          ".json"
+        ],
+        "text/csv": [
+          ".csv"
+        ]
+      },
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+explyra",
+      "url": "/?url=%s"
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "/emp.html?action=new-note"
+  },
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": [
+      "focus-existing",
+      "auto"
+    ]
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
+  "widgets": [
+    {
+      "name": "Recent Activity",
+      "short_name": "Activity",
+      "description": "Quick view of your recent expenses.",
+      "tag": "activity",
+      "ms_ac_template": "/expense-summary.json",
+      "data": "/expense-data.json",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/assets/images/explyra_logo.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ],
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/emp.html",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link",
+      "files": [
+        {
+          "name": "receipt",
+          "accept": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ]
+        }
+      ]
+    }
+  },
+  "display_override": [
+    "window-controls-overlay",
+    "tabbed",
+    "minimal-ui"
+  ],
+  "lang": "en-US",
+  "dir": "ltr"
 }

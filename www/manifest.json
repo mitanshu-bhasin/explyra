@@ -8,6 +8,7 @@
   "display": "standalone",
   "display_override": [
     "window-controls-overlay",
+    "tabbed",
     "minimal-ui"
   ],
   "orientation": "portrait-primary",
@@ -17,9 +18,10 @@
   "related_applications": [],
   "handle_links": "preferred",
   "categories": [
-    "productivity",
     "finance",
-    "business"
+    "business",
+    "productivity",
+    "utilities"
   ],
   "lang": "en-US",
   "dir": "ltr",
@@ -88,13 +90,16 @@
     }
   ],
   "launch_handler": {
-    "client_mode": "navigate-existing"
+    "client_mode": [
+      "focus-existing",
+      "auto"
+    ]
   },
   "edge_side_panel": {
     "preferred_width": 480
   },
   "share_target": {
-    "action": "./emp.html",
+    "action": "/emp.html",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
@@ -112,5 +117,71 @@
         }
       ]
     }
-  }
+  },
+  "iarc_rating_id": "e58c735d-dead-4f2e-836e-58742d1396a5",
+  "scope_extensions": [
+    {
+      "origin": "https://explyra.me"
+    },
+    {
+      "origin": "https://www.explyra.me"
+    },
+    {
+      "origin": "https://*.explyra.me"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/emp.html?action=import",
+      "accept": {
+        "application/json": [
+          ".json"
+        ],
+        "text/csv": [
+          ".csv"
+        ]
+      },
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+explyra",
+      "url": "/?url=%s"
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "/emp.html?action=new-note"
+  },
+  "widgets": [
+    {
+      "name": "Recent Activity",
+      "short_name": "Activity",
+      "description": "Quick view of your recent expenses.",
+      "tag": "activity",
+      "ms_ac_template": "/expense-summary.json",
+      "data": "/expense-data.json",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/assets/images/explyra_logo.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ],
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }

@@ -26,9 +26,15 @@
   ],
   "iarc_rating_id": "e58c735d-dead-4f2e-836e-58742d1396a5",
   "scope_extensions": [
-    { "origin": "https://explyra.me" },
-    { "origin": "https://www.explyra.me" },
-    { "origin": "https://*.explyra.me" }
+    {
+      "origin": "https://explyra.me"
+    },
+    {
+      "origin": "https://www.explyra.me"
+    },
+    {
+      "origin": "https://*.explyra.me"
+    }
   ],
   "categories": [
     "finance",
@@ -40,8 +46,12 @@
     {
       "action": "/emp.html?action=import",
       "accept": {
-        "application/json": [".json"],
-        "text/csv": [".csv"]
+        "application/json": [
+          ".json"
+        ],
+        "text/csv": [
+          ".csv"
+        ]
       },
       "icons": [
         {
@@ -148,25 +158,43 @@
       "short_name": "New Claim",
       "description": "Create a new expense claim instantly",
       "url": "/emp.html?action=create",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Admin Panel",
       "short_name": "Admin",
       "description": "Access administrative controls",
       "url": "/admin.html",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "AI Assistant",
       "short_name": "AI",
       "description": "Chat with Explyra AI",
       "url": "/ai-dashboard.html",
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "launch_handler": {
-    "client_mode": ["focus-existing", "auto"]
+    "client_mode": [
+      "focus-existing",
+      "auto"
+    ]
   },
   "edge_side_panel": {
     "preferred_width": 480
@@ -177,21 +205,26 @@
       "short_name": "Activity",
       "description": "Quick view of your recent expenses.",
       "tag": "activity",
-      "ms_ac_template": "expense-summary.json",
-      "data": "expense-data.json",
+      "ms_ac_template": "/expense-summary.json",
+      "data": "/expense-data.json",
       "type": "application/json",
       "screenshots": [
         {
-          "src": "assets/images/explyra_logo.png",
+          "src": "/assets/images/explyra_logo.png",
           "sizes": "512x512",
           "type": "image/png"
         }
       ],
-      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "share_target": {
-    "action": "./emp.html",
+    "action": "/emp.html",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
@@ -201,11 +234,13 @@
       "files": [
         {
           "name": "receipt",
-          "accept": ["image/jpeg", "image/png", "application/pdf"]
+          "accept": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ]
         }
       ]
     }
   }
 }
-
-
