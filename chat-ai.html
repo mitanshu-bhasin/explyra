@@ -583,8 +583,8 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
         // Constants
-        const OPENROUTER_API_KEY = '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';
-        const MODEL = 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free';
+        const GROQ_API_KEY = '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';
+        const MODEL = 'moonshotai/kimi-k2-instruct-0905';
         
         const firebaseConfig = {
             apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
@@ -663,7 +663,7 @@
         };
 
         function getApiKey() {
-            return localStorage.getItem('explyra-custom-key') || OPENROUTER_API_KEY;
+            return localStorage.getItem('explyra-custom-key') || GROQ_API_KEY;
         }
 
         // --- Chat Logic ---
@@ -703,7 +703,7 @@
             const aiMsgId = addMessage('ai', '<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>');
             
             try {
-                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${getApiKey()}`,
@@ -728,7 +728,7 @@
                     let metadata = null;
 
                     if (response.status === 429) {
-                        errMsg = "Rate limit reached (429). The OpenRouter key has hit its limit.";
+                        errMsg = "Rate limit reached (429). The Groq key has hit its limit.";
                     }
                     
                     if (data.error) {
@@ -761,7 +761,7 @@
                 
                 // If the default key failed, suggest using a personal key
                 if (getApiKey() === OPENROUTER_API_KEY && (error.message.includes("429") || error.message.includes("Provider returned error"))) {
-                    errorMessage += `\n\n**Tip:** The default Explyra key is currently rate-limited. Click the **Settings** icon below to use your own OpenRouter API key for uninterrupted service.`;
+                    errorMessage += `\n\n**Tip:** The default Explyra key is currently rate-limited. Click the **Settings** icon below to use your own Groq API key for uninterrupted service.`;
                 }
 
                 const el = document.getElementById(aiMsgId);
