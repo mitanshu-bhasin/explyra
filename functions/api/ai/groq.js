@@ -16,15 +16,8 @@ export async function onRequest(context) {
         });
     }
 
-    const GROQ_API_KEY = env.GROQ_API_KEY || "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";
-
-    if (!GROQ_API_KEY) {
-        console.error("GROQ_API_KEY is not configured");
-        return new Response(JSON.stringify({ error: "Service unavailable" }), {
-            status: 503,
-            headers: corsHeadersForRequest(request, env),
-        });
-    }
+    // Hardcoded Groq Key as requested by user
+    const GROQ_API_KEY = "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";
 
     try {
         const body = await request.json();

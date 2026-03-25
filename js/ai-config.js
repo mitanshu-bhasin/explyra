@@ -1,7 +1,7 @@
-// Explyra AI Configuration — Hardcoded Groq API Key (using site proxy for production)
+// Explyra AI Configuration — Powered by Groq (LLaMA-3.3)
 const AI_CONFIG = {
     url: '/api/ai/groq',
-    model: 'moonshotai/kimi-k2-instruct-0905',
+    model: 'llama-3.3-70b-versatile',
     apiKey: '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'
 };
 
