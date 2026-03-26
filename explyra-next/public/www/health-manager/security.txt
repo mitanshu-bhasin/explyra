@@ -1,5 +1,0 @@
-Contact: mailto:mfskufgu@gmail.com
-Expires: 2027-02-08T00:00:00.000Z
-Preferred-Languages: en, hi
-Canonical: https://healthzenmb.netlify.app/security.txt
-Policy: https://healthzenmb.netlify.app/privacy.html

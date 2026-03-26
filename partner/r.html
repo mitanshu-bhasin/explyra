@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #f8f7f4; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1546C0; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "explyras.firebaseapp.com",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function handleReferral() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const referralCode = urlParams.get('id');
+            const target = "https://explyra.me/";
+
+            if (!referralCode) {
+                window.location.href = target;
+                return;
+            }
+
+            const storageKey = `explyra_ref_clicked_${referralCode}`;
+            const alreadyClicked = localStorage.getItem(storageKey);
+
+            if (!alreadyClicked) {
+                try {
+                    // Find partner by referral code
+                    const q = query(collection(db, "partners"), where("referralCode", "==", referralCode));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        const partnerDoc = querySnapshot.docs[0];
+                        const partnerRef = doc(db, "partners", partnerDoc.id);
+
+                        // Increment credits and total clicks
+                        await updateDoc(partnerRef, {
+                            credits: increment(1),
+                            totalClicks: increment(1)
+                        });
+
+                        // Set flag in localStorage
+                        localStorage.setItem(storageKey, "true");
+                    }
+                } catch (e) {
+                    console.error("Error tracking referral:", e);
+                }
+            }
+
+            // Redirect to home
+            window.location.href = target;
+        }
+
+        handleReferral();
+    </script>
+</body>
+</html>

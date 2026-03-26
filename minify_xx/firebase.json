@@ -46,6 +46,41 @@
     ],
     "redirects": [
       {
+        "source": "/403.html",
+        "destination": "/403.html",
+        "type": 200
+      },
+      {
+        "source": "/404.html",
+        "destination": "/404.html",
+        "type": 200
+      },
+      {
+        "source": "/500.html",
+        "destination": "/500.html",
+        "type": 200
+      },
+      {
+        "source": "/google1bc6c1d290e2d8b1.html",
+        "destination": "/google1bc6c1d290e2d8b1.html",
+        "type": 200
+      },
+      {
+        "source": "/yandex_fa0950c8693cbdb7.html",
+        "destination": "/yandex_fa0950c8693cbdb7.html",
+        "type": 200
+      },
+      {
+        "source": "/pinterest-66eba.html",
+        "destination": "/pinterest-66eba.html",
+        "type": 200
+      },
+      {
+        "source": "/:slug.html",
+        "destination": "/:slug",
+        "type": 301
+      },
+      {
         "source": "/:path*",
         "destination": "https://explyra.me/:path*",
         "type": 301

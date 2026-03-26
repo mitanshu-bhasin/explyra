@@ -6,6 +6,17 @@ https://explyra.pages.dev/* https://explyra.me/:splat 301
 /mailbox /email-app/src/index.html 200
 /mail /email-app/src/index.html 200
 
+# Keep explicit HTML endpoints that should not redirect
+/403.html /403.html 200
+/404.html /404.html 200
+/500.html /500.html 200
+/google1bc6c1d290e2d8b1.html /google1bc6c1d290e2d8b1.html 200
+/yandex_fa0950c8693cbdb7.html /yandex_fa0950c8693cbdb7.html 200
+/pinterest-66eba.html /pinterest-66eba.html 200
+
+# Global extensionless policy
+/*.html /:splat 301!
+
 # Tenant workspace rewrites
 /cmp_:companyId/admin.html /cmp_:companyId/admin 301
 /cmp_:companyId/emp.html /cmp_:companyId/emp 301
@@ -32,3 +43,4 @@ https://explyra.pages.dev/* https://explyra.me/:splat 301
 # Redirects
 /firestore.rules /404.html 404
 /sw.js /sw.js 200
+/security.txt /.well-known/security.txt 301

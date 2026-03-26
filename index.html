@@ -46,7 +46,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </noscript>
     <meta name="title" content="Explyra Suite | Unified SaaS for Teams &amp; Enterprises" />
-    <meta name="description" content="Explyra is the ultimate productivity suite. Manage expenses, developer utilities, CRM, and team collaboration in one unified, secure platform.">
+    <meta name="description"
+        content="Explyra is the ultimate productivity suite. Manage expenses, developer utilities, CRM, and team collaboration in one unified, secure platform.">
     <meta name="keywords"
         content="Explyra, SaaS ecosystem, unified productivity, expense tracker, CRM software, health manager, invoicing tool, developer utilities, AI learning platform, enterprise ERP" />
     <meta name="author" content="Mitanshu Bhasin" />
@@ -83,7 +84,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
     <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
     <link rel="manifest" href="manifest.json" />
-        <meta name="theme-color" content="#1546C0">
+    <meta name="theme-color" content="#1546C0">
     <meta name="application-name" content="Explyra">
     <meta name="msapplication-TileColor" content="#1546C0">
     <meta name="msapplication-TileImage" content="android-chrome-192x192.png">
@@ -120,11 +121,11 @@
         // PWA Install Prompt Logic
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            // Show the install button if it exists
             const installBtn = document.getElementById('pwaInstallBtn');
-            if (installBtn) installBtn.style.display = 'inline-flex';
+            if (!installBtn) return;
+            // Keep browser-native banner behavior and store event for optional custom CTA.
+            deferredPrompt = e;
+            installBtn.style.display = 'inline-flex';
         });
 
         async function installPWA() {
@@ -149,8 +150,6 @@
     <!-- Preload Fonts & Base Styles -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
         media="print" onload="this.media='all'" />
@@ -479,6 +478,33 @@
             line-height: 1.65;
             overflow-x: hidden;
             transition: background .4s, color .4s
+        }
+
+        .cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid rgba(0, 0, 0, 0.72);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5000;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity .16s ease, transform .12s ease;
+            will-change: transform;
+        }
+
+        [data-theme="dark"] .cursor-ring {
+            border-color: rgba(255, 255, 255, 0.75);
+        }
+
+        @media (hover: none),
+        (pointer: coarse) {
+            .cursor-ring {
+                display: none;
+            }
         }
 
         a {
@@ -1270,12 +1296,12 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.8;
+            opacity: 0.95;
             transition: opacity 1s ease;
         }
 
         [data-theme="dark"] #hero-3d-canvas {
-            opacity: 0.6;
+            opacity: 0.82;
         }
 
         .hero-badge {
@@ -3981,16 +4007,16 @@
 ═══════════════════════════════════════════ */
         .reveal {
             opacity: 0;
-            transform: translateY(24px) scale(.985);
-            filter: blur(3px);
-            transition: opacity .7s ease, transform .7s cubic-bezier(.22, .61, .36, 1), filter .7s ease;
+            transform: translateY(34px) scale(.965);
+            filter: blur(10px);
+            transition: opacity .95s ease, transform .95s cubic-bezier(.2, .72, .2, 1), filter .95s ease;
             transition-delay: var(--reveal-delay, 0ms)
         }
 
         .reveal.visible {
             opacity: 1;
             transform: none;
-            filter: blur(0)
+            filter: blur(0);
         }
 
         .d1 {
@@ -4607,18 +4633,6 @@
                 scroll-behavior: auto;
             }
 
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-
-            .running-text-content {
-                animation: none;
-            }
-
             .suite-pill,
             .reveal,
             .motion-tilt,
@@ -4628,11 +4642,68 @@
                 filter: none !important;
             }
         }
+        /* POWERED BY KRISHNA GLASS HOUSE */
+        .foot-powered-by {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .foot-powered-by a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0.8;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            box-shadow: var(--s1);
+        }
+
+        .foot-powered-by a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            box-shadow: var(--s2);
+            border-color: var(--blue-b);
+        }
+
+        .kgh-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .powered-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .powered-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        .powered-quote {
+            font-size: 0.65rem;
+            color: var(--ink3);
+            font-style: italic;
+            line-height: 1.2;
+        }
+
     </style>
 
 
 
-    
+
 
     <script type="application/ld+json">
 {
@@ -5258,7 +5329,7 @@
                     <span class="theme-pill-label" id="themeLabel">Light</span>
                     <div class="theme-pill-toggle"></div>
                 </div>
-                <a href="company.html" class="btn-try coming-soon-trigger">Request Access</a>
+                <a href="contact.html#contact" class="btn-try">Book Demo</a>
                 <button class="menu-btn" id="menuBtn" aria-label="Open mobile menu">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -5338,12 +5409,15 @@
                 <li><a href="contact.html" style="color:var(--blue);">✉️ Contact</a></li>
             </ul>
             <div class="mobile-menu-footer">
-                <a href="company.html" class="btn-hero coming-soon-trigger"
-                    style="width:100%; justify-content:center; text-decoration:none;">Request Access</a>
+                <a href="contact.html#contact" class="btn-hero"
+                    style="width:100%; justify-content:center; text-decoration:none;">Book Demo</a>
                 <div class="mobile-socials">
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://x.com/explyra" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="https://instagram.com/explyra" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer"><i
+                            class="fab fa-github"></i></a>
+                    <a href="https://x.com/explyra" target="_blank" rel="noopener noreferrer"><i
+                            class="fab fa-twitter"></i></a>
+                    <a href="https://instagram.com/explyra" target="_blank" rel="noopener noreferrer"><i
+                            class="fab fa-instagram"></i></a>
                     <a href="mailto:explyra@gmail.com"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
@@ -5374,7 +5448,7 @@
                     health tracking, AI-powered learning, developer tools, and seamless P2P collaboration. All under one
                     roof, built by one visionary.</p>
                 <div class="hero-actions">
-                    <a href="admin.html" class="btn-hero">Get Demo <span>→</span></a>
+                    <a href="contact.html#contact" class="btn-hero">Book Demo <span>→</span></a>
                     <a href="pricing.html" class="btn-hero-ghost">View Pricing</a>
                 </div>
                 <div class="suite-pills">
@@ -5579,8 +5653,8 @@
                         </div>
                     </div>
                     <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-                        <a href="company.html" class="btn-prod coming-soon-trigger"
-                            style="background:var(--blue)">Request Access →</a>
+                        <a href="contact.html#contact" class="btn-prod" style="background:var(--blue)">Book Demo
+                            →</a>
                         <a href="admin.html" class="btn-prod-out"
                             style="border-color:var(--blue-b);color:var(--blue)">See
                             Demo</a>
@@ -6200,7 +6274,7 @@
                         <p class="sup-desc">24/7 intelligent assistant that can answer product questions, walk you
                             through
                             setup, and escalate to humans when needed.</p><a href="#"
-                            onclick="document.querySelector('.ai-support-bubble').click(); return false;"
+                            onclick="document.querySelector('.ai-support-bubble')?.click(); return false;"
                             class="sup-link">Try Now
                             →</a>
                     </div>
@@ -6241,7 +6315,8 @@
                         infrastructure. Explyra is not just a product, it's a statement: the right combination of AI,
                         design, and engineering can give teams everything they need in a single platform.</p>
                     <div class="founder-btns">
-                        <a href="https://github.com/mitanshu-bhasin" target="_blank" class="founder-btn">🐙 GitHub</a>
+                        <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer"
+                            class="founder-btn">🐙 GitHub</a>
                         <a href="mailto:mfskufgu@gmail.com" class="founder-btn">✉️ Email</a>
                         <a href="tel:+918076108584" class="founder-btn">📞 +91 8076108584</a>
                     </div>
@@ -6276,8 +6351,7 @@
                 <p class="cta-sub">Join the waitlist for early access to all ten Explyra products. Be the first to
                     shape
                     what we build next.</p>
-                <a href="company.html" class="btn-hero coming-soon-trigger" style="display:inline-flex">Request Early
-                    Access
+                <a href="contact.html#contact" class="btn-hero" style="display:inline-flex">Book Demo
                     →</a>
                 <div class="cta-contacts">
                     <a href="contact.html" class="cta-c"><span class="cta-c-icon">📞</span>
@@ -6292,7 +6366,8 @@
                             <div class="cta-c-val">explyra@gmail.com</div>
                         </div>
                     </a>
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank" class="cta-c"><span
+                    <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer"
+                        class="cta-c"><span
                             class="cta-c-icon">🐙</span>
                         <div>
                             <div class="cta-c-label">GitHub</div>
@@ -6425,14 +6500,32 @@
             <p style="font-size:0.7rem; opacity:0.7; margin-top:0.4rem; letter-spacing:0.02em;">Software and Design
                 Patented (No: US-2026-EX-0081-A1, US-2026-EX-0092-B2). Unauthorized copying or redistribution is
                 strictly prohibited and subject to legal action.</p>
-            <div class="foot-socials-wrapper foot-socials" style="margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-size: 1.5rem;">
-                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
-                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <div class="foot-socials-wrapper foot-socials"
+                style="margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-size: 1.5rem;">
+                <a href="https://x.com/explyras" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i
+                        class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61584891033070" target="_blank"
+                    rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.instagram.com/explyras" target="_blank" rel="noopener noreferrer"
+                    aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@explyras" target="_blank" rel="noopener noreferrer"
+                    aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/company/explyra/" target="_blank" rel="noopener noreferrer"
+                    aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://www.threads.com/@explyras" target="_blank" rel="noopener noreferrer"
+                    aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
+                <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i
+                        class="fa-brands fa-github"></i></a>
+            </div>
+            <div class="foot-powered-by">
+                <a href="https://krishnaglass.explyra.me/" target="_blank" rel="noopener noreferrer">
+                    <img src="https://krishnaglass.explyra.me/images/kgh.webp" alt="Krishna Glass House Logo"
+                        class="kgh-logo">
+                    <div class="powered-info">
+                        <span class="powered-text">Powered by Krishna Glass House</span>
+                        <span class="powered-quote">"Crafting Brilliance in Every Panel"</span>
+                    </div>
+                </a>
             </div>
         </div>
     </footer>
@@ -6463,14 +6556,17 @@
         <span>Coming Soon! We're preparing something amazing.</span>
     </div>
 
+    <div id="cursorRing" class="cursor-ring" aria-hidden="true"></div>
+
     <script>
         /* THEME */
         const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
+        const cursorRing = document.getElementById('cursorRing');
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const netInfo = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         const isDataSaver = !!netInfo?.saveData;
         const isLowSpecDevice = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
-        const allowEnhancedEffects = !prefersReducedMotion && !isDataSaver && !isLowSpecDevice;
+        const allowEnhancedEffects = !isDataSaver;
         const saved = localStorage.getItem('explyra-theme') || 'light';
         html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
         const toggleTheme = () => {
@@ -6487,6 +6583,26 @@
                     e.preventDefault();
                     toggleTheme();
                 }
+            });
+        }
+
+        if (cursorRing && window.matchMedia('(pointer: fine)').matches) {
+            window.addEventListener('pointermove', (e) => {
+                cursorRing.style.opacity = '1';
+                cursorRing.style.left = `${e.clientX}px`;
+                cursorRing.style.top = `${e.clientY}px`;
+            }, { passive: true });
+
+            window.addEventListener('pointerdown', () => {
+                cursorRing.style.transform = 'translate(-50%, -50%) scale(0.88)';
+            });
+
+            window.addEventListener('pointerup', () => {
+                cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+
+            window.addEventListener('blur', () => {
+                cursorRing.style.opacity = '0';
             });
         }
 
@@ -6511,19 +6627,15 @@
             });
         });
 
-        if (prefersReducedMotion) {
-            document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-        } else {
-            const io = new IntersectionObserver((entries, observer) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
-            document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-        }
+        const io = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
         /* SMOOTH SCROLL */
         document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -6578,7 +6690,24 @@
         const toast = document.getElementById('exToast');
         let toastTimeout;
 
-        function showComingSoon() {
+        function openCookieSettings() {
+            if (window?.Cookiebot?.renew) {
+                window.Cookiebot.renew();
+                return;
+            }
+            if (window?.OneTrust?.ToggleInfoDisplay) {
+                window.OneTrust.ToggleInfoDisplay();
+                return;
+            }
+            showComingSoon('Cookie settings panel coming soon.');
+        }
+
+        function showComingSoon(message = "Coming Soon! We're preparing something amazing.") {
+            if (!toast) return;
+            const toastText = toast.querySelector('span');
+            if (toastText) {
+                toastText.textContent = message;
+            }
             if (toastTimeout) clearTimeout(toastTimeout);
             toast.classList.add('visible');
             toastTimeout = setTimeout(() => {
@@ -6586,12 +6715,6 @@
             }, 3000);
         }
 
-        document.querySelectorAll('.coming-soon-trigger').forEach(el => {
-            el.addEventListener('click', (e) => {
-                e.preventDefault();
-                showComingSoon();
-            });
-        });
         if (btt) {
             btt.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -6653,7 +6776,7 @@
                     return;
                 }
 
-                const duration = 1300;
+                const duration = 780;
                 const start = performance.now();
                 const step = (now) => {
                     const progress = Math.min((now - start) / duration, 1);
@@ -6668,14 +6791,28 @@
             const heroStats = document.querySelector('.hero-stats');
             const heroCounters = document.querySelectorAll('.hero-stats .h-stat-num[data-count]');
             if (heroStats && heroCounters.length) {
+                let countersStarted = false;
+                const runHeroCounters = () => {
+                    if (countersStarted) return;
+                    countersStarted = true;
+                    heroCounters.forEach((counter) => {
+                        counter.textContent = '0';
+                        countUp(counter);
+                    });
+                };
+
+                requestAnimationFrame(() => {
+                    setTimeout(runHeroCounters, 140);
+                });
+
                 const counterObserver = new IntersectionObserver((entries, observer) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) {
-                            heroCounters.forEach(countUp);
+                            runHeroCounters();
                             observer.unobserve(entry.target);
                         }
                     });
-                }, { threshold: 0.45 });
+                }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
                 counterObserver.observe(heroStats);
             }
 
@@ -7086,174 +7223,188 @@
     <!-- HERO 3D DIGITAL CORE -->
     <script>
         (function () {
-            const canvas = document.getElementById('hero-3d-canvas');
-            if (!canvas || typeof THREE === 'undefined') return;
+            const bootThreeHero = () => {
+                const canvas = document.getElementById('hero-3d-canvas');
+                if (!canvas || typeof THREE === 'undefined') return;
+                canvas.style.display = 'block';
 
-            const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            const saveData = !!connection?.saveData;
-            const lowSpec = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
-            const mobileView = window.innerWidth < 820;
-            const disableScene = motionReduced || saveData;
-            if (disableScene) {
-                canvas.style.display = 'none';
-                return;
-            }
+                const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                const saveData = !!connection?.saveData;
+                const lowSpec = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+                const mobileView = window.innerWidth < 820;
+                const lowQuality = lowSpec || mobileView || saveData;
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({
+                    canvas,
+                    alpha: true,
+                    antialias: !lowQuality,
+                    powerPreference: lowQuality ? 'low-power' : 'high-performance'
+                });
 
-            const lowQuality = lowSpec || mobileView;
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({
-                canvas,
-                alpha: true,
-                antialias: !lowQuality,
-                powerPreference: lowQuality ? 'low-power' : 'high-performance'
-            });
-
-            const setRendererSize = () => {
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowQuality ? 1.25 : 1.8));
-            };
-            setRendererSize();
-
-            const getColors = () => {
-                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                return {
-                    core: isDark ? 0x5B8AF5 : 0x1546C0,
-                    shell: isDark ? 0x93B4FF : 0x1546C0,
-                    particles: isDark ? 0x5B8AF5 : 0x1546C0
+                const setRendererSize = () => {
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowQuality ? 1.25 : 1.8));
                 };
-            };
+                setRendererSize();
 
-            const colors = getColors();
-            const segmentCount = lowQuality ? 20 : 32;
+                const getColors = () => {
+                    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                    return {
+                        core: isDark ? 0x5B8AF5 : 0x1546C0,
+                        shell: isDark ? 0x93B4FF : 0x1546C0,
+                        particles: isDark ? 0x5B8AF5 : 0x1546C0
+                    };
+                };
 
-            const coreGeom = new THREE.SphereGeometry(1.2, segmentCount, segmentCount);
-            const coreMat = new THREE.MeshBasicMaterial({ color: colors.core, transparent: true, opacity: 0.4 });
-            const core = new THREE.Mesh(coreGeom, coreMat);
-            scene.add(core);
+                const colors = getColors();
+                const segmentCount = lowQuality ? 20 : 32;
 
-            const coreGlowGeom = new THREE.SphereGeometry(1.6, segmentCount, segmentCount);
-            const coreGlowMat = new THREE.MeshBasicMaterial({ color: colors.core, transparent: true, opacity: 0.15 });
-            const coreGlow = new THREE.Mesh(coreGlowGeom, coreGlowMat);
-            scene.add(coreGlow);
+                const coreGeom = new THREE.SphereGeometry(1.2, segmentCount, segmentCount);
+                const coreMat = new THREE.MeshBasicMaterial({ color: colors.core, transparent: true, opacity: 0.4 });
+                const core = new THREE.Mesh(coreGeom, coreMat);
+                scene.add(core);
 
-            const shellGeom = new THREE.IcosahedronGeometry(3.5, lowQuality ? 0 : 1);
-            const shellMat = new THREE.MeshBasicMaterial({ color: colors.shell, wireframe: true, transparent: true, opacity: 0.2 });
-            const shell = new THREE.Mesh(shellGeom, shellMat);
-            scene.add(shell);
+                const coreGlowGeom = new THREE.SphereGeometry(1.6, segmentCount, segmentCount);
+                const coreGlowMat = new THREE.MeshBasicMaterial({ color: colors.core, transparent: true, opacity: 0.15 });
+                const coreGlow = new THREE.Mesh(coreGlowGeom, coreGlowMat);
+                scene.add(coreGlow);
 
-            const particlesGeom = new THREE.BufferGeometry();
-            const particlesCount = lowQuality ? 70 : 140;
-            const posArray = new Float32Array(particlesCount * 3);
+                const shellGeom = new THREE.IcosahedronGeometry(3.5, lowQuality ? 0 : 1);
+                const shellMat = new THREE.MeshBasicMaterial({ color: colors.shell, wireframe: true, transparent: true, opacity: 0.2 });
+                const shell = new THREE.Mesh(shellGeom, shellMat);
+                scene.add(shell);
 
-            for (let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 15;
-            }
+                const particlesGeom = new THREE.BufferGeometry();
+                const particlesCount = lowQuality ? 110 : 220;
+                const posArray = new Float32Array(particlesCount * 3);
 
-            particlesGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particlesMat = new THREE.PointsMaterial({
-                size: lowQuality ? 0.03 : 0.04,
-                color: colors.particles,
-                transparent: true,
-                opacity: lowQuality ? 0.42 : 0.5
-            });
-            const particles = new THREE.Points(particlesGeom, particlesMat);
-            scene.add(particles);
+                for (let i = 0; i < particlesCount * 3; i++) {
+                    posArray[i] = (Math.random() - 0.5) * 15;
+                }
 
-            camera.position.z = 8;
+                particlesGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                const particlesMat = new THREE.PointsMaterial({
+                    size: lowQuality ? 0.03 : 0.04,
+                    color: colors.particles,
+                    transparent: true,
+                    opacity: lowQuality ? 0.58 : 0.72
+                });
+                const particles = new THREE.Points(particlesGeom, particlesMat);
+                scene.add(particles);
 
-            let mouseX = 0;
-            let mouseY = 0;
-            if (window.matchMedia('(pointer: fine)').matches) {
-                document.addEventListener('mousemove', (e) => {
+                camera.position.z = 8;
+
+                let mouseX = 0;
+                let mouseY = 0;
+                window.addEventListener('pointermove', (e) => {
                     mouseX = (e.clientX / window.innerWidth) - 0.5;
                     mouseY = (e.clientY / window.innerHeight) - 0.5;
                 }, { passive: true });
-            }
 
-            const themeObserver = new MutationObserver(() => {
-                const newColors = getColors();
-                coreMat.color.set(newColors.core);
-                coreGlowMat.color.set(newColors.core);
-                shellMat.color.set(newColors.shell);
-                particlesMat.color.set(newColors.particles);
-            });
-            themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+                const themeObserver = new MutationObserver(() => {
+                    const newColors = getColors();
+                    coreMat.color.set(newColors.core);
+                    coreGlowMat.color.set(newColors.core);
+                    shellMat.color.set(newColors.shell);
+                    particlesMat.color.set(newColors.particles);
+                });
+                themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-            const heroSection = canvas.closest('.hero');
-            let heroVisible = true;
-            let tabVisible = !document.hidden;
-            let rafId = null;
-            const startTime = performance.now();
+                let rafId = null;
+                const startTime = performance.now();
 
-            const renderLoop = () => {
-                if (!heroVisible || !tabVisible) {
-                    rafId = null;
-                    return;
-                }
+                const renderLoop = () => {
+                    const elapsedTime = (performance.now() - startTime) / 1000;
+                    shell.rotation.y = elapsedTime * 0.26;
+                    shell.rotation.x = elapsedTime * 0.13;
 
-                const elapsedTime = (performance.now() - startTime) / 1000;
-                shell.rotation.y = elapsedTime * 0.1;
-                shell.rotation.x = elapsedTime * 0.05;
+                    core.rotation.y = -elapsedTime * 0.38;
+                    const pulse = 1 + Math.sin(elapsedTime * 2.6) * 0.075;
+                    core.scale.set(pulse, pulse, pulse);
+                    coreGlow.scale.set(pulse * 1.2, pulse * 1.2, pulse * 1.2);
 
-                core.rotation.y = -elapsedTime * 0.2;
-                const pulse = 1 + Math.sin(elapsedTime * 2) * 0.05;
-                core.scale.set(pulse, pulse, pulse);
-                coreGlow.scale.set(pulse * 1.2, pulse * 1.2, pulse * 1.2);
+                    particles.rotation.y = elapsedTime * 0.11;
+                    particles.rotation.x = Math.sin(elapsedTime * 0.45) * 0.09;
 
-                particles.rotation.y = elapsedTime * 0.05;
+                    scene.rotation.y += (mouseX * 0.55 - scene.rotation.y) * 0.07;
+                    scene.rotation.x += (mouseY * 0.45 - scene.rotation.x) * 0.07;
+                    camera.position.x += (mouseX * 0.45 - camera.position.x) * 0.045;
+                    camera.position.y += (-mouseY * 0.35 - camera.position.y) * 0.045;
+                    camera.lookAt(0, 0, 0);
+                    renderer.render(scene, camera);
+                    rafId = requestAnimationFrame(renderLoop);
+                };
 
-                scene.rotation.y += (mouseX * 0.5 - scene.rotation.y) * 0.05;
-                scene.rotation.x += (mouseY * 0.5 - scene.rotation.x) * 0.05;
-                renderer.render(scene, camera);
+                let resizeRaf = null;
+                window.addEventListener('resize', () => {
+                    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+                    resizeRaf = requestAnimationFrame(() => {
+                        camera.aspect = window.innerWidth / window.innerHeight;
+                        camera.updateProjectionMatrix();
+                        setRendererSize();
+                    });
+                });
+
+                window.addEventListener('beforeunload', () => {
+                    if (rafId) cancelAnimationFrame(rafId);
+                    themeObserver.disconnect();
+                    renderer.dispose();
+                    coreGeom.dispose();
+                    coreGlowGeom.dispose();
+                    shellGeom.dispose();
+                    particlesGeom.dispose();
+                    coreMat.dispose();
+                    coreGlowMat.dispose();
+                    shellMat.dispose();
+                    particlesMat.dispose();
+                });
+
                 rafId = requestAnimationFrame(renderLoop);
             };
 
-            const ensureRenderLoop = () => {
-                if (!rafId && heroVisible && tabVisible) {
-                    rafId = requestAnimationFrame(renderLoop);
+            let heroBooted = false;
+            const tryBoot = () => {
+                if (heroBooted || typeof window.THREE === 'undefined') return false;
+                heroBooted = true;
+                bootThreeHero();
+                return true;
+            };
+
+            const loadThreeFrom = (src) => new Promise((resolve, reject) => {
+                const existing = document.querySelector(`script[src="${src}"]`);
+                if (existing) {
+                    if (typeof window.THREE !== 'undefined') resolve();
+                    else existing.addEventListener('load', resolve, { once: true });
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error(`Failed to load ${src}`));
+                document.head.appendChild(script);
+            });
+
+            const ensureThreeAndBoot = async () => {
+                if (tryBoot()) return;
+
+                const fallbacks = [
+                    'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js',
+                    'https://unpkg.com/three@0.160.0/build/three.min.js'
+                ];
+
+                for (const src of fallbacks) {
+                    try {
+                        await loadThreeFrom(src);
+                        if (tryBoot()) return;
+                    } catch (_) { }
                 }
             };
 
-            if (heroSection) {
-                const heroObserver = new IntersectionObserver((entries) => {
-                    heroVisible = entries[0]?.isIntersecting ?? true;
-                    ensureRenderLoop();
-                }, { threshold: 0.02 });
-                heroObserver.observe(heroSection);
-            }
-
-            document.addEventListener('visibilitychange', () => {
-                tabVisible = !document.hidden;
-                ensureRenderLoop();
-            });
-
-            let resizeRaf = null;
-            window.addEventListener('resize', () => {
-                if (resizeRaf) cancelAnimationFrame(resizeRaf);
-                resizeRaf = requestAnimationFrame(() => {
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    setRendererSize();
-                });
-            });
-
-            window.addEventListener('beforeunload', () => {
-                if (rafId) cancelAnimationFrame(rafId);
-                themeObserver.disconnect();
-                renderer.dispose();
-                coreGeom.dispose();
-                coreGlowGeom.dispose();
-                shellGeom.dispose();
-                particlesGeom.dispose();
-                coreMat.dispose();
-                coreGlowMat.dispose();
-                shellMat.dispose();
-                particlesMat.dispose();
-            });
-
-            ensureRenderLoop();
+            ensureThreeAndBoot();
         })();
     </script>
 </body>

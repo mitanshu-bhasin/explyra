@@ -1,1 +1,0 @@
-const AI_CONFIG={url:"/api/ai/groq",model:"moonshotai/kimi-k2-instruct-0905"};window.GROQ_API_KEY=AI_CONFIG.apiKey,window.AI_CONFIG=AI_CONFIG;

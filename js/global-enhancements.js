@@ -674,7 +674,7 @@
         const searchForm = `
             <div class="fsb-container">
                 <form class="fsb-wrapper" id="footSearchForm" autocomplete="off" aria-label="Search Ecosystem">
-                    <input type="text" class="fsb-input" id="fsbInput" placeholder="Search everywhere..." required aria-label="Search query">
+                    <input type="text" class="fsb-input" id="fsbInput" name="q" placeholder="Search everywhere..." required aria-label="Search query" autocomplete="search">
                     <button type="submit" class="fsb-btn" aria-label="Submit Search">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -685,7 +685,7 @@
                 </form>
                 <div class="fsb-links">
                     <a href="https://status.explyra.me" class="fsb-link" target="_blank"><i class="fas fa-signal"></i> Status</a>
-                    <a href="/security.txt" class="fsb-link"><i class="fas fa-shield-alt"></i> Security</a>
+                    <a href="/.well-known/security.txt" class="fsb-link"><i class="fas fa-shield-alt"></i> Security</a>
                 </div>
             </div>
         `;

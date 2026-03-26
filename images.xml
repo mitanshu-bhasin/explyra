@@ -21,7 +21,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/services/index.html</loc>
+    <loc>https://explyra.me/services/index</loc>
     <image:image>
       <image:loc>https://explyra.me/services/assets/images/hero.png</image:loc>
       <image:title>Explyra Services Portfolio</image:title>
@@ -29,7 +29,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/events/details/explyra-dev-summit.html</loc>
+    <loc>https://explyra.me/events/details/explyra-dev-summit</loc>
     <image:image>
       <image:loc>https://explyra.me/events/assets/thumbnails/dev-summit.png</image:loc>
       <image:title>Explyra Developer Summit 2026</image:title>
@@ -37,7 +37,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/events/details/explyra-suite-launch.html</loc>
+    <loc>https://explyra.me/events/details/explyra-suite-launch</loc>
     <image:image>
       <image:loc>https://explyra.me/events/assets/thumbnails/suite-launch.png</image:loc>
       <image:title>Explyra Suite Launch Event</image:title>
@@ -45,14 +45,14 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/team.html</loc>
+    <loc>https://explyra.me/team</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/team_photo.jpg</image:loc>
       <image:title>Explyra Team</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/attendance-system.html</loc>
+    <loc>https://explyra.me/solutions/attendance-system</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/attendance-system-ui.png</image:loc>
       <image:title>Explyra Attendance System Interface</image:title>
@@ -60,7 +60,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/booking-system.html</loc>
+    <loc>https://explyra.me/solutions/booking-system</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/booking-system-ui.png</image:loc>
       <image:title>Explyra Booking System Interface</image:title>
@@ -68,7 +68,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/crm.html</loc>
+    <loc>https://explyra.me/solutions/crm</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/crm-pipeline-ui.png</image:loc>
       <image:title>Explyra CRM Pipeline Interface</image:title>
@@ -76,7 +76,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/developers.html</loc>
+    <loc>https://explyra.me/solutions/developers</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/developers-api-ui.png</image:loc>
       <image:title>Explyra Developer Portal Interface</image:title>
@@ -84,7 +84,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/expense-manager.html</loc>
+    <loc>https://explyra.me/solutions/expense-manager</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/expense-manager-ui.png</image:loc>
       <image:title>Explyra Expense Manager Interface</image:title>
@@ -92,7 +92,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/health.html</loc>
+    <loc>https://explyra.me/solutions/health</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/health-manager-ui.png</image:loc>
       <image:title>Explyra Health Manager Interface</image:title>
@@ -100,7 +100,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/invoice-software.html</loc>
+    <loc>https://explyra.me/solutions/invoice-software</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/invoice-software-ui.png</image:loc>
       <image:title>Explyra Invoice Software Interface</image:title>
@@ -108,7 +108,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/learning.html</loc>
+    <loc>https://explyra.me/solutions/learning</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/learning-platform-ui.png</image:loc>
       <image:title>Explyra Learning Platform Interface</image:title>
@@ -116,7 +116,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/suite.html</loc>
+    <loc>https://explyra.me/solutions/suite</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/saas-suite-ui.png</image:loc>
       <image:title>Explyra Enterprise Suite Overview</image:title>
@@ -124,7 +124,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://explyra.me/solutions/utilities.html</loc>
+    <loc>https://explyra.me/solutions/utilities</loc>
     <image:image>
       <image:loc>https://explyra.me/assets/images/utility-tools-ui.png</image:loc>
       <image:title>Explyra Utility Tools Suite</image:title>
@@ -132,3 +132,4 @@
     </image:image>
   </url>
 </urlset>
+

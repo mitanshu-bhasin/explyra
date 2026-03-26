@@ -396,13 +396,8 @@
         }
     </style>
 
-    
+    <meta name="description" content="Use Cart on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
 
-        <meta name="description" content="Use Cart on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
-
-    
-    
-    
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -420,14 +415,6 @@
         "width": 512,
         "height": 512
       },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Okhla Phase III",
-        "addressLocality": "New Delhi",
-        "addressRegion": "Delhi",
-        "postalCode": "110020",
-        "addressCountry": "IN"
-      },
       "sameAs": [
         "https://x.com/explyras",
         "https://www.facebook.com/profile.php?id=61584891033070",
@@ -437,28 +424,7 @@
         "https://www.threads.com/@explyras",
         "https://github.com/Explyra",
         "https://ipecconsulting.org/"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+91-8076108584",
-          "contactType": "customer service",
-          "email": "explyra@gmail.com",
-          "availableLanguage": [
-            "en",
-            "hi"
-          ],
-          "contactOption": "TollFree",
-          "areaServed": "IN"
-        }
-      ],
-      "founder": {
-        "@type": "Person",
-        "name": "Mitanshu Bhasin",
-        "url": "https://explyra.me/mitanshu.html"
-      },
-      "foundingDate": "2024",
-      "foundingLocation": "New Delhi, India"
+      ]
     }
   ]
 }
@@ -477,9 +443,7 @@
     <main class="cart-page">
         <h1 class="cart-title">Your <em>Shopping Cart</em></h1>
         
-        <div id="itemsContainer" class="items-list">
-            <!-- Items injected via JS -->
-        </div>
+        <div id="itemsContainer" class="items-list"></div>
 
         <div id="cartSummary" class="cart-summary">
             <h2 class="summary-h">Order Summary</h2>
@@ -525,7 +489,6 @@
             <a href="pricing.html" class="btn-return">Explore Products</a>
         </div>
 
-        <!-- RECENT ORDERS SECTION -->
         <section class="recent-orders" id="recentOrdersSection" style="display:none">
             <h2 class="orders-h"><i class="fas fa-history"></i> Your Recent Orders</h2>
             <div id="ordersContainer">
@@ -534,7 +497,6 @@
         </section>
     </main>
 
-    <!-- Company ID Modal -->
     <div id="idModal" class="modal-overlay">
         <div class="modal-content">
             <h2 class="modal-h">Connect Company</h2>
@@ -613,7 +575,6 @@
                 document.getElementById('discountRow').style.display = 'none';
             }
 
-            // Crypto Lock Logic
             const cryptoBtn = document.getElementById('cryptoBtn');
             const cryptoMsg = document.getElementById('cryptoLockMsg');
             if (total < 1000) {
@@ -631,7 +592,7 @@
             }
         }
 
-        function applyCoupon() {
+        async function applyCoupon() {
             const codeInput = document.getElementById('couponCode');
             const code = codeInput.value.toUpperCase();
             const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
@@ -646,19 +607,34 @@
                 discount = Math.floor(subtotal * 0.2);
                 showToast("20% Beta Discount Applied!");
             } else {
-                showToast("Invalid Coupon Code", "#BE185D");
-                return;
+                try {
+                    const { collection, query, where, getDocs, getFirestore } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
+                    const db = getFirestore();
+                    const q = query(collection(db, "partner_coupons"), where("code", "==", code), where("used", "==", false));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        const couponDoc = querySnapshot.docs[0];
+                        const data = couponDoc.data();
+                        discount = Math.min(data.value, subtotal);
+                        showToast(`₹${data.value} Partner Discount Applied!`);
+                        window.appliedCouponId = couponDoc.id;
+                    } else {
+                        showToast("Invalid or used Coupon Code", "#BE185D");
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Error applying partner coupon:", e);
+                    showToast("Error checking coupon", "#BE185D");
+                    return;
+                }
             }
             updateTotals();
             codeInput.value = "";
         }
 
-        // --- MODAL LOGIC ---
         function needsCompanyId() {
-            return cart.some(item => 
-                item.name.toLowerCase().includes('crm') || 
-                item.name.toLowerCase().includes('expense')
-            );
+            return cart.some(item => item.name.toLowerCase().includes('crm') || item.name.toLowerCase().includes('expense'));
         }
 
         function checkoutFlow(type) {
@@ -681,11 +657,11 @@
             localStorage.setItem('explyra_company_id', val);
             closeModal();
             showToast("Company ID saved!");
-            
             if (pendingCheckout === 'manual') payManual();
             else if (pendingCheckout === 'crypto') payCrypto();
             pendingCheckout = null;
         }
+
         function closeModal() {
             document.getElementById('idModal').classList.remove('show');
             pendingCheckout = null;
@@ -697,10 +673,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, orderBy, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, getDocs, Timestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "",
+            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",
             storageBucket: "explyras.firebasestorage.app",
@@ -728,14 +704,9 @@
         async function fetchOrderHistory(uid) {
             const ordersSection = document.getElementById('recentOrdersSection');
             const container = document.getElementById('ordersContainer');
-            
             try {
-                const q = query(
-                    collection(db, `users/${uid}/orderHistory`),
-                    orderBy("timestamp", "desc")
-                );
+                const q = query(collection(db, `users/${uid}/orderHistory`), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
-                
                 if (querySnapshot.empty) {
                     container.innerHTML = '<p style="color:var(--ink4)">No orders found yet. Start your journey today!</p>';
                 } else {
@@ -756,17 +727,14 @@
                 ordersSection.style.display = 'block';
             } catch (e) {
                 console.error("Error fetching orders:", e);
-                container.innerHTML = '<p style="color:var(--ink4)">Unable to load order history.</p>';
             }
         }
 
         window.saveOrderToFirestore = async function() {
             if (!currentUser) return;
-            
             const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
             const total = subtotal - discount;
             const cid = localStorage.getItem('companyId') || 'N/A';
-
             try {
                 await addDoc(collection(db, `users/${currentUser.uid}/orderHistory`), {
                     items: cart,
@@ -774,9 +742,17 @@
                     discount: discount,
                     companyId: cid,
                     timestamp: Timestamp.now(),
-                    status: 'Pending Payment'
+                    status: 'Pending Payment',
+                    appliedCouponId: window.appliedCouponId || null
                 });
-                console.log("Order saved to Firestore");
+                if (window.appliedCouponId) {
+                    await updateDoc(doc(db, "partner_coupons", window.appliedCouponId), {
+                        used: true,
+                        usedBy: currentUser.uid,
+                        usedAt: Timestamp.now()
+                    });
+                    window.appliedCouponId = null;
+                }
                 localStorage.removeItem('explyra_cart');
                 cart = [];
                 renderCart();
@@ -785,17 +761,13 @@
             }
         };
 
-        // Re-implement payment functions with Firestore integration
         window.payManual = async function() {
             if (!checkoutFlow('manual')) return;
-            
             const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
             const total = subtotal - discount;
             const itemsList = cart.map(item => `• ${item.name} (₹${item.price})`).join('%0A');
             const cid = localStorage.getItem('companyId') || 'N/A';
-            
             await window.saveOrderToFirestore();
-
             const message = `Halo Explyra Team! I want to complete my purchase:%0A%0A${itemsList}%0A%0A--------------------%0ASubtotal: ₹${subtotal}%0ADiscount: -₹${discount}%0A*Total: ₹${total}*%0A--------------------%0ACompany ID: ${cid}%0A--------------------%0APlease share the manual payment details.`;
             window.location.href = `https://wa.me/918076108584?text=${message}`;
         };
@@ -804,7 +776,6 @@
             const EXPLYRA_PUBLIC_IDENTIFIER = '41c73ac7-202d-4876-8051-5121ae4339e3';
             const apiBase = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://pay.explyra.me';
             const companyId = localStorage.getItem('companyId') || 'MANUAL_EXPLYRA';
-
             try {
                 const response = await fetch(`${apiBase}/create-payment`, {
                     method: 'POST',
@@ -826,16 +797,11 @@
 
         window.payCrypto = async function() {
             if (!checkoutFlow('crypto')) return;
-
-            const subtotal = cart.reduce((acc, item) => acc + item.price, 0);
-            const total = subtotal - discount;
+            const total = cart.reduce((acc, item) => acc + item.price, 0) - discount;
             const btn = document.getElementById('cryptoBtn');
-            
             btn.disabled = true;
             btn.textContent = "Connecting...";
-            
             await window.saveOrderToFirestore();
-
             setTimeout(() => {
                 createCryptoInvoice(total).finally(() => {
                     btn.disabled = false;
@@ -843,7 +809,6 @@
                 });
             }, 800);
         };
-
     </script>
 </body>
 </html>

@@ -46,7 +46,7 @@
             "founder": {
                 "@type": "Person",
                 "name": "Mitanshu Bhasin",
-                "url": "https://explyra.me/mitanshu.html"
+                "url": "https://explyra.me/mitanshu"
             },
             "foundingDate": "2024",
             "foundingLocation": "New Delhi, India"
@@ -62,7 +62,7 @@
             },
             "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://explyra.me/search.html?q={search_term_string}",
+                "target": "https://explyra.me/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
             }
         },
@@ -185,3 +185,4 @@
         }
     ]
 }
+

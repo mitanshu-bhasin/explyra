@@ -1,2 +1,0 @@
-File: developers\index.html | Title: Explyra Developer Tools Hub - Code Beautifiers, Generators & Converters
-File: www\developers\index.html | Title: Explyra Developer Tools Hub - Code Beautifiers, Generators & Converters

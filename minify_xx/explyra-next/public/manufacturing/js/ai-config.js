@@ -1,1 +1,0 @@
-const AI_CONFIG={apiKey:window.EXPLYRA_CONFIG?.ai?.apiKey||"REDACTED_GROQ_API_KEY_2",url:"https://api.groq.com/openai/v1/chat/completions",model:"moonshotai/kimi-k2-instruct-0905"};window.GROQ_API_KEY=AI_CONFIG.apiKey,window.AI_CONFIG=AI_CONFIG;

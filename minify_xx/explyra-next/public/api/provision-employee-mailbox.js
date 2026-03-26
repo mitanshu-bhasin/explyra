@@ -1,1 +1,0 @@
-module.exports=async(e,t)=>{try{return(await import("../email-app/api/provision-employee-mailbox.js")).default(e,t)}catch(e){return t.status(500).json({error:"Provision endpoint bootstrap failed",details:e?.message||String(e)})}};
