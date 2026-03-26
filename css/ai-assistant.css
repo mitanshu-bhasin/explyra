@@ -293,3 +293,44 @@
         right: 20px;
     }
 }
+
+/* Report Button Styles */
+.ai-report-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
+    background: var(--bg2);
+    border: 1px solid var(--bdr);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--ink3);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: var(--s1);
+    z-index: 10;
+}
+
+.ai-msg-bot:hover .ai-report-btn {
+    opacity: 1;
+}
+
+.ai-report-btn:hover {
+    background: var(--rose-g);
+    color: var(--rose);
+    border-color: var(--rose-b);
+    transform: scale(1.1);
+}
+
+.ai-report-btn.reported {
+    opacity: 1;
+    background: var(--teal-g);
+    color: var(--teal);
+    border-color: var(--teal-b);
+}
+

@@ -22,7 +22,6 @@
                     </div>
                 </div>
                 <div class="ai-chat-messages" id="aiMsgs">
-                    <div class="ai-msg ai-msg-bot">Hello! I'm Explyra AI. How can I help you today? You can ask me about any of Explyra's products and services.</div>
                 </div>
                 <div class="ai-chat-input-area">
                     <div class="ai-input-wrap">
@@ -48,7 +47,9 @@
     const msgsContainer = document.getElementById('aiMsgs');
     const voiceBtn = document.getElementById('aiVoiceBtn');
     const muteBtn = document.getElementById('aiMuteBtn');
+
     let isMuted = false;
+
     let isRecording = false;
 
     // 7. Voice Output (TTS)
@@ -89,6 +90,24 @@
         const msg = document.createElement('div');
         msg.className = `ai-msg ai-msg-${sender}`;
         msg.textContent = text;
+        
+        if (sender === 'bot') {
+            const reportBtn = document.createElement('div');
+            reportBtn.className = 'ai-report-btn';
+            reportBtn.innerHTML = '<i class="fas fa-flag"></i>';
+            reportBtn.title = 'Report message';
+            reportBtn.onclick = () => {
+                const userEmail = prompt("Please enter your email to report this message:", localStorage.getItem('user_email') || "");
+                if (userEmail) {
+                    localStorage.setItem('user_email', userEmail);
+                    alert("Thank you! The report has been sent with your email: " + userEmail);
+                    reportBtn.classList.add('reported');
+                    reportBtn.innerHTML = '<i class="fas fa-check"></i>';
+                }
+            };
+            msg.appendChild(reportBtn);
+        }
+
         msgsContainer.appendChild(msg);
         msgsContainer.scrollTop = msgsContainer.scrollHeight;
         return msg;
@@ -251,5 +270,8 @@ PERSONALITY:
         muteBtn.classList.toggle('muted', isMuted);
         if (isMuted) window.speechSynthesis.cancel();
     });
+
+    // Add initial message
+    addMessage("Hello! I'm Explyra AI. How can I help you today? You can ask me about any of Explyra's products and services.", 'bot');
 
 })();
