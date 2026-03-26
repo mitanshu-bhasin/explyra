@@ -9,4 +9,5 @@ Disallow: /.env
 Disallow: /.git/
 
 Sitemap: https://explyra.me/sitemap.xml
+Sitemap: https://explyra.me/sitemap-index.xml
 Sitemap: https://explyra.me/llms.txt

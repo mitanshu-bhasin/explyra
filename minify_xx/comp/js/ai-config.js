@@ -1,1 +1,1 @@
-const AI_CONFIG={apiKey:window.EXPLYRA_CONFIG?.ai?.apiKey||"REDACTED",url:"https://api.groq.com/openai/v1/chat/completions",model:"moonshotai/kimi-k2-instruct-0905"};window.GROQ_API_KEY=AI_CONFIG.apiKey,window.AI_CONFIG=AI_CONFIG;
+const AI_CONFIG={url:"localhost"===window.location.hostname||"127.0.0.1"===window.location.hostname?"https://api.groq.com/openai/v1/chat/completions":"/api/ai/groq",model:"moonshotai/kimi-k2-instruct-0905",apiKey:"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"};window.GROQ_API_KEY=AI_CONFIG.apiKey,window.AI_CONFIG=AI_CONFIG;

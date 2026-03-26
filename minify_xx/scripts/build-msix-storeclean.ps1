@@ -26,40 +26,30 @@ Copy-Item $srcIcon (Join-Path $assets 'Square310x310Logo.png') -Force
 
 $launcherCode = @"
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 
 internal static class Program {
     [STAThread]
     static void Main() {
         try {
-            var url = "https://explyra.me";
-            var edgePath = GetEdgePath();
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
 
-            if (!string.IsNullOrEmpty(edgePath)) {
-                Process.Start(new ProcessStartInfo(edgePath, "--app=" + url) {
-                    UseShellExecute = false
-                });
-            } else {
-                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-            }
+      var form = new Form();
+      form.Text = "Explyra";
+      form.WindowState = FormWindowState.Maximized;
+      form.StartPosition = FormStartPosition.CenterScreen;
+
+      var browser = new WebBrowser();
+      browser.Dock = DockStyle.Fill;
+      browser.ScriptErrorsSuppressed = true;
+      form.Controls.Add(browser);
+
+      browser.Navigate("https://explyra.me");
+      Application.Run(form);
         } catch (Exception ex) {
             MessageBox.Show("Failed to open Explyra: " + ex.Message, "Explyra", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-    }
-
-    static string GetEdgePath() {
-        string[] candidates = new[] {
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft", "Edge", "Application", "msedge.exe"),
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Microsoft", "Edge", "Application", "msedge.exe")
-        };
-
-        foreach (var p in candidates) {
-            if (File.Exists(p)) return p;
-        }
-
-        return null;
     }
 }
 "@
