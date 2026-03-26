@@ -11,38 +11,39 @@ enabled = true
 # ==============================
 # 🚀 SECURITY & CACHE HEADERS
 # ==============================
-[[headers]]
-pattern = "/*"
-[headers.values]
-  X-Frame-Options = "DENY"
-  X-XSS-Protection = "1; mode=block"
-  X-Content-Type-Options = "nosniff"
-  Referrer-Policy = "strict-origin-when-cross-origin"
-  Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-  Cache-Control = "public, max-age=0, must-revalidate"
-  Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
-  Content-Security-Policy = "upgrade-insecure-requests; frame-ancestors 'none';"
-  X-Permitted-Cross-Domain-Policies = "none"
+# [[headers]]
+# pattern = "/*"
+# [headers.values]
+#   X-Frame-Options = "DENY"
+#   X-XSS-Protection = "1; mode=block"
+#   X-Content-Type-Options = "nosniff"
+#   Referrer-Policy = "strict-origin-when-cross-origin"
+#   Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+#   Cache-Control = "public, max-age=0, must-revalidate"
+#   Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+#   Content-Security-Policy = "upgrade-insecure-requests; frame-ancestors 'none';"
+#   X-Permitted-Cross-Domain-Policies = "none"
+# 
+# [[headers]]
+# pattern = "/assets/*"
+# [headers.values]
+#   Cache-Control = "public, max-age=31536000, immutable"
+# 
+# [[headers]]
+# pattern = "/css/*"
+# [headers.values]
+#   Cache-Control = "public, max-age=31536000, immutable"
+# 
+# [[headers]]
+# pattern = "/js/*"
+# [headers.values]
+#   Cache-Control = "public, max-age=31536000, immutable"
+# 
+# [[headers]]
+# pattern = "/*.xml"
+# [headers.values]
+#   Cache-Control = "public, max-age=3600, must-revalidate"
 
-[[headers]]
-pattern = "/assets/*"
-[headers.values]
-  Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-pattern = "/css/*"
-[headers.values]
-  Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-pattern = "/js/*"
-[headers.values]
-  Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-pattern = "/*.xml"
-[headers.values]
-  Cache-Control = "public, max-age=3600, must-revalidate"
 
 # ==============================
 # 🔗 REDIRECTS & REWRITES
