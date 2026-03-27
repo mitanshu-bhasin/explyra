@@ -1,0 +1,93 @@
+================================================================================
+                                EXPLYRA DETAILS
+================================================================================
+
+PRODUCT NAME: 
+Explyra
+
+DESCRIPTION: 
+Explyra is a highly robust, unified SaaS ecosystem designed to streamline and 
+modernize workflows for developers, enterprise teams, and individual 
+professionals. It functions as an "All-in-One Digital Workspace," unifying 
+productivity, management, and developer utilities into a seamless 
+Progressive Web App (PWA).
+
+PRIMARY MISSION: 
+The Ultimate All-in-One Digital Workspace for Productivity, Management, and Utilities.
+
+DOMAIN & DEPLOYMENT:
+- Primary Domain: https://explyra.me
+- Hosting: Cloudflare Pages, Netlify, Vercel
+
+CORE PRODUCT FEATURES:
+--------------------------------------------------------------------------------
+1.  EXPENSE MANAGER (emp.html, admin.html):
+    Dual-portal environment for Employees and Admins with smart tracking, 
+    real-time charts, and role-based verification.
+
+2.  HEALTH MANAGER (/health-manager):
+    Holistic fitness and dietary tracker with AI companion and native offline 
+    support.
+
+3.  EXPLYRA LEARNING (/explyra-learning):
+    Integrated Learning Management System (LMS) with course dashboards and 
+    automated certificate issuance.
+
+4.  INO INVOICING SOFTWARE (/Ino software):
+    Professional billing tools for invoice generation and visual customization.
+
+5.  DEVELOPER UTILITY SUITE (/Utilites):
+    AI-driven voice generator/translator, secure P2P file sharing, and 
+    web-based document scanning (DocScan).
+
+6.  ERP / MANUFACTURING (/manufacturing):
+    Enterprise Resource Planning tools for manufacturing and supply chain.
+
+7.  CRM (/crm):
+    Sales pipeline management tool for scaling organizations.
+
+8.  ATTENDANCE SYSTEM (/attendance):
+    Geofenced check-in system for HR and security.
+
+9.  BOOKING HUB (https://book.explyra.me):
+    Auto-scheduling system for service providers.
+
+10. DNS MANAGER (/dns):
+    Global edge infrastructure and DNS management tool.
+
+11. AI & REAL-TIME COMMS:
+    Integrated ecosystem chat with spam filtration and an AI Support 
+    Assistant for policy queries.
+
+TECHNOLOGY STACK:
+--------------------------------------------------------------------------------
+- Frontend: HTML5, Vanilla JavaScript (ES6+), CSS3
+- Styling: Modular Component CSS, Tailwind CSS standard utilities
+- Backend: Firebase (Firestore, Auth, Storage, Cloud Functions)
+- Mobile: Capacitor JS (@capacitor/android, @capacitor/core)
+- Analytics/Graphics: Chart.js
+- Scripting/DevOps: Python, Node.js, Wrangler, Vercel/Netlify/Cloudflare
+
+ORGANIZATION & LEADERSHIP:
+--------------------------------------------------------------------------------
+- Parent Organization: Explyra
+- Architect & Core Maintainer: Mitanshu Bhasin
+- Founded: 2024
+
+CONTACT INFORMATION:
+--------------------------------------------------------------------------------
+- Support Email: support@explyra.me
+- Main Phone: +91-8076108584
+- Official Website: https://explyra.me
+
+SOCIAL MEDIA PRESENCE:
+--------------------------------------------------------------------------------
+- X (Twitter): @explyras
+- GitHub: https://github.com/Explyra
+- LinkedIn: https://www.linkedin.com/company/explyra/
+- Instagram: @explyras
+- YouTube: @explyras
+
+LICENSE: 
+Proprietary (Strictly disallowed for direct commercial utilization or raw 
+cloning without authorized documentation).

@@ -730,6 +730,9 @@ window.handleGoogleLogin = async () => {
 
     try {
         setAuthButtonsLoading(true, 'Opening Google...');
+        const { setPersistence, browserLocalPersistence } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+        await setPersistence(auth, browserLocalPersistence);
+
         const result = await safeWithRetry(
             () => safeWithTimeout(signInWithPopup(auth, provider), 15000, 'Google sign-in timed out.'),
             { maxRetries: 1 }

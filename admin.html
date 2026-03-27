@@ -115,11 +115,11 @@
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
     <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="js/theme.js"></script>
-    <script src="js/utils.js" defer></script>
-    <script src="js/docx-export.js" defer></script>
-    <script type="module" src="js/admin-logic.js" defer></script>
-    <script src="js/gdrive-service.js" defer></script>
+    <script src="/js/theme.js"></script>
+    <script src="/js/utils.js" defer></script>
+    <script src="/js/docx-export.js" defer></script>
+    <script type="module" src="/js/admin-logic.js" defer></script>
+    <script src="/js/gdrive-service.js" defer></script>
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -4001,223 +4001,70 @@
             }
         }
     </script>
-    <script>
-        // Multi-Step Auth Logic
-        window.handleIdentifierNext = async (e) => {
-            e.preventDefault();
-            const identifier = document.getElementById('login-identifier').value.trim();
-            const btn = document.getElementById('identifier-btn');
-            
-            if (!identifier) return showToast('Please enter an email or phone', 'error');
-            
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
-            
-            try {
-                // Get full user object to check for uid and status
-                const user = await window.resolveUserIdentity(identifier);
-                if (!user) {
-                    showToast("Account not found. Please contact admin.", "error");
-                    return;
-                }
-
-                const resolvedEmail = user.email;
-                document.getElementById('display-resolved-email').textContent = resolvedEmail;
-                
-                const stepId = document.getElementById('step-identifier');
-                const stepPass = document.getElementById('step-password');
-                const stepAct = document.getElementById('step-activation');
-
-                if (user.status === 'ACTIVE' || user.uid) {
-                    // Show Password Step
-                    stepId.classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
-                    stepPass.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
-                    stepPass.classList.add('translate-x-0', 'opacity-100');
-                } else {
-                    // Show Activation Step
-                    document.getElementById('signup-email').value = resolvedEmail;
-                    stepId.classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
-                    stepAct.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
-                    stepAct.classList.add('translate-x-0', 'opacity-100');
-                }
-                
-                btn.disabled = false;
-                btn.innerHTML = 'Next <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i>';
-            } catch (err) {
-                showToast(err.message, 'error');
-                btn.disabled = false;
-                btn.innerHTML = 'Next <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i>';
+    <script type="module">
+        // Robust Multi-Step Auth Bridge
+        // This ensures functions are available even if the main module loads slowly or across different base paths
+        const ensureLogic = async () => {
+            if (!window.resolveUserIdentity || !window.handleIdentifierNext) {
+                const { resolveUserIdentity, handleIdentifierNext, handleAccountActivationVerify, handleAccountActivation, handleFinalLogin, forgotPassword, handleForgotPasswordNext, sendResetToConfirmedUser, toggleLoginPassword } = await import('/js/admin-logic.js');
+                window.resolveUserIdentity = resolveUserIdentity;
+                window.handleIdentifierNext = handleIdentifierNext;
+                window.handleAccountActivationVerify = handleAccountActivationVerify;
+                window.handleAccountActivation = handleAccountActivation;
+                window.handleFinalLogin = handleFinalLogin;
+                window.forgotPassword = forgotPassword;
+                window.handleForgotPasswordNext = handleForgotPasswordNext;
+                window.sendResetToConfirmedUser = sendResetToConfirmedUser;
+                window.toggleLoginPassword = toggleLoginPassword;
             }
+        };
+
+        window.handleIdentifierNext = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleIdentifierNext(e);
+        };
+
+        window.handleAccountActivationVerify = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleAccountActivationVerify(e);
         };
 
         window.handleAccountActivation = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signup-email').value;
-            const pass = document.getElementById('signup-password').value;
-            const confirm = document.getElementById('confirm-password').value;
-            const btn = document.getElementById('signup-btn');
-
-            if (!pass || pass !== confirm) return showToast("Passwords do not match", "warning");
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Activating...';
-
-            try {
-                const { createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
-                const { collection, query, where, getDocs, updateDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
-                
-                const q = query(collection(window.db, "users"), where("email", "==", email));
-                const snap = await getDocs(q);
-                if (snap.empty) throw new Error("Account not found.");
-
-                const userCred = await createUserWithEmailAndPassword(window.auth, email, pass);
-                await updateDoc(doc(window.db, "users", snap.docs[0].id), {
-                    uid: userCred.user.uid,
-                    status: 'ACTIVE',
-                    updatedAt: serverTimestamp()
-                });
-
-                showToast("Account activated! Please sign in.", "success");
-                setTimeout(() => window.backToIdentifier(), 2000);
-            } catch (err) {
-                showToast(err.message, "error");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'Activate';
-            }
-        };
-
-        window.forgotPassword = () => {
-            const currentId = document.getElementById('login-identifier').value.trim();
-            if (currentId) document.getElementById('forgot-identifier').value = currentId;
-
-            document.getElementById('step-identifier').classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
-            document.getElementById('step-password').classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
-            const stepForgot = document.getElementById('step-forgot-password');
-            stepForgot.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
-            stepForgot.classList.add('translate-x-0', 'opacity-100');
-        };
-
-        window.handleForgotPasswordNext = async (e) => {
-            e.preventDefault();
-            const identifier = document.getElementById('forgot-identifier').value.trim();
-            if(!identifier) return showToast('Please enter your email or phone', 'warning');
-            
-            try {
-                const loadingStep = document.getElementById('step-loading');
-                if (loadingStep) {
-                    loadingStep.classList.remove('opacity-0', 'pointer-events-none');
-                    loadingStep.classList.add('opacity-100');
-                }
-
-                const user = await window.resolveUserIdentity(identifier);
-                
-                await new Promise(r => setTimeout(r, 800));
-
-                if (loadingStep) {
-                    loadingStep.classList.remove('opacity-100');
-                    loadingStep.classList.add('opacity-0', 'pointer-events-none');
-                }
-
-                if (!user) {
-                    showToast("Account not found. Check the identifier entered.", "error");
-                    return;
-                }
-
-                // Populate Step 4
-                document.getElementById('confirm-user-name').textContent = user.name || 'Explyra User';
-                document.getElementById('confirm-user-email').textContent = user.email;
-                document.getElementById('confirm-send-email').textContent = user.email;
-
-                if (user.photoUrl) {
-                    document.getElementById('confirm-avatar-img').src = user.photoUrl;
-                    document.getElementById('confirm-avatar-img').classList.remove('hidden');
-                    document.getElementById('confirm-avatar-placeholder').classList.add('hidden');
-                } else {
-                    document.getElementById('confirm-avatar-img').classList.add('hidden');
-                    document.getElementById('confirm-avatar-placeholder').classList.remove('hidden');
-                }
-
-                // Transition to Step 4
-                document.getElementById('step-forgot-password').classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
-                const stepConfirm = document.getElementById('step-confirm-identity');
-                stepConfirm.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
-                stepConfirm.classList.add('translate-x-0', 'opacity-100');
-
-            } catch (err) { 
-                console.error(err);
-                showToast(err.message, 'error'); 
-                const loadingStep = document.getElementById('step-loading');
-                if (loadingStep) {
-                    loadingStep.classList.remove('opacity-100');
-                    loadingStep.classList.add('opacity-0', 'pointer-events-none');
-                }
-            }
-        };
-
-        window.sendResetToConfirmedUser = async () => {
-            const email = document.getElementById('confirm-user-email').textContent;
-            const btn = document.getElementById('confirm-identity-btn');
-            const originalText = btn.innerHTML;
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
-
-            try {
-                const { getAuth, sendPasswordResetEmail } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
-                const auth = getAuth();
-                await sendPasswordResetEmail(auth, email);
-                showToast('Reset email sent to your primary email!', 'success');
-                setTimeout(() => backToIdentifier(), 2000);
-            } catch (err) {
-                console.error(err);
-                showToast(err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleAccountActivation(e);
         };
 
         window.handleFinalLogin = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('display-resolved-email').textContent;
-            const password = document.getElementById('login-password').value;
-            const btn = document.getElementById('login-btn');
-            
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing in...';
-            
-            try {
-                // We depend on handleLogin being globally available or using firebase direct
-                // For admin.html, it usually calls handleLogin from admin-logic.js
-                if (window.handleLogin) {
-                    await window.handleLogin(email, password);
-                } else {
-                    // Fallback to direct firebase if handleLogin isn't ready
-                    const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
-                    await signInWithEmailAndPassword(window.auth, email, password);
-                }
-            } catch (err) {
-                showToast(err.message, 'error');
-                btn.disabled = false;
-                btn.innerHTML = 'Sign In';
-            }
-        };
-        
-        window.toggleLoginPassword = () => {
-            const input = document.getElementById('login-password');
-            const icon = document.getElementById('login-eye-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-regular', 'fa-solid');
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-solid', 'fa-regular');
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleFinalLogin(e);
         };
 
+        window.forgotPassword = async () => {
+            await ensureLogic();
+            return window.forgotPassword();
+        };
+
+        window.handleForgotPasswordNext = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleForgotPasswordNext(e);
+        };
+
+        window.sendResetToConfirmedUser = async () => {
+            await ensureLogic();
+            return window.sendResetToConfirmedUser();
+        };
+
+        window.toggleLoginPassword = async () => {
+            await ensureLogic();
+            return window.toggleLoginPassword();
+        };
+
+        // Accessibility & Utility
         window.updateStrength = function (password) {
             const rules = {
                 length: password.length >= 8,
@@ -4231,7 +4078,6 @@
             if (rules.upper && rules.lower) strength++;
             if (rules.number) strength++;
 
-            // Update rules UI
             Object.keys(rules).forEach(rule => {
                 const el = document.getElementById(`rule-${rule}`);
                 if (el) {
@@ -4253,7 +4099,6 @@
                 }
             });
 
-            // Update bars
             for (let i = 1; i <= 3; i++) {
                 const bar = document.getElementById(`bar-${i}`);
                 if (bar) {

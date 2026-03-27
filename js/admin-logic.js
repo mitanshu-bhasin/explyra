@@ -1436,37 +1436,7 @@ window.toggleAuthMode = function(mode) {
 /**
  * Handle Account Activation
  */
-window.handleAccountActivation = async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('signup-email').value.trim();
-    const password = document.getElementById('signup-password').value;
-    const confirm = document.getElementById('confirm-password').value;
-
-    if (!email || !password) return showToast('Please enter both email and password.', 'error');
-    if (password !== confirm) return showToast('Passwords do not match.', 'error');
-
-    const loader = document.getElementById('auth-loader');
-    loader.classList.add('opacity-100');
-
-    try {
-        // Here you would normally register or update the user
-        // Assuming your setup uses createUserWithEmailAndPassword or sets a doc
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", res.user.uid), {
-            email,
-            role: 'employee', // Default role for inline activation
-            activated: true,
-            createdAt: serverTimestamp()
-        }, { merge: true });
-
-        showToast('Account activated successfully!', 'success');
-        window.location.reload();
-    } catch (err) {
-        showToast(err.message, 'error');
-    } finally {
-        loader.classList.remove('opacity-100');
-    }
-};
+// Redundant handleAccountActivation removed to favor standardized version at bottom of file.
 
 /**
  * Resolve identifier (email or phone) to primary email
@@ -1543,6 +1513,8 @@ window.handleGoogleLogin = async () => {
     provider.addScope('email');
     provider.addScope('profile');
     try {
+        const { setPersistence, browserLocalPersistence } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+        await setPersistence(auth, browserLocalPersistence);
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 

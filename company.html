@@ -194,81 +194,102 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-            apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
-            authDomain: "explyras.firebaseapp.com",
-            projectId: "explyras",
-            storageBucket: "explyras.firebasestorage.app",
-            messagingSenderId: "411853553644",
-            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
-        };
+        // Environment Initialization
+        const initExplyra = async () => {
+            if (!window.EXPLYRA_CONFIG) {
+                try { await import('/js/env.js'); } catch(e) { console.warn("Using fallback config"); }
+            }
+            const config = window.EXPLYRA_CONFIG?.firebase || {
+                apiKey: "", 
+                authDomain: "explyras.firebaseapp.com",
+                projectId: "explyras",
+                storageBucket: "explyras.firebasestorage.app",
+                messagingSenderId: "411853553644",
+                appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+            };
+            const app = initializeApp(config);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        let currentUser = null;
-        let userDocId = null;
+            window.showToast = (msg, type = 'success') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type} fade-in`;
+                toast.innerHTML = msg;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => toast.remove(), 500);
+                }, 4000);
+            };
 
-        window.showToast = (msg, type = 'success') => {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        };
-
-        function showForm() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-            document.getElementById('mainContainer').style.opacity = '1';
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                const userDocSnap = await getDoc(doc(db, "users", user.uid));
-                if (userDocSnap.exists() && userDocSnap.data().companyId) {
-                    window.location.href = 'admin.html';
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    try {
+                        const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                        if (userDocSnap.exists() && userDocSnap.data().companyId) {
+                            window.location.href = 'admin.html';
+                        } else {
+                            document.getElementById('loadingOverlay').style.opacity = '0';
+                            setTimeout(() => {
+                                document.getElementById('loadingOverlay').style.display = 'none';
+                                document.getElementById('mainContainer').style.opacity = '1';
+                            }, 400);
+                        }
+                    } catch (err) {
+                        window.showToast(err.message, 'error');
+                    }
                 } else {
-                    showForm();
+                    window.location.href = 'signup.html';
                 }
-            } else {
-                window.location.href = 'signup.html';
-            }
-        });
+            });
 
-        const generateId = (p) => p + '_' + Math.random().toString(36).substr(2, 9);
+            document.getElementById('companyForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const user = auth.currentUser;
+                if (!user) return window.location.href = 'signup.html';
 
-        document.getElementById('companyForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser) return;
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.textContent = 'Creating...';
+                const btn = document.getElementById('submitBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
 
-            try {
-                const companyId = generateId('cmp');
-                await setDoc(doc(db, "companies", companyId), {
-                    companyId,
-                    name: document.getElementById('cmpName').value,
-                    ownerId: currentUser.uid,
-                    createdAt: serverTimestamp()
-                });
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    companyId,
-                    role: 'ADMIN',
-                    updatedAt: serverTimestamp()
-                });
-                showToast('Workspace ready!', 'success');
-                setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
-            } catch (error) {
-                showToast(error.message, 'error');
-                btn.disabled = false;
-                btn.textContent = 'Next';
-            }
-        });
+                try {
+                    const companyId = 'cmp_' + Math.random().toString(36).substr(2, 9);
+                    const companyData = {
+                        companyId,
+                        name: document.getElementById('cmpName').value,
+                        domain: document.getElementById('cmpDomain').value || null,
+                        industry: document.getElementById('cmpIndustry').value,
+                        size: document.getElementById('cmpSize').value,
+                        country: document.getElementById('cmpCountry').value,
+                        logo: document.getElementById('cmpLogo').value || null,
+                        ownerId: user.uid,
+                        ownerEmail: user.email,
+                        status: 'ACTIVE',
+                        plan: 'FREE',
+                        createdAt: serverTimestamp()
+                    };
+
+                    await setDoc(doc(db, "companies", companyId), companyData);
+                    await updateDoc(doc(db, "users", user.uid), {
+                        companyId,
+                        role: 'ADMIN',
+                        updatedAt: serverTimestamp()
+                    });
+
+                    window.showToast('Workspace created successfully!', 'success');
+                    setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+                } catch (error) {
+                    window.showToast(error.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Next';
+                }
+            });
+        };
+
+        initExplyra();
     </script>
     <style>
         @keyframes dotFade { from { opacity: 0.2; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }

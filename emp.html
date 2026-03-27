@@ -109,12 +109,12 @@
             }
         }
     </script>
-    <script src="js/env.js"></script>
-    <script src="js/theme.js"></script>
-    <script src="js/ai-config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/docx-export.js" defer></script>
-    <script src="js/gdrive-service.js" defer></script>
+    <script src="/js/env.js"></script>
+    <script src="/js/theme.js"></script>
+    <script src="/js/ai-config.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/docx-export.js" defer></script>
+    <script src="/js/gdrive-service.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -3887,8 +3887,61 @@
                 Back to Login
             </button>
         </div>
-    <script>
-        window.currentPasswordStrength = 0;
+    <script type="module">
+        // Robust Multi-Step Auth Bridge for Employee Portal
+        const ensureLogic = async () => {
+            if (!window.resolveUserIdentity || !window.handleIdentifierNext) {
+                const { resolveUserIdentity, handleIdentifierNext, handleAccountActivation, handleFinalLogin, forgotPassword, handleForgotPasswordNext, sendResetToConfirmedUser, toggleLoginPassword } = await import('/js/emp-auth.js');
+                window.resolveUserIdentity = resolveUserIdentity;
+                window.handleIdentifierNext = handleIdentifierNext;
+                window.handleAccountActivation = handleAccountActivation;
+                window.handleFinalLogin = handleFinalLogin;
+                window.forgotPassword = forgotPassword;
+                window.handleForgotPasswordNext = handleForgotPasswordNext;
+                window.sendResetToConfirmedUser = sendResetToConfirmedUser;
+                window.toggleLoginPassword = toggleLoginPassword;
+            }
+        };
+
+        window.handleIdentifierNext = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleIdentifierNext(e);
+        };
+
+        window.handleAccountActivation = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleAccountActivation(e);
+        };
+
+        window.handleFinalLogin = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleFinalLogin(e);
+        };
+
+        window.forgotPassword = async () => {
+            await ensureLogic();
+            return window.forgotPassword();
+        };
+
+        window.handleForgotPasswordNext = async (e) => {
+            if (e) e.preventDefault();
+            await ensureLogic();
+            return window.handleForgotPasswordNext(e);
+        };
+
+        window.sendResetToConfirmedUser = async () => {
+            await ensureLogic();
+            return window.sendResetToConfirmedUser();
+        };
+
+        window.toggleLoginPassword = async () => {
+            await ensureLogic();
+            return window.toggleLoginPassword();
+        };
+
         window.updateStrength = function(p) {
             const rules = {
                 len: p.length >= 8,
