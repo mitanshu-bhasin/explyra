@@ -35,6 +35,270 @@ window.companyId = null;
 window.currentUser = null;
 window.userData = null;
 
+window.resolveUserIdentity = async (identifier) => {
+    if (!identifier) return null;
+    let input = identifier.toLowerCase().trim();
+
+    // 1. Check Primary Email
+    try {
+        const qEmail = query(collection(db, "users"), where("email", "==", input), limit(1));
+        const snapEmail = await getDocs(qEmail);
+        if (!snapEmail.empty) return snapEmail.docs[0].data();
+    } catch (e) {}
+
+    // 2. Check Phone (Multi-Format)
+    const digits = input.replace(/\D/g, '');
+    if (digits.length >= 10 && digits.length <= 13) {
+        const formats = [];
+        if (digits.length === 10) {
+            formats.push('+91' + digits, '91' + digits, digits);
+        } else if (digits.length === 12 && digits.startsWith('91')) {
+            formats.push('+' + digits, digits, digits.substring(2));
+        } else {
+            formats.push('+' + digits, digits);
+        }
+
+        for (const fmt of [...new Set(formats)]) {
+            try {
+                // Check 'phone' field
+                const qPhone = query(collection(db, "users"), where("phone", "==", fmt), limit(1));
+                const snapPhone = await getDocs(qPhone);
+                if (!snapPhone.empty) return snapPhone.docs[0].data();
+
+                // Check 'altPhone' field
+                const qAltPhone = query(collection(db, "users"), where("altPhone", "==", fmt), limit(1));
+                const snapAltPhone = await getDocs(qAltPhone);
+                if (!snapAltPhone.empty) return snapAltPhone.docs[0].data();
+            } catch (e) {}
+        }
+    }
+
+    // 3. Check Alternative Email
+    try {
+        const qAltEmail = query(collection(db, "users"), where("altEmail", "==", input), limit(1));
+        const snapAltEmail = await getDocs(qAltEmail);
+        if (!snapAltEmail.empty) return snapAltEmail.docs[0].data();
+    } catch (e) {}
+
+    return null;
+};
+
+/**
+ * Resolve identifier (email or phone) to primary email
+ */
+window.resolveEmailToPrimary = async function(identifier) {
+    const user = await window.resolveUserIdentity(identifier);
+    if (user) return user.email;
+    return identifier; 
+};
+
+window.showStep = function(stepId) {
+    const currentStep = document.querySelector('.step-content.active');
+    const nextStep = document.getElementById(stepId);
+    
+    if (currentStep) {
+        currentStep.classList.remove('active');
+        currentStep.classList.add('fade-out');
+        setTimeout(() => currentStep.classList.remove('fade-out'), 500);
+    }
+    if (nextStep) nextStep.classList.add('active');
+};
+
+window.backToIdentifier = () => window.showStep('step-identifier');
+
+window.handleIdentifierNext = async function(e) {
+    e.preventDefault();
+    const identifier = document.getElementById('login-identifier').value.trim();
+    if (!identifier) return showToast('Please enter an identifier', 'warning');
+
+    const loadingStep = document.getElementById('step-loading');
+    loadingStep.classList.add('active');
+
+    try {
+        const resolvedEmail = await window.resolveEmailToPrimary(identifier);
+        await new Promise(r => setTimeout(r, 800));
+
+        // Get user details to see if active or pending
+        const q = query(collection(db, "users"), where("email", "==", resolvedEmail));
+        const snap = await getDocs(q);
+        loadingStep.classList.remove('active');
+
+        if (snap.empty) {
+            window.showToast("Account not found.", "error");
+            return;
+        }
+
+        const userData = snap.docs[0].data();
+        document.getElementById('display-resolved-email').textContent = resolvedEmail;
+        
+        if (userData.status === 'ACTIVE' || userData.uid) {
+            window.showStep('step-password');
+        } else {
+            document.getElementById('signup-email').value = resolvedEmail;
+            window.showStep('step-activation');
+        }
+    } catch (err) {
+        showToast(err.message, 'error');
+        document.getElementById('step-loading').classList.remove('active');
+    }
+};
+
+window.handleAccountActivation = async function(e) {
+    if (e) e.preventDefault();
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPass = document.getElementById('confirm-password').value;
+
+    if (password !== confirmPass) {
+        return showToast("Passwords do not match!", "error");
+    }
+
+    setAuthButtonsLoading(true, 'Activating...');
+    try {
+        const userCredential = await createUserWithEmailAndPassword(getAuth(), email, password);
+        const user = userCredential.user;
+
+        // Update user document in Firestore
+        const q = query(collection(db, "users"), where("email", "==", email), limit(1));
+        const snap = await getDocs(q);
+        
+        if (!snap.empty) {
+            const userDocRef = doc(db, "users", snap.docs[0].id);
+            await updateDoc(userDocRef, {
+                uid: user.uid,
+                status: 'ACTIVE',
+                updatedAt: serverTimestamp()
+            });
+        }
+
+        showToast("Account activated successfully! Logging in...", "success");
+        // Firebase automatically logs in the user after creation
+    } catch (err) {
+        showToast(authMessage(err, "Activation failed. Try again."), "error");
+    } finally {
+        setAuthButtonsLoading(false);
+    }
+};
+
+window.backToIdentifier = () => window.showStep('step-identifier');
+
+window.handleAccountActivationVerify = async function(e) {
+    if (e) e.preventDefault();
+    const email = document.getElementById('activation-email-input').value.trim().toLowerCase();
+    if (!email) return showToast('Please enter your email', 'warning');
+
+    const loadingStep = document.getElementById('step-loading');
+    loadingStep.classList.add('active');
+
+    try {
+        const q = query(collection(db, "users"), where("email", "==", email), limit(1));
+        const snap = await getDocs(q);
+        
+        await new Promise(r => setTimeout(r, 800));
+        loadingStep.classList.remove('active');
+
+        if (snap.empty) {
+            return showToast("Account not found. Contact your administrator to be added.", "error");
+        }
+
+        const userData = snap.docs[0].data();
+        if (userData.status === 'ACTIVE' || userData.uid) {
+            showToast("This account is already active. Please sign in.", "info");
+            showStep('step-identifier');
+            document.getElementById('login-identifier').value = email;
+            return;
+        }
+
+        // Proceed to password creation
+        document.getElementById('signup-email').value = email;
+        showStep('step-activation');
+    } catch (err) {
+        showToast(err.message, 'error');
+        loadingStep.classList.remove('active');
+    }
+};
+
+window.handleFinalLogin = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('display-resolved-email').textContent;
+    const pass = document.getElementById('login-password').value;
+    
+    setAuthButtonsLoading(true, 'Signing in...');
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        window.showToast('Welcome back!', 'success');
+    } catch (err) {
+        window.showToast(authMessage(err, 'Invalid password. Plase try again.'), 'error');
+    } finally {
+        setAuthButtonsLoading(false);
+    }
+};
+
+window.forgotPassword = () => {
+    const currentId = document.getElementById('login-identifier').value.trim();
+    if (currentId) document.getElementById('forgot-identifier').value = currentId;
+    window.showStep('step-forgot-password');
+    setTimeout(() => document.getElementById('forgot-identifier').focus(), 500);
+};
+
+window.handleForgotPasswordNext = async (e) => {
+    if (e) e.preventDefault();
+    const identifier = document.getElementById('forgot-identifier').value.trim();
+    if(!identifier) return showToast('Please enter email or phone', 'warning');
+    
+    const loadingStep = document.getElementById('step-loading');
+    loadingStep.classList.add('active');
+
+    try {
+        const user = await window.resolveUserIdentity(identifier);
+        await new Promise(r => setTimeout(r, 800));
+        loadingStep.classList.remove('active');
+
+        if (!user) {
+            showToast("Account not found.", "error");
+            return;
+        }
+
+        document.getElementById('confirm-user-name').textContent = user.name || 'Explyra User';
+        document.getElementById('confirm-user-email').textContent = user.email;
+        document.getElementById('confirm-send-email').textContent = user.email;
+
+        if (user.photoUrl) {
+            const img = document.getElementById('confirm-avatar-img');
+            img.src = user.photoUrl;
+            img.classList.remove('hidden');
+            document.getElementById('confirm-avatar-placeholder').classList.add('hidden');
+        } else {
+            document.getElementById('confirm-avatar-placeholder').classList.remove('hidden');
+            document.getElementById('confirm-avatar-img').classList.add('hidden');
+        }
+        window.showStep('step-confirm-identity');
+    } catch (err) {
+        showToast(err.message, 'error');
+        loadingStep.classList.remove('active');
+    }
+};
+
+window.sendResetToConfirmedUser = async () => {
+    const email = document.getElementById('confirm-user-email').textContent;
+    const btn = document.getElementById('confirm-identity-btn');
+    const originalText = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showToast('Reset email sent!', 'success');
+        setTimeout(() => window.backToIdentifier(), 2000);
+    } catch (err) {
+        showToast(err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+};
+
 const empUrlParams = new URLSearchParams(window.location.search);
 const empModeParam = (empUrlParams.get('mode') || '').toLowerCase();
 window.IS_DEMO_MODE = window.IS_DEMO_MODE || ['demo', 'sandbox', 'readonly'].includes(empModeParam) || localStorage.getItem('explyra_demo_mode') === 'true';
@@ -560,24 +824,16 @@ window.handleMicrosoftLogin = async () => {
 };
 
 window.toggleAuthMode = (mode) => {
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const loginFooter = document.getElementById('login-footer');
-    const signupFooter = document.getElementById('signup-footer');
-    const googleBtn = document.getElementById('google-signin-container');
-
     if (mode === 'signup') {
-        loginForm.classList.add('hidden');
-        signupForm.classList.remove('hidden');
-        loginFooter.classList.add('hidden');
-        signupFooter.classList.remove('hidden');
-        if (googleBtn) googleBtn.classList.add('hidden');
+        const identifier = document.getElementById('login-identifier').value.trim();
+        if (identifier) {
+            // If they already typed an identifier, try to go to activation
+            window.handleIdentifierNext({ preventDefault: () => {} });
+        } else {
+            window.showToast("Enter your email/phone to check activation status.", "info");
+        }
     } else {
-        loginForm.classList.remove('hidden');
-        signupForm.classList.add('hidden');
-        loginFooter.classList.remove('hidden');
-        signupFooter.classList.add('hidden');
-        if (googleBtn) googleBtn.classList.remove('hidden');
+        window.backToIdentifier();
     }
 };
 
@@ -635,16 +891,103 @@ window.handleAccountActivation = async (e) => {
         btn.disabled = false;
     }
 };
+window.forgotPassword = () => {
+    const currentId = document.getElementById('login-identifier').value.trim();
+    if (currentId) document.getElementById('forgot-identifier').value = currentId;
+    
+    document.getElementById('step-identifier').classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+    document.getElementById('step-password').classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+    const stepForgot = document.getElementById('step-forgot-password');
+    stepForgot.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+    stepForgot.classList.add('translate-x-0', 'opacity-100');
+};
 
-window.forgotPassword = async () => {
+window.handleForgotPasswordNext = async (e) => {
+    e.preventDefault();
+    const identifier = document.getElementById('forgot-identifier').value.trim();
+    if(!identifier) return window.showToast('Please enter your email or phone', 'warning');
+    
     try {
-        const email = await window.showInputPromise("Reset Password", "Enter your corporate email:", "user@brandname.com", "email");
-        if (email) {
-            await sendPasswordResetEmail(auth, email);
-            window.showToast('Password reset email sent!', 'success');
+        const loadingStep = document.getElementById('step-loading');
+        if (loadingStep) {
+            loadingStep.classList.remove('opacity-0', 'pointer-events-none');
+            loadingStep.classList.add('opacity-100');
         }
-    } catch (e) {
-        window.showToast(authMessage(e, 'Unable to send reset email right now.'), "error");
+
+        const user = await window.resolveUserIdentity(identifier);
+        
+        await new Promise(r => setTimeout(r, 800));
+
+        if (loadingStep) {
+            loadingStep.classList.remove('opacity-100');
+            loadingStep.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        if (!user) {
+            window.showToast("Account not found. Check the identifier entered.", "error");
+            return;
+        }
+
+        // Populate Step 4
+        document.getElementById('confirm-user-name').textContent = user.name || 'Explyra User';
+        document.getElementById('confirm-user-email').textContent = user.email;
+        document.getElementById('confirm-send-email').textContent = user.email;
+
+        if (user.photoUrl) {
+            document.getElementById('confirm-avatar-img').src = user.photoUrl;
+            document.getElementById('confirm-avatar-img').classList.remove('hidden');
+            document.getElementById('confirm-avatar-placeholder').classList.add('hidden');
+        } else {
+            document.getElementById('confirm-avatar-img').classList.add('hidden');
+            document.getElementById('confirm-avatar-placeholder').classList.remove('hidden');
+        }
+
+        // Transition to Step 4
+        document.getElementById('step-forgot-password').classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+        const stepConfirm = document.getElementById('step-confirm-identity');
+        stepConfirm.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+        stepConfirm.classList.add('translate-x-0', 'opacity-100');
+    } catch (err) {
+        console.error(err);
+        window.showToast(err.message, 'error');
+        const loadingStep = document.getElementById('step-loading');
+        if (loadingStep) {
+            loadingStep.classList.remove('opacity-100');
+            loadingStep.classList.add('opacity-0', 'pointer-events-none');
+        }
+    }
+};
+
+window.backToIdentifier = () => {
+    const steps = ['step-password', 'step-activation', 'step-confirm-identity', 'step-forgot-password'];
+    steps.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) {
+            el.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+            el.classList.remove('translate-x-0', 'opacity-100');
+        }
+    });
+    document.getElementById('step-identifier').classList.remove('-translate-x-full', 'opacity-0', 'pointer-events-none');
+};
+
+window.sendResetToConfirmedUser = async () => {
+    const email = document.getElementById('confirm-user-email').textContent;
+    const btn = document.getElementById('confirm-identity-btn');
+    const originalText = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        window.showToast('Reset email sent to your primary email!', 'success');
+        setTimeout(() => window.backToIdentifier(), 2000);
+    } catch (err) {
+        console.error(err);
+        window.showToast(authMessage(err, 'Unable to send reset email.'), 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 };
 

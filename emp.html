@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta property="og:site_name" content="Explyra" />
     <meta property="og:locale" content="en_US" />
@@ -121,6 +120,51 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="./emp/ai.css">
+    <style>
+        /* Step Transitions */
+        .step-container { position: relative; width: 100%; min-height: 380px; }
+        .step-content { 
+            position: absolute; 
+            inset: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0; 
+            pointer-events: none; 
+            transform: translateX(50px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white; /* Prevent bleed */
+            z-index: 1;
+        }
+        .dark .step-content { background: #000; }
+        
+        .step-content.active { 
+            position: relative;
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translateX(0);
+            z-index: 2;
+        }
+        
+        .step-content.fade-out {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
+        }
+
+        .ms-auth-card {
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            padding: 44px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+            margin-top: 15vh; /* Lowered as requested */
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .dark .ms-auth-card { background: #0a0a0a; border: 1px solid #333; }
+    </style>
     <style type="text/tailwindcss">
         @layer base {
             body {
@@ -684,46 +728,77 @@
             }
         }
 
-        /* Password Strength Meter */
-        .strength-meter {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-            height: 5px;
+        /* Microsoft-style Auth classes for Emp */
+        .ms-auth-card {
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 44px;
+            width: 100%;
+            max-width: 440px;
+            text-align: left;
+            position: relative;
+            z-index: 10;
         }
-        .strength-bar {
-            flex: 1;
-            height: 100%;
-            background: #f1f5f9;
-            border-radius: 10px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .dark .ms-auth-card { background: #111; border: 1px solid #333; }
+        .ms-logo { width: 32px; height: 32px; margin-bottom: 24px; position: relative; }
+        .ms-logo img { height: 100%; width: auto; object-fit: contain; }
+        .ms-title { font-size: 24px; font-weight: 600; color: #1b1b1b; margin-bottom: 8px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .dark .ms-title { color: #fff; }
+        .ms-subtitle { font-size: 15px; color: #1b1b1b; margin-bottom: 24px; }
+        .dark .ms-subtitle { color: #ccc; }
+        .ms-input-line {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #666;
+            padding: 10px 0;
+            outline: none;
+            font-size: 15px;
+            margin-bottom: 20px;
+            background: transparent;
+            border-radius: 0;
+            transition: border-bottom-color 0.2s;
         }
-        .dark .strength-bar {
-            background: #1e293b;
+        .ms-input-line:focus { border-bottom-color: #10b981; } /* Green for Emp */
+        .ms-link { color: #10b981; text-decoration: none; font-size: 13px; cursor: pointer; }
+        .ms-link:hover { text-decoration: underline; color: #059669; }
+        .ms-btn-next {
+            background: #10b981 !important; /* Green for Emp */
+            color: #fff !important;
+            padding: 8px 36px !important;
+            font-weight: 400 !important;
+            font-size: 15px !important;
+            min-width: 108px;
+            border: none !important;
+            float: right;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            border-radius: 0 !important;
         }
-        .password-rules {
-            margin-top: 12px;
-            font-size: 11px;
-            color: #94a3b8;
-        }
-        .rule-item {
+        .ms-btn-next:hover { opacity: 0.85; }
+        .ms-social-btn {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-            transition: all 0.3s;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            border: 1px solid #d2d2d2;
+            background: #fff;
+            color: #111;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .rule-item i {
-            font-size: 10px;
-            opacity: 0.4;
-        }
-        .rule-item.met {
-            color: #10b981;
-        }
-        .rule-item.met i {
-            color: #10b981;
-            opacity: 1;
-        }
+        .dark .ms-social-btn { background: #1a1a1a; border-color: #333; color: #fff; }
+        .ms-social-btn:hover { background: #f5f5f5; }
+        .dark .ms-social-btn:hover { background: #222; }
+        .ms-btn-admin { background: #f2f2f2 !important; border: 1px solid transparent !important; }
+        .dark .ms-btn-admin { background: #262626 !important; }
+        .ms-footer-text { font-size: 13px; margin-top: 24px; color: #1b1b1b; }
+        .dark .ms-footer-text { color: #ccc; }
+        .ms-business-footer { margin-top: 40px; text-align: center; font-size: 13px; color: #666; width: 440px; }
+        .dark .ms-business-footer { color: #999; }
     </style>
     <link rel="manifest" href="manifest.json">
     <script>
@@ -816,151 +891,152 @@
     class="h-screen flex flex-col overflow-hidden relative selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2"></div>
 
-    <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black transition-colors duration-500">
-        <!-- Premium Background Gradients -->
+    <div id="auth-screen" class="w-full min-h-screen flex flex-col items-center justify-center p-6 bg-white dark:bg-black transition-colors duration-500 relative overflow-y-auto overflow-x-hidden">
+        <!-- Premium Background Blobs -->
         <div class="fixed inset-0 z-0 pointer-events-none">
-            <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[120px] animate-pulse"></div>
-            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s"></div>
+            <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-green-500/5 rounded-full blur-[120px]"></div>
+            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[120px]"></div>
         </div>
 
-        <div class="w-full flex-1 flex flex-col items-center justify-center p-6 relative z-10 transition-all duration-500">
-            <div class="vercel-card p-8 md:p-10 rounded-3xl w-full max-w-md bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl mb-8 shadow-2xl border border-slate-100 dark:border-white/5 animate-fade-in">
-                <div class="text-center mb-10">
-                    <div id="login-logo-container"
-                        class="w-20 h-20 bg-black dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl overflow-hidden group transition-transform hover:scale-105">
-                        <img id="login-logo-img" class="w-full h-full object-contain hidden"
-                            src="assets/images/explyra_logo.png" alt="Company Logo">
-                        <i id="login-logo-fallback" class="fa-solid fa-bolt text-3xl text-white dark:text-black group-hover:rotate-12 transition-transform"></i>
-                    </div>
-                    <h1 class="text-3xl font-black tracking-tighter text-slate-800 dark:text-slate-100" id="login-company-name">Explyra Expense Portal</h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">Sign in to manage your corporate expenses</p>
+        <div class="ms-auth-card">
+            <div class="ms-logo">
+                <img src="/assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
+            </div>
+            
+            <div id="auth-steps" class="relative overflow-hidden min-h-[360px]">
+                <!-- Step 1: Identifier -->
+                <div id="step-identifier" class="step-content active text-left">
+                    <h1 class="ms-title">Sign in</h1>
+                    <p class="ms-subtitle">to continue to Explyra Expense</p>
+                    
+                    <form id="identifier-form" onsubmit="handleIdentifierNext(event)">
+                        <input type="text" id="login-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                        <div class="ms-footer-text">
+                            First time user? <a href="javascript:void(0)" onclick="showStep('step-activation-verify')" class="ms-link font-bold">Activate now!</a>
+                        </div>
+                        <div class="mt-2">
+                            <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Can't access your account?</a>
+                        </div>
+
+                        <div class="mt-8 space-y-2">
+                            <button type="button" onclick="handleGoogleLogin()" class="ms-social-btn">
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4"> Continue with Google
+                            </button>
+                            <button type="button" onclick="handleMicrosoftLogin()" class="ms-social-btn">
+                                <i class="fa-brands fa-microsoft text-[#00A4EF]"></i> Continue with Microsoft
+                            </button>
+                            <button type="button" onclick="window.location.href='admin.html'" class="ms-social-btn ms-btn-admin">
+                                <i class="fa-solid fa-shield-halved text-slate-500"></i> Switch to Admin Access
+                            </button>
+                        </div>
+
+                        <div class="flex justify-end mt-8">
+                            <button type="submit" id="identifier-btn" class="ms-btn-next">Next</button>
+                        </div>
+                    </form>
                 </div>
 
-                <form id="login-form" class="space-y-4">
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Corporate
-                            Email</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-slate-400"></i>
-                            <input type="email" id="login-email"
-                                class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm"
-                                placeholder="employee@company.com" autocomplete="username" required>
-                        </div>
+                <!-- Step 2: Password -->
+                <div id="step-password" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span id="display-resolved-email" class="text-sm text-slate-600">...</span>
                     </div>
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Password</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-slate-400"></i>
-                            <input type="password" id="login-password"
-                                class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm" placeholder="••••••••"
-                                autocomplete="current-password" required>
+                    <h1 class="ms-title">Enter password</h1>
+                    
+                    <form id="login-form" onsubmit="handleFinalLogin(event)">
+                        <input type="password" id="login-password" class="ms-input-line dark:text-white" placeholder="Password" required>
+                        <div class="ms-footer-text">
+                            <a href="#" onclick="forgotPassword()" class="ms-link">Forgot password?</a>
                         </div>
-                        <div class="text-right mt-1">
-                            <button type="button" onclick="forgotPassword()"
-                                class="text-xs text-black dark:text-white hover:underline font-semibold">Forgot
-                                Password?</button>
-                        </div>
-                    </div>
-                    <button type="submit" id="login-btn"
-                        class="w-full bg-black dark:bg-white text-white dark:text-black font-bold py-3 rounded-lg transition-all shadow-md transform hover:translate-y-[-1px] active:scale-[0.98]">
-                        Sign In
-                    </button>
-                    <div class="flex justify-between mt-3 text-xs">
-                        <a href="index.html" onclick="localStorage.removeItem('explyra_portal_preference')"
-                            class="text-slate-400 hover:text-black dark:hover:text-white transition">Back to Website</a>
-                        <a href="support.html"
-                            class="text-gray-500 hover:text-black dark:hover:text-white transition">Contact
-                            Support</a>
-                    </div>
-                </form>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" id="login-btn" class="ms-btn-next">Sign in</button>
+                    </form>
+                </div>
 
-                <!-- Signup Form (Hidden by default) -->
-                <form id="signup-form" class="space-y-4 hidden" onsubmit="handleAccountActivation(event)">
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Corporate
-                            Email</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-slate-400"></i>
-                            <input type="email" id="signup-email"
-                                class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm"
-                                placeholder="employee@company.com" autocomplete="username" required>
-                        </div>
+                <!-- Step 3: Activation Verification (New) -->
+                <div id="step-activation-verify" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Account Activation</span>
                     </div>
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Create
-                            Password</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-slate-400"></i>
-                            <input type="password" id="signup-password"
-                                class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm" placeholder="••••••••"
-                                oninput="updateStrength(this.value)" autocomplete="new-password" required>
+                    <h1 class="ms-title">Who are you?</h1>
+                    <p class="ms-subtitle">Enter the email address provided to you by your administrator to start activation.</p>
+                    
+                    <form onsubmit="handleAccountActivationVerify(event)">
+                        <input type="email" id="activation-email-input" class="ms-input-line dark:text-white" placeholder="Admin Provided Email" required autofocus>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" id="activation-verify-btn" class="ms-btn-next">Next</button>
                         </div>
-                        <div class="strength-meter">
+                    </form>
+                </div>
+
+                <!-- Step 4: Activation Password (Modified) -->
+                <div id="step-activation" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Account Activation</span>
+                    </div>
+                    <h1 class="ms-title">Activate account</h1>
+                    
+                    <form id="signup-form" onsubmit="handleAccountActivation(event)">
+                        <input type="email" id="signup-email" class="ms-input-line bg-slate-50/50 opacity-70" readonly>
+                        <input type="password" id="signup-password" class="ms-input-line mt-4 dark:text-white" placeholder="Create Password" required oninput="updateStrength(this.value)">
+                        <div class="strength-meter mb-6">
                             <div class="strength-bar" id="bar-1"></div>
                             <div class="strength-bar" id="bar-2"></div>
                             <div class="strength-bar" id="bar-3"></div>
                         </div>
-                        <div class="password-rules">
-                            <div class="rule-item" id="rule-len"><i class="fa-solid fa-circle"></i> 8+ characters</div>
-                            <div class="rule-item" id="rule-cap"><i class="fa-solid fa-circle"></i> Uppercase letter</div>
-                            <div class="rule-item" id="rule-low"><i class="fa-solid fa-circle"></i> Lowercase letter</div>
-                            <div class="rule-item" id="rule-num"><i class="fa-solid fa-circle"></i> A number</div>
+                        <input type="password" id="confirm-password" class="ms-input-line dark:text-white" placeholder="Confirm Password" required>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" id="signup-btn" class="ms-btn-next">Activate</button>
                         </div>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">Confirm
-                            Password</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-shield-check absolute left-3 top-3.5 text-slate-400"></i>
-                            <input type="password" id="confirm-password"
-                                class="input-field w-full rounded-lg py-3 pl-10 pr-4 text-sm" placeholder="••••••••"
-                                autocomplete="new-password" required>
-                        </div>
-                    </div>
-                    <button type="submit" id="signup-btn"
-                        class="w-full bg-black dark:bg-white text-white dark:text-black font-bold py-3 rounded-lg transition-all shadow-lg transform hover:translate-y-[-1px] active:scale-[0.98]">
-                        Activate Account
-                    </button>
-                </form>
-
-                <div id="google-signin-container" class="mt-8 space-y-3">
-                    <button type="button" onclick="handleGoogleLogin()"
-                        class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-                            alt="Google">
-                        Sign in with Google
-                    </button>
-                    <button type="button" onclick="handleMicrosoftLogin()"
-                        class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <i class="fa-brands fa-microsoft text-[#00A4EF]"></i>
-                        Sign in with Microsoft
-                    </button>
+                    </form>
                 </div>
 
-                <div class="mt-6 text-center border-t border-slate-100 dark:border-slate-800 pt-6">
-                    <div id="login-footer" class="flex flex-col gap-4 mt-2">
-                        <p class="text-[10px] text-slate-400 max-w-xs mx-auto leading-relaxed">
-                            <i class="fa-solid fa-circle-info mr-1 text-green-500"></i> First time user? You <span
-                                class="font-bold text-slate-500 dark:text-slate-300">must</span> activate your account
-                            here.
-                        </p>
-                        <button onclick="toggleAuthMode('signup')"
-                            class="block w-full text-center text-xs text-green-600 font-bold hover:text-green-700 hover:underline transition-colors py-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                            Create / Activate Account
-                        </button>
+                <!-- Step: Loading Transition -->
+                <div id="step-loading" class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
+                    <div class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Please wait...</p>
+                </div>
+
+                <!-- Step: Forgot Password Identifier -->
+                <div id="step-forgot-password" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Recover your account</span>
                     </div>
-                    <div id="signup-footer" class="hidden space-y-6">
-                        <p class="text-[10px] text-slate-400 mb-2 uppercase tracking-widest font-bold opacity-60">
-                            Already activated your account?</p>
-                        <button onclick="toggleAuthMode('login')"
-                            class="block w-full text-center text-xs text-green-600 font-bold hover:text-green-700 hover:underline transition-colors py-3 bg-slate-50 dark:bg-slate-900 rounded-lg">Back
-                            to Login</button>
+                    <h1 class="ms-title">Who are you?</h1>
+                    <p class="ms-subtitle">To recover your account, begin by typing your email or phone number.</p>
+                    <form onsubmit="handleForgotPasswordNext(event)">
+                        <input type="text" id="forgot-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" class="ms-btn-next">Next</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 4: Confirm Identity -->
+                <div id="step-confirm-identity" class="step-content">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Account Recovery</span>
+                    </div>
+                    
+                    <div class="text-center mb-8">
+                        <div id="confirm-avatar-container" class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
+                            <i id="confirm-avatar-placeholder" class="fa-solid fa-user text-2xl text-slate-400"></i>
+                            <img id="confirm-avatar-img" src="" class="hidden w-full h-full object-cover">
+                        </div>
+                        <h2 id="confirm-user-name" class="text-lg font-bold text-slate-800 dark:text-white">...</h2>
+                        <p id="confirm-user-email" class="text-xs text-slate-500">...</p>
+                    </div>
+
+                    <h1 class="ms-title mb-2">Is this you?</h1>
+                    <p class="ms-subtitle text-slate-600 dark:text-slate-400">We found the account associated with the identifier you provided. Send reset link to <span id="confirm-send-email" class="font-semibold text-slate-800 dark:text-slate-100">...</span>?</p>
+                    
+                    <div class="flex justify-end mt-12 gap-3">
+                        <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()" class="ms-btn-next">Yes, send reset link</button>
                     </div>
                 </div>
             </div>
@@ -2156,10 +2232,11 @@
                             readonly>
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Phone
-                            Number</label>
-                        <input type="tel" id="profile-phone" class="input-field w-full rounded-lg p-2.5 text-sm"
-                            placeholder="+91...">
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Alternative Phone Number</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="profile-phone-cc" class="input-field w-24 rounded-lg p-2.5 text-sm" placeholder="+91">
+                            <input type="tel" id="profile-phone-num" class="input-field flex-1 rounded-lg p-2.5 text-sm" placeholder="Phone Number">
+                        </div>
                     </div>
                     <div class="col-span-2">
                         <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Photo

@@ -345,7 +345,17 @@ window.openProfileModal = async () => {
     document.getElementById('profile-email').value = userData.email || '';
     document.getElementById('profile-dept').value = userData.department || '';
     document.getElementById('profile-empid').value = userData.employeeId || '';
-    document.getElementById('profile-phone').value = userData.phone || '';
+    const rawPhone = userData.phone || '';
+    if (rawPhone.startsWith('+')) {
+        document.getElementById('profile-phone-cc').value = rawPhone.slice(0, 3);
+        document.getElementById('profile-phone-num').value = rawPhone.slice(3).trim();
+    } else if (rawPhone.length > 10) {
+        document.getElementById('profile-phone-cc').value = '+' + rawPhone.slice(0, 2);
+        document.getElementById('profile-phone-num').value = rawPhone.slice(2).trim();
+    } else {
+        document.getElementById('profile-phone-cc').value = '+91';
+        document.getElementById('profile-phone-num').value = rawPhone;
+    }
     document.getElementById('profile-dob').value = userData.dob || '';
     if (document.getElementById('profile-photo-url')) {
         document.getElementById('profile-photo-url').value = userData.photoUrl || '';
@@ -424,7 +434,9 @@ window.submitProfile = async (e) => {
         }
 
         const name = document.getElementById('profile-name').value;
-        const phone = document.getElementById('profile-phone').value;
+        const cc = document.getElementById('profile-phone-cc').value || '';
+        const num = document.getElementById('profile-phone-num').value || '';
+        const phone = (cc + num).replace(/\s+/g, '');
         const photoUrl = document.getElementById('profile-photo-url')?.value || '';
         const twoFactorEnabled = document.getElementById('profile-2fa-enabled').checked;
         const twoFactorPin = document.getElementById('profile-2fa-pin').value;

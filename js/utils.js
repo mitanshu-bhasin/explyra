@@ -138,7 +138,72 @@ window.prompt = async (message, defaultValue = '') => {
     return result;
 };
 
-// Expose internal method for custom usages
+// Premium Toast System
+window.showToast = (message, type = 'info') => {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const icons = {
+        success: 'fa-circle-check',
+        error: 'fa-circle-xmark',
+        warning: 'fa-triangle-exclamation',
+        info: 'fa-circle-info'
+    };
+    
+    const colors = {
+        success: 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400',
+        error: 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400',
+        warning: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400',
+        info: 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
+    };
+
+    toast.className = `pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-2xl border backdrop-blur-xl shadow-2xl transform transition-all duration-500 translate-x-full opacity-0 ${colors[type] || colors.info}`;
+    toast.style.minWidth = '300px';
+    toast.style.maxWidth = '400px';
+
+    toast.innerHTML = `
+        <div class="flex-shrink-0 text-lg">
+            <i class="fa-solid ${icons[type] || icons.info}"></i>
+        </div>
+        <div class="flex-1 text-sm font-semibold tracking-tight">
+            ${message}
+        </div>
+        <button class="flex-shrink-0 ml-2 opacity-50 hover:opacity-100 transition" onclick="this.parentElement.remove()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="absolute bottom-0 left-0 h-1 bg-current opacity-20 toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    // Entry animation
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full', 'opacity-0');
+        toast.classList.add('translate-x-0', 'opacity-100');
+    }, 10);
+
+    // Progress bar animation
+    const progressBar = toast.querySelector('.toast-progress');
+    if (progressBar) {
+        progressBar.style.transition = 'width 4s linear';
+        progressBar.style.width = '100%';
+        setTimeout(() => progressBar.style.width = '0%', 10);
+    }
+
+    // Auto removal
+    setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+};
+
+// Internal Modal System
 window.customModal = modalSystem;
 
 // Handle Google Drive Chat Attachments

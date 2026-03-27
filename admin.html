@@ -44,7 +44,8 @@
 
     <title>Admin — Free Explyra Suite Tool | Fast & Secure</title>
     <!-- Environment Config -->
-    <script src="js/env.js"></script>
+    <script src="/js/env.js"></script>
+    <script src="js/utils.js"></script>
     <script src="js/tenant-routing.js"></script>
     <script>        function initTheme() {
             const theme = localStorage.getItem('explyra-theme') || 'light';
@@ -276,41 +277,88 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .btn-vercel-primary {
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+        /* Microsoft-style Auth classes */
+        .ms-auth-card {
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 44px;
+            width: 100%;
+            max-width: 440px;
+            text-align: left;
+            position: relative;
+            z-index: 10;
+        }
+        .dark .ms-auth-card { background: #111; border: 1px solid #333; }
+        .ms-logo { width: 32px; height: 32px; margin-bottom: 24px; position: relative; }
+        .ms-logo img { height: 100%; width: auto; object-fit: contain; }
+        .ms-title { font-size: 24px; font-weight: 600; color: #1b1b1b; margin-bottom: 8px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .dark .ms-title { color: #fff; }
+        .ms-subtitle { font-size: 15px; color: #1b1b1b; margin-bottom: 24px; }
+        .dark .ms-subtitle { color: #ccc; }
+        .ms-input-line {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #666;
+            padding: 10px 0;
+            outline: none;
+            font-size: 15px;
+            margin-bottom: 20px;
+            background: transparent;
+            border-radius: 0;
+            transition: border-bottom-color 0.2s;
+        }
+        .ms-input-line:focus { border-bottom-color: #0067b8; }
+        .ms-link { color: #0067b8; text-decoration: none; font-size: 13px; cursor: pointer; }
+        .top-50pct { top: 50%; }
+        .minus-translate-y-50pct { transform: translateY(-50%); }
+        .opacity-0 { opacity: 0; }
+        .opacity-100 { opacity: 1; }
+        .w-full { width: 100%; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .pr-10 { padding-right: 2.5rem; }
+        .right-2 { right: 0.5rem; }
+        .cursor-pointer { cursor: pointer; }
+        .bg-none { background: none; }
+        .border-none { border: none; }
+        .ms-btn-next {
+            background: #000 !important;
+            color: #fff !important;
+            padding: 8px 36px !important;
+            font-weight: 400 !important;
+            font-size: 15px !important;
+            min-width: 108px;
+            border: none !important;
+            float: right;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            border-radius: 0 !important;
+        }
+        .ms-btn-next:hover { opacity: 0.85; }
+        .ms-social-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            border: 1px solid #d2d2d2;
+            background: #fff;
+            color: #111;
+            font-size: 14px;
             font-weight: 500;
-            font-size: 0.875rem;
-            transition: var(--transition);
+            cursor: pointer;
+            transition: background 0.2s;
         }
-
-        .btn-vercel-primary:hover {
-            opacity: 0.85;
-            transform: scale(0.98);
-        }
-
-        .btn-vercel-secondary {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: var(--transition);
-        }
-
-        .btn-vercel-secondary:hover {
-            background: var(--bg-secondary);
-            border-color: var(--text-secondary);
-        }
-
-        .input-vercel:focus {
-            border-color: var(--text-primary);
-            box-shadow: 0 0 0 1px var(--text-primary);
-        }
+        .dark .ms-social-btn { background: #1a1a1a; border-color: #333; color: #fff; }
+        .ms-social-btn:hover { background: #f5f5f5; }
+        .dark .ms-social-btn:hover { background: #222; }
+        .ms-btn-emp { background: #f2f2f2 !important; border: 1px solid transparent !important; }
+        .dark .ms-btn-emp { background: #262626 !important; }
+        .ms-footer-text { font-size: 13px; margin-top: 24px; color: #1b1b1b; }
+        .dark .ms-footer-text { color: #ccc; }
+        .ms-business-footer { margin-top: 40px; text-align: center; font-size: 13px; color: #666; width: 440px; }
+        .dark .ms-business-footer { color: #999; }
 
         /* Specialized Sections */
         .welcome-banner {
@@ -833,6 +881,49 @@
                 scroll-behavior: auto !important;
             }
         }
+        /* Step Transitions */
+        .step-container { position: relative; width: 100%; min-height: 380px; }
+        .step-content { 
+            position: absolute; 
+            inset: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0; 
+            pointer-events: none; 
+            transform: translateX(50px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white; /* Prevent bleed */
+            z-index: 1;
+        }
+        .dark .step-content { background: #000; }
+        
+        .step-content.active { 
+            position: relative;
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translateX(0);
+            z-index: 2;
+        }
+        
+        .step-content.fade-out {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
+        }
+
+        .ms-auth-card {
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            padding: 44px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+            margin-top: 10vh;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .dark .ms-auth-card { background: #0a0a0a; border: 1px solid #333; }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
@@ -1756,11 +1847,16 @@
                                 <label
                                     class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Alternative
                                     Phone</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-phone absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                    <input type="tel" id="ac-phone"
-                                        class="input-primary pl-8 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 py-1.5 text-xs focus:ring-brand-500 focus:border-green-500 outline-none"
-                                        placeholder="+91 9876543210">
+                                <div class="flex gap-2">
+                                    <input type="text" id="ac-country-code" 
+                                        class="input-primary w-20 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 py-1.5 text-xs text-center focus:ring-brand-500 focus:border-green-500 outline-none"
+                                        placeholder="+91" value="+91">
+                                    <div class="relative flex-1">
+                                        <i class="fa-solid fa-phone absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                                        <input type="tel" id="ac-phone"
+                                            class="input-primary pl-8 w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 py-1.5 text-xs focus:ring-brand-500 focus:border-green-500 outline-none"
+                                            placeholder="9876543210">
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -1821,144 +1917,166 @@
     </div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden bg-white dark:bg-black transition-colors duration-500">
-        <!-- Premium Background Gradients -->
+    <div id="auth-screen" class="w-full min-h-screen flex flex-col items-center justify-start pt-16 p-6 bg-white dark:bg-black transition-colors duration-500 relative overflow-y-auto no-scrollbar">
+        <!-- Premium Background Blobs -->
         <div class="fixed inset-0 z-0 pointer-events-none">
-            <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[120px] animate-pulse"></div>
-            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s"></div>
+            <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-[120px]"></div>
+            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[120px]"></div>
         </div>
 
-        <div class="w-full flex-1 flex flex-col items-center justify-center p-6 relative z-10 transition-all duration-500">
-            <div class="vercel-card p-8 md:p-10 rounded-3xl w-full max-w-md bg-white/90 dark:bg-black/90 backdrop-blur-xl mb-8 shadow-2xl border border-slate-200 dark:border-white/10 animate-fade-in">
-                <div class="text-center mb-10">
-                    <div id="login-logo-container"
-                        class="w-20 h-20 bg-black dark:bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl overflow-hidden group transition-transform hover:scale-105">
-                        <img id="login-logo-img" class="w-full h-full object-contain hidden"
-                            src="assets/images/explyra_logo.png" alt="Company Logo">
-                        <i id="login-logo-fallback" class="fa-solid fa-bolt text-3xl text-white dark:text-black group-hover:rotate-12 transition-transform"></i>
-                    </div>
-                    <h1 class="text-3xl font-black tracking-tighter text-slate-900 dark:text-white" id="login-company-name">Explyra Admin Portal</h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">Enter your administrative credentials to access the suite</p>
-                </div>
+        <div class="ms-auth-card">
+            <div class="ms-logo">
+                <img src="/assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
+            </div>
+            
+            <div id="auth-steps" class="relative overflow-hidden min-h-[360px]">
+                <!-- Step 1: Identifier -->
+                <div id="step-identifier" class="step-content active text-left">
+                    <h1 class="ms-title">Sign in</h1>
+                    <p class="ms-subtitle">to continue to Admin Portal</p>
+                    
+                    <form id="identifier-form" onsubmit="handleIdentifierNext(event)">
+                        <input type="text" id="login-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                        <div class="ms-footer-text">
+                            No account? <a href="javascript:void(0)" onclick="showStep('step-activation-verify')" class="ms-link font-bold">Activate now!</a>
+                        </div>
+                        <div class="mt-2">
+                            <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Can't access your account?</a>
+                        </div>
 
-                <form id="login-form" class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</label>
-                        <input type="email" id="login-email" class="input-vercel h-10" placeholder="admin@explyra.me"
-                            required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Password</label>
-                        <div class="relative">
-                            <input type="password" id="login-password" class="input-vercel h-10 pr-10"
-                                placeholder="••••••••" required>
-                            <button type="button" onclick="toggleLoginPassword()"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-black">
-                                <i class="fa-regular fa-eye" id="login-eye-icon"></i>
+                        <div class="mt-8 space-y-2">
+                            <button type="button" onclick="handleGoogleLogin()" class="ms-social-btn">
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4"> Continue with Google
+                            </button>
+                            <button type="button" onclick="handleMicrosoftLogin()" class="ms-social-btn">
+                                <i class="fa-brands fa-microsoft text-[#00A4EF]"></i> Continue with Microsoft
+                            </button>
+                            <button type="button" onclick="window.location.href='emp.html'" class="ms-social-btn ms-btn-emp">
+                                <i class="fa-solid fa-user-tie text-slate-500"></i> Login as Employee
                             </button>
                         </div>
-                    </div>
-                    <button type="submit" id="login-btn" class="btn-vercel-primary w-full h-10 mt-2">
-                        Continue
-                    </button>
-                    <div class="text-center">
-                        <button type="button" onclick="forgotPassword()"
-                            class="text-xs text-slate-500 hover:text-black font-medium">Forgot password?</button>
-                    </div>
-                </form>
 
-                <!-- Signup Form (Activation) -->
-                <form id="signup-form" class="space-y-4 hidden" onsubmit="handleAccountActivation(event)">
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Corporate
-                            Email</label>
-                        <input type="email" id="signup-email" class="input-vercel h-10" placeholder="admin@company.com"
-                            required>
+                        <div class="flex justify-end mt-8">
+                            <button type="submit" id="identifier-btn" class="ms-btn-next">Next</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 2: Password -->
+                <div id="step-password" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span id="display-resolved-email" class="text-sm text-slate-600">...</span>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Create
-                            Password</label>
-                        <input type="password" id="signup-password" class="input-vercel h-10" placeholder="••••••••"
-                            required oninput="updateStrength(this.value)">
-                        
-                        <!-- Strength Meter -->
-                        <div class="strength-meter">
+                    <h1 class="ms-title">Enter password</h1>
+                    
+                    <form id="login-form" onsubmit="handleFinalLogin(event)">
+                        <div class="relative w-full">
+                            <input type="password" id="login-password" class="ms-input-line dark:text-white pr-10" placeholder="Password" required>
+                            <button type="button" onclick="toggleLoginPassword()" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-slate-500 hover:text-black dark:hover:text-white">
+                                <i id="login-eye-icon" class="fa-regular fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="ms-footer-text">
+                            <a href="#" onclick="forgotPassword()" class="ms-link">Forgot password?</a>
+                        </div>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" id="login-btn" class="ms-btn-next">Sign in</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step: Loading Transition -->
+                <div id="step-loading" class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
+                    <div class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Please wait...</p>
+                </div>
+
+                <!-- Step 3: Activation Verification (New) -->
+                <div id="step-activation-verify" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Account Activation</span>
+                    </div>
+                    <h1 class="ms-title">Who are you?</h1>
+                    <p class="ms-subtitle">Enter the email provided to you by your administrator to start activation.</p>
+                    
+                    <form onsubmit="handleAccountActivationVerify(event)">
+                        <input type="email" id="activation-email-input" class="ms-input-line dark:text-white" placeholder="Admin Provided Email" required autofocus>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" id="activation-verify-btn" class="ms-btn-next">Next</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step: Forgot Password Identifier -->
+                <div id="step-forgot-password" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Recover your account</span>
+                    </div>
+                    <h1 class="ms-title">Who are you?</h1>
+                    <p class="ms-subtitle">To recover your account, begin by typing your email or phone number.</p>
+                    <form onsubmit="handleForgotPasswordNext(event)">
+                        <input type="text" id="forgot-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" class="ms-btn-next">Next</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 3: Activation -->
+                <div id="step-activation" class="step-content text-left">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Account Activation</span>
+                    </div>
+                    <h1 class="ms-title">Activate account</h1>
+                    
+                    <form id="signup-form" onsubmit="handleAccountActivation(event)">
+                        <input type="email" id="signup-email" class="ms-input-line bg-slate-50/50 opacity-70" readonly>
+                        <input type="password" id="signup-password" class="ms-input-line mt-4 dark:text-white" placeholder="Create Password" required oninput="updateStrength(this.value)">
+                        <div class="strength-meter mb-6">
                             <div class="strength-bar" id="bar-1"></div>
                             <div class="strength-bar" id="bar-2"></div>
                             <div class="strength-bar" id="bar-3"></div>
                         </div>
-
-                        <!-- Rule list -->
-                        <div class="password-rules">
-                            <div class="rule-item" id="rule-length">
-                                <i class="fa-solid fa-circle"></i> At least 8 characters
-                            </div>
-                            <div class="rule-item" id="rule-upper">
-                                <i class="fa-solid fa-circle"></i> One uppercase letter
-                            </div>
-                            <div class="rule-item" id="rule-lower">
-                                <i class="fa-solid fa-circle"></i> One lowercase letter
-                            </div>
-                            <div class="rule-item" id="rule-number">
-                                <i class="fa-solid fa-circle"></i> One number
-                            </div>
+                        <input type="password" id="confirm-password" class="ms-input-line dark:text-white" placeholder="Confirm Password" required>
+                        <div class="flex justify-end mt-12">
+                            <button type="submit" id="signup-btn" class="ms-btn-next">Activate</button>
                         </div>
+                    </form>
+                </div>
+
+                <!-- Step 4: Confirm Identity -->
+                <div id="step-confirm-identity" class="step-content">
+                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                        <span class="text-sm text-slate-600">Account Recovery</span>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Confirm
-                            Password</label>
-                        <input type="password" id="confirm-password" class="input-vercel h-10" placeholder="••••••••"
-                            required>
+                    
+                    <div class="text-center mb-8">
+                        <div id="confirm-avatar-container" class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
+                            <i id="confirm-avatar-placeholder" class="fa-solid fa-user text-2xl text-slate-400"></i>
+                            <img id="confirm-avatar-img" src="" class="hidden w-full h-full object-cover">
+                        </div>
+                        <h2 id="confirm-user-name" class="text-lg font-bold">...</h2>
+                        <p id="confirm-user-email" class="text-xs text-slate-500">...</p>
                     </div>
-                    <button type="submit" id="signup-btn" class="btn-vercel-primary w-full h-10 mt-2">
-                        Activate Account
-                    </button>
-                </form>
 
-                <div id="google-signin-container" class="mt-8 space-y-3">
-                    <button type="button" onclick="handleGoogleLogin()"
-                        class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-                            alt="Google">
-                        Sign in with Google
-                    </button>
-                    <button type="button" onclick="handleMicrosoftLogin()"
-                        class="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold transition flex items-center justify-center gap-3 shadow-sm">
-                        <i class="fa-brands fa-microsoft text-[#00A4EF]"></i>
-                        Sign in with Microsoft
-                    </button>
-                    <button type="button" onclick="if(window.ExplyraTenant){window.location.href=window.ExplyraTenant.buildTenantUrl('emp', window.companyId || window.userData?.companyId || window.ExplyraTenant.getCurrentCompanyId());}else{window.location.href='emp.html';}"
-                        class="w-full py-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition flex items-center justify-center gap-2 shadow-sm border border-transparent">
-                        <i class="fa-solid fa-user-tie text-slate-500"></i>
-                        Login as Employee
-                    </button>
-                </div>
-
-                <div id="login-footer" class="mt-6 text-center text-xs text-slate-500">
-                    Don't have an account? <button onclick="toggleAuthMode('signup')"
-                        class="text-black dark:text-white font-semibold hover:underline">Activate</button>
-                </div>
-
-                <div id="signup-footer" class="mt-6 text-center text-xs text-slate-500 hidden">
-                    Already have an account? <button onclick="toggleAuthMode('login')"
-                        class="text-black dark:text-white font-semibold hover:underline">Login</button>
-                </div>
-                <div class="mt-2 text-center text-xs text-slate-500">
-                    Want to use for your business? <a href="company.html"
-                        class="text-black dark:text-white font-semibold hover:underline">Create Company</a>
-                </div>
-            </div>
-
-            <div class="mt-12 flex flex-col items-center gap-6 opacity-60">
-                <div class="flex items-center gap-4 grayscale group hover:grayscale-0 transition duration-500">
-                    <img src="assets/images/explyra_logo.png" class="h-4 w-auto" alt="Logo">
-                    <div class="h-4 w-[1px] bg-slate-300 dark:bg-slate-800"></div>
-                    <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Secure Portal</span>
+                    <h1 class="ms-title mb-4">Is this you?</h1>
+                    <p class="ms-subtitle text-slate-600 dark:text-slate-400">We found the account associated with the identifier you provided. Send reset link to <span id="confirm-send-email" class="font-semibold text-slate-800 dark:text-slate-100">...</span>?</p>
+                    
+                    <div class="flex justify-end mt-12 gap-3">
+                        <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()" class="ms-btn-next">Yes, send reset link</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Extended Footer Section -->
+        <div class="ms-business-footer">
+            Want to use for your business? <a href="company.html" class="ms-link font-bold">Create Company</a>
+        </div>
         <div
             class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
             <!-- Qualys SSL Labs A+ Certification Badge -->
@@ -2739,6 +2857,7 @@
     <!-- External Scripts -->
     <script src="components/loader.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/utils.js"></script>
     <script type="module" src="js/admin-logic.js"></script>
     <script type="module" src="js/spam-filter.js"></script>
     <script type="module" src="js/chat-ai-helper.js"></script>
@@ -3495,7 +3614,6 @@
                 if (action === 'focus_search') {
                     const search = document.getElementById('approval-search') || document.getElementById('task-search') || document.getElementById('audit-search-input');
                     if (search) search.focus();
-                    return;
                 }
                 if (typeof switchTab === 'function') switchTab(action);
             };
@@ -3884,7 +4002,222 @@
         }
     </script>
     <script>
-        // Password strength meter logic
+        // Multi-Step Auth Logic
+        window.handleIdentifierNext = async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const btn = document.getElementById('identifier-btn');
+            
+            if (!identifier) return showToast('Please enter an email or phone', 'error');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
+            
+            try {
+                // Get full user object to check for uid and status
+                const user = await window.resolveUserIdentity(identifier);
+                if (!user) {
+                    showToast("Account not found. Please contact admin.", "error");
+                    return;
+                }
+
+                const resolvedEmail = user.email;
+                document.getElementById('display-resolved-email').textContent = resolvedEmail;
+                
+                const stepId = document.getElementById('step-identifier');
+                const stepPass = document.getElementById('step-password');
+                const stepAct = document.getElementById('step-activation');
+
+                if (user.status === 'ACTIVE' || user.uid) {
+                    // Show Password Step
+                    stepId.classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+                    stepPass.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+                    stepPass.classList.add('translate-x-0', 'opacity-100');
+                } else {
+                    // Show Activation Step
+                    document.getElementById('signup-email').value = resolvedEmail;
+                    stepId.classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+                    stepAct.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+                    stepAct.classList.add('translate-x-0', 'opacity-100');
+                }
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Next <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i>';
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Next <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i>';
+            }
+        };
+
+        window.handleAccountActivation = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const pass = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+            const btn = document.getElementById('signup-btn');
+
+            if (!pass || pass !== confirm) return showToast("Passwords do not match", "warning");
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Activating...';
+
+            try {
+                const { createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+                const { collection, query, where, getDocs, updateDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js");
+                
+                const q = query(collection(window.db, "users"), where("email", "==", email));
+                const snap = await getDocs(q);
+                if (snap.empty) throw new Error("Account not found.");
+
+                const userCred = await createUserWithEmailAndPassword(window.auth, email, pass);
+                await updateDoc(doc(window.db, "users", snap.docs[0].id), {
+                    uid: userCred.user.uid,
+                    status: 'ACTIVE',
+                    updatedAt: serverTimestamp()
+                });
+
+                showToast("Account activated! Please sign in.", "success");
+                setTimeout(() => window.backToIdentifier(), 2000);
+            } catch (err) {
+                showToast(err.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Activate';
+            }
+        };
+
+        window.forgotPassword = () => {
+            const currentId = document.getElementById('login-identifier').value.trim();
+            if (currentId) document.getElementById('forgot-identifier').value = currentId;
+
+            document.getElementById('step-identifier').classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+            document.getElementById('step-password').classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+            const stepForgot = document.getElementById('step-forgot-password');
+            stepForgot.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+            stepForgot.classList.add('translate-x-0', 'opacity-100');
+        };
+
+        window.handleForgotPasswordNext = async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('forgot-identifier').value.trim();
+            if(!identifier) return showToast('Please enter your email or phone', 'warning');
+            
+            try {
+                const loadingStep = document.getElementById('step-loading');
+                if (loadingStep) {
+                    loadingStep.classList.remove('opacity-0', 'pointer-events-none');
+                    loadingStep.classList.add('opacity-100');
+                }
+
+                const user = await window.resolveUserIdentity(identifier);
+                
+                await new Promise(r => setTimeout(r, 800));
+
+                if (loadingStep) {
+                    loadingStep.classList.remove('opacity-100');
+                    loadingStep.classList.add('opacity-0', 'pointer-events-none');
+                }
+
+                if (!user) {
+                    showToast("Account not found. Check the identifier entered.", "error");
+                    return;
+                }
+
+                // Populate Step 4
+                document.getElementById('confirm-user-name').textContent = user.name || 'Explyra User';
+                document.getElementById('confirm-user-email').textContent = user.email;
+                document.getElementById('confirm-send-email').textContent = user.email;
+
+                if (user.photoUrl) {
+                    document.getElementById('confirm-avatar-img').src = user.photoUrl;
+                    document.getElementById('confirm-avatar-img').classList.remove('hidden');
+                    document.getElementById('confirm-avatar-placeholder').classList.add('hidden');
+                } else {
+                    document.getElementById('confirm-avatar-img').classList.add('hidden');
+                    document.getElementById('confirm-avatar-placeholder').classList.remove('hidden');
+                }
+
+                // Transition to Step 4
+                document.getElementById('step-forgot-password').classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+                const stepConfirm = document.getElementById('step-confirm-identity');
+                stepConfirm.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+                stepConfirm.classList.add('translate-x-0', 'opacity-100');
+
+            } catch (err) { 
+                console.error(err);
+                showToast(err.message, 'error'); 
+                const loadingStep = document.getElementById('step-loading');
+                if (loadingStep) {
+                    loadingStep.classList.remove('opacity-100');
+                    loadingStep.classList.add('opacity-0', 'pointer-events-none');
+                }
+            }
+        };
+
+        window.sendResetToConfirmedUser = async () => {
+            const email = document.getElementById('confirm-user-email').textContent;
+            const btn = document.getElementById('confirm-identity-btn');
+            const originalText = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+
+            try {
+                const { getAuth, sendPasswordResetEmail } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+                const auth = getAuth();
+                await sendPasswordResetEmail(auth, email);
+                showToast('Reset email sent to your primary email!', 'success');
+                setTimeout(() => backToIdentifier(), 2000);
+            } catch (err) {
+                console.error(err);
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        };
+
+        window.handleFinalLogin = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('display-resolved-email').textContent;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing in...';
+            
+            try {
+                // We depend on handleLogin being globally available or using firebase direct
+                // For admin.html, it usually calls handleLogin from admin-logic.js
+                if (window.handleLogin) {
+                    await window.handleLogin(email, password);
+                } else {
+                    // Fallback to direct firebase if handleLogin isn't ready
+                    const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js");
+                    await signInWithEmailAndPassword(window.auth, email, password);
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+            }
+        };
+        
+        window.toggleLoginPassword = () => {
+            const input = document.getElementById('login-password');
+            const icon = document.getElementById('login-eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-regular', 'fa-solid');
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-solid', 'fa-regular');
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        };
+
         window.updateStrength = function (password) {
             const rules = {
                 length: password.length >= 8,

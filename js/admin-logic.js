@@ -21,6 +21,65 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+window.auth = auth;
+window.db = db;
+window.storage = storage;
+
+window.resolveUserIdentity = async (identifier) => {
+    if (!identifier) return null;
+    let input = identifier.toLowerCase().trim();
+
+    // 1. Check Primary Email
+    try {
+        const qEmail = query(collection(db, "users"), where("email", "==", input), limit(1));
+        const snapEmail = await getDocs(qEmail);
+        if (!snapEmail.empty) return snapEmail.docs[0].data();
+    } catch (e) {}
+
+    // 2. Check Phone (Multi-Format)
+    const digits = input.replace(/\D/g, '');
+    if (digits.length >= 10 && digits.length <= 13) {
+        const formats = [];
+        if (digits.length === 10) {
+            formats.push('+91' + digits, '91' + digits, digits);
+        } else if (digits.length === 12 && digits.startsWith('91')) {
+            formats.push('+' + digits, digits, digits.substring(2));
+        } else {
+            formats.push('+' + digits, digits);
+        }
+
+        for (const fmt of [...new Set(formats)]) {
+            try {
+                // Check 'phone' field
+                const qPhone = query(collection(db, "users"), where("phone", "==", fmt), limit(1));
+                const snapPhone = await getDocs(qPhone);
+                if (!snapPhone.empty) return snapPhone.docs[0].data();
+
+                // Check 'altPhone' field
+                const qAltPhone = query(collection(db, "users"), where("altPhone", "==", fmt), limit(1));
+                const snapAltPhone = await getDocs(qAltPhone);
+                if (!snapAltPhone.empty) return snapAltPhone.docs[0].data();
+            } catch (e) {}
+        }
+    }
+
+    // 3. Check Alternative Email
+    try {
+        const qAltEmail = query(collection(db, "users"), where("altEmail", "==", input), limit(1));
+        const snapAltEmail = await getDocs(qAltEmail);
+        if (!snapAltEmail.empty) return snapAltEmail.docs[0].data();
+    } catch (e) {}
+
+    return null;
+};
+
+// Identifier Resolution Logic (Existing)
+window.resolveEmailToPrimary = async (identifier) => {
+    const user = await window.resolveUserIdentity(identifier);
+    if (user) return user.email;
+    return identifier; 
+};
+
 // Expose for inline scripts
 window.auth = auth;
 window.db = db;
@@ -1356,11 +1415,118 @@ document.getElementById('input-modal-value')?.addEventListener('keypress', (e) =
     if (e.key === 'Enter') confirmInputModal();
 });
 
-document.getElementById('login-form').addEventListener('submit', async (e) => {
+// Handle Multi-step Inline Login
+/**
+ * Toggle between Login and Activation modes
+ */
+window.toggleAuthMode = function(mode) {
+    const loginStep = document.getElementById('auth-step-1');
+    const activationStep = document.getElementById('auth-activation-step');
+    const loader = document.getElementById('auth-loader');
+    
+    if (mode === 'activation') {
+        loginStep.classList.add('hidden');
+        activationStep.classList.remove('hidden');
+    } else {
+        activationStep.classList.add('hidden');
+        loginStep.classList.remove('hidden');
+    }
+};
+
+/**
+ * Handle Account Activation
+ */
+window.handleAccountActivation = async function(e) {
     e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-password').value;
-    const btn = document.getElementById('login-btn');
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('confirm-password').value;
+
+    if (!email || !password) return showToast('Please enter both email and password.', 'error');
+    if (password !== confirm) return showToast('Passwords do not match.', 'error');
+
+    const loader = document.getElementById('auth-loader');
+    loader.classList.add('opacity-100');
+
+    try {
+        // Here you would normally register or update the user
+        // Assuming your setup uses createUserWithEmailAndPassword or sets a doc
+        const res = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", res.user.uid), {
+            email,
+            role: 'employee', // Default role for inline activation
+            activated: true,
+            createdAt: serverTimestamp()
+        }, { merge: true });
+
+        showToast('Account activated successfully!', 'success');
+        window.location.reload();
+    } catch (err) {
+        showToast(err.message, 'error');
+    } finally {
+        loader.classList.remove('opacity-100');
+    }
+};
+
+/**
+ * Resolve identifier (email or phone) to primary email
+ */
+window.resolveEmailToPrimary = async function(identifier) {
+    if (identifier.includes('@')) return identifier;
+    
+    // Format phone: if 10 digits, add 91
+    let cleaned = identifier.replace(/\D/g, '');
+    if (cleaned.length === 10) cleaned = '91' + cleaned;
+
+    const qAlt = query(collection(db, "users"), where("altPhone", "==", cleaned));
+    const qPhone = query(collection(db, "users"), where("phone", "==", cleaned));
+    
+    let snap = await getDocs(qAlt);
+    if (snap.empty) snap = await getDocs(qPhone);
+
+    if (snap.empty) return null;
+    return snap.docs[0].data().email;
+}
+
+/**
+ * Transition Admin Auth Steps
+ */
+window.transitionAuthStep = async function (step) {
+    const s1 = document.getElementById('auth-step-1');
+    const s2 = document.getElementById('auth-step-2');
+    const loader = document.getElementById('auth-loader');
+    const emailInput = document.getElementById('login-email');
+    const displayEmail = document.getElementById('display-email-auth');
+
+    if (step === 2) {
+        const iden = emailInput.value.trim();
+        if (!iden) return showToast('Please enter your email or phone.', 'error');
+        
+        loader.classList.add('opacity-100');
+        const resolvedEmail = await resolveEmailToPrimary(iden);
+        loader.classList.remove('opacity-100');
+
+        if (!resolvedEmail) return showToast('User not found.', 'error');
+
+        displayEmail.textContent = resolvedEmail;
+        // Store for actual login
+        emailInput.setAttribute('data-resolved-email', resolvedEmail);
+
+        s1.classList.add('hidden');
+        s2.classList.remove('hidden');
+    } else {
+        s2.classList.add('hidden');
+        s1.classList.remove('hidden');
+    }
+};
+
+document.getElementById('login-btn-inline')?.addEventListener('click', async () => {
+    const emailInput = document.getElementById('login-email');
+    const passInput = document.getElementById('login-password');
+    const email = emailInput ? emailInput.value : '';
+    const pass = passInput ? passInput.value : '';
+    const btn = document.getElementById('login-btn-inline');
+    const originalContent = btn.innerHTML;
 
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
     try {
@@ -1368,7 +1534,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         showToast('Login successful!', 'success');
     } catch (err) {
         showToast(err.message, 'error');
-        btn.innerHTML = 'Secure Login <i class="fa-solid fa-arrow-right ml-2"></i>';
+        btn.innerHTML = originalContent;
     }
 });
 
@@ -1654,6 +1820,11 @@ window.handleAccountActivation = async (e) => {
 function showLogin() {
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('dashboard-screen').classList.add('hidden');
+    // Reset to step 1
+    const step1 = document.getElementById('auth-step-1');
+    const step2 = document.getElementById('auth-step-2');
+    if (step1) step1.classList.remove('hidden');
+    if (step2) step2.classList.add('hidden');
 }
 
 function showDashboard() {
@@ -8806,5 +8977,201 @@ window.resetUserPassword = async (email) => {
         showToast("Password reset email sent!", "success");
     } catch (e) {
         showToast("Error: " + e.message, "error");
+    }
+};
+
+// --- Consolidated Authentication & Recovery Logic ---
+window.showStep = (stepId) => {
+    const currentStep = document.querySelector('.step-content.active');
+    const nextStep = document.getElementById(stepId);
+    
+    if (currentStep) {
+        currentStep.classList.remove('active');
+        currentStep.classList.add('fade-out');
+        setTimeout(() => currentStep.classList.remove('fade-out'), 500);
+    }
+    if (nextStep) nextStep.classList.add('active');
+};
+
+window.handleAccountActivation = async (e) => {
+    if (e) e.preventDefault();
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPass = document.getElementById('confirm-password').value;
+
+    if (password !== confirmPass) {
+        return showToast("Passwords do not match!", "error");
+    }
+
+    if (typeof setAuthButtonsLoading === 'function') {
+        setAuthButtonsLoading(true, 'Activating...');
+    }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(getAuth(), email, password);
+        const user = userCredential.user;
+
+        // Update user document in Firestore
+        const q = query(collection(db, "users"), where("email", "==", email), limit(1));
+        const snap = await getDocs(q);
+        
+        if (!snap.empty) {
+            const userDocRef = doc(db, "users", snap.docs[0].id);
+            await updateDoc(userDocRef, {
+                uid: user.uid,
+                status: 'ACTIVE',
+                updatedAt: serverTimestamp()
+            });
+        }
+
+        showToast("Account activated successfully! Logging in...", "success");
+    } catch (err) {
+        showToast(err.message, "error");
+    } finally {
+        if (typeof setAuthButtonsLoading === 'function') {
+            setAuthButtonsLoading(false);
+        }
+    }
+};
+
+window.backToIdentifier = () => window.showStep('step-identifier');
+
+window.handleIdentifierNext = async (e) => {
+    if (e) e.preventDefault();
+    const identifier = document.getElementById('login-identifier').value.trim();
+    if (!identifier) return showToast('Please enter an identifier', 'warning');
+
+    const loadingStep = document.getElementById('step-loading');
+    loadingStep.classList.add('active');
+
+    try {
+        const resolvedEmail = await window.resolveEmailToPrimary(identifier);
+        
+        await new Promise(r => setTimeout(r, 800)); // Premium delay
+
+        const q = query(collection(db, "users"), where("email", "==", resolvedEmail), limit(1));
+        const snap = await getDocs(q);
+        
+        loadingStep.classList.remove('active');
+
+        if (snap.empty) {
+            window.showToast("Account not found.", "error");
+            return;
+        }
+
+        const userData = snap.docs[0].data();
+        document.getElementById('display-resolved-email').textContent = resolvedEmail;
+        
+        if (userData.status === 'ACTIVE' || userData.uid) {
+            window.showStep('step-password');
+            setTimeout(() => document.getElementById('login-password')?.focus(), 500);
+        } else {
+            document.getElementById('signup-email').value = resolvedEmail;
+            window.showStep('step-activation');
+            setTimeout(() => document.getElementById('signup-password')?.focus(), 500);
+        }
+    } catch (err) {
+        showToast("Connection error. Try again.", "error");
+        document.getElementById('step-loading')?.classList.remove('active');
+    }
+};
+
+window.handleAccountActivationVerify = async (e) => {
+    if (e) e.preventDefault();
+    const email = document.getElementById('activation-email-input').value.trim().toLowerCase();
+    if (!email) return showToast('Please enter your email', 'warning');
+
+    const loadingStep = document.getElementById('step-loading');
+    loadingStep.classList.add('active');
+
+    try {
+        const q = query(collection(db, "users"), where("email", "==", email), limit(1));
+        const snap = await getDocs(q);
+        
+        await new Promise(r => setTimeout(r, 800));
+        loadingStep.classList.remove('active');
+
+        if (snap.empty) {
+            return showToast("Account not found. Contact your administrator to be added.", "error");
+        }
+
+        const userData = snap.docs[0].data();
+        if (userData.status === 'ACTIVE' || userData.uid) {
+            showToast("This account is already active. Please sign in.", "info");
+            showStep('step-identifier');
+            document.getElementById('login-identifier').value = email;
+            return;
+        }
+
+        document.getElementById('signup-email').value = email;
+        showStep('step-activation');
+    } catch (err) {
+        showToast(err.message, 'error');
+        loadingStep.classList.remove('active');
+    }
+};
+
+window.forgotPassword = () => {
+    const currentId = document.getElementById('login-identifier').value.trim();
+    if (currentId) document.getElementById('forgot-identifier').value = currentId;
+    showStep('step-forgot-password');
+    setTimeout(() => document.getElementById('forgot-identifier').focus(), 500);
+};
+
+window.handleForgotPasswordNext = async (e) => {
+    if (e) e.preventDefault();
+    const identifier = document.getElementById('forgot-identifier').value.trim();
+    if(!identifier) return showToast('Please enter email or phone', 'warning');
+    
+    const loadingStep = document.getElementById('step-loading');
+    loadingStep.classList.add('active');
+
+    try {
+        const user = await window.resolveUserIdentity(identifier);
+        await new Promise(r => setTimeout(r, 800));
+        loadingStep.classList.remove('active');
+
+        if (!user) {
+            showToast("Account not found.", "error");
+            return;
+        }
+
+        document.getElementById('confirm-user-name').textContent = user.name || 'Explyra User';
+        document.getElementById('confirm-user-email').textContent = user.email;
+        document.getElementById('confirm-send-email').textContent = user.email;
+
+        if (user.photoUrl) {
+            const img = document.getElementById('confirm-avatar-img');
+            img.src = user.photoUrl;
+            img.classList.remove('hidden');
+            document.getElementById('confirm-avatar-placeholder').classList.add('hidden');
+        } else {
+            document.getElementById('confirm-avatar-placeholder').classList.remove('hidden');
+            document.getElementById('confirm-avatar-img').classList.add('hidden');
+        }
+        showStep('step-confirm-identity');
+    } catch (err) {
+        showToast(err.message, 'error');
+        loadingStep.classList.remove('active');
+    }
+};
+
+window.sendResetToConfirmedUser = async () => {
+    const email = document.getElementById('confirm-user-email').textContent;
+    const btn = document.getElementById('confirm-identity-btn');
+    const originalText = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showToast('Reset email sent!', 'success');
+        setTimeout(() => window.backToIdentifier(), 2000);
+    } catch (err) {
+        showToast(err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 };

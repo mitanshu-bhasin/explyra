@@ -23,262 +23,133 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #fafafa;
-            --bg-overlay: rgba(255, 255, 255, 0.85);
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
-            --accent-color: #000000;
-            --border-color: #e5e7eb;
-            --card-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-            --radius-md: 1.25rem;
-            --transition: all 0.3s ease;
-        }
-
-        .dark {
-            --bg-primary: #000000;
-            --bg-secondary: #111827;
-            --bg-overlay: rgba(0, 0, 0, 0.75);
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --accent-color: #ffffff;
-            --border-color: #1f2937;
-            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #1b1b1b;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            transition: background-color 0.5s ease;
-            position: relative;
-            overflow-x: hidden;
+            padding: 24px;
+            margin: 0;
+            overflow-y: auto;
         }
+        .dark body { background: #000; color: #fff; }
 
-        .blob {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, #10b981 0%, #6366f1 100%);
-            filter: blur(100px);
-            opacity: 0.1;
-            z-index: 0;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .blob-1 { top: -100px; right: -100px; }
-        .blob-2 { bottom: -100px; left: -100px; }
-
-        .auth-container {
+        .ms-auth-card {
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            padding: 44px;
             width: 100%;
             max-width: 440px;
-            background: var(--bg-overlay);
-            border: 1px solid var(--border-color);
-            border-radius: 28px;
-            padding: 2.5rem 2rem;
-            box-shadow: var(--card-shadow);
-            text-align: center;
             position: relative;
             z-index: 10;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            margin-top: 5vh;
+            margin-bottom: 24px;
         }
+        .dark .ms-auth-card { background: #111; border: 1px solid #333; }
 
-        .auth-logo {
-            width: 56px;
-            height: 56px;
-            background: var(--accent-color);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-
-        .auth-logo img {
-            width: 32px;
-            height: 32px;
-            filter: invert(1);
-        }
-        .dark .auth-logo img { filter: none; }
-
-        .auth-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            margin-bottom: 0.5rem;
-        }
-
-        .auth-desc {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            text-align: left;
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-input {
+        .ms-logo { height: 32px; margin-bottom: 24px; overflow: hidden; display: flex; align-items: center; }
+        .ms-logo img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
+        
+        .ms-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+        .ms-subtitle { font-size: 15px; margin-bottom: 24px; }
+        
+        .ms-input-line {
             width: 100%;
-            height: 44px;
-            padding: 0 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 14px;
-            transition: var(--transition);
+            border: none;
+            border-bottom: 1px solid #666;
+            padding: 10px 0;
             outline: none;
-        }
-
-        .form-input:focus {
-            border-color: var(--text-primary);
-            background: var(--bg-primary);
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            padding: 0.85rem;
-            border-radius: 8px;
             font-size: 15px;
-            font-weight: 700;
+            margin-bottom: 20px;
+            background: transparent;
+            border-radius: 0;
+            transition: border-bottom-color 0.2s;
+            color: inherit;
+        }
+        .ms-input-line:focus { border-bottom-color: #0067b8; }
+        
+        .ms-link { color: #0067b8; text-decoration: none; font-size: 13px; cursor: pointer; display: inline-block; }
+        .ms-link:hover { text-decoration: underline; }
+        
+        .ms-btn-next {
+            background: #0067b8;
+            color: #fff;
+            padding: 8px 36px;
+            font-size: 15px;
+            min-width: 108px;
             border: none;
             cursor: pointer;
-            transition: var(--transition);
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            float: right;
+            transition: opacity 0.2s;
         }
+        .ms-btn-next:hover { opacity: 0.9; }
 
-        .btn-submit:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .auth-footer {
-            margin-top: 2rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .auth-footer a {
-            color: var(--text-primary);
-            font-weight: 700;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .auth-footer a:hover {
-            text-decoration: underline;
-        }
-
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            padding: 12px 20px;
-            border-radius: 8px;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            box-shadow: var(--card-shadow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideIn 0.3s ease forwards;
-        }
-
-        .toast.success { background: #000; border: 1px solid #333; }
-        .toast.error { background: #EF4444; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+        .ms-footer-text { font-size: 13px; margin-top: 24px; text-align: left; }
+        .ms-business-footer { margin-top: auto; padding: 24px 0; text-align: center; font-size: 12px; color: #666; }
+        .dark .ms-business-footer { color: #999; }
 
         /* Password Strength Meter */
-        .strength-meter {
-            display: flex;
-            gap: 4px;
-            margin-top: 8px;
-            height: 4px;
+        .strength-meter { display: flex; gap: 4px; margin-top: -10px; margin-bottom: 20px; height: 3px; }
+        .strength-bar { flex: 1; height: 100%; background: #eee; border-radius: 2px; }
+        .dark .strength-bar { background: #333; }
+        .strength-meter.weak #bar-1 { background: #d83b01; }
+        .strength-meter.moderate #bar-1, .strength-meter.moderate #bar-2 { background: #ffb900; }
+        .strength-meter.strong .strength-bar { background: #107c10; }
+
+        .password-rules { font-size: 11px; color: #666; margin-bottom: 20px; }
+        .rule-item { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+        .rule-item.met { color: #107c10; font-weight: 600; }
+                /* Step Transitions */
+        .step-container { position: relative; width: 100%; min-height: 480px; }
+        .step-content { 
+            position: absolute; 
+            inset: 0;
+            width: 100%;
+            opacity: 0; 
+            pointer-events: none; 
+            transform: translateX(50px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white; /* Prevent bleed */
+            z-index: 1;
+        }
+        .dark .step-content { background: #111; }
+        
+        .step-content.active { 
+            position: relative;
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translateX(0);
+            z-index: 2;
+        }
+        
+        .step-content.fade-out {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
         }
 
-        .strength-meter div {
-            flex: 1;
-            height: 100%;
-            background: var(--border-color);
-            border-radius: 2px;
-            transition: background 0.3s;
-        }
+        .absolute { position: absolute; }
+        .relative { position: relative; }
+        .inset-0 { top: 0; left: 0; right: 0; bottom: 0; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .opacity-0 { opacity: 0; }
+        .opacity-100 { opacity: 1; }
+        .pointer-events-none { pointer-events: none; }
+        .hidden { display: none; }
+        
+        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 1000; }
+        .toast { padding: 12px 24px; background: #333; color: #fff; border-radius: 4px; margin-top: 10px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
+        .toast.error { background: #d83b01; }
+        .toast.success { background: #107c10; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .strength-meter.weak div:nth-child(1) { background: #ef4444; }
-        .strength-meter.moderate div:nth-child(1),
-        .strength-meter.moderate div:nth-child(2) { background: #f59e0b; }
-        .strength-meter.strong div { background: #10b981; }
-
-        .password-rules {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 6px;
-            line-height: 1.4;
-        }
-
-        .rule-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .rule-item.met { color: #10b981; }
-        .rule-item.met i { display: inline-block !important; }
+        .theme-toggle { position: fixed; top: 24px; right: 24px; background: none; border: none; cursor: pointer; color: #666; font-size: 20px; z-index: 100; }
+        .dark .theme-toggle { color: #aaa; }
+    </style>
     </style>
 
     
@@ -352,48 +223,107 @@
 </head>
 
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fa-solid fa-moon dark:hidden"></i>
+        <i class="fa-solid fa-sun hidden dark:block"></i>
+    </button>
 
-    <div class="auth-container">
-        <div class="auth-logo">
-            <img src="assets/images/explyra_logo.png" alt="Explyra">
+    <script src="js/utils.js"></script>
+
+    <div class="ms-auth-card">
+        <div class="ms-logo">
+            <img src="assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
         </div>
-        <h1 class="auth-title">Join Explyra</h1>
-        <p class="auth-desc">Start your professional developer journey today.</p>
+        
+        <div id="signup-steps" class="step-container relative overflow-hidden min-h-[480px]">
+            <!-- Step 1: Identifier -->
+            <div id="step-identifier" class="step-content active text-left">
+                <h1 class="ms-title">Create account</h1>
+                <p class="ms-subtitle">Enter your work email to get started.</p>
+                
+                <form id="identifierForm" onsubmit="handleIdentifierNext(event)">
+                    <input type="email" id="email" class="ms-input-line dark:text-white" placeholder="Work Email" required autofocus>
+                    
+                    <div class="ms-footer-text">
+                        Already have an account? <a href="login.html" class="ms-link font-bold">Sign In</a>
+                    </div>
 
-        <form id="signupForm">
-            <div class="form-group">
-                <label class="form-label" for="name">Full Name *</label>
-                <input type="text" id="name" class="form-input" placeholder="Mitanshu Bhasin" required>
+                    <div class="flex justify-end mt-12">
+                        <button type="submit" id="identifierBtn" class="ms-btn-next">Next</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="email">Work Email *</label>
-                <input type="email" id="email" class="form-input" placeholder="you@company.com" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="password">Create Password *</label>
-                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
-                <div class="strength-meter" id="strengthMeter">
-                    <div></div><div></div><div></div>
+
+            <!-- Step 2: Profile -->
+            <div id="step-profile" class="step-content text-left">
+                <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
+                    <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                    <span id="display-email-profile" class="text-sm text-slate-600">...</span>
                 </div>
-                <div class="password-rules">
-                    <div class="rule-item" id="rule-length"><i class="fa-solid fa-circle-check hidden"></i> 8+ characters</div>
-                    <div class="rule-item" id="rule-case"><i class="fa-solid fa-circle-check hidden"></i> Upper & lowercase</div>
-                    <div class="rule-item" id="rule-number"><i class="fa-solid fa-circle-check hidden"></i> At least one number</div>
+                <h1 class="ms-title">Who are you?</h1>
+                <p class="ms-subtitle">Tell us your full name so we can personalize your workspace.</p>
+                
+                <form id="profileForm" onsubmit="handleProfileNext(event)">
+                    <input type="text" id="name" class="ms-input-line dark:text-white" placeholder="Full Name" required autofocus>
+                    
+                    <div class="flex justify-end mt-12">
+                        <button type="submit" id="profileBtn" class="ms-btn-next">Next</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step: Loading Transition -->
+            <div id="step-loading" class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
+                <div class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p id="loading-text" class="text-sm font-medium text-slate-600 dark:text-slate-400">Checking...</p>
+            </div>
+
+            <!-- Step 3: Security -->
+            <div id="step-security" class="step-content text-left">
+                <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToProfile()">
+                    <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
+                    <span id="display-email" class="text-sm text-slate-600">...</span>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="confirmPassword">Confirm Password *</label>
-                <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required>
-            </div>
+                <h1 class="ms-title">Create a password</h1>
+                <p class="ms-subtitle">Enter the password you'd like to use with your account.</p>
+                
+                <form id="signupForm" onsubmit="handleFinalSignup(event)">
+                    <div class="relative w-full">
+                        <input type="password" id="password" class="ms-input-line dark:text-white pr-10" placeholder="Create Password" required>
+                        <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
+                            <i class="fa-solid fa-eye text-sm"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="strength-meter" id="strengthMeter">
+                        <div class="strength-bar" id="bar-1"></div>
+                        <div class="strength-bar" id="bar-2"></div>
+                        <div class="strength-bar" id="bar-3"></div>
+                    </div>
 
-            <button type="submit" class="btn-submit" id="submitBtn">
-                Create Account <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </form>
+                    <div class="password-rules">
+                        <div class="rule-item" id="rule-length"><i class="fa-solid fa-circle-check opacity-20"></i> 8+ characters</div>
+                        <div class="rule-item" id="rule-case"><i class="fa-solid fa-circle-check opacity-20"></i> Upper & lowercase</div>
+                        <div class="rule-item" id="rule-number"><i class="fa-solid fa-circle-check opacity-20"></i> At least one number</div>
+                    </div>
 
-        <div class="auth-footer">
-            Already have an account? <a href="login.html">Sign In</a>
+                    <div class="relative w-full">
+                        <input type="password" id="confirmPassword" class="ms-input-line dark:text-white pr-10" placeholder="Confirm Password" required>
+                        <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
+                            <i class="fa-solid fa-eye text-sm"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex justify-end mt-12">
+                        <button type="submit" id="submitBtn" class="ms-btn-next">Create account</button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
+
+    <div class="ms-business-footer">
+        © 2026 Explyra Suite. All rights reserved.
     </div>
 
     <div id="toast-container"></div>
@@ -424,6 +354,18 @@
             toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
+        };
+
+        window.togglePasswordVisibility = (id, btn) => {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
         };
 
         // Password Validation Logic
@@ -463,8 +405,55 @@
         }
 
         passInput.addEventListener('input', updateStrength);
+        
+        // Navigation
+        window.showStep = (stepId) => {
+            const steps = document.querySelectorAll('.step-content');
+            const currentStep = document.querySelector('.step-content.active');
+            const nextStep = document.getElementById(stepId);
+            
+            if (currentStep) {
+                currentStep.classList.remove('active');
+                currentStep.classList.add('fade-out');
+                setTimeout(() => currentStep.classList.remove('fade-out'), 500);
+            }
+            if (nextStep) nextStep.classList.add('active');
+        };
 
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        window.handleIdentifierNext = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            if(!email) return showToast('Please enter your email', 'error');
+
+            const loadingStep = document.getElementById('step-loading');
+            loadingStep.classList.add('active');
+
+            setTimeout(() => {
+                loadingStep.classList.remove('active');
+                document.getElementById('display-email-profile').textContent = email;
+                showStep('step-profile');
+            }, 800);
+        };
+
+        window.handleProfileNext = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            if (!document.getElementById('name').value.trim()) return showToast('Please enter your name', 'error');
+
+            const loadingStep = document.getElementById('step-loading');
+            loadingStep.classList.add('active');
+
+            setTimeout(() => {
+                loadingStep.classList.remove('active');
+                document.getElementById('display-email').textContent = email;
+                showStep('step-security');
+            }, 800);
+        };
+
+        window.backToIdentifier = () => showStep('step-identifier');
+        window.backToProfile = () => showStep('step-profile');
+
+        window.handleFinalSignup = async (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -472,7 +461,7 @@
             const confirmPass = document.getElementById('confirmPassword').value;
             const btn = document.getElementById('submitBtn');
 
-            if (!name || !email || !password) return showToast('Please fill all required fields', 'error');
+            if (!password || !confirmPass) return showToast('Please fill all fields', 'error');
 
             // Final Validation
             const hasUpper = /[A-Z]/.test(password);
@@ -510,9 +499,9 @@
                 console.error("Signup error:", error);
                 showToast(error.message, 'error');
                 btn.disabled = false;
-                btn.innerHTML = 'Create Account <i class="fa-solid fa-arrow-right"></i>';
+                btn.innerHTML = 'Create account <i class="fa-solid fa-arrow-right"></i>';
             }
-        });
+        };
     </script>
 </body>
 
