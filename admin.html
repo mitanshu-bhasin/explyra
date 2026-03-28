@@ -2265,10 +2265,7 @@
                             class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800 hidden"></span>
                     </button>
 
-                    <button onclick="toggleTheme()" aria-label="Toggle theme"
-                        class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-white dark:hover:bg-slate-900 transition">
-                        <i class="fa-solid fa-moon theme-toggle-icon"></i>
-                    </button>
+
 
                     <button onclick="openAccountCenter()" aria-label="Open account center"
                         class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200 shadow-sm">
@@ -4005,25 +4002,19 @@
         // Robust Multi-Step Auth Bridge
         // This ensures functions are available even if the main module loads slowly or across different base paths
         const ensureLogic = async () => {
-            if (!window.resolveUserIdentity || !window.handleIdentifierNext) {
-                const { resolveUserIdentity, handleIdentifierNext, handleAccountActivationVerify, handleAccountActivation, handleFinalLogin, forgotPassword, handleForgotPasswordNext, sendResetToConfirmedUser, toggleLoginPassword } = await import('/js/admin-logic.js');
-                window.resolveUserIdentity = resolveUserIdentity;
-                window.handleIdentifierNext = handleIdentifierNext;
-                window.handleAccountActivationVerify = handleAccountActivationVerify;
-                window.handleAccountActivation = handleAccountActivation;
-                window.handleFinalLogin = handleFinalLogin;
-                window.forgotPassword = forgotPassword;
-                window.handleForgotPasswordNext = handleForgotPasswordNext;
-                window.sendResetToConfirmedUser = sendResetToConfirmedUser;
-                window.toggleLoginPassword = toggleLoginPassword;
+            if (!window.resolveUserIdentity) {
+                // Just import the module; it sets globals on window
+                await import('/js/admin-logic.js');
             }
         };
 
-        window.handleIdentifierNext = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleIdentifierNext(e);
-        };
+        if (!window.handleIdentifierNext) {
+            window.handleIdentifierNext = async (e) => {
+                if (e) e.preventDefault();
+                await ensureLogic();
+                return window.handleIdentifierNext(e);
+            };
+        }
 
         window.handleAccountActivationVerify = async (e) => {
             if (e) e.preventDefault();

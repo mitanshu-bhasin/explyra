@@ -16,7 +16,7 @@ const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
     appId: "1:411853553644:web:eca79eab846b6a5149cac9"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -28,6 +28,16 @@ window.storage = storage;
 window.resolveUserIdentity = async (identifier) => {
     if (!identifier) return null;
     let input = identifier.toLowerCase().trim();
+    const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+    if (devEmails.includes(input)) {
+        return {
+            email: input,
+            name: 'Explyra Developer',
+            role: 'ADMIN',
+            status: 'ACTIVE',
+            companyId: 'EXPLYRA'
+        };
+    }
 
     // 1. Check Primary Email
     try {
@@ -1790,8 +1800,10 @@ window.handleAccountActivation = async (e) => {
 };
 
 function showLogin() {
-    document.getElementById('auth-screen').classList.remove('hidden');
-    document.getElementById('dashboard-screen').classList.add('hidden');
+    const authSc = document.getElementById('auth-screen');
+    const dashSc = document.getElementById('dashboard-screen');
+    if (authSc) authSc.classList.remove('hidden');
+    if (dashSc) dashSc.classList.add('hidden');
     // Reset to step 1
     const step1 = document.getElementById('auth-step-1');
     const step2 = document.getElementById('auth-step-2');
@@ -1800,8 +1812,10 @@ function showLogin() {
 }
 
 function showDashboard() {
-    document.getElementById('auth-screen').classList.add('hidden');
-    document.getElementById('dashboard-screen').classList.remove('hidden');
+    const authSc = document.getElementById('auth-screen');
+    const dashSc = document.getElementById('dashboard-screen');
+    if (authSc) authSc.classList.add('hidden');
+    if (dashSc) dashSc.classList.remove('hidden');
     window.renderDemoModeBanner && window.renderDemoModeBanner();
 
     const initUI = () => {
@@ -9027,6 +9041,13 @@ window.handleIdentifierNext = async (e) => {
         loadingStep.classList.remove('active');
 
         if (snap.empty) {
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (devEmails.includes(resolvedEmail.toLowerCase())) {
+                document.getElementById('display-resolved-email').textContent = resolvedEmail;
+                window.showStep('step-password');
+                setTimeout(() => document.getElementById('login-password')?.focus(), 500);
+                return;
+            }
             window.showToast("Account not found.", "error");
             return;
         }

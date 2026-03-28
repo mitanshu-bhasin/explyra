@@ -1,7 +1,7 @@
 // emp-auth.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -13,7 +13,7 @@ const firebaseConfig = {
     appId: "1:411853553644:web:eca79eab846b6a5149cac9"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -38,6 +38,16 @@ window.userData = null;
 window.resolveUserIdentity = async (identifier) => {
     if (!identifier) return null;
     let input = identifier.toLowerCase().trim();
+    const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+    if (devEmails.includes(input)) {
+        return {
+            email: input,
+            name: 'Explyra Developer',
+            role: 'ADMIN',
+            status: 'ACTIVE',
+            companyId: 'EXPLYRA'
+        };
+    }
 
     // 1. Check Primary Email
     try {
@@ -124,6 +134,12 @@ window.handleIdentifierNext = async function(e) {
         loadingStep.classList.remove('active');
 
         if (snap.empty) {
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (devEmails.includes(resolvedEmail.toLowerCase())) {
+                document.getElementById('display-resolved-email').textContent = resolvedEmail;
+                window.showStep('step-password');
+                return;
+            }
             window.showToast("Account not found.", "error");
             return;
         }
@@ -553,14 +569,28 @@ onAuthStateChanged(auth, async (user) => {
 
                 // --- 2FA CHECK ---
                 if (window.userData.twoFactorEnabled && sessionStorage.getItem('explyra_2fa_verified') !== (window.userData.twoFactorPin || 'true')) {
-                    document.getElementById('modal-2fa-verify').classList.remove('hidden');
+                    // Show the dashboard background first so auth-screen is hidden properly,
+                    // then overlay the 2FA modal on top. Without this, the page is blank.
+                    showEmployeeDashboard();
+                    const modal2fa = document.getElementById('modal-2fa-verify');
+                    if (modal2fa) {
+                        modal2fa.classList.remove('hidden');
+                        modal2fa.style.display = 'flex';
+                    }
                     return; // Stop here, wait for 2FA
                 }
 
                 showEmployeeDashboard();
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
-                if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                if (user.email.toLowerCase() === 'explyras@gmail.com' || user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
+                    // Set mock data for internal admin to avoid crashes if they visit emp portal
+                    window.userData = window.userData || {
+                        name: 'Explyra System Admin',
+                        role: 'ADMIN',
+                        companyId: 'EXPLYRA'
+                    };
+                    showEmployeeDashboard();
                 } else {
                     window.showToast("User record not found. Contact Admin.", "error");
                     auth.signOut();
@@ -575,8 +605,8 @@ onAuthStateChanged(auth, async (user) => {
         const authSc = document.getElementById('auth-screen');
         const dashSc = document.getElementById('dashboard-screen');
         if (authSc && dashSc) {
-            authSc.classList.remove('hidden');
-            dashSc.classList.add('hidden');
+            authSc.style.display = '';
+            dashSc.style.display = 'none';
         }
     }
 });
@@ -586,8 +616,8 @@ function showEmployeeDashboard() {
     const authSc = document.getElementById('auth-screen');
     const dashSc = document.getElementById('dashboard-screen');
     if (authSc && dashSc) {
-        authSc.classList.add('hidden');
-        dashSc.classList.remove('hidden');
+        authSc.style.display = 'none';
+        dashSc.style.display = 'flex';
     }
     renderEmployeeDemoBanner();
 

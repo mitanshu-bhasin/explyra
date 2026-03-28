@@ -22,7 +22,7 @@
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.iife.js"></script>
     <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
@@ -1131,7 +1131,7 @@
 
     <!-- Dashboard Screen -->
     <div id="dashboard-screen"
-        class="hidden h-screen flex overflow-hidden bg-white dark:bg-black transition-colors duration-300">
+        style="display:none" class="h-screen overflow-hidden bg-white dark:bg-black transition-colors duration-300">
 
         <!-- Sidebar Navigation -->
         <aside id="main-sidebar"
@@ -2469,10 +2469,7 @@
                                 class="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-tight">Voice
                                 Control</label>
                         </div>
-                        <button type="button" onclick="toggleTheme()" aria-label="Toggle theme"
-                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-moon theme-toggle-icon"></i> Theme
-                        </button>
+
                     </div>
 
                     <div id="speech-guide"
@@ -2693,7 +2690,7 @@
     <script type="module" src="js/emp-expenses.js"></script>
     <script type="module" src="js/emp-chat.js"></script>
     <script type="module" src="js/emp-calls.js"></script>
-    <script type="module" src="js/emp-auth.js"></script>
+    <!-- emp-auth.js is loaded once via the cache-busted import() at the bottom of this file -->
     <script type="module" src="js/ai-receipt.js"></script>
     <script src="js/avatar-manager.js"></script>
 
@@ -3694,7 +3691,6 @@
             if (dashMain) dashObs.observe(dashMain, { childList: true, subtree: false });
         })();
     </script>
-    </script>
 
     <!-- P2P Video Call Modal -->
     <div id="modal-video-call"
@@ -3860,7 +3856,7 @@
 
     <!-- Two-Factor Verification Modal -->
     <div id="modal-2fa-verify"
-        class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
+        class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden items-center justify-center p-4">
         <div
             class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-slate-100 dark:border-slate-700">
             <div
@@ -3887,61 +3883,17 @@
                 Back to Login
             </button>
         </div>
+    </div>
     <script type="module">
-        // Robust Multi-Step Auth Bridge for Employee Portal
-        const ensureLogic = async () => {
-            if (!window.resolveUserIdentity || !window.handleIdentifierNext) {
-                const { resolveUserIdentity, handleIdentifierNext, handleAccountActivation, handleFinalLogin, forgotPassword, handleForgotPasswordNext, sendResetToConfirmedUser, toggleLoginPassword } = await import('/js/emp-auth.js');
-                window.resolveUserIdentity = resolveUserIdentity;
-                window.handleIdentifierNext = handleIdentifierNext;
-                window.handleAccountActivation = handleAccountActivation;
-                window.handleFinalLogin = handleFinalLogin;
-                window.forgotPassword = forgotPassword;
-                window.handleForgotPasswordNext = handleForgotPasswordNext;
-                window.sendResetToConfirmedUser = sendResetToConfirmedUser;
-                window.toggleLoginPassword = toggleLoginPassword;
-            }
-        };
-
-        window.handleIdentifierNext = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleIdentifierNext(e);
-        };
-
-        window.handleAccountActivation = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleAccountActivation(e);
-        };
-
-        window.handleFinalLogin = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleFinalLogin(e);
-        };
-
-        window.forgotPassword = async () => {
-            await ensureLogic();
-            return window.forgotPassword();
-        };
-
-        window.handleForgotPasswordNext = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleForgotPasswordNext(e);
-        };
-
-        window.sendResetToConfirmedUser = async () => {
-            await ensureLogic();
-            return window.sendResetToConfirmedUser();
-        };
-
-        window.toggleLoginPassword = async () => {
-            await ensureLogic();
-            return window.toggleLoginPassword();
-        };
-
+        // Force clear all service worker caches so fresh files load
+        if ('caches' in window) {
+            caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        }
+        // Import auth module with cache buster
+        await import('/js/emp-auth.js?v=' + Date.now());
+    </script>
+    <script>
+        // Password strength meter (non-module, used inline by the form)
         window.updateStrength = function(p) {
             const rules = {
                 len: p.length >= 8,
@@ -3949,26 +3901,26 @@
                 low: /[a-z]/.test(p),
                 num: /[0-9]/.test(p)
             };
-            
+
             Object.keys(rules).forEach(r => {
                 const el = document.getElementById('rule-' + r);
-                if(el) el.classList.toggle('met', rules[r]);
+                if (el) el.classList.toggle('met', rules[r]);
             });
 
             let strength = 0;
-            if(rules.len && rules.cap && rules.low && rules.num) strength = 3;
-            else if(rules.len && (rules.cap || rules.low) && rules.num) strength = 2;
-            else if(p.length > 0) strength = 1;
+            if (rules.len && rules.cap && rules.low && rules.num) strength = 3;
+            else if (rules.len && (rules.cap || rules.low) && rules.num) strength = 2;
+            else if (p.length > 0) strength = 1;
 
             window.currentPasswordStrength = strength;
 
             ['bar-1', 'bar-2', 'bar-3'].forEach((id, i) => {
                 const b = document.getElementById(id);
-                if(!b) return;
+                if (!b) return;
                 b.style.background = '';
-                if(i < strength) {
-                    if(strength === 1) b.style.background = '#ef4444';
-                    else if(strength === 2) b.style.background = '#f59e0b';
+                if (i < strength) {
+                    if (strength === 1) b.style.background = '#ef4444';
+                    else if (strength === 2) b.style.background = '#f59e0b';
                     else b.style.background = '#10b981';
                 }
             });

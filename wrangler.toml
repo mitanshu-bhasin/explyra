@@ -48,10 +48,10 @@ enabled = true
 # ==============================
 # 🔗 REDIRECTS & REWRITES
 # ==============================
-[[redirects]]
-from = "https://explyra.pages.dev/*"
-to = "https://explyra.me/:splat"
-status = 301
+#[[redirects]]
+#from = "https://explyra.pages.dev/*"
+#to = "https://explyra.me/:splat"
+#status = 301
 
 [[redirects]]
 from = "https://explyra.fouralpha.org/*"
