@@ -802,7 +802,25 @@
     </style>
     <link rel="manifest" href="manifest.json">
     <script>
-        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                const host = (window.location.hostname || '').toLowerCase();
+                const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+
+                if (isLocal) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map((reg) => reg.unregister()));
+                    if ('caches' in window) {
+                        const names = await caches.keys();
+                        await Promise.all(names.map((name) => caches.delete(name)));
+                    }
+                    console.info('Service workers disabled for localhost to avoid stale cache issues.');
+                    return;
+                }
+
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
     </script>
 
     <!-- EmailJS SDK -->
@@ -951,6 +969,7 @@
                         </div>
                         <div class="flex justify-end mt-12">
                             <button type="submit" id="login-btn" class="ms-btn-next">Sign in</button>
+                        </div>
                     </form>
                 </div>
 
@@ -1131,7 +1150,7 @@
 
     <!-- Dashboard Screen -->
     <div id="dashboard-screen"
-        style="display:none" class="h-screen overflow-hidden bg-white dark:bg-black transition-colors duration-300">
+        class="hidden h-screen flex overflow-hidden bg-white dark:bg-black transition-colors duration-300">
 
         <!-- Sidebar Navigation -->
         <aside id="main-sidebar"
@@ -3122,9 +3141,13 @@
 
             // Register Service Worker
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registered'))
-                    .catch(err => console.error('Service Worker Error', err));
+                const host = (window.location.hostname || '').toLowerCase();
+                const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+                if (!isLocal) {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then(reg => console.log('Service Worker Registered'))
+                        .catch(err => console.error('Service Worker Error', err));
+                }
             }
         });
     </script>
@@ -3140,8 +3163,18 @@
             }, 'google_translate_element');
         }
     </script>
-    <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        (function loadTranslateScript() {
+            const host = (window.location.hostname || '').toLowerCase();
+            const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+            if (isLocal) return;
+
+            const s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.body.appendChild(s);
+        })();
+    </script>
 
     <!-- Language Logic CSS (Hide Google UI) -->
     <style>
@@ -3885,12 +3918,125 @@
         </div>
     </div>
     <script type="module">
-        // Force clear all service worker caches so fresh files load
+        const ensureVisibleFallbackCard = () => {
+            const claimsSection = document.getElementById('section-claims');
+            const list = document.getElementById('expenses-list');
+            if (!claimsSection || !list) return;
+            if (document.getElementById('emp-safe-fallback-card')) return;
+            const hasVisibleContent = list.children.length > 0;
+            if (hasVisibleContent) return;
+
+            const card = document.createElement('div');
+            card.id = 'emp-safe-fallback-card';
+            card.className = 'vercel-card p-6';
+            card.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                    <div>
+                        <p class="text-sm font-bold text-black dark:text-white">Dashboard safe mode active</p>
+                        <p class="text-xs text-gray-500 mt-1">Data service temporary issue. UI is running and will auto-retry in background.</p>
+                    </div>
+                </div>
+            `;
+            list.appendChild(card);
+        };
+
+        const enforceDashboardShell = () => {
+            const authSc = document.getElementById('auth-screen');
+            const dashSc = document.getElementById('dashboard-screen');
+            const mainDash = document.getElementById('main-view-dashboard');
+            const mainMsg = document.getElementById('main-view-messages');
+            const sectionClaims = document.getElementById('section-claims');
+            const sectionTasks = document.getElementById('section-tasks');
+            const sectionFinancials = document.getElementById('section-financials');
+            const sectionScheduler = document.getElementById('section-scheduler');
+
+            if (!authSc || !dashSc) return;
+
+            authSc.classList.add('hidden');
+            authSc.style.display = 'none';
+            dashSc.classList.remove('hidden');
+            dashSc.style.display = 'flex';
+
+            if (mainDash) {
+                mainDash.classList.remove('hidden');
+                mainDash.classList.add('flex-1', 'overflow-y-auto');
+                mainDash.style.display = 'block';
+                mainDash.style.visibility = 'visible';
+            }
+
+            if (mainMsg) {
+                mainMsg.classList.add('hidden');
+                mainMsg.style.display = 'none';
+            }
+
+            const sections = [sectionClaims, sectionTasks, sectionFinancials, sectionScheduler].filter(Boolean);
+            const allHidden = sections.length > 0 && sections.every((section) => section.classList.contains('hidden'));
+            if (allHidden && sectionClaims) {
+                sectionClaims.classList.remove('hidden');
+            }
+            sections.forEach((section) => {
+                section.style.display = section.classList.contains('hidden') ? 'none' : '';
+            });
+
+            ensureVisibleFallbackCard();
+        };
+
+        const recoverPortalScreens = () => {
+            const authSc = document.getElementById('auth-screen');
+            const dashSc = document.getElementById('dashboard-screen');
+            if (!authSc || !dashSc) return;
+
+            const authUser = window.currentUser || window.auth?.currentUser || null;
+            if (authUser) {
+                enforceDashboardShell();
+                return;
+            }
+
+            const authHidden = authSc.classList.contains('hidden') || getComputedStyle(authSc).display === 'none';
+            const dashHidden = dashSc.classList.contains('hidden') || getComputedStyle(dashSc).display === 'none';
+            if (authHidden && dashHidden) {
+                authSc.classList.remove('hidden');
+                dashSc.classList.add('hidden');
+                authSc.style.display = 'flex';
+                dashSc.style.display = 'none';
+                console.warn('Recovered from blank state by restoring auth screen.');
+            }
+        };
+
+        window.addEventListener('error', () => {
+            setTimeout(recoverPortalScreens, 0);
+        });
+        window.addEventListener('unhandledrejection', () => {
+            setTimeout(recoverPortalScreens, 0);
+        });
+
         if ('caches' in window) {
             caches.keys().then(names => names.forEach(name => caches.delete(name)));
         }
-        // Import auth module with cache buster
-        await import('/js/emp-auth.js?v=' + Date.now());
+
+        try {
+            await import('/js/emp-auth.js?v=' + Date.now());
+        } catch (bootErr) {
+            console.error('[emp bootstrap] emp-auth import failed:', bootErr);
+            if (typeof window.showToast === 'function') {
+                window.showToast('Some modules failed to load. Showing safe mode.', 'warning');
+            }
+            recoverPortalScreens();
+        }
+
+        [200, 800, 1600, 2800, 4200].forEach((delay) => {
+            setTimeout(recoverPortalScreens, delay);
+        });
+
+        setInterval(() => {
+            const authUser = window.currentUser || window.auth?.currentUser || null;
+            if (!authUser) return;
+            const staleHeartbeat = !window.__empAuthHeartbeat || (Date.now() - window.__empAuthHeartbeat) > 15000;
+            if (!staleHeartbeat) return;
+            console.warn('[emp bootstrap] Heartbeat stale while authenticated. Re-enforcing dashboard shell.');
+            enforceDashboardShell();
+        }, 5000);
     </script>
     <script>
         // Password strength meter (non-module, used inline by the form)

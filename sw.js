@@ -1,7 +1,7 @@
 // Explyra PWA Service Worker v9.3
 // Production-tuned for faster loads across Android, iOS, Windows, Linux, and macOS.
 
-const VERSION = 'v9.5';
+const VERSION = 'v9.6';
 const CORE_CACHE = `explyra-core-${VERSION}`;
 const ASSET_CACHE = `explyra-assets-${VERSION}`;
 const CDN_CACHE = `explyra-cdn-${VERSION}`;

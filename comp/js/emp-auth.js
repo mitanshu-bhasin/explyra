@@ -81,6 +81,70 @@ const safeWithRetry = (operation, options) => (typeof window.withRetry === 'func
 const safeWithTimeout = (promise, timeoutMs, timeoutMessage) => (typeof window.withTimeout === 'function' ? window.withTimeout(promise, timeoutMs, timeoutMessage) : promise);
 const authMessage = (error, fallback) => (typeof window.getFriendlyAuthMessage === 'function' ? window.getFriendlyAuthMessage(error, fallback) : (fallback || error?.message || 'Request failed.'));
 
+const EMP_PROFILE_CACHE_KEY = 'explyra_emp_profile_cache_v1';
+
+const isLikelyFirestoreNetworkError = (error) => {
+    const code = String(error?.code || '').toLowerCase();
+    const message = String(error?.message || '').toLowerCase();
+    return (
+        code.includes('network') ||
+        code.includes('unavailable') ||
+        code.includes('deadline') ||
+        message.includes('fetch') ||
+        message.includes('listen/channel') ||
+        message.includes('offline')
+    );
+};
+
+const saveCachedEmpProfile = (profile) => {
+    if (!profile || typeof localStorage === 'undefined') return;
+    try {
+        const payload = {
+            name: profile.name || '',
+            role: profile.role || 'EMPLOYEE',
+            companyId: profile.companyId || null,
+            photoUrl: profile.photoUrl || '',
+            docId: profile.docId || null,
+            cachedAt: Date.now()
+        };
+        localStorage.setItem(EMP_PROFILE_CACHE_KEY, JSON.stringify(payload));
+    } catch (_) {}
+};
+
+const loadCachedEmpProfile = () => {
+    if (typeof localStorage === 'undefined') return null;
+    try {
+        const raw = localStorage.getItem(EMP_PROFILE_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        return parsed;
+    } catch (_) {
+        return null;
+    }
+};
+
+const recoverWithOfflineProfile = (authUser, reasonError) => {
+    const urlCompanyId = window.ExplyraTenant?.getCompanyIdFromPath() || null;
+    const cached = loadCachedEmpProfile();
+    const fallbackName = authUser?.displayName || (authUser?.email ? authUser.email.split('@')[0] : 'User');
+
+    window.userData = {
+        name: cached?.name || fallbackName,
+        role: cached?.role || 'EMPLOYEE',
+        companyId: urlCompanyId || cached?.companyId || window.companyId || null,
+        photoUrl: authUser?.photoURL || cached?.photoUrl || '',
+        docId: cached?.docId || null,
+        offlineMode: true
+    };
+    window.companyId = window.userData.companyId;
+    window.currentUser = authUser;
+    window.delegateSession = null;
+    showEmployeeDashboard();
+    window.showToast('Network issue detected. Dashboard loaded in safe mode.', 'warning');
+    console.warn('[emp-auth] Recovered with offline profile due to Firestore failure:', reasonError);
+};
+
 const validateEnterprisePassword = (password) => {
     const value = String(password || '');
     if (value.length < 8) return 'Password must be at least 8 characters.';
@@ -106,6 +170,117 @@ const setAuthButtonsLoading = (isLoading, activeLabel = 'Processing...') => {
             : (loginBtn.dataset.defaultHtml || 'Sign In');
     }
 };
+
+const setPortalVisibility = (showDashboard) => {
+    const authSc = document.getElementById('auth-screen');
+    const dashSc = document.getElementById('dashboard-screen');
+    if (!authSc || !dashSc) return;
+
+    authSc.style.display = showDashboard ? 'none' : 'flex';
+    dashSc.style.display = showDashboard ? 'flex' : 'none';
+
+    if (showDashboard) {
+        authSc.classList.add('hidden');
+        dashSc.classList.remove('hidden');
+    } else {
+        authSc.classList.remove('hidden');
+        dashSc.classList.add('hidden');
+    }
+};
+
+const fallbackToAuthScreen = async (reason) => {
+    console.warn('[emp-auth] Falling back to auth screen:', reason);
+    setPortalVisibility(false);
+    try {
+        if (auth.currentUser) {
+            await signOut(auth);
+        }
+    } catch (signOutErr) {
+        console.error('[emp-auth] Sign out during fallback failed:', signOutErr);
+    }
+};
+
+const ensurePortalScreenVisible = () => {
+    const authSc = document.getElementById('auth-screen');
+    const dashSc = document.getElementById('dashboard-screen');
+    if (!authSc || !dashSc) return;
+
+    const authHidden = authSc.classList.contains('hidden');
+    const dashHidden = dashSc.classList.contains('hidden');
+    if (authHidden && dashHidden) {
+        if (auth.currentUser && window.userData) {
+            setPortalVisibility(true);
+        } else {
+            setPortalVisibility(false);
+        }
+    }
+};
+
+const ensureDashboardShellVisible = () => {
+    const dashSc = document.getElementById('dashboard-screen');
+    const mainDash = document.getElementById('main-view-dashboard');
+    const mainMsg = document.getElementById('main-view-messages');
+    const sectionClaims = document.getElementById('section-claims');
+    const sectionTasks = document.getElementById('section-tasks');
+    const sectionFinancials = document.getElementById('section-financials');
+    const sectionScheduler = document.getElementById('section-scheduler');
+    const btnClaims = document.getElementById('btn-view-claims');
+
+    if (dashSc) {
+        dashSc.classList.remove('hidden');
+        dashSc.style.display = 'flex';
+    }
+    if (mainDash) {
+        mainDash.classList.remove('hidden');
+        mainDash.classList.add('flex-1', 'overflow-y-auto');
+        mainDash.style.display = 'block';
+        mainDash.style.visibility = 'visible';
+    }
+    if (mainMsg) {
+        mainMsg.classList.add('hidden');
+        mainMsg.classList.remove('flex-1', 'flex', 'flex-col');
+        mainMsg.style.display = 'none';
+    }
+
+    const allSectionsHidden = [sectionClaims, sectionTasks, sectionFinancials, sectionScheduler]
+        .filter(Boolean)
+        .every((el) => el.classList.contains('hidden'));
+
+    if (allSectionsHidden && sectionClaims) {
+        sectionClaims.classList.remove('hidden');
+        sectionClaims.style.display = '';
+        if (btnClaims) {
+            btnClaims.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
+            btnClaims.classList.remove('text-gray-500', 'dark:text-gray-400');
+        }
+    }
+
+    [sectionClaims, sectionTasks, sectionFinancials, sectionScheduler].forEach((section) => {
+        if (!section) return;
+        section.style.display = section.classList.contains('hidden') ? 'none' : '';
+    });
+};
+
+const scheduleDashboardShellRecovery = () => {
+    [0, 80, 250, 700, 1400].forEach((delay) => {
+        setTimeout(() => {
+            try {
+                ensureDashboardShellVisible();
+            } catch (_) {}
+        }, delay);
+    });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(ensurePortalScreenVisible, 1200);
+    });
+} else {
+    setTimeout(ensurePortalScreenVisible, 1200);
+}
+window.addEventListener('load', () => {
+    setTimeout(ensurePortalScreenVisible, 1800);
+});
 
 const initAuthFieldValidation = () => {
     const loginEmail = document.getElementById('login-email');
@@ -147,6 +322,7 @@ if (window.__empAuthInitialized) {
 
 // The requested Employee Architecture logic
 onAuthStateChanged(auth, async (user) => {
+    window.__empAuthHeartbeat = Date.now();
     if (user) {
         try {
             const q = query(collection(db, "users"), where("email", "==", user.email));
@@ -158,6 +334,7 @@ onAuthStateChanged(auth, async (user) => {
             if (!snap.empty) {
                 window.userData = snap.docs[0].data() || {};
                 window.userData.docId = snap.docs[0].id; // store docId for updates
+                saveCachedEmpProfile(window.userData);
                 const urlCompanyId = window.ExplyraTenant?.getCompanyIdFromPath() || null;
                 if (urlCompanyId && window.userData.companyId && urlCompanyId !== window.userData.companyId) {
                     window.showToast('Company access mismatch. Please sign in using your company link.', 'error');
@@ -200,15 +377,30 @@ onAuthStateChanged(auth, async (user) => {
 
                 // --- 2FA CHECK ---
                 if (window.userData.twoFactorEnabled && sessionStorage.getItem('explyra_2fa_verified') !== (window.userData.twoFactorPin || 'true')) {
-                    document.getElementById('modal-2fa-verify').classList.remove('hidden');
+                    setPortalVisibility(true);
+                    const modal2fa = document.getElementById('modal-2fa-verify');
+                    if (modal2fa) {
+                        modal2fa.classList.remove('hidden');
+                        modal2fa.style.display = 'flex';
+                    }
                     return; // Stop here, wait for 2FA
                 }
 
                 showEmployeeDashboard();
             } else {
                 // Don't sign out Explyra internal admins — they have no entry in `users`
-                if (user.email.toLowerCase() === 'explyra@gmail.com' || user.email.toLowerCase().endsWith('@explyra.com')) {
-                    console.log('[Auth] Explyra admin detected on emp portal, skipping.');
+                const emailLower = (user.email || '').toLowerCase();
+                if (emailLower === 'explyras@gmail.com' || emailLower === 'explyra@gmail.com' || emailLower.endsWith('@explyra.com')) {
+                    window.userData = window.userData || {
+                        name: 'Explyra System Admin',
+                        role: 'ADMIN',
+                        companyId: 'EXPLYRA'
+                    };
+                    window.companyId = window.userData.companyId || 'EXPLYRA';
+                    window.currentUser = user;
+                    window.delegateSession = null;
+                    console.log('[Auth] Explyra admin detected on emp portal, continuing with admin fallback profile.');
+                    showEmployeeDashboard();
                 } else {
                     window.showToast("User record not found. Contact Admin.", "error");
                     auth.signOut();
@@ -216,27 +408,25 @@ onAuthStateChanged(auth, async (user) => {
             }
         } catch (error) {
             console.error("Auth state error:", error);
+            if (user && isLikelyFirestoreNetworkError(error)) {
+                recoverWithOfflineProfile(user, error);
+                return;
+            }
             window.showToast(authMessage(error, 'Unable to validate your session. Please sign in again.'), 'error');
+            await fallbackToAuthScreen('auth-state-validation-failed');
         }
     } else {
         // User is signed out, show auth screen
-        const authSc = document.getElementById('auth-screen');
-        const dashSc = document.getElementById('dashboard-screen');
-        if (authSc && dashSc) {
-            authSc.classList.remove('hidden');
-            dashSc.classList.add('hidden');
-        }
+        setPortalVisibility(false);
     }
 });
 }
 
 function showEmployeeDashboard() {
-    const authSc = document.getElementById('auth-screen');
-    const dashSc = document.getElementById('dashboard-screen');
-    if (authSc && dashSc) {
-        authSc.classList.add('hidden');
-        dashSc.classList.remove('hidden');
-    }
+    window.__empAuthHeartbeat = Date.now();
+    setPortalVisibility(true);
+    ensureDashboardShellVisible();
+    scheduleDashboardShellRecovery();
     renderEmployeeDemoBanner();
 
     // Update Profile UI
@@ -273,20 +463,34 @@ function showEmployeeDashboard() {
         }
     }
 
-    // Load Features
-    loadCompanyBranding();
-    window.ExplyraTenant?.applyTenantLinkTransform({ companyId: window.companyId, forcePrefix: true });
+    const safeInit = (label, fn) => {
+        try {
+            fn();
+        } catch (err) {
+            console.error(`[emp-auth] ${label} failed:`, err);
+        }
+    };
 
-    if (window.toggleMode) {
-        window.toggleMode('company'); // will call fetchExpenses
-    } else if (window.fetchEmpTasks) window.fetchEmpTasks();
-    if (window.initNotifications) window.initNotifications();
+    safeInit('loadCompanyBranding', () => loadCompanyBranding());
+    safeInit('tenant-link-transform', () => window.ExplyraTenant?.applyTenantLinkTransform({ companyId: window.companyId, forcePrefix: true }));
+    safeInit('primary-data-load', () => {
+        if (window.toggleMode) {
+            window.toggleMode('company');
+        } else if (window.fetchEmpTasks) {
+            window.fetchEmpTasks();
+        }
+    });
+    safeInit('notifications', () => {
+        if (window.initNotifications) window.initNotifications();
+    });
+    safeInit('manager-view-init', () => {
+        if (window.userData.role === "MANAGER" || window.userData.role === "FINANCE_MANAGER") {
+            if (window.initManagerTasksView) window.initManagerTasksView();
+        }
+    });
+
+    ensureDashboardShellVisible();
     console.log("Employee Dashboard Loaded for:", window.userData.name);
-
-    // Role handling for managers (extra manager view)
-    if (window.userData.role === "MANAGER" || window.userData.role === "FINANCE_MANAGER") {
-        if (window.initManagerTasksView) window.initManagerTasksView();
-    }
 }
 
 window.loadCompanyBranding = async () => {

@@ -7,6 +7,11 @@ const VAPID_KEY = 'BOsOeRaI8phgZF1FNFk3ruTzQJh15l0QA2vYzuwJ3ZS59jSSFRxfWRWpzWGri
 window.empNotifications = [];
 window.notifUnsub = null;
 
+const isLocalHost = () => {
+    const host = (window.location.hostname || '').toLowerCase();
+    return host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+};
+
 window.initNotifications = async () => {
     if (!window.userData || !window.userData.docId || !window.companyId) return;
 
@@ -14,27 +19,39 @@ window.initNotifications = async () => {
     const auth = window.auth;
     const app = auth.app;
 
-    // 1. FCM Setup
+    // 1. FCM Setup (best-effort only; should never block dashboard)
     try {
-        const messaging = getMessaging(app);
-        const permission = await Notification.requestPermission();
+        if (!isLocalHost() && 'Notification' in window) {
+            const messaging = getMessaging(app);
+            const permission = await Notification.requestPermission();
 
-        if (permission === 'granted') {
-            const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY }).catch(() => null);
-            if (currentToken) {
-                await updateDoc(doc(db, "users", window.userData.docId), {
-                    fcmToken: currentToken,
-                    lastTokenSync: new Date()
-                });
+            if (permission === 'granted') {
+                let activeReg = null;
+                if ('serviceWorker' in navigator) {
+                    activeReg = await navigator.serviceWorker.getRegistration().catch(() => null);
+                }
+
+                const tokenOptions = activeReg
+                    ? { vapidKey: VAPID_KEY, serviceWorkerRegistration: activeReg }
+                    : { vapidKey: VAPID_KEY };
+
+                const currentToken = await getToken(messaging, tokenOptions).catch(() => null);
+                if (currentToken) {
+                    await updateDoc(doc(db, "users", window.userData.docId), {
+                        fcmToken: currentToken,
+                        lastTokenSync: new Date()
+                    });
+                }
             }
-        }
 
-        onMessage(messaging, (payload) => {
-            window.showToast(payload.notification.title + ": " + payload.notification.body, 'info');
-            // Show dot
-            const dot = document.getElementById('header-notif-dot');
-            if (dot) dot.classList.remove('hidden');
-        });
+            onMessage(messaging, (payload) => {
+                const title = payload?.notification?.title || 'New notification';
+                const body = payload?.notification?.body || '';
+                window.showToast(title + (body ? ': ' + body : ''), 'info');
+                const dot = document.getElementById('header-notif-dot');
+                if (dot) dot.classList.remove('hidden');
+            });
+        }
     } catch (e) {
         console.warn('FCM not supported or failed:', e);
     }

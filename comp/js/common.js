@@ -57,6 +57,16 @@ if (typeof tailwind !== 'undefined') {
 // ===== Service Worker Registration =====
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        const host = (window.location.hostname || '').toLowerCase();
+        const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+
+        if (isLocal) {
+            navigator.serviceWorker.getRegistrations()
+                .then((regs) => Promise.all(regs.map((reg) => reg.unregister())))
+                .catch(() => {});
+            return;
+        }
+
         navigator.serviceWorker.register('sw.js')
             .then(reg => console.log('Service Worker Registered'))
             .catch(err => console.error('Service Worker Error', err));

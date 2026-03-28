@@ -340,6 +340,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 window.toggleEmpView = (view, options = {}) => {
+    if (!['claims', 'tasks', 'financials', 'scheduler'].includes(view)) {
+        view = 'claims';
+    }
+
     const btnClaims = document.getElementById('btn-view-claims');
     const btnTasks = document.getElementById('btn-view-tasks');
     const btnFinancials = document.getElementById('btn-view-financials');
@@ -416,6 +420,10 @@ window.closeModal = (id) => {
 
 window.toggleMainView = (viewId, options = {}) => {
     // viewId can be 'dashboard' or 'messages'
+    if (viewId !== 'dashboard' && viewId !== 'messages') {
+        viewId = 'dashboard';
+    }
+
     const viewDashboard = document.getElementById('main-view-dashboard');
     const viewMessages = document.getElementById('main-view-messages');
 

@@ -727,7 +727,25 @@
     </style>
     <link rel="manifest" href="manifest.json">
     <script>
-        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                const host = (window.location.hostname || '').toLowerCase();
+                const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+
+                if (isLocal) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map((reg) => reg.unregister()));
+                    if ('caches' in window) {
+                        const names = await caches.keys();
+                        await Promise.all(names.map((name) => caches.delete(name)));
+                    }
+                    console.info('Service workers disabled for localhost to avoid stale cache issues.');
+                    return;
+                }
+
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
     </script>
 
     <!-- EmailJS SDK -->
@@ -2984,9 +3002,13 @@
 
             // Register Service Worker
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registered'))
-                    .catch(err => console.error('Service Worker Error', err));
+                const host = (window.location.hostname || '').toLowerCase();
+                const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+                if (!isLocal) {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then(reg => console.log('Service Worker Registered'))
+                        .catch(err => console.error('Service Worker Error', err));
+                }
             }
         });
     </script>
@@ -3002,8 +3024,18 @@
             }, 'google_translate_element');
         }
     </script>
-    <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        (function loadTranslateScript() {
+            const host = (window.location.hostname || '').toLowerCase();
+            const isLocal = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
+            if (isLocal) return;
+
+            const s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.body.appendChild(s);
+        })();
+    </script>
 
     <!-- Language Logic CSS (Hide Google UI) -->
     <style>
@@ -3746,7 +3778,88 @@
                 Back to Login
             </button>
         </div>
+    </div>
     <script>
+        const enforceCompDashboardShell = () => {
+            const authSc = document.getElementById('auth-screen');
+            const dashSc = document.getElementById('dashboard-screen');
+            const mainDash = document.getElementById('main-view-dashboard');
+            const mainMsg = document.getElementById('main-view-messages');
+            const sectionClaims = document.getElementById('section-claims');
+            const sectionTasks = document.getElementById('section-tasks');
+            const sectionFinancials = document.getElementById('section-financials');
+            const sectionScheduler = document.getElementById('section-scheduler');
+            const list = document.getElementById('expenses-list');
+
+            if (!authSc || !dashSc) return;
+
+            authSc.classList.add('hidden');
+            authSc.style.display = 'none';
+            dashSc.classList.remove('hidden');
+            dashSc.style.display = 'flex';
+
+            if (mainDash) {
+                mainDash.classList.remove('hidden');
+                mainDash.style.display = 'block';
+                mainDash.style.visibility = 'visible';
+            }
+            if (mainMsg) {
+                mainMsg.classList.add('hidden');
+                mainMsg.style.display = 'none';
+            }
+
+            const sections = [sectionClaims, sectionTasks, sectionFinancials, sectionScheduler].filter(Boolean);
+            const allHidden = sections.length > 0 && sections.every((section) => section.classList.contains('hidden'));
+            if (allHidden && sectionClaims) {
+                sectionClaims.classList.remove('hidden');
+            }
+            sections.forEach((section) => {
+                section.style.display = section.classList.contains('hidden') ? 'none' : '';
+            });
+
+            if (list && !document.getElementById('emp-safe-fallback-card') && list.children.length === 0) {
+                const card = document.createElement('div');
+                card.id = 'emp-safe-fallback-card';
+                card.className = 'vercel-card p-6';
+                card.innerHTML = '<div class="flex items-start gap-3"><i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i><div><p class="text-sm font-bold text-black dark:text-white">Dashboard safe mode active</p><p class="text-xs text-gray-500 mt-1">Data service temporary issue. UI is available and retries continue automatically.</p></div></div>';
+                list.appendChild(card);
+            }
+        };
+
+        const recoverCompPortal = () => {
+            const authSc = document.getElementById('auth-screen');
+            const dashSc = document.getElementById('dashboard-screen');
+            if (!authSc || !dashSc) return;
+
+            const authUser = window.currentUser || window.auth?.currentUser || null;
+            if (authUser) {
+                enforceCompDashboardShell();
+                return;
+            }
+
+            const authHidden = authSc.classList.contains('hidden') || getComputedStyle(authSc).display === 'none';
+            const dashHidden = dashSc.classList.contains('hidden') || getComputedStyle(dashSc).display === 'none';
+            if (authHidden && dashHidden) {
+                authSc.classList.remove('hidden');
+                dashSc.classList.add('hidden');
+                authSc.style.display = 'flex';
+                dashSc.style.display = 'none';
+            }
+        };
+
+        [200, 800, 1600, 2800, 4200].forEach((delay) => setTimeout(recoverCompPortal, delay));
+        window.addEventListener('error', () => setTimeout(recoverCompPortal, 0));
+        window.addEventListener('unhandledrejection', () => setTimeout(recoverCompPortal, 0));
+
+        setInterval(() => {
+            const authUser = window.currentUser || window.auth?.currentUser || null;
+            if (!authUser) return;
+            const staleHeartbeat = !window.__empAuthHeartbeat || (Date.now() - window.__empAuthHeartbeat) > 15000;
+            if (!staleHeartbeat) return;
+            console.warn('[emp bootstrap] Heartbeat stale while authenticated. Re-enforcing dashboard shell.');
+            enforceCompDashboardShell();
+        }, 5000);
+
         window.currentPasswordStrength = 0;
         window.updateStrength = function(p) {
             const rules = {

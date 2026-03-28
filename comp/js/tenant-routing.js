@@ -233,8 +233,18 @@
     }
 
     if (shouldEnforceTenantRouting()) {
-        const storedCompanyId = getCompanyIdFromStorage();
         const currentPath = normalizePath(window.location.pathname || '/');
+        const canonicalWorkspacePath = normalizeWorkspaceTargetPath(currentPath.replace(/^\//, ''));
+        const canonicalNeedsRedirect = /^(admin|emp|benifits)(?:[?#].*)?$/i.test(canonicalWorkspacePath) &&
+            /^\/(admin\.html|emp\.html|benifits\.html)(?:\/)?$/i.test(currentPath);
+
+        if (canonicalNeedsRedirect) {
+            const canonicalUrl = `/${canonicalWorkspacePath}${window.location.search || ''}${window.location.hash || ''}`;
+            window.location.replace(canonicalUrl);
+            return;
+        }
+
+        const storedCompanyId = getCompanyIdFromStorage();
         const isWorkspacePathWithoutTenant = /^\/(admin|admin\.html|emp|emp\.html|benifits|benifits\.html)(?:\/)?$/i.test(currentPath);
 
         if (isCompanyId(storedCompanyId) && isWorkspacePathWithoutTenant) {
