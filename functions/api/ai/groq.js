@@ -16,8 +16,18 @@ export async function onRequest(context) {
         });
     }
 
-    // Hardcoded Groq Key as requested by user
-    const GROQ_API_KEY = "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";
+    const GROQ_API_KEY =
+        env.GROQ_API_KEY ||
+        env.GROQ_API ||
+        env.GROQ_KEY ||
+        env.GROQ_TOKEN;
+
+    if (!GROQ_API_KEY) {
+        return new Response(JSON.stringify({ error: "Missing GROQ_API_KEY secret" }), {
+            status: 500,
+            headers: corsHeadersForRequest(request, env),
+        });
+    }
 
     try {
         const body = await request.json();
