@@ -1,0 +1,1 @@
+const CACHE_NAME="explyra-os-v2",ASSETS=["explyra-os.html","nobg.png","explyra-os.webmanifest"];self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_NAME).then(e=>e.addAll(ASSETS)))}),self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(t=>t||fetch(e.request)))});

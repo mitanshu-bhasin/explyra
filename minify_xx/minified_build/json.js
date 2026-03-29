@@ -1,0 +1,2 @@
+/*! (c) Andrea Giammarchi - ISC */
+import{deserialize}from"./deserialize.js";import{serialize}from"./serialize.js";const{parse:$parse,stringify:$stringify}=JSON,options={json:!0,lossy:!0};export const parse=i=>deserialize($parse(i));export const stringify=i=>$stringify(serialize(i,options));

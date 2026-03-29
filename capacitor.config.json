@@ -1,6 +1,6 @@
 {
-    "appId": "com.mitanshu.explyra",
-    "appName": "EXPLYRA App",
+    "appId": "com.explyra.expense",
+    "appName": "Explyra: Smart Expense Manager",
     "webDir": "www",
     "bundledWebRuntime": false
 }

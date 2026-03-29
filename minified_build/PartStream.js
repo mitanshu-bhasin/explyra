@@ -1,0 +1,1 @@
+"use strict";const inherits=require("node:util").inherits,ReadableStream=require("node:stream").Readable;function PartStream(e){ReadableStream.call(this,e)}inherits(PartStream,ReadableStream),PartStream.prototype._read=function(e){},module.exports=PartStream;

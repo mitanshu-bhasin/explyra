@@ -1,0 +1,138 @@
+{
+  "name": "Explyra: Smart Expense Manager",
+  "short_name": "Explyra Expense",
+  "id": "./mobile",
+  "description": "Mobile-first expense and admin management for Explyra.",
+  "start_url": "./login.html?source=mobile_pwa",
+  "scope": "./",
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": [
+      "focus-existing",
+      "auto"
+    ]
+  },
+  "lang": "en-US",
+  "dir": "ltr",
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui"
+  ],
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "prefer_related_applications": false,
+  "background_color": "#0b1220",
+  "theme_color": "#1546C0",
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Claim",
+      "short_name": "Claim",
+      "description": "Create a new expense claim",
+      "url": "./emp.html?action=create",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Admin Panel",
+      "short_name": "Admin",
+      "description": "Open admin approval panel",
+      "url": "./admin.html",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "My Tasks",
+      "short_name": "Tasks",
+      "description": "Open employee tasks view",
+      "url": "./emp.html?tab=tasks",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Inbox",
+      "short_name": "Chat",
+      "description": "Open employee messages",
+      "url": "./emp.html?view=messages",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "./emp.html",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link",
+      "files": [
+        {
+          "name": "receipt",
+          "accept": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ]
+        }
+      ]
+    }
+  }
+}
