@@ -5,13 +5,15 @@
     UNAUTHORIZED DUPLICATION, MODIFICATION, OR DISTRIBUTION IS STRICTLY PROHIBITED.
     LEGAL ACTION WILL BE TAKEN AGAINST INFRINGEMENT.
 -->
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 
-<head>
-    <!-- Environment Config -->
-    <script src="js/env.js"></script>
+    <!-- Environment & Configuration -->
     <script src="js/ai-config.js"></script>
-    <link rel="stylesheet" href="css/ai-assistant.css">
+
+    <!-- Staging Environment Detection -->
+    <script>
+        window.isStaging = /^staging\.explyra\.me$/.test(window.location.hostname);
+    </script>
 
     <!-- Google tag (gtag.js) -->
     <script>
@@ -157,6 +159,10 @@
         <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
     </noscript>
+
+    <!-- AI Assistant Styles -->
+    <link rel="stylesheet" href="css/ai-assistant.css">
+
     <style>
         /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -4642,6 +4648,47 @@
                 filter: none !important;
             }
         }
+
+        /* ═══════════════════════════════════════════
+   STAGING 3D NICHE
+═══════════════════════════════════════════ */
+        .staging-3d-niche {
+            width: 100%;
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(21, 70, 192, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border-top: 1px solid var(--bdr);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        [data-theme="dark"] .staging-3d-niche {
+            background: linear-gradient(135deg, rgba(21, 70, 192, 0.15) 0%, rgba(6, 182, 212, 0.12) 100%);
+        }
+
+        .staging-3d-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #staging-3d-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .staging-3d-niche {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .staging-3d-niche {
+                height: 200px;
+            }
+        }
         /* POWERED BY KRISHNA GLASS HOUSE */
         .foot-powered-by {
             margin-top: 0.5rem;
@@ -4737,8 +4784,7 @@
         "https://www.youtube.com/@explyras",
         "https://www.linkedin.com/company/explyra/",
         "https://www.threads.com/@explyras",
-        "https://github.com/Explyra",
-        "https://ipecconsulting.org/"
+        "https://github.com/Explyra"
       ],
       "contactPoint": [
         {
@@ -6343,6 +6389,13 @@
             </div>
         </article>
 
+        <!-- ══ STAGING 3D NICHE ══ -->
+        <section class="staging-3d-niche" id="staging-3d-section" style="display:none;">
+            <div class="staging-3d-wrapper">
+                <canvas id="staging-3d-canvas"></canvas>
+            </div>
+        </section>
+
         <!-- ══ CTA ══ -->
         <section class="cta-banner" id="contact">
             <div class="reveal">
@@ -6567,7 +6620,7 @@
         const isDataSaver = !!netInfo?.saveData;
         const isLowSpecDevice = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
         const allowEnhancedEffects = !isDataSaver;
-        const saved = localStorage.getItem('explyra-theme') || 'light';
+        const saved = localStorage.getItem('explyra-theme') || 'dark';
         html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';
         const toggleTheme = () => {
             const cur = html.getAttribute('data-theme'), nxt = cur === 'light' ? 'dark' : 'light';
@@ -7407,6 +7460,209 @@
             ensureThreeAndBoot();
         })();
     </script>
+
+    <!-- Staging 3D Niche Scene -->
+    <script>
+        if (window.isStaging) {
+            (function initStaging3D() {
+                const canvas = document.getElementById('staging-3d-canvas');
+                const container = document.getElementById('staging-3d-section');
+                
+                if (!canvas || !window.THREE) return;
+
+                container.style.display = 'block';
+
+                const deviceMemory = navigator.deviceMemory || 4;
+                const hardwareConcurrency = navigator.hardwareConcurrency || 2;
+                const connection = navigator.connection;
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const isMobile = window.innerWidth < 820;
+                const lowQuality = deviceMemory < 4 || hardwareConcurrency < 2 || (connection && (connection.saveData || connection.effectiveType === '3g')) || isMobile;
+
+                const scene = new window.THREE.Scene();
+                const camera = new window.THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 1000);
+                const renderer = new window.THREE.WebGLRenderer({ 
+                    canvas, 
+                    antialias: !lowQuality, 
+                    alpha: true, 
+                    powerPreference: lowQuality ? 'low-power' : 'high-performance' 
+                });
+                
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowQuality ? 1 : 2));
+                renderer.setClearColor(0x000000, 0);
+
+                camera.position.z = 5;
+
+                function getThemeColors() {
+                    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+                    if (theme === 'dark') {
+                        return {
+                            primary: new window.THREE.Color('#1546C0'),
+                            secondary: new window.THREE.Color('#06B6D4'),
+                            accent: new window.THREE.Color('#9333EA'),
+                            particle: new window.THREE.Color('#60A5FA')
+                        };
+                    } else {
+                        return {
+                            primary: new window.THREE.Color('#0F4BBF'),
+                            secondary: new window.THREE.Color('#0891B2'),
+                            accent: new window.THREE.Color('#7E22CE'),
+                            particle: new window.THREE.Color('#3B82F6')
+                        };
+                    }
+                }
+
+                let colors = getThemeColors();
+
+                const ambientLight = new window.THREE.AmbientLight(0xffffff, 0.5);
+                scene.add(ambientLight);
+                
+                const directionalLight = new window.THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 5, 5);
+                scene.add(directionalLight);
+
+                const cubeMeshes = [];
+                const numCubes = lowQuality ? 3 : 5;
+
+                for (let i = 0; i < numCubes; i++) {
+                    const size = 0.4 + Math.random() * 0.3;
+                    const geom = new window.THREE.BoxGeometry(size, size, size);
+                    const colorKey = ['primary', 'secondary', 'accent'][i % 3];
+                    const mat = new window.THREE.MeshPhongMaterial({ 
+                        color: colors[colorKey],
+                        shininess: 100
+                    });
+                    const mesh = new window.THREE.Mesh(geom, mat);
+                    
+                    mesh.position.x = (Math.random() - 0.5) * 6;
+                    mesh.position.y = (Math.random() - 0.5) * 6;
+                    mesh.position.z = (Math.random() - 0.5) * 4;
+                    
+                    mesh.userData.rotationSpeed = {
+                        x: (Math.random() - 0.5) * 0.02,
+                        y: (Math.random() - 0.5) * 0.02,
+                        z: (Math.random() - 0.5) * 0.02
+                    };
+                    mesh.userData.floatOffset = Math.random() * Math.PI * 2;
+                    
+                    scene.add(mesh);
+                    cubeMeshes.push(mesh);
+                }
+
+                const octaGeom = new window.THREE.OctahedronGeometry(1, 2);
+                const octaMat = new window.THREE.MeshPhongMaterial({ 
+                    color: colors.secondary,
+                    metalness: 0.4,
+                    roughness: 0.6
+                });
+                const octaMesh = new window.THREE.Mesh(octaGeom, octaMat);
+                scene.add(octaMesh);
+
+                const particleCount = lowQuality ? 80 : 150;
+                const particlesGeom = new window.THREE.BufferGeometry();
+                const positions = new Float32Array(particleCount * 3);
+
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    positions[i] = (Math.random() - 0.5) * 12;
+                    positions[i + 1] = (Math.random() - 0.5) * 12;
+                    positions[i + 2] = (Math.random() - 0.5) * 8;
+                }
+
+                particlesGeom.setAttribute('position', new window.THREE.BufferAttribute(positions, 3));
+
+                const particlesMat = new window.THREE.PointsMaterial({
+                    color: colors.particle,
+                    size: lowQuality ? 0.08 : 0.12,
+                    sizeAttenuation: true,
+                    transparent: true,
+                    opacity: lowQuality ? 0.5 : 0.7
+                });
+
+                const particles = new window.THREE.Points(particlesGeom, particlesMat);
+                scene.add(particles);
+
+                function handleResize() {
+                    const width = canvas.clientWidth;
+                    const height = canvas.clientHeight;
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(width, height);
+                }
+
+                window.addEventListener('resize', handleResize, { passive: true });
+
+                const themeObserver = new MutationObserver(() => {
+                    colors = getThemeColors();
+                    octaMat.color.set(colors.secondary);
+                    particlesMat.color.set(colors.particle);
+
+                    cubeMeshes.forEach((cube, i) => {
+                        const colorKey = ['primary', 'secondary', 'accent'][i % 3];
+                        cube.material.color.set(colors[colorKey]);
+                    });
+                });
+
+                themeObserver.observe(document.documentElement, { 
+                    attributes: true, 
+                    attributeFilter: ['data-theme'] 
+                });
+
+                let rafId = null;
+                const startTime = performance.now();
+
+                function animate() {
+                    const elapsed = (performance.now() - startTime) / 1000;
+
+                    if (!prefersReducedMotion) {
+                        octaMesh.rotation.x += 0.003;
+                        octaMesh.rotation.y += 0.005;
+                        octaMesh.rotation.z += 0.002;
+
+                        octaMesh.scale.set(
+                            1 + Math.sin(elapsed * 1.5) * 0.1,
+                            1 + Math.cos(elapsed * 1.3) * 0.1,
+                            1 + Math.sin(elapsed * 1.7) * 0.1
+                        );
+
+                        cubeMeshes.forEach((cube) => {
+                            cube.rotation.x += cube.userData.rotationSpeed.x;
+                            cube.rotation.y += cube.userData.rotationSpeed.y;
+                            cube.rotation.z += cube.userData.rotationSpeed.z;
+                            cube.position.y += Math.sin(elapsed * 0.5 + cube.userData.floatOffset) * 0.002;
+                        });
+
+                        particles.rotation.x += 0.0005;
+                        particles.rotation.y += 0.0008;
+                    }
+
+                    renderer.render(scene, camera);
+                    rafId = requestAnimationFrame(animate);
+                }
+
+                if (!prefersReducedMotion) {
+                    animate();
+                } else {
+                    renderer.render(scene, camera);
+                }
+
+                window.addEventListener('beforeunload', () => {
+                    if (rafId) cancelAnimationFrame(rafId);
+                    themeObserver.disconnect();
+                    renderer.dispose();
+                    octaGeom.dispose();
+                    octaMat.dispose();
+                    particlesGeom.dispose();
+                    particlesMat.dispose();
+                    cubeMeshes.forEach(cube => {
+                        cube.geometry.dispose();
+                        cube.material.dispose();
+                    });
+                });
+            })();
+        }
+    </script>
+
 </body>
 
 </html>
