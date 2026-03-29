@@ -7,7 +7,7 @@ const AI_CONFIG = {
     url: isLocal
         ? 'https://api.groq.com/openai/v1/chat/completions'
         : '/api/ai/groq',
-    model: 'moonshotai/kimi-k2-instruct-0905',
+    model: 'llama-3.1-8b-instant',
     // Production should use proxy route; localhost can use a manually provided local key.
     apiKey: isLocal ? (localApiKey || envApiKey || 'MISSING_KEY') : 'HANDLED_BY_PROXY'
 };
