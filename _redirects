@@ -43,4 +43,4 @@ https://explyra.pages.dev/* https://explyra.me/:splat 301
 # Redirects
 /firestore.rules /404.html 404
 /sw.js /sw.js 200
-/security.txt /.well-known/security.txt 301
+/.well-known/security.txt /security.txt 200
