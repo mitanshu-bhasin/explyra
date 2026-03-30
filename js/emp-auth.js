@@ -235,18 +235,35 @@ window.handleAccountActivationVerify = async function(e) {
 };
 
 window.handleFinalLogin = async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('display-resolved-email').textContent;
-    const pass = document.getElementById('login-password').value;
+    if (e) e.preventDefault();
+    const displayEmailEl = document.getElementById('display-resolved-email');
+    const email = displayEmailEl ? displayEmailEl.textContent : '';
+    const loginPassEl = document.getElementById('login-password');
+    const pass = loginPassEl ? loginPassEl.value : '';
     
-    setAuthButtonsLoading(true, 'Signing in...');
+    if (!email || !pass) return window.showToast('Please enter both email and password.', 'warning');
+
+    if (typeof setAuthButtonsLoading === 'function') {
+        setAuthButtonsLoading(true, 'Signing in...');
+    }
+
     try {
         await signInWithEmailAndPassword(auth, email, pass);
         window.showToast('Welcome back!', 'success');
     } catch (err) {
-        window.showToast(authMessage(err, 'Invalid password. Plase try again.'), 'error');
+        console.error("Employee Login Error:", err);
+        let msg = 'Invalid password. Please try again.';
+        if (err.code === 'auth/user-not-found') msg = "User account not found.";
+        else if (err.code === 'auth/wrong-password') msg = "Incorrect password.";
+        else if (err.code === 'auth/network-request-failed') msg = "Network failure. Check your connection.";
+        
+        // Use authMessage if it exists, otherwise fallback to our built message
+        const finalMsg = (typeof authMessage === 'function') ? authMessage(err, msg) : msg;
+        window.showToast(finalMsg, 'error');
     } finally {
-        setAuthButtonsLoading(false);
+        if (typeof setAuthButtonsLoading === 'function') {
+            setAuthButtonsLoading(false);
+        }
     }
 };
 
@@ -929,9 +946,20 @@ function applyBranding(data) {
 // ---------------- Login / Signup Flows ---------------- 
 document.getElementById('login-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-password').value;
-    const btn = document.getElementById('login-btn');
+    const loginEmailInput = document.getElementById('login-email');
+    const resolvedEmailEl = document.getElementById('display-resolved-email');
+    const email = (loginEmailInput?.value || resolvedEmailEl?.textContent || '').trim();
+    const pass = (document.getElementById('login-password')?.value || '').trim();
+
+    if (!email) {
+        window.showToast('Please enter your email first.', 'warning');
+        return;
+    }
+    if (!pass) {
+        window.showToast('Please enter your password.', 'warning');
+        return;
+    }
+
     setAuthButtonsLoading(true, 'Authenticating...');
     try {
         await safeWithRetry(

@@ -8,7 +8,7 @@ const inputDir = __dirname;
 const outputDir = path.join(__dirname, 'minify_xx');
 
 // Inhe chhod kar baaki sab copy/minify hoga
-const blockedNames = new Set(['node_modules', '.git', 'minify_xx', '.github', 'android', 'functions', 'ruild.js', 'package-lock.json']);
+const blockedNames = new Set(['node_modules', '.venv', 'dist', 'shop', '.next', '.git', 'minify_xx', '.github', 'android', 'functions', 'ruild.js', 'package-lock.json', '.vscode', '__pycache__']);
 
 function ensureDir(filePath) {
     const dirname = path.dirname(filePath);
