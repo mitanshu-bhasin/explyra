@@ -4746,6 +4746,62 @@
             line-height: 1.2;
         }
 
+
+        /* PRANK BUTTON */
+        .dont-click-btn {
+            background: #FF3B3B;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-left: 1.5rem;
+            box-shadow: 0 4px 15px rgba(255, 59, 59, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dont-click-btn:hover {
+            transform: scale(1.1) rotate(-3deg);
+            background: #ff0000;
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+        }
+        .dont-click-btn i { font-size: 0.9rem; }
+
+        #crackOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: url('assets/images/screen_crack.png') center/cover no-repeat;
+            z-index: 99999;
+            display: none;
+            pointer-events: none;
+            mix-blend-mode: screen; /* Makes black background transparent */
+            opacity: 0.9;
+        }
+        #crackMessage {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(8, 11, 20, 0.98);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 30px;
+            z-index: 100000;
+            display: none;
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.8);
+            max-width: 90%;
+            width: 500px;
+        }
     </style>
 
 
@@ -6582,6 +6638,9 @@
                         <span class="powered-quote">"Crafting Brilliance in Every Panel"</span>
                     </div>
                 </a>
+                <button class="dont-click-btn" onclick="triggerCrack()">
+                    <i class="fas fa-exclamation-triangle"></i> Do Not Click
+                </button>
             </div>
         </div>
     </footer>
@@ -7666,6 +7725,39 @@
         }
     </script>
 
+    <div id="crackOverlay"></div>
+    <div id="crackMessage"></div>
+
+    <script>
+        function triggerCrack() {
+            // Lazy load audio only when clicked to keep index.html fast
+            const crackAudio = new Audio('/gb.mp3');
+            crackAudio.play().catch(e => console.log('Audio play blocked or failed:', e));
+            
+            const overlay = document.getElementById('crackOverlay');
+            overlay.style.display = 'block';
+            
+            // Reassuring message after 2 seconds
+            setTimeout(() => {
+                const msg = document.getElementById('crackMessage');
+                msg.innerHTML = `
+                    <h2 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; margin-bottom: 1rem; color: #fff;">Oops! Broken?</h2>
+                    <p style="font-size: 1.25rem; color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Don't worry, it's just a prank. But if your real glass breaks...</p>
+                    <p style="font-size: 1.4rem; font-weight: 700; color: #5B8AF5; margin-bottom: 1.5rem;">Krishna Glass House is here to fix it!</p>
+                    <div style="margin-top: 1rem; font-size: 1.8rem; font-weight: 800; border: 2px dashed rgba(255,255,255,0.2); padding: 1.2rem; border-radius: 15px; background: rgba(255,255,255,0.05);">
+                        <i class="fas fa-phone"></i> +91 8700162623
+                    </div>
+                    <button onclick="dismissCrack()" style="margin-top: 2.5rem; background: #fff; color: #000; border: none; padding: 12px 30px; border-radius: 100px; cursor: pointer; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Restore Screen</button>
+                `;
+                msg.style.display = 'block';
+            }, 2000);
+        }
+
+        function dismissCrack() {
+            document.getElementById('crackOverlay').style.display = 'none';
+            document.getElementById('crackMessage').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>

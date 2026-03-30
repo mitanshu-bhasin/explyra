@@ -301,4 +301,10 @@
     <priority>0.7</priority>
     <lastmod>2026-03-26</lastmod>
   </url>
+  <url>
+    <loc>https://explyra.me/gb.mp3</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <lastmod>2026-03-30</lastmod>
+  </url>
 </urlset>
