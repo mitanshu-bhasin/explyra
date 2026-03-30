@@ -2116,19 +2116,6 @@
             }
         }
 
-        3);
-        border: 1px solid var(--bdr);
-        border-radius: 9px;
-        padding: .85rem 1.3rem;
-        transition: all .2s;
-        font-size: .84rem 3);
-        border: 1px solid var(--bdr);
-        border-radius: 9px;
-        padding: .85rem 1.3rem;
-        transition: all .2s;
-        font-size: .84rem
-        }
-
         .cta-c:hover {
             border-color: var(--blue-b);
             background: var(--blue-g);
@@ -2486,10 +2473,6 @@
                 flex-direction: column;
                 align-items: flex-start
             }
-
-            footer {
-                /* No longer needed here as main footer controls base styles */
-            }
         }
 
 
@@ -2571,11 +2554,11 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, rgba(248, 247, 244, 0.92), rgba(255, 255, 255, 0.95)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
+            background: linear-gradient(135deg, rgba(248, 247, 244, 0.8), rgba(255, 255, 255, 0.6)), url('assets/images/team_hero_bg.png') center/cover no-repeat;
         }
 
         [data-theme="dark"] .team-hero {
-            background: linear-gradient(135deg, rgba(8, 11, 20, 0.85), rgba(8, 11, 20, 0.95)), url('assets/images/founder_light_bg.png') center/cover no-repeat;
+            background: linear-gradient(135deg, rgba(8, 11, 20, 0.7), rgba(8, 11, 20, 0.85)), url('assets/images/team_hero_bg_dark.png') center/cover no-repeat;
         }
 
         .team-grid {
@@ -2685,6 +2668,333 @@
         .team-portfolio-btn svg {
             width: 16px;
             height: 16px;
+        }
+
+        /* ════════════════════════════════════════════
+           PREMIUM FOUNDER SECTION
+        ════════════════════════════════════════════ */
+        .founder-showcase {
+            padding: 6rem 5vw;
+            background: linear-gradient(135deg, var(--blue-g) 0%, var(--purp-g) 100%);
+            border: 2px solid var(--blue-b);
+            border-radius: 24px;
+            margin: 3rem 5vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .founder-showcase {
+            background: linear-gradient(135deg, rgba(91, 138, 245, 0.12) 0%, rgba(167, 139, 250, 0.12) 100%);
+            border-color: rgba(91, 138, 245, 0.3);
+        }
+
+        .founder-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(21, 70, 192, 0.15), transparent);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        [data-theme="dark"] .founder-showcase::before {
+            background: radial-gradient(circle, rgba(91, 138, 245, 0.2), transparent);
+        }
+
+        .founder-showcase::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(109, 40, 217, 0.1), transparent);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        [data-theme="dark"] .founder-showcase::after {
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent);
+        }
+
+        .founder-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .founder-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .founder-img-wrap {
+            width: 280px;
+            height: 320px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 6px solid #fff;
+            box-shadow: 0 20px 60px rgba(21, 70, 192, 0.25), 0 0 0 1px rgba(21, 70, 192, 0.1);
+            position: relative;
+        }
+
+        [data-theme="dark"] .founder-img-wrap {
+            border-color: var(--bg2);
+            box-shadow: 0 20px 60px rgba(91, 138, 245, 0.15), 0 0 0 1px rgba(91, 138, 245, 0.2);
+        }
+
+        .founder-img-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(21, 70, 192, 0.1), transparent);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .founder-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .founder-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            color: var(--blue);
+            padding: 0.8rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 3;
+        }
+
+        [data-theme="dark"] .founder-badge {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(91, 138, 245, 0.3);
+        }
+
+        .founder-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .founder-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .founder-label::before {
+            content: '';
+            width: 24px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 2px;
+        }
+
+        .founder-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .founder-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--blue);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .founder-bio-text {
+            font-size: 1rem;
+            color: var(--ink2);
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .founder-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 2px solid var(--blue-b);
+        }
+
+        .founder-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .founder-stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .founder-stat-label {
+            font-size: 0.8rem;
+            color: var(--ink3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .founder-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .founder-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--blue);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid var(--blue);
+            cursor: pointer;
+        }
+
+        .founder-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(21, 70, 192, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .founder-btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: transparent;
+            color: var(--blue);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid var(--blue-b);
+            cursor: pointer;
+        }
+
+        .founder-btn-secondary:hover {
+            transform: translateY(-3px);
+            background: var(--blue-g);
+            border-color: var(--blue);
+        }
+
+        [data-theme="dark"] .founder-btn-secondary {
+            border-color: rgba(91, 138, 245, 0.4);
+            color: var(--blue2);
+        }
+
+        [data-theme="dark"] .founder-btn-secondary:hover {
+            background: rgba(91, 138, 245, 0.15);
+            border-color: var(--blue2);
+            color: var(--blue2);
+        }
+
+        [data-theme="dark"] .founder-btn-primary {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+
+        [data-theme="dark"] .founder-btn-primary:hover {
+            background: var(--blue2);
+            border-color: var(--blue2);
+            box-shadow: 0 12px 36px rgba(91, 138, 245, 0.4);
+        }
+
+        /* Responsive founder section */
+        @media (max-width: 768px) {
+            .founder-showcase {
+                padding: 4rem 5vw;
+                margin: 2rem 5vw;
+            }
+
+            .founder-wrapper {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .founder-img-wrap {
+                width: 240px;
+                height: 280px;
+                margin: 0 auto;
+            }
+
+            .founder-name {
+                font-size: 2.2rem;
+            }
+
+            .founder-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .founder-actions {
+                flex-direction: column;
+            }
+
+            .founder-btn-primary,
+            .founder-btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Team grid adjustments for founder on top */
+        .team-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 5vw 8rem;
+        }
+
+        @media (max-width: 768px) {
+            .team-wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .founder-showcase {
+                order: -1;
+            }
         }
     </style>
 
@@ -2805,7 +3115,7 @@
       "url": "https://mitanshu.explyra.me",
       "image": "https://media.licdn.com/dms/image/v2/D5603AQGXL6bEmLqpLg/profile-displayphoto-crop_800_800/B56ZyksQsRI0AI-/0/1772289593451?e=1774483200&v=beta&t=ZPxSKtR4s4mSYZoHjBXwJHYpQXMY2boI2lrVzqL5SPo",
       "sameAs": [
-        "https://www.linkedin.com/in/mitanshubahsin",
+        "https://www.linkedin.com/in/mitanshubahsin/",
         "https://mitanshu.explyra.me"
       ],
       "worksFor": { "@id": "https://explyra.me/#organization" }
@@ -2818,7 +3128,7 @@
       "url": "https://rohan.explyra.me",
       "image": "https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1774483200&v=beta&t=WVtSMFZ2b1oTk5yU7RVfMj8q_V0tZij7BJekgO33IO8",
       "sameAs": [
-        "https://www.linkedin.com/in/rohan-krishnagoudar",
+        "https://www.linkedin.com/in/rohan-krishnagoudar/",
         "https://rohan.explyra.me"
       ],
       "worksFor": { "@id": "https://explyra.me/#organization" }
@@ -2961,55 +3271,75 @@
         </section>
 
         <div class="ov-header reveal" style="margin-top: 100px;">
-            <div class="eyebrow">The Architects</div>
-            <h2 class="sec-h">Global <em class="grad">Leadership</em></h2>
+            <div class="eyebrow">The Visionary</div>
+            <h2 class="sec-h">Meet Our Founder & Chief <em class="grad">Architect</em></h2>
+        </div>
+
+        <div class="founder-showcase reveal">
+            <div class="founder-wrapper">
+                <div class="founder-visual">
+                    <div class="founder-img-wrap">
+                        <img src="/mitanshu.png" alt="Mitanshu Bhasin - Founder">
+                    </div>
+                </div>
+                <div class="founder-content">
+                    <div class="founder-label">
+                        <span>Leadership</span>
+                    </div>
+                    <h2 class="founder-name">Mitanshu<br>Bhasin</h2>
+                    <div class="founder-title">Founder & Chief Architect</div>
+
+                    <div class="founder-stats">
+                        <div class="founder-stat">
+                            <div class="founder-stat-value">5+</div>
+                            <div class="founder-stat-label">Years Experience</div>
+                        </div>
+                        <div class="founder-stat">
+                            <div class="founder-stat-value">1M+</div>
+                            <div class="founder-stat-label">Users Reached</div>
+                        </div>
+                        <div class="founder-stat">
+                            <div class="founder-stat-value">50+</div>
+                            <div class="founder-stat-label">Products Built</div>
+                        </div>
+                    </div>
+
+                    <p class="founder-bio-text">
+                        Mitanshu is a visionary technologist and architect who founded Explyra™ with a mission to
+                        revolutionize how teams work. With deep expertise in AI system design, full-stack architecture,
+                        and enterprise-scale systems, he leads the global product roadmap and technical vision. His
+                        passion for building elegant solutions to complex problems has shaped Explyra into the
+                        industry-leading platform it is today.
+                    </p>
+
+                    <div class="founder-actions">
+                        <a href="mitanshu.html" class="founder-btn-primary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            View Official Profile
+                        </a>
+                        <a href="https://www.linkedin.com/in/mitanshubahsin/" target="_blank"
+                            class="founder-btn-secondary">
+                            <i class="fab fa-linkedin"></i>
+                            Connect on LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ov-header reveal" style="margin-top: 100px;">
+            <div class="eyebrow">Core Leadership Team</div>
+            <h2 class="sec-h">Supporting <em class="grad">Experts</em></h2>
         </div>
 
         <div class="team-grid reveal d1">
-            <!-- Mitanshu -->
             <div class="team-card">
                 <div class="team-img-wrap">
-                    <img src="https://media.licdn.com/dms/image/v2/D5603AQGXL6bEmLqpLg/profile-displayphoto-crop_800_800/B56ZyksQsRI0AI-/0/1772289593451?e=1774483200&v=beta&t=ZPxSKtR4s4mSYZoHjBXwJHYpQXMY2boI2lrVzqL5SPo"
-                        alt="Mitanshu Bhasin">
-                </div>
-                <div class="team-name">Mitanshu Bhasin</div>
-                <div class="team-role">Founder & Chief Architect</div>
-                <div class="team-bio">
-                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize
-                    digital workflows. With expertise in AI system design and full-stack architecture, he oversees the
-                    global product roadmap and technical vision.
-                    Mitanshu is a visionary developer and technologist who founded Explyra&trade; to revolutionize
-                    digital workflows. With expertise in AI system design and full-stack architecture, he oversees the
-                    global product roadmap and technical vision.
-                </div>
-                <a href="https://mitanshu.explyra.me" target="_blank" class="team-portfolio-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                    </svg>
-                    View Portfolio
-                </a>
-                <div class="team-actions">
-                    <a href="https://mitanshu.explyra.me" target="_blank" class="team-portfolio-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                        </svg>
-                        Portfolio
-                    </a>
-                    <a href="https://www.linkedin.com/in/mitanshubahsin" target="_blank" class="team-portfolio-btn">
-                        <i class="fab fa-linkedin" style="font-size: 1.1rem;"></i>
-                        LinkedIn
-                    </a>
-                </div>
-            </div>
-
-            <!-- Rohan -->
-            <div class="team-card">
-                <div class="team-img-wrap">
-                    <img src="https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1774483200&v=beta&t=WVtSMFZ2b1oTk5yU7RVfMj8q_V0tZij7BJekgO33IO8"
+                    <img src="https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1776297600&v=beta&t=DW9Rr1ZHdNEQByyMn2hrzjq1GFVE7ZXL2kDMmizwRwA"
                         alt="Rohan Krishnagoudar">
                 </div>
                 <div class="team-name">Rohan Krishnagoudar</div>
@@ -3022,24 +3352,16 @@
                     integrity, scalability, and performance of the Explyra&trade; data warehouse, ensuring that every
                     user's information is secure and accessible.
                 </div>
-                <a href="https://rohan.explyra.me" target="_blank" class="team-portfolio-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                    </svg>
-                    View Portfolio
-                </a>
                 <div class="team-actions">
-                    <a href="https://rohan.explyra.me" target="_blank" class="team-portfolio-btn">
+                    <a href="rohan.html" class="team-portfolio-btn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                         </svg>
-                        Portfolio
+                        View Profile
                     </a>
-                    <a href="https://www.linkedin.com/in/rohan-krishnagoudar" target="_blank"
+                    <a href="https://www.linkedin.com/in/rohan-krishnagoudar/" target="_blank"
                         class="team-portfolio-btn">
                         <i class="fab fa-linkedin" style="font-size: 1.1rem;"></i>
                         LinkedIn
@@ -3138,8 +3460,6 @@
                     <li><a href="pricing.html">Pricing Plans</a></li>
                     <li><a href="directories/submit.html" style="color:var(--purp); font-weight:700;">Submit Business
                             (₹29)</a></li>
-                    <li><a href="directories/submit.html" style="color:var(--purp); font-weight:700;">Submit Business
-                            (₹29)</a></li>
                     <li><a href="index.html#contact">Contact Us</a></li>
                     <li><a href="careers.html">Careers</a></li>
                 </ul>
@@ -3203,12 +3523,14 @@
                 <a href="https://github.com/Explyra" target="_blank" rel="noopener noreferrer"><i
                         class="fab fa-github"></i></a>
             </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="https://apps.microsoft.com/detail/9n23dh28dj4v?referrer=appbadge&mode=full" target="_blank" rel="noopener noreferrer">
+                    <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" alt="Get it from Microsoft" style="max-width: 100%; height: auto;" />
+                </a>
+            </div>
         </div>
     </footer>
-
     <script>
-        /* THEME */
-
         const html = document.documentElement, pill = document.getElementById('themePill'), lbl = document.getElementById('themeLabel');
         const saved = localStorage.getItem('explyra-theme') || 'light';
         html.setAttribute('data-theme', saved); lbl.textContent = saved === 'dark' ? 'Dark' : 'Light';

@@ -47,8 +47,41 @@
   <url>
     <loc>https://explyra.me/team</loc>
     <image:image>
-      <image:loc>https://explyra.me/assets/images/team_photo.jpg</image:loc>
-      <image:title>Explyra Team</image:title>
+      <image:loc>https://explyra.me/assets/images/team_hero_bg.png</image:loc>
+      <image:title>Explyra Team Leadership Background - Light Mode</image:title>
+      <image:caption>Premium corporate abstract 3D background for the Explyra leadership section.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://explyra.me/assets/images/team_hero_bg_dark.png</image:loc>
+      <image:title>Explyra Team Leadership Background - Dark Mode</image:title>
+      <image:caption>Premium dark-theme abstract 3D background for the Explyra leadership section.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://explyra.me/mitanshu.png</image:loc>
+      <image:title>Mitanshu Bhasin - Founder & Chief Architect</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/mitanshu</loc>
+    <image:image>
+      <image:loc>https://media.licdn.com/dms/image/v2/D5603AQGXL6bEmLqpLg/profile-displayphoto-crop_800_800/B56ZyksQsRI0AI-/0/1772289593451?e=1774483200&v=beta&t=ZPxSKtR4s4mSYZoHjBXwJHYpQXMY2boI2lrVzqL5SPo</image:loc>
+      <image:title>Mitanshu Bhasin | Explyra Founder Profile</image:title>
+      <image:caption>Official profile image of Mitanshu Bhasin, the architect of Explyra Suite.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/rohan</loc>
+    <image:image>
+      <image:loc>https://media.licdn.com/dms/image/v2/D5603AQHdcAb_ugD1oQ/profile-displayphoto-crop_800_800/B56ZzIxP_DIIAI-/0/1772894880169?e=1776297600&v=beta&t=DW9Rr1ZHdNEQByyMn2hrzjq1GFVE7ZXL2kDMmizwRwA</image:loc>
+      <image:title>Rohan Krishnagoudar | Explyra Co-Founder Profile</image:title>
+      <image:caption>Official profile image of Rohan Krishnagoudar, Head of Data at Explyra.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://explyra.me/windows</loc>
+    <image:image>
+      <image:loc>https://get.microsoft.com/images/en-us%20dark.svg</image:loc>
+      <image:title>Download Explyra from Microsoft Store</image:title>
     </image:image>
   </url>
   <url>

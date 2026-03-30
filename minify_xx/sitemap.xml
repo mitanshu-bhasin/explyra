@@ -184,8 +184,14 @@
   <url>
     <loc>https://explyra.me/mitanshu</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-    <lastmod>2026-03-26</lastmod>
+    <priority>0.7</priority>
+    <lastmod>2026-03-30</lastmod>
+  </url>
+  <url>
+    <loc>https://explyra.me/rohan</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-03-30</lastmod>
   </url>
   <url>
     <loc>https://explyra.me/onboarding</loc>
@@ -274,8 +280,14 @@
   <url>
     <loc>https://explyra.me/team</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <lastmod>2026-03-26</lastmod>
+    <priority>0.8</priority>
+    <lastmod>2026-03-30</lastmod>
+  </url>
+  <url>
+    <loc>https://explyra.me/windows</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-30</lastmod>
   </url>
   <url>
     <loc>https://explyra.me/terms</loc>
