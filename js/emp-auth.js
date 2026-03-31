@@ -5,8 +5,9 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
 const firebaseConfig = {
-    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
+    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw"),
     authDomain: "explyras.firebaseapp.com",
+    databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",
     messagingSenderId: "411853553644",

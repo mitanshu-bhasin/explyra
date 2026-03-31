@@ -2,14 +2,16 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, RecaptchaVerifier, PhoneAuthProvider, updatePhoneNumber, signInWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, collectionGroup, query, where, getDocs, getCountFromServer, doc, updateDoc, addDoc, onSnapshot, serverTimestamp, setDoc, orderBy, getDoc, deleteDoc, writeBatch, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 import { AISupport } from './ai-support.js';
 import { handleAIChatRequest } from './chat-ai-helper.js';
 
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || ""),
+    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw"),
     authDomain: "explyras.firebaseapp.com",
+    databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",
     messagingSenderId: "411853553644",
@@ -5387,6 +5389,11 @@ window.handleDecision = async (decision) => {
             if (payProofInput && payProofInput.files[0]) {
                 try {
                     updateData.paymentProofUrl = await compressImage(payProofInput.files[0]);
+                    const file = payProofInput.files[0];
+                    const storageRef = ref(storage, `payment_proofs/${window.currentExpenseId}_${Date.now()}_${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+                    await new Promise((res, rej) => uploadTask.on('state_changed', null, rej, res));
+                    updateData.paymentProofUrl = await getDownloadURL(uploadTask.snapshot.ref);
                 } catch (e) { console.error("Proof upload failed", e); }
             }
         }
@@ -5456,6 +5463,11 @@ window.updateAdminExpense = async () => {
         if (payProofInput && payProofInput.files[0]) {
             try {
                 updateData.paymentProofUrl = await compressImage(payProofInput.files[0]);
+                const file = payProofInput.files[0];
+                const storageRef = ref(storage, `payment_proofs/${window.currentExpenseId}_${Date.now()}_${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+                await new Promise((res, rej) => uploadTask.on('state_changed', null, rej, res));
+                updateData.paymentProofUrl = await getDownloadURL(uploadTask.snapshot.ref);
             } catch (e) {
                 console.error("Proof upload failed", e);
             }
@@ -9291,7 +9303,7 @@ window.sendResetToConfirmedUser = async () => {
         if (resetBtn) {
             resetBtn.disabled = false;
             resetBtn.innerHTML = originalText;
-        }
+        }coc
     }
 };
 

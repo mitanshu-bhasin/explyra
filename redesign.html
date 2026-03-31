@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Explyra | Ethereal Ledgering System</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&amp;family=Manrope:wght@200;400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error": "#ffb4ab",
+              "on-primary-container": "#f4f1ff",
+              "on-tertiary-fixed": "#1a1c1c",
+              "background": "#150c32",
+              "on-surface": "#e7deff",
+              "secondary-fixed-dim": "#47d6ff",
+              "on-tertiary-container": "#f3f3f3",
+              "secondary": "#a5e7ff",
+              "secondary-container": "#00d2ff",
+              "surface-bright": "#3c335a",
+              "on-primary-fixed": "#0c006b",
+              "surface-variant": "#372f56",
+              "on-error": "#690005",
+              "tertiary": "#c6c6c7",
+              "on-error-container": "#ffdad6",
+              "primary-container": "#5e5ce6",
+              "tertiary-fixed-dim": "#c6c6c7",
+              "outline": "#918fa0",
+              "surface-container-highest": "#372f56",
+              "on-tertiary-fixed-variant": "#454747",
+              "primary-fixed-dim": "#c2c1ff",
+              "surface-container-low": "#1d153b",
+              "secondary-fixed": "#b6ebff",
+              "primary": "#c2c1ff",
+              "primary-fixed": "#e2dfff",
+              "on-primary": "#1800a7",
+              "surface": "#150c32",
+              "surface-container-lowest": "#10072d",
+              "tertiary-container": "#6d6f6f",
+              "inverse-primary": "#4d4ad5",
+              "surface-container": "#22193f",
+              "on-background": "#e7deff",
+              "tertiary-fixed": "#e2e2e2",
+              "on-secondary": "#003543",
+              "on-surface-variant": "#c7c4d7",
+              "inverse-on-surface": "#332b51",
+              "on-primary-fixed-variant": "#332dbc",
+              "on-secondary-fixed": "#001f28",
+              "on-secondary-fixed-variant": "#004e60",
+              "error-container": "#93000a",
+              "surface-container-high": "#2c244a",
+              "on-secondary-container": "#00566a",
+              "surface-tint": "#c2c1ff",
+              "surface-dim": "#150c32",
+              "outline-variant": "#464554",
+              "on-tertiary": "#2f3131",
+              "inverse-surface": "#e7deff"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .glass-card {
+            background: rgba(60, 51, 90, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .glow-border {
+            box-shadow: inset 0 0 0 1px rgba(194, 193, 255, 0.1);
+        }
+        body {
+            background-color: #10072d;
+            overflow-x: hidden;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+      <link rel="stylesheet" href="assets/css/global-theme.css">
+</head>
+<body class="font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-[#150c32]/80 backdrop-blur-lg shadow-[0_8px_32px_0_rgba(194,193,255,0.08)]">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<span class="text-2xl font-bold bg-gradient-to-r from-[#c2c1ff] to-[#5e5ce6] bg-clip-text text-transparent font-headline tracking-tight">Explyra</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden active:scale-95 duration-200 transition-all hover:bg-[#3c335a]/50">
+<img alt="Developer Profile" class="w-full h-full object-cover" data-alt="close-up profile avatar of a tech professional in soft cinematic lighting with purple highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1A73zrXWlq_-omJGIIlYOtD06GoDjvjjDbQF9j0gcfUWvJGdrr2pYlTd7CiGNaEZZKGy43yDp3xGJukXlU1VkcRlW0Wq3abLtngbQ_inAMptY1mGUUZBGnMWaEwIyY1i1ftZCUN3ms3jXcBBSp4QS7OhfdDhr6uU5D2oQN6EYFes5bIw8TuLXMkWBB0Ea7t4_-3loyOrqw6EjDbLk4KF-osJU-DyQMcDX3KBLz8eBHXXqurL17ziS5AivPO2MsT3lOF6OzhhEXik"/>
+</div>
+<button class="text-[#c2c1ff] material-symbols-outlined text-2xl active:scale-95 duration-200 transition-all hover:bg-[#3c335a]/50 p-2 rounded-full" data-icon="settings">settings</button>
+</div>
+<div class="absolute bottom-0 left-0 w-full bg-gradient-to-b from-[#22193f] to-transparent h-px"></div>
+</header>
+<main class="pt-24 pb-32">
+<!-- Hero Section -->
+<section class="px-6 py-12 flex flex-col items-center text-center relative overflow-hidden">
+<!-- Background Glows -->
+<div class="absolute top-[-10%] left-[-20%] w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-container/10 via-transparent to-transparent -z-10"></div>
+<h1 class="font-headline text-5xl md:text-7xl font-bold tracking-tighter leading-none mb-6 text-on-background">
+                Unified Workspace <br/>
+<span class="text-secondary-container">for Modern Teams</span>
+</h1>
+<p class="text-on-surface-variant text-lg max-w-md mb-10 leading-relaxed">
+                A dimensional architect for your workflow. Bridge the gap between data and execution with the ethereal ledger.
+            </p>
+<div class="flex flex-col w-full gap-4 px-4 max-w-sm mb-16">
+<button class="bg-gradient-to-r from-primary-container to-secondary-container text-white py-4 px-8 rounded-xl font-bold text-lg shadow-[0_0_30px_rgba(94,92,230,0.4)] active:scale-95 transition-transform">
+                    Get Started for Free
+                </button>
+<button class="glass-card text-primary py-4 px-8 rounded-xl font-medium border border-outline-variant/20 active:scale-95 transition-transform">
+                    Watch Demo
+                </button>
+</div>
+<!-- 3D Glassmorphic Centerpiece -->
+<div class="relative w-full max-w-lg aspect-square mt-8 mx-auto">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-container/20 to-secondary-container/20 blur-3xl rounded-full"></div>
+<div class="glass-card relative z-10 w-full h-full rounded-[3rem] border border-outline-variant/10 shadow-2xl flex items-center justify-center p-8">
+<div class="grid grid-cols-2 gap-4 w-full h-full">
+<div class="bg-surface-container-high/40 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-secondary-container opacity-80" data-icon="dashboard_customize">dashboard_customize</span>
+</div>
+<div class="bg-surface-container-high/40 rounded-2xl mt-8 flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-primary-fixed-dim opacity-80" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="bg-surface-container-high/40 rounded-2xl -mt-8 flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-on-surface-variant opacity-80" data-icon="layers">layers</span>
+</div>
+<div class="bg-surface-container-high/40 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-secondary-fixed-dim opacity-80" data-icon="cloud_sync">cloud_sync</span>
+</div>
+</div>
+</div>
+<!-- Floating Accents -->
+<div class="absolute -top-4 -right-4 w-24 h-24 glass-card rounded-2xl flex items-center justify-center shadow-xl rotate-12">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="token">token</span>
+</div>
+</div>
+</section>
+<!-- Social Proof -->
+<section class="py-12 px-6">
+<p class="text-center font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 mb-8">Trusted by 50,000+ teams worldwide</p>
+<div class="flex flex-wrap justify-center items-center gap-10 opacity-40 grayscale contrast-125">
+<img alt="Vercel Logo" class="h-6" data-alt="minimalist typographic logo for a tech company in monochromatic light grey" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDordHQtrfiumQIRUtBLzgjyi6J1Wk1gXfA9MPfyJ82g6ncXWf93pCvYrLqRMTGHfLmHO3saMFEYS2GoaFAy8ILU9LyQmlxyiUUpDGaCT5MES8Ay5sVhOQKZT5eRMDmjrmPrAU-xZeMVp5XBgqP4eJ4eSMKcdp27itQ4sPMWP30xNoo81QZjkYjPDxRO0aK2v2IZoPzUq2BmAfreb6jzvs0XiCyELcUtdBWihyZ8zRroIWpQhYMmgn43aD3XqtlJ6TffVBrpKyQ7Ik"/>
+<img alt="Stripe Logo" class="h-6" data-alt="clean corporate logo for a payment processor in soft monochromatic tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFOJgBRWrHyVhp6arBg--OLzJNZ-IO3MYJ6I0lEaysDaY3nV7LG74uV_-mTO6ORXoZoCm1PWFCz86b0l8ABlWwDm9Nql7-dzLe44WsbsPmIPHQnzkODmgveck3HQUDUKDZoutdaAEMiQ8jvJqCTpN8l8z3n1jNsNvavszqZVTYN5cW0SENbdBavUdiM6Hk_8wsnHf_TlnK9UiCr_LbGjbHYfTX_1dCZEFyClUP9oHrCQ6JcHTp7k8FrI9B0Lslvpm6IUFvKoTVZEU"/>
+<img alt="Linear Logo" class="h-6" data-alt="sleek modern logo for a software tool in monochromatic grey on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_GneUDuTqhkDsyCaTNgXHb2GTBmLxq-9qI0l_URljRvuHZ2WwLlieqBi8xrdx5zhPO90_s6tSEnA9KShJtDQZjAx96ctEeInDvvOoEkYvPadr7GuUh21vNGbLWjmDwMHnKrE8ciBS_1D7-theIOpj_1LfTti7Ev650tp83-HXRhftesEsyih0DUkF4AJAdQrKGU12Tv94vLBl20igB1A3ivFQrYVyQociU4aGF5LeXN5jsgze6gOHkP-gJrSIQXkxZzUdw9TFLik"/>
+<img alt="Figma Logo" class="h-6" data-alt="geometric abstract logo for a design tool in subtle grey shades" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWfO62eeKeXUjzhPSAHFN2tQreSlRP5CEoY97HLRnB5Hg2bSO9fypzEQDkJbrNq9BBxmPHAyooMgRw4_6fih_DwqXBz-Bh6LHXZkzAHYsZzyYs1mjo9nvHZyIsDbBq3VRge2cYu-ZdzC7raN3yXtlnGeJqIPIVAVLOSLE250KPNH6Y_Ku3um5LjJOj1Pna3qTGitzrzsHoK7tWE6Z9YcEJgXnGr7xWAHKofAFcBAcMMNuvX4AIHiPTMeINDRzI9hTDv6DYiST1fVg"/>
+</div>
+</section>
+<!-- App Suite Showcase -->
+<section class="px-6 py-20 space-y-12">
+<div class="space-y-4">
+<h2 class="font-headline text-3xl font-bold leading-tight">Universal <br/>Product Suite</h2>
+<div class="h-1 w-12 bg-secondary-container rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 gap-6">
+<!-- Card: Expense Tracker -->
+<div class="glass-card p-8 rounded-[2.5rem] border border-outline-variant/10 flex flex-col gap-6 group hover:bg-surface-bright/30 transition-all">
+<div class="w-16 h-16 rounded-2xl bg-secondary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-secondary-container" data-icon="payments">payments</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-2xl font-bold">Expense Tracker</h3>
+<p class="text-on-surface-variant leading-relaxed">Financial transparency for modern decentralised workforces.</p>
+</div>
+<div class="mt-4 flex items-center text-secondary-container font-bold gap-2">
+                        Explore <span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+<!-- Card: CRM -->
+<div class="glass-card p-8 rounded-[2.5rem] border border-outline-variant/10 flex flex-col gap-6 group hover:bg-surface-bright/30 transition-all">
+<div class="w-16 h-16 rounded-2xl bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-primary-container" data-icon="hub">hub</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-2xl font-bold">CRM</h3>
+<p class="text-on-surface-variant leading-relaxed">Manage relationships with dimensional intelligence and AI routing.</p>
+</div>
+<div class="mt-4 flex items-center text-primary-container font-bold gap-2">
+                        Explore <span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+<!-- Card: Health Manager -->
+<div class="glass-card p-8 rounded-[2.5rem] border border-outline-variant/10 flex flex-col gap-6 group hover:bg-surface-bright/30 transition-all">
+<div class="w-16 h-16 rounded-2xl bg-secondary-fixed-dim/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-secondary-fixed-dim" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<div class="space-y-2">
+<h3 class="font-headline text-2xl font-bold">Health Manager</h3>
+<p class="text-on-surface-variant leading-relaxed">Optimizing team wellness through bio-synced analytics.</p>
+</div>
+<div class="mt-4 flex items-center text-secondary-fixed-dim font-bold gap-2">
+                        Explore <span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Video Preview Section -->
+<section class="px-6 py-12">
+<div class="relative w-full aspect-video rounded-3xl overflow-hidden glass-card border border-outline-variant/20 shadow-2xl flex items-center justify-center">
+<div class="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-primary-container/20"></div>
+<img alt="Platform Preview" class="absolute inset-0 w-full h-full object-cover opacity-50" data-alt="stunning dark UI dashboard with glowing neon teal charts and 3D glass elements on a deep purple cosmos background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtt6E-HUyHRQgtk6JZ2dfJ7uomw4zbMQ-3TAGSmFXctC1MCEiTnVrmDADggvkNpJCJDs0865btykY2gyYGKFFbm_vJZBw8QZxW4FhToq_dpW71gFRjyMaOKsBcRs-5m9l-Q4nRejscApu5xI_vAOurC3LDAdl2QoQnfW896fgeGDL7IBE77Bvhh4o-AIQPCPnAHenPwF-zKIHnKai5BLAa64tCmEQ9N9vwKY957CWYZbRw_1dwTBENrW1xEBCffu6ZMDhFvDZB7qo"/>
+<div class="relative z-10 w-20 h-20 rounded-full bg-secondary-container/90 flex items-center justify-center shadow-[0_0_40px_rgba(0,210,255,0.5)] active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white text-4xl ml-1" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</section>
+<!-- Features Layout (Asymmetric) -->
+<section class="py-20">
+<div class="space-y-24">
+<!-- Feature 1 -->
+<div class="px-6 space-y-8">
+<div class="bg-surface-container-low p-12 rounded-r-[4rem] -ml-6 border-l-4 border-secondary-container">
+<h4 class="font-label text-secondary-container font-bold tracking-widest text-xs uppercase mb-4">Core Engine</h4>
+<h2 class="font-headline text-4xl font-bold mb-6">Real-time Sync</h2>
+<p class="text-on-surface-variant text-lg">Every node in your ledger updates instantly. No lag, no latency, just pure ethereal flow across continents.</p>
+</div>
+<div class="px-6">
+<div class="h-[300px] w-full bg-gradient-to-br from-surface-container to-surface-container-lowest rounded-3xl relative overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-secondary-container/20 blur-[80px]"></div>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl text-secondary-container/20" data-icon="sync">sync</span>
+</div>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="px-6 space-y-8 flex flex-col items-end text-right">
+<div class="bg-surface-container-high p-12 rounded-l-[4rem] -mr-6 border-r-4 border-primary-container">
+<h4 class="font-label text-primary-container font-bold tracking-widest text-xs uppercase mb-4">Intelligence</h4>
+<h2 class="font-headline text-4xl font-bold mb-6">AI-Powered Insights</h2>
+<p class="text-on-surface-variant text-lg">Our neural engine predicts bottlenecks before they happen. Managing your team has never been this intuitive.</p>
+</div>
+<div class="px-6 w-full">
+<div class="h-[300px] w-full bg-gradient-to-bl from-surface-container-high to-background rounded-3xl relative overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary-container/20 blur-[80px]"></div>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl text-primary-container/20" data-icon="psychology">psychology</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Final -->
+<section class="px-6 py-20 text-center">
+<div class="glass-card p-12 rounded-[3rem] border border-primary-container/30 relative overflow-hidden">
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-primary-container/20 blur-[100px]"></div>
+<h2 class="font-headline text-4xl font-bold mb-6 relative z-10">Ready to enter the <br/>dimension?</h2>
+<button class="relative z-10 bg-on-background text-background py-4 px-10 rounded-2xl font-bold text-lg active:scale-95 transition-transform">
+                    Join Explyra Now
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col items-center space-y-6 text-center block w-full py-12 px-8 bg-[#10072d]">
+<div class="bg-[#1d153b] h-0.5 w-full mb-8"></div>
+<div class="text-[#c2c1ff] font-['Space_Grotesk'] font-medium text-xl">Explyra</div>
+<div class="flex flex-wrap justify-center gap-6 text-[#c7c4d7] font-['Manrope'] text-sm font-light">
+<a class="hover:text-[#c2c1ff] transition-all" href="#">Privacy Policy</a>
+<a class="hover:text-[#c2c1ff] transition-all" href="#">Terms of Service</a>
+<a class="hover:text-[#c2c1ff] transition-all" href="#">Cookie Settings</a>
+<a class="hover:text-[#c2c1ff] transition-all" href="#">Contact Support</a>
+</div>
+<p class="text-[#c7c4d7]/60 font-['Manrope'] text-xs mt-4">© 2024 Explyra Ledgering System</p>
+</footer>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#10072d]/90 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] rounded-t-2xl border-t border-outline-variant/10">
+<a class="flex flex-col items-center justify-center text-[#c7c4d7]/60 hover:text-[#c2c1ff] transition-colors active:translate-y-0.5 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest mt-1">Features</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#c7c4d7]/60 hover:text-[#c2c1ff] transition-colors active:translate-y-0.5 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest mt-1">Pricing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#c7c4d7]/60 hover:text-[#c2c1ff] transition-colors active:translate-y-0.5 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest mt-1">Security</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#c7c4d7]/60 hover:text-[#c2c1ff] transition-colors active:translate-y-0.5 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest mt-1">Resources</span>
+</a>
+</nav>
+</body></html>

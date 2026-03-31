@@ -27,6 +27,7 @@ function sync() {
         firebase: {
             apiKey: env.FIREBASE_API_KEY || "",
             authDomain: env.FIREBASE_AUTH_DOMAIN || "explyras.firebaseapp.com",
+            databaseURL: env.FIREBASE_DATABASE_URL || "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: env.FIREBASE_PROJECT_ID || "explyras",
             storageBucket: env.FIREBASE_STORAGE_BUCKET || "explyras.firebasestorage.app",
             messagingSenderId: env.FIREBASE_MESSAGING_SENDER_ID || "411853553644",

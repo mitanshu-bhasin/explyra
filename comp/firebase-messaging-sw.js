@@ -3,7 +3,7 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-comp
 
 const firebaseConfig = {
     // Service workers run without window/document. Keep config static here.
-    apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+    apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
     authDomain: "explyras.firebaseapp.com",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",

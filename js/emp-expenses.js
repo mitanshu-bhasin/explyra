@@ -1,5 +1,6 @@
 // js/emp-expenses.js
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, onSnapshot, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { checkSpam } from './spam-filter.js';
 import { IMGBB_URL } from './emp-utils.js';
 
@@ -689,23 +690,27 @@ window.handleFileSelect = async (input) => {
     const removeBtn = el.querySelector('.btn-remove-img');
     const orig = label.innerHTML;
 
-    try {
-        const fd = new FormData();
-        fd.append('image', file);
-        const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
-        const data = await res.json();
+    label.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-green-500"></i> Processing...';
+    label.classList.add('opacity-50', 'pointer-events-none');
 
-        if (data && data.data && data.data.url) {
-            hidden.value = data.data.url;
-            label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Done';
-            if (status) status.classList.remove('hidden');
-            if (removeBtn) removeBtn.classList.remove('hidden');
-        } else {
-            throw new Error("Upload failed");
-        }
+    try {
+        // Google Cloud (Firebase) Storage - User specific folder
+        const storageRef = ref(window.storage, `receipts/${window.userData?.docId || 'anon'}_${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        
+        await new Promise((resolve, reject) => {
+            uploadTask.on('state_changed', null, reject, resolve);
+        });
+        
+        hidden.value = await getDownloadURL(uploadTask.snapshot.ref);
+        label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Done';
+        if (status) status.classList.remove('hidden');
+        if (removeBtn) removeBtn.classList.remove('hidden');
     } catch (e) {
         label.innerHTML = orig;
         window.showToast("Upload failed", "error");
+    } finally {
+        label.classList.remove('opacity-50', 'pointer-events-none');
     }
 };
 
@@ -750,18 +755,21 @@ window.handleProofUpload = async (input) => {
     const urlInput = document.getElementById('approval-proof-url');
     const label = document.getElementById('proof-upload-label');
     const removeBtn = document.getElementById('btn-remove-proof');
+    const orig = label.innerHTML;
+
     label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
     try {
-        const fd = new FormData();
-        fd.append('image', file);
-        const res = await fetch(IMGBB_URL, { method: 'POST', body: fd });
-        const data = await res.json();
-        if (data && data.data && data.data.url) {
-            hidden.value = data.data.url;
-            if (urlInput) urlInput.value = ''; // Clear manual link if file is uploaded
-            label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Attached';
-            if (removeBtn) removeBtn.classList.remove('hidden');
-        } else { throw new Error("Upload failed"); }
+        const storageRef = ref(window.storage, `proofs/${window.userData?.docId || 'anon'}_${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        
+        await new Promise((resolve, reject) => {
+            uploadTask.on('state_changed', null, reject, resolve);
+        });
+        
+        hidden.value = await getDownloadURL(uploadTask.snapshot.ref);
+        if (urlInput) urlInput.value = ''; // Clear manual link if file is uploaded
+        label.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> Attached';
+        if (removeBtn) removeBtn.classList.remove('hidden');
     } catch (e) {
         label.innerHTML = orig;
         window.showToast("Upload failed", "error");

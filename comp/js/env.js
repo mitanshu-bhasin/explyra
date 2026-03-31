@@ -1,6 +1,6 @@
 window.EXPLYRA_CONFIG = {
     firebase: {
-        apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+        apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
         authDomain: "explyras.firebaseapp.com",
         projectId: "explyras",
         storageBucket: "explyras.firebasestorage.app",
