@@ -9295,3 +9295,149 @@ window.sendResetToConfirmedUser = async () => {
     }
 };
 
+/**
+ * UI Navigation between authentication steps
+ */
+window.showStep = function(stepId) {
+    const currentStep = document.querySelector('.step-content.active');
+    const nextStep = document.getElementById(stepId);
+    
+    if (currentStep) {
+        currentStep.classList.remove('active');
+        currentStep.classList.add('fade-out');
+        setTimeout(() => currentStep.classList.remove('fade-out'), 500);
+    }
+    if (nextStep) {
+        nextStep.classList.add('active');
+        // Auto-focus first input if possible
+        const firstInput = nextStep.querySelector('input');
+        if (firstInput) setTimeout(() => firstInput.focus(), 550);
+    }
+};
+
+/**
+ * Progress indicator for auth buttons
+ */
+window.setAuthButtonsLoading = (isLoading, activeLabel = 'Processing...') => {
+    const selectors = ['#identifier-form button', '#login-form button', '#signup-form button', '.ms-social-btn'];
+    const buttons = Array.from(document.querySelectorAll(selectors.join(',')));
+    
+    buttons.forEach((button) => {
+        if (!button.dataset.defaultHtml) {
+            button.dataset.defaultHtml = button.innerHTML;
+        }
+        button.disabled = !!isLoading;
+        
+        // Only update label for primary action buttons, not social buttons
+        if (isLoading && (button.id === 'identifier-btn' || button.id === 'login-btn' || button.id === 'signup-btn' || button.id === 'activation-verify-btn')) {
+            button.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${activeLabel}`;
+        } else if (!isLoading) {
+            button.innerHTML = button.dataset.defaultHtml;
+        }
+    });
+};
+
+/**
+ * Toggle visibility of login password
+ */
+window.toggleLoginPassword = () => {
+    const passInput = document.getElementById('login-password');
+    const eyeIcon = document.getElementById('login-eye-icon');
+    if (passInput && eyeIcon) {
+        const isPass = passInput.type === 'password';
+        passInput.type = isPass ? 'text' : 'password';
+        eyeIcon.classList.toggle('fa-eye', !isPass);
+        eyeIcon.classList.toggle('fa-eye-slash', isPass);
+    }
+};
+
+/**
+ * Google Social Login Handler
+ */
+window.handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+
+    try {
+        window.setAuthButtonsLoading(true, 'Opening Google...');
+        const result = await signInWithPopup(getAuth(), provider);
+        const user = result.user;
+
+        const q = query(collection(db, "users"), where("email", "==", user.email));
+        let snap = await getDocs(q);
+
+        if (snap.empty) {
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (!devEmails.includes(user.email.toLowerCase())) {
+                await signOut(getAuth());
+                window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
+                return;
+            }
+        }
+
+        if (!snap.empty) {
+            const docId = snap.docs[0].id;
+            await updateDoc(doc(db, "users", docId), {
+                uid: user.uid,
+                updatedAt: serverTimestamp(),
+                status: 'ACTIVE',
+                authProvider: 'google'
+            });
+        }
+
+        window.showToast("Login successful!", "success");
+    } catch (error) {
+        console.error("Google Login Error:", error);
+        window.showToast('Google sign-in failed. Please try again.', "error");
+    } finally {
+        window.setAuthButtonsLoading(false);
+    }
+};
+
+/**
+ * Microsoft Social Login Handler
+ */
+window.handleMicrosoftLogin = async () => {
+    const provider = new OAuthProvider('microsoft.com');
+    provider.addScope('openid');
+    provider.addScope('email');
+    provider.addScope('profile');
+
+    try {
+        window.setAuthButtonsLoading(true, 'Opening Microsoft...');
+        const result = await signInWithPopup(getAuth(), provider);
+        const user = result.user;
+
+        const q = query(collection(db, "users"), where("email", "==", user.email));
+        let snap = await getDocs(q);
+
+        if (snap.empty) {
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (!devEmails.includes(user.email.toLowerCase())) {
+                await signOut(getAuth());
+                window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
+                return;
+            }
+        }
+
+        if (!snap.empty) {
+            const docId = snap.docs[0].id;
+            await updateDoc(doc(db, "users", docId), {
+                uid: user.uid,
+                updatedAt: serverTimestamp(),
+                status: 'ACTIVE',
+                authProvider: 'microsoft'
+            });
+        }
+
+        window.showToast("Login successful!", "success");
+    } catch (error) {
+        console.error("Microsoft Login Error:", error);
+        window.showToast('Microsoft sign-in failed. Please try again.', "error");
+    } finally {
+        window.setAuthButtonsLoading(false);
+    }
+};
+
+

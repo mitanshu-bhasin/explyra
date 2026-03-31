@@ -1005,18 +1005,23 @@ window.handleGoogleLogin = async () => {
         }
 
         if (snap.empty) {
-            await signOut(auth);
-            window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
-            return;
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (!devEmails.includes((user.email || '').toLowerCase())) {
+                await signOut(auth);
+                window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
+                return;
+            }
         }
 
-        const docId = snap.docs[0].id;
-        await updateDoc(doc(db, "users", docId), {
-            uid: user.uid,
-            updatedAt: serverTimestamp(),
-            status: 'ACTIVE',
-            authProvider: 'google'
-        });
+        if (!snap.empty) {
+            const docId = snap.docs[0].id;
+            await updateDoc(doc(db, "users", docId), {
+                uid: user.uid,
+                updatedAt: serverTimestamp(),
+                status: 'ACTIVE',
+                authProvider: 'google'
+            });
+        }
 
         window.showToast("Login successful!", "success");
     } catch (error) {
@@ -1056,18 +1061,23 @@ window.handleMicrosoftLogin = async () => {
         }
 
         if (snap.empty) {
-            await signOut(auth);
-            window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
-            return;
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (!devEmails.includes((user.email || '').toLowerCase())) {
+                await signOut(auth);
+                window.showToast(`Access Denied: Email [${user.email}] not registered.`, "error");
+                return;
+            }
         }
 
-        const docId = snap.docs[0].id;
-        await updateDoc(doc(db, "users", docId), {
-            uid: user.uid,
-            updatedAt: serverTimestamp(),
-            status: 'ACTIVE',
-            authProvider: 'microsoft'
-        });
+        if (!snap.empty) {
+            const docId = snap.docs[0].id;
+            await updateDoc(doc(db, "users", docId), {
+                uid: user.uid,
+                updatedAt: serverTimestamp(),
+                status: 'ACTIVE',
+                authProvider: 'microsoft'
+            });
+        }
 
         window.showToast("Login successful!", "success");
     } catch (error) {
