@@ -9,7 +9,7 @@ function cleanup() {
     // 1. Replace Style Block (Lines 470 to 4939 approx)
     // We'll use a regex that matches the start and end tokens we know are there.
     const styleRegex = /<style>\s* \/\* ═══════════[\s\S]*?<\/style>/;
-    const styleReplacement = `<link rel="stylesheet" href="/css/main.css">\n    <link rel="stylesheet" href="/css/index.css">`;
+    const styleReplacement = `<link rel="stylesheet" href="./css/main.css">\n    <link rel="stylesheet" href="./css/index.css">`;
     
     // Actually, I'll match the DESIGN TOKENS header specifically.
     const specificStyleRegex = /<style>\s+\/\* ═══════════════════════════════════════════\s+DESIGN TOKENS[\s\S]*?<\/style>/;
@@ -23,7 +23,7 @@ function cleanup() {
 
     // 2. Replace Script Block (Lines 6476 to 7092 approx)
     const scriptRegex = /<script>\s+\/\* THEME \*\/[\s\S]*?<\/script>/;
-    const scriptReplacement = `<script src="/js/main.js"></script>\n    <script src="/js/index-demos.js"></script>`;
+    const scriptReplacement = `<script src="./js/main.js"></script>\n    <script src="./js/index-demos.js"></script>`;
     
     if (scriptRegex.test(content)) {
         content = content.replace(scriptRegex, scriptReplacement);
@@ -34,7 +34,7 @@ function cleanup() {
 
     // 3. Replace 3D Script Block (Lines 7097 to 7268 approx)
     const threeRegex = /<script>\s+\(function \(\) \{\s+const canvas = document.getElementById\('hero-3d-canvas'\);[\s\S]*?<\/script>/;
-    const threeReplacement = `<script src="/js/hero-3d.js"></script>`;
+    const threeReplacement = `<script src="./js/hero-3d.js"></script>`;
     
     if (threeRegex.test(content)) {
         content = content.replace(threeRegex, threeReplacement);
