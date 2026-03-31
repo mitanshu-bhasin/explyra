@@ -129,51 +129,26 @@ class AvatarManager {
     }
 
     /**
-     * Compress image and convert to data URL
+     * Upload image to Firebase Storage and return URL
      * @param {File} file - Image file
-     * @returns {Promise<string>} Data URL
+     * @returns {Promise<string>} Download URL
      */
     async compressImage(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
+        try {
+            const { ref, uploadBytesResumable, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js');
+            const id = window.userData?.docId || 'anon';
+            const storageRef = ref(window.storage, `avatars/${id}_${Date.now()}_${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
             
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Set max dimensions (200x200)
-                    const maxSize = 200;
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    if (width > maxSize || height > maxSize) {
-                        if (width > height) {
-                            height = (height * maxSize) / width;
-                            width = maxSize;
-                        } else {
-                            width = (width * maxSize) / height;
-                            height = maxSize;
-                        }
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Convert to data URL with quality reduction
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    resolve(dataUrl);
-                };
-                img.onerror = () => reject(new Error('Invalid image'));
-                img.src = e.target.result;
-            };
+            await new Promise((resolve, reject) => {
+                uploadTask.on('state_changed', null, reject, resolve);
+            });
             
-            reader.onerror = () => reject(new Error('File read error'));
-            reader.readAsDataURL(file);
-        });
+            return await getDownloadURL(uploadTask.snapshot.ref);
+        } catch (e) {
+            console.error('File upload error:', e);
+            throw new Error('Failed to upload file to storage');
+        }
     }
 
     /**

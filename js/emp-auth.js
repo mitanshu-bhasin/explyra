@@ -1,20 +1,23 @@
 // emp-auth.js
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, signInWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-const firebaseConfig = {
-    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw"),
+const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+    apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
     authDomain: "explyras.firebaseapp.com",
     databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "explyras",
     storageBucket: "explyras.firebasestorage.app",
     messagingSenderId: "411853553644",
-    appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+    appId: "1:411853553644:web:eca79eab846b6a5149cac9",
+    measurementId: "G-TFBZ5GZ22C"
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -567,6 +570,11 @@ const ensureDashboardShellVisible = () => {
         dashSc.classList.remove('hidden');
         dashSc.style.display = 'flex';
     }
+
+    // Don't override the messages view if it's currently active
+    const isMessagesActive = mainMsg && !mainMsg.classList.contains('hidden');
+    if (isMessagesActive) return;
+
     if (mainDash) {
         mainDash.classList.remove('hidden');
         mainDash.classList.add('flex-1', 'overflow-y-auto');

@@ -1,7 +1,6 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, OAuthProvider, RecaptchaVerifier, PhoneAuthProvider, updatePhoneNumber, signInWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, collectionGroup, query, where, getDocs, getCountFromServer, doc, updateDoc, addDoc, onSnapshot, serverTimestamp, setDoc, orderBy, getDoc, deleteDoc, writeBatch, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 import { AISupport } from './ai-support.js';
@@ -1806,9 +1805,9 @@ function showLogin() {
     const dashSc = document.getElementById('dashboard-screen');
     if (authSc) authSc.classList.remove('hidden');
     if (dashSc) dashSc.classList.add('hidden');
-    // Reset to step 1
-    const step1 = document.getElementById('auth-step-1');
-    const step2 = document.getElementById('auth-step-2');
+    // Reset to step 1 - Using IDs consistent with admin.html bridge
+    const step1 = document.getElementById('step-identifier');
+    const step2 = document.getElementById('step-password');
     if (step1) step1.classList.remove('hidden');
     if (step2) step2.classList.add('hidden');
 }
@@ -1818,6 +1817,8 @@ function showDashboard() {
     const dashSc = document.getElementById('dashboard-screen');
     if (authSc) authSc.classList.add('hidden');
     if (dashSc) dashSc.classList.remove('hidden');
+    window.__adminAuthHeartbeat = Date.now();
+    setInterval(() => { window.__adminAuthHeartbeat = Date.now(); }, 10000);
     window.renderDemoModeBanner && window.renderDemoModeBanner();
 
     const initUI = () => {
@@ -2707,10 +2708,11 @@ async function renderTasks() {
     content.innerHTML = `
                 <div class="flex flex-col lg:flex-row gap-6 h-full pb-20">
                     <!-- Create Task Form -->
-                    <div class="w-full lg:w-1/3 fade-in">
+                    <div class="w-full lg:w-96 shrink-0 fade-in">
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 sticky top-4">
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                                <i class="fa-solid fa-plus-circle text-green-600"></i> Assign New Task
+                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-5 flex items-center gap-2">
+                                <span class="w-7 h-7 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-plus text-xs"></i></span>
+                                Assign New Task
                             </h3>
                             <form id="create-task-form" onsubmit="handleCreateTask(event)" class="space-y-4">
                                 <div>
@@ -2721,6 +2723,21 @@ async function renderTasks() {
                                     <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Description</label>
                                     <textarea id="task-desc" class="input-primary h-20 resize-none" placeholder="Provide details..."></textarea>
                                 </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Priority</label>
+                                        <select id="task-priority" class="input-primary">
+                                            <option value="MEDIUM">Medium</option>
+                                            <option value="HIGH">High</option>
+                                            <option value="LOW">Low</option>
+                                            <option value="URGENT">Urgent</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Due Date <span class="text-red-500">*</span></label>
+                                        <input type="date" id="task-due-date" class="input-primary" required>
+                                    </div>
+                                </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Assign To <span class="text-red-500">*</span></label>
                                     <select id="task-assignee" class="input-primary" required>
@@ -2728,8 +2745,8 @@ async function renderTasks() {
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Due Date <span class="text-red-500">*</span></label>
-                                    <input type="date" id="task-due-date" class="input-primary" required>
+                                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Attachment <span class="text-slate-400">(optional)</span></label>
+                                    <input type="file" id="task-attachment" accept="image/*,application/pdf,.doc,.docx" class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 dark:file:bg-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-600 transition">
                                 </div>
                                 <button type="submit" id="btn-create-task" class="w-full btn-primary py-3 flex justify-center items-center gap-2">
                                     <span>Assign Task</span> <i class="fa-solid fa-paper-plane"></i>
@@ -2739,28 +2756,40 @@ async function renderTasks() {
                     </div>
 
                     <!-- Tasks List -->
-                    <div class="w-full lg:w-2/3 flex flex-col fade-in max-h-full">
-                        <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-4 flex justify-between items-center">
-                            <div class="flex items-center gap-4">
-                                <div class="relative min-w-[200px]">
+                    <div class="flex-1 flex flex-col fade-in min-w-0">
+                        <!-- Filter Bar -->
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm mb-4">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <div class="relative flex-1 min-w-[180px]">
                                     <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                    <input type="text" id="task-search" onkeyup="filterAdminTasks()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-9 pr-3 text-xs outline-none" placeholder="Search tasks...">
+                                    <input type="text" id="task-search" onkeyup="filterAdminTasks()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-9 pr-3 text-xs outline-none focus:border-green-500 transition" placeholder="Search tasks...">
                                 </div>
-                                <select id="task-status-filter" onchange="filterAdminTasks()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none">
+                                <select id="task-status-filter" onchange="filterAdminTasks()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none focus:border-green-500 transition">
                                     <option value="">All Statuses</option>
                                     <option value="PENDING">Pending</option>
                                     <option value="IN_PROGRESS">In Progress</option>
+                                    <option value="ON_HOLD">On Hold</option>
                                     <option value="COMPLETED">Completed</option>
+                                    <option value="REOPENED">Reopened</option>
                                 </select>
+                                <select id="task-priority-filter" onchange="filterAdminTasks()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs outline-none focus:border-green-500 transition">
+                                    <option value="">All Priorities</option>
+                                    <option value="URGENT">Urgent</option>
+                                    <option value="HIGH">High</option>
+                                    <option value="MEDIUM">Medium</option>
+                                    <option value="LOW">Low</option>
+                                </select>
+                                <div id="task-count-badge" class="ml-auto text-[10px] font-bold text-slate-400 uppercase tracking-widest"></div>
                             </div>
                         </div>
-                        
-                        <div id="admin-tasks-list" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2">
-                            <div class="flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500 text-3xl"></i></div>
+
+                        <div id="admin-tasks-list" class="flex-1 overflow-y-auto grid grid-cols-1 xl:grid-cols-2 gap-3 content-start custom-scrollbar pr-1">
+                            <div class="col-span-full flex justify-center mt-10"><i class="fa-solid fa-circle-notch fa-spin text-green-500 text-3xl"></i></div>
                         </div>
                     </div>
                 </div>
             `;
+
 
     // Set minimum due date to today
     const today = new Date().toISOString().split('T')[0];
@@ -2786,7 +2815,7 @@ async function renderTasks() {
             if (!list) return;
 
             if (snap.empty) {
-                list.innerHTML = emptyState("No tasks found. Create one to get started!");
+                list.innerHTML = `<div class="col-span-full">${emptyState("No tasks found. Create one to get started!")}</div>`;
                 window.adminTasksData = [];
                 return;
             }
@@ -2816,37 +2845,105 @@ window.filterAdminTasks = () => {
 
     const search = (document.getElementById('task-search')?.value || '').toLowerCase();
     const statusFilter = document.getElementById('task-status-filter')?.value;
+    const priorityFilter = document.getElementById('task-priority-filter')?.value;
 
     const filtered = window.adminTasksData.filter(t => {
-        const matchesSearch = (t.title + t.description + t.assignedTo).toLowerCase().includes(search);
+        const matchesSearch = (t.title + (t.description || '') + (t.assignedTo || '')).toLowerCase().includes(search);
         const matchesStatus = !statusFilter || t.status === statusFilter;
-        return matchesSearch && matchesStatus;
+        const matchesPriority = !priorityFilter || t.priority === priorityFilter;
+        return matchesSearch && matchesStatus && matchesPriority;
     });
 
+    const badge = document.getElementById('task-count-badge');
+    if (badge) badge.textContent = `${filtered.length} Task${filtered.length !== 1 ? 's' : ''}`;
+
     if (filtered.length === 0) {
-        list.innerHTML = emptyState("No tasks match your filters.");
+        list.innerHTML = `<div class="col-span-full">${emptyState("No tasks match your filters.")}</div>`;
         return;
     }
 
-    list.innerHTML = filtered.map(t => `
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition relative">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">${t.title}</h4>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${t.description || 'No description provided.'}</p>
-                        </div>
-                        <span class="badge ${getTaskStatusClass(t.status)}">${t.status.replace('_', ' ')}</span>
+    // Helper: priority badge
+    const getPriorityBadge = (priority) => {
+        const map = {
+            URGENT: 'bg-red-100 text-red-700 border-red-200',
+            HIGH: 'bg-orange-100 text-orange-700 border-orange-200',
+            MEDIUM: 'bg-amber-100 text-amber-700 border-amber-200',
+            LOW: 'bg-slate-100 text-slate-600 border-slate-200'
+        };
+        const icons = { URGENT: 'fa-fire', HIGH: 'fa-arrow-up', MEDIUM: 'fa-minus', LOW: 'fa-arrow-down' };
+        const cls = map[priority] || map.MEDIUM;
+        const ic = icons[priority] || icons.MEDIUM;
+        return `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${cls}"><i class="fa-solid ${ic} text-[8px]"></i>${priority || 'MEDIUM'}</span>`;
+    };
+
+    // Helper: due date display
+    const getDueDateHtml = (dueDate, status) => {
+        if (!dueDate) return '<span class="text-slate-400">No due date</span>';
+        const due = new Date(dueDate);
+        const now = new Date();
+        const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+        const overdue = diff < 0 && status !== 'COMPLETED';
+        const dueStr = due.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const diffStr = overdue ? `<span class="text-red-500 font-bold">${Math.abs(diff)}d overdue</span>` :
+                        diff === 0 ? `<span class="text-orange-500 font-bold">Due today</span>` :
+                        diff <= 3 ? `<span class="text-amber-600 font-bold">Due in ${diff}d</span>` :
+                        `<span class="text-slate-400">${diff}d left</span>`;
+        return `<span class="${overdue ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'} font-medium">${dueStr}</span> &bull; ${diffStr}`;
+    };
+
+    list.innerHTML = filtered.map(t => {
+        const statusOptions = ['PENDING','IN_PROGRESS','ON_HOLD','COMPLETED','REOPENED'].map(s =>
+            `<option value="${s}" ${t.status === s ? 'selected' : ''}>${s.replace('_', ' ')}</option>`
+        ).join('');
+        const canDelete = (userData.role === 'ADMIN' || t.assignedBy === userData.email) && t.status !== 'COMPLETED';
+        const createdStr = t.createdAt?.toDate ? t.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) : '—';
+
+        return `
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all group relative flex flex-col gap-3">
+                <!-- Header -->
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg ${getTaskStatusClass(t.status).split(' ')[0]} flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid ${t.status === 'COMPLETED' ? 'fa-check' : t.status === 'IN_PROGRESS' ? 'fa-spinner fa-spin' : t.status === 'ON_HOLD' ? 'fa-pause' : 'fa-hourglass-half'} text-xs ${getTaskStatusClass(t.status).split(' ')[1]}"></i>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-slate-50 dark:border-slate-700/50 flex flex-wrap gap-4 text-[10px] text-slate-500 dark:text-slate-400 items-center">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-user text-green-500"></i> Assignee: <span class="font-bold text-slate-700 dark:text-slate-300">${t.assignedTo}</span></span>
-                        <span class="flex items-center gap-1"><i class="fa-regular fa-calendar-check text-red-400"></i> Due: <span class="font-bold ${new Date(t.dueDate) < new Date() && t.status !== 'COMPLETED' ? 'text-red-500' : 'text-slate-700 dark:text-slate-300'}">${formatDateUtc(t.dueDate)}</span></span>
-                        <span class="flex items-center gap-1"><i class="fa-regular fa-clock text-slate-400"></i> Created: ${t.createdAt?.toDate ? t.createdAt.toDate().toLocaleDateString() : 'Unknown'}</span>
-                        ${t.status !== 'COMPLETED' ? `<button onclick="updateTaskStatus('${t.id}', 'COMPLETED')" class="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-[10px] font-bold transition ml-auto"><i class="fa-solid fa-check"></i> Mark Done</button>` : ''}
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight truncate">${t.title}</h4>
+                        ${t.description ? `<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">${t.description}</p>` : ''}
                     </div>
-                     ${t.status !== 'COMPLETED' ? `<button onclick="deleteTask('${t.id}', '${t.status}')" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 transition w-6 h-6 rounded flex items-center justify-center hover:bg-red-50 dark:hover:bg-slate-700" title="Delete Task"><i class="fa-solid fa-trash text-xs"></i></button>` : `<div class="absolute top-4 right-4 text-slate-300" title="Completed tasks cannot be deleted"><i class="fa-solid fa-lock text-[10px]"></i></div>`}
+                    ${canDelete ? `<button onclick="deleteTask('${t.id}', '${t.status}')" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition w-6 h-6 flex items-center justify-center shrink-0" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>` : `<div class="w-6 h-6 flex items-center justify-center shrink-0 text-slate-200" title="Locked"><i class="fa-solid fa-lock text-[10px]"></i></div>`}
                 </div>
-            `).join('');
+
+                <!-- Priority + Assignee -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    ${getPriorityBadge(t.priority)}
+                    <span class="inline-flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-user text-[8px] text-green-500"></i> ${t.assignedTo || '—'}
+                    </span>
+                    <span class="inline-flex items-center gap-1 text-[9px] text-slate-400 ml-auto">
+                        <i class="fa-regular fa-clock text-[8px]"></i> ${createdStr}
+                    </span>
+                </div>
+
+                <!-- Due Date -->
+                <div class="text-[11px] flex items-center gap-1">
+                    <i class="fa-regular fa-calendar-check text-slate-400 text-[10px]"></i>
+                    ${getDueDateHtml(t.dueDate, t.status)}
+                </div>
+
+                ${t.attachmentUrl ? `<a href="${t.attachmentUrl}" target="_blank" class="inline-flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-paperclip text-[9px]"></i> View Attachment</a>` : ''}
+
+                <!-- Status Control -->
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-50 dark:border-slate-700/50">
+                    <label class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Status:</label>
+                    <select onchange="updateTaskStatus('${t.id}', this.value)" class="flex-1 text-[10px] font-bold px-2 py-1 rounded-lg border ${getTaskStatusClass(t.status)} outline-none focus:ring-2 focus:ring-green-500/30 transition appearance-none">
+                        ${statusOptions}
+                    </select>
+                    ${t.status !== 'COMPLETED' ? `<button onclick="updateTaskStatus('${t.id}', 'COMPLETED')" class="shrink-0 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1"><i class="fa-solid fa-check"></i> Done</button>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
 };
+
 
 window.handleCreateTask = async (e) => {
     e.preventDefault();
@@ -2856,19 +2953,42 @@ window.handleCreateTask = async (e) => {
     btn.disabled = true;
 
     try {
-        const title = document.getElementById('task-title').value;
-        const desc = document.getElementById('task-desc').value;
+        const title = document.getElementById('task-title').value.trim();
+        const desc = document.getElementById('task-desc').value.trim();
         const assignee = document.getElementById('task-assignee').value;
         const dueDate = document.getElementById('task-due-date').value;
+        const priority = document.getElementById('task-priority')?.value || 'MEDIUM';
+        const attachmentInput = document.getElementById('task-attachment');
+        const file = attachmentInput?.files?.[0];
+
+        let attachmentUrl = null;
+
+        if (file) {
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Uploading...';
+            try {
+                const { ref: storRef, uploadBytesResumable: ubr, getDownloadURL: gdl } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js');
+                const storageRef = storRef(storage, `tasks/${userData.companyId}/${Date.now()}_${file.name}`);
+                const uploadTask = ubr(storageRef, file);
+                await new Promise((resolve, reject) => uploadTask.on('state_changed', null, reject, resolve));
+                attachmentUrl = await gdl(storageRef);
+            } catch (attachErr) {
+                console.warn('Attachment upload failed:', attachErr);
+                showToast('Attachment upload failed, saving task without it.', 'warning');
+            }
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+        }
 
         await addDoc(collection(db, "tasks"), {
-            title: title,
+            title,
             description: desc,
             assignedTo: assignee,
             assignedBy: userData.email,
+            assignedByName: userData.name || userData.email,
             companyId: userData.companyId,
             status: 'PENDING',
-            dueDate: dueDate,
+            priority,
+            dueDate,
+            attachmentUrl,
             createdAt: serverTimestamp()
         });
 
@@ -2882,6 +3002,7 @@ window.handleCreateTask = async (e) => {
         btn.disabled = false;
     }
 };
+
 
 window.deleteTask = async (taskId, status) => {
     if (status === 'COMPLETED') {
@@ -2915,8 +3036,10 @@ window.updateTaskStatus = async (taskId, newStatus) => {
 function getTaskStatusClass(status) {
     switch (status) {
         case 'COMPLETED': return 'bg-green-100 text-green-700 border-green-200';
-        case 'IN_PROGRESS': return 'bg-green-100 text-green-700 border-green-200';
-        default: return 'bg-amber-100 text-amber-700 border-amber-200';
+        case 'IN_PROGRESS': return 'bg-blue-100 text-blue-700 border-blue-200';
+        case 'ON_HOLD': return 'bg-slate-100 text-slate-600 border-slate-200';
+        case 'REOPENED': return 'bg-purple-100 text-purple-700 border-purple-200';
+        default: return 'bg-amber-100 text-amber-700 border-amber-200'; // PENDING
     }
 }
 
@@ -6355,24 +6478,18 @@ const getStatusBadgeClass = (s) => {
 
 const getSymbol = (c) => ({ 'USD': '$', 'EUR': '€', 'GBP': '£' }[c] || '₹');
 
-const compressImage = (file) => new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const MAX_WIDTH = 600;
-            const scale = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scale;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL('image/jpeg', 0.7));
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-});
+const compressImage = async (file) => {
+    try {
+        const path = `uploads/${window.userData?.docId || 'anon'}_${Date.now()}_${file.name}`;
+        const storageRef = ref(window.storage, path);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        await new Promise((resolve, reject) => uploadTask.on('state_changed', null, reject, resolve));
+        return await getDownloadURL(uploadTask.snapshot.ref);
+    } catch (err) {
+        console.error("Storage upload failed", err);
+        throw err;
+    }
+};
 
 // --- My Claims Logic (Admin/Manager Self-Service) ---
 
@@ -6534,44 +6651,20 @@ window.handleFileSelect = async (input) => {
     try {
         let imageUrl = '';
 
-        // Attempt ImageKit Upload first
+        // Upload to Firebase Storage
         try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('fileName', file.name);
-            formData.append('useUniqueFileName', 'true');
-            formData.append('folder', '/admin_receipts');
-
-            const authHeader = 'Basic ' + btoa(IMAGEKIT_PRIVATE_KEY + ':');
-
-            const response = await fetch(IMAGEKIT_URL, {
-                method: 'POST',
-                body: formData,
-                headers: { 'Authorization': authHeader }
+            // Directly to Firebase Storage as requested by user
+            const storageRef = ref(storage, 'receipts/' + (file.name + '_' + Date.now()));
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            
+            await new Promise((resolve, reject) => {
+                uploadTask.on('state_changed', null, reject, resolve);
             });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error('ImageKit Upload failed: ' + (errData.message || response.statusText));
-            }
-            const data = await response.json();
-            imageUrl = data.url;
-        } catch (imgKitErr) {
-            console.warn("ImageKit upload failed, falling back to Firebase Storage", imgKitErr);
-            try {
-                const storageRef = ref(storage, 'admin_receipts/' + (file.name + '_' + Date.now()));
-                const reader = new FileReader();
-                const dataUrl = await new Promise((resolve, reject) => {
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-                await uploadString(storageRef, dataUrl, 'data_url');
-                imageUrl = await getDownloadURL(storageRef);
-            } catch (fbErr) {
-                console.warn("Firebase Storage fallback failed, using local compression.", fbErr);
-                imageUrl = await compressImage(file);
-            }
+            
+            imageUrl = await getDownloadURL(storageRef);
+        } catch (fbErr) {
+            console.warn("Firebase Storage upload failed, using local compression.", fbErr);
+            imageUrl = await compressImage(file);
         }
 
         hiddenInput.value = imageUrl;
@@ -7731,6 +7824,91 @@ window.openAccountCenter = async () => {
 
     window.loadAccountDelegations();
 };
+
+// --- Missing Account Center Bridge Functions ---
+
+window.openAvatarUploadPanel = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        showToast("Uploading avatar...", "info");
+        try {
+            const storageRef = ref(storage, `avatars/${userData.docId || auth.currentUser.uid}/${Date.now()}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            
+            await new Promise((resolve, reject) => {
+                uploadTask.on('state_changed', null, reject, resolve);
+            });
+            
+            const url = await getDownloadURL(storageRef);
+            
+            // Update Firestore
+            if (userData.docId) {
+                await updateDoc(doc(db, "users", userData.docId), { avatarUrl: url });
+                userData.avatarUrl = url;
+                window.userData = userData;
+                // Update UI immediately
+                const acAvatar = document.getElementById('ac-avatar');
+                if (acAvatar) {
+                    acAvatar.style.backgroundImage = `url(${url})`;
+                    acAvatar.style.backgroundSize = 'cover';
+                    acAvatar.textContent = '';
+                }
+                showToast("Avatar updated successfully!", "success");
+            }
+        } catch (err) {
+            console.error("Avatar upload failed:", err);
+            showToast("Failed to upload avatar", "error");
+        }
+    };
+    input.click();
+};
+
+window.copyShareUrl = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        showToast("Workspace link copied to clipboard!", "success");
+    }).catch(() => {
+        showToast("Failed to copy link", "error");
+    });
+};
+
+window.shareAccountCenter = () => {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Explyra Account Details',
+            text: `Connect with me on Explyra. Email: ${userData.email}`,
+            url: window.location.href
+        }).catch(() => {});
+    } else {
+        window.copyShareUrl();
+    }
+};
+
+window.installPwa = () => {
+    if (window.deferredPrompt) {
+        window.deferredPrompt.prompt();
+        window.deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                showToast("Installing Explyra...", "success");
+            }
+            window.deferredPrompt = null;
+        });
+    } else {
+        showToast("PWA installation not available or already installed.", "info");
+    }
+};
+
+window.openAdminPasswordChange = () => {
+    showToast("Opening profile security...", "info");
+    // Implementation can be added as a modal or redirect
+    window.location.hash = '#security'; 
+};
+
 
 window.sendAdminPhoneOtp = async () => {
     if (!userData || (userData.role || '').toUpperCase() !== 'ADMIN') {
@@ -9297,13 +9475,11 @@ window.sendResetToConfirmedUser = async () => {
         await sendPasswordResetEmail(auth, email);
         showToast('Reset email sent!', 'success');
         setTimeout(() => window.backToIdentifier(), 2000);
-    } catch (err) {
-        showToast(err.message, 'error');
     } finally {
         if (resetBtn) {
             resetBtn.disabled = false;
             resetBtn.innerHTML = originalText;
-        }coc
+        }
     }
 };
 

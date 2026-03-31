@@ -4000,110 +4000,98 @@
         }
     </script>
     <script type="module">
-        // Robust Multi-Step Auth Bridge
-        // This ensures functions are available even if the main module loads slowly or across different base paths
+        // --- Safe module bootstrap with screen recovery ---
+        let _adminModuleLoaded = false;
+
         const ensureLogic = async () => {
-            if (!window.resolveUserIdentity) {
-                // Just import the module; it sets globals on window
-                await import('/js/admin-logic.js');
+            if (_adminModuleLoaded) return;
+            await import('./js/admin-logic.js?v=' + Date.now());
+            _adminModuleLoaded = true;
+        };
+
+        const recoverPortalScreens = () => {
+            const authSc = document.getElementById('auth-screen');
+            const dashSc = document.getElementById('dashboard-screen');
+            if (!authSc || !dashSc) return;
+            const authUser = window.currentUser || window.auth?.currentUser || null;
+            if (authUser) {
+                authSc.classList.add('hidden');
+                dashSc.classList.remove('hidden');
+                return;
+            }
+            const authHidden = authSc.classList.contains('hidden') || getComputedStyle(authSc).display === 'none';
+            const dashHidden = dashSc.classList.contains('hidden') || getComputedStyle(dashSc).display === 'none';
+            if (authHidden && dashHidden) {
+                authSc.classList.remove('hidden');
+                dashSc.classList.add('hidden');
+                console.warn('[admin bootstrap] Recovered from blank state.');
             }
         };
 
-        if (!window.handleIdentifierNext) {
-            window.handleIdentifierNext = async (e) => {
-                if (e) e.preventDefault();
+        // --- Non-recursive auth bridge using isBridge flag ---
+        const bridge = (fn) => {
+            const wrapper = async (...args) => {
                 await ensureLogic();
-                return window.handleIdentifierNext(e);
+                if (window[fn] && !window[fn].isBridge) return window[fn](...args);
+                console.error(`[admin bridge] ${fn} not defined after module load`);
             };
+            wrapper.isBridge = true;
+            return wrapper;
+        };
+
+        window.handleIdentifierNext = bridge('handleIdentifierNext');
+        window.handleAccountActivationVerify = bridge('handleAccountActivationVerify');
+        window.handleAccountActivation = bridge('handleAccountActivation');
+        window.handleFinalLogin = bridge('handleFinalLogin');
+        window.forgotPassword = bridge('forgotPassword');
+        window.handleForgotPasswordNext = bridge('handleForgotPasswordNext');
+        window.sendResetToConfirmedUser = bridge('sendResetToConfirmedUser');
+        window.toggleLoginPassword = bridge('toggleLoginPassword');
+
+        // Password strength utility
+        window.updateStrength = function (password) {
+            const rules = { len: password.length >= 8, cap: /[A-Z]/.test(password), low: /[a-z]/.test(password), num: /[0-9]/.test(password) };
+            Object.keys(rules).forEach(r => {
+                const el = document.getElementById('rule-' + r);
+                if (el) el.classList.toggle('met', rules[r]);
+            });
+            let strength = 0;
+            if (rules.len && rules.cap && rules.low && rules.num) strength = 3;
+            else if (rules.len && (rules.cap || rules.low) && rules.num) strength = 2;
+            else if (password.length > 0) strength = 1;
+            window.currentPasswordStrength = strength;
+            ['bar-1', 'bar-2', 'bar-3'].forEach((id, i) => {
+                const b = document.getElementById(id);
+                if (!b) return;
+                b.style.background = '';
+                if (i < strength) b.style.background = ['#ef4444', '#f59e0b', '#10b981'][strength - 1];
+            });
+        };
+
+        // Error recovery listeners
+        window.addEventListener('error', () => setTimeout(recoverPortalScreens, 0));
+        window.addEventListener('unhandledrejection', () => setTimeout(recoverPortalScreens, 0));
+
+        // Boot module
+        try {
+            await ensureLogic();
+        } catch (bootErr) {
+            console.error('[admin bootstrap] Module failed:', bootErr);
+            recoverPortalScreens();
         }
 
-        window.handleAccountActivationVerify = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleAccountActivationVerify(e);
-        };
-
-        window.handleAccountActivation = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleAccountActivation(e);
-        };
-
-        window.handleFinalLogin = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleFinalLogin(e);
-        };
-
-        window.forgotPassword = async () => {
-            await ensureLogic();
-            return window.forgotPassword();
-        };
-
-        window.handleForgotPasswordNext = async (e) => {
-            if (e) e.preventDefault();
-            await ensureLogic();
-            return window.handleForgotPasswordNext(e);
-        };
-
-        window.sendResetToConfirmedUser = async () => {
-            await ensureLogic();
-            return window.sendResetToConfirmedUser();
-        };
-
-        window.toggleLoginPassword = async () => {
-            await ensureLogic();
-            return window.toggleLoginPassword();
-        };
-
-        // Accessibility & Utility
-        window.updateStrength = function (password) {
-            const rules = {
-                length: password.length >= 8,
-                upper: /[A-Z]/.test(password),
-                lower: /[a-z]/.test(password),
-                number: /[0-9]/.test(password)
-            };
-
-            let strength = 0;
-            if (rules.length) strength++;
-            if (rules.upper && rules.lower) strength++;
-            if (rules.number) strength++;
-
-            Object.keys(rules).forEach(rule => {
-                const el = document.getElementById(`rule-${rule}`);
-                if (el) {
-                    if (rules[rule]) {
-                        el.classList.add('met');
-                        const icon = el.querySelector('i');
-                        if (icon) {
-                            icon.classList.remove('fa-circle');
-                            icon.classList.add('fa-check-circle');
-                        }
-                    } else {
-                        el.classList.remove('met');
-                        const icon = el.querySelector('i');
-                        if (icon) {
-                            icon.classList.remove('fa-check-circle');
-                            icon.classList.add('fa-circle');
-                        }
-                    }
-                }
-            });
-
-            for (let i = 1; i <= 3; i++) {
-                const bar = document.getElementById(`bar-${i}`);
-                if (bar) {
-                    bar.classList.remove('weak', 'moderate', 'strong');
-                    if (i <= strength) {
-                        if (strength === 1) bar.classList.add('weak');
-                        else if (strength === 2) bar.classList.add('moderate');
-                        else if (strength === 3) bar.classList.add('strong');
-                    }
-                }
+        // Periodic recovery checks
+        [200, 800, 1600, 2800, 4200].forEach(d => setTimeout(recoverPortalScreens, d));
+        setInterval(() => {
+            const authUser = window.currentUser || window.auth?.currentUser || null;
+            if (!authUser) return;
+            if (!window.__adminAuthHeartbeat || (Date.now() - window.__adminAuthHeartbeat) > 30000) {
+                const authSc = document.getElementById('auth-screen');
+                const dashSc = document.getElementById('dashboard-screen');
+                if (authSc) authSc.classList.add('hidden');
+                if (dashSc) dashSc.classList.remove('hidden');
             }
-            window.currentPasswordStrength = strength;
-        };
+        }, 15000);
     </script>
 </body>
 

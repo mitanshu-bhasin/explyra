@@ -63,6 +63,37 @@
 
         initTheme();
     </script>
+    <!-- Early global stubs - available before module scripts load -->
+    <script>
+        // Safe early stub for toggleMainView - delegates to full impl once loaded
+        window.toggleMainView = function(viewId, options) {
+            const viewDashboard = document.getElementById('main-view-dashboard');
+            const viewMessages = document.getElementById('main-view-messages');
+            if (!viewDashboard || !viewMessages) return;
+            if (viewId === 'messages') {
+                viewDashboard.classList.add('hidden');
+                viewMessages.classList.remove('hidden');
+                viewMessages.style.display = 'flex';
+                viewMessages.style.flexDirection = 'column';
+                // Try to call full impl if loaded
+                if (window.fetchChatUsers) { window.fetchChatUsers(); window.selectChat && window.selectChat('global'); }
+            } else {
+                viewMessages.classList.add('hidden');
+                viewMessages.style.display = 'none';
+                viewDashboard.classList.remove('hidden');
+            }
+        };
+        window.toggleEmpView = function(view) {
+            const sections = ['section-claims', 'section-tasks', 'section-financials', 'section-scheduler'];
+            sections.forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = view === 'tasks' ? 'section-tasks' : view === 'scheduler' ? 'section-scheduler' : view === 'financials' ? 'section-financials' : 'section-claims';
+            const el = document.getElementById(target);
+            if (el) { el.classList.remove('hidden'); el.style.display = ''; }
+        };
+    </script>
     <link rel="stylesheet" href="css/responsive-fixes.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -3954,6 +3985,17 @@
 
             if (!authSc || !dashSc) return;
 
+            // If messages view is currently active, don't interfere
+            const isMessagesActive = mainMsg && !mainMsg.classList.contains('hidden');
+            if (isMessagesActive) {
+                // Just ensure auth/dashboard screens are correctly shown
+                authSc.classList.add('hidden');
+                authSc.style.display = 'none';
+                dashSc.classList.remove('hidden');
+                dashSc.style.display = 'flex';
+                return;
+            }
+
             authSc.classList.add('hidden');
             authSc.style.display = 'none';
             dashSc.classList.remove('hidden');
@@ -3983,6 +4025,7 @@
             ensureVisibleFallbackCard();
         };
 
+
         const recoverPortalScreens = () => {
             const authSc = document.getElementById('auth-screen');
             const dashSc = document.getElementById('dashboard-screen');
@@ -4005,6 +4048,39 @@
             }
         };
 
+        // --- Robust Auth Bridge ---
+        const ensureAuthLogic = async () => {
+            if (window.handleIdentifierNext && !window.handleIdentifierNext.isBridge) return;
+            await import('./js/emp-auth.js?v=' + Date.now());
+        };
+
+        window.handleIdentifierNext = async (e) => {
+            if (e) e.preventDefault();
+            await ensureAuthLogic();
+            return window.handleIdentifierNext(e);
+        };
+        window.handleIdentifierNext.isBridge = true;
+
+        window.handleLogin = async (e) => {
+            if (e) e.preventDefault();
+            await ensureAuthLogic();
+            return window.handleLogin(e);
+        };
+        window.handleLogin.isBridge = true;
+
+        window.forgotPassword = async () => {
+            await ensureAuthLogic();
+            return window.forgotPassword();
+        };
+        window.forgotPassword.isBridge = true;
+
+        window.handleAccountActivation = async (e) => {
+            if (e) e.preventDefault();
+            await ensureAuthLogic();
+            return window.handleAccountActivation(e);
+        };
+        window.handleAccountActivation.isBridge = true;
+        
         window.addEventListener('error', () => {
             setTimeout(recoverPortalScreens, 0);
         });
@@ -4017,7 +4093,7 @@
         }
 
         try {
-            await import('/js/emp-auth.js?v=' + Date.now());
+            await ensureAuthLogic();
         } catch (bootErr) {
             console.error('[emp bootstrap] emp-auth import failed:', bootErr);
             if (typeof window.showToast === 'function') {

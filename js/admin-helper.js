@@ -1,28 +1,14 @@
 
-window.compressImage = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const maxWidth = 800;
-                const scaleSize = maxWidth / img.width;
-                if (img.width > maxWidth) {
-                    canvas.width = maxWidth;
-                    canvas.height = img.height * scaleSize;
-                } else {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                }
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL(file.type, 0.7));
-            };
-            img.onerror = (err) => reject(err);
-        };
-        reader.onerror = (err) => reject(err);
-    });
+window.compressImage = async (file) => {
+    try {
+        const { getStorage, ref, uploadBytesResumable, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js");
+        const path = `uploads/${window.userData?.docId || 'anon'}_${Date.now()}_${file.name}`;
+        const storageRef = ref(window.storage, path);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        await new Promise((resolve, reject) => uploadTask.on('state_changed', null, reject, resolve));
+        return await getDownloadURL(uploadTask.snapshot.ref);
+    } catch (err) {
+        console.error("Storage upload failed", err);
+        throw err;
+    }
 };

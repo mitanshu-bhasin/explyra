@@ -403,7 +403,7 @@
             try {
                 // Wait for admin-logic to load resolveEmailToPrimary
                 if (!window.resolveEmailToPrimary) {
-                    await import('/js/admin-logic.js');
+                    await import('./js/admin-logic.js');
                 }
                 
                 const resolvedEmail = await window.resolveEmailToPrimary(identifier);
@@ -474,7 +474,7 @@
 
             try {
                 if (!window.resolveUserIdentity) {
-                    const { resolveUserIdentity } = await import('/js/admin-logic.js');
+                    const { resolveUserIdentity } = await import('./js/admin-logic.js');
                     window.resolveUserIdentity = resolveUserIdentity;
                 }
 

@@ -2,7 +2,6 @@
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, onSnapshot, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 import { checkSpam } from './spam-filter.js';
-import { IMGBB_URL } from './emp-utils.js';
 
 window.expensesData = [];
 window.expensesUnsub = null;

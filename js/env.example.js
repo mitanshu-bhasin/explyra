@@ -29,9 +29,5 @@ window.EXPLYRA_CONFIG = {
     },
     emailjs: {
         publicKey: ""
-    },
-    imgbb: {
-        url: "/api/imgbb",
-        apiKey: "HANDLED_BY_PROXY"
     }
 };

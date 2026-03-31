@@ -200,7 +200,7 @@
         // Environment Initialization
         const initExplyra = async () => {
             if (!window.EXPLYRA_CONFIG) {
-                try { await import('/js/env.js'); } catch(e) { console.warn("Using fallback config"); }
+                try { await import('./js/env.js'); } catch(e) { console.warn("Using fallback config"); }
             }
             const config = window.EXPLYRA_CONFIG?.firebase || {
                 apiKey: "", 
