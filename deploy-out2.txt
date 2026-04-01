@@ -1,0 +1,25 @@
+
+[1m[37m===[39m Deploying to 'explyras'...[22m
+
+[36m[1mi [22m[39m deploying [1mhosting[22m
+[36m[1mi  hosting[explyras]:[22m[39m beginning deploy...
+[36m[1mi  hosting[explyras]:[22m[39m found 1586 files in [1mminify_xx[22m
+[32m[1m+  hosting[explyras]:[22m[39m file upload complete
+[36m[1mi  hosting[explyra]:[22m[39m beginning deploy...
+[36m[1mi  hosting[explyra]:[22m[39m found 1586 files in [1mminify_xx[22m
+- [1m[36m hosting:[39m[22m upload complete
+[32m[1m+  hosting[explyra]:[22m[39m file upload complete
+[36m[1mi  hosting[explyras]:[22m[39m finalizing version...
+[36m[1mi  hosting[explyra]:[22m[39m finalizing version...
+[32m[1m+  hosting[explyras]:[22m[39m version finalized
+[36m[1mi  hosting[explyras]:[22m[39m releasing new version...
+[32m[1m+  hosting[explyra]:[22m[39m version finalized
+[36m[1mi  hosting[explyra]:[22m[39m releasing new version...
+[32m[1m+  hosting[explyras]:[22m[39m release complete
+[32m[1m+  hosting[explyra]:[22m[39m release complete
+
+[32m[1m+ [22m[39m [1m[4mDeploy complete![24m[22m
+
+[1mProject Console:[22m https://console.firebase.google.com/project/explyras/overview
+[1mHosting URL:[22m https://explyras.web.app
+[1mHosting URL:[22m https://explyra.web.app

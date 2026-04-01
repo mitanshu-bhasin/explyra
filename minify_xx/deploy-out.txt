@@ -1,0 +1,15 @@
+
+[1m[37m===[39m Deploying to 'explyras'...[22m
+
+[36m[1mi [22m[39m deploying [1mhosting[22m
+[36m[1mi  hosting[explyras]:[22m[39m beginning deploy...
+[36m[1mi  hosting[explyras]:[22m[39m found 1586 files in [1mminify_xx[22m
+[32m[1m+  hosting[explyras]:[22m[39m file upload complete
+[36m[1mi  hosting[explyra]:[22m[39m beginning deploy...
+[36m[1mi  hosting[explyra]:[22m[39m found 1586 files in [1mminify_xx[22m
+- [1m[36m hosting:[39m[22m upload complete
+[32m[1m+  hosting[explyra]:[22m[39m file upload complete
+[36m[1mi  hosting[explyras]:[22m[39m finalizing version...
+[36m[1mi  hosting[explyra]:[22m[39m finalizing version...
+
+[1m[31mError:[39m[22m Request to https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/explyra/versions/1a2eda6a31591ad9?updateMask=status%2Cconfig had HTTP Error: 400, Must supply a 3xx status code for redirects

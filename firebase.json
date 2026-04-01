@@ -1,98 +1,136 @@
 {
-  "hosting": {
-    "public": "minify_xx",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "headers": [
-      {
-        "source": "/assets/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
-          }
-        ]
-      },
-      {
-        "source": "/css/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
-          }
-        ]
-      },
-      {
-        "source": "/js/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
-          }
-        ]
-      },
-      {
-        "source": "**/*.xml",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=3600, must-revalidate"
-          }
-        ]
-      }
-    ],
-    "redirects": [
-      {
-        "source": "/403.html",
-        "destination": "/403.html",
-        "type": 200
-      },
-      {
-        "source": "/404.html",
-        "destination": "/404.html",
-        "type": 200
-      },
-      {
-        "source": "/500.html",
-        "destination": "/500.html",
-        "type": 200
-      },
-      {
-        "source": "/google1bc6c1d290e2d8b1.html",
-        "destination": "/google1bc6c1d290e2d8b1.html",
-        "type": 200
-      },
-      {
-        "source": "/yandex_fa0950c8693cbdb7.html",
-        "destination": "/yandex_fa0950c8693cbdb7.html",
-        "type": 200
-      },
-      {
-        "source": "/pinterest-66eba.html",
-        "destination": "/pinterest-66eba.html",
-        "type": 200
-      },
-      {
-        "source": "/:slug.html",
-        "destination": "/:slug",
-        "type": 301
-      },
-      {
-        "source": "/:path*",
-        "destination": "https://explyra.me/:path*",
-        "type": 301
-      }
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  },
+  "hosting": [
+    {
+      "public": "minify_xx",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "/assets/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "/css/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "/js/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.xml",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=3600, must-revalidate"
+            }
+          ]
+        }
+      ],
+      "redirects": [
+        {
+          "source": "/:slug.html",
+          "destination": "/:slug",
+          "type": 301
+        },
+        {
+          "source": "/:path*",
+          "destination": "https://explyra.me/:path*",
+          "type": 301
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "explyras"
+    },
+    {
+      "public": "minify_xx",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "/assets/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "/css/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "/js/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.xml",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=3600, must-revalidate"
+            }
+          ]
+        }
+      ],
+      "redirects": [
+        {
+          "source": "/:slug.html",
+          "destination": "/:slug",
+          "type": 301
+        },
+        {
+          "source": "/:path*",
+          "destination": "https://explyra.me/:path*",
+          "type": 301
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "explyra"
+    }
+  ],
   "functions": {
     "source": "firebase-functions"
   }

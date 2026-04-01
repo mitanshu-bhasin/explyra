@@ -8,7 +8,7 @@ import { handleAIChatRequest } from './chat-ai-helper.js';
 
 
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw"),
+    apiKey: (window.EXPLYRA_CONFIG?.firebase?.apiKey || "AIzaSyAoDQhHlUbiUl57azSrst5M2eGDeQ8EydA"),
     authDomain: "explyras.firebaseapp.com",
     databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "explyras",

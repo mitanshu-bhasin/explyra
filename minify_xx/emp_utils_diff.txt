@@ -1,0 +1,41 @@
+diff --git a/js/emp-utils.js b/js/emp-utils.js
+index 49b4b15..deb609e 100644
+--- a/js/emp-utils.js
++++ b/js/emp-utils.js
+@@ -454,15 +454,28 @@ window.toggleMainView = (viewId, options = {}) => {
+     });
+ 
+     if (viewId === 'dashboard') {
+-        if (viewDashboard) viewDashboard.classList.remove('hidden');
+-        if (viewDashboard) viewDashboard.classList.add('flex-1', 'overflow-y-auto');
+-        if (viewMessages) viewMessages.classList.add('hidden');
+-        if (viewMessages) viewMessages.classList.remove('flex-1', 'flex', 'flex-col');
++        if (viewDashboard) {
++            viewDashboard.classList.remove('hidden');
++            viewDashboard.classList.add('flex-1', 'overflow-y-auto');
++            viewDashboard.style.display = '';
++            viewDashboard.style.visibility = '';
++        }
++        if (viewMessages) {
++            viewMessages.classList.add('hidden');
++            viewMessages.classList.remove('flex-1', 'flex', 'flex-col');
++            viewMessages.style.display = 'none';
++        }
+     } else if (viewId === 'messages') {
+-        if (viewDashboard) viewDashboard.classList.add('hidden');
+-        if (viewDashboard) viewDashboard.classList.remove('flex-1', 'overflow-y-auto');
+-        if (viewMessages) viewMessages.classList.remove('hidden');
+-        if (viewMessages) viewMessages.classList.add('flex-1', 'flex', 'flex-col');
++        if (viewDashboard) {
++            viewDashboard.classList.add('hidden');
++            viewDashboard.classList.remove('flex-1', 'overflow-y-auto');
++            viewDashboard.style.display = 'none';
++        }
++        if (viewMessages) {
++            viewMessages.classList.remove('hidden');
++            viewMessages.classList.add('flex-1', 'flex', 'flex-col');
++            viewMessages.style.display = 'flex';
++        }
+ 
+         // Fetch chat users if not already fetched
+         if (window.fetchChatUsers) {

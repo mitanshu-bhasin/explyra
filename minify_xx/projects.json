@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "result": [
+    {
+      "projectId": "explyras",
+      "projectNumber": "411853553644",
+      "displayName": "explyra",
+      "name": "projects/explyras",
+      "resources": {
+        "hostingSite": "explyras",
+        "realtimeDatabaseInstance": "explyras-default-rtdb"
+      },
+      "state": "ACTIVE",
+      "etag": "1_9ece6a16-1953-413b-9f28-faa151b98e77"
+    }
+  ]
+}

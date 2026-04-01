@@ -1,0 +1,115 @@
+Line 607:     'overview', 'approvals', 'my-claims', 'tasks', 'users', 'roles', 'projects',
+Line 1847:         const optionalTabs = ['users', 'projects', 'settings', 'reports', 'audit
+Line 1882:             viewInvoices: true, viewCrm: true, viewTasks: true, viewProjects: tr
+Line 1944:     // Task Manager
+Line 1945:     const navTasks = document.getElementById('nav-tasks');
+Line 1946:     if (navTasks && (userData.permissions?.viewTasks || userData.role === 'ADMIN
+Line 1947:         navTasks.classList.remove('hidden');
+Line 1981:     ['overview', 'approvals', 'tasks', 'crm', 'ai', 'attendance', 'salary', 'cha
+Line 2009:         case 'tasks': return p.viewTasks || ['MANAGER', 'SENIOR_MANAGER'].includ
+Line 2047:     if (normalizedTab === 'tasks') renderTasks(); // Added tasks renderer
+Line 2692: async function renderTasks() {
+Line 2693:     document.getElementById('page-title').textContent = "Task Manager";
+Line 2705:         console.error("Error loading users for tasks:", e);
+Line 2710:                     <!-- Create Task Form -->
+Line 2715:                                 Assign New Task
+Line 2717:                             <form id="create-task-form" onsubmit="handleCreateTa
+Line 2719:                                     <label class="block text-xs font-bold text-s
+Line 2720:                                     <input type="text" id="task-title" class="in
+Line 2724:                                     <textarea id="task-desc" class="input-primar
+Line 2729:                                         <select id="task-priority" class="input-
+Line 2738:                                         <input type="date" id="task-due-date" cl
+Line 2743:                                     <select id="task-assignee" class="input-prim
+Line 2749:                                     <input type="file" id="task-attachment" acce
+Line 2751:                                 <button type="submit" id="btn-create-task" class
+Line 2752:                                     <span>Assign Task</span> <i class="fa-solid 
+Line 2758:                     <!-- Tasks List -->
+Line 2765:                                     <input type="text" id="task-search" onkeyup=
+Line 2767:                                 <select id="task-status-filter" onchange="filter
+Line 2775:                                 <select id="task-priority-filter" onchange="filt
+Line 2782:                                 <div id="task-count-badge" class="ml-auto text-[
+Line 2786:                         <div id="admin-tasks-list" class="flex-1 overflow-y-auto
+Line 2796:     const dueInput = document.getElementById('task-due-date');
+Line 2799:         // Fetch tasks
+Line 2802:             q = collection(db, "tasks");
+Line 2806:                 q = query(collection(db, "tasks"), where("companyId", "==", scop
+Line 2808:                 q = query(collection(db, "tasks"), where("companyId", "==", scop
+Line 2814:             const list = document.getElementById('admin-tasks-list');
+Line 2818:                 list.innerHTML = `<div class="col-span-full">${emptyState("No ta
+Line 2819:                 window.adminTasksData = [];
+Line 2824:             let tasks = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+Line 2825:             tasks.sort((a, b) => {
+Line 2831:             window.adminTasksData = tasks;
+Line 2832:             filterAdminTasks();
+Line 2837:         console.error("Error loading tasks:", e);
+Line 2838:         document.getElementById('admin-tasks-list').innerHTML = emptyState("Fail
+Line 2842: window.filterAdminTasks = () => {
+Line 2843:     const list = document.getElementById('admin-tasks-list');
+Line 2844:     if (!list || !window.adminTasksData) return;
+Line 2846:     const search = (document.getElementById('task-search')?.value || '').toLower
+Line 2847:     const statusFilter = document.getElementById('task-status-filter')?.value;
+Line 2848:     const priorityFilter = document.getElementById('task-priority-filter')?.valu
+Line 2850:     const filtered = window.adminTasksData.filter(t => {
+Line 2857:     const badge = document.getElementById('task-count-badge');
+Line 2858:     if (badge) badge.textContent = `${filtered.length} Task${filtered.length !==
+Line 2861:         list.innerHTML = `<div class="col-span-full">${emptyState("No tasks matc
+Line 2905:                     <div class="w-8 h-8 rounded-lg ${getTaskStatusClass(t.status
+Line 2906:                         <i class="fa-solid ${t.status === 'COMPLETED' ? 'fa-chec
+Line 2912:                     ${canDelete ? `<button onclick="deleteTask('${t.id}', '${t.s
+Line 2937:                     <select onchange="updateTaskStatus('${t.id}', this.value)" c
+Line 2940:                     ${t.status !== 'COMPLETED' ? `<button onclick="updateTaskSta
+Line 2948: window.handleCreateTask = async (e) => {
+Line 2950:     if (window.guardDemoMutation('Task creation')) return;
+Line 2951:     const btn = document.getElementById('btn-create-task');
+Line 2956:         const title = document.getElementById('task-title').value.trim();
+Line 2957:         const desc = document.getElementById('task-desc').value.trim();
+Line 2958:         const assignee = document.getElementById('task-assignee').value;
+Line 2959:         const dueDate = document.getElementById('task-due-date').value;
+Line 2960:         const priority = document.getElementById('task-priority')?.value || 'MED
+Line 2961:         const attachmentInput = document.getElementById('task-attachment');
+Line 2970:                 const storageRef = storRef(storage, `tasks/${userData.companyId}
+Line 2971:                 const uploadTask = ubr(storageRef, file);
+Line 2972:                 await new Promise((resolve, reject) => uploadTask.on('state_chan
+Line 2976:                 showToast('Attachment upload failed, saving task without it.', '
+Line 2981:         await addDoc(collection(db, "tasks"), {
+Line 2995:         showToast("Task assigned successfully!", "success");
+Line 2998:         console.error("Task creation error:", err);
+Line 2999:         showToast("Failed to create task: " + err.message, "error");
+Line 3001:         btn.innerHTML = '<span>Assign Task</span> <i class="fa-solid fa-paper-pl
+Line 3007: window.deleteTask = async (taskId, status) => {
+Line 3009:         showToast("Completed tasks cannot be deleted.", "error");
+Line 3012:     if (window.guardDemoMutation('Task deletion')) return;
+Line 3013:     if (!await showInputPromise("Delete Task", "Are you sure you want to delete 
+Line 3015:         await deleteDoc(doc(db, "tasks", taskId));
+Line 3016:         showToast("Task deleted.", "info");
+Line 3018:         showToast("Failed to delete task.", "error");
+Line 3022: window.updateTaskStatus = async (taskId, newStatus) => {
+Line 3024:         if (window.guardDemoMutation('Task status update')) return;
+Line 3025:         await updateDoc(doc(db, "tasks", taskId), {
+Line 3029:         showToast("Task status updated", "success");
+Line 3031:         console.error("Update task error:", err);
+Line 3032:         showToast("Failed to update task status", "error");
+Line 3036: function getTaskStatusClass(status) {
+Line 3113:     const tasksQuery = query(collection(db, "tasks"), where("companyId", "==", c
+Line 3117:     const tasksCountPromise = getQueryCountSafe(tasksQuery).catch(() => 0);
+Line 3145:     const [usersCount, tasksCount, expensesSnap, aiGlobalCount, aiThreadMessages
+Line 3147:         tasksCountPromise,
+Line 3169:     setUsageValue('usage-tasks-created', tasksCount);
+Line 3309:                                     <p class="text-[10px] font-bold text-slate-5
+Line 3310:                                     <p id="usage-tasks-created" class="text-xl f
+Line 5517:                     const uploadTask = uploadBytesResumable(storageRef, file);
+Line 5518:                     await new Promise((res, rej) => uploadTask.on('state_changed
+Line 5519:                     updateData.paymentProofUrl = await getDownloadURL(uploadTask
+Line 5591:                 const uploadTask = uploadBytesResumable(storageRef, file);
+Line 5592:                 await new Promise((res, rej) => uploadTask.on('state_changed', n
+Line 5593:                 updateData.paymentProofUrl = await getDownloadURL(uploadTask.sna
+Line 6485:         const uploadTask = uploadBytesResumable(storageRef, file);
+Line 6486:         await new Promise((resolve, reject) => uploadTask.on('state_changed', nu
+Line 6487:         return await getDownloadURL(uploadTask.snapshot.ref);
+Line 6658:             const uploadTask = uploadBytesResumable(storageRef, file);
+Line 6661:                 uploadTask.on('state_changed', null, reject, resolve);
+Line 7783:         const tabs = ['overview', 'approvals', 'tasks', 'my-claims', 'users', 'p
+Line 7841:             const uploadTask = uploadBytesResumable(storageRef, file);
+Line 7844:                 uploadTask.on('state_changed', null, reject, resolve);
+Line 8782:             { id: 'def-emp', name: 'EMPLOYEE', systemRole: true, description: 'B
+Line 8783:             { id: 'def-mgr', name: 'MANAGER', systemRole: true, description: 'Te

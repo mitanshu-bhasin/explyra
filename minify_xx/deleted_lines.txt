@@ -1,0 +1,33 @@
+-                            <div
+-                                class="p-4 border-b border-[#eaeaea] dark:border-[#333] flex justif
+-                                <div class="flex gap-3 items-center w-full">
+-                                    <div class="relative flex-1 max-w-sm">
+-                                        <i
+-                                            class="fa-solid fa-search absolute left-3 top-1/2 -tran
+-                                        <input type="text" id="emp-task-search" onkeyup="filterEmpT
+-                                            class="input-geist pl-8 text-xs py-1.5" placeholder="Se
+-                                    <button type="button" onclick="openEmpTaskModal()"
+-                                        class="btn-geist-primary text-[10px] py-1.5 px-3 whitespace
+-                                        <i class="fa-solid fa-plus mr-1"></i> New Task
+-                class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-betwe
+-                    <p class="text-xs text-slate-500 dark:text-slate-400">Create a task for yoursel
+-                        anyone.</p>
+-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 up
+-                        Title <span class="text-red-500">*</span></label>
+-                    <input type="text" id="emp-task-title" class="input-field w-full rounded-lg py-
+-                        required>
+-                    <label
+-                        class="block text-xs font-semibold text-slate-500 dark:text-slate-400 upper
+-                    <textarea id="emp-task-desc"
+-                        class="input-field w-full rounded-lg py-3 px-4 text-sm h-24 resize-none"></
+-                <div id="task-assignee-group">
+-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 up
+-                        To <span class="text-red-500">*</span></label>
+-                    <select id="emp-task-assignee" class="input-field w-full rounded-lg py-3 px-4 t
+-                        <option value="">Loading...</option>
+-                    </select>
+-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 up
+-                        Date <span class="text-red-500">*</span></label>
+-                    <input type="date" id="emp-task-due-date" class="input-field w-full rounded-lg 
+-                        required>
+-                        <span>Send</span>
