@@ -1,0 +1,1 @@
+export default{async fetch(e,t){const a=new URL(e.url),n="https://explyra-news-engine-411853553644.us-central1.run.app";if("/sitemap.xml"===a.pathname)return fetch(n+"/sitemap.xml");if("/feed.xml"===a.pathname)return fetch(n+"/feed.xml");if(a.pathname.startsWith("/article/")){const e=a.pathname.replace("/article/","/generated/");return fetch(n+e)}return t.ASSETS.fetch(e)}};

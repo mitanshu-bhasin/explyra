@@ -1,0 +1,12 @@
+{
+  "name": "explyra-ai-integration",
+  "version": "1.0.0",
+  "description": "Integration testing for Explyra AI with Google AI Studio",
+  "main": "generate.js",
+  "scripts": {
+    "start": "node generate.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0"
+  }
+}
