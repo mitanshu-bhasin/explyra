@@ -18,7 +18,8 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
     <link rel="apple-touch-icon" href="assets/images/explyra_logo.png">
-    <meta name="description" content="Use Admin on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
+    <meta name="description"
+        content="Use Admin on Explyra Suite. A high-performance, secure, and professional tool designed to optimize your workflow within the Explyra ecosystem.">
     <meta name="keywords" content="Explyra, Admin, Expense Approval, Dashboard, Management, Mitanshu Bhasin">
     <meta name="author" content="Mitanshu Bhasin, Explyra">
     <link rel="canonical" href="https://explyra.me/admin" />
@@ -38,7 +39,7 @@
     <meta name="twitter:image" content="https://explyra.me/assets/images/explyra_logo.png">
 
     <!-- Schema.org JSON-LD -->
-    
+
 
 
 
@@ -129,7 +130,7 @@
             --border-color: #eaeaea;
             --accent-color: #000000;
             --card-bg: #ffffff;
-            --card-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04);
+            --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.04);
             --sidebar-bg: #ffffff;
             --header-bg: rgba(255, 255, 255, 0.8);
             --radius-md: 0.75rem;
@@ -176,6 +177,7 @@
             margin-top: 8px;
             height: 4px;
         }
+
         .strength-bar {
             flex: 1;
             height: 100%;
@@ -183,12 +185,22 @@
             border-radius: 2px;
             transition: all 0.3s ease;
         }
+
         .dark .strength-bar {
             background: #333;
         }
-        .strength-bar.weak { background: #ef4444; }
-        .strength-bar.moderate { background: #f59e0b; }
-        .strength-bar.strong { background: #22c55e; }
+
+        .strength-bar.weak {
+            background: #ef4444;
+        }
+
+        .strength-bar.moderate {
+            background: #f59e0b;
+        }
+
+        .strength-bar.strong {
+            background: #22c55e;
+        }
 
         .password-rules {
             margin-top: 12px;
@@ -197,10 +209,12 @@
             border-radius: 8px;
             border: 1px solid #eaeaea;
         }
+
         .dark .password-rules {
             background: #0a0a0a;
             border-color: #262626;
         }
+
         .rule-item {
             display: flex;
             align-items: center;
@@ -209,10 +223,23 @@
             color: #666;
             margin-bottom: 4px;
         }
-        .dark .rule-item { color: #a1a1aa; }
-        .rule-item i { font-size: 10px; width: 12px; }
-        .rule-item.met { color: #22c55e; }
-        .rule-item.met i { color: #22c55e; }
+
+        .dark .rule-item {
+            color: #a1a1aa;
+        }
+
+        .rule-item i {
+            font-size: 10px;
+            width: 12px;
+        }
+
+        .rule-item.met {
+            color: #22c55e;
+        }
+
+        .rule-item.met i {
+            color: #22c55e;
+        }
 
         /* Chatbot Theme Override */
         #chatbot-toggle-btn {
@@ -240,8 +267,9 @@
 
         .vercel-card:hover {
             border-color: #999;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.04);
         }
+
         .dark .vercel-card:hover {
             border-color: #666;
             box-shadow: none;
@@ -280,7 +308,7 @@
         /* Microsoft-style Auth classes */
         .ms-auth-card {
             background: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             padding: 44px;
             width: 100%;
             max-width: 440px;
@@ -288,13 +316,47 @@
             position: relative;
             z-index: 10;
         }
-        .dark .ms-auth-card { background: #111; border: 1px solid #333; }
-        .ms-logo { width: 32px; height: 32px; margin-bottom: 24px; position: relative; }
-        .ms-logo img { height: 100%; width: auto; object-fit: contain; }
-        .ms-title { font-size: 24px; font-weight: 600; color: #1b1b1b; margin-bottom: 8px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .dark .ms-title { color: #fff; }
-        .ms-subtitle { font-size: 15px; color: #1b1b1b; margin-bottom: 24px; }
-        .dark .ms-subtitle { color: #ccc; }
+
+        .dark .ms-auth-card {
+            background: #111;
+            border: 1px solid #333;
+        }
+
+        .ms-logo {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .ms-logo img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .ms-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1b1b1b;
+            margin-bottom: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .dark .ms-title {
+            color: #fff;
+        }
+
+        .ms-subtitle {
+            font-size: 15px;
+            color: #1b1b1b;
+            margin-bottom: 24px;
+        }
+
+        .dark .ms-subtitle {
+            color: #ccc;
+        }
+
         .ms-input-line {
             width: 100%;
             border: none;
@@ -307,20 +369,66 @@
             border-radius: 0;
             transition: border-bottom-color 0.2s;
         }
-        .ms-input-line:focus { border-bottom-color: #0067b8; }
-        .ms-link { color: #0067b8; text-decoration: none; font-size: 13px; cursor: pointer; }
-        .top-50pct { top: 50%; }
-        .minus-translate-y-50pct { transform: translateY(-50%); }
-        .opacity-0 { opacity: 0; }
-        .opacity-100 { opacity: 1; }
-        .w-full { width: 100%; }
-        .relative { position: relative; }
-        .absolute { position: absolute; }
-        .pr-10 { padding-right: 2.5rem; }
-        .right-2 { right: 0.5rem; }
-        .cursor-pointer { cursor: pointer; }
-        .bg-none { background: none; }
-        .border-none { border: none; }
+
+        .ms-input-line:focus {
+            border-bottom-color: #0067b8;
+        }
+
+        .ms-link {
+            color: #0067b8;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .top-50pct {
+            top: 50%;
+        }
+
+        .minus-translate-y-50pct {
+            transform: translateY(-50%);
+        }
+
+        .opacity-0 {
+            opacity: 0;
+        }
+
+        .opacity-100 {
+            opacity: 1;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        .pr-10 {
+            padding-right: 2.5rem;
+        }
+
+        .right-2 {
+            right: 0.5rem;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .bg-none {
+            background: none;
+        }
+
+        .border-none {
+            border: none;
+        }
+
         .ms-btn-next {
             background: #000 !important;
             color: #fff !important;
@@ -334,7 +442,11 @@
             transition: opacity 0.2s;
             border-radius: 0 !important;
         }
-        .ms-btn-next:hover { opacity: 0.85; }
+
+        .ms-btn-next:hover {
+            opacity: 0.85;
+        }
+
         .ms-social-btn {
             display: flex;
             align-items: center;
@@ -350,15 +462,51 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .dark .ms-social-btn { background: #1a1a1a; border-color: #333; color: #fff; }
-        .ms-social-btn:hover { background: #f5f5f5; }
-        .dark .ms-social-btn:hover { background: #222; }
-        .ms-btn-emp { background: #f2f2f2 !important; border: 1px solid transparent !important; }
-        .dark .ms-btn-emp { background: #262626 !important; }
-        .ms-footer-text { font-size: 13px; margin-top: 24px; color: #1b1b1b; }
-        .dark .ms-footer-text { color: #ccc; }
-        .ms-business-footer { margin-top: 40px; text-align: center; font-size: 13px; color: #666; width: 440px; }
-        .dark .ms-business-footer { color: #999; }
+
+        .dark .ms-social-btn {
+            background: #1a1a1a;
+            border-color: #333;
+            color: #fff;
+        }
+
+        .ms-social-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .dark .ms-social-btn:hover {
+            background: #222;
+        }
+
+        .ms-btn-emp {
+            background: #f2f2f2 !important;
+            border: 1px solid transparent !important;
+        }
+
+        .dark .ms-btn-emp {
+            background: #262626 !important;
+        }
+
+        .ms-footer-text {
+            font-size: 13px;
+            margin-top: 24px;
+            color: #1b1b1b;
+        }
+
+        .dark .ms-footer-text {
+            color: #ccc;
+        }
+
+        .ms-business-footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            width: 440px;
+        }
+
+        .dark .ms-business-footer {
+            color: #999;
+        }
 
         /* Specialized Sections */
         .welcome-banner {
@@ -881,30 +1029,40 @@
                 scroll-behavior: auto !important;
             }
         }
+
         /* Step Transitions */
-        .step-container { position: relative; width: 100%; min-height: 380px; }
-        .step-content { 
-            position: absolute; 
+        .step-container {
+            position: relative;
+            width: 100%;
+            min-height: 380px;
+        }
+
+        .step-content {
+            position: absolute;
             inset: 0;
             width: 100%;
             height: auto;
-            opacity: 0; 
-            pointer-events: none; 
+            opacity: 0;
+            pointer-events: none;
             transform: translateX(50px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white; /* Prevent bleed */
+            background: white;
+            /* Prevent bleed */
             z-index: 1;
         }
-        .dark .step-content { background: #000; }
-        
-        .step-content.active { 
+
+        .dark .step-content {
+            background: #000;
+        }
+
+        .step-content.active {
             position: relative;
-            opacity: 1; 
-            pointer-events: auto; 
+            opacity: 1;
+            pointer-events: auto;
             transform: translateX(0);
             z-index: 2;
         }
-        
+
         .step-content.fade-out {
             opacity: 0;
             transform: translateX(-50px);
@@ -913,7 +1071,7 @@
 
         .ms-auth-card {
             background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             padding: 44px;
             width: 100%;
             max-width: 440px;
@@ -923,7 +1081,11 @@
             margin-bottom: 24px;
             transition: all 0.3s ease;
         }
-        .dark .ms-auth-card { background: #0a0a0a; border: 1px solid #333; }
+
+        .dark .ms-auth-card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+        }
     </style>
     <script>
         // ImageKit Config (relocated to window.EXPLYRA_CONFIG)
@@ -970,13 +1132,13 @@
 
 
 
-    
+
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    
-    
-    
-    
+
+
+
+
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1037,7 +1199,7 @@
   ]
 }
     </script>
-    <link rel="stylesheet" href="assets/css/global-theme.css">
+
 </head>
 
 <body
@@ -1196,9 +1358,9 @@
                         placeholder="Project goals, budget info, etc..."></textarea>
                 </div>
                 <div class="flex gap-3 pt-4">
-                    <button type="button" onclick="closeProjectModal()" class="flex-1 btn-vercel-secondary">Cancel</button>
-                    <button type="submit"
-                        class="flex-1 btn-vercel-primary">Save
+                    <button type="button" onclick="closeProjectModal()"
+                        class="flex-1 btn-vercel-secondary">Cancel</button>
+                    <button type="submit" class="flex-1 btn-vercel-primary">Save
                         Project</button>
                 </div>
             </form>
@@ -1257,8 +1419,7 @@
             <input type="text" id="input-modal-value" class="input-primary mb-4" placeholder="">
             <div class="flex gap-3">
                 <button onclick="closeInputModal(null)" class="btn-vercel-secondary flex-1">Cancel</button>
-                <button onclick="confirmInputModal()"
-                    class="btn-vercel-primary flex-1">Confirm</button>
+                <button onclick="confirmInputModal()" class="btn-vercel-primary flex-1">Confirm</button>
             </div>
         </div>
     </div>
@@ -1339,8 +1500,13 @@
                         <div class="col-span-2">
                             <label class="block font-bold text-slate-400 uppercase mb-1">Workspace Link</label>
                             <div class="flex items-center gap-2">
-                                <p id="ac-workspace-url" class="flex-1 font-mono text-slate-700 dark:text-slate-300 break-all font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-2">...</p>
-                                <button id="ac-workspace-copy-btn" onclick="window.copyWorkspaceUrl(userData?.companyId, true)" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition flex-shrink-0 flex items-center gap-1.5" title="Copy workspace link">
+                                <p id="ac-workspace-url"
+                                    class="flex-1 font-mono text-slate-700 dark:text-slate-300 break-all font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-2">
+                                    ...</p>
+                                <button id="ac-workspace-copy-btn"
+                                    onclick="window.copyWorkspaceUrl(userData?.companyId, true)"
+                                    class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition flex-shrink-0 flex items-center gap-1.5"
+                                    title="Copy workspace link">
                                     <i class="fa-regular fa-copy"></i>
                                     <span class="hidden sm:inline text-xs">Copy</span>
                                 </button>
@@ -1849,7 +2015,7 @@
                                     class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Alternative
                                     Phone</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="ac-country-code" 
+                                    <input type="text" id="ac-country-code"
                                         class="input-primary w-20 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 py-1.5 text-xs text-center focus:ring-brand-500 focus:border-green-500 outline-none"
                                         placeholder="+91" value="+91">
                                     <div class="relative flex-1">
@@ -1894,7 +2060,8 @@
                         </div>
                     </form>
 
-                    <button type="button" onclick="if(window.ExplyraTenant){window.location.href=window.ExplyraTenant.buildTenantUrl('emp', window.companyId || window.userData?.companyId || window.ExplyraTenant.getCurrentCompanyId());}else{window.location.href='emp.html';}"
+                    <button type="button"
+                        onclick="if(window.ExplyraTenant){window.location.href=window.ExplyraTenant.buildTenantUrl('emp', window.companyId || window.userData?.companyId || window.ExplyraTenant.getCurrentCompanyId());}else{window.location.href='emp.html';}"
                         class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg mb-4">
                         <i class="fa-solid fa-shuffle"></i> Switch to Employee Portal
                     </button>
@@ -1918,41 +2085,48 @@
     </div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen" class="w-full min-h-screen flex flex-col items-center justify-start pt-16 p-6 bg-white dark:bg-black transition-colors duration-500 relative overflow-y-auto no-scrollbar">
+    <div id="auth-screen"
+        class="w-full min-h-screen flex flex-col items-center justify-start pt-16 p-6 bg-white dark:bg-black transition-colors duration-500 relative overflow-y-auto no-scrollbar">
         <!-- Premium Background Blobs -->
         <div class="fixed inset-0 z-0 pointer-events-none">
             <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-[120px]"></div>
-            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[120px]"></div>
+            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[120px]">
+            </div>
         </div>
 
         <div class="ms-auth-card">
             <div class="ms-logo">
                 <img src="/assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
             </div>
-            
+
             <div id="auth-steps" class="relative overflow-hidden min-h-[360px]">
                 <!-- Step 1: Identifier -->
                 <div id="step-identifier" class="step-content active text-left">
                     <h1 class="ms-title">Sign in</h1>
                     <p class="ms-subtitle">to continue to Admin Portal</p>
-                    
+
                     <form id="identifier-form" onsubmit="handleIdentifierNext(event)">
-                        <input type="text" id="login-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                        <input type="text" id="login-identifier" class="ms-input-line dark:text-white"
+                            placeholder="Email or Phone" required autofocus>
                         <div class="ms-footer-text">
-                            No account? <a href="javascript:void(0)" onclick="showStep('step-activation-verify')" class="ms-link font-bold">Activate now!</a>
+                            No account? <a href="javascript:void(0)" onclick="showStep('step-activation-verify')"
+                                class="ms-link font-bold">Activate now!</a>
                         </div>
                         <div class="mt-2">
-                            <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Can't access your account?</a>
+                            <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Can't access your
+                                account?</a>
                         </div>
 
                         <div class="mt-8 space-y-2">
                             <button type="button" onclick="handleGoogleLogin()" class="ms-social-btn">
-                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4"> Continue with Google
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                                    class="w-4 h-4"> Continue with Google
                             </button>
                             <button type="button" onclick="handleMicrosoftLogin()" class="ms-social-btn">
                                 <i class="fa-brands fa-microsoft text-[#00A4EF]"></i> Continue with Microsoft
                             </button>
-                            <button type="button" onclick="window.location.href='emp.html'" class="ms-social-btn ms-btn-emp">
+                            <button type="button" onclick="window.location.href='emp.html'"
+                                class="ms-social-btn ms-btn-emp">
                                 <i class="fa-solid fa-user-tie text-slate-500"></i> Login as Employee
                             </button>
                         </div>
@@ -1970,11 +2144,13 @@
                         <span id="display-resolved-email" class="text-sm text-slate-600">...</span>
                     </div>
                     <h1 class="ms-title">Enter password</h1>
-                    
+
                     <form id="login-form" onsubmit="handleFinalLogin(event)">
                         <div class="relative w-full">
-                            <input type="password" id="login-password" class="ms-input-line dark:text-white pr-10" placeholder="Password" required>
-                            <button type="button" onclick="toggleLoginPassword()" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-slate-500 hover:text-black dark:hover:text-white">
+                            <input type="password" id="login-password" class="ms-input-line dark:text-white pr-10"
+                                placeholder="Password" required>
+                            <button type="button" onclick="toggleLoginPassword()"
+                                class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-slate-500 hover:text-black dark:hover:text-white">
                                 <i id="login-eye-icon" class="fa-regular fa-eye text-sm"></i>
                             </button>
                         </div>
@@ -1988,8 +2164,11 @@
                 </div>
 
                 <!-- Step: Loading Transition -->
-                <div id="step-loading" class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
-                    <div class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4"></div>
+                <div id="step-loading"
+                    class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
+                    <div
+                        class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4">
+                    </div>
                     <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Please wait...</p>
                 </div>
 
@@ -2000,10 +2179,12 @@
                         <span class="text-sm text-slate-600">Account Activation</span>
                     </div>
                     <h1 class="ms-title">Who are you?</h1>
-                    <p class="ms-subtitle">Enter the email provided to you by your administrator to start activation.</p>
-                    
+                    <p class="ms-subtitle">Enter the email provided to you by your administrator to start activation.
+                    </p>
+
                     <form onsubmit="handleAccountActivationVerify(event)">
-                        <input type="email" id="activation-email-input" class="ms-input-line dark:text-white" placeholder="Admin Provided Email" required autofocus>
+                        <input type="email" id="activation-email-input" class="ms-input-line dark:text-white"
+                            placeholder="Admin Provided Email" required autofocus>
                         <div class="flex justify-end mt-12">
                             <button type="submit" id="activation-verify-btn" class="ms-btn-next">Next</button>
                         </div>
@@ -2019,7 +2200,8 @@
                     <h1 class="ms-title">Who are you?</h1>
                     <p class="ms-subtitle">To recover your account, begin by typing your email or phone number.</p>
                     <form onsubmit="handleForgotPasswordNext(event)">
-                        <input type="text" id="forgot-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                        <input type="text" id="forgot-identifier" class="ms-input-line dark:text-white"
+                            placeholder="Email or Phone" required autofocus>
                         <div class="flex justify-end mt-12">
                             <button type="submit" class="ms-btn-next">Next</button>
                         </div>
@@ -2033,16 +2215,18 @@
                         <span class="text-sm text-slate-600">Account Activation</span>
                     </div>
                     <h1 class="ms-title">Activate account</h1>
-                    
+
                     <form id="signup-form" onsubmit="handleAccountActivation(event)">
                         <input type="email" id="signup-email" class="ms-input-line bg-slate-50/50 opacity-70" readonly>
-                        <input type="password" id="signup-password" class="ms-input-line mt-4 dark:text-white" placeholder="Create Password" required oninput="updateStrength(this.value)">
+                        <input type="password" id="signup-password" class="ms-input-line mt-4 dark:text-white"
+                            placeholder="Create Password" required oninput="updateStrength(this.value)">
                         <div class="strength-meter mb-6">
                             <div class="strength-bar" id="bar-1"></div>
                             <div class="strength-bar" id="bar-2"></div>
                             <div class="strength-bar" id="bar-3"></div>
                         </div>
-                        <input type="password" id="confirm-password" class="ms-input-line dark:text-white" placeholder="Confirm Password" required>
+                        <input type="password" id="confirm-password" class="ms-input-line dark:text-white"
+                            placeholder="Confirm Password" required>
                         <div class="flex justify-end mt-12">
                             <button type="submit" id="signup-btn" class="ms-btn-next">Activate</button>
                         </div>
@@ -2055,9 +2239,10 @@
                         <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
                         <span class="text-sm text-slate-600">Account Recovery</span>
                     </div>
-                    
+
                     <div class="text-center mb-8">
-                        <div id="confirm-avatar-container" class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
+                        <div id="confirm-avatar-container"
+                            class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
                             <i id="confirm-avatar-placeholder" class="fa-solid fa-user text-2xl text-slate-400"></i>
                             <img id="confirm-avatar-img" src="" class="hidden w-full h-full object-cover">
                         </div>
@@ -2066,10 +2251,13 @@
                     </div>
 
                     <h1 class="ms-title mb-4">Is this you?</h1>
-                    <p class="ms-subtitle text-slate-600 dark:text-slate-400">We found the account associated with the identifier you provided. Send reset link to <span id="confirm-send-email" class="font-semibold text-slate-800 dark:text-slate-100">...</span>?</p>
-                    
+                    <p class="ms-subtitle text-slate-600 dark:text-slate-400">We found the account associated with the
+                        identifier you provided. Send reset link to <span id="confirm-send-email"
+                            class="font-semibold text-slate-800 dark:text-slate-100">...</span>?</p>
+
                     <div class="flex justify-end mt-12 gap-3">
-                        <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()" class="ms-btn-next">Yes, send reset link</button>
+                        <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()"
+                            class="ms-btn-next">Yes, send reset link</button>
                     </div>
                 </div>
             </div>
@@ -2252,8 +2440,9 @@
                     </button>
 
                     <!-- Theme Toggle -->
-                    <button class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition" 
-                            onclick="toggleTheme()" title="Toggle Theme">
+                    <button
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                        onclick="toggleTheme()" title="Toggle Theme">
                         <i class="fa-solid fa-moon dark:hidden text-slate-600"></i>
                         <i class="fa-solid fa-sun hidden dark:block text-slate-300"></i>
                     </button>
