@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra Tech | The Authority in Technology News</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-top">
+            <div class="date-info" id="current-date"></div>
+            <div class="branding">
+                <h1>EXPLYRA TECH</h1>
+                <p class="tagline">Insight. Innovation. Implementation.</p>
+            </div>
+            <div class="weather-info">LIGHT MODE ONLY</div>
+        </div>
+        <nav class="nav-bar">
+            <ul class="container">
+                <li><a href="#" class="active">LATEST</a></li>
+                <li><a href="#">AI & ML</a></li>
+                <li><a href="#">HARDWARE</a></li>
+                <li><a href="#">SOFTWARE</a></li>
+                <li><a href="#">OPINION</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Featured Section -->
+        <section id="featured-article" class="featured-section">
+            <div class="loading">Fetching latest intelligence...</div>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- News Feed Grid -->
+        <section class="feed-container">
+            <div class="feed-header">
+                <h2>CHRONOLOGICAL FEED</h2>
+            </div>
+            <div id="articles-grid" class="masonry-grid">
+                <!-- Articles will be injected here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>EXPLYRA</h3>
+                    <p>Automated tech journalism powered by advanced AI and Firebase infrastructure.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>LINKS</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Ethics Code</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Explyra Tech. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Article Modal / Detail View -->
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

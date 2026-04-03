@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explyra Tech | The Authority in Technology News</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1a1a1a; background: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        .main-header { border-bottom: 5px solid #1a1a1a; padding: 30px 0; background: #fff; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; text-align: center; }
+        .branding h1 { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+        .branding .tagline { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 5px; color: #888; margin-top: 8px; }
+        
+        .nav-bar { border-top: 1px solid #eee; border-bottom: 1px solid #1a1a1a; margin-top: 20px; }
+        .nav-bar ul { display: flex; justify-content: center; list-style: none; gap: 40px; padding: 15px 0; }
+        .nav-bar a { text-decoration: none; color: #1a1a1a; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+        .nav-bar a:hover { color: #a00; }
+
+        .masonry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; margin: 60px 0; }
+        .article-card { border-bottom: 1px solid #eee; padding-bottom: 30px; transition: transform 0.3s ease; }
+        .article-card:hover { transform: translateY(-5px); }
+        .article-card img { width: 100%; height: 200px; border-radius: 8px; object-fit: cover; }
+        .article-card .meta { font-size: 0.7rem; font-weight: 800; color: #a00; text-transform: uppercase; margin: 15px 0 5px; }
+        .article-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; line-height: 1.25; margin-bottom: 10px; }
+        .article-card h3 a { color: inherit; text-decoration: none; }
+        .article-card h3 a:hover { text-decoration: underline; }
+        .article-card p { font-size: 0.95rem; color: #555; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .read-more-link { color: #a00; font-weight: 700; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .main-footer { background: #f9f9f9; padding: 80px 0 40px; border-top: 1px solid #eee; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 80px; margin-bottom: 60px; }
+        .footer-grid h4 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
+        .footer-grid a { text-decoration: none; color: #555; display: block; margin-bottom: 10px; font-size: 0.9rem; }
+        
+        .footer-bottom { border-top: 1px solid #ddd; padding-top: 20px; text-align: center; color: #999; font-size: 0.8rem; }
+        
+        @media (max-width: 768px) {
+            .branding h1 { font-size: 2.5rem; }
+            .header-top { flex-direction: column; gap: 15px; }
+            .nav-bar ul { gap: 20px; font-size: 0.7rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-top">
+            <div>THURSDAY, APR 2, 2026</div>
+            <div class="branding">
+                <h1>EXPLYRA TECH</h1>
+                <p class="tagline">Insight. Innovation. Implementation.</p>
+            </div>
+            <div>INTELLIGENCE REPORT</div>
+        </div>
+        <nav class="nav-bar">
+            <ul class="container">
+                <li><a href="/">LATEST</a></li>
+                <li><a href="#">AI & ML</a></li>
+                <li><a href="#">CLOUDS</a></li>
+                <li><a href="/sitemap.xml">SITEMAP</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div id="articles-grid" class="masonry-grid">
+            
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/1/400/250" alt="Article 1">
+                <div class="meta">AI & MACHINE LEARNING</div>
+                <h3><a href="/article/article_1.html" target="_blank">Lara Translate Recognized as the Industry Standard for AI Agent Translation</a></h3>
+                <p>Explore the breakthrough development of Lara Translate and how it is redefining the landscape of AI-powered translation for developers and enterprises globally.</p>
+                <a href="/article/article_1.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/2/400/250" alt="Article 2">
+                <div class="meta">CLOUD COMPUTING</div>
+                <h3><a href="/article/article_2.html" target="_blank">The new Huawei Mate 80 Pro is now available in South Africa</a></h3>
+                <p>Huawei officially launches its latest flagship, the Mate 80 Pro, bringing unprecedented power and professional-grade mobile photography to the South African market.</p>
+                <a href="/article/article_2.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/3/400/250" alt="Article 3">
+                <div class="meta">CYBERSECURITY</div>
+                <h3><a href="/article/article_3.html" target="_blank">Massive Changes Are Coming to the Appalachian Trail</a></h3>
+                <p>An investigative report on how technology and digital transformation are reshaping one of the world's most iconic wilderness landscapes for a new era of hikers.</p>
+                <a href="/article/article_3.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/4/400/250" alt="Article 4">
+                <div class="meta">HARDWARE</div>
+                <h3><a href="/article/article_4.html" target="_blank">PlayStation Plus April 2026 games reportedly leaked: Detailed Analysis</a></h3>
+                <p>Early leaks suggest a blockbuster lineup for PlayStation Plus members this April. We dive into the technical merits and gameplay expectations for the rumored titles.</p>
+                <a href="/article/article_4.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/5/400/250" alt="Article 5">
+                <div class="meta">SOFTWARE</div>
+                <h3><a href="/article/article_5.html" target="_blank">BenQ’s MA270S with 5K Mac-focused Color Accuracy</a></h3>
+                <p>BenQ sets a new professional benchmark for creative workflows with its specialized 5K display range, tailored specifically for the demands of high-end Mac users.</p>
+                <a href="/article/article_5.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/6/400/250" alt="Article 6">
+                <div class="meta">ENTERPRISE TECH</div>
+                <h3><a href="/article/article_6.html" target="_blank">WhatsApp warns hundreds of users over fake app spyware threat</a></h3>
+                <p>A critical security bulletin as WhatsApp identifies targeted attacks via unofficial third-party applications, highlighting the urgent need for mobile security best practices.</p>
+                <a href="/article/article_6.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/7/400/250" alt="Article 7">
+                <div class="meta">OPEN SOURCE</div>
+                <h3><a href="/article/article_7.html" target="_blank">Google's authentic Refurbished program grabs Pixel 8a</a></h3>
+                <p>Google expands its circular economy initiatives as the Pixel 8a joins the official refurbished program, offering enterprise-level hardware at consumer-friendly prices.</p>
+                <a href="/article/article_7.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/8/400/250" alt="Article 8">
+                <div class="meta">MARKET ANALYSIS</div>
+                <h3><a href="/article/article_8.html" target="_blank">AI alignment researchers want to automate themselves: Future Outlook</a></h3>
+                <p>Inside the ambitious and controversial push to use superhuman AI models to verify their own safety and alignment protocols as we approach AGI.</p>
+                <a href="/article/article_8.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/9/400/250" alt="Article 9">
+                <div class="meta">CONSUMER TECH</div>
+                <h3><a href="/article/article_9.html" target="_blank">Everything is iPhone now: The Dominance of Ecosystems</a></h3>
+                <p>A critical analysis of how ecosystem lock-in and hardware integration are defining the next decade of consumer technology market share and user experience.</p>
+                <a href="/article/article_9.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+            <div class="article-card">
+                <img src="https://picsum.photos/seed/10/400/250" alt="Article 10">
+                <div class="meta">REGULATION</div>
+                <h3><a href="/article/article_10.html" target="_blank">Translating Global News into Indigenous Languages using LLMs</a></h3>
+                <p>Technical deep-dive on how modern Large Language Models and specialized fine-tuning are breaking down linguistic barriers for underrepresented communities globally.</p>
+                <a href="/article/article_10.html" class="read-more-link" target="_blank">Read Full Report →</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div>
+                <h4>EXPLYRA TECH</h4>
+                <p style="color:#666;">The global authority in technical journalism and innovation intelligence. Delivering deep-dive whitepapers and investigative reports on the future of technology.</p>
+            </div>
+            <div>
+                <h4>SECTIONS</h4>
+                <a href="#">Artificial Intelligence</a>
+                <a href="#">Cloud Computing</a>
+                <a href="#">Cybersecurity</a>
+                <a href="/feed.xml">RSS Feed</a>
+            </div>
+            <div>
+                <h4>LEGAL</h4>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="/sitemap.xml">XML Sitemap</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Explyra Tech. Intelligence of the Future.
+        </div>
+    </footer>
+</body>
+</html>
