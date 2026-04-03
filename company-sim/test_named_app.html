@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firestore Named App Test</title>
+</head>
+<body>
+  <h1>Firestore Named App Test</h1>
+  <div id="log" style="font-family: monospace; padding: 10px; border: 1px solid #ccc; background: #f9f9f9;"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    function log(msg, color = 'black') {
+      const div = document.getElementById('log');
+      div.innerHTML += `<p style="color: ${color}">${new Date().toLocaleTimeString()} - ${msg}</p>`;
+      console.log(msg);
+    }
+
+    const config = {
+      apiKey: "AIzaSyAoDQhHlUbiUl57azSrst5M2eGDeQ8EydA",
+      authDomain: "explyras.firebaseapp.com",
+      projectId: "explyras",
+      appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+    };
+
+    log("Initializing Named Firebase App 'companySimApp'...");
+    try {
+      const app = firebase.initializeApp(config, "companySimApp");
+      const db = firebase.firestore(app);
+      
+      log("Attempting to write to cs_companies using NAMED APP...");
+      db.collection('cs_companies').add({
+        test: true,
+        type: 'named_app_browser_test',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(docRef => {
+        log("SUCCESS! Created document: " + docRef.id, 'green');
+      })
+      .catch(err => {
+        log("ERROR: " + err.code + " - " + err.message, 'red');
+        console.error(err);
+      });
+
+    } catch (e) {
+      log("CRITICAL FAILURE: " + e.message, 'red');
+    }
+  </script>
+</body>
+</html>

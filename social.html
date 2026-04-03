@@ -249,14 +249,37 @@
             .f-search-box { width: 100%; }
         }
 
-        /* Custom Theme-matched Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { 
-            background: color-mix(in srgb, var(--blue) 30%, transparent); 
-            border-radius: 10px; border: 2px solid var(--bg); 
+        /* Made in India Badge */
+        .mii-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--bdr);
+            border-radius: 100px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            color: var(--ink);
+            font-weight: 600;
+            font-size: 0.8rem;
         }
-        ::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+        .mii-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(21, 70, 192, 0.1);
+        }
+
+        .mii-badge img {
+            width: 18px;
+            height: auto;
+            border-radius: 2px;
+        }
     </style>
 
     
@@ -365,6 +388,12 @@
         </div>
         <div id="socialContainer"></div>
 
+        <div class="section-header">
+            <h2>Marketplace & Extensions</h2>
+            <span class="count-badge" id="marketplaceCount">0 Listings</span>
+        </div>
+        <div id="marketplaceContainer"></div>
+
         <section class="contact-cta">
             <div class="cta-content">
                 <h2>Ready to Collaborate?</h2>
@@ -401,6 +430,10 @@
                     <div class="comp-badge"><i class="fa-solid fa-shield-halved"></i> HIPAA Ready Compliant</div>
                     <div class="comp-badge"><i class="fa-solid fa-user-shield"></i> GDPR Compliant</div>
                     <div class="comp-badge"><i class="fa-solid fa-lock"></i> SSL Secured</div>
+                    <a href="https://explyra.me" class="mii-badge" style="margin-top: 12px; align-self: flex-start;">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="India">
+                        <span>Proudly Made in India</span>
+                    </a>
                 </div>
             </div>
 
@@ -604,7 +637,8 @@
                     { name: "Quora", icon: "fa-brands fa-quora", color: "#A82100", handle: "Explyra", url: "https://www.quora.com/profile/Explyra", desc: "Expert answers and professional building logs." },
                     { name: "Google Business", domain: "business.google.com", color: "#4285F4", handle: "Explyra", url: "https://share.google/7CUitGHv7NUx2LoA9", desc: "Official verified presence on Google Search." },
                     { name: "F6S", domain: "f6s.com", color: "#FB002A", handle: "Explyra", url: "https://f6s.com/explyra", desc: "Startup community and growth dashboard." },
-                    { name: "e27", domain: "e27.co", color: "#E11D48", handle: "Explyra", url: "https://e27.co/startup/explyra", desc: "Tech ecosystem intelligence and investor portal." }
+                    { name: "e27", domain: "e27.co", color: "#E11D48", handle: "Explyra", url: "https://e27.co/startup/explyra", desc: "Tech ecosystem intelligence and investor portal." },
+                    { name: "Tracxn", domain: "tracxn.com", color: "#EF4444", handle: "Explyra", url: "https://platform.tracxn.com/a/d/company/69ae62334721842b802a38ea/explyra", desc: "Enterprise intelligence and venture data analytics." }
                 ]
             },
             {
@@ -660,6 +694,17 @@
             }
         ];
 
+        const marketplaceCategories = [
+            {
+                title: "App Stores & Extensions",
+                items: [
+                    { name: "Microsoft Store", domain: "microsoft.com", handle: "Explyra Suite", url: "https://apps.microsoft.com/detail/9n23dh28dj4v?hl=en-US&gl=IN", desc: "Official Windows desktop application for Explyra Suite." },
+                    { name: "VS Code Marketplace", domain: "visualstudio.com", handle: "Explyra Code Assist", url: "https://marketplace.visualstudio.com/items?itemName=mitanshubhasin.explyra-code-assist&ssr=false#overview", desc: "AI-powered coding assistant extension for Visual Studio Code." },
+                    { name: "Open VSX Registry", domain: "open-vsx.org", handle: "Explyra Code Assist", url: "https://open-vsx.org/extension/MitanshuBhasin/explyra-code-assist", desc: "Open-source extension registry platform for Explyra Code Assist." }
+                ]
+            }
+        ];
+
         function createCategorizedGrid(containerId, categories, showLogos) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -710,10 +755,12 @@
 
         const iCount = createCategorizedGrid('internalContainer', internalCategories, false);
         const sCount = createCategorizedGrid('socialContainer', socialCategories, true);
+        const mCount = createCategorizedGrid('marketplaceContainer', marketplaceCategories, true);
         
         function initCounts() {
             document.getElementById('internalCount').textContent = `${iCount} Platforms`;
             document.getElementById('socialCount').textContent = `${sCount} Networks`;
+            document.getElementById('marketplaceCount').textContent = `${mCount} Listings`;
             // Reset category visibility
             document.querySelectorAll('.category-group').forEach(group => group.style.display = 'block');
         }

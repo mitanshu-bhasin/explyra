@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentation — CompanySim</title>
+  <meta name="description" content="Your AI company pitch deck and progress presentation.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/presentation.css">
+</head>
+<body>
+  <div class="main-content page-content" id="main-content">
+    <div class="presentation-page">
+      <div class="presentation-actions" id="pres-actions">
+        <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print</button>
+        <button class="btn btn-primary btn-sm" onclick="regeneratePresentation()" id="regen-btn">✨ Regenerate Copy</button>
+      </div>
+
+      <div id="presentation-content">
+        <div style="text-align:center;padding:100px 0">
+          <div class="loading-spinner" style="margin:0 auto 16px"></div>
+          <p class="loading-text">Preparing your presentation...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/company.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/meeting-service.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="data/role-catalog.js"></script>
+  <script src="prompts/roles.js"></script>
+  <script src="prompts/meeting-prompts.js"></script>
+
+  <script>
+    let companyData = null;
+    let agentsData = [];
+    let meetingsData = [];
+    let memoriesData = [];
+
+    const roleMap = {};
+    ROLE_CATALOG.forEach(r => roleMap[r.id] = r);
+
+    Router.requireAuth(async (user) => {
+      if (!user) return;
+      renderSidebar('presentation');
+      await loadPresentation(user);
+    });
+
+    async function loadPresentation(user) {
+      try {
+        companyData = await CompanyService.getByUser(user.uid);
+        if (!companyData) {
+          document.getElementById('presentation-content').innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📽️</div>
+              <h2 class="empty-state-title">No Company Yet</h2>
+              <p class="empty-state-text">Create a company first to generate your presentation.</p>
+              <a href="company-setup.html" class="btn btn-primary">Create Company</a>
+            </div>
+          `;
+          return;
+        }
+
+        [agentsData, meetingsData, memoriesData] = await Promise.all([
+          CompanyService.getAgents(companyData.id),
+          MeetingService.getAll(companyData.id),
+          MemoryService.getAll(companyData.id)
+        ]);
+
+        renderPresentation();
+      } catch (error) {
+        Utils.toast('Failed to load presentation', 'error');
+      }
+    }
+
+    async function renderPresentation() {
+      const decisions = memoriesData.filter(m => m.type === 'decision');
+      const insights = memoriesData.filter(m => m.type === 'insight');
+      const actions = memoriesData.filter(m => m.type === 'action');
+      const completedMeetings = meetingsData.filter(m => m.status === 'completed');
+
+      // Generate AI copy
+      let overviewCopy = companyData.description || companyData.goal;
+      try {
+        const result = await GeminiService.generatePresentationCopy(companyData, 'overview');
+        if (result.success) overviewCopy = result.text;
+      } catch (e) { /* use fallback */ }
+
+      const content = document.getElementById('presentation-content');
+      content.innerHTML = `
+        <!-- Slide 1: Title -->
+        <div class="deck-slide deck-slide-hero">
+          <span class="deck-slide-number">01</span>
+          <div style="position:relative">
+            <div style="font-size:64px;margin-bottom:var(--space-6)">🏢</div>
+            <h1>${Utils.escapeHtml(companyData.name)}</h1>
+            <p>${Utils.escapeHtml(overviewCopy)}</p>
+            <div style="display:flex;justify-content:center;gap:var(--space-4);margin-top:var(--space-8)">
+              <span class="badge badge-blue">${Utils.escapeHtml(companyData.industry)}</span>
+              <span class="badge badge-green">${agentsData.length} Team Members</span>
+              <span class="badge badge-purple">${completedMeetings.length} Meetings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Vision & Goal -->
+        <div class="deck-slide">
+          <span class="deck-slide-number">02</span>
+          <h2>🎯 Vision & Goal</h2>
+          <div class="card-glow" style="margin-bottom:var(--space-6)">
+            <h3>Our Mission</h3>
+            <p style="font-size:var(--font-size-lg);line-height:1.6">${Utils.escapeHtml(companyData.goal)}</p>
+          </div>
+          ${companyData.description ? `
+            <div class="card" style="margin-top:var(--space-4)">
+              <h3>About Us</h3>
+              <p>${Utils.escapeHtml(companyData.description)}</p>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Slide 3: Team -->
+        <div class="deck-slide">
+          <span class="deck-slide-number">03</span>
+          <h2>👥 AI Executive Team</h2>
+          ${agentsData.length > 0 ? `
+            <div class="team-grid">
+              ${agentsData.map(a => {
+                const role = roleMap[a.id] || a;
+                return `
+                  <div class="team-member-card">
+                    <div class="team-member-avatar" style="background:${role.bgColor || 'rgba(102,126,234,0.12)'}">${role.emoji || '🤖'}</div>
+                    <div class="team-member-name">${Utils.escapeHtml(role.name || a.id)}</div>
+                    <div class="team-member-role">${(role.responsibilities || [])[0] || ''}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : '<p style="color:var(--color-text-muted)">No team members selected yet.</p>'}
+        </div>
+
+        <!-- Slide 4: Key Decisions -->
+        <div class="deck-slide">
+          <span class="deck-slide-number">04</span>
+          <h2>✅ Key Decisions</h2>
+          ${decisions.length > 0 ? `
+            <div class="decisions-list">
+              ${decisions.slice(0, 8).map((d, i) => `
+                <div class="decision-card">
+                  <div class="decision-number">${i + 1}</div>
+                  <div class="decision-text">${Utils.escapeHtml(d.content)}</div>
+                </div>
+              `).join('')}
+            </div>
+          ` : '<p style="color:var(--color-text-muted)">No decisions recorded yet. Hold meetings to start making decisions.</p>'}
+        </div>
+
+        <!-- Slide 5: Progress & Insights -->
+        <div class="deck-slide">
+          <span class="deck-slide-number">05</span>
+          <h2>💡 Insights & Progress</h2>
+
+          <div class="grid-2" style="margin-bottom:var(--space-6)">
+            <div class="card">
+              <div class="stat-label">Meetings Held</div>
+              <div class="stat-value" style="color:var(--color-accent-blue)">${meetingsData.length}</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Total Decisions</div>
+              <div class="stat-value" style="color:var(--color-accent-green)">${decisions.length}</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Action Items</div>
+              <div class="stat-value" style="color:var(--color-accent-orange)">${actions.length}</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Key Insights</div>
+              <div class="stat-value" style="color:var(--color-accent-purple)">${insights.length}</div>
+            </div>
+          </div>
+
+          ${insights.length > 0 ? `
+            <h3>Top Insights</h3>
+            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--space-3)">
+              ${insights.slice(0, 5).map(i => `
+                <li style="padding:12px 16px;background:var(--color-surface-glass);border-radius:var(--radius-md);font-size:var(--font-size-sm);color:var(--color-text-secondary);border-left:3px solid var(--color-accent-purple)">
+                  ${Utils.escapeHtml(i.content)}
+                </li>
+              `).join('')}
+            </ul>
+          ` : ''}
+        </div>
+
+        <!-- Slide 6: Roadmap -->
+        <div class="deck-slide">
+          <span class="deck-slide-number">06</span>
+          <h2>🗺️ Action Items & Roadmap</h2>
+          ${actions.length > 0 ? `
+            <div class="roadmap-timeline">
+              ${actions.slice(0, 6).map(a => `
+                <div class="roadmap-item">
+                  <div class="roadmap-dot"></div>
+                  <h4>${Utils.escapeHtml(Utils.truncate(a.content, 80))}</h4>
+                  <p>${Utils.formatRelative(a.createdAt)}</p>
+                </div>
+              `).join('')}
+            </div>
+          ` : '<p style="color:var(--color-text-muted)">Action items will appear here after meetings.</p>'}
+        </div>
+      `;
+    }
+
+    async function regeneratePresentation() {
+      const btn = document.getElementById('regen-btn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Regenerating...';
+      await renderPresentation();
+      btn.disabled = false;
+      btn.textContent = '✨ Regenerate Copy';
+      Utils.toast('Presentation updated!', 'success');
+    }
+  </script>
+</body>
+</html>

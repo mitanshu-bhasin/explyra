@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting — CompanySim</title>
+  <meta name="description" content="Run AI-powered team meetings with your company agents.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/meeting.css">
+</head>
+<body>
+  <div class="main-content page-content" id="main-content">
+    <!-- Meeting Setup (shown by default) -->
+    <div id="meeting-setup-view">
+      <div class="meeting-setup">
+        <div class="page-header" style="text-align:center">
+          <h1 class="page-title">💬 New Meeting</h1>
+          <p class="page-subtitle">Set a topic, pick your agents, and start the discussion.</p>
+        </div>
+
+        <div class="meeting-setup-card">
+          <div class="input-group" style="margin-bottom:var(--space-6)">
+            <label for="meeting-topic">Meeting Topic *</label>
+            <input class="input" type="text" id="meeting-topic" placeholder="e.g., Q1 product launch strategy" maxlength="100">
+          </div>
+
+          <div class="input-group">
+            <label>Select Agents (min 2)</label>
+            <div class="meeting-agent-selector" id="agent-selector"></div>
+          </div>
+
+          <div style="margin-top:var(--space-8);text-align:center">
+            <button class="btn btn-primary btn-lg" id="start-meeting-btn" onclick="startMeeting()" disabled>
+              🚀 Start Meeting
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Meeting View (hidden initially) -->
+    <div id="meeting-active-view" style="display:none">
+      <div class="meeting-page">
+        <div class="meeting-header-bar">
+          <div class="meeting-topic-display">
+            <div class="meeting-live-dot"></div>
+            <h3 id="active-meeting-topic" style="font-size:var(--font-size-md);font-weight:700"></h3>
+          </div>
+          <div style="display:flex;gap:var(--space-2);align-items:center;">
+            <div class="toggle-container" style="display:flex;align-items:center;gap:8px;margin-right:15px;background:rgba(255,255,255,0.05);padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);">
+              <span style="font-size:12px;font-weight:600;color:var(--color-text-muted);">Agent Cross-Talk</span>
+              <input type="checkbox" id="crosstalk-toggle" style="cursor:pointer;">
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="endMeeting()">End Meeting & Summarize</button>
+          </div>
+        </div>
+
+        <div class="meeting-agents-bar" id="active-agents-bar"></div>
+
+        <div class="chat-area" id="chat-area"></div>
+
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <select id="speak-as-select" class="input" style="width:auto;min-width:160px;margin-right:var(--space-2);background-color:var(--color-bg-secondary);border-radius:12px;font-weight:600;">
+              <option value="user">Founder 👤</option>
+            </select>
+            <input class="input" type="text" id="chat-input" placeholder="Type your message or ask an agent to speak..."
+              onkeydown="if(event.key==='Enter')sendMessage()">
+            <button class="btn btn-primary" onclick="sendMessage()" id="send-btn">Send</button>
+            <button class="btn btn-secondary" onclick="discussAsTeam()" id="discuss-btn" title="Ask all selected agents to share their thoughts on the current topic">
+              👥 Discuss as Team
+            </button>
+          </div>
+          <div style="display:flex;justify-content:center;gap:var(--space-4);margin-top:var(--space-2);">
+             <p style="font-size:11px;color:var(--color-text-muted);">
+               Select an agent from the dropdown to make them respond, or stay as "Founder" to just add to the chat.
+             </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary View (hidden) -->
+    <div id="meeting-summary-view" style="display:none"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/company.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/meeting-service.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="data/role-catalog.js"></script>
+  <script src="prompts/roles.js"></script>
+  <script src="prompts/meeting-prompts.js"></script>
+
+  <script>
+    let companyData = null;
+    let agentsData = [];
+    let selectedMeetingAgents = new Set();
+    let currentMeetingId = null;
+    let transcript = [];
+    let isProcessing = false;
+
+    const roleMap = {};
+    ROLE_CATALOG.forEach(r => roleMap[r.id] = r);
+
+    Router.requireAuth(async (user) => {
+      if (!user) return;
+      renderSidebar('meeting');
+      companyData = await CompanyService.getByUser(user.uid);
+
+      if (!companyData) {
+        Utils.toast('Please create a company first', 'info');
+        window.location.href = 'company-setup.html';
+        return;
+      }
+
+      agentsData = await CompanyService.getAgents(companyData.id);
+
+      if (agentsData.length === 0) {
+        Utils.toast('Please select agents first', 'info');
+        window.location.href = 'agent-selection.html';
+        return;
+      }
+
+      renderAgentSelector();
+
+      // Check if viewing existing meeting
+      const params = new URLSearchParams(window.location.search);
+      const meetingId = params.get('id');
+      if (meetingId) {
+        await loadExistingMeeting(meetingId);
+      }
+    });
+
+    function renderAgentSelector() {
+      document.getElementById('agent-selector').innerHTML = agentsData.map(a => {
+        const role = roleMap[a.id] || a;
+        return `
+          <div class="meeting-agent-option" id="mag-${a.id}" onclick="toggleMeetingAgent('${a.id}')">
+            <span class="agent-emoji">${role.emoji || '🤖'}</span>
+            <span>${role.name || a.id}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleMeetingAgent(agentId) {
+      if (selectedMeetingAgents.has(agentId)) {
+        selectedMeetingAgents.delete(agentId);
+      } else {
+        selectedMeetingAgents.add(agentId);
+      }
+      document.getElementById(`mag-${agentId}`).classList.toggle('selected');
+      document.getElementById('start-meeting-btn').disabled = selectedMeetingAgents.size < 2;
+    }
+
+    async function startMeeting() {
+      const topic = document.getElementById('meeting-topic').value.trim();
+      if (!topic) { Utils.toast('Please enter a meeting topic', 'error'); return; }
+      if (selectedMeetingAgents.size < 2) { Utils.toast('Select at least 2 agents', 'error'); return; }
+
+      Utils.showLoading('Starting meeting...');
+
+      try {
+        const result = await MeetingService.create(companyData.id, {
+          topic,
+          agentIds: Array.from(selectedMeetingAgents)
+        });
+
+        if (!result.success) throw new Error(result.error);
+        currentMeetingId = result.id;
+        transcript = [];
+
+        // Switch to active view
+        document.getElementById('meeting-setup-view').style.display = 'none';
+        document.getElementById('meeting-active-view').style.display = 'block';
+        document.getElementById('active-meeting-topic').textContent = topic;
+
+        // Show agent chips
+        const speakerSelect = document.getElementById('speak-as-select');
+        // Keep Founder, then add agents
+        speakerSelect.innerHTML = '<option value="user">Founder 👤</option>';
+
+        document.getElementById('active-agents-bar').innerHTML = Array.from(selectedMeetingAgents).map(id => {
+          const role = roleMap[id] || {};
+          // Add to speaker dropdown
+          const option = document.createElement('option');
+          option.value = id;
+          option.textContent = `${role.emoji || '🤖'} ${role.name || id}`;
+          speakerSelect.appendChild(option);
+
+          return `<div class="meeting-agent-chip"><span>${role.emoji || '🤖'}</span>${role.name || id}</div>`;
+        }).join('');
+
+        Utils.hideLoading();
+
+        // Opening remarks from ALL agents
+        for (const agentId of selectedMeetingAgents) {
+          await generateAgentResponse(topic + '. Please share your opening thoughts on this topic.', agentId);
+        }
+      } catch (error) {
+        Utils.hideLoading();
+        Utils.toast('Failed to start meeting: ' + error.message, 'error');
+      }
+    }
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text || isProcessing) return;
+
+      input.value = '';
+      const speakerDropdown = document.getElementById('speak-as-select');
+      const selectedSpeaker = speakerDropdown.value;
+
+      // ALWAYS show the user message first
+      const senderName = 'Founder';
+      addChatMessage(senderName, 'user', text, '👤');
+      transcript.push({ sender: senderName, senderRole: 'user', text });
+      MeetingService.addMessage(companyData.id, currentMeetingId, {
+        sender: senderName, senderRole: 'user', text
+      });
+
+      if (selectedSpeaker !== 'user') {
+        // Someone else is speaking - they respond to the founder's message
+        await generateAgentResponse(text, selectedSpeaker);
+      }
+    }
+
+    async function generateAgentResponse(userMessage, targetAgentId = null) {
+      isProcessing = true;
+      document.getElementById('send-btn').disabled = true;
+
+      // If no specific agent, we might want everyone (old behavior), 
+      // but new behavior is founder-controlled. 
+      // If targetAgentId is null, we pick the first agent as a fallback or return.
+      const agentIds = targetAgentId ? [targetAgentId] : [Array.from(selectedMeetingAgents)[0]];
+
+      for (const agentId of agentIds) {
+        const role = roleMap[agentId] || {};
+        const agentData = agentsData.find(a => a.id === agentId) || {};
+
+        // Show typing indicator
+        showTyping(role.name || agentId);
+
+        try {
+          // Get agent memory for context
+          const agentMemories = (agentData.memory || []).slice(-5);
+
+          // Get relevant company memories
+          const relevantMems = await MemoryService.getRelevant(companyData.id, userMessage, 3);
+          
+          // Get Agent-Specific Personal Chat Memory
+          const personalMems = await MemoryService.getAgentPersonalHistory(companyData.id, agentId);
+          const personalContext = personalMems.length > 0 
+            ? `\n[PERSONAL CHAT MEMORY WITH FOUNDER]\n${personalMems.map(m => `- ${m.content}`).join('\n')}`
+            : '';
+
+          const contextMems = [
+            ...agentMemories,
+            ...relevantMems.map(m => m.content)
+          ];
+          const companyContext = {
+            name: companyData.name,
+            goal: companyData.goal,
+            industry: companyData.industry,
+            description: companyData.description
+          };
+
+          // YouTube Integration for Marketing Agent
+          let youtubeInsights = '';
+          if (agentId === 'marketing_agent') {
+            const userDoc = await csDb.collection('cs_users').doc(firebase.auth(csApp).currentUser.uid).get();
+            if (userDoc.exists && userDoc.data().youtube?.connected) {
+              const yt = userDoc.data().youtube;
+              let simulatedData = '';
+              if (!yt.apiKey) {
+                simulatedData = `\n[SIMULATED DATA FOR CHANNEL: ${yt.channelId}]\n- Recent Viewer Retention: 65% (Above average)\n- Top Traffic Source: YouTube Search (40%)\n- Current Subscriber Growth: +12% this month\n- Most Active Time: 6 PM - 9 PM\n- High Engagement on "Tutorial" style videos.`;
+              }
+              
+              youtubeInsights = `\n\n[USER YOUTUBE SETTINGS]\nChannel ID: ${yt.channelId}\nMode: ${yt.mode}\n${yt.apiKey ? '(API Access Verified)' : '(Simulation Mode)'}${simulatedData}\n(As the Marketing Agent, you must weave in specific, data-driven advice based on this channel's potential performance.)`;
+              
+              if (yt.apiKey && yt.channelId) {
+                try {
+                   const ytResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${yt.apiKey}&channelId=${yt.channelId}&part=snippet,id&order=date&maxResults=3`);
+                   const ytData = await ytResponse.json();
+                   if (ytData.items) {
+                     const titles = ytData.items.map(item => item.snippet.title).join(', ');
+                     youtubeInsights += `\nLatest Videos Found: ${titles}`;
+                   }
+                } catch (e) { console.warn("YT Fetch failed:", e); }
+              }
+            }
+          }
+
+          const contextMsg = (targetAgentId && !userMessage.toLowerCase().includes('opening'))
+            ? `Previous discussion context:\n${transcript.slice(-15).map(t => `${t.sender}: ${t.text}`).join('\n')}\n\nFounder/User Instruction: ${userMessage}\n\n${personalContext}\n\nIMPORTANT: Respond from your perspective as ${role.name}. YOUR RESPONSE MUST BE DETAILED, COMPREHENSIVE, AND AT LEAST 3-4 PARAGRAPHS LONG. Do not give short answers. Address the Topic and the Founder's latest instruction directly, providing specific strategic or technical advice based on your role. If you have personal context from your previous private chats with the Founder, use it to make your response more personalized.${youtubeInsights}`
+            : `Meeting Topic: ${document.getElementById('active-meeting-topic').textContent}\nContext: ${userMessage}\n\n${personalContext}\n\nRespond as ${role.name}. Provide a detailed, long, and comprehensive opening statement (at least 200 words). Include your vision and initial thoughts on how you will contribute to this goal.${youtubeInsights}`;
+
+          const result = await GeminiService.agentRespond(
+            agentId, contextMsg, companyContext, contextMems
+          );
+
+          hideTyping();
+
+          const responseText = result.text;
+          addChatMessage(role.name || agentId, agentId, responseText, role.emoji || '🤖', role.bgColor);
+
+          transcript.push({ sender: role.name, senderRole: agentId, text: responseText });
+          MeetingService.addMessage(companyData.id, currentMeetingId, {
+            sender: role.name, senderRole: agentId, text: responseText
+          });
+        } catch (error) {
+          hideTyping();
+          addChatMessage(role.name || agentId, agentId, 'I apologize, I encountered an issue formulating my response.', role.emoji || '🤖', role.bgColor);
+        }
+
+        // Small delay between agents for natural flow
+        await new Promise(r => setTimeout(r, 500));
+      }
+
+      isProcessing = false;
+      document.getElementById('send-btn').disabled = false;
+      document.getElementById('discuss-btn').disabled = false;
+      document.getElementById('chat-input').focus();
+
+      // --- [NEW] Trigger Cross-Talk if enabled ---
+      if (document.getElementById('crosstalk-toggle').checked && targetAgentId) {
+        handleCrossTalk(targetAgentId);
+      }
+    }
+
+    async function discussAsTeam() {
+      if (isProcessing) return;
+      const lastMsg = transcript.length > 0 ? transcript[transcript.length - 1].text : "No recent message.";
+      const topic = document.getElementById('active-meeting-topic').textContent;
+      
+      console.log('Team discussion triggered...');
+      document.getElementById('discuss-btn').disabled = true;
+
+      for (const agentId of selectedMeetingAgents) {
+        await generateAgentResponse(`The team is discussing: "${topic}". Based on the last point: "${lastMsg.substring(0, 100)}...", what is your expert opinion? Provide a detailed strategic perspective.`, agentId);
+        // Delay between agents
+        await new Promise(r => setTimeout(r, 1000));
+      }
+      
+      document.getElementById('discuss-btn').disabled = false;
+    }
+
+    async function handleCrossTalk(lastSpeakerId) {
+      // 30% chance of cross-talk automatically, or if forced
+      if (Math.random() > 0.7) return;
+
+      const otherAgents = Array.from(selectedMeetingAgents).filter(id => id !== lastSpeakerId);
+      if (otherAgents.length === 0) return;
+
+      const randomAgentId = otherAgents[Math.floor(Math.random() * otherAgents.length)];
+      const lastMessage = transcript[transcript.length - 1].text;
+
+      // Small delay before reaction
+      await new Promise(r => setTimeout(r, 2000));
+      
+      const role = roleMap[randomAgentId];
+      console.log(`${role.name} is reacting to ${lastSpeakerId}...`);
+      
+      await generateAgentResponse(`The ${roleMap[lastSpeakerId]?.name || lastSpeakerId} just said: "${lastMessage.substring(0, 100)}...". Please react to this or add your unique perspective from your role.`, randomAgentId);
+    }
+
+    function addChatMessage(sender, role, text, emoji, bgColor) {
+      const chatArea = document.getElementById('chat-area');
+      const isUser = role === 'user';
+      const senderDisplayName = isUser ? 'Founder' : sender;
+      const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${isUser ? 'user-message' : ''}`;
+      messageDiv.innerHTML = `
+          <div class="chat-avatar" style="background:${bgColor || 'var(--gradient-hero)'}">${emoji}</div>
+          <div class="chat-bubble">
+            <div class="chat-sender">
+              ${Utils.escapeHtml(senderDisplayName)}
+              ${!isUser ? `<span class="chat-sender-role">${roleMap[role]?.responsibilities?.[0] || ''}</span>` : ''}
+            </div>
+            <div class="chat-text">${Utils.escapeHtml(text)}</div>
+            <div class="chat-time">${time}</div>
+          </div>
+      `;
+      chatArea.appendChild(messageDiv);
+      chatArea.scrollTop = chatArea.scrollHeight;
+      console.log(`Rendered message from ${senderDisplayName}`);
+    }
+
+    function showTyping(name) {
+      const chatArea = document.getElementById('chat-area');
+      chatArea.innerHTML += `
+        <div class="typing-indicator" id="typing-indicator">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          <span>${Utils.escapeHtml(name)} is thinking...</span>
+        </div>
+      `;
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typing-indicator');
+      if (el) el.remove();
+    }
+
+    async function endMeeting() {
+      if (transcript.length < 2) {
+        Utils.toast('Have a discussion first before ending the meeting', 'info');
+        return;
+      }
+
+      Utils.showLoading('Generating meeting summary...');
+
+      try {
+        const transcriptText = transcript.map(t => `${t.sender} (${t.senderRole}): ${t.text}`).join('\n\n');
+        const topic = document.getElementById('active-meeting-topic').textContent;
+
+        const summaryResult = await GeminiService.summarizeMeeting(transcriptText, topic);
+
+        if (summaryResult.success) {
+          const parsed = MeetingService.parseSummary(summaryResult.text);
+
+          // Save to Firestore
+          await MeetingService.saveSummary(companyData.id, currentMeetingId, parsed);
+
+          // Extract and save memories
+          const memoriesCount = await MemoryService.extractAndSave(companyData.id, parsed, currentMeetingId);
+
+          Utils.hideLoading();
+
+          // Show summary view
+          document.getElementById('meeting-active-view').style.display = 'none';
+          showSummary(parsed, topic, memoriesCount);
+        } else {
+          throw new Error('Failed to generate summary');
+        }
+      } catch (error) {
+        Utils.hideLoading();
+        Utils.toast('Error generating summary: ' + error.message, 'error');
+      }
+    }
+
+    function showSummary(parsed, topic, memoriesCount) {
+      const view = document.getElementById('meeting-summary-view');
+      view.style.display = 'block';
+      view.innerHTML = `
+        <div class="summary-panel">
+          <h3>📋 Meeting Summary</h3>
+          <p style="color:var(--color-text-muted);font-size:var(--font-size-sm);margin-bottom:var(--space-6)">
+            Topic: <strong>${Utils.escapeHtml(topic)}</strong> · ${transcript.length} messages · ${memoriesCount} memories saved
+          </p>
+
+          ${parsed.summary ? `
+            <div class="summary-section">
+              <h4>📄 Summary</h4>
+              <p>${Utils.escapeHtml(parsed.summary)}</p>
+            </div>
+          ` : ''}
+
+          ${parsed.decisions?.length ? `
+            <div class="summary-section">
+              <h4>✅ Key Decisions</h4>
+              <ul>${parsed.decisions.map(d => `<li>${Utils.escapeHtml(d)}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+
+          ${parsed.actionItems?.length ? `
+            <div class="summary-section">
+              <h4>📌 Action Items</h4>
+              <ul>${parsed.actionItems.map(a => `<li>${Utils.escapeHtml(a)}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+
+          ${parsed.followUps?.length ? `
+            <div class="summary-section">
+              <h4>🔄 Follow-up Tasks</h4>
+              <ul>${parsed.followUps.map(f => `<li>${Utils.escapeHtml(f)}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+
+          ${parsed.insights?.length ? `
+            <div class="summary-section">
+              <h4>💡 Important Insights</h4>
+              <ul>${parsed.insights.map(i => `<li>${Utils.escapeHtml(i)}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+
+          <div style="display:flex;gap:var(--space-3);margin-top:var(--space-8)">
+            <a href="meeting.html" class="btn btn-primary">🔄 New Meeting</a>
+            <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+            <a href="memory.html" class="btn btn-ghost">View All Memories →</a>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadExistingMeeting(meetingId) {
+      try {
+        const meeting = await MeetingService.get(companyData.id, meetingId);
+        if (!meeting) { Utils.toast('Meeting not found', 'error'); return; }
+
+        if (meeting.status === 'completed' && meeting.summary) {
+          // Show summary directly
+          document.getElementById('meeting-setup-view').style.display = 'none';
+          const parsed = {
+            summary: meeting.summary,
+            decisions: meeting.decisions || [],
+            actionItems: meeting.actionItems || [],
+            followUps: meeting.followUps || [],
+            insights: meeting.insights || []
+          };
+          transcript = meeting.transcript || [];
+          showSummary(parsed, meeting.topic, 0);
+        } else {
+          // Load active meeting state
+          currentMeetingId = meetingId;
+          selectedMeetingAgents = new Set(meeting.agentIds || []);
+          transcript = meeting.transcript || [];
+
+          document.getElementById('meeting-setup-view').style.display = 'none';
+          document.getElementById('meeting-active-view').style.display = 'block';
+          document.getElementById('active-meeting-topic').textContent = meeting.topic;
+
+          const speakerSelect = document.getElementById('speak-as-select');
+          speakerSelect.innerHTML = '<option value="user">Founder 👤</option>';
+
+          document.getElementById('active-agents-bar').innerHTML = (meeting.agentIds || []).map(id => {
+            const role = roleMap[id] || {};
+            // Add to speaker dropdown
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = `${role.emoji || '🤖'} ${role.name || id}`;
+            speakerSelect.appendChild(option);
+
+            return `<div class="meeting-agent-chip"><span>${role.emoji || '🤖'}</span>${role.name || id}</div>`;
+          }).join('');
+
+          // Replay transcript
+          transcript.forEach(msg => {
+            const role = roleMap[msg.senderRole] || {};
+            const isUser = msg.senderRole === 'user';
+            addChatMessage(isUser ? 'Founder' : msg.sender, msg.senderRole, msg.text, isUser ? '👤' : (role.emoji || '🤖'), role.bgColor);
+          });
+        }
+      } catch (error) {
+        console.error('Load meeting error:', error);
+      }
+    }
+  </script>
+</body>
+</html>

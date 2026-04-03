@@ -257,6 +257,48 @@
     }
 
     /* ═══════════════════════════════════════════
+   BRANDING: MADE IN INDIA
+═══════════════════════════════════════════ */
+    .mii-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--bdr);
+        border-radius: 100px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        letter-spacing: 0.02em;
+    }
+
+    .mii-badge:hover {
+        background: var(--blue-g);
+        border-color: var(--blue);
+        color: var(--blue);
+        transform: translateY(-2px);
+        box-shadow: var(--s2);
+    }
+
+    .mii-badge img {
+        width: 18px;
+        height: auto;
+        border-radius: 2px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .foot-powered-by {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    /* ═══════════════════════════════════════════
    VIDEO PREVIEW SECTION
 ═══════════════════════════════════════════ */
     .video-suite-section {
@@ -6524,7 +6566,10 @@
     <footer id="mainFooter">
         <div class="foot-container">
             <div class="foot-col-brand">
-                <span class="foot-logo">Explyra&trade;</span>
+                <div class="foot-logo-wrapper" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                    <img src="nobg.png" alt="Explyra" style="height: 42px; width: auto; object-fit: contain;">
+                    <span class="foot-logo" style="margin-bottom: 0;">Explyra&trade;</span>
+                </div>
                 <p class="foot-tagline">One Platform. Everything. The ultimate SaaS ecosystem for developers, teams, and
                     enterprises.</p>
                 <div class="foot-compliance">
@@ -6649,10 +6694,14 @@
                         <span class="powered-quote">"Crafting Brilliance in Every Panel"</span>
                     </div>
                 </a>
-                <button class="dont-click-btn" onclick="triggerCrack()">
-                    <i class="fas fa-exclamation-triangle"></i> Do Not Click
-                </button>
-            </div>
+                    <button class="dont-click-btn" onclick="triggerCrack()" style="margin-right: 20px;">
+                        <i class="fas fa-exclamation-triangle"></i> Do Not Click
+                    </button>
+                    <a href="https://explyra.me" class="mii-badge">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="India">
+                        <span>Proudly Made in India</span>
+                    </a>
+                </div>
         </div>
     </footer>
 

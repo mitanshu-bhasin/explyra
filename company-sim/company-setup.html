@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Setup — CompanySim</title>
+  <meta name="description" content="Set up your AI-powered company with name, goal, industry, and description.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="main-content page-content" id="main-content">
+    <div class="setup-page">
+      <div class="page-header" style="text-align:center">
+        <h1 class="page-title">🏢 Create Your Company</h1>
+        <p class="page-subtitle">Tell us about your venture and we'll build the perfect AI team.</p>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="setup-progress" id="setup-progress">
+        <div class="setup-step active" data-step="1">
+          <div class="setup-step-number">1</div>
+          <span class="setup-step-label">Basics</span>
+        </div>
+        <div class="setup-line"></div>
+        <div class="setup-step" data-step="2">
+          <div class="setup-step-number">2</div>
+          <span class="setup-step-label">Industry</span>
+        </div>
+        <div class="setup-line"></div>
+        <div class="setup-step" data-step="3">
+          <div class="setup-step-number">3</div>
+          <span class="setup-step-label">Details</span>
+        </div>
+        <div class="setup-line"></div>
+        <div class="setup-step" data-step="4">
+          <div class="setup-step-number">4</div>
+          <span class="setup-step-label">Review</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Basics -->
+      <div class="setup-card" id="step-1">
+        <h2>Company Basics</h2>
+        <p>Start with the essentials — your company's name and primary goal.</p>
+        <div class="auth-form">
+          <div class="input-group">
+            <label for="company-name">Company Name *</label>
+            <input class="input" type="text" id="company-name" placeholder="e.g., NovaTech Solutions" required maxlength="60">
+          </div>
+          <div class="input-group">
+            <label for="company-goal">Company Goal *</label>
+            <input class="input" type="text" id="company-goal" placeholder="e.g., Revolutionize personal finance with AI" required maxlength="120">
+          </div>
+        </div>
+        <div class="setup-actions">
+          <a href="dashboard.html" class="btn btn-ghost">← Back to Dashboard</a>
+          <button class="btn btn-primary" onclick="nextStep(2)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Industry -->
+      <div class="setup-card" id="step-2" style="display:none">
+        <h2>Choose Your Industry</h2>
+        <p>Select the industry that best describes your company.</p>
+        <div class="industry-grid" id="industry-grid"></div>
+        <div class="setup-actions">
+          <button class="btn btn-ghost" onclick="prevStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(3)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Details -->
+      <div class="setup-card" id="step-3" style="display:none">
+        <h2>Company Description</h2>
+        <p>Describe your company in more detail. This helps your AI team understand your vision.</p>
+        <div class="auth-form">
+          <div class="input-group">
+            <label for="company-desc">Description (optional)</label>
+            <textarea class="textarea" id="company-desc" placeholder="Tell us more about what your company does, your target market, unique value proposition..." rows="5" maxlength="500"></textarea>
+            <span class="text-muted" style="font-size:12px"><span id="desc-count">0</span>/500</span>
+          </div>
+        </div>
+        <div class="setup-actions">
+          <button class="btn btn-ghost" onclick="prevStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(4)">Review →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Review -->
+      <div class="setup-card" id="step-4" style="display:none">
+        <h2>Review & Create</h2>
+        <p>Here's a summary of your company. Make sure everything looks good!</p>
+        <div id="review-content"></div>
+        <div class="setup-actions">
+          <button class="btn btn-ghost" onclick="prevStep(3)">← Edit</button>
+          <button class="btn btn-primary btn-lg" id="create-btn" onclick="createCompany()">
+            <span id="create-btn-text">🚀 Create Company</span>
+            <span id="create-btn-spinner" class="spinner" style="display:none"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/company.js"></script>
+  <script src="data/industries.js"></script>
+  <script src="data/role-catalog.js"></script>
+
+  <script>
+    let currentStep = 1;
+    let selectedIndustry = '';
+    let existingCompany = null;
+
+    Router.requireAuth(async (user) => {
+      if (!user) return;
+      renderSidebar('company-setup');
+      renderIndustryGrid();
+
+      // Check if editing existing company
+      existingCompany = await CompanyService.getByUser(user.uid);
+      if (existingCompany) {
+        document.getElementById('company-name').value = existingCompany.name || '';
+        document.getElementById('company-goal').value = existingCompany.goal || '';
+        document.getElementById('company-desc').value = existingCompany.description || '';
+        selectedIndustry = existingCompany.industry || '';
+        updateDescCount();
+
+        // Highlight selected industry
+        setTimeout(() => {
+          document.querySelectorAll('.industry-option').forEach(el => {
+            if (el.dataset.industry === selectedIndustry) el.classList.add('selected');
+          });
+        }, 100);
+      }
+    });
+
+    function renderIndustryGrid() {
+      document.getElementById('industry-grid').innerHTML = INDUSTRIES.map(ind => `
+        <div class="industry-option" data-industry="${ind.id}" onclick="selectIndustry('${ind.id}', this)">
+          <div class="industry-option-icon">${ind.emoji}</div>
+          <div>${ind.name}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectIndustry(id, el) {
+      document.querySelectorAll('.industry-option').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedIndustry = id;
+    }
+
+    function nextStep(step) {
+      // Validate current step
+      if (step === 2) {
+        const name = document.getElementById('company-name').value.trim();
+        const goal = document.getElementById('company-goal').value.trim();
+        if (!name) { Utils.toast('Please enter a company name', 'error'); return; }
+        if (!goal) { Utils.toast('Please enter a company goal', 'error'); return; }
+      }
+      if (step === 3 && !selectedIndustry) {
+        Utils.toast('Please select an industry', 'error');
+        return;
+      }
+      if (step === 4) {
+        renderReview();
+      }
+
+      goToStep(step);
+    }
+
+    function prevStep(step) {
+      goToStep(step);
+    }
+
+    function goToStep(step) {
+      // Hide all steps
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`step-${i}`).style.display = 'none';
+      }
+      document.getElementById(`step-${step}`).style.display = 'block';
+      document.getElementById(`step-${step}`).classList.add('animate-fadeIn');
+
+      // Update progress
+      document.querySelectorAll('.setup-step').forEach((el, i) => {
+        el.classList.remove('active', 'completed');
+        if (i + 1 < step) el.classList.add('completed');
+        if (i + 1 === step) el.classList.add('active');
+      });
+
+      document.querySelectorAll('.setup-line').forEach((el, i) => {
+        el.classList.toggle('completed', i + 1 < step);
+      });
+
+      currentStep = step;
+    }
+
+    function renderReview() {
+      const name = document.getElementById('company-name').value.trim();
+      const goal = document.getElementById('company-goal').value.trim();
+      const desc = document.getElementById('company-desc').value.trim();
+      const industry = INDUSTRIES.find(i => i.id === selectedIndustry);
+
+      document.getElementById('review-content').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:var(--space-5);margin:var(--space-6) 0">
+          <div class="card">
+            <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2)">Company Name</div>
+            <div style="font-size:var(--font-size-lg);font-weight:700">${Utils.escapeHtml(name)}</div>
+          </div>
+          <div class="card">
+            <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2)">Company Goal</div>
+            <div style="font-size:var(--font-size-base);color:var(--color-text-secondary)">${Utils.escapeHtml(goal)}</div>
+          </div>
+          <div class="card">
+            <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2)">Industry</div>
+            <div style="font-size:var(--font-size-base)">${industry ? industry.emoji + ' ' + industry.name : selectedIndustry}</div>
+          </div>
+          ${desc ? `
+            <div class="card">
+              <div style="font-size:var(--font-size-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--space-2)">Description</div>
+              <div style="font-size:var(--font-size-sm);color:var(--color-text-secondary);line-height:1.7">${Utils.escapeHtml(desc)}</div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    async function createCompany() {
+      const name = document.getElementById('company-name').value.trim();
+      const goal = document.getElementById('company-goal').value.trim();
+      const desc = document.getElementById('company-desc').value.trim();
+      const industry = INDUSTRIES.find(i => i.id === selectedIndustry);
+      const btn = document.getElementById('create-btn');
+      const btnText = document.getElementById('create-btn-text');
+      const spinner = document.getElementById('create-btn-spinner');
+
+      btn.disabled = true;
+      btnText.textContent = existingCompany ? 'Updating...' : 'Creating...';
+      spinner.style.display = 'inline-block';
+
+      try {
+        let result;
+        if (existingCompany) {
+          result = await CompanyService.update(existingCompany.id, {
+            name, goal, industry: industry ? industry.name : selectedIndustry, description: desc
+          });
+        } else {
+          result = await CompanyService.create(csAuth.currentUser.uid, {
+            name, goal, industry: industry ? industry.name : selectedIndustry, description: desc
+          });
+        }
+
+        if (result.success) {
+          Utils.toast(existingCompany ? 'Company updated! 🎉' : 'Company created! 🎉 Now select your AI team.', 'success');
+          setTimeout(() => {
+            window.location.href = existingCompany ? 'dashboard.html' : 'agent-selection.html';
+          }, 800);
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        Utils.toast('Failed: ' + error.message, 'error');
+        btn.disabled = false;
+        btnText.textContent = existingCompany ? '✏️ Update Company' : '🚀 Create Company';
+        spinner.style.display = 'none';
+      }
+    }
+
+    // Description counter
+    document.getElementById('company-desc').addEventListener('input', updateDescCount);
+    function updateDescCount() {
+      document.getElementById('desc-count').textContent = document.getElementById('company-desc').value.length;
+    }
+  </script>
+</body>
+</html>

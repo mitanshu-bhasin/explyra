@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — CompanySim</title>
+  <meta name="description" content="Your AI company dashboard. View agents, meetings, and company progress.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="main-content page-content" id="main-content">
+    <!-- Content will be loaded dynamically -->
+    <div id="dashboard-loading" style="text-align:center;padding:100px 0">
+      <div class="loading-spinner" style="margin:0 auto 16px"></div>
+      <p class="loading-text">Loading your dashboard...</p>
+    </div>
+    <div id="dashboard-content" style="display:none"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/company.js"></script>
+  <script src="js/meeting-service.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="data/role-catalog.js"></script>
+
+  <script>
+    let companyData = null;
+    let agentsData = [];
+    let meetingsData = [];
+    let memoriesData = [];
+
+    Router.requireAuth(async (user) => {
+      if (!user) return;
+      renderSidebar('dashboard');
+      await loadDashboard(user);
+    });
+
+    async function loadDashboard(user) {
+      try {
+        companyData = await CompanyService.getByUser(user.uid);
+
+        if (!companyData) {
+          showNoCompany();
+          return;
+        }
+
+        // Load data in parallel
+        const [agents, meetings, memories] = await Promise.all([
+          CompanyService.getAgents(companyData.id),
+          MeetingService.getRecent(companyData.id, 5),
+          MemoryService.getRecent(companyData.id, 5)
+        ]);
+
+        agentsData = agents;
+        meetingsData = meetings;
+        memoriesData = memories;
+
+        renderDashboard();
+      } catch (error) {
+        console.error('Dashboard load error:', error);
+        Utils.toast('Failed to load dashboard', 'error');
+      }
+    }
+
+    function showNoCompany() {
+      document.getElementById('dashboard-loading').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'block';
+      document.getElementById('dashboard-content').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🏢</div>
+          <h2 class="empty-state-title">Welcome to CompanySim!</h2>
+          <p class="empty-state-text">You haven't created a company yet. Set up your AI-powered company to get started.</p>
+          <a href="company-setup.html" class="btn btn-primary btn-lg">🚀 Create Your Company</a>
+        </div>
+      `;
+    }
+
+    function renderDashboard() {
+      document.getElementById('dashboard-loading').style.display = 'none';
+      const content = document.getElementById('dashboard-content');
+      content.style.display = 'block';
+
+      const roleMap = {};
+      ROLE_CATALOG.forEach(r => roleMap[r.id] = r);
+
+      const completedMeetings = meetingsData.filter(m => m.status === 'completed').length;
+      const totalDecisions = memoriesData.filter(m => m.type === 'decision').length;
+
+      content.innerHTML = `
+        <div class="page-header">
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Your company at a glance</p>
+        </div>
+
+        <!-- Company Card -->
+        <div class="company-card animate-fadeInUp">
+          <div class="company-card-header">
+            <div>
+              <div class="company-icon">🏢</div>
+              <h2 class="company-name">${Utils.escapeHtml(companyData.name)}</h2>
+              <p class="company-goal">${Utils.escapeHtml(companyData.goal)}</p>
+              <div class="company-meta">
+                <div class="company-meta-item">🏭 ${Utils.escapeHtml(companyData.industry)}</div>
+                <div class="company-meta-item">🤖 ${agentsData.length} Active Agents</div>
+                <div class="company-meta-item">💬 ${meetingsData.length} Meetings</div>
+              </div>
+            </div>
+            <a href="company-setup.html" class="btn btn-ghost btn-sm">Edit ✏️</a>
+          </div>
+          ${companyData.description ? `<p style="font-size:var(--font-size-sm);color:var(--color-text-muted);margin-top:var(--space-4)">${Utils.escapeHtml(companyData.description)}</p>` : ''}
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="dashboard-grid stagger-children">
+          <div class="stat-card">
+            <div class="stat-label">Active Agents</div>
+            <div class="stat-value" style="color:var(--color-accent-blue)">${agentsData.length}</div>
+            <div class="stat-meta">AI team members</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Meetings Held</div>
+            <div class="stat-value" style="color:var(--color-accent-purple)">${meetingsData.length}</div>
+            <div class="stat-meta">${completedMeetings} completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Decisions Made</div>
+            <div class="stat-value" style="color:var(--color-accent-green)">${totalDecisions}</div>
+            <div class="stat-meta">from meetings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Memories Stored</div>
+            <div class="stat-value" style="color:var(--color-accent-orange)">${memoriesData.length}</div>
+            <div class="stat-meta">knowledge items</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-8);flex-wrap:wrap">
+          <a href="meeting.html" class="btn btn-primary">💬 New Meeting</a>
+          <a href="chat.html" class="btn btn-secondary">👤 Personal Chat</a>
+          <a href="agent-selection.html" class="btn btn-secondary">🤖 Manage Agents</a>
+          <a href="presentation.html" class="btn btn-secondary">📽️ View Presentation</a>
+          <a href="settings.html" class="btn btn-secondary">⚙️ Settings</a>
+        </div>
+
+        <!-- Active Agents -->
+        <div class="dashboard-section">
+          <div class="section-title">
+            <h3>🤖 Active Agents</h3>
+            <a href="agent-selection.html" class="btn btn-ghost btn-sm">Manage →</a>
+          </div>
+          ${agentsData.length > 0 ? `
+            <div class="agents-grid stagger-children">
+              ${agentsData.map(a => {
+                const role = roleMap[a.id] || {};
+                return `
+                  <div class="agent-mini-card">
+                    <div class="agent-mini-avatar" style="background:${role.bgColor || 'rgba(102,126,234,0.12)'}">${role.emoji || '🤖'}</div>
+                    <div>
+                      <div class="agent-mini-name">${Utils.escapeHtml(role.name || a.name || a.id)}</div>
+                      <div class="agent-mini-role">${(a.memory || []).length} memories</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : `
+            <div class="empty-state" style="padding:40px">
+              <p class="empty-state-text" style="margin:0">No agents activated yet.</p>
+              <a href="agent-selection.html" class="btn btn-primary btn-sm" style="margin-top:16px">Select Agents</a>
+            </div>
+          `}
+        </div>
+
+        <!-- Recent Meetings -->
+        <div class="dashboard-section">
+          <div class="section-title">
+            <h3>💬 Recent Meetings</h3>
+            <a href="meeting.html" class="btn btn-ghost btn-sm">New Meeting →</a>
+          </div>
+          ${meetingsData.length > 0 ? `
+            <div class="meeting-list">
+              ${meetingsData.map(m => `
+                <div class="meeting-item" onclick="window.location.href='meeting.html?id=${m.id}'">
+                  <div class="meeting-dot" style="background:${m.status === 'completed' ? 'var(--color-accent-green)' : 'var(--color-accent-orange)'}"></div>
+                  <div class="meeting-info">
+                    <div class="meeting-topic">${Utils.escapeHtml(m.topic)}</div>
+                    <div class="meeting-meta">${m.agentIds?.length || 0} agents · ${m.transcript?.length || 0} messages</div>
+                  </div>
+                  <div class="meeting-date">${Utils.formatRelative(m.createdAt)}</div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="empty-state" style="padding:40px">
+              <p class="empty-state-text" style="margin:0">No meetings yet. Start your first team discussion!</p>
+              <a href="meeting.html" class="btn btn-primary btn-sm" style="margin-top:16px">Start Meeting</a>
+            </div>
+          `}
+        </div>
+
+        <!-- Memory Highlights -->
+        <div class="dashboard-section">
+          <div class="section-title">
+            <h3>🧠 Memory Highlights</h3>
+            <a href="memory.html" class="btn btn-ghost btn-sm">View All →</a>
+          </div>
+          ${memoriesData.length > 0 ? `
+            <div class="memory-highlights">
+              ${memoriesData.slice(0, 4).map(m => `
+                <div class="memory-item">
+                  <div class="memory-item-text">${Utils.escapeHtml(Utils.truncate(m.content, 150))}</div>
+                  <div class="memory-item-meta">
+                    <span class="badge badge-${m.type === 'decision' ? 'green' : m.type === 'insight' ? 'purple' : 'blue'}">${m.type}</span>
+                    · ${Utils.formatRelative(m.createdAt)}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="empty-state" style="padding:40px">
+              <p class="empty-state-text" style="margin:0">No memories yet. They'll appear after your first meeting.</p>
+            </div>
+          `}
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

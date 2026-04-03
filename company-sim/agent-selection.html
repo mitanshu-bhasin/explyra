@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Selection — CompanySim</title>
+  <meta name="description" content="Select AI agents for your company team.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="main-content page-content" id="main-content">
+    <div class="page-header">
+      <h1 class="page-title">🤖 Select Your AI Team</h1>
+      <p class="page-subtitle">Choose the agents that will power your company's executive team.</p>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6);flex-wrap:wrap;gap:var(--space-3)">
+      <div>
+        <span id="selected-count" class="badge badge-blue" style="font-size:14px;padding:8px 16px">0 selected</span>
+        <span id="recommended-hint" class="badge badge-orange" style="font-size:12px;padding:6px 12px;margin-left:8px;display:none">⭐ AI-recommended roles highlighted</span>
+      </div>
+      <button class="btn btn-primary" id="save-agents-btn" onclick="saveAgents()" disabled>
+        <span id="save-btn-text">Save Team</span>
+        <span id="save-btn-spinner" class="spinner" style="display:none"></span>
+      </button>
+    </div>
+
+    <div class="agent-select-grid stagger-children" id="agent-grid"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/company.js"></script>
+  <script src="data/role-catalog.js"></script>
+  <script src="data/industries.js"></script>
+
+  <script>
+    let companyData = null;
+    let selectedAgents = new Set();
+    let recommendedRoles = [];
+
+    Router.requireAuth(async (user) => {
+      if (!user) return;
+      renderSidebar('agent-selection');
+      companyData = await CompanyService.getByUser(user.uid);
+
+      if (!companyData) {
+        Utils.toast('Please create a company first', 'info');
+        window.location.href = 'company-setup.html';
+        return;
+      }
+
+      // Get recommended roles based on industry
+      const industryKey = INDUSTRIES.find(i => i.name === companyData.industry)?.id;
+      recommendedRoles = industryKey ? (INDUSTRY_ROLE_MAP[industryKey] || []) : [];
+      if (recommendedRoles.length > 0) {
+        document.getElementById('recommended-hint').style.display = 'inline-flex';
+      }
+
+      // Load existing agents
+      const existingAgents = await CompanyService.getAgents(companyData.id);
+      existingAgents.forEach(a => selectedAgents.add(a.id));
+
+      renderAgentGrid();
+      updateSelectedCount();
+    });
+
+    function renderAgentGrid() {
+      const grid = document.getElementById('agent-grid');
+      grid.innerHTML = ROLE_CATALOG.map(role => {
+        const isSelected = selectedAgents.has(role.id);
+        const isRecommended = recommendedRoles.includes(role.id);
+        return `
+          <div class="agent-select-card ${isSelected ? 'selected' : ''} ${isRecommended ? 'recommended' : ''}"
+               id="agent-card-${role.id}" onclick="toggleAgent('${role.id}')">
+            ${isRecommended ? '<div class="recommended-badge">⭐ Recommended</div>' : ''}
+            <div class="agent-select-check">${isSelected ? '✓' : ''}</div>
+            <div class="agent-select-avatar" style="background:${role.bgColor}">${role.emoji}</div>
+            <div class="agent-select-name">${role.name}</div>
+            <div class="agent-select-desc">${role.personality.split('.')[0]}.</div>
+            <div class="agent-select-responsibilities">
+              ${role.responsibilities.slice(0, 3).map(r => `<span class="agent-responsibility-tag">${r}</span>`).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleAgent(roleId) {
+      if (selectedAgents.has(roleId)) {
+        selectedAgents.delete(roleId);
+      } else {
+        selectedAgents.add(roleId);
+      }
+
+      const card = document.getElementById(`agent-card-${roleId}`);
+      card.classList.toggle('selected');
+      card.querySelector('.agent-select-check').textContent = selectedAgents.has(roleId) ? '✓' : '';
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      const count = selectedAgents.size;
+      document.getElementById('selected-count').textContent = `${count} selected`;
+      document.getElementById('save-agents-btn').disabled = count === 0;
+    }
+
+    async function saveAgents() {
+      const btn = document.getElementById('save-agents-btn');
+      const btnText = document.getElementById('save-btn-text');
+      const spinner = document.getElementById('save-btn-spinner');
+
+      btn.disabled = true;
+      btnText.textContent = 'Saving...';
+      spinner.style.display = 'inline-block';
+
+      try {
+        const agents = Array.from(selectedAgents).map(id => {
+          const role = ROLE_CATALOG.find(r => r.id === id);
+          return {
+            id: role.id,
+            name: role.name,
+            emoji: role.emoji,
+            color: role.color,
+            bgColor: role.bgColor,
+            personality: role.personality,
+            responsibilities: role.responsibilities,
+            style: role.style
+          };
+        });
+
+        const result = await CompanyService.saveAgents(companyData.id, agents);
+
+        if (result.success) {
+          Utils.toast(`${agents.length} agents activated! 🎉`, 'success');
+          setTimeout(() => window.location.href = 'dashboard.html', 800);
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        Utils.toast('Failed to save: ' + error.message, 'error');
+        btn.disabled = false;
+        btnText.textContent = 'Save Team';
+        spinner.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
