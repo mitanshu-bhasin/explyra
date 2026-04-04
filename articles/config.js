@@ -19,21 +19,23 @@ function parseFbConfig() {
         const content = fs.readFileSync(configPath, 'utf-8');
         
         // Extract the object defined in const firebaseConfig = { ... };
-        const match = content.match(/const firebaseConfig = ({[\s\S]+?});/);
+        const match = content.match(/const firebaseConfig = {([\s\S]+?)};/);
         if (!match) {
             console.error('Error: Could not parse firebaseConfig from fb.config');
             return null;
         }
 
-        // Convert the matched JS object string to a JSON-parsable string
-        // Note: This matches simple JS object literals.
-        const rawObj = match[1]
-            .replace(/(\w+):/g, '"$1":') // add quotes to keys
-            .replace(/'/g, '"') // replace single quotes with double quotes
-            .replace(/,(\s*[}\]])/g, '$1'); // remove trailing commas
+        // Safer way to parse: turn it into valid JSON
+        let jsonStr = match[0]
+            .replace('const firebaseConfig = ', '')
+            .replace(/;/g, '')
+            .replace(/^\s*(\w+):/gm, '"$1":') // Only match keys at start of line
+            .replace(/'/g, '"')
+            .replace(/,(\s*})/g, '$1'); // remove trailing commas
+
+        const firebaseConfig = JSON.parse(jsonStr);
         
-        const firebaseConfig = JSON.parse(rawObj);
-        
+        // Other constants if any
         const geminiMatch = content.match(/const GEMINI_API_KEY = "(.*)";/);
         const newsMatch = content.match(/const NEWS_API_KEY = "(.*)";/);
 
@@ -43,7 +45,7 @@ function parseFbConfig() {
             newsKey: newsMatch ? newsMatch[1] : process.env.NEWS_API_KEY
         };
     } catch (error) {
-        console.error('Error parsing fb.config:', error);
+        console.error('Error parsing fb.config:', error.message);
         return null;
     }
 }

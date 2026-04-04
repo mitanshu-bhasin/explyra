@@ -33,6 +33,13 @@
         .article-card p { font-size: 0.95rem; color: #555; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .read-more-link { color: #a00; font-weight: 700; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
 
+        .section-header { font-family: 'Playfair Display', serif; font-size: 2rem; border-bottom: 2px solid #1a1a1a; padding-bottom: 10px; margin-top: 60px; margin-bottom: 30px;}
+        .past-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .past-card img { height: 150px; }
+        
+        .view-more-btn { display: block; width: fit-content; margin: 0 auto 60px; padding: 15px 40px; border: 2px solid #1a1a1a; background: transparent; color: #1a1a1a; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; text-decoration: none;}
+        .view-more-btn:hover { background: #1a1a1a; color: #fff; }
+
         .main-footer { background: #f9f9f9; padding: 80px 0 40px; border-top: 1px solid #eee; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 80px; margin-bottom: 60px; }
         .footer-grid h4 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
@@ -43,7 +50,7 @@
         @media (max-width: 768px) {
             .branding h1 { font-size: 2.5rem; }
             .header-top { flex-direction: column; gap: 15px; }
-            .nav-bar ul { gap: 20px; font-size: 0.7rem; }
+            .nav-bar ul { gap: 20px; font-size: 0.7rem; flex-wrap: wrap; justify-content: center; }
             .footer-grid { grid-template-columns: 1fr; gap: 40px; }
         }
     </style>
@@ -70,88 +77,95 @@
 
     <main class="container">
         <div id="articles-grid" class="masonry-grid">
-            
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/1/400/250" alt="Article 1">
-                <div class="meta">AI & MACHINE LEARNING</div>
-                <h3><a href="/article/article_1.html" target="_blank">Lara Translate Recognized as the Industry Standard for AI Agent Translation</a></h3>
-                <p>Explore the breakthrough development of Lara Translate and how it is redefining the landscape of AI-powered translation for developers and enterprises globally.</p>
-                <a href="/article/article_1.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/2/400/250" alt="Article 2">
-                <div class="meta">CLOUD COMPUTING</div>
-                <h3><a href="/article/article_2.html" target="_blank">The new Huawei Mate 80 Pro is now available in South Africa</a></h3>
-                <p>Huawei officially launches its latest flagship, the Mate 80 Pro, bringing unprecedented power and professional-grade mobile photography to the South African market.</p>
-                <a href="/article/article_2.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://imgeucdn.gamespress.com/cdn/files/Games%20Press/2025/07/171152-1fbe4ee7/Ex_Sanguis_New_Key_art_1920x1080.jpg?w=360&mode=max&otf=y&quality=90&format=jpg&bgcolor=white&sky=1aadfb3bb51e85abdc8b6922ab0265e9f1d8e877f029b06bc235b63e8edeafa1" alt="Style Roguelite from the Othercide Creators, Coming to Steam Early Access on May 21"" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">AI & ML</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_1.html" target="_blank" style="color:inherit;text-decoration:none;">Style Roguelite from the Othercide Creators, Coming to Steam Early Access on May 21"</a></h3>
+                    <p>Press releases and assets from across the games industry - screenshots, videos, logos, packshots, artwork, PR contacts, ...</p>
+                    <a href="/generated/article_1.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/3/400/250" alt="Article 3">
-                <div class="meta">CYBERSECURITY</div>
-                <h3><a href="/article/article_3.html" target="_blank">Massive Changes Are Coming to the Appalachian Trail</a></h3>
-                <p>An investigative report on how technology and digital transformation are reshaping one of the world's most iconic wilderness landscapes for a new era of hikers.</p>
-                <a href="/article/article_3.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://kotaku.com/app/uploads/2025/01/c00c0f69c36bb3d58146a55288c98310.jpg" alt="PlayStation 6 Leaks Point To Sony Paving The Way for A Handheld" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Cloud</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_2.html" target="_blank" style="color:inherit;text-decoration:none;">PlayStation 6 Leaks Point To Sony Paving The Way for A Handheld</a></h3>
+                    <p>It also sounds like the next PlayStation could be imminent...</p>
+                    <a href="/generated/article_2.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/4/400/250" alt="Article 4">
-                <div class="meta">HARDWARE</div>
-                <h3><a href="/article/article_4.html" target="_blank">PlayStation Plus April 2026 games reportedly leaked: Detailed Analysis</a></h3>
-                <p>Early leaks suggest a blockbuster lineup for PlayStation Plus members this April. We dive into the technical merits and gameplay expectations for the rumored titles.</p>
-                <a href="/article/article_4.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://idsb.tmgrup.com.tr/ly/uploads/images/2026/04/03/thumbs/1200x675/434802.jpg" alt="Regret your Gmail address? Google rolls out long-awaited fix" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Security</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_3.html" target="_blank" style="color:inherit;text-decoration:none;">Regret your Gmail address? Google rolls out long-awaited fix</a></h3>
+                    <p>Good news for people who regret the Gmail address they came up with when they registered for an account: Google is now l...</p>
+                    <a href="/generated/article_3.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/5/400/250" alt="Article 5">
-                <div class="meta">SOFTWARE</div>
-                <h3><a href="/article/article_5.html" target="_blank">BenQ’s MA270S with 5K Mac-focused Color Accuracy</a></h3>
-                <p>BenQ sets a new professional benchmark for creative workflows with its specialized 5K display range, tailored specifically for the demands of high-end Mac users.</p>
-                <a href="/article/article_5.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://www.gamespress.com/Content/Themes/Games Press/img/favicon.ico" alt="SEFTON ASYLUM Revealed on Steam with Announce Trailer" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Hardware</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_4.html" target="_blank" style="color:inherit;text-decoration:none;">SEFTON ASYLUM Revealed on Steam with Announce Trailer</a></h3>
+                    <p>Press releases and assets from across the games industry - screenshots, videos, logos, packshots, artwork, PR contacts, ...</p>
+                    <a href="/generated/article_4.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/6/400/250" alt="Article 6">
-                <div class="meta">ENTERPRISE TECH</div>
-                <h3><a href="/article/article_6.html" target="_blank">WhatsApp warns hundreds of users over fake app spyware threat</a></h3>
-                <p>A critical security bulletin as WhatsApp identifies targeted attacks via unofficial third-party applications, highlighting the urgent need for mobile security best practices.</p>
-                <a href="/article/article_6.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://nintendoeverything.com/wp-content/uploads/Ratatan-Switch-1-cancelled.jpg" alt="Ratatan's Nintendo Switch version officially cancelled, dev explains why" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Software</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_5.html" target="_blank" style="color:inherit;text-decoration:none;">Ratatan's Nintendo Switch version officially cancelled, dev explains why</a></h3>
+                    <p>It’s now official that the Nintendo Switch version of Ratatan has been cancelled. You may recall that the game was featu...</p>
+                    <a href="/generated/article_5.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/7/400/250" alt="Article 7">
-                <div class="meta">OPEN SOURCE</div>
-                <h3><a href="/article/article_7.html" target="_blank">Google's authentic Refurbished program grabs Pixel 8a</a></h3>
-                <p>Google expands its circular economy initiatives as the Pixel 8a joins the official refurbished program, offering enterprise-level hardware at consumer-friendly prices.</p>
-                <a href="/article/article_7.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://www.techpowerup.com/img/NBIXpNivkUxCEhfm.jpg" alt="GMKtec Launches NucBox K17 Mini PC with Intel Core Ultra 5 226V" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Quantum</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_6.html" target="_blank" style="color:inherit;text-decoration:none;">GMKtec Launches NucBox K17 Mini PC with Intel Core Ultra 5 226V</a></h3>
+                    <p>GMKtec has launched the NucBox K17, a compact mini PC featuring an Intel Core Ultra 5 226V processor, a Lunar Lake chip ...</p>
+                    <a href="/generated/article_6.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/8/400/250" alt="Article 8">
-                <div class="meta">MARKET ANALYSIS</div>
-                <h3><a href="/article/article_8.html" target="_blank">AI alignment researchers want to automate themselves: Future Outlook</a></h3>
-                <p>Inside the ambitious and controversial push to use superhuman AI models to verify their own safety and alignment protocols as we approach AGI.</p>
-                <a href="/article/article_8.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://www.mmjdaily.com/remote/https/agfstorage.blob.core.windows.net/misc/GN_nl/2026/04/02/index.jpg?preset=OgImage" alt="Clean water is not the same as sterile water" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Space</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_7.html" target="_blank" style="color:inherit;text-decoration:none;">Clean water is not the same as sterile water</a></h3>
+                    <p>A Belgian hellebore grower has improved root health by replacing hydrogen peroxide dosing with a water treatment system,...</p>
+                    <a href="/generated/article_7.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/9/400/250" alt="Article 9">
-                <div class="meta">CONSUMER TECH</div>
-                <h3><a href="/article/article_9.html" target="_blank">Everything is iPhone now: The Dominance of Ecosystems</a></h3>
-                <p>A critical analysis of how ecosystem lock-in and hardware integration are defining the next decade of consumer technology market share and user experience.</p>
-                <a href="/article/article_9.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://images.macrumors.com/t/lYf14IFj-_I1liH_JpkCoQvPBPw=/2500x/article-new/2026/02/iPhone-18-Pro-Deep-Red-Feature.jpg" alt="iPhone 18 Pro Launching Later This Year With These 12 New Features" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Consumer</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_8.html" target="_blank" style="color:inherit;text-decoration:none;">iPhone 18 Pro Launching Later This Year With These 12 New Features</a></h3>
+                    <p>While the iPhone 18 Pro and iPhone 18 Pro Max are not expected to launch for more than five more months, there are alrea...</p>
+                    <a href="/generated/article_8.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
-            <div class="article-card">
-                <img src="https://picsum.photos/seed/10/400/250" alt="Article 10">
-                <div class="meta">REGULATION</div>
-                <h3><a href="/article/article_10.html" target="_blank">Translating Global News into Indigenous Languages using LLMs</a></h3>
-                <p>Technical deep-dive on how modern Large Language Models and specialized fine-tuning are breaking down linguistic barriers for underrepresented communities globally.</p>
-                <a href="/article/article_10.html" class="read-more-link" target="_blank">Read Full Report →</a>
-            </div>
+                <div class="article-card">
+                    <img src="https://sm.pcmag.com/t/pcmag_uk/opinion/i/i-stress-t/i-stress-tested-apples-599-macbook-neo-with-lightroom-and-8k_yn9c.1200.jpg" alt="I Stress-Tested Apple's $599 MacBook Neo With Lightroom and 8K Video. Here's What Happened" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Enterprise</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_9.html" target="_blank" style="color:inherit;text-decoration:none;">I Stress-Tested Apple's $599 MacBook Neo With Lightroom and 8K Video. Here's What Happened</a></h3>
+                    <p>The MacBook Neo is small, cheap, and more powerful than expected—but can it survive Lightroom, Final Cut Pro, and real c...</p>
+                    <a href="/generated/article_9.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
 
+                <div class="article-card">
+                    <img src="https://sm.pcmag.com/t/pcmag_au/opinion/i/i-stress-t/i-stress-tested-apples-599-macbook-neo-with-lightroom-and-8k_qd57.1200.jpg" alt="I Stress-Tested Apple's $599 MacBook Neo With Lightroom and 8K Video. Here's What Happened" style="width:100%;height:200px;object-fit:cover;border-radius:4px;margin-bottom:12px;">
+                    <div class="meta">Regulation</div>
+                    <h3 style="cursor:pointer;"><a href="/generated/article_10.html" target="_blank" style="color:inherit;text-decoration:none;">I Stress-Tested Apple's $599 MacBook Neo With Lightroom and 8K Video. Here's What Happened</a></h3>
+                    <p>The MacBook Neo is small, cheap, and more powerful than expected—but can it survive Lightroom, Final Cut Pro, and real c...</p>
+                    <a href="/generated/article_10.html" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
+                </div>
+            </div>
         </div>
+        
+        <h2 class="section-header">Past Intelligence Briefs</h2>
+        <div id="past-articles-grid" class="past-grid">
+            <!-- Past articles injected here by syncEverything -->
+        </div>
+
+        <a href="/archive.html" class="view-more-btn">View Full Archive</a>
     </main>
 
     <footer class="main-footer">

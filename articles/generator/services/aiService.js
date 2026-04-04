@@ -179,13 +179,32 @@ function buildFullPage(title, description, source, today, heroImg, thumbImg, bod
     <meta name="keywords" content="${title.split(' ').slice(0, 5).join(', ')}, technology, analysis, Explyra">
     <meta name="author" content="Explyra Intelligence Network">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://explyra.me/articles/generated/${slug}.html">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description.substring(0, 200)}">
     <meta property="og:image" content="${heroImg}">
+    <meta property="og:url" content="https://explyra.me/articles/generated/${slug}.html">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:image" content="${thumbImg}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "${title.replace(/"/g, '\\"')}",
+      "image": [
+        "${heroImg}"
+       ],
+      "datePublished": "${new Date().toISOString()}",
+      "dateModified": "${new Date().toISOString()}",
+      "author": [{
+          "@type": "Organization",
+          "name": "Explyra Intelligence Desk",
+          "url": "https://explyra.me/"
+        }]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
