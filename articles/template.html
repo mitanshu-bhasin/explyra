@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} | Explyra Tech Intelligence</title>
+    <meta name="description" content="{{DESCRIPTION}}">
+    <meta property="og:title" content="{{TITLE}}">
+    <meta property="og:image" content="{{IMAGE}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.8; color: #1a1a1a; background: #fff; }
+        .site-header { border-bottom: 4px double #1a1a1a; background: #fff; }
+        .header-top { max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; }
+        .header-date { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; }
+        .header-brand h1 { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; line-height: 1; text-align: center; }
+        .header-edition { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; color: #666; }
+        .nav-bar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; gap: 32px; padding: 12px 24px; border-bottom: 1px solid #1a1a1a; }
+        .nav-bar a { text-decoration: none; color: #1a1a1a; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+        
+        .article-container { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+        .article-title { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; line-height: 1.15; margin-bottom: 30px; }
+        .hero-image { width: 100%; height: auto; max-height: 500px; object-fit: cover; border-radius: 6px; margin-bottom: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .article-body { font-size: 1.15rem; line-height: 1.85; }
+        .article-body h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin: 40px 0 20px; }
+        .article-body p { margin-bottom: 24px; }
+        
+        .site-footer { background: #f9f9f9; padding: 60px 0; border-top: 1px solid #eee; margin-top: 80px; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+        .footer-bottom { text-align: center; padding-top: 30px; margin-top: 40px; border-top: 1px solid #ddd; color: #999; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-top">
+            <span class="header-date">{{DATE}}</span>
+            <div class="header-brand">
+                <h1>EXPLYRA TECH</h1>
+                <p style="font-size:0.8rem; text-transform:uppercase; letter-spacing:3px; color:#888;">Insight. Innovation. Implementation.</p>
+            </div>
+            <span class="header-edition">Intelligence Report</span>
+        </div>
+        <nav class="nav-bar">
+            <a href="/index.html">LATEST</a>
+            <a href="/archive.html">ARCHIVE</a>
+            <a href="/sitemap.xml">SITEMAP</a>
+        </nav>
+    </header>
+
+    <article class="article-container">
+        <div class="article-meta">
+            <span style="background: #a00; color: #fff; padding: 4px 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">TECH ANALYSIS</span>
+        </div>
+        <h1 class="article-title">{{TITLE}}</h1>
+        <img class="hero-image" src="{{IMAGE}}" alt="{{TITLE}}">
+        <div class="article-body">
+            {{CONTENT}}
+        </div>
+    </article>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <h4>EXPLYRA</h4>
+                <p>Global authority in technical journalism. Delivering deep-dive AI-powered analysis.</p>
+            </div>
+            <div>
+                <h4>SECTIONS</h4>
+                <a href="/index.html" style="display:block; margin:8px 0; text-decoration:none; color:#666;">Latest News</a>
+                <a href="/archive.html" style="display:block; margin:8px 0; text-decoration:none; color:#666;">Archive</a>
+            </div>
+            <div>
+                <h4>LEGAL</h4>
+                <a href="/privacy.html" style="display:block; margin:8px 0; text-decoration:none; color:#666;">Privacy Policy</a>
+                <a href="/sitemap.xml" style="display:block; margin:8px 0; text-decoration:none; color:#666;">Sitemap</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Explyra Tech. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- ADS INJECTION -->
+    <script>
+      atOptions = {
+        'key' : '6ba2490f903e87b89b3544dfc343bda3',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/6ba2490f903e87b89b3544dfc343bda3/invoke.js"></script>
+
+    <!-- DYNAMIC DATE INJECTION -->
+    <script>
+        const updateDynamicDate = () => {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString("en-US", {
+                weekday: "long", month: "long", day: "numeric", year: "numeric"
+            }).toUpperCase();
+            const headerDate = document.querySelector('.header-date');
+            if (headerDate) headerDate.innerText = dateStr;
+        };
+        updateDynamicDate();
+    </script>
+</body>
+</html>

@@ -22,6 +22,7 @@ export const fetchLatestTechNews = async () => {
             title: article.title,
             description: article.description,
             url: article.url,
+            urlToImage: article.urlToImage, // Include image URL
             source: article.source.name,
             publishedAt: article.publishedAt
         })).slice(0, 5); // Just top 5 for generation

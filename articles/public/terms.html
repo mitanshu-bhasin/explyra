@@ -32,5 +32,53 @@
     
     <hr>
     <p>&copy; 2026 Explyra Tech. Intelligence of the Future.</p>
+
+    <!-- ADS INJECTION -->
+    <script>
+      atOptions = {
+        'key' : '6ba2490f903e87b89b3544dfc343bda3',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/6ba2490f903e87b89b3544dfc343bda3/invoke.js"></script>
+
+    <!-- DYNAMIC DATE INJECTION -->
+    <script>
+        const updateDynamicDate = () => {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString("en-US", {
+                weekday: "long", month: "long", day: "numeric", year: "numeric"
+            }).toUpperCase();
+            
+            // 1. Check for header-date (articles)
+            const headerDates = document.querySelectorAll('.header-date');
+            headerDates.forEach(el => { el.innerText = dateStr; });
+
+            // 2. Check for byline-detail (articles)
+            const bylineDates = document.querySelectorAll('.byline-detail');
+            bylineDates.forEach(el => {
+                const content = el.innerText;
+                if (content.includes(' · ')) {
+                    const parts = content.split(' · ');
+                    el.innerText = dateStr + ' · ' + parts[1];
+                } else {
+                    el.innerText = dateStr;
+                }
+            });
+
+            // 3. Check for index/archive style date (first div in header-top)
+            const topHeaders = document.querySelectorAll('.header-top');
+            topHeaders.forEach(topHeader => {
+                const firstDiv = topHeader.querySelector('div:first-child');
+                if (firstDiv && !firstDiv.classList.contains('branding')) {
+                    firstDiv.innerText = dateStr;
+                }
+            });
+        };
+        updateDynamicDate();
+    </script>
 </body>
 </html>

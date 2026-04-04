@@ -30,7 +30,7 @@
         .article-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; line-height: 1.25; margin-bottom: 10px; }
         .article-card h3 a { color: inherit; text-decoration: none; }
         .article-card h3 a:hover { text-decoration: underline; }
-        .article-card p { font-size: 0.95rem; color: #555; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .article-card p { font-size: 0.95rem; color: #555; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
         .read-more-link { color: #a00; font-weight: 700; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .section-header { font-family: 'Playfair Display', serif; font-size: 2rem; border-bottom: 2px solid #1a1a1a; padding-bottom: 10px; margin-top: 60px; margin-bottom: 30px;}
@@ -192,5 +192,64 @@
             &copy; 2026 Explyra Tech. Intelligence of the Future.
         </div>
     </footer>
+    <div id="current-date" style="display:none;"></div>
+    <!-- ADS INJECTION -->
+    <script>
+      atOptions = {
+        'key' : '6ba2490f903e87b89b3544dfc343bda3',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/6ba2490f903e87b89b3544dfc343bda3/invoke.js"></script>
+    <script>
+        const updateDate = () => {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString("en-US", {
+                weekday: "long", month: "short", day: "numeric", year: "numeric"
+            }).toUpperCase();
+            const dateEl = document.querySelector('.header-top div:first-child');
+            if (dateEl) dateEl.innerText = dateStr;
+        };
+        updateDate();
+    </script>
+
+    <!-- DYNAMIC DATE INJECTION -->
+    <script>
+        const updateDynamicDate = () => {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString("en-US", {
+                weekday: "long", month: "long", day: "numeric", year: "numeric"
+            }).toUpperCase();
+            
+            // 1. Check for header-date (articles)
+            const headerDates = document.querySelectorAll('.header-date');
+            headerDates.forEach(el => { el.innerText = dateStr; });
+
+            // 2. Check for byline-detail (articles)
+            const bylineDates = document.querySelectorAll('.byline-detail');
+            bylineDates.forEach(el => {
+                const content = el.innerText;
+                if (content.includes(' · ')) {
+                    const parts = content.split(' · ');
+                    el.innerText = dateStr + ' · ' + parts[1];
+                } else {
+                    el.innerText = dateStr;
+                }
+            });
+
+            // 3. Check for index/archive style date (first div in header-top)
+            const topHeaders = document.querySelectorAll('.header-top');
+            topHeaders.forEach(topHeader => {
+                const firstDiv = topHeader.querySelector('div:first-child');
+                if (firstDiv && !firstDiv.classList.contains('branding')) {
+                    firstDiv.innerText = dateStr;
+                }
+            });
+        };
+        updateDynamicDate();
+    </script>
 </body>
 </html>
