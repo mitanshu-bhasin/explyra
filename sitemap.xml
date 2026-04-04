@@ -312,5 +312,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
     <lastmod>2026-03-30</lastmod>
+  <url>
+    <loc>https://explyra.me/articles</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-04-03</lastmod>
   </url>
 </urlset>
