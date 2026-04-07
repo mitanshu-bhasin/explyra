@@ -217,7 +217,7 @@
                 </div>
                 <div style="text-align: right">
                     <p style="font-size: 0.8rem; color: var(--ink3); font-weight: 700;">YOUR BALANCE</p>
-                    <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Space Grotesk', serif; background: linear-gradient(120deg, var(--primary), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px var(--primary-g); letter-spacing: -0.05em;" id="current-balance">0 pts</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Space Grotesk', serif; background: linear-gradient(120deg, var(--primary), var(--blue)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px var(--primary-g); letter-spacing: -0.05em;" id="current-balance">0 pts</div>
                 </div>
             </div>
         </div>
@@ -303,8 +303,8 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, collection, addDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKXkuH1zbUwOD1gA35gG4vQXKTX60xwe0",
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
             authDomain: "explyras.firebaseapp.com",
             projectId: "explyras",
             storageBucket: "explyras.firebasestorage.app",

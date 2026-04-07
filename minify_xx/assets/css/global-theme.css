@@ -1,0 +1,1 @@
+:root{--blue:#00d2ff;--blue2:#2563eb;--teal:#34d399;--amber:#fbbf24;--primary:#4f46e5;--header-h:70px;--sidebar-w:280px}.glass{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1)}[data-theme=dark] .glass{background:rgba(0,0,0,.2);border-color:rgba(255,255,255,.05)}

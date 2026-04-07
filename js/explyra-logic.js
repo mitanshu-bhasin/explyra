@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebas
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, query, where, Timestamp, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-const firebaseConfig = {
+const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
     apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
     authDomain: "explyras.firebaseapp.com",
     databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",

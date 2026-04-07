@@ -6,6 +6,7 @@ const path = require('path');
 
 const envPath = path.join(__dirname, '..', '.env');
 const outputPath = path.join(__dirname, '..', 'js', 'env.js');
+const mobileOutputPath = path.join(__dirname, '..', 'mobile_exp', 'js', 'env.js');
 
 function sync() {
     let env = { ...process.env };
@@ -69,7 +70,8 @@ window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
     fs.writeFileSync(outputPath, outputContent);
-    console.log('✓ Successfully synced .env to js/env.js (Secure mode active)');
+    fs.writeFileSync(mobileOutputPath, outputContent);
+    console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
 }
 
 sync();

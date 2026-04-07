@@ -1,0 +1,14 @@
+.gcloudignore
+.git
+.gitignore
+android/
+ios/
+windows/
+linux/
+macos/
+build/
+.dart_tool/
+.pub-cache/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Certification Course — Explyra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <!-- html2canvas for screenshot-based PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg: #fdfdfd;
+            --bg2: #f0f2f5;
+            --ink: #111418;
+            --ink2: #3a4149;
+            --ink3: #6b7280;
+            --ink4: #9ca3af;
+            --primary: #4F46E5;
+            --primary-d: #4338ca;
+            --blue: #2563EB;
+            --gold: #F59E0B;
+            --bdr: #e5e7eb;
+            --s1: 0 4px 6px -1px rgba(0,0,0,.05),0 2px 4px -1px rgba(0,0,0,.03);
+            --s2: 0 10px 15px -3px rgba(0,0,0,.06),0 4px 6px -2px rgba(0,0,0,.03);
+            --s3: 0 25px 50px -12px rgba(0,0,0,.1);
+            --success: #10B981;
+            --error: #EF4444;
+            --r: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg2);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            background: var(--bg);
+            padding: 1rem 5vw;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+            gap: 1rem;
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--ink); text-decoration: none; white-space: nowrap; }
+
+        .progress-container { flex-grow: 1; max-width: 440px; }
+        .progress-bar-bg { background: var(--bdr); height: 8px; border-radius: 4px; overflow: hidden; width: 100%; }
+        .progress-bar-fill { background: linear-gradient(90deg, var(--blue), var(--primary)); height: 100%; width: 0%; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+        .progress-text { font-size: 0.78rem; color: var(--ink3); text-align: right; margin-top: 5px; font-weight: 500; }
+
+        /* ─── MAIN ─── */
+        main { flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; padding: 2.5rem 1rem 4rem; }
+
+        .course-container {
+            background: var(--bg);
+            width: 100%;
+            max-width: 820px;
+            border-radius: 20px;
+            box-shadow: var(--s3);
+            border: 1px solid var(--bdr);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── SLIDE ─── */
+        .slide-wrap { padding: 2.5rem 3rem; flex-grow: 1; animation: fadeUp 0.35s ease both; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── IMAGE FIX ─── */
+        .slide-img-wrap {
+            width: 100%;
+            height: 240px;
+            background: var(--bg2);
+            border-radius: var(--r);
+            border: 1px solid var(--bdr);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide-img-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            padding: 1rem;
+        }
+
+        .slide-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(79,70,229,.08); color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px; border-radius: 999px; margin-bottom: 1rem; }
+        .slide-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--ink); margin-bottom: 0.8rem; line-height: 1.2; }
+        .slide-text { font-size: 1.05rem; color: var(--ink2); line-height: 1.75; }
+
+        /* ─── BULLET POINTS ─── */
+        .slide-bullets { margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; }
+        .slide-bullet { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 1rem; color: var(--ink2); }
+        .slide-bullet i { color: var(--primary); margin-top: 3px; flex-shrink: 0; }
+
+        /* ─── QUIZ ─── */
+        .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+        .option-btn {
+            text-align: left; background: var(--bg); border: 2px solid var(--bdr);
+            padding: 1rem 1.25rem; border-radius: 10px; cursor: pointer;
+            font-size: 1rem; color: var(--ink2); transition: all 0.18s;
+            font-family: inherit; display: flex; align-items: center; gap: 0.75rem;
+        }
+        .option-btn .opt-letter { width: 28px; height: 28px; border-radius: 50%; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; transition: 0.18s; }
+        .option-btn:hover { border-color: var(--primary); background: rgba(79,70,229,.04); }
+        .option-btn:hover .opt-letter { background: var(--primary); color: white; }
+        .option-btn.selected { border-color: var(--primary); background: rgba(79,70,229,.07); }
+        .option-btn.selected .opt-letter { background: var(--primary); color: white; }
+        .option-btn.correct { border-color: var(--success); background: rgba(16,185,129,.08); color: var(--success); }
+        .option-btn.correct .opt-letter { background: var(--success); color: white; }
+        .option-btn.wrong { border-color: var(--error); background: rgba(239,68,68,.08); color: var(--error); }
+        .option-btn.wrong .opt-letter { background: var(--error); color: white; }
+
+        .feedback-box { margin-top: 1rem; padding: 0.9rem 1.2rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; display: none; }
+        .feedback-box.show-success { display: flex; align-items: center; gap: 8px; background: rgba(16,185,129,.1); color: var(--success); border: 1px solid rgba(16,185,129,.3); }
+        .feedback-box.show-error   { display: flex; align-items: center; gap: 8px; background: rgba(239,68,68,.1); color: var(--error); border: 1px solid rgba(239,68,68,.3); }
+
+        /* ─── FORM INPUTS ─── */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.5rem; }
+        .form-grid .full { grid-column: 1/-1; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem; color: var(--ink2); }
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--bdr); border-radius: 8px;
+            font-size: 0.95rem; font-family: inherit; color: var(--ink); background: var(--bg);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+        .input-group textarea { resize: vertical; min-height: 80px; }
+
+        /* ─── CONTROLS ─── */
+        .controls {
+            padding: 1.25rem 3rem;
+            background: var(--bg2);
+            border-top: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .btn { padding: 0.75rem 1.6rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.95rem; border: none; display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
+        .btn-ghost { background: transparent; color: var(--ink3); border: 1px solid var(--bdr); }
+        .btn-ghost:hover { background: var(--bdr); color: var(--ink); }
+        .btn-primary { background: linear-gradient(120deg, var(--primary), var(--blue)); color: white; box-shadow: 0 4px 14px rgba(79,70,229,.3); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-gold { background: linear-gradient(120deg, var(--gold), #d97706); color: white; box-shadow: 0 4px 14px rgba(245,158,11,.3); }
+        .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-success { background: linear-gradient(120deg, var(--success), #059669); color: white; box-shadow: 0 4px 14px rgba(16,185,129,.3); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+        /* ─── COMPLETION SCREEN ─── */
+        .completion-screen { padding: 2.5rem 3rem; text-align: center; animation: fadeUp 0.4s ease both; }
+        .completion-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--blue)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 8px 20px rgba(79,70,229,.3); }
+        .completion-icon i { font-size: 2rem; color: white; }
+        .completion-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .completion-sub { font-size: 1rem; color: var(--ink3); margin-bottom: 2rem; }
+
+        .action-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+        .action-card { background: var(--bg2); border: 1px solid var(--bdr); border-radius: 14px; padding: 1.5rem; text-align: center; }
+        .action-card .card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+        .action-card h4 { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .action-card p { font-size: 0.82rem; color: var(--ink3); margin-bottom: 1rem; line-height: 1.4; }
+
+        .badge-preview { width: 120px; height: 120px; object-fit: contain; margin: 0 auto 0.75rem; display: block; }
+
+        /* ─── CERTIFICATE (for printing / canvas capture) ─── */
+        #cert-printable {
+            background: white;
+            width: 900px;
+            padding: 60px 70px;
+            font-family: 'Outfit', sans-serif;
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+        }
+        .cert-inner { border: 6px double #c7d2fe; border-radius: 16px; padding: 50px; text-align: center; position: relative; }
+        .cert-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 1.5rem; }
+        .cert-logo-img { width: 56px; height: 56px; object-fit: contain; }
+        .cert-brand { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: #4F46E5; }
+        .cert-divider { width: 80px; height: 3px; background: linear-gradient(90deg, #4F46E5, #2563EB); margin: 0 auto 1.5rem; border-radius: 2px; }
+        .cert-subtitle { font-size: 0.8rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #6B7280; margin-bottom: 2rem; }
+        .cert-main-title { font-family: 'Playfair Display', serif; font-size: 3rem; color: #111418; margin-bottom: 0.5rem; }
+        .cert-presented { font-size: 1rem; color: #6B7280; margin-bottom: 0.5rem; }
+        .cert-name { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #2563EB; border-bottom: 2px solid #e5e7eb; display: inline-block; padding: 0 2rem 0.5rem; margin-bottom: 1.5rem; }
+        .cert-desc { font-size: 1rem; color: #3a4149; max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .cert-footer-row { display: flex; justify-content: space-between; align-items: flex-end; }
+        .cert-sig-block { text-align: left; }
+        .cert-sig { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #111418; font-style: italic; border-bottom: 1px solid #111; padding-bottom: 4px; margin-bottom: 4px; }
+        .cert-sig-name { font-size: 0.8rem; color: #6B7280; }
+        .cert-meta-block { text-align: right; font-size: 0.82rem; color: #6B7280; line-height: 1.8; }
+        .cert-corner { position: absolute; width: 60px; height: 60px; }
+        .cert-corner.tl { top: 12px; left: 12px; border-top: 3px solid #4F46E5; border-left: 3px solid #4F46E5; border-radius: 4px 0 0 0; }
+        .cert-corner.tr { top: 12px; right: 12px; border-top: 3px solid #4F46E5; border-right: 3px solid #4F46E5; border-radius: 0 4px 0 0; }
+        .cert-corner.bl { bottom: 12px; left: 12px; border-bottom: 3px solid #4F46E5; border-left: 3px solid #4F46E5; border-radius: 0 0 0 4px; }
+        .cert-corner.br { bottom: 12px; right: 12px; border-bottom: 3px solid #4F46E5; border-right: 3px solid #4F46E5; border-radius: 0 0 4px 0; }
+
+        /* ─── UPLOAD STATUS ─── */
+        .upload-status { font-size: 0.85rem; color: var(--ink3); display: flex; align-items: center; gap: 6px; margin-top: 0.5rem; justify-content: center; min-height: 22px; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 640px) {
+            .slide-wrap, .controls, .completion-screen { padding: 1.5rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .action-cards { grid-template-columns: 1fr; }
+            .progress-container { max-width: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Explyra</a>
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">Step <span id="currentStep">1</span> of <span id="totalSteps"></span></div>
+        </div>
+        <div style="width:70px;flex-shrink:0"></div>
+    </header>
+
+    <main>
+        <div class="course-container">
+            <div id="slide-container"></div>
+            <div class="controls" id="controls">
+                <button class="btn btn-ghost" id="btnPrev"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="btn btn-primary" id="btnNext">Continue <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Hidden printable certificate (captured by html2canvas) -->
+    <div id="cert-printable">
+        <div class="cert-inner">
+            <div class="cert-corner tl"></div>
+            <div class="cert-corner tr"></div>
+            <div class="cert-corner bl"></div>
+            <div class="cert-corner br"></div>
+            <div class="cert-logo-wrap">
+                <img class="cert-logo-img" src="../nobg.png" alt="Explyra">
+                <div class="cert-brand">Explyra</div>
+            </div>
+            <div class="cert-divider"></div>
+            <div class="cert-subtitle">Partner Certification Program</div>
+            <div class="cert-main-title">Certificate of Achievement</div>
+            <div class="cert-presented">This is to certify that</div>
+            <div class="cert-name" id="cert-name-display"></div>
+            <div class="cert-desc" id="cert-company-display"></div>
+            <div class="cert-footer-row">
+                <div class="cert-sig-block">
+                    <div class="cert-sig">M. Bhasin</div>
+                    <div class="cert-sig-name">Mitanshu Bhasin, Founder — Explyra</div>
+                </div>
+                <div class="cert-meta-block">
+                    <div id="cert-date-display"></div>
+                    <div id="cert-id-display"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ── Firebase init ──────────────────────────────────────────
+    const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+        apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
+        authDomain: "explyras.firebaseapp.com",
+        projectId: "explyras",
+        storageBucket: "explyras.firebasestorage.app",
+        messagingSenderId: "411853553644",
+        appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth    = firebase.auth();
+    const db      = firebase.firestore();
+    const storage = firebase.storage();
+
+    // ── Auth Guard ─────────────────────────────────────────────
+    // Show a loading overlay while we check auth state
+    document.body.insertAdjacentHTML('afterbegin', `
+        <div id="auth-overlay" style="position:fixed;inset:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:1rem">
+            <div style="width:44px;height:44px;border:4px solid var(--bdr);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+            <p style="color:var(--ink3);font-size:0.95rem">Verifying your session…</p>
+        </div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    `);
+
+    let currentUser = null;
+
+    auth.onAuthStateChanged(user => {
+        document.getElementById('auth-overlay').remove();
+        if (!user) {
+            // Not logged in — send to auth, come back after
+            window.location.href = 'auth.html?next=course.html';
+            return;
+        }
+        currentUser = user;
+        // Pre-fill partnerData from Firebase profile
+        partnerData.name  = partnerData.name  || user.displayName || '';
+        partnerData.email = partnerData.email || user.email       || '';
+        renderSlide();
+    });
+
+    // ── State ─────────────────────────────────────────────────
+    let currentSlide = 0;
+    let selectedOption = null;
+    let partnerData = {};
+    let certId = '';
+    let certDataUrl = null;
+
+    // ── Slides definition ─────────────────────────────────────
+    const slides = [
+        {
+            type: 'info',
+            tag: 'Introduction',
+            title: 'Welcome to Explyra',
+            text: 'Explyra is a unified SaaS ecosystem designed to power modern businesses. From expense management and CRM to AI integrations and team collaboration — Explyra brings it all under one platform.',
+            img: 'course_about.png',
+            bullets: [
+                'Edge-computing powered architecture for blazing speed.',
+                'Multi-product suite: finance, HR, CRM, books & more.',
+                'Built for teams from startups to enterprises.',
+            ]
+        },
+        {
+            type: 'info',
+            tag: 'Partner Program',
+            title: 'Your Partnership Opportunity',
+            text: 'As an Explyra Certified Partner, you gain the tools, training, and revenue sharing to grow alongside us. There are three ways to partner:',
+            img: 'course_partner.png',
+            bullets: [
+                'Referral Partner — Earn commissions on every signup you bring.',
+                'Agency Partner — White-label Explyra for your client base.',
+                'Integration Partner — Build on our APIs and co-market your product.',
+            ]
+        },
+        {
+            type: 'quiz',
+            tag: 'Knowledge Check',
+            title: 'Quiz #1 — Explyra Basics',
+            text: 'What best describes the Explyra platform?',
+            options: [
+                'A social media network for influencers.',
+                'A unified SaaS ecosystem for modern businesses and teams.',
+                'A hardware and manufacturing company.',
+                'A local food delivery service.'
+            ],
+            answerIndex: 1
+        },
+        {
+            type: 'info',
+            tag: 'Best Practices',
+            title: 'Ethics & Brand Standards',
+            text: 'As a partner you represent Explyra. How you engage potential clients matters deeply.',
+            bullets: [
+                'Always share accurate pricing — no inflated claims.',
+                'Never use spam or cold unsolicited bulk messaging.',
+                'Use only approved Explyra branding assets.',
+                'Provide honest, consultative guidance to prospects.',
+                'Maintain confidentiality of partner-exclusive materials.',
+            ]
+        },
+        {
+            type: 'quiz',
+            tag: 'Knowledge Check',
+            title: 'Quiz #2 — Partner Ethics',
+            text: 'A potential client asks about Explyra pricing. What is the correct response?',
+            options: [
+                'Quote any price to close the deal faster.',
+                'Refer them to the official pricing page and explain it accurately.',
+                'Tell them it\'s free forever to get them interested.',
+                'Avoid the question and redirect to features only.'
+            ],
+            answerIndex: 1
+        },
+        {
+            type: 'name-entry',
+            tag: 'Your Details',
+            title: 'Almost There!',
+            text: 'Provide your details for the partner certificate and company profile.'
+        },
+        {
+            type: 'completion',
+            title: 'You\'re Certified!'
+        }
+    ];
+
+    // ── DOM refs ──────────────────────────────────────────────
+    const container   = document.getElementById('slide-container');
+    const btnPrev     = document.getElementById('btnPrev');
+    const btnNext     = document.getElementById('btnNext');
+    // NOTE: renderSlide() is now called inside onAuthStateChanged, NOT at the bottom
+    const progressFill = document.getElementById('progressFill');
+    const currentStepEl = document.getElementById('currentStep');
+    const totalStepsEl  = document.getElementById('totalSteps');
+    const controlsDiv   = document.getElementById('controls');
+
+    totalStepsEl.textContent = slides.length;
+
+    const LETTERS = ['A','B','C','D'];
+
+    // ── renderSlide ───────────────────────────────────────────
+    function renderSlide() {
+        const slide = slides[currentSlide];
+        progressFill.style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+        currentStepEl.textContent = currentSlide + 1;
+
+        // Reset controls to default
+        controlsDiv.innerHTML = `
+            <button class="btn btn-ghost" id="btnPrev"><i class="fas fa-arrow-left"></i> Previous</button>
+            <button class="btn btn-primary" id="btnNext">Continue <i class="fas fa-arrow-right"></i></button>
+        `;
+        // Re-bind after innerHTML reset
+        document.getElementById('btnPrev').addEventListener('click', prevSlide);
+        document.getElementById('btnNext').addEventListener('click', nextSlide);
+        document.getElementById('btnPrev').style.visibility = currentSlide === 0 ? 'hidden' : 'visible';
+
+        let html = '';
+
+        // ── INFO SLIDE ────────────────────────────────────────
+        if (slide.type === 'info') {
+            html = `
+                <div class="slide-wrap">
+                    <div class="slide-tag"><i class="fas fa-book-open fa-xs"></i>${slide.tag}</div>
+                    ${slide.img ? `
+                    <div class="slide-img-wrap">
+                        <img src="${slide.img}" alt="${slide.title}">
+                    </div>` : ''}
+                    <h2 class="slide-title">${slide.title}</h2>
+                    <p class="slide-text">${slide.text}</p>
+                    ${slide.bullets ? `
+                    <div class="slide-bullets">
+                        ${slide.bullets.map(b => `<div class="slide-bullet"><i class="fas fa-check-circle fa-sm"></i><span>${b}</span></div>`).join('')}
+                    </div>` : ''}
+                </div>
+            `;
+            document.getElementById('btnNext').textContent = 'Continue';
+            document.getElementById('btnNext').disabled = false;
+        }
+
+        // ── QUIZ SLIDE ────────────────────────────────────────
+        else if (slide.type === 'quiz') {
+            selectedOption = null;
+            const opts = slide.options.map((opt, i) => `
+                <button class="option-btn" id="opt-${i}" onclick="selectOption(${i})">
+                    <span class="opt-letter">${LETTERS[i]}</span>
+                    <span>${opt}</span>
+                </button>
+            `).join('');
+
+            html = `
+                <div class="slide-wrap">
+                    <div class="slide-tag"><i class="fas fa-question-circle fa-xs"></i>${slide.tag}</div>
+                    <h2 class="slide-title">${slide.title}</h2>
+                    <p class="slide-text">${slide.text}</p>
+                    <div class="quiz-options">${opts}</div>
+                    <div class="feedback-box" id="quiz-feedback"></div>
+                </div>
+            `;
+            document.getElementById('btnNext').textContent = 'Check Answer';
+            document.getElementById('btnNext').disabled = true;
+        }
+
+        // ── NAME + COMPANY ENTRY ──────────────────────────────
+        else if (slide.type === 'name-entry') {
+            html = `
+                <div class="slide-wrap">
+                    <div class="slide-tag"><i class="fas fa-id-card fa-xs"></i>${slide.tag}</div>
+                    <h2 class="slide-title">${slide.title}</h2>
+                    <p class="slide-text" style="margin-bottom:0">${slide.text}</p>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Full Legal Name *</label>
+                            <input type="text" id="f-name" placeholder="e.g. Mitanshu Bhasin" value="${partnerData.name || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Company Name *</label>
+                            <input type="text" id="f-company" placeholder="e.g. Acme Pvt. Ltd." value="${partnerData.company || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Email Address *</label>
+                            <input type="email" id="f-email" placeholder="you@company.com" value="${partnerData.email || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="f-phone" placeholder="+91 98765 43210" value="${partnerData.phone || ''}">
+                        </div>
+                        <div class="input-group">
+                            <label>Industry / Sector</label>
+                            <select id="f-industry">
+                                <option value="">— Select —</option>
+                                <option ${partnerData.industry==='Technology'?'selected':''}>Technology</option>
+                                <option ${partnerData.industry==='Manufacturing'?'selected':''}>Manufacturing</option>
+                                <option ${partnerData.industry==='Retail'?'selected':''}>Retail</option>
+                                <option ${partnerData.industry==='Finance'?'selected':''}>Finance</option>
+                                <option ${partnerData.industry==='Healthcare'?'selected':''}>Healthcare</option>
+                                <option ${partnerData.industry==='Education'?'selected':''}>Education</option>
+                                <option ${partnerData.industry==='Other'?'selected':''}>Other</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Website</label>
+                            <input type="url" id="f-website" placeholder="https://yoursite.com" value="${partnerData.website || ''}">
+                        </div>
+                        <div class="input-group full">
+                            <label>Brief About Your Business</label>
+                            <textarea id="f-about" placeholder="What does your company do? How would you grow with Explyra?">${partnerData.about || ''}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const nxt = document.getElementById('btnNext');
+            nxt.innerHTML = 'Generate my Certificate <i class="fas fa-certificate"></i>';
+            nxt.disabled = true;
+
+            // Validate required fields after render
+            setTimeout(() => {
+                const checkForm = () => {
+                    const n = document.getElementById('f-name')?.value.trim();
+                    const c = document.getElementById('f-company')?.value.trim();
+                    const e = document.getElementById('f-email')?.value.trim();
+                    document.getElementById('btnNext').disabled = !(n && c && e);
+                };
+                ['f-name','f-company','f-email'].forEach(id => {
+                    document.getElementById(id)?.addEventListener('input', checkForm);
+                });
+            }, 0);
+        }
+
+        // ── COMPLETION SCREEN ─────────────────────────────────
+        else if (slide.type === 'completion') {
+            controlsDiv.style.display = 'none';
+            html = `
+                <div class="completion-screen">
+                    <div class="completion-icon"><i class="fas fa-trophy"></i></div>
+                    <h2 class="completion-title">You're an Explyra Certified Partner!</h2>
+                    <p class="completion-sub">Welcome to the Explyra Partner Network, ${partnerData.name || ''}.</p>
+
+                    <div class="action-cards">
+                        <!-- Partner Badge -->
+                        <div class="action-card">
+                            <img src="partner-badge.png" class="badge-preview" alt="Partner Badge">
+                            <h4>Partner Badge</h4>
+                            <p>Your official Explyra Certified Partner badge. Display it on your website and profiles.</p>
+                            <a href="partner-badge.png" download="Explyra-Partner-Badge.png" class="btn btn-gold" style="justify-content:center;width:100%">
+                                <i class="fas fa-download"></i> Download Badge
+                            </a>
+                        </div>
+
+                        <!-- Certificate -->
+                        <div class="action-card">
+                            <div class="card-icon" style="background:rgba(37,99,235,.1);margin-bottom:.75rem">
+                                <i class="fas fa-certificate fa-lg" style="color:var(--blue)"></i>
+                            </div>
+                            <h4>Partner Certificate</h4>
+                            <p>Your verifiable PDF certificate with a unique Credential ID, downloadable anytime.</p>
+                            <button class="btn btn-primary" id="btn-dl-cert" style="width:100%;justify-content:center" onclick="generateAndDownloadCert()">
+                                <i class="fas fa-file-pdf"></i> Download Certificate
+                            </button>
+                            <div class="upload-status" id="upload-status"></div>
+                        </div>
+                    </div>
+
+                    <a href="dashboard.html" class="btn btn-success" style="width:100%;justify-content:center;margin-top:0.5rem">
+                        <i class="fas fa-door-open"></i> Proceed to Partner Portal
+                    </a>
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+    }
+
+    // ── Navigation ────────────────────────────────────────────
+    function prevSlide() {
+        if (currentSlide > 0) { currentSlide--; renderSlide(); }
+    }
+
+    function nextSlide() {
+        const slide = slides[currentSlide];
+
+        // Quiz: first click = evaluate, second click = advance
+        if (slide.type === 'quiz') {
+            const btn = document.getElementById('btnNext');
+            if (btn.textContent.trim() === 'Check Answer' || btn.innerHTML.includes('Check Answer')) {
+                evaluateQuiz(slide); return;
+            }
+        }
+
+        // Name entry: save data + push to Firestore
+        if (slide.type === 'name-entry') {
+            partnerData = {
+                name:     document.getElementById('f-name')?.value.trim(),
+                company:  document.getElementById('f-company')?.value.trim(),
+                email:    document.getElementById('f-email')?.value.trim(),
+                phone:    document.getElementById('f-phone')?.value.trim(),
+                industry: document.getElementById('f-industry')?.value,
+                website:  document.getElementById('f-website')?.value.trim(),
+                about:    document.getElementById('f-about')?.value.trim(),
+            };
+            certId = 'EXPL-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+            populatePrintable();
+
+            // Save partner profile to Firestore
+            if (currentUser) {
+                db.collection('partners').doc(currentUser.uid).set({
+                    uid:            currentUser.uid,
+                    displayName:    partnerData.name,
+                    email:          partnerData.email,
+                    phone:          partnerData.phone       || '',
+                    companyName:    partnerData.company,
+                    industry:       partnerData.industry    || '',
+                    website:        partnerData.website     || '',
+                    about:          partnerData.about       || '',
+                    certId:         certId,
+                    courseComplete: true,
+                    completedAt:    firebase.firestore.FieldValue.serverTimestamp(),
+                    type:           'company',
+                }, { merge: true }).catch(e => console.warn('Firestore save failed:', e));
+            }
+        }
+
+        if (currentSlide < slides.length - 1) { currentSlide++; renderSlide(); }
+    }
+
+    // ── Quiz evaluation ───────────────────────────────────────
+    window.selectOption = function(index) {
+        const btn = document.getElementById('btnNext');
+        if (btn && (btn.textContent.trim() === 'Continue' || btn.innerHTML.includes('Continue'))) return;
+        selectedOption = index;
+        document.querySelectorAll('.option-btn').forEach((b,i) => {
+            b.classList.toggle('selected', i === index);
+        });
+        if (btn) { btn.textContent = 'Check Answer'; btn.disabled = false; }
+    };
+
+    function evaluateQuiz(slide) {
+        const btns = document.querySelectorAll('.option-btn');
+        const fb   = document.getElementById('quiz-feedback');
+        const nxt  = document.getElementById('btnNext');
+        const correct = selectedOption === slide.answerIndex;
+
+        btns.forEach((b,i) => {
+            b.style.pointerEvents = 'none';
+            if (i === slide.answerIndex) b.classList.add('correct');
+            if (i === selectedOption && !correct) b.classList.add('wrong');
+        });
+
+        fb.className = 'feedback-box ' + (correct ? 'show-success' : 'show-error');
+        fb.innerHTML = correct
+            ? `<i class="fas fa-check-circle"></i> Correct! Well done.`
+            : `<i class="fas fa-times-circle"></i> Incorrect. The correct answer is highlighted above.`;
+
+        nxt.innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+        nxt.disabled = false;
+    }
+
+    // ── Populate hidden printable cert ─────────────────────────
+    function populatePrintable() {
+        const date = new Date().toLocaleDateString('en-IN', {year:'numeric',month:'long',day:'numeric'});
+        document.getElementById('cert-name-display').textContent = partnerData.name;
+        document.getElementById('cert-company-display').textContent =
+            `${partnerData.company ? `representing ${partnerData.company}` + (partnerData.industry ? ` (${partnerData.industry})` : '') + ', has' : 'has'} successfully completed the Explyra Partner Certification Course, demonstrating mastery of the Explyra ecosystem, partner ethics, and best practices.`;
+        document.getElementById('cert-date-display').textContent = `Date: ${date}`;
+        document.getElementById('cert-id-display').textContent = `Credential ID: ${certId}`;
+    }
+
+    // ── Generate & download certificate as PNG, then upload ────
+    async function generateAndDownloadCert() {
+        const btn = document.getElementById('btn-dl-cert');
+        const statusEl = document.getElementById('upload-status');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating…';
+        statusEl.innerHTML = '';
+
+        try {
+            const certEl = document.getElementById('cert-printable');
+            certEl.style.top = '0';
+            certEl.style.left = '0';
+            certEl.style.position = 'fixed';
+            certEl.style.zIndex = '-1';
+
+            const canvas = await html2canvas(certEl, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            });
+
+            certEl.style.top = '-9999px';
+            certEl.style.left = '-9999px';
+
+            certDataUrl = canvas.toDataURL('image/png');
+
+            // ── Download locally ──────────────────────────────
+            const link = document.createElement('a');
+            link.href = certDataUrl;
+            link.download = `Explyra-Partner-Certificate-${partnerData.name?.replace(/\s+/g,'-') || 'Partner'}.png`;
+            link.click();
+
+            btn.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+            statusEl.innerHTML = '<i class="fas fa-cloud-upload-alt" style="color:var(--primary)"></i> Uploading to cloud…';
+
+            // ── Upload to Firebase Storage ────────────────────
+            await uploadCertToStorage(canvas);
+
+        } catch (err) {
+            console.error(err);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Certificate';
+            statusEl.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:var(--error)"></i> Error generating. Try again.`;
+        }
+    }
+
+    async function uploadCertToStorage(canvas) {
+        const statusEl = document.getElementById('upload-status');
+        try {
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+            const filename = `partner-certificates/${certId}-${partnerData.name?.replace(/\s+/g,'-') || 'partner'}.png`;
+            const ref = storage.ref(filename);
+            const snap = await ref.put(blob, { contentType: 'image/png' });
+            const url  = await snap.ref.getDownloadURL();
+
+            // Save certificate URL to Firestore profile
+            if (currentUser) {
+                await db.collection('partners').doc(currentUser.uid).update({
+                    certificateUrl: url,
+                    certificateIssuedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+
+            statusEl.innerHTML = `<i class="fas fa-check-circle" style="color:var(--success)"></i> Certificate saved to cloud. <a href="${url}" target="_blank" style="color:var(--primary);font-weight:600;margin-left:4px">View</a>`;
+        } catch (err) {
+            console.error('Upload error:', err);
+            statusEl.innerHTML = `<i class="fas fa-wifi" style="color:var(--ink3)"></i> Certificate downloaded. Cloud backup requires sign-in.`;
+        }
+    }
+
+    // ── Bind static buttons ───────────────────────────────────
+    document.getElementById('btnPrev').addEventListener('click', prevSlide);
+    document.getElementById('btnNext').addEventListener('click', nextSlide);
+    // renderSlide() is called by onAuthStateChanged after auth check
+    </script>
+</body>
+</html>

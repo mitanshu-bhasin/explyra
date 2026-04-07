@@ -1,6 +1,6 @@
 // Firebase Configuration
 const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
-    apiKey: "AIzaSyAoDQhHlUbiUl57azSrst5M2eGDeQ8EydA",
+    apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
     authDomain: "explyras.firebaseapp.com",
     databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "explyras",

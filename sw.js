@@ -139,11 +139,11 @@ async function staleWhileRevalidate(request, cacheName) {
             if (response && response.ok) {
                 cache.put(request, response.clone());
             }
-            return response;
+            return response || cached || Response.error();
         })
-        .catch(() => cached);
+        .catch(() => cached || Response.error());
 
-    return cached || networkPromise;
+    return cached || networkPromise || Response.error();
 }
 
 function fetchWithTimeout(request, timeoutMs) {
