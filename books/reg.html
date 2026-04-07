@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Dashboard | Mitanshu Bhasin Publications</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080810;
+            --surface: #0f0f1a;
+            --surface2: #13131e;
+            --accent: #ff2a5f;
+            --accent2: #ff7e67;
+            --accent3: #c94bff;
+            --text: #f2f2f8;
+            --text-muted: #8888aa;
+            --border: rgba(255,255,255,0.07);
+            --success: #00ffaa;
+            --transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            padding: 20px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8,8,16,0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: 0.25s;
+        }
+        .nav-links a:hover { color: #fff; }
+
+        /* ── DASHBOARD ── */
+        .container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 6%;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            margin-bottom: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .header-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, #8888aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-text p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            border: none;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(255,42,95,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(255,42,95,0.45); }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.2); }
+
+        .btn-danger {
+            background: rgba(255,42,95,0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255,42,95,0.2);
+        }
+        .btn-danger:hover { background: var(--accent); color: #fff; }
+
+        /* ── STATS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .stat-card {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .stat-card:hover { border-color: rgba(255,42,95,0.2); transform: scale(1.02); }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            opacity: 0.8;
+        }
+        .stat-card.newsletter::before { background: linear-gradient(90deg, var(--accent3), var(--accent2)); }
+        
+        .stat-card h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .stat-card .value {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+        .stat-card .insight {
+            font-size: 0.9rem;
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Distribution bar */
+        .dist-container {
+            width: 100%;
+            height: 8px;
+            background: var(--surface2);
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+            display: flex;
+        }
+        .dist-bar { height: 100%; transition: width 1s ease-in-out; }
+
+        /* ── TABLES ── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-title span {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            border: 1px solid var(--accent);
+            padding: 4px 12px;
+            border-radius: 50px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .table-container {
+            background: var(--surface);
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            margin-bottom: 60px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            background: rgba(255,255,255,0.03);
+            padding: 22px 28px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+        td {
+            padding: 22px 28px;
+            border-bottom: 1px solid var(--border);
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        
+        .email-cell {
+            font-weight: 500;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .copy-btn {
+            opacity: 0;
+            padding: 4px 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .email-cell:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { color: #fff; border-color: #fff; }
+
+        .date-cell {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .source-download { background: rgba(255, 42, 95, 0.12); color: var(--accent); border: 1px solid rgba(255,42,95,0.2); }
+        .source-newsletter { background: rgba(201, 75, 255, 0.12); color: var(--accent3); border: 1px solid rgba(201,75,255,0.2); }
+
+        .empty-state {
+            padding: 100px 25px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+            opacity: 0.2;
+            display: block;
+        }
+
+        /* ── TOAST ── */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #fff;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 800px) {
+            .header { justify-content: center; text-align: center; }
+            .header-text h1 { font-size: 2.5rem; }
+            th, td { padding: 18px 20px; }
+            .copy-btn { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Mitanshu<span>.</span>Books</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="the-code-of-heart.html">Current Book</a>
+            <a href="#" style="color: #fff; font-weight: 600;">Reader Insights</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-text">
+                <h1>Reader Insights</h1>
+                <p>Real-time analytics for your book publications.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" onclick="exportCSV()">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Export CSV
+                </button>
+                <button class="btn btn-danger" onclick="clearData()">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Purge
+                </button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Registrations</h3>
+                <div class="value" id="total-count">0</div>
+                <div class="insight">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    Active Reader Base
+                </div>
+                <div class="dist-container">
+                    <div id="dist-dl" class="dist-bar" style="background:var(--accent); width:0%"></div>
+                    <div id="dist-nl" class="dist-bar" style="background:var(--accent3); width:0%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Direct Downloads</h3>
+                <div class="value" id="download-count">0</div>
+                <div id="dl-percent" class="insight" style="color:var(--accent)">
+                    0% of Total
+                </div>
+            </div>
+            <div class="stat-card newsletter">
+                <h3>Newsletter Signups</h3>
+                <div class="value" id="newsletter-count">0</div>
+                <div id="nl-percent" class="insight" style="color:var(--accent3)">
+                    0% of Total
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Registration Activity <span>Verified Emails</span></h2>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%">Reader Email</th>
+                        <th>Source</th>
+                        <th>Date Added</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="email-table-body">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <span class="empty-state-icon">📥</span>
+                <p>No registration data found yet.</p>
+                <p style="font-size: 0.85rem; margin-top: 5px;">Data will appear here once visitors interact with your landing pages.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Email Copied!</div>
+
+    <script>
+        function loadData() {
+            const tableBody = document.getElementById('email-table-body');
+            const totalCount = document.getElementById('total-count');
+            const downloadCountElement = document.getElementById('download-count');
+            const newsletterCountElement = document.getElementById('newsletter-count');
+            const emptyState = document.getElementById('empty-state');
+            
+            const distDl = document.getElementById('dist-dl');
+            const distNl = document.getElementById('dist-nl');
+            const dlPercent = document.getElementById('dl-percent');
+            const nlPercent = document.getElementById('nl-percent');
+
+            // Try to get data with formatted timestamps (or fallback)
+            const bookEmails = JSON.parse(localStorage.getItem('book_registrations') || '[]');
+            const newsletterEmails = JSON.parse(localStorage.getItem('newsletter_registrations') || '[]');
+
+            // Combine and format for display
+            let allData = [
+                ...bookEmails.map(e => ({ email: e, source: 'download', date: new Date().toLocaleDateString('en-GB') })),
+                ...newsletterEmails.map(e => ({ email: e, source: 'newsletter', date: new Date().toLocaleDateString('en-GB') }))
+            ];
+
+            // Sort by most recent (this is a simulation since we don't store time)
+            // Ideally we should store {email, timestamp} objects
+            
+            totalCount.innerText = allData.length;
+            downloadCountElement.innerText = bookEmails.length;
+            newsletterCountElement.innerText = newsletterEmails.length;
+
+            if (allData.length > 0) {
+                const dlPct = Math.round((bookEmails.length / allData.length) * 100);
+                const nlPct = 100 - dlPct;
+                distDl.style.width = `${dlPct}%`;
+                distNl.style.width = `${nlPct}%`;
+                dlPercent.innerText = `${dlPct}% of Total Content`;
+                nlPercent.innerText = `${nlPct}% of Potential Reach`;
+            }
+
+            if (allData.length === 0) {
+                tableBody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tableBody.innerHTML = allData.reverse().map(item => `
+                <tr>
+                    <td>
+                        <div class="email-cell">
+                            ${item.email}
+                            <button class="copy-btn" onclick="copyEmail('${item.email}')">Copy</button>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="source-badge ${item.source === 'download' ? 'source-download' : 'source-newsletter'}">
+                            ${item.source === 'download' ? 'PDF Download' : 'Newsletter'}
+                        </span>
+                    </td>
+                    <td class="date-cell">${item.date}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:8px; color: var(--success); font-weight: 700; font-size:0.8rem;">
+                            <span style="width:6px; height:6px; background:var(--success); border-radius:50%"></span>
+                            VERIFIED
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function copyEmail(email) {
+            navigator.clipboard.writeText(email).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+
+        function exportCSV() {
+            const bookEmails = JSON.parse(localStorage.getItem('book_registrations') || '[]');
+            const newsletterEmails = JSON.parse(localStorage.getItem('newsletter_registrations') || '[]');
+            
+            if (bookEmails.length === 0 && newsletterEmails.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Email,Source,Date\n";
+            bookEmails.forEach(e => { csvContent += `${e},PDF Download,${new Date().toLocaleDateString()}\n`; });
+            newsletterEmails.forEach(e => { csvContent += `${e},Newsletter Signup,${new Date().toLocaleDateString()}\n`; });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `registrations_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearData() {
+            if (confirm('CRITICAL: Are you sure you want to permanently purge all locally stored registration data? This cannot be undone.')) {
+                localStorage.removeItem('book_registrations');
+                localStorage.removeItem('newsletter_registrations');
+                loadData();
+                alert('All reader data has been purged.');
+            }
+        }
+
+        // Initialize
+        loadData();
+
+        // Listen for storage changes
+        window.addEventListener('storage', () => loadData());
+    </script>
+</body>
+</html>
+

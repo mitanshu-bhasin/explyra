@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitanshu Bhasin - Founder & Asset Manager | TaxBodh</title>
+    
+    <meta name="description" content="Mitanshu Bhasin is the owner, tech lead, and visionary architect behind the TaxBodh asset package.">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        secondary: '#f8fafc',
+                        accent: '#2563eb',
+                        gold: '#fbbf24'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">
+
+    <header class="w-full p-6 max-w-5xl mx-auto flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-extrabold text-primary">TaxBodh<span class="text-accent">.com</span></a>
+        <a href="index.html" class="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-accent transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Asset
+        </a>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto w-full px-6 py-12">
+        <div class="glass rounded-[2.5rem] p-10 md:p-16 shadow-xl relative overflow-hidden">
+            <!-- Decorative blur -->
+            <div class="absolute -top-32 -right-32 w-96 h-96 bg-accent opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-10 relative z-10">
+                <div class="relative shrink-0 group">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-accent to-purple-600 rounded-full blur-lg opacity-40 group-hover:opacity-75 transition-opacity duration-500"></div>
+                    <img src="https://i.postimg.cc/Pf9dQZ5M/1772289593451.png" alt="Mitanshu Bhasin" class="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover border-[6px] border-white relative z-10 shadow-2xl">
+                </div>
+                
+                <div class="text-center md:text-left space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-accent rounded-full text-xs font-bold uppercase tracking-widest">
+                        <i data-lucide="code" class="w-3 h-3"></i> Tech Lead & Investor
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-serif text-slate-900 tracking-tight">Mitanshu Bhasin</h1>
+                    
+                    <div class="prose prose-slate prose-lg text-slate-600 leading-relaxed mt-4">
+                        <p><strong>Mitanshu Bhasin is the visionary architect behind Explyra Suite and the principal manager of the TaxBodh asset group.</strong> Leading technical strategy, product engineering, and overarching platform execution.</p>
+                        <p>With an unwavering passion for building performant, secure, and robust ecosystems, Mitanshu brings technical excellence to every level of the stack. His deep expertise spans modern cloud architecture, intuitive frontend experiences, and highly optimized database schemas.</p>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100 flex flex-wrap gap-4 mt-6 justify-center md:justify-start">
+                        <a href="https://linkedin.com/in/mitanshubhasin" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-[#0A66C2] text-white rounded-lg hover:shadow-lg transition-transform hover:-translate-y-1 font-medium">Linkedin</a>
+                        <a href="https://github.com/mitanshu-bhasin" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:shadow-lg transition-transform hover:-translate-y-1 font-medium">GitHub</a>
+                        <a href="https://x.com/mitanshubhasin" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:shadow-lg transition-transform hover:-translate-y-1 font-medium">X / Twitter</a>
+                        <a href="https://mitanshu.tech" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-800 border border-slate-200 rounded-lg hover:shadow-lg transition-transform hover:-translate-y-1 font-bold">Personal Site</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full text-center p-8 text-sm text-slate-400">
+        <p>&copy; 2026 Mitanshu Bhasin. TaxBodh domain property manager.</p>
+    </footer>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -8,25 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #F8F7F4;
-            --bg2: #FFFFFF;
-            --surf: #FFFFFF;
-            --bdr: #E4E1DB;
-            --ink: #0D1117;
-            --ink2: #2A3141;
-            --ink3: #586070;
-            --ink4: #939BAC;
-            --blue: #1546C0;
-            --blue-g: rgba(21, 70, 192, .08);
-            --s1: 0 1px 3px rgba(0, 0, 0, .06);
-            --s2: 0 4px 16px rgba(0, 0, 0, .08);
-            --s4: 0 24px 72px rgba(0, 0, 0, .12);
+            --bg: #10072d;
+            --bg2: #150b36;
+            --surf: rgba(34, 22, 73, 0.4);
+            --surf-hover: #2f225d;
+            --bdr: rgba(75, 66, 107, 0.3);
+            --ink: #eae1ff;
+            --ink2: #afa5d4;
+            --ink3: #796f9b;
+            --ink4: #4b426b;
+            --blue: #00d2ff;
+            --primary: #a5a5ff;
+            --primary-g: rgba(165, 165, 255, 0.15);
+            --blue-g: rgba(0, 210, 255, 0.15);
+            --s1: 0px 8px 16px rgba(0, 0, 0, 0.3);
+            --s2: 0px 16px 32px rgba(0, 0, 0, 0.4);
+            --s4: 0px 32px 64px rgba(0, 0, 0, 0.5), 0px 8px 16px rgba(100, 98, 236, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
+            font-family: 'Outfit', 'Manrope', sans-serif;
+            background: radial-gradient(circle at 100% 100%, var(--bg2) 0%, var(--bg) 100%);
             color: var(--ink);
             display: flex;
             min-height: 100vh;
@@ -34,108 +37,140 @@
 
         aside {
             width: 280px;
-            background: var(--bg2);
+            background: rgba(21, 11, 54, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-right: 1px solid var(--bdr);
             padding: 2rem;
             display: flex;
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            z-index: 10;
         }
 
         .logo {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Space Grotesk', 'Playfair Display', serif;
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 3rem;
             text-decoration: none;
             color: var(--ink);
+            letter-spacing: -0.04em;
         }
 
         nav { display: flex; flex-direction: column; gap: 0.5rem; }
         nav a {
             padding: 1rem;
-            border-radius: 12px;
+            border-radius: 16px;
             text-decoration: none;
-            color: var(--ink3);
+            color: var(--ink2);
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            transition: all 0.2s;
+            gap: 1rem;
+            transition: all 0.3s;
         }
-        nav a:hover, nav a.active { background: var(--blue-g); color: var(--blue); }
+        nav a:hover, nav a.active { 
+            background: var(--blue-g); 
+            color: var(--blue); 
+            box-shadow: inset 2px 2px 0px rgba(0, 210, 255, 0.1); 
+        }
 
         main { flex: 1; margin-left: 280px; padding: 3rem 5vw; }
         .header { margin-bottom: 3rem; }
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; }
+        .header h1 { font-family: 'Space Grotesk', 'Playfair Display', serif; font-size: 2.2rem; letter-spacing: -0.04em; }
 
         /* REDEEM GRID */
         .redeem-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            gap: 2.5rem;
             margin-bottom: 4rem;
         }
 
         .card {
             background: var(--surf);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--bdr);
-            border-radius: 24px;
-            padding: 2rem;
+            border-radius: 28px;
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--s2);
         }
-        .card:hover { transform: translateY(-5px); box-shadow: var(--s2); }
+        .card::before {
+            content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            pointer-events: none; border-radius: 28px;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--s4); border-color: rgba(165, 165, 255, 0.4); }
 
         .points-badge {
             background: var(--blue-g);
             color: var(--blue);
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 100px;
             font-size: 0.75rem;
-            font-weight: 700;
+            font-weight: 800;
             width: fit-content;
             margin-bottom: 1rem;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            text-shadow: 0 0 10px var(--blue-g);
         }
 
-        .card-h { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .card-p { color: var(--ink3); font-size: 0.9rem; margin-bottom: 1.5rem; flex: 1; }
+        .card-h { font-family: 'Space Grotesk', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .card-p { color: var(--ink2); font-size: 0.95rem; margin-bottom: 1.5rem; flex: 1; }
 
         .btn-action {
             width: 100%;
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 1.2rem;
+            border-radius: 100px;
             border: none;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.3s;
-            background: var(--ink);
-            color: #fff;
+            background: linear-gradient(120deg, var(--primary), var(--blue));
+            color: #10072d;
+            box-shadow: inset 2px 2px 0px rgba(255,255,255,0.4), 0 8px 24px var(--blue-g);
         }
-        .btn-action:disabled { background: var(--bdr); cursor: not-allowed; opacity: 0.6; }
-        .btn-action.secondary { background: var(--bg); color: var(--ink); border: 1.5px solid var(--bdr); }
+        .btn-action:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: inset 2px 2px 0px rgba(255,255,255,0.6), 0 12px 32px var(--blue-g);
+        }
+        .btn-action:disabled { background: var(--surf-hover); color: var(--ink3); cursor: not-allowed; box-shadow: none; border: 1px solid var(--bdr); transform: none; }
+        .btn-action.secondary { background: var(--surf); color: var(--ink); border: 1px solid var(--primary); box-shadow: none; }
+        .btn-action.secondary:hover { background: var(--primary); color: #10072d; box-shadow: 0 8px 24px var(--primary-g); }
 
         /* MONEY WITHDRAWAL MODAL/SECTION */
         .withdrawal-sec {
             background: var(--surf);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--bdr);
-            border-radius: 24px;
-            padding: 2.5rem;
+            border-radius: 28px;
+            padding: 3rem;
             margin-top: 4rem;
+            box-shadow: var(--s2);
         }
 
         .form-group { margin-bottom: 1.5rem; text-align: left; }
-        label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--ink2); text-transform: uppercase; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; font-family: 'Manrope', sans-serif; margin-bottom: 0.6rem; color: var(--ink2); text-transform: uppercase; letter-spacing: 0.08em; }
         input, select {
             width: 100%;
-            padding: 0.9rem 1.1rem;
-            border-radius: 12px;
-            border: 1.5px solid var(--bdr);
-            background: var(--bg);
+            padding: 1.2rem;
+            border-radius: 16px;
+            border: 1.5px solid var(--ink4);
+            background: rgba(0,0,0,0.2);
             font-family: inherit;
+            color: var(--ink);
+            transition: all 0.3s;
         }
+        input:focus { outline: none; border-color: var(--blue); background: var(--bg2); box-shadow: 0 0 0 4px var(--blue-g); }
 
         /* FOOTER */
         footer {
@@ -145,13 +180,14 @@
             margin-top: 4rem;
         }
         .footer-grid { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 4rem; margin-bottom: 4rem; }
-        .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; }
-        .footer-desc { color: var(--ink4); font-size: 0.9rem; max-width: 300px; }
-        .footer-h { font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--ink4); }
+        .footer-logo { font-family: 'Space Grotesk', 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.04em; }
+        .footer-desc { color: var(--ink3); font-size: 0.95rem; max-width: 300px; }
+        .footer-h { font-weight: 700; margin-bottom: 1.5rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--ink2); }
         .footer-links { list-style: none; }
         .footer-links li { margin-bottom: 0.8rem; }
-        .footer-links a { text-decoration: none; color: var(--ink3); font-size: 0.9rem; }
-        .copyright { border-top: 1px solid var(--bdr); padding-top: 2rem; text-align: center; color: var(--ink4); font-size: 0.85rem; }
+        .footer-links a { text-decoration: none; color: var(--ink3); font-size: 0.9rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--blue); }
+        .copyright { border-top: 1px solid var(--bdr); padding-top: 2rem; text-align: center; color: var(--ink3); font-size: 0.85rem; }
 
         @media (max-width: 900px) {
             aside { width: 80px; padding: 1rem; }
@@ -177,11 +213,11 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
                     <h1>Redeem Center</h1>
-                    <p style="color:var(--ink4)" id="ratio-msg">Loading current rates...</p>
+                    <p style="color:var(--ink2)" id="ratio-msg">Loading current rates...</p>
                 </div>
                 <div style="text-align: right">
-                    <p style="font-size: 0.8rem; color: var(--ink4); font-weight: 700;">YOUR BALANCE</p>
-                    <div style="font-size: 2rem; font-weight: 700; font-family: 'Playfair Display', serif;" id="current-balance">0 pts</div>
+                    <p style="font-size: 0.8rem; color: var(--ink3); font-weight: 700;">YOUR BALANCE</p>
+                    <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Space Grotesk', serif; background: linear-gradient(120deg, var(--primary), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px var(--primary-g); letter-spacing: -0.05em;" id="current-balance">0 pts</div>
                 </div>
             </div>
         </div>
