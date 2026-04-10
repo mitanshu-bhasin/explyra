@@ -4,13 +4,13 @@ import config from "../config.js";
 
 // Initialize Gemini SDK (Primary)
 const genAI = new GoogleGenerativeAI(config.geminiKey);
-const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // Initialize Vertex AI SDK (Fallback)
 const project = config.firebase.projectId || process.env.GOOGLE_CLOUD_PROJECT;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 const vertexAI = new VertexAI({ project: project, location: location });
-const vertexModel = vertexAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+const vertexModel = vertexAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
 export const generateProfessionalArticle = async (newsItems) => {
     const prompt = `

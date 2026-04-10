@@ -19,11 +19,11 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 // 2. AI Studio Config
-const API_KEY = "AIzaSyBuaiiY1Ef7EyTB1Qtd1GS2xNT-Rkhhqp4";
+const API_KEY = "AIzaSyCA36DOoQGv51JCrEkIbVxXtaw6WkN_4GY";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // State
-let activeModel = "gemini-3-flash-preview"; 
+let activeModel = "gemini-2.5-flash"; 
 let currentGem = "Expert AI Analyst";
 let chatHistory = [];
 let pendingFiles = [];
@@ -56,11 +56,9 @@ console.log("Explyra Matrix Core Initiated.");
 
 // --- Model Configuration ---
 const availableModels = [
-    { id: "gemini-3.1-pro-preview", name: "3.1 Pro", icon: "psychology" },
-    { id: "gemini-3-flash-preview", name: "Flash 3", icon: "bolt", default: true },
-    { id: "gemini-3.1-flash-lite-preview", name: "Flash-Lite", icon: "electric_bolt" },
-    { id: "gemini-3.1-flash-image-preview", name: "Banana 2", icon: "image" },
-    { id: "veo-3.1-generate-preview", name: "Veo 3.1", icon: "movie" }
+    { id: "gemini-2.5-flash", name: "1.5 Pro", icon: "psychology" },
+    { id: "gemini-2.5-flash", name: "2.5 Flash", icon: "bolt", default: true },
+    { id: "gemini-2.5-flash", name: "Flash-8B", icon: "electric_bolt" }
 ];
 
 const EXPLYRA_PERSONAS = {

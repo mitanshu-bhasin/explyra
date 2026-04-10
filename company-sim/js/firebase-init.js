@@ -40,7 +40,7 @@ console.log("Firestore configured for database (if visible):", csDb.databaseId |
 // csDb.enablePersistence().catch(...)
 
 // Gemini API configuration
-const GEMINI_API_KEY = 'AIzaSyAww4cntyfJ2_Ck26nvSpwRRYkj33B1BIs';
+const GEMINI_API_KEY = 'AIzaSyCA36DOoQGv51JCrEkIbVxXtaw6WkN_4GY';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 // Export

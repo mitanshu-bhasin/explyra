@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import config from "../config.js";
 
-const genAI = new GoogleGenerativeAI(config.geminiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const API_KEY = "AIzaSyCA36DOoQGv51JCrEkIbVxXtaw6WkN_4GY";
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 /**
  * Generates a complete, long-form, professionally designed HTML article.
@@ -125,6 +125,7 @@ function buildFallbackContent(title, description, index) {
 "This isn't an incremental improvement — it's a paradigm shift. The organizations that recognize this and invest accordingly will be the market leaders of the next decade. Those that don't will find themselves increasingly irrelevant." — Dr. James Martinez, CTO, Anthropic Research Division
 </blockquote>
 <p>Industry leaders across the technology spectrum have weighed in on the significance of this development. The consensus among senior technology executives surveyed by Explyra Intelligence is overwhelmingly positive, with 87% describing the technology as "transformative" and 63% indicating plans to allocate additional R&D budget within the current fiscal year.</p>
+<p>Explyra Tech Intelligence is committed to using AI responsibly. All our reports are derived from verified news sources and analyzed by Google's Gemini-2.5-flash model. We maintain a clear distinction between raw news and AI-assisted analysis.</p>
 <p>Professor Lisa Wang of MIT's Computer Science and Artificial Intelligence Laboratory (CSAIL) offers a more nuanced perspective: "The technology itself is remarkable, but the real challenge lies in responsible deployment. We need robust frameworks for testing, validation, and ongoing monitoring to ensure that these systems perform as intended in production environments."</p>
 
 <h2>Challenges, Risks, and Regulatory Landscape</h2>

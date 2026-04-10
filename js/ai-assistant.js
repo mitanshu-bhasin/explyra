@@ -128,75 +128,73 @@
             addMessage("Slow down! You've reached the limit of 10 messages per minute.", 'bot');
             return;
         }
-
+    
         const typingIndicator = showTyping();
         
         try {
-            const url = window.AI_CONFIG?.url || '/api/ai/groq';
+            let url = window.AI_CONFIG?.url || '/api/ai/gemini';
             const apiKey = window.AI_CONFIG?.apiKey;
             const headers = { 'Content-Type': 'application/json' };
-            const isSameOriginProxy =
-                typeof url === 'string' &&
-                (url.startsWith('/') || url.startsWith(window.location.origin));
-            const keyOk =
-                apiKey &&
-                apiKey !== 'HANDLED_BY_PROXY' &&
-                apiKey !== 'undefined';
-            if (!isSameOriginProxy && keyOk) {
-                headers['Authorization'] = `Bearer ${apiKey}`;
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+            // If local and we have a key, add it to the URL as per Gemini API requirements
+            if (isLocalhost && apiKey && apiKey !== 'HANDLED_BY_PROXY') {
+                url += `?key=${apiKey}`;
             }
-
+    
+            const systemPrompt = `
+    You are the Elite Explyra AI Strategist. You explain our unified SaaS ecosystem with authority and excitement.
+    
+    WORKFLOW KNOWLEDGE:
+    - Expense Tracker: Users scan/upload receipts. AI automatically categorizes & extracts data. It follows a multi-level approval workflow before final reimbursement. It syncs with billing software like Ino.
+    - CRM: Leads enter through submits/integrations. They move through a visual Kanban pipeline. AI forecasts deal closure rates and suggests follow-up actions.
+    - AI Learning: Adaptive assessment identifies skill gaps. Courses auto-adjust difficulty. Real-time mentor answers questions mid-video.
+    - Health Companion: Syncs with live weather. Suggests morning runs when clear, indoor yoga when rainy. Tracks steps, calories, and mood.
+    - Dev Tools: High-speed utilities (Minifier, Hasher, IDE). No ads, privacy-focused, 100% cloud-synced workspace.
+    
+    PERSONALITY:
+    - Be punchy, professional, and high-energy. 
+    - Use English default.
+    - Keep responses under 50 words.
+    - Emphasize that Explyra replaces 10 separate tools with one smooth workspace.`;
+    
             const response = await fetch(url, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({
-                    model: window.AI_CONFIG.model,
-                    messages: [
-                        { role: 'system', content: `
-You are the Elite Explyra AI Strategist. You explain our unified SaaS ecosystem with authority and excitement.
-
-WORKFLOW KNOWLEDGE:
-- Expense Tracker: Users scan/upload receipts. AI automatically categorizes & extracts data. It follows a multi-level approval workflow before final reimbursement. It syncs with billing software like Ino.
-- CRM: Leads enter through submits/integrations. They move through a visual Kanban pipeline. AI forecasts deal closure rates and suggests follow-up actions.
-- AI Learning: Adaptive assessment identifies skill gaps. Courses auto-adjust difficulty. Real-time mentor answers questions mid-video.
-- Health Companion: Syncs with live weather. Suggests morning runs when clear, indoor yoga when rainy. Tracks steps, calories, and mood.
-- Dev Tools: High-speed utilities (Minifier, Hasher, IDE). No ads, privacy-focused, 100% cloud-synced workspace.
-
-PERSONALITY:
-- Be punchy, professional, and high-energy. 
-- Use English default.
-- Keep responses under 50 words.
-- Emphasize that Explyra replaces 10 separate tools with one smooth workspace.` },
-                        { role: 'user', content: userText }
-                    ],
-                    temperature: 0.7
+                    contents: [{
+                        parts: [{ text: `System Instruction: ${systemPrompt}\n\nUser: ${userText}` }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 200,
+                    }
                 })
             });
-
+    
             const data = await response.json().catch(() => ({}));
-            const choiceText = data?.choices?.[0]?.message?.content;
+            const choiceText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
             const apiErr =
-                (typeof data?.error === 'string' ? data.error : null) ||
                 data?.error?.message ||
                 data?.message;
-
+    
             typingIndicator.remove();
-
+    
             if (!choiceText) {
                 let msg =
                     apiErr ||
                     (response.status === 503
                         ? 'AI is not available on this deployment yet.'
                         : response.status === 401 || response.status === 403
-                          ? 'AI access could not be verified. Please try again later.'
+                          ? 'AI access could not be verified. Please check your API key.'
                           : 'The AI service returned an error. Please try again shortly.');
                 addMessage(msg, 'bot');
                 return;
             }
-
+    
             addMessage(choiceText, 'bot');
             if (!isMuted) speak(choiceText);
-
+    
         } catch (error) {
             console.error('AI Error:', error);
             typingIndicator.remove();
