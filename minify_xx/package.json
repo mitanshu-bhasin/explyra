@@ -22,9 +22,12 @@
     "dependencies": {
         "@capacitor/android": "^6.1.2",
         "@capacitor/core": "^6.1.2",
+        "@genkit-ai/googleai": "^1.28.0",
+        "@google-cloud/language": "^7.2.1",
         "dotenv": "^16.6.1",
         "express": "^4.22.1",
         "firebase": "^12.10.0",
+        "genkit": "^1.31.0",
         "serve": "^14.2.0"
     },
     "devDependencies": {

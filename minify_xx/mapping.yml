@@ -1,0 +1,13 @@
+mappings:
+  explyra_mapping:
+    sources:
+      - ['explyras.explyra_kg.explyra_entity']
+    s: https://explyra.me/entities/$(name)
+    po:
+      - [a, schema:Organization]
+      - [schema:name, $(name)]
+      - [schema:description, $(description)]
+      - [schema:url, $(url)]
+      - [schema:address, $(address)]
+      - [schema:postalCode, $(pincode)]
+      - [schema:email, $(email)]

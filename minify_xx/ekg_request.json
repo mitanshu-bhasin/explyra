@@ -1,0 +1,16 @@
+{
+  "entity_reconciliation_job": {
+    "input_config": {
+      "bigquery_input_configs": [
+        {
+          "bigquery_table": "projects/explyras/datasets/explyra_kg/tables/explyra_entity",
+          "gcs_uri": "gs://explyra-kg-bucket/mapping.yml"
+        }
+      ],
+      "entity_type": "ORGANIZATION"
+    },
+    "output_config": {
+      "bigquery_dataset": "projects/explyras/datasets/explyra_kg"
+    }
+  }
+}
