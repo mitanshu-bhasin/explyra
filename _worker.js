@@ -7,14 +7,14 @@ export default {
     const adsScript = `
 <script>
   atOptions = {
-    'key' : '6ba2490f903e87b89b3544dfc343bda3',
+    'key' : '4147493a3880628203f19f170af36691',
     'format' : 'iframe',
     'height' : 90,
     'width' : 728,
     'params' : {}
   };
 </script>
-<script src="https://www.highperformanceformat.com/6ba2490f903e87b89b3544dfc343bda3/invoke.js"></script>`;
+<script src="https://www.highperformanceformat.com/4147493a3880628203f19f170af36691/invoke.js"></script>`;
 
     // Helper to dynamically update HTML content (Ads + Date)
     function transformHTML(response) {
