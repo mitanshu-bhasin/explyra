@@ -19,6 +19,17 @@ if (!fs.existsSync(GEN_DIR)) fs.mkdirSync(GEN_DIR, { recursive: true });
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Path Normalization for sub-path hosting (/articles/)
+app.use((req, res, next) => {
+    if (req.url.startsWith('/articles')) {
+        req.url = req.url.substring(9); // Remove "/articles"
+        if (req.url === '' || req.url === '/') {
+            req.url = '/index.html';
+        }
+    }
+    next();
+});
+
 app.use(cors());
 app.use(express.json());
 
