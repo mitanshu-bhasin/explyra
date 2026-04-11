@@ -1,0 +1,1 @@
+"use strict";import stream from"stream";class ZlibHeaderTransformStream extends stream.Transform{__transform(r,s,t){this.push(r),t()}_transform(r,s,t){if(0!==r.length&&(this._transform=this.__transform,120!==r[0])){const r=Buffer.alloc(2);r[0]=120,r[1]=156,this.push(r,s)}this.__transform(r,s,t)}}export default ZlibHeaderTransformStream;

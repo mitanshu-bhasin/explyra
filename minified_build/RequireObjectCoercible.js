@@ -1,0 +1,1 @@
+"use strict";var $TypeError=require("es-errors/type");module.exports=function(r){if(null==r)throw new $TypeError(arguments.length>0&&arguments[1]||"Cannot call method on "+r);return r};

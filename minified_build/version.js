@@ -1,0 +1,1 @@
+import validate from"./validate.js";function version(r){if(!validate(r))throw TypeError("Invalid UUID");return parseInt(r.slice(14,15),16)}export default version;

@@ -1,0 +1,1 @@
+"use strict";function escapeHTML(e){return e.replace(/</g,"&lt;").replace(/>/g,"&gt;")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=escapeHTML;

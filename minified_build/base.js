@@ -1,0 +1,1 @@
+export class FetchBaseError extends Error{constructor(r,t){super(r),Error.captureStackTrace(this,this.constructor),this.type=t}get name(){return this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}}

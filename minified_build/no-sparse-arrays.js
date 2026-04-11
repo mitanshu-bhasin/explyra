@@ -1,0 +1,1 @@
+"use strict";module.exports={meta:{type:"problem",docs:{description:"Disallow sparse arrays",recommended:!0,url:"https://eslint.org/docs/latest/rules/no-sparse-arrays"},schema:[],messages:{unexpectedSparseArray:"Unexpected comma in middle of array."}},create:e=>({ArrayExpression(s){s.elements.includes(null)&&e.report({node:s,messageId:"unexpectedSparseArray"})}})};

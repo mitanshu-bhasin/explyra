@@ -1,0 +1,18 @@
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc, collection, setDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
+  authDomain: "explyras.firebaseapp.com",
+  databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "explyras",
+  storageBucket: "explyras.firebasestorage.app",
+  messagingSenderId: "411853553644",
+  appId: "1:411853553644:web:eca79eab846b6a5149cac9",
+  measurementId: "G-TFBZ5GZ22C"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export { db, doc, getDoc, collection, setDoc, query, orderBy, limit, getDocs };

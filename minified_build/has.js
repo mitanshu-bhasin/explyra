@@ -1,0 +1,1 @@
+"use strict";var inspect=require("../"),test=require("tape"),mockProperty=require("mock-property");test("when Object#hasOwnProperty is deleted",function(e){e.plan(1);e.teardown(mockProperty(Array.prototype,1,{value:2})),e.teardown(mockProperty(Object.prototype,"hasOwnProperty",{delete:!0})),e.equal(inspect([1,,3]),"[ 1, , 3 ]")});

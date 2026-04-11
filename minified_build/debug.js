@@ -1,0 +1,1 @@
+var debug;module.exports=function(){if(!debug){try{debug=require("debug")("follow-redirects")}catch(e){}"function"!=typeof debug&&(debug=function(){})}debug.apply(null,arguments)};

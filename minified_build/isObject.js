@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t){return!!t&&("function"==typeof t||"object"==typeof t)};

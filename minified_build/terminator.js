@@ -1,0 +1,1 @@
+var abort=require("./abort.js"),async=require("./async.js");function terminator(t){Object.keys(this.jobs).length&&(this.index=this.size,abort(this),async(t)(null,this.results))}module.exports=terminator;

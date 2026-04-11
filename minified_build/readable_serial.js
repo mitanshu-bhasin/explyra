@@ -1,0 +1,1 @@
+var serial=require("../serial.js");function ReadableSerial(e,a,l){if(!(this instanceof ReadableSerial))return new ReadableSerial(e,a,l);ReadableSerial.super_.call(this,{objectMode:!0}),this._start(serial,e,a,l)}module.exports=ReadableSerial;

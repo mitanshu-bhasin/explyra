@@ -1,0 +1,1 @@
+import{COMPOSED_HANDLER}from"./constants.js";var isMiddleware=e=>e.length>1,findTargetHandler=e=>e[COMPOSED_HANDLER]?findTargetHandler(e[COMPOSED_HANDLER]):e;export{findTargetHandler,isMiddleware};

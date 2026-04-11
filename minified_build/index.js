@@ -1,1 +1,17 @@
-import Queue from"yocto-queue";export default function pLimit(e){if(!Number.isInteger(e)&&e!==Number.POSITIVE_INFINITY||!(e>0))throw new TypeError("Expected `concurrency` to be a number from 1 and up");const t=new Queue;let u=0;const n=async(e,n,r)=>{u++;const o=(async()=>e(...r))();n(o);try{await o}catch{}u--,t.size>0&&t.dequeue()()},r=(r,...o)=>new Promise(i=>{((r,o,i)=>{t.enqueue(n.bind(void 0,r,o,i)),(async()=>{await Promise.resolve(),u<e&&t.size>0&&t.dequeue()()})()})(r,i,o)});return Object.defineProperties(r,{activeCount:{get:()=>u},pendingCount:{get:()=>t.size},clearQueue:{value:()=>{t.clear()}}}),r}
+import{r as registerAuth,i as initializeAuth,a as indexedDBLocalPersistence,c as connectAuthEmulator}from"./register-27e07cc8.js";export{Y as ActionCodeURL,m as AuthCredential,A as AuthErrorCodes,E as EmailAuthCredential,q as EmailAuthProvider,F as FacebookAuthProvider,t as GithubAuthProvider,G as GoogleAuthProvider,O as OAuthCredential,w as OAuthProvider,P as PhoneAuthCredential,S as SAMLAuthProvider,T as TotpMultiFactorGenerator,b as TotpSecret,x as TwitterAuthProvider,J as applyActionCode,e as beforeAuthStateChanged,K as checkActionCode,I as confirmPasswordReset,c as connectAuthEmulator,M as createUserWithEmailAndPassword,l as debugErrorMap,k as deleteUser,V as fetchSignInMethodsForEmail,a4 as getAdditionalUserInfo,a1 as getIdToken,a2 as getIdTokenResult,a6 as getMultiFactorResolver,n as inMemoryPersistence,a as indexedDBLocalPersistence,i as initializeAuth,d as initializeRecaptchaConfig,R as isSignInWithEmailLink,B as linkWithCredential,a7 as multiFactor,f as onAuthStateChanged,o as onIdTokenChanged,Z as parseActionCodeURL,p as prodErrorMap,C as reauthenticateWithCredential,a5 as reload,j as revokeAccessToken,W as sendEmailVerification,H as sendPasswordResetEmail,Q as sendSignInLinkToEmail,s as setPersistence,y as signInAnonymously,z as signInWithCredential,D as signInWithCustomToken,N as signInWithEmailAndPassword,U as signInWithEmailLink,h as signOut,a3 as unlink,g as updateCurrentUser,$ as updateEmail,a0 as updatePassword,_ as updateProfile,u as useDeviceLanguage,v as validatePassword,X as verifyBeforeUpdateEmail,L as verifyPasswordResetCode}from"./register-27e07cc8.js";import{_getProvider,getApp}from"@firebase/app";import{getDefaultEmulatorHost}from"@firebase/util";import"@firebase/component";import"@firebase/logger";
+/**
+ * @license
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function getAuth(e=getApp()){const a=_getProvider(e,"auth");if(a.isInitialized())return a.getImmediate();const t=initializeAuth(e,{persistence:[indexedDBLocalPersistence]}),s=getDefaultEmulatorHost("auth");return s&&connectAuthEmulator(t,`http://${s}`),t}registerAuth("WebExtension");export{getAuth};

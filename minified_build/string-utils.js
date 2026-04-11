@@ -1,0 +1,1 @@
+const ansi=new RegExp("(?:\\[(?:\\d+[ABCDEFGJKSTm]|\\d+;\\d+[Hfm]|\\d+;\\d+;\\d+m|6n|s|u|\\?25[lh])|\\w)","g");export function stripAnsi(n){return n.replace(ansi,"")}export function wrap(n,t){const[r,e]=n.match(ansi)||["",""];n=stripAnsi(n);let s="";for(let r=0;r<n.length;r++)0!==r&&r%t===0&&(s+="\n"),s+=n.charAt(r);return r&&e&&(s=`${r}${s}${e}`),s}

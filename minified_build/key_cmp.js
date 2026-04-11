@@ -1,0 +1,1 @@
+var stringify=require("../"),obj={c:8,b:[{z:6,y:5,x:4},7],a:3},s=stringify(obj,function(r,e){return r.key<e.key?1:-1});console.log(s);

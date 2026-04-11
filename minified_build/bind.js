@@ -1,0 +1,1 @@
+"use strict";export default function bind(t,n){return function(){return t.apply(n,arguments)}}

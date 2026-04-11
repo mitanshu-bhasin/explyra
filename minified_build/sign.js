@@ -1,0 +1,1 @@
+"use strict";var $isNaN=require("./isNaN");module.exports=function(r){return $isNaN(r)||0===r?r:r<0?-1:1};

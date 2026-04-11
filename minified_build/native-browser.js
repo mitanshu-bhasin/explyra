@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;const randomUUID="undefined"!=typeof crypto&&crypto.randomUUID&&crypto.randomUUID.bind(crypto);var _default={randomUUID:randomUUID};exports.default=_default;

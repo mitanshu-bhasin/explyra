@@ -21,7 +21,7 @@
         let icon = 'fa-moon';
         let motivational = 'Wind down and review your day.';
         if (hour < 12) { greeting = 'Good Morning'; icon = 'fa-sun'; motivational = 'Start your day strong with a clear overview.'; }
-        else if (hour < 17) { greeting = 'Good Afternoon'; icon = 'fa-cloud-sun'; motivational = 'Stay focused — you're doing great!'; }
+        else if (hour < 17) { greeting = 'Good Afternoon'; icon = 'fa-cloud-sun'; motivational = "Stay focused — you're doing great!"; }
         const nameEl = document.getElementById('sidebar-user-name');
         const name = nameEl?.textContent?.trim() || (window.userData ? window.userData.name : 'Employee');
         const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });

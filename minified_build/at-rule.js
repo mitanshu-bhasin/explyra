@@ -1,0 +1,1 @@
+"use strict";let Container=require("./container");class AtRule extends Container{constructor(e){super(e),this.type="atrule"}append(...e){return this.proxyOf.nodes||(this.nodes=[]),super.append(...e)}prepend(...e){return this.proxyOf.nodes||(this.nodes=[]),super.prepend(...e)}}module.exports=AtRule,AtRule.default=AtRule,Container.registerAtRule(AtRule);

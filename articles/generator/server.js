@@ -31,11 +31,47 @@ app.use((req, res, next) => {
 // Serve static files from public/
 app.use(express.static(PUBLIC_DIR));
 
-// Explicit route for generator dashboard
-app.get('/x.html', (req, res) => {
-    const xPath = path.join(__dirname, 'public', 'x.html');
-    if (fs.existsSync(xPath)) return res.sendFile(xPath);
-    res.status(404).send('Generator dashboard not found');
+// ── DYNAMIC ARTICLE RECOVERY ROUTE ──
+// If a user requests a generated article that doesn't exist on disk, 
+// we fetch it from Firestore and render it on the fly.
+app.get('/generated/:fileName', async (req, res) => {
+    const { fileName } = req.params;
+    const filePath = path.join(GEN_DIR, fileName);
+
+    // If file exists, static middleware would have served it, 
+    // but we add this as a fallback just in case.
+    if (fs.existsSync(filePath)) {
+        return res.sendFile(filePath);
+    }
+
+    try {
+        console.log(`[Recovery] Article ${fileName} not found on disk. Attempting recovery from Firestore...`);
+        const { db, doc, getDoc } = await import('./fb.config.js');
+        const articleId = fileName.replace('.html', '');
+        const articleRef = doc(db, "generated_articles", articleId);
+        const articleSnap = await getDoc(articleRef);
+
+        if (articleSnap.exists()) {
+            const data = articleSnap.data();
+            const templatePath = path.resolve(__dirname, '..', 'template.html');
+            let template = fs.readFileSync(templatePath, 'utf8');
+
+            const html = template
+                .replace(/{{TITLE}}/g, data.title || 'Technical Report')
+                .replace(/{{IMAGE}}/g, data.thumb || data.image || 'https://picsum.photos/seed/tech/1200/600')
+                .replace(/{{CONTENT}}/g, data.content || '<p>Detailed analysis for this report is being synchronized...</p>');
+
+            // Cache it back to disk for performance
+            fs.writeFileSync(filePath, html);
+            return res.send(html);
+        }
+
+        console.log(`[Recovery] No data found in Firestore for ${articleId}`);
+        res.status(404).send('Article not found in archive');
+    } catch (error) {
+        console.error('[Recovery Error]', error);
+        res.status(500).send('Error recovering article');
+    }
 });
 
 // ── BATCH GENERATION API ──

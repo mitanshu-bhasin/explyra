@@ -1,0 +1,1 @@
+var serialOrdered=require("./serialOrdered.js");function serial(r,e,l){return serialOrdered(r,e,null,l)}module.exports=serial;

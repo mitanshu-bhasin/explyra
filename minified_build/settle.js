@@ -1,0 +1,1 @@
+"use strict";import AxiosError from"./AxiosError.js";export default function settle(t,s,r){const o=r.config.validateStatus;r.status&&o&&!o(r.status)?s(new AxiosError("Request failed with status code "+r.status,[AxiosError.ERR_BAD_REQUEST,AxiosError.ERR_BAD_RESPONSE][Math.floor(r.status/100)-4],r.config,r.request,r)):t(r)}

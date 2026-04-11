@@ -1,0 +1,1 @@
+"use strict";module.exports=function(r){for(var t,e=0,o=r.length,c=0;c<o;)e++,(t=r.charCodeAt(c++))>=55296&&t<=56319&&c<o&&56320==(64512&(t=r.charCodeAt(c)))&&c++;return e};

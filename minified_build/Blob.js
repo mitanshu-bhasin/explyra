@@ -1,0 +1,1 @@
+"use strict";export default"undefined"!=typeof Blob?Blob:null;

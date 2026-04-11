@@ -1,0 +1,1 @@
+"use strict";import AxiosError from"../core/AxiosError.js";class CanceledError extends AxiosError{constructor(r,o,e){super(null==r?"canceled":r,AxiosError.ERR_CANCELED,o,e),this.name="CanceledError",this.__CANCEL__=!0}}export default CanceledError;

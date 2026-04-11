@@ -1,0 +1,1 @@
+var test=require("tape"),inspect=require("../"),xs=["a","b"];xs[5]="f",xs[7]="j",xs[8]="k",test("holes",function(e){e.plan(1),e.equal(inspect(xs),"[ 'a', 'b', , , , 'f', , 'j', 'k' ]")});

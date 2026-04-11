@@ -1,0 +1,1 @@
+"use strict";var Event=function(t,e){for(var n in this.type=t,e)this[n]=e[n]};Event.prototype.initEvent=function(t,e,n){this.type=t,this.bubbles=e,this.cancelable=n},Event.prototype.stopPropagation=function(){},Event.prototype.preventDefault=function(){},Event.CAPTURING_PHASE=1,Event.AT_TARGET=2,Event.BUBBLING_PHASE=3,module.exports=Event;

@@ -1,0 +1,1 @@
+var inspect=require("../../"),test=require("tape");test("dom element",function(e){e.plan(1);var i=document.createElement("div");i.setAttribute("id","beep"),i.innerHTML="<b>wooo</b><i>iiiii</i>",e.equal(inspect([i,{a:3,b:4,c:[5,6,[7,[8,[9]]]]}]),'[ <div id="beep">...</div>, { a: 3, b: 4, c: [ 5, 6, [ 7, [ 8, [Object] ] ] ] } ]')});

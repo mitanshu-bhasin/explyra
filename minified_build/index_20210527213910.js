@@ -1,0 +1,2 @@
+/*! node-DOMException. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
+if(!globalThis.DOMException)try{const{MessageChannel:e}=require("worker_threads"),o=(new e).port1,r=new ArrayBuffer;o.postMessage(r,[r,r])}catch(e){"DOMException"===e.constructor.name&&(globalThis.DOMException=e.constructor)}module.exports=globalThis.DOMException;

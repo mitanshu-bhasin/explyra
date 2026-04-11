@@ -1,0 +1,1 @@
+"use strict";var ConnectivityState;Object.defineProperty(exports,"__esModule",{value:!0}),exports.ConnectivityState=void 0,function(t){t[t.IDLE=0]="IDLE",t[t.CONNECTING=1]="CONNECTING",t[t.READY=2]="READY",t[t.TRANSIENT_FAILURE=3]="TRANSIENT_FAILURE",t[t.SHUTDOWN=4]="SHUTDOWN"}(ConnectivityState||(exports.ConnectivityState=ConnectivityState={}));

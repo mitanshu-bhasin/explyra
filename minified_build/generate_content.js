@@ -1,0 +1,17 @@
+"use strict";
+/**
+ * @license
+ * Copyright 2024 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */Object.defineProperty(exports,"__esModule",{value:!0}),exports.generateContentStream=exports.generateContent=void 0;const errors_1=require("../types/errors"),constants=require("../util/constants"),post_fetch_processing_1=require("./post_fetch_processing"),post_request_1=require("./post_request"),pre_fetch_processing_1=require("./pre_fetch_processing");async function generateContent(e,t,n,o,r,s,i,a,c,_){var g,p,f,u;o=(0,pre_fetch_processing_1.formatContentRequest)(o,s,i),(0,pre_fetch_processing_1.validateGenerateContentRequest)(o),o.generationConfig&&(o.generationConfig=(0,pre_fetch_processing_1.validateGenerationConfig)(o.generationConfig));const l={contents:o.contents,systemInstruction:o.systemInstruction,cachedContent:o.cachedContent,generationConfig:null!==(g=o.generationConfig)&&void 0!==g?g:s,safetySettings:null!==(p=o.safetySettings)&&void 0!==p?p:i,tools:null!==(f=o.tools)&&void 0!==f?f:a,toolConfig:null!==(u=o.toolConfig)&&void 0!==u?u:c,labels:o.labels},h=await(0,post_request_1.postRequest)({region:e,resourcePath:t,resourceMethod:constants.GENERATE_CONTENT_METHOD,token:await n,data:l,apiEndpoint:r,requestOptions:_,apiVersion:(0,pre_fetch_processing_1.getApiVersion)(o)}).catch(e=>{throw new errors_1.GoogleGenerativeAIError("exception posting request to model",e)});return await(0,post_fetch_processing_1.throwErrorIfNotOK)(h).catch(e=>{throw e}),(0,post_fetch_processing_1.processUnary)(h)}async function generateContentStream(e,t,n,o,r,s,i,a,c,_){var g,p,f,u;o=(0,pre_fetch_processing_1.formatContentRequest)(o,s,i),(0,pre_fetch_processing_1.validateGenerateContentRequest)(o),o.generationConfig&&(o.generationConfig=(0,pre_fetch_processing_1.validateGenerationConfig)(o.generationConfig));const l={contents:o.contents,systemInstruction:o.systemInstruction,cachedContent:o.cachedContent,generationConfig:null!==(g=o.generationConfig)&&void 0!==g?g:s,safetySettings:null!==(p=o.safetySettings)&&void 0!==p?p:i,tools:null!==(f=o.tools)&&void 0!==f?f:a,toolConfig:null!==(u=o.toolConfig)&&void 0!==u?u:c,labels:o.labels},h=await(0,post_request_1.postRequest)({region:e,resourcePath:t,resourceMethod:constants.STREAMING_GENERATE_CONTENT_METHOD,token:await n,data:l,apiEndpoint:r,requestOptions:_,apiVersion:(0,pre_fetch_processing_1.getApiVersion)(o)}).catch(e=>{throw new errors_1.GoogleGenerativeAIError("exception posting request",e)});return await(0,post_fetch_processing_1.throwErrorIfNotOK)(h).catch(e=>{throw e}),(0,post_fetch_processing_1.processStream)(h)}exports.generateContent=generateContent,exports.generateContentStream=generateContentStream;

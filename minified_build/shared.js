@@ -1,0 +1,1 @@
+"use strict";function fromArrayBufferToHex(r){return Array.from(new Uint8Array(r)).map(r=>r.toString(16).padStart(2,"0")).join("")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.fromArrayBufferToHex=fromArrayBufferToHex;

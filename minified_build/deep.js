@@ -1,0 +1,1 @@
+var inspect=require("../"),test=require("tape");test("deep",function(e){e.plan(4);var t=[[[[[[500]]]]]];e.equal(inspect(t),"[ [ [ [ [ [Array] ] ] ] ] ]"),e.equal(inspect(t,{depth:4}),"[ [ [ [ [Array] ] ] ] ]"),e.equal(inspect(t,{depth:2}),"[ [ [Array] ] ]"),e.equal(inspect([[[{a:1}]]],{depth:3}),"[ [ [ [Object] ] ] ]")});

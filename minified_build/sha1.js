@@ -1,0 +1,1 @@
+import crypto from"crypto";function sha1(r){return Array.isArray(r)?r=Buffer.from(r):"string"==typeof r&&(r=Buffer.from(r,"utf8")),crypto.createHash("sha1").update(r).digest()}export default sha1;

@@ -1,0 +1,1 @@
+const isPromiseLike=e=>"object"==typeof e&&!!e&&"then"in e;export const using=(e,s)=>{let o;try{o=s(e)}catch(s){throw e.dispose(),s}return isPromiseLike(o)?o.then(s=>(e.dispose(),s),s=>{throw e.dispose(),s}):(e.dispose(),o)};

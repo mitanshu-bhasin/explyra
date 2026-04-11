@@ -1,0 +1,1 @@
+"use strict";export default function spread(t){return function(n){return t.apply(null,n)}}

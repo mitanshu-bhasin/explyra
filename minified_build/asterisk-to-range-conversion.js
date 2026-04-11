@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=(()=>{function e(e,r){return-1!==e.indexOf("*")?e.replace("*",r):e}return function(r){return r[0]=e(r[0],"0-59"),r[1]=e(r[1],"0-59"),r[2]=e(r[2],"0-23"),r[3]=e(r[3],"1-31"),r[4]=e(r[4],"1-12"),r[5]=e(r[5],"0-6"),r}})();

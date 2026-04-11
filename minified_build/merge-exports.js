@@ -1,0 +1,1 @@
+"use strict";var hasOwn=void 0===Object.hasOwn?Function.call.bind(Object.prototype.hasOwnProperty):Object.hasOwn;function mergeModules(e,n){for(var o in n)hasOwn(n,o)&&(e[o]=n[o])}module.exports=mergeModules;

@@ -1,0 +1,1 @@
+"use strict";var inspect=require("../"),test=require("tape"),globalThis=require("globalthis")();test("global object",function(e){var i="undefined"==typeof window?"globalThis":"Window";e.equal(inspect([globalThis]),"[ { [object "+i+"] } ]"),e.end()});

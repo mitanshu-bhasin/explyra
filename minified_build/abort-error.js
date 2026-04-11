@@ -1,0 +1,1 @@
+import{FetchBaseError}from"./base.js";export class AbortError extends FetchBaseError{constructor(r,e="aborted"){super(r,e)}}

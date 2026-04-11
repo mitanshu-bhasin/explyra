@@ -1,0 +1,1 @@
+const re=/^dotenv_config_(encoding|path|quiet|debug|override|DOTENV_KEY)=(.+)$/;module.exports=function(e){const t=e.reduce(function(e,t){const n=t.match(re);return n&&(e[n[1]]=n[2]),e},{});return"quiet"in t||(t.quiet="true"),t};

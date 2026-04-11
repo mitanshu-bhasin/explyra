@@ -1,0 +1,1 @@
+const UUID=/^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/,UUID_PARSE=/^[0-9A-Fa-f\-]{36}/,handler={scheme:"urn:uuid",parse:function(r,n){const e=r;return e.uuid=e.nss,e.nss=void 0,n.tolerant||e.uuid&&e.uuid.match(UUID)||(e.error=e.error||"UUID is not valid."),e},serialize:function(r,n){const e=r;return e.nss=(r.uuid||"").toLowerCase(),e}};export default handler;

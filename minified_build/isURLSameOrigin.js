@@ -1,0 +1,1 @@
+import platform from"../platform/index.js";export default platform.hasStandardBrowserEnv?((o,t)=>r=>(r=new URL(r,platform.origin),o.protocol===r.protocol&&o.host===r.host&&(t||o.port===r.port)))(new URL(platform.origin),platform.navigator&&/(msie|trident)/i.test(platform.navigator.userAgent)):()=>!0;

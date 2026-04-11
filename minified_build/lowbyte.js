@@ -1,0 +1,1 @@
+var test=require("tape"),inspect=require("../"),obj={x:"a\r\nb",y:"!  "};test("interpolate low bytes",function(e){e.plan(1),e.equal(inspect(obj),"{ x: 'a\\r\\nb', y: '\\x05! \\x1F \\x12' }")});

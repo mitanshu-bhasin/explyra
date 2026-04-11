@@ -1,0 +1,1 @@
+"use strict";var $Object=require("es-object-atoms");module.exports=$Object.getPrototypeOf||null;

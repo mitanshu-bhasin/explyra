@@ -1,0 +1,1 @@
+var requestId=({limitLength:e=255,headerName:t="X-Request-Id",generator:r=()=>crypto.randomUUID()}={})=>async function(a,d){let n=t?a.req.header(t):void 0;(!n||n.length>e||/[^\w\-=]/.test(n))&&(n=r(a)),a.set("requestId",n),t&&a.header(t,n),await d()};export{requestId};

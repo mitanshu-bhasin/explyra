@@ -1,0 +1,1 @@
+"use strict";const SemVer=require("../classes/semver"),compare=(e,r,m)=>new SemVer(e,m).compare(new SemVer(r,m));module.exports=compare;

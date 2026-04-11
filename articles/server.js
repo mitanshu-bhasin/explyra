@@ -28,10 +28,42 @@ app.get('/sitemap.xml', (req, res) => {
 // API: Get latest articles for the frontend
 app.get('/api/articles', async (req, res) => {
     try {
-        const articles = await getArticles(20);
+        const articles = await getArticles(30);
         res.json(articles);
     } catch (e) {
         res.status(500).json({ error: 'Failed to fetch articles' });
+    }
+});
+
+// Dynamic Article Viewer (Fallback if static file missing)
+app.get('/generated/article_:id.html', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const articles = await getArticles(100);
+        const article = articles.find(a => a.id === id);
+
+        if (!article) {
+            return res.status(404).send('Article not found');
+        }
+
+        const templatePath = path.resolve(__dirname, 'template.html');
+        if (fs.existsSync(templatePath)) {
+            let template = fs.readFileSync(templatePath, 'utf-8');
+            const dateStr = new Date(article.createdAt || Date.now()).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }).toUpperCase();
+
+            const finalHtml = template
+                .replace(/{{TITLE}}/g, article.title)
+                .replace(/{{DESCRIPTION}}/g, article.description || '')
+                .replace(/{{IMAGE}}/g, article.image || '')
+                .replace(/{{DATE}}/g, dateStr)
+                .replace(/{{CONTENT}}/g, article.content);
+
+            res.send(finalHtml);
+        } else {
+            res.send(article.content);
+        }
+    } catch (e) {
+        res.status(500).send('Error rendering article');
     }
 });
 

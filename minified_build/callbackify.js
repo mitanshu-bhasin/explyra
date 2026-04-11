@@ -1,0 +1,1 @@
+import utils from"../utils.js";const callbackify=(l,t)=>utils.isAsyncFn(l)?function(...c){const i=c.pop();l.apply(this,c).then(l=>{try{t?i(null,...t(l)):i(null,l)}catch(l){i(l)}},i)}:l;export default callbackify;

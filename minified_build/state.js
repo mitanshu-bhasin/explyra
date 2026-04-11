@@ -1,0 +1,1 @@
+function state(e,t){var s=!Array.isArray(e),r={index:0,keyedList:s||t?Object.keys(e):null,jobs:{},results:s?{}:[],size:s?Object.keys(e).length:e.length};return t&&r.keyedList.sort(s?t:function(s,r){return t(e[s],e[r])}),r}module.exports=state;

@@ -1,0 +1,1 @@
+"use strict";import utils from"../utils.js";export default function isAxiosError(r){return utils.isObject(r)&&!0===r.isAxiosError}

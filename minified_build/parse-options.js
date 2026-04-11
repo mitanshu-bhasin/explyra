@@ -1,0 +1,1 @@
+"use strict";const looseOption=Object.freeze({loose:!0}),emptyOpts=Object.freeze({}),parseOptions=e=>e?"object"!=typeof e?looseOption:e:emptyOpts;module.exports=parseOptions;

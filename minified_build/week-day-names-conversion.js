@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=(()=>{const e=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"],t=["sun","mon","tue","wed","thu","fri","sat"];function r(e,t){for(let r=0;r<t.length;r++)e=e.replace(new RegExp(t[r],"gi"),r);return e}return function(n){return n=r(n=n.replace("7","0"),e),r(n,t)}})();

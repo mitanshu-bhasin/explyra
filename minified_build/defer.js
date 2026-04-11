@@ -1,0 +1,1 @@
+function defer(e){var t="function"==typeof setImmediate?setImmediate:"object"==typeof process&&"function"==typeof process.nextTick?process.nextTick:null;t?t(e):setTimeout(e,0)}module.exports=defer;

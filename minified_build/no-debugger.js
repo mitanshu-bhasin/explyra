@@ -1,0 +1,1 @@
+"use strict";module.exports={meta:{type:"problem",docs:{description:"Disallow the use of `debugger`",recommended:!0,url:"https://eslint.org/docs/latest/rules/no-debugger"},fixable:null,schema:[],messages:{unexpected:"Unexpected 'debugger' statement."}},create:e=>({DebuggerStatement(t){e.report({node:t,messageId:"unexpected"})}})};

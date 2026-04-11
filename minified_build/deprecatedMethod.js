@@ -1,0 +1,1 @@
+"use strict";export default function deprecatedMethod(e,o,t){try{console.warn("DEPRECATED method `"+e+"`."+(o?" Use `"+o+"` instead.":"")+" This method will be removed in a future release."),t&&console.warn("For more information about usage see "+t)}catch(e){}}

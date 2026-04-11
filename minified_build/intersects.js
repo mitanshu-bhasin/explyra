@@ -1,0 +1,1 @@
+"use strict";const Range=require("../classes/range"),intersects=(e,s,n)=>(e=new Range(e,n),s=new Range(s,n),e.intersects(s,n));module.exports=intersects;

@@ -1,0 +1,1 @@
+var Buffer=require("buffer").Buffer;module.exports=function(r){return"string"==typeof r?r:"number"==typeof r||Buffer.isBuffer(r)?r.toString():JSON.stringify(r)};

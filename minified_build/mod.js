@@ -1,0 +1,1 @@
+"use strict";var $floor=require("./floor");module.exports=function(r,o){var e=r%o;return $floor(e>=0?e:e+o)};

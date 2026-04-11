@@ -1,0 +1,8 @@
+/*!
+ * express
+ * Copyright(c) 2009-2013 TJ Holowaychuk
+ * Copyright(c) 2013 Roman Shtylman
+ * Copyright(c) 2014-2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+"use strict";var debug=require("debug")("express:view"),path=require("node:path"),fs=require("node:fs"),dirname=path.dirname,basename=path.basename,extname=path.extname,join=path.join,resolve=path.resolve;function View(e,t){var i=t||{};if(this.defaultEngine=i.defaultEngine,this.ext=extname(e),this.name=e,this.root=i.root,!this.ext&&!this.defaultEngine)throw new Error("No default engine was specified and no extension was provided.");var n=e;if(this.ext||(this.ext="."!==this.defaultEngine[0]?"."+this.defaultEngine:this.defaultEngine,n+=this.ext),!i.engines[this.ext]){var r=this.ext.slice(1);debug('require "%s"',r);var s=require(r).__express;if("function"!=typeof s)throw new Error('Module "'+r+'" does not provide a view engine.');i.engines[this.ext]=s}this.engine=i.engines[this.ext],this.path=this.lookup(n)}function tryStat(e){debug('stat "%s"',e);try{return fs.statSync(e)}catch(e){return}}module.exports=View,View.prototype.lookup=function(e){var t,i=[].concat(this.root);debug('lookup "%s"',e);for(var n=0;n<i.length&&!t;n++){var r=i[n],s=resolve(r,e),a=dirname(s),o=basename(s);t=this.resolve(a,o)}return t},View.prototype.render=function(e,t){var i=!0;debug('render "%s"',this.path),this.engine(this.path,e,function(){if(!i)return t.apply(this,arguments);for(var e=new Array(arguments.length),n=this,r=0;r<arguments.length;r++)e[r]=arguments[r];return process.nextTick(function(){return t.apply(n,e)})}),i=!1},View.prototype.resolve=function(e,t){var i=this.ext,n=join(e,t),r=tryStat(n);return r&&r.isFile()||(r=tryStat(n=join(e,basename(t,i),"index"+i)))&&r.isFile()?n:void 0};
