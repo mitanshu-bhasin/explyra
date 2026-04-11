@@ -1,1 +1,1 @@
-"use strict";let Node=require("./node");class Comment extends Node{constructor(e){super(e),this.type="comment"}}module.exports=Comment,Comment.default=Comment;
+"use strict";module.exports=function(t,o,e){var r=" ",s=t.schema[o],n=t.errSchemaPath+"/"+o,c=(t.opts.allErrors,t.util.toQuotedString(s));return!0===t.opts.$comment?r+=" console.log("+c+");":"function"==typeof t.opts.$comment&&(r+=" self._opts.$comment("+c+", "+t.util.toQuotedString(n)+", validate.root.schema);"),r};

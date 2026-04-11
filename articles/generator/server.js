@@ -116,6 +116,32 @@ app.post('/api/trigger', async (req, res) => {
         // Sync everything: index.html, sitemap, and feed
         syncEverything(newArticles);
 
+        // ── GOOGLE INDEXING API NOTIFICATION ──
+        try {
+            const { GoogleAuth } = await import('google-auth-library');
+            const auth = new GoogleAuth({
+                keyFile: path.join(__dirname, '..', 'explyras-service-account.json'),
+                scopes: ['https://www.googleapis.com/auth/indexing'],
+            });
+            const client = await auth.getClient();
+            
+            for (const art of newArticles) {
+                const url = `https://explyra.me${art.url}`;
+                console.log(`[Indexing] Notifying Google about ${url}...`);
+                await client.request({
+                    url: 'https://indexing.googleapis.com/v3/urlNotifications:publish',
+                    method: 'POST',
+                    data: {
+                        url: url,
+                        type: 'URL_UPDATED'
+                    }
+                });
+            }
+            console.log('[Indexing] ✅ All new articles submitted to Google Indexing API');
+        } catch (idxErr) {
+            console.error('[Indexing Error] Failed to notify Google:', idxErr.message);
+        }
+
         res.json({ success: true, count: newArticles.length, articles: newArticles });
     } catch (e) {
         console.error('[FATAL]', e);

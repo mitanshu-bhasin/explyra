@@ -1,7 +1,2 @@
-/*!
- * body-parser
- * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-"use strict";var debug=require("debug")("body-parser:json"),read=require("../read"),{normalizeOptions:normalizeOptions}=require("../utils");module.exports=json;var FIRST_CHAR_REGEXP=/^[\x20\x09\x0a\x0d]*([^\x20\x09\x0a\x0d])/,JSON_SYNTAX_CHAR="#",JSON_SYNTAX_REGEXP=/#+/g;function json(r){const e=normalizeOptions(r,"application/json");var t=r?.reviver,a=!1!==r?.strict;function s(r){if(0===r.length)return{};if(a){var e=firstchar(r);if("{"!==e&&"["!==e)throw debug("strict violation"),createStrictSyntaxError(r,e)}try{return debug("parse json"),JSON.parse(r,t)}catch(r){throw normalizeJsonSyntaxError(r,{message:r.message,stack:r.stack})}}const n={...e,isValidCharset:r=>"utf-"===r.slice(0,4)};return function(r,e,t){read(r,e,t,s,debug,n)}}function createStrictSyntaxError(r,e){var t=r.indexOf(e),a="";-1!==t&&(a=r.substring(0,t)+JSON_SYNTAX_CHAR.repeat(r.length-t));try{throw JSON.parse(a),new SyntaxError("strict violation")}catch(e){return normalizeJsonSyntaxError(e,{message:e.message.replace(JSON_SYNTAX_REGEXP,function(e){return r.substring(t,t+e.length)}),stack:e.stack})}}function firstchar(r){var e=FIRST_CHAR_REGEXP.exec(r);return e?e[1]:void 0}function normalizeJsonSyntaxError(r,e){for(var t=Object.getOwnPropertyNames(r),a=0;a<t.length;a++){var s=t[a];"stack"!==s&&"message"!==s&&delete r[s]}return r.stack=e.stack.replace(r.message,e.message),r.message=e.message,r}
+/*! (c) Andrea Giammarchi - ISC */
+import{deserialize}from"./deserialize.js";import{serialize}from"./serialize.js";const{parse:$parse,stringify:$stringify}=JSON,options={json:!0,lossy:!0};export const parse=i=>deserialize($parse(i));export const stringify=i=>$stringify(serialize(i,options));
