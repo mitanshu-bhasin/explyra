@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch Articles
     async function fetchArticles() {
         try {
-            const response = await fetch('/api/articles');
+            const response = await fetch('/articles/api/articles');
             const articles = await response.json();
 
             if (!articles || articles.length === 0) {
@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="featured-main" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; align-items: start;">
                     <div>
                         <div class="meta" style="color: #a00; font-weight: 800; font-size: 0.75rem; margin-bottom: 10px;">FEATURED DAILY TECH | ${new Date(featured.createdAt).toLocaleDateString()}</div>
-                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px; cursor: pointer; line-height: 1.1;" onclick="location.href='generated/article_${featured.id}.html'">${featured.title}</h1>
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px; cursor: pointer; line-height: 1.1;" onclick="location.href='/articles/generated/${featured.id}.html'">${featured.title}</h1>
                         <div class="summary" style="font-size: 1.1rem; color: #444; margin-bottom: 20px;">${stripHtml(featured.content).substring(0, 350)}...</div>
-                        <a href="generated/article_${featured.id}.html" style="color: #a00; font-weight: 700; text-decoration: none; text-transform: uppercase; font-size: 0.8rem;">Read Full Analysis →</a>
+                        <a href="/articles/generated/${featured.id}.html" style="color: #a00; font-weight: 700; text-decoration: none; text-transform: uppercase; font-size: 0.8rem;">Read Full Analysis →</a>
                     </div>
                     <div class="featured-image-container">
                         <img src="${featuredImage}" style="width:100%; border-radius:4px; height:400px; object-fit:cover; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" onerror="this.src='https://picsum.photos/seed/techfallback/1200/600'">
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${cardImage}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/600/400'">
             </div>
             <div class="meta" style="font-size: 0.7rem; color: #a00; font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">${article.newsSources ? article.newsSources[0] : 'TECH NEWS'} | ${dateStr}</div>
-            <h3 style="font-family: 'Playfair Display', serif; font-size: ${isSmall ? '1.1rem' : '1.4rem'}; line-height: 1.3; margin-bottom: 10px; cursor: pointer;" onclick="location.href='generated/article_${article.id}.html'">${article.title}</h3>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: ${isSmall ? '1.1rem' : '1.4rem'}; line-height: 1.3; margin-bottom: 10px; cursor: pointer;" onclick="location.href='/articles/generated/${article.id}.html'">${article.title}</h3>
             ${isSmall ? '' : `<p style="font-size: 0.9rem; color: #666; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${stripHtml(article.content).substring(0, 150)}...</p>`}
         `;
         return card;

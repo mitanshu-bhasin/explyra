@@ -74,6 +74,34 @@ app.get('/generated/:fileName', async (req, res) => {
     }
 });
 
+// ── JSON API FOR DASHBOARD (USED BY MAIN.JS) ──
+app.get('/api/articles', async (req, res) => {
+    try {
+        const { db, collection, getDocs, query, orderBy, limit } = await import('./fb.config.js');
+        const q = query(collection(db, "generated_articles"), orderBy("createdAt", "desc"), limit(50));
+        const querySnapshot = await getDocs(q);
+        
+        const articles = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            articles.push({
+                id: doc.id,
+                title: data.title,
+                content: data.content,
+                image: data.thumb || data.image,
+                createdAt: data.createdAt,
+                newsSources: data.newsSources || ['Explyra Intelligence']
+            });
+        });
+
+        res.json(articles);
+    } catch (e) {
+        console.error('[API Error]', e);
+        // Fallback to disk scan if Firestore fails
+        res.json([]);
+    }
+});
+
 // ── BATCH GENERATION API ──
 app.post('/api/trigger', async (req, res) => {
     try {
@@ -90,6 +118,8 @@ app.post('/api/trigger', async (req, res) => {
         const today = new Date();
         const dateStr = today.toISOString().split('T')[0];
 
+        const { db, doc, setDoc } = await import('./fb.config.js');
+
         for (let i = 0; i < news.length; i++) {
             const item = news[i];
             const html = await generateProfessionalArticle(item, i);
@@ -97,20 +127,35 @@ app.post('/api/trigger', async (req, res) => {
             // Create a smart SEO slug directly from title
             const safeTitle = (item.title || `tech-news-${i}`).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
             const fileName = `${safeTitle.substring(0, 80)}.html`;
+            const articleId = fileName.replace('.html', '');
+            
             const savePath = path.join(GEN_DIR, fileName);
             fs.writeFileSync(savePath, html);
 
             const thumbUrl = item.image || `https://picsum.photos/seed/card${i}${Date.now()}/400/250`;
-            newArticles.push({
+            const artData = {
+                id: articleId,
                 title: item.title,
                 description: (item.description || '').substring(0, 150),
-                url: `/articles/generated/${fileName}`, // Updated to /articles/ base
+                url: `/articles/generated/${fileName}`,
                 fileName: fileName,
                 thumb: thumbUrl,
                 source: item.source || 'Explyra Intelligence',
                 category: ['AI & ML', 'Cloud', 'Security', 'Hardware', 'Software', 'Quantum', 'Space', 'Consumer', 'Enterprise', 'Regulation'][i % 10],
-                date: today.toISOString()
-            });
+                date: today.toISOString(),
+                createdAt: Date.now(),
+                content: html // Save the full HTML for recovery
+            };
+
+            // ── SAVE TO FIRESTORE ──
+            try {
+                await setDoc(doc(db, "generated_articles", articleId), artData);
+                console.log(`[Firestore] Archived ${articleId}`);
+            } catch (fsErr) {
+                console.error(`[Firestore Error] Could not archive ${articleId}:`, fsErr);
+            }
+
+            newArticles.push(artData);
         }
 
         // Sync everything: index.html, sitemap, and feed
@@ -190,13 +235,17 @@ function syncEverything(newArticles) {
     if (fs.existsSync(indexPath)) {
         let content = fs.readFileSync(indexPath, 'utf8');
         const latestArticles = allArticles.slice(0, 10);
-        const feedCards = latestArticles.map(art => `
+        const feedCards = latestArticles.map(art => {
+            const thumb = art.thumb || `https://picsum.photos/seed/${art.fileName}/600/400`;
+            return `
                 <div class="article-card">
+                    <a href="${art.url}" target="_blank"><img src="${thumb}" alt="${art.title}" loading="lazy"></a>
                     <div class="meta">INTELLIGENCE REPORT</div>
                     <h3 style="cursor:pointer;"><a href="${art.url}" target="_blank" style="color:inherit;text-decoration:none;">${art.title}</a></h3>
-                    <p>Authoritative technical analysis and deep-dive report on ${art.title}...</p>
-                    <a href="${art.url}" target="_blank" style="color:#a00;font-weight:700;font-size:0.85rem;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Read Full Report →</a>
-                </div>`).join('\n');
+                    <p>Authoritative technical analysis and deep-dive report on ${art.title}. Published by Explyra Tech Intelligence...</p>
+                    <a href="${art.url}" target="_blank" class="read-more-link">Read Full Report →</a>
+                </div>`;
+        }).join('\n');
 
         const gridRegex = /(<div id="articles-grid" class="masonry-grid">)([\s\S]*?)(<\/div>)/;
         if (content.match(gridRegex)) {
@@ -205,12 +254,16 @@ function syncEverything(newArticles) {
         
         // Past 3
         const pastArticles = allArticles.slice(10, 13);
-        const pastCards = pastArticles.map(art => `
+        const pastCards = pastArticles.map(art => {
+            const thumb = art.thumb || `https://picsum.photos/seed/${art.fileName}/400/250`;
+            return `
                 <div class="article-card past-card" style="opacity: 0.85;">
+                    <a href="${art.url}" target="_blank"><img src="${thumb}" alt="${art.title}" loading="lazy"></a>
                     <div class="meta">PAST BRIEF | ${art.date.toISOString().split('T')[0]}</div>
                     <h4 style="font-size:1.1rem;margin-bottom:5px;"><a href="${art.url}" target="_blank" style="color:inherit;text-decoration:none;">${art.title}</a></h4>
-                    <a href="${art.url}" target="_blank" style="color:#a00;font-size:0.75rem;text-transform:uppercase;">Read Base Report →</a>
-                </div>`).join('\n');
+                    <a href="${art.url}" target="_blank" style="color:#a00;font-size:0.75rem;text-transform:uppercase;text-decoration:none;">Read Base Report →</a>
+                </div>`;
+        }).join('\n');
 
         const pastRegex = /(<div id="past-articles-grid" class="past-grid">)([\s\S]*?)(<\/div>)/;
         if (content.match(pastRegex)) {
@@ -223,12 +276,16 @@ function syncEverything(newArticles) {
     // 2. Sync archive.html (Everything)
     if (fs.existsSync(archivePath)) {
         let content = fs.readFileSync(archivePath, 'utf8');
-        const archiveCards = allArticles.map(art => `
+        const archiveCards = allArticles.map(art => {
+            const thumb = art.thumb || `https://picsum.photos/seed/${art.fileName}/400/250`;
+            return `
                 <div class="article-card">
+                    <a href="${art.url}" target="_blank"><img src="${thumb}" alt="${art.title}" loading="lazy"></a>
                     <div class="meta">${art.date.toISOString().split('T')[0]} | EXPLYRA</div>
                     <h3><a href="${art.url}" target="_blank">${art.title}</a></h3>
                     <p>Deep-dive research into the implications of ${art.title}. Published for Explyra Tech Intelligence.</p>
-                </div>`).join('\n');
+                </div>`;
+        }).join('\n');
 
         const targetRegex = /(<div id="archive-grid" class="archive-grid">)([\s\S]*?)(<\/div>)/;
         if (content.match(targetRegex)) {
