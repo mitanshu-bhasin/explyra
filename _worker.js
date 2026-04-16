@@ -42,7 +42,36 @@ export default {
         .transform(response);
     }
 
-    // 1. Articles Proxy (Cloud Run)
+    // 1. AI PROXY ROUTES
+    if (url.pathname === "/api/ai/groq" && request.method === "POST") {
+      const body = await request.json();
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${env.GROQ_API_KEY || "OFFLINE"}`,
+        },
+        body: JSON.stringify(body)
+      });
+      const res = new Response(response.body, response);
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
+    }
+
+    if (url.pathname === "/api/ai/gemini" && request.method === "POST") {
+      const body = await request.json();
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GA}`;
+      const response = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const res = new Response(response.body, response);
+      res.headers.set("Access-Control-Allow-Origin", "*");
+      return res;
+    }
+
+    // 2. Articles Proxy (Cloud Run)
     if (url.pathname === "/articles" || url.pathname.startsWith("/articles/")) {
       let subpath = url.pathname.replace("/articles", "");
       if (subpath === "" || subpath === "/") subpath = "/index.html";

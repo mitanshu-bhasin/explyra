@@ -1,0 +1,1 @@
+"use strict";function getCursorRectangle(e,t,o,r){var n=r/2;return{stroke:"none",fill:"#ccc",x:"horizontal"===e?t.x-n:o.left+.5,y:"horizontal"===e?o.top+.5:t.y-n,width:"horizontal"===e?r:o.width-1,height:"horizontal"===e?o.height-1:r}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getCursorRectangle=getCursorRectangle;

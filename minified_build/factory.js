@@ -1,0 +1,1 @@
+"use strict";var factory=require("./factoryWithTypeCheckers");module.exports=function(r){return factory(r,!1)};

@@ -1,0 +1,1 @@
+import hasClass from"./hasClass";export default function addClass(s,a){s.classList?s.classList.add(a):hasClass(s,a)||("string"==typeof s.className?s.className=s.className+" "+a:s.setAttribute("class",(s.className&&s.className.baseVal||"")+" "+a))}

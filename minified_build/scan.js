@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=scan;var _leastIndex=_interopRequireDefault(require("./leastIndex.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function scan(e,t){const r=(0,_leastIndex.default)(e,t);return r<0?void 0:r}

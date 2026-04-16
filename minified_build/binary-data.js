@@ -1,0 +1,1 @@
+"use strict";exports.copyToArrayBufferInNewRealm=(e,r)=>{const t=new r.ArrayBuffer(e.byteLength);return new Uint8Array(t).set(e),t};

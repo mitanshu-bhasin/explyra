@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.CatchScope=void 0;const ScopeBase_1=require("./ScopeBase"),ScopeType_1=require("./ScopeType");class CatchScope extends ScopeBase_1.ScopeBase{constructor(e,c,o){super(e,ScopeType_1.ScopeType.catch,c,o,!1)}}exports.CatchScope=CatchScope;

@@ -1,0 +1,1 @@
+"use strict";function findClosestQuality(e,t){const s=e||75;return t?.qualities?.length?t.qualities.reduce((e,t)=>Math.abs(t-s)<Math.abs(e-s)?t:e,0):s}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"findClosestQuality",{enumerable:!0,get:function(){return findClosestQuality}});

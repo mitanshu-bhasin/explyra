@@ -1,0 +1,1 @@
+"use strict";exports.formatDistanceWithOptions=void 0;var _index=require("../formatDistance.js"),_index2=require("./_lib/convertToFP.js");const formatDistanceWithOptions=exports.formatDistanceWithOptions=(0,_index2.convertToFP)(_index.formatDistance,3);

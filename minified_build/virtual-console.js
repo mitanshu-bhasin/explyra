@@ -1,0 +1,1 @@
+"use strict";const{EventEmitter:EventEmitter}=require("events");module.exports=class extends EventEmitter{constructor(){super(),this.on("error",()=>{})}sendTo(t,r){void 0===r&&(r={});for(const e of Object.keys(t))if("function"==typeof t[e]){function o(...r){t[e](...r)}this.on(e,o)}return r.omitJSDOMErrors||this.on("jsdomError",r=>t.error(r.stack,r.detail)),this}};

@@ -1,0 +1,1 @@
+function _toSetter(t,e,r){e||(e=[]);var n=e.length++;return Object.defineProperty({},"_",{set:function(o){e[n]=o,t.apply(r,e)}})}export{_toSetter as default};

@@ -1,0 +1,1 @@
+import"../build/polyfills/polyfill-module";"production"!==process.env.NODE_ENV&&require("../next-devtools/userspace/app/app-dev-overlay-setup");

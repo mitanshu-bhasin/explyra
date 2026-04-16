@@ -1,0 +1,1 @@
+var MapCache=require("./_MapCache"),setCacheAdd=require("./_setCacheAdd"),setCacheHas=require("./_setCacheHas");function SetCache(e){var a=-1,t=null==e?0:e.length;for(this.__data__=new MapCache;++a<t;)this.add(e[a])}SetCache.prototype.add=SetCache.prototype.push=setCacheAdd,SetCache.prototype.has=setCacheHas,module.exports=SetCache;

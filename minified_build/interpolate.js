@@ -1,1 +1,1 @@
-"use strict";module.exports=(e,r)=>r?e.replace(/\{\{([^{}]+?)\}\}/gu,(e,t)=>{const s=t.trim();return s in r?r[s]:e}):e;
+"use strict";function getPlaceholderMatcher(){return/\{\{([^{}]+)\}\}/gu}function interpolate(e,t){if(!t)return e;const r=getPlaceholderMatcher();return e.replace(r,(e,r)=>{const c=r.trim();return c in t?t[c]:e})}module.exports={getPlaceholderMatcher:getPlaceholderMatcher,interpolate:interpolate};

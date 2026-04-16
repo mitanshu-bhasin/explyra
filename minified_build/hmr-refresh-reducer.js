@@ -1,0 +1,1 @@
+import{refreshDynamicData}from"./refresh-reducer";import{FreshnessPolicy}from"../ppr-navigations";export function hmrRefreshReducer(r){return refreshDynamicData(r,FreshnessPolicy.HMRRefresh)}

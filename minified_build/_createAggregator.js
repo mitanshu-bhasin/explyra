@@ -1,0 +1,1 @@
+var arrayAggregator=require("./_arrayAggregator"),baseAggregator=require("./_baseAggregator"),baseIteratee=require("./_baseIteratee"),isArray=require("./isArray");function createAggregator(r,e){return function(a,g){var t=isArray(a)?arrayAggregator:baseAggregator,o=e?e():{};return t(a,r,baseIteratee(g,2),o)}}module.exports=createAggregator;

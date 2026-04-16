@@ -1,0 +1,1 @@
+var isSymbol=require("./isSymbol"),NAN=NaN;function baseToNumber(e){return"number"==typeof e?e:isSymbol(e)?NAN:+e}module.exports=baseToNumber;

@@ -1,0 +1,1 @@
+"use strict";module.exports=class{constructor(l){this.source=l}apply(l){this.source.tapAsync("ResultPlugin",(s,t,o)=>{const u={...s};t.log&&t.log(`reporting result ${u.path}`),l.hooks.result.callAsync(u,t,l=>{if(l)return o(l);"function"==typeof t.yield?(t.yield(u),o(null,null)):o(null,u)})})}};

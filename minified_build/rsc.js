@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"RSCPathnameNormalizer",{enumerable:!0,get:function(){return RSCPathnameNormalizer}});const _constants=require("../../../lib/constants"),_suffix=require("./suffix");class RSCPathnameNormalizer extends _suffix.SuffixPathnameNormalizer{constructor(){super(_constants.RSC_SUFFIX)}}

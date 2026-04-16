@@ -1,0 +1,1 @@
+"use strict";exports.setHours=void 0;var _index=require("../setHours.js"),_index2=require("./_lib/convertToFP.js");const setHours=exports.setHours=(0,_index2.convertToFP)(_index.setHours,2);

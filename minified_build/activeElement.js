@@ -1,0 +1,1 @@
+import ownerDocument from"./ownerDocument";export default function activeElement(e){void 0===e&&(e=ownerDocument());try{var t=e.activeElement;return t&&t.nodeName?t:null}catch(t){return e.body}}

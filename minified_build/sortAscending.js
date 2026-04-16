@@ -1,0 +1,1 @@
+"use strict";function sortAscending(t){return t.sort(function(t,e){return t-e})}exports.__esModule=!0,exports.default=sortAscending,module.exports=exports.default;

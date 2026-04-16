@@ -1,1 +1,1 @@
-"use strict";var Type=require("../type");function resolveYamlMerge(e){return"<<"===e||null===e}module.exports=new Type("tag:yaml.org,2002:merge",{kind:"scalar",resolve:resolveYamlMerge});
+"use strict";function*flatten(e){for(const t of e)yield*t}function merge(e){return Array.from(flatten(e))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=merge;

@@ -1,0 +1,1 @@
+module.exports=function(n){return function(e,r,t){return r%2==0?e:n.inverse(e)}};

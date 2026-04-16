@@ -1,0 +1,1 @@
+var test=require("tape"),resolve=require("../"),path=require("path");test("subdirs",function(e){e.plan(2);var r=path.join(__dirname,"/subdirs");resolve("a/b/c/x.json",{basedir:r},function(a,i){e.ifError(a),e.equal(i,path.join(r,"node_modules/a/b/c/x.json"))})});

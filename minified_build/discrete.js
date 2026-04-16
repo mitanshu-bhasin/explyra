@@ -1,0 +1,1 @@
+"use strict";function _default(t){var e=t.length;return function(r){return t[Math.max(0,Math.min(e-1,Math.floor(r*e)))]}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

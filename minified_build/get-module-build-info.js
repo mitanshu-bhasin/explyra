@@ -1,0 +1,1 @@
+export function getModuleBuildInfo(n){return n.buildInfo}

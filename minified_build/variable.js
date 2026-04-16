@@ -1,1 +1,7 @@
-class Variable{constructor(a,e){this.name=a,this.identifiers=[],this.references=[],this.defs=[],this.tainted=!1,this.stack=!0,this.scope=e}}Variable.CatchClause="CatchClause",Variable.Parameter="Parameter",Variable.FunctionName="FunctionName",Variable.ClassName="ClassName",Variable.Variable="Variable",Variable.ImportBinding="ImportBinding",Variable.ImplicitGlobalVariable="ImplicitGlobalVariable";export default Variable;
+/**
+ * @license lucide-react v0.462.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+import createLucideIcon from"../createLucideIcon.js";const Variable=createLucideIcon("Variable",[["path",{d:"M8 21s-4-3-4-9 4-9 4-9",key:"uto9ud"}],["path",{d:"M16 3s4 3 4 9-4 9-4 9",key:"4w2vsq"}],["line",{x1:"15",x2:"9",y1:"9",y2:"15",key:"f7djnv"}],["line",{x1:"9",x2:"15",y1:"9",y2:"15",key:"1shsy8"}]]);export{Variable as default};

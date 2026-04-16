@@ -1,0 +1,1 @@
+"use strict";function count(e,t){let l=0;if(void 0===t)for(let t of e)null!=t&&(t=+t)>=t&&++l;else{let o=-1;for(let u of e)null!=(u=t(u,++o,e))&&(u=+u)>=u&&++l}return l}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=count;

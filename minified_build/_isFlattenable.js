@@ -1,0 +1,1 @@
+var Symbol=require("./_Symbol"),isArguments=require("./isArguments"),isArray=require("./isArray"),spreadableSymbol=Symbol?Symbol.isConcatSpreadable:void 0;function isFlattenable(e){return isArray(e)||isArguments(e)||!!(spreadableSymbol&&e&&e[spreadableSymbol])}module.exports=isFlattenable;

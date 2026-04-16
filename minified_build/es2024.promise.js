@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2024_promise=void 0;const base_config_1=require("./base-config");exports.es2024_promise={libs:[],variables:[["PromiseWithResolvers",base_config_1.TYPE],["PromiseConstructor",base_config_1.TYPE]]};

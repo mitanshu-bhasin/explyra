@@ -1,0 +1,1 @@
+"use strict";exports.eachQuarterOfInterval=void 0;var _index=require("../eachQuarterOfInterval.js"),_index2=require("./_lib/convertToFP.js");const eachQuarterOfInterval=exports.eachQuarterOfInterval=(0,_index2.convertToFP)(_index.eachQuarterOfInterval,1);

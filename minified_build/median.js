@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=median;var _quantile=_interopRequireDefault(require("./quantile.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function median(e,t){return(0,_quantile.default)(e,.5,t)}

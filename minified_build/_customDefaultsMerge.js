@@ -1,0 +1,1 @@
+var baseMerge=require("./_baseMerge"),isObject=require("./isObject");function customDefaultsMerge(e,s,t,r,u,c){return isObject(e)&&isObject(s)&&(c.set(s,e),baseMerge(e,s,void 0,customDefaultsMerge,c),c.delete(s)),e}module.exports=customDefaultsMerge;

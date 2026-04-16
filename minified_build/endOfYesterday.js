@@ -1,0 +1,1 @@
+"use strict";function endOfYesterday(){const e=new Date,t=e.getFullYear(),n=e.getMonth(),r=e.getDate(),s=new Date(0);return s.setFullYear(t,n,r-1),s.setHours(23,59,59,999),s}exports.endOfYesterday=endOfYesterday;

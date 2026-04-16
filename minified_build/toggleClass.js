@@ -1,0 +1,1 @@
+import addClass from"./addClass";import hasClass from"./hasClass";import removeClass from"./removeClass";export default function toggleClass(s,a){s.classList?s.classList.toggle(a):hasClass(s,a)?removeClass(s,a):addClass(s,a)}

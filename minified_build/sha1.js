@@ -1,1 +1,1 @@
-import crypto from"crypto";function sha1(r){return Array.isArray(r)?r=Buffer.from(r):"string"==typeof r&&(r=Buffer.from(r,"utf8")),crypto.createHash("sha1").update(r).digest()}export default sha1;
+import{SHA1 as SHA1n,sha1 as sha1n}from"./legacy.js";export const SHA1=SHA1n;export const sha1=sha1n;

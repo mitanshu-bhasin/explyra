@@ -1,1 +1,1 @@
-"use strict";const Rules=require("../rules");exports.defaultConfig=[{plugins:{"@":{rules:new Proxy({},{get:(e,s)=>Rules.get(s),has:(e,s)=>Rules.has(s)})}},languageOptions:{sourceType:"module",ecmaVersion:"latest",parser:require("espree"),parserOptions:{}}},{ignores:["**/node_modules/",".git/"]},{files:["**/*.js","**/*.mjs"]},{files:["**/*.cjs"],languageOptions:{sourceType:"commonjs",ecmaVersion:"latest"}}];
+import{cloneDeep}from"../util/cloneDeep";import defaultConfig from"../../stubs/config.full";export default cloneDeep(defaultConfig);

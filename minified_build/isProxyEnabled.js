@@ -1,6 +1,6 @@
-var config=require("../config");
+import{config}from"../config.js";
 /*!
  * Chai - isProxyEnabled helper
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
- */module.exports=function(){return config.useProxy&&"undefined"!=typeof Proxy&&"undefined"!=typeof Reflect};
+ */export function isProxyEnabled(){return config.useProxy&&"undefined"!=typeof Proxy&&"undefined"!=typeof Reflect}

@@ -1,0 +1,1 @@
+"use strict";function buildMatchPatternFn(t){return(a,l={})=>{const e=a.match(t.matchPattern);if(!e)return null;const n=e[0],r=a.match(t.parsePattern);if(!r)return null;let u=t.valueCallback?t.valueCallback(r[0]):r[0];return u=l.valueCallback?l.valueCallback(u):u,{value:u,rest:a.slice(n.length)}}}exports.buildMatchPatternFn=buildMatchPatternFn;

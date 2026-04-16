@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"InvariantError",{enumerable:!0,get:function(){return InvariantError}});class InvariantError extends Error{constructor(r,e){super(`Invariant: ${r.endsWith(".")?r:r+"."} This is a bug in Next.js.`,e),this.name="InvariantError"}}

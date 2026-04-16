@@ -1,0 +1,1 @@
+"use strict";exports.isAfter=void 0;var _index=require("../isAfter.js"),_index2=require("./_lib/convertToFP.js");const isAfter=exports.isAfter=(0,_index2.convertToFP)(_index.isAfter,2);

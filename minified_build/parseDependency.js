@@ -1,0 +1,1 @@
+export default function parseDependency(e){return e.ignore?[]:e.glob?"true"===process.env.ROLLUP_WATCH?[{type:"dependency",file:e.base}]:[{type:"dir-dependency",dir:e.base,glob:e.glob}]:[{type:"dependency",file:e.base}]}

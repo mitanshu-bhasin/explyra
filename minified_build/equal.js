@@ -1,1 +1,7 @@
-"use strict";module.exports=require("fast-deep-equal");
+/**
+ * @license lucide-react v0.462.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+import createLucideIcon from"../createLucideIcon.js";const Equal=createLucideIcon("Equal",[["line",{x1:"5",x2:"19",y1:"9",y2:"9",key:"1nwqeh"}],["line",{x1:"5",x2:"19",y1:"15",y2:"15",key:"g8yjpy"}]]);export{Equal as default};

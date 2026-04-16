@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.BlockScope=void 0;const ScopeBase_1=require("./ScopeBase"),ScopeType_1=require("./ScopeType");class BlockScope extends ScopeBase_1.ScopeBase{constructor(e,o,c){super(e,ScopeType_1.ScopeType.block,o,c,!1)}}exports.BlockScope=BlockScope;

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2020_sharedmemory=void 0;const base_config_1=require("./base-config"),es2020_bigint_1=require("./es2020.bigint");exports.es2020_sharedmemory={libs:[es2020_bigint_1.es2020_bigint],variables:[["Atomics",base_config_1.TYPE]]};

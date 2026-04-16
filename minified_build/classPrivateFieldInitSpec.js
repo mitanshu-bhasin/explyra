@@ -1,0 +1,1 @@
+import checkPrivateRedeclaration from"./checkPrivateRedeclaration.js";function _classPrivateFieldInitSpec(e,a,t){checkPrivateRedeclaration(e,a),a.set(e,t)}export{_classPrivateFieldInitSpec as default};

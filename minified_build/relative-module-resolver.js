@@ -1,1 +1,1 @@
-import Module from"module";const createRequire=Module.createRequire;function resolve(e,r){try{return createRequire(r).resolve(e)}catch(o){throw"object"==typeof o&&null!==o&&"MODULE_NOT_FOUND"===o.code&&!o.requireStack&&o.message.includes(e)&&(o.message+=`\nRequire stack:\n- ${r}`),o}}export{resolve};
+"use strict";const Module=require("node:module"),createRequire=Module.createRequire;function resolve(e,r){return createRequire(r).resolve(e)}exports.resolve=resolve;

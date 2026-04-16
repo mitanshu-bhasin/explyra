@@ -1,0 +1,1 @@
+"use strict";exports.isFirstDayOfMonth=void 0;var _index=require("../isFirstDayOfMonth.js"),_index2=require("./_lib/convertToFP.js");const isFirstDayOfMonth=exports.isFirstDayOfMonth=(0,_index2.convertToFP)(_index.isFirstDayOfMonth,1);

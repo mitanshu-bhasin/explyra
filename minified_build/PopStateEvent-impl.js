@@ -1,0 +1,1 @@
+"use strict";const EventImpl=require("./Event-impl.js").implementation,PopStateEventInit=require("../generated/PopStateEventInit");class PopStateEventImpl extends EventImpl{}PopStateEventImpl.defaultInit=PopStateEventInit.convert(void 0,void 0),exports.implementation=PopStateEventImpl;

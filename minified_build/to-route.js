@@ -1,0 +1,1 @@
+"use strict";function toRoute(e){return e.replace(/(?:\/index)?\/?$/,"")||"/"}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"toRoute",{enumerable:!0,get:function(){return toRoute}});

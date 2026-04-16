@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"stripFlightHeaders",{enumerable:!0,get:function(){return stripFlightHeaders}});const _approuterheaders=require("../../client/components/app-router-headers");function stripFlightHeaders(e){for(const r of _approuterheaders.FLIGHT_HEADERS)delete e[r]}

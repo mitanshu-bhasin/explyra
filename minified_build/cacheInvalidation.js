@@ -1,0 +1,1 @@
+import crypto from"crypto";import*as sharedState from"./sharedState";function getHash(t){try{return crypto.createHash("md5").update(t,"utf-8").digest("binary")}catch(t){return""}}export function hasContentChanged(t,e){let r=e.toString();if(!r.includes("@tailwind"))return!1;let a=sharedState.sourceHashMap.get(t),s=getHash(r),n=a!==s;return sharedState.sourceHashMap.set(t,s),n}

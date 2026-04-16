@@ -1,0 +1,1 @@
+export function formatManifest(n){return JSON.stringify(n,null,2)}

@@ -1,0 +1,1 @@
+export default function isKeyframeRule(e){return e.parent&&"atrule"===e.parent.type&&/keyframes$/.test(e.parent.name)}

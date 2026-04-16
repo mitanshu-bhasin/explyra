@@ -1,0 +1,1 @@
+"use strict";const{aliasResolveHandler:aliasResolveHandler}=require("./AliasUtils");module.exports=class{constructor(s,t,e){this.source=s,this.options=Array.isArray(t)?t:[t],this.target=e}apply(s){const t=s.ensureHook(this.target);s.getHook(this.source).tapAsync("AliasPlugin",(e,o,a)=>{aliasResolveHandler(s,this.options,t,e,o,a)})}};

@@ -1,0 +1,1 @@
+"use strict";exports.yearsToMonths=void 0;var _index=require("../yearsToMonths.js"),_index2=require("./_lib/convertToFP.js");const yearsToMonths=exports.yearsToMonths=(0,_index2.convertToFP)(_index.yearsToMonths,1);

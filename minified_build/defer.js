@@ -1,1 +1,1 @@
-function defer(e){var t="function"==typeof setImmediate?setImmediate:"object"==typeof process&&"function"==typeof process.nextTick?process.nextTick:null;t?t(e):setTimeout(e,0)}module.exports=defer;
+var convert=require("./convert"),func=convert("defer",require("../defer"),require("./_falseOptions"));func.placeholder=require("./placeholder"),module.exports=func;

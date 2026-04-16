@@ -1,0 +1,1 @@
+export default function isPlainObject(t){if("[object Object]"!==Object.prototype.toString.call(t))return!1;const e=Object.getPrototypeOf(t);return null===e||null===Object.getPrototypeOf(e)}

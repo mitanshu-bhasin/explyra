@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.createAPICaller=createAPICaller;const normalApiCaller_1=require("./normalCalls/normalApiCaller");function createAPICaller(e,l){return l?l.getApiCaller(e):new normalApiCaller_1.NormalApiCaller}

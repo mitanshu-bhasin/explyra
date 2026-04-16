@@ -1,0 +1,1 @@
+import{onHidden}from"./onHidden.js";import{runOnce}from"./runOnce.js";export const whenIdle=e=>{const n=self.requestIdleCallback||self.setTimeout;let t=-1;return e=runOnce(e),"hidden"===document.visibilityState?e():(t=n(e),onHidden(e)),t};

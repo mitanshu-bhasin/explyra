@@ -1,0 +1,1 @@
+import regeneratorAsyncGen from"./regeneratorAsyncGen.js";function _regeneratorAsync(e,n,r,t,o){var a=regeneratorAsyncGen(e,n,r,t,o);return a.next().then(function(e){return e.done?e.value:a.next()})}export{_regeneratorAsync as default};

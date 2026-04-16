@@ -93,7 +93,7 @@ function injectSectionImages(html, images, altText) {
     return html.replace(/<\/h2>/gi, (match) => {
         if (imgIndex < images.length) {
             const img = images[imgIndex++];
-            return `${match}\n<figure style="margin:30px 0;"><img src="${img}" alt="${altText} - Section Illustration" style="width:100%;height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);"><figcaption style="text-align:center;font-size:0.85rem;color:#888;margin-top:8px;">Illustration: Explyra Intelligence Visual Library</figcaption></figure>`;
+            return `${match}\n<figure style="margin:4rem 0;"><img src="${img}" alt="${altText}" style="width:100%;height:450px;object-fit:cover;border-radius:20px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 15px 40px rgba(0,0,0,0.3);"><figcaption style="text-align:center;font-size:0.85rem;color:#94a3b8;margin-top:1rem;font-weight:500;">TECH SCHEMATIC: ${altText.toUpperCase()}</figcaption></figure>`;
         }
         return match;
     });
@@ -169,6 +169,7 @@ function buildFullPage(title, description, source, today, heroImg, thumbImg, bod
     const readTime = Math.max(8, Math.floor(bodyContent.length / 1200));
     const categoryLabels = ['AI & MACHINE LEARNING', 'CLOUD COMPUTING', 'CYBERSECURITY', 'SEMICONDUCTORS', 'SOFTWARE ENGINEERING', 'QUANTUM COMPUTING', 'SPACE TECH', 'CONSUMER TECH', 'ENTERPRISE', 'REGULATION'];
     const category = categoryLabels[index % categoryLabels.length];
+    const baseUrl = '/articles';
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -177,408 +178,306 @@ function buildFullPage(title, description, source, today, heroImg, thumbImg, bod
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title} | Explyra Tech Intelligence</title>
     <meta name="description" content="${description.substring(0, 160)}">
-    <meta name="keywords" content="${title.split(' ').slice(0, 5).join(', ')}, technology, analysis, Explyra">
-    <meta name="author" content="Explyra Intelligence Network">
-    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://explyra.me/articles/generated/${slug}.html">
-    <meta property="og:title" content="${title}">
-    <meta property="og:description" content="${description.substring(0, 200)}">
-    <meta property="og:image" content="${heroImg}">
-    <meta property="og:url" content="https://explyra.me/articles/generated/${slug}.html">
-    <meta property="og:type" content="article">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${title}">
-    <meta name="twitter:image" content="${thumbImg}">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "NewsArticle",
-      "headline": "${title.replace(/"/g, '\\"')}",
-      "image": [
-        "${heroImg}"
-       ],
-      "datePublished": "${new Date().toISOString()}",
-      "dateModified": "${new Date().toISOString()}",
-      "author": [{
-          "@type": "Organization",
-          "name": "Explyra Intelligence Desk",
-          "url": "https://explyra.me/"
-        }]
-    }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass: rgba(15, 23, 42, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             line-height: 1.8;
-            color: #1a1a1a;
-            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* ─── BACKGROUND DECOR ─── */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* ─── HEADER ─── */
-        .site-header {
-            border-bottom: 4px double #1a1a1a;
-            background: #fff;
-        }
-        .header-top {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 24px;
+        header {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #ddd;
         }
-        .header-date { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; }
-        .header-brand { text-align: center; }
-        .header-brand h1 { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; letter-spacing: -1px; line-height: 1; }
-        .header-brand .tagline { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: #888; margin-top: 4px; }
-        .header-edition { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; color: #666; }
 
-        .nav-bar {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            padding: 12px 24px;
-        }
-        .nav-bar a {
-            text-decoration: none;
-            color: #1a1a1a;
-            font-size: 0.8rem;
+        .logo {
+            font-family: 'Outfit', sans-serif;
             font-weight: 700;
+            font-size: 1.5rem;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--accent); }
+
+        nav { display: flex; gap: 2rem; }
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: color 0.2s;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
         }
-        .nav-bar a:hover, .nav-bar a.active { color: #a00; }
+        nav a:hover { color: var(--accent); }
 
-        /* ─── ARTICLE ─── */
-        .article-container {
-            max-width: 820px;
-            margin: 0 auto;
-            padding: 40px 24px 80px;
+        /* ─── ARTICLE CONTAINER ─── */
+        .main-article {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 2rem;
         }
 
-        .article-meta {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+        .article-header { margin-bottom: 3rem; }
+
+        .badge-row { 
+            display: flex; 
+            gap: 1rem; 
+            margin-bottom: 1.5rem; 
+            align-items: center; 
         }
         .category-badge {
-            background: #a00;
-            color: #fff;
-            padding: 4px 12px;
-            font-size: 0.7rem;
+            background: var(--accent-glow);
+            color: var(--accent);
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--accent);
         }
-        .meta-text { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .read-time { color: var(--text-muted); font-size: 0.85rem; }
 
-        .article-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            font-weight: 900;
-            line-height: 1.15;
-            margin-bottom: 16px;
-            color: #111;
-        }
-
-        .article-subtitle {
-            font-size: 1.25rem;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            font-weight: 300;
-            border-left: 4px solid #a00;
-            padding-left: 16px;
-        }
-
-        .byline {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 0;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 32px;
-        }
-        .byline-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #a00, #d44);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
             font-weight: 700;
-            font-size: 1.1rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: #fff;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .byline-info { font-size: 0.85rem; }
-        .byline-name { font-weight: 600; }
-        .byline-detail { color: #888; font-size: 0.8rem; }
 
-        .hero-image {
+        .meta-row {
+            display: flex;
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .hero-container {
+            margin: 3rem 0;
+            position: relative;
+        }
+        .hero-img {
             width: 100%;
-            height: auto;
-            max-height: 500px;
+            height: 500px;
             object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
         }
-        .hero-caption { text-align: center; font-size: 0.8rem; color: #999; margin-bottom: 40px; }
 
-        /* ─── CONTENT ─── */
+        /* ─── BODY CONTENT ─── */
+        .article-body {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        .article-body p { margin-bottom: 2rem; }
         .article-body h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 48px 0 16px;
-            padding-top: 24px;
-            border-top: 1px solid #eee;
-            color: #111;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            color: #fff;
+            margin: 4rem 0 1.5rem;
         }
         .article-body h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin: 32px 0 12px;
-            color: #333;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            color: var(--accent);
+            margin: 2.5rem 0 1rem;
         }
-        .article-body p {
-            font-size: 1.15rem;
-            line-height: 1.85;
-            margin-bottom: 20px;
-            color: #2a2a2a;
-        }
-        .article-body ul, .article-body ol {
-            margin: 16px 0 24px 24px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #333;
-        }
-        .article-body li { margin-bottom: 8px; }
+
         .article-body blockquote {
-            border-left: 4px solid #a00;
-            padding: 20px 28px;
-            margin: 32px 0;
-            background: #faf8f5;
+            background: var(--surface);
+            border-left: 4px solid var(--accent);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            border-radius: 0 16px 16px 0;
             font-style: italic;
-            font-size: 1.2rem;
-            line-height: 1.7;
-            color: #333;
-            border-radius: 0 6px 6px 0;
-        }
-        .article-body strong { font-weight: 600; }
-        .article-body figure { margin: 32px 0; }
-        .article-body figure img { width: 100%; border-radius: 8px; }
-        .article-body figure figcaption { text-align: center; font-size: 0.8rem; color: #999; margin-top: 8px; }
-
-        /* ─── READ MORE FOLD ─── */
-        .read-more-fold {
-            position: relative;
-            max-height: 600px;
-            overflow: hidden;
-            transition: max-height 0.6s ease;
-        }
-        .read-more-fold.expanded { max-height: none; }
-        .read-more-fold::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: linear-gradient(transparent, #ffffff);
-            pointer-events: none;
-            transition: opacity 0.4s;
-        }
-        .read-more-fold.expanded::after { opacity: 0; height: 0; }
-
-        .read-more-btn {
-            display: block;
-            margin: -20px auto 60px;
-            padding: 16px 48px;
-            background: #1a1a1a;
             color: #fff;
-            border: none;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 10;
-            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .read-more-btn:hover { background: #a00; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(170,0,0,0.2); }
-        .read-more-btn.hidden { display: none; }
 
-        /* ─── TAGS ─── */
-        .article-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 40px 0;
-            padding-top: 24px;
-            border-top: 1px solid #eee;
+        .article-body ul {
+            margin: 2rem 0;
+            padding-left: 1.5rem;
         }
-        .article-tags span {
-            background: #f0f0f0;
-            padding: 6px 14px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .article-body li { margin-bottom: 1rem; }
+
+        /* ─── FOLD LOGIC ─── */
+        .fold-content {
+            position: relative;
+            max-height: 800px;
+            overflow: hidden;
+            transition: max-height 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fold-content.expanded { max-height: 10000px; }
+        
+        .fold-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 300px;
+            background: linear-gradient(transparent, var(--bg));
+            z-index: 10;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4rem;
+        }
+        .fold-content.expanded .fold-overlay { display: none; }
+
+        .btn-expand {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 12px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #555;
-            border-radius: 3px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: all 0.3s ease;
+        }
+        .btn-expand:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 50px var(--accent-glow);
         }
 
         /* ─── FOOTER ─── */
-        .site-footer {
-            background: #f8f8f8;
-            border-top: 5px solid #1a1a1a;
-            padding: 60px 0 30px;
-        }
-        .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 48px;
-        }
-        .footer-col h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 16px; }
-        .footer-col p, .footer-col a { font-size: 0.9rem; color: #666; text-decoration: none; }
-        .footer-col a:hover { color: #a00; }
-        .footer-col ul { list-style: none; }
-        .footer-col li { margin-bottom: 8px; }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 40px auto 0;
-            padding: 20px 24px 0;
-            border-top: 1px solid #ddd;
+        footer {
+            margin-top: 8rem;
+            padding: 6rem 2rem;
+            background: #000;
+            border-top: 1px solid var(--border);
             text-align: center;
-            font-size: 0.8rem;
-            color: #999;
         }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .footer-links a:hover { color: var(--accent); }
 
         @media (max-width: 768px) {
-            .article-title { font-size: 2rem; }
-            .header-brand h1 { font-size: 2.2rem; }
-            .header-top { flex-direction: column; gap: 10px; }
-            .nav-bar { flex-wrap: wrap; gap: 16px; }
-            .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-            .article-body p { font-size: 1.05rem; }
+            h1 { font-size: 2.5rem; }
+            .hero-img { height: 350px; }
+            header { padding: 1rem; }
+            nav { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- ─── HEADER ─── -->
-    <header class="site-header">
-        <div class="header-top">
-            <span class="header-date">${today}</span>
-            <div class="header-brand">
-                <h1>EXPLYRA TECH</h1>
-                <p class="tagline">Insight. Innovation. Implementation.</p>
-            </div>
-            <span class="header-edition">Intelligence Report</span>
-        </div>
-        <nav class="nav-bar">
-            <a href="/index.html">LATEST</a>
-            <a href="/index.html">AI & ML</a>
-            <a href="/index.html">HARDWARE</a>
-            <a href="/index.html">SOFTWARE</a>
-            <a href="/index.html" class="active">OPINION</a>
+    <div class="bg-glow"></div>
+    
+    <header>
+        <a href="${baseUrl}/index.html" class="logo">EXPLYRA <span>TECH</span></a>
+        <nav>
+            <a href="${baseUrl}/index.html">Latest</a>
+            <a href="${baseUrl}/index.html">Intelligence</a>
+            <a href="${baseUrl}/index.html">Archive</a>
         </nav>
+        <div style="font-size: 0.7rem; color: var(--accent); border: 1px solid; padding: 2px 8px; border-radius: 4px;">SECURED ACCESS</div>
     </header>
 
-    <!-- ─── ARTICLE ─── -->
-    <article class="article-container">
-        <div class="article-meta">
-            <span class="category-badge">${category}</span>
-            <span class="meta-text">${readTime} min read</span>
-            <span class="meta-text">Source: ${source}</span>
-        </div>
-
-        <h1 class="article-title">${title}</h1>
-        <p class="article-subtitle">${description}</p>
-
-        <div class="byline">
-            <div class="byline-avatar">E</div>
-            <div class="byline-info">
-                <div class="byline-name">Explyra Intelligence Desk</div>
-                <div class="byline-detail">${today} · ${category}</div>
+    <article class="main-article">
+        <div class="article-header">
+            <div class="badge-row">
+                <span class="category-badge">${category}</span>
+                <span class="read-time">${readTime} min read</span>
+            </div>
+            <h1>${title}</h1>
+            <div class="meta-row">
+                <span>BY EXPLYRA INTELLIGENCE DESK</span>
+                <span>•</span>
+                <span>${today}</span>
             </div>
         </div>
 
-        <img class="hero-image" src="${heroImg}" alt="${title}">
-        <p class="hero-caption">Image: ${source} via Explyra Visual Library</p>
-
-        <!-- Content with Read More fold -->
-        <div class="article-body read-more-fold" id="articleFold">
-            ${bodyContent}
+        <div class="hero-container">
+            <img src="${heroImg}" alt="${title}" class="hero-img">
         </div>
 
-        <button class="read-more-btn" id="readMoreBtn" onclick="expandArticle()">
-            ✦ READ FULL INTELLIGENCE REPORT
-        </button>
+        <div class="fold-content" id="articleFold">
+            <div class="article-body">
+                ${bodyContent}
+            </div>
+            <div class="fold-overlay">
+                <button class="btn-expand" onclick="expandArticle()">Read Full Intelligence Report</button>
+            </div>
+        </div>
 
-        <div class="article-tags">
-            ${title.split(' ').filter(w => w.length > 3).slice(0, 6).map(w => `<span>${w}</span>`).join('\n            ')}
-            <span>TECHNOLOGY</span>
-            <span>ANALYSIS</span>
-            <span>2024</span>
+        <div style="margin-top: 5rem; padding: 2rem; background: var(--surface); border-radius: 20px; border: 1px solid var(--border);">
+            <h4 style="margin-bottom: 1rem; font-family: 'Outfit';">Technical Summary</h4>
+            <p style="font-size: 1rem; color: var(--text-muted);">${description}</p>
         </div>
     </article>
 
-    <!-- ─── FOOTER ─── -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-col">
-                <h4>EXPLYRA</h4>
-                <p>Automated tech journalism powered by advanced AI and Firebase infrastructure. Delivering authoritative analysis across the global technology landscape.</p>
-            </div>
-            <div class="footer-col">
-                <h4>SECTIONS</h4>
-                <ul>
-                    <li><a href="/index.html">Latest Intelligence</a></li>
-                    <li><a href="/index.html">AI & Machine Learning</a></li>
-                    <li><a href="/index.html">Cloud & Infrastructure</a></li>
-                    <li><a href="/index.html">Cybersecurity</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>LEGAL</h4>
-                <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Ethics Code</a></li>
-                </ul>
-            </div>
+    <footer>
+        <div class="logo" style="font-size: 2rem; margin-bottom: 2rem;">EXPLYRA</div>
+        <div class="footer-links">
+            <a href="${baseUrl}/index.html">Dashboard</a>
+            <a href="${baseUrl}/index.html">Global Intelligence</a>
+            <a href="${baseUrl}/index.html">Infrastructure</a>
         </div>
-        <div class="footer-bottom">
-            &copy; 2024 Explyra Tech. All Rights Reserved. Full Technical Authority.
-        </div>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4rem;">
+            &copy; 2024-2026 Explyra Media Group. All rights reserved. <br>
+            Powered by Gemini 2.5 Flash & Explyra Distributed Network.
+        </p>
     </footer>
 
     <script>
         function expandArticle() {
-            const fold = document.getElementById('articleFold');
-            const btn = document.getElementById('readMoreBtn');
-            fold.classList.add('expanded');
-            btn.classList.add('hidden');
+            document.getElementById('articleFold').classList.add('expanded');
         }
     </script>
 </body>

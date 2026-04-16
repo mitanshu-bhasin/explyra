@@ -1,0 +1,1 @@
+import temporalUndefined from"./temporalUndefined.js";import tdz from"./tdz.js";function _temporalRef(e,t){return e===temporalUndefined?tdz(t):e}export{_temporalRef as default};

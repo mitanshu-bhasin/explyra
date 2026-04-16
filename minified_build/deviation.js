@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=deviation;var _variance=_interopRequireDefault(require("./variance.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function deviation(e,t){const r=(0,_variance.default)(e,t);return r?Math.sqrt(r):r}

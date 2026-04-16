@@ -1,0 +1,1 @@
+var identity=require("./identity");function castFunction(t){return"function"==typeof t?t:identity}module.exports=castFunction;

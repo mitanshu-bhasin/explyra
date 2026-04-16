@@ -1,0 +1,1 @@
+"use strict";module.exports=function(e,t){if(!t)return;const o=new Error(`Not implemented: ${e}`);o.type="not implemented",t._virtualConsole.emit("jsdomError",o)};

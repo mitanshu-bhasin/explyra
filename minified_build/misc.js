@@ -1,0 +1,1 @@
+"use strict";function isTokenOnSameLine(e,n){return e.loc.end.line===n.loc.start.line}Object.defineProperty(exports,"__esModule",{value:!0}),exports.LINEBREAK_MATCHER=void 0,exports.isTokenOnSameLine=isTokenOnSameLine,exports.LINEBREAK_MATCHER=/\r\n|[\r\n\u2028\u2029]/;

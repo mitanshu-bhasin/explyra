@@ -1,0 +1,1 @@
+"use strict";const CharacterDataImpl=require("./CharacterData-impl").implementation,NODE_TYPE=require("../node-type");class ProcessingInstructionImpl extends CharacterDataImpl{constructor(t,e,r){super(t,e,r),this.nodeType=NODE_TYPE.PROCESSING_INSTRUCTION_NODE,this._target=r.target}get target(){return this._target}}module.exports={implementation:ProcessingInstructionImpl};

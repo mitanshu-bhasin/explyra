@@ -1,0 +1,1 @@
+"use strict";exports.getWeekWithOptions=void 0;var _index=require("../getWeek.js"),_index2=require("./_lib/convertToFP.js");const getWeekWithOptions=exports.getWeekWithOptions=(0,_index2.convertToFP)(_index.getWeek,2);

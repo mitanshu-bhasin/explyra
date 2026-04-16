@@ -1,0 +1,1 @@
+"use strict";var isValid=require("./borderStyle").isValid;module.exports.isValid=isValid,module.exports.definition={set:function(e){isValid(e)&&("none"===e.toLowerCase()&&(e="",this.removeProperty("border-bottom-width")),this._setProperty("border-bottom-style",e))},get:function(){return this.getPropertyValue("border-bottom-style")},enumerable:!0,configurable:!0};

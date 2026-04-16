@@ -1,0 +1,1 @@
+"use strict";const{defineConfig:defineConfig,globalIgnores:globalIgnores}=require("@eslint/config-helpers");module.exports={defineConfig:defineConfig,globalIgnores:globalIgnores};

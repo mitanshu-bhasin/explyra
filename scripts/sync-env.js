@@ -36,8 +36,9 @@ function sync() {
             measurementId: env.FIREBASE_MEASUREMENT_ID || "G-TFBZ5GZ22C"
         },
         ai: {
-            model: 'moonshotai/kimi-k2-instruct-0905',
-            // API Keys are SECURELY handled by Cloudflare Functions /api/ai/groq
+            model: 'gemini-2.5-flash',
+            // API Keys are SECURELY handled by Cloudflare Workers /api/ai/gemini
+            // We use "HANDLED_BY_PROXY" to tell the frontend to use the worker endpoint.
             apiKey: "HANDLED_BY_PROXY",
             geminiKey: "HANDLED_BY_PROXY"
         },

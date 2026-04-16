@@ -1,0 +1,1 @@
+export default function isVisible(t){return!!t&&!!(t.offsetWidth||t.offsetHeight||t.getClientRects().length)}

@@ -63,7 +63,7 @@ function createFirebaseNamespaceCore(e){const t={},r={__esModule:!0,initializeAp
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */function createFirebaseNamespaceLite(){const e=createFirebaseNamespaceCore(FirebaseAppLiteImpl);e.SDK_VERSION=`${e.SDK_VERSION}_LITE`;const t=e.INTERNAL.registerComponent;return e.INTERNAL.registerComponent=function(e){if("PUBLIC"===e.type&&!e.name.includes("performance")&&!e.name.includes("installations"))throw Error(`${name} cannot register with the standalone perf instance`);return t(e)},e}const name$1="@firebase/app-compat",version="0.5.10";
+ */function createFirebaseNamespaceLite(){const e=createFirebaseNamespaceCore(FirebaseAppLiteImpl);e.SDK_VERSION=`${e.SDK_VERSION}_LITE`;const t=e.INTERNAL.registerComponent;return e.INTERNAL.registerComponent=function(e){if("PUBLIC"===e.type&&!e.name.includes("performance")&&!e.name.includes("installations"))throw Error(`${name} cannot register with the standalone perf instance`);return t(e)},e}const name$1="@firebase/app-compat",version="0.5.9";
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -80,7 +80,7 @@ function createFirebaseNamespaceCore(e){const t={},r={__esModule:!0,initializeAp
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function registerCoreComponents(e){registerVersion(name$1,version,e)}
+function registerCoreComponents(e){registerVersion(name$1,"0.5.9",e)}
 /**
  * @license
  * Copyright 2019 Google LLC

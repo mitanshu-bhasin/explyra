@@ -3,43 +3,4 @@
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
  */
-var used=[];
-/*!
- * Chai version
- */exports.version="4.3.8",
-/*!
- * Assertion Error
- */
-exports.AssertionError=require("assertion-error");
-/*!
- * Utils for plugins (not exported)
- */
-var util=require("./chai/utils");exports.use=function(e){return~used.indexOf(e)||(e(exports,util),used.push(e)),exports},
-/*!
- * Utility Functions
- */
-exports.util=util;
-/*!
- * Configuration
- */
-var config=require("./chai/config");exports.config=config;
-/*!
- * Primary `Assertion` prototype
- */
-var assertion=require("./chai/assertion");exports.use(assertion);
-/*!
- * Core Assertions
- */
-var core=require("./chai/core/assertions");exports.use(core);
-/*!
- * Expect interface
- */
-var expect=require("./chai/interface/expect");exports.use(expect);
-/*!
- * Should interface
- */
-var should=require("./chai/interface/should");exports.use(should);
-/*!
- * Assert interface
- */
-var assert=require("./chai/interface/assert");exports.use(assert);
+import*as util from"./chai/utils/index.js";import{AssertionError}from"assertion-error";import{config}from"./chai/config.js";import"./chai/core/assertions.js";import{expect}from"./chai/interface/expect.js";import{Assertion}from"./chai/assertion.js";import*as should from"./chai/interface/should.js";import{assert}from"./chai/interface/assert.js";const used=[];export{AssertionError};export function use(r){const s={use:use,AssertionError:AssertionError,util:util,config:config,expect:expect,assert:assert,Assertion:Assertion,...should};return~used.indexOf(r)||(r(s,util),used.push(r)),s}export{util};export{config};export*from"./chai/assertion.js";export*from"./chai/interface/expect.js";export*from"./chai/interface/should.js";export*from"./chai/interface/assert.js";

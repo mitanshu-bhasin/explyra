@@ -1,0 +1,1 @@
+import{jsx as _jsx,Fragment as _Fragment}from"react/jsx-runtime";import React,{useContext}from"react";import{TemplateContext}from"../../shared/lib/app-router-context.shared-runtime";export default function RenderFromTemplateContext(){const t=useContext(TemplateContext);return _jsx(_Fragment,{children:t})}

@@ -1,0 +1,1 @@
+const isDisjoint=(...t)=>{const e=t.filter(Boolean);if(0===e.length||1===e.length)return!0;let n;for(const t of e){const e=Object.keys(t);if(n&&0!==n.size)for(const t of e){if(n.has(t))return!1;n.add(t)}else n=new Set(e)}return!0};export default isDisjoint;

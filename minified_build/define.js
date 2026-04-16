@@ -1,0 +1,1 @@
+"use strict";function _default(e,t,r){e.prototype=t.prototype=r,r.constructor=e}function extend(e,t){var r=Object.create(e.prototype);for(var o in t)r[o]=t[o];return r}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default,exports.extend=extend;

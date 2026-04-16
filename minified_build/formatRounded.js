@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;var _formatDecimal=require("./formatDecimal.js");function _default(e,r){var t=(0,_formatDecimal.formatDecimalParts)(e,r);if(!t)return e+"";var a=t[0],i=t[1];return i<0?"0."+new Array(-i).join("0")+a:a.length>i+1?a.slice(0,i+1)+"."+a.slice(i+1):a+new Array(i-a.length+2).join("0")}

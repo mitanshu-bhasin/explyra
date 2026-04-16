@@ -1,0 +1,1 @@
+var baseForOwn=require("./_baseForOwn"),createBaseEach=require("./_createBaseEach"),baseEach=createBaseEach(baseForOwn);module.exports=baseEach;

@@ -1,0 +1,1 @@
+"use strict";function isAppPageRoute(e){return e.endsWith("/page")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isAppPageRoute",{enumerable:!0,get:function(){return isAppPageRoute}});

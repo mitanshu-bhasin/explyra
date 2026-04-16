@@ -1,0 +1,1 @@
+export class WalkerBase{constructor(){this.should_skip=!1,this.should_remove=!1,this.replacement=null,this.context={skip:()=>this.should_skip=!0,remove:()=>this.should_remove=!0,replace:e=>this.replacement=e}}replace(e,s,l,t){e&&s&&(null!=l?e[s][l]=t:e[s]=t)}remove(e,s,l){e&&s&&(null!=l?e[s].splice(l,1):delete e[s])}}

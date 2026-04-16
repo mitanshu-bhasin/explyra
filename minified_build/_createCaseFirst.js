@@ -1,0 +1,1 @@
+var castSlice=require("./_castSlice"),hasUnicode=require("./_hasUnicode"),stringToArray=require("./_stringToArray"),toString=require("./toString");function createCaseFirst(r){return function(e){e=toString(e);var i=hasUnicode(e)?stringToArray(e):void 0,t=i?i[0]:e.charAt(0),a=i?castSlice(i,1).join(""):e.slice(1);return t[r]()+a}}module.exports=createCaseFirst;

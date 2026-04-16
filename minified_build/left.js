@@ -1,0 +1,1 @@
+"use strict";var parseMeasurement=require("../parsers").parseMeasurement;module.exports.definition={set:function(e){this._setProperty("left",parseMeasurement(e))},get:function(){return this.getPropertyValue("left")},enumerable:!0,configurable:!0};

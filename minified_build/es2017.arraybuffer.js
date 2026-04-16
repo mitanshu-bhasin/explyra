@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2017_arraybuffer=void 0;const base_config_1=require("./base-config");exports.es2017_arraybuffer={libs:[],variables:[["ArrayBufferConstructor",base_config_1.TYPE]]};

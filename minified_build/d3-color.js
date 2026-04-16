@@ -1,0 +1,1 @@
+module.exports=require("../lib-vendor/d3-color/src/index.js");

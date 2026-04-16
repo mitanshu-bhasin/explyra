@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"consoleAsyncStorageInstance",{enumerable:!0,get:function(){return consoleAsyncStorageInstance}});const _asynclocalstorage=require("./async-local-storage"),consoleAsyncStorageInstance=(0,_asynclocalstorage.createAsyncLocalStorage)();

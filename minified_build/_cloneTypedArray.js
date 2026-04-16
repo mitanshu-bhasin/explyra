@@ -1,0 +1,1 @@
+var cloneArrayBuffer=require("./_cloneArrayBuffer");function cloneTypedArray(r,e){var f=e?cloneArrayBuffer(r.buffer):r.buffer;return new r.constructor(f,r.byteOffset,r.length)}module.exports=cloneTypedArray;

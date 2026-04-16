@@ -1,0 +1,1 @@
+function tsRewriteRelativeImportExtensions(t,e){return"string"==typeof t&&/^\.\.?\//.test(t)?t.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+)?)\.([cm]?)ts$/i,function(t,s,r,n,i){return s?e?".jsx":".js":!r||n&&i?r+n+"."+i.toLowerCase()+"js":t}):t}export{tsRewriteRelativeImportExtensions as default};

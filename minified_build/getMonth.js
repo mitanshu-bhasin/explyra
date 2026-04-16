@@ -1,0 +1,1 @@
+"use strict";exports.getMonth=void 0;var _index=require("../getMonth.js"),_index2=require("./_lib/convertToFP.js");const getMonth=exports.getMonth=(0,_index2.convertToFP)(_index.getMonth,1);

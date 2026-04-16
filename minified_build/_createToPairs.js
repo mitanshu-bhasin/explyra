@@ -1,0 +1,1 @@
+var baseToPairs=require("./_baseToPairs"),getTag=require("./_getTag"),mapToArray=require("./_mapToArray"),setToPairs=require("./_setToPairs"),mapTag="[object Map]",setTag="[object Set]";function createToPairs(a){return function(r){var e=getTag(r);return e==mapTag?mapToArray(r):e==setTag?setToPairs(r):baseToPairs(r,a(r))}}module.exports=createToPairs;

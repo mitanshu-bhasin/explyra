@@ -1,1 +1,1 @@
-global.should=require("./").should();
+import{should}from"./index.js";globalThis.should=should();

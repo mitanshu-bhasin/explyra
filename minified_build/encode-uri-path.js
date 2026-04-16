@@ -1,0 +1,1 @@
+"use strict";function encodeURIPath(e){return e.split("/").map(e=>encodeURIComponent(e)).join("/")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"encodeURIPath",{enumerable:!0,get:function(){return encodeURIPath}});

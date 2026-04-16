@@ -1,0 +1,1 @@
+var copyObject=require("./_copyObject"),getSymbols=require("./_getSymbols");function copySymbols(e,o){return copyObject(e,getSymbols(e),o)}module.exports=copySymbols;

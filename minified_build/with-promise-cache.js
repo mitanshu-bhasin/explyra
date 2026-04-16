@@ -1,0 +1,1 @@
+"use strict";function withPromiseCache(e,t,r){return(...o)=>{const c=r?r(...o):o[0];let i=e.get(c);return i||(i=t(...o),i.catch(()=>e.remove(c)),e.set(c,i)),i}}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"withPromiseCache",{enumerable:!0,get:function(){return withPromiseCache}});

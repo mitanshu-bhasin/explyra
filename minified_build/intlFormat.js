@@ -1,0 +1,1 @@
+"use strict";exports.intlFormat=void 0;var _index=require("../intlFormat.js"),_index2=require("./_lib/convertToFP.js");const intlFormat=exports.intlFormat=(0,_index2.convertToFP)(_index.intlFormat,3);

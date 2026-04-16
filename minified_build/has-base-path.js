@@ -1,0 +1,1 @@
+import{pathHasPrefix}from"../shared/lib/router/utils/path-has-prefix";const basePath=process.env.__NEXT_ROUTER_BASEPATH||"";export function hasBasePath(a){return pathHasPrefix(a,basePath)}

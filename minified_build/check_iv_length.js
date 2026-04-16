@@ -1,0 +1,1 @@
+import{JWEInvalid}from"../util/errors.js";import{bitLength}from"./iv.js";const checkIvLength=(t,i)=>{if(i.length<<3!==bitLength(t))throw new JWEInvalid("Invalid Initialization Vector length")};export default checkIvLength;

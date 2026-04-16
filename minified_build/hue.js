@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;var _color=require("./color.js");function _default(e,r){var o=(0,_color.hue)(+e,+r);return function(e){var r=o(e);return r-360*Math.floor(r/360)}}

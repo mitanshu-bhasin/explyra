@@ -1,0 +1,1 @@
+"use strict";function extent(e,t){let o,l;if(void 0===t)for(const t of e)null!=t&&(void 0===o?t>=t&&(o=l=t):(o>t&&(o=t),l<t&&(l=t)));else{let n=-1;for(let r of e)null!=(r=t(r,++n,e))&&(void 0===o?r>=r&&(o=l=r):(o>r&&(o=r),l<r&&(l=r)))}return[o,l]}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=extent;

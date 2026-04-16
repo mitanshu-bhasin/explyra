@@ -1,0 +1,1 @@
+function JwksError(r){Error.call(this,r),Error.captureStackTrace(this,this.constructor),this.name="JwksError",this.message=r}JwksError.prototype=Object.create(Error.prototype),JwksError.prototype.constructor=JwksError,module.exports=JwksError;

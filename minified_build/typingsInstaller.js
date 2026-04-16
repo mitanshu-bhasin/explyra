@@ -1,0 +1,1 @@
+try{const{enableCompileCache:e}=require("node:module");e&&e()}catch{}module.exports=require("./_typingsInstaller.js");

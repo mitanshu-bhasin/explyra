@@ -1,0 +1,1 @@
+var apply=require("./_apply"),castPath=require("./_castPath"),last=require("./last"),parent=require("./_parent"),toKey=require("./_toKey");function baseInvoke(e,a,r){a=castPath(a,e);var t=null==(e=parent(e,a))?e:e[toKey(last(a))];return null==t?void 0:apply(t,e,r)}module.exports=baseInvoke;

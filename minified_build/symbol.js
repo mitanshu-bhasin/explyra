@@ -1,1 +1,1 @@
-export default function inspectSymbol(o){return"description"in Symbol.prototype?o.description?`Symbol(${o.description})`:"Symbol()":o.toString()}
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.baggageEntryMetadataSymbol=void 0,exports.baggageEntryMetadataSymbol=Symbol("BaggageEntryMetadata");

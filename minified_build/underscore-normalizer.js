@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"UnderscoreNormalizer",{enumerable:!0,get:function(){return UnderscoreNormalizer}});class UnderscoreNormalizer{normalize(e){return e.replace(/%5F/g,"_")}}

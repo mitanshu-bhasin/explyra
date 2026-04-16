@@ -1,0 +1,1 @@
+"use strict";function typeDeclaredInLib(e,r){return 0===e.length||e.some(e=>r.isSourceFileDefaultLibrary(e))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.typeDeclaredInLib=typeDeclaredInLib;

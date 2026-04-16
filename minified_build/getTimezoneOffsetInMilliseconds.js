@@ -1,0 +1,1 @@
+"use strict";exports.getTimezoneOffsetInMilliseconds=getTimezoneOffsetInMilliseconds;var _index=require("../toDate.js");function getTimezoneOffsetInMilliseconds(e){const t=(0,_index.toDate)(e),n=new Date(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate(),t.getHours(),t.getMinutes(),t.getSeconds(),t.getMilliseconds()));return n.setUTCFullYear(t.getFullYear()),+e-+n}

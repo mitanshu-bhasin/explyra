@@ -1,0 +1,1 @@
+"use strict";const{modulesResolveHandler:modulesResolveHandler}=require("./ModulesUtils");module.exports=class{constructor(e,s,o){this.source=e,this.directories=[...s],this.target=o}apply(e){const s=e.ensureHook(this.target);e.getHook(this.source).tapAsync("ModulesInHierarchicalDirectoriesPlugin",(o,t,r)=>{modulesResolveHandler(e,this.directories,s,o,t,r)})}};

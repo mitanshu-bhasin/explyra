@@ -1,0 +1,1 @@
+export default function prepend(e,n){return e&&n?(n.firstElementChild?n.insertBefore(e,n.firstElementChild):n.appendChild(e),e):null}

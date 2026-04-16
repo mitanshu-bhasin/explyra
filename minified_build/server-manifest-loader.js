@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"ServerManifestLoader",{enumerable:!0,get:function(){return ServerManifestLoader}});class ServerManifestLoader{constructor(e){this.getter=e}load(e){return this.getter(e)}}

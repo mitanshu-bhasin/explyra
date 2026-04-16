@@ -1,0 +1,1 @@
+export const whenActivated=e=>{document.prerendering?addEventListener("prerenderingchange",()=>e(),!0):e()};

@@ -1,0 +1,1 @@
+function baseGt(e,t){return e>t}module.exports=baseGt;

@@ -1,0 +1,1 @@
+function strictLastIndexOf(t,r,e){for(var n=e+1;n--;)if(t[n]===r)return n;return n}module.exports=strictLastIndexOf;

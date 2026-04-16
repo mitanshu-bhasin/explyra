@@ -1,0 +1,1 @@
+"use strict";var SpanKind;Object.defineProperty(exports,"__esModule",{value:!0}),exports.SpanKind=void 0,function(n){n[n.INTERNAL=0]="INTERNAL",n[n.SERVER=1]="SERVER",n[n.CLIENT=2]="CLIENT",n[n.PRODUCER=3]="PRODUCER",n[n.CONSUMER=4]="CONSUMER"}(SpanKind=exports.SpanKind||(exports.SpanKind={}));

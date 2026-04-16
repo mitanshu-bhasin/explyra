@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"addPathPrefix",{enumerable:!0,get:function(){return addPathPrefix}});const _parsepath=require("./parse-path");function addPathPrefix(e,t){if(!e.startsWith("/")||!t)return e;const{pathname:r,query:a,hash:s}=(0,_parsepath.parsePath)(e);return`${t}${r}${a}${s}`}

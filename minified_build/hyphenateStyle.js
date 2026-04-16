@@ -1,0 +1,1 @@
+import hyphenate from"./hyphenate";var msPattern=/^ms-/;export default function hyphenateStyleName(e){return hyphenate(e).replace(msPattern,"-ms-")}

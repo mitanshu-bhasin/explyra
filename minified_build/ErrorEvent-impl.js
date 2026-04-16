@@ -1,0 +1,1 @@
+"use strict";const EventImpl=require("./Event-impl").implementation,ErrorEventInit=require("../generated/ErrorEventInit");class ErrorEventImpl extends EventImpl{}ErrorEventImpl.defaultInit=ErrorEventInit.convert(void 0,void 0),module.exports={implementation:ErrorEventImpl};

@@ -1,0 +1,1 @@
+var toArray=Function.prototype.bind.call(Function.prototype.call,[].slice);export default function childNodes(o){return o?toArray(o.childNodes):[]}

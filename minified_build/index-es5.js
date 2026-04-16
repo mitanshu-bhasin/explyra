@@ -1,0 +1,1 @@
+"use strict";var pattern=/-(\w|$)/g,callback=function(a,e){return e.toUpperCase()},camelCaseCSS=function(a){return"float"===(a=a.toLowerCase())?"cssFloat":45===a.charCodeAt(0)&&109===a.charCodeAt(1)&&115===a.charCodeAt(2)&&45===a.charCodeAt(3)?a.substr(1).replace(pattern,callback):a.replace(pattern,callback)};module.exports=camelCaseCSS;

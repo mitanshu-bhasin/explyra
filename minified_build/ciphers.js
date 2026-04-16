@@ -1,0 +1,1 @@
+import{getCiphers}from"crypto";let ciphers;export default e=>(ciphers||(ciphers=new Set(getCiphers())),ciphers.has(e));

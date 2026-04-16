@@ -1,0 +1,1 @@
+import{length,percentage}from"./dataTypes";import{splitAtTopLevelOnly}from"./splitAtTopLevelOnly";export function backgroundSize(e){let t=["cover","contain"];return splitAtTopLevelOnly(e,",").every(e=>{let l=splitAtTopLevelOnly(e,"_").filter(Boolean);return!(1!==l.length||!t.includes(l[0]))||(1===l.length||2===l.length)&&l.every(e=>length(e)||percentage(e)||"auto"===e)})}

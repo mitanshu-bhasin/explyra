@@ -1,0 +1,1 @@
+"use strict";exports.setQuarter=void 0;var _index=require("../setQuarter.js"),_index2=require("./_lib/convertToFP.js");const setQuarter=exports.setQuarter=(0,_index2.convertToFP)(_index.setQuarter,2);

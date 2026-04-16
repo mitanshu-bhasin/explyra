@@ -1,0 +1,1 @@
+import ownerWindow from"./ownerWindow";export default function getComputedStyle(e,o){return ownerWindow(e).getComputedStyle(e,o)}

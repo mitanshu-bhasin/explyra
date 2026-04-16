@@ -1,0 +1,1 @@
+import{addBasePath}from"./add-base-path";export function assignLocation(t,a){if(t.startsWith(".")){const n=a.origin+a.pathname;return new URL((n.endsWith("/")?n:n+"/")+t)}return new URL(addBasePath(t),a.href)}

@@ -1,0 +1,1 @@
+"use strict";var s;s="production"===process.env.NODE_ENV?require("./cjs/react-dom-server.browser.production.js"):require("./cjs/react-dom-server.browser.development.js"),exports.version=s.version,exports.prerender=s.prerender,exports.resumeAndPrerender=s.resumeAndPrerender;

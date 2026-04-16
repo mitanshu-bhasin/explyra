@@ -1,0 +1,1 @@
+"use strict";const HTMLElementImpl=require("./HTMLElement-impl").implementation,{childTextContent:childTextContent}=require("../helpers/text");class HTMLTitleElementImpl extends HTMLElementImpl{get text(){return childTextContent(this)}set text(e){this.textContent=e}}module.exports={implementation:HTMLTitleElementImpl};

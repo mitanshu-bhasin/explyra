@@ -1,1 +1,1 @@
-"use strict";export default function spread(t){return function(n){return t.apply(null,n)}}
+var convert=require("./convert"),func=convert("spread",require("../spread"));func.placeholder=require("./placeholder"),module.exports=func;

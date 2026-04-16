@@ -1,0 +1,1 @@
+function arrayEvery(r,e){for(var n=-1,a=null==r?0:r.length;++n<a;)if(!e(r[n],n,r))return!1;return!0}module.exports=arrayEvery;

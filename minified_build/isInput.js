@@ -1,0 +1,1 @@
+var regExpInputs=/^(?:input|select|textarea|button)$/i;export default function isInput(t){return!!t&&regExpInputs.test(t.nodeName)}

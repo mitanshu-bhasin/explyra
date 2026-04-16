@@ -1,0 +1,1 @@
+function createPlugin(n,t){return{handler:n,config:t}}createPlugin.withOptions=function(n,t=()=>({})){const i=function(i){return{__options:i,handler:n(i),config:t(i)}};return i.__isOptionsFunction=!0,i.__pluginFunction=n,i.__configFunction=t,i};export default createPlugin;

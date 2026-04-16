@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.DisabledTraceUtil=void 0;const span_1=require("./span");class DisabledTraceUtil{startSpan(e){return new span_1.Span}startActiveSpan(e,r,a){return r(new span_1.Span)}currentSpan(){return new span_1.Span}recordProjectId(e){}}exports.DisabledTraceUtil=DisabledTraceUtil;

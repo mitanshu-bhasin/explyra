@@ -1,0 +1,1 @@
+function baseSum(e,o){for(var r,u=-1,a=e.length;++u<a;){var n=o(e[u]);void 0!==n&&(r=void 0===r?n:r+n)}return r}module.exports=baseSum;

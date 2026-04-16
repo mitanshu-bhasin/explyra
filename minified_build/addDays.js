@@ -1,0 +1,1 @@
+"use strict";exports.addDays=void 0;var _index=require("../addDays.js"),_index2=require("./_lib/convertToFP.js");const addDays=exports.addDays=(0,_index2.convertToFP)(_index.addDays,2);

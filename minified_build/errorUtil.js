@@ -1,1 +1,1 @@
-"use strict";var errorUtil;Object.defineProperty(exports,"__esModule",{value:!0}),exports.errorUtil=void 0,function(r){r.errToObj=r=>"string"==typeof r?{message:r}:r||{},r.toString=r=>"string"==typeof r?r:null==r?void 0:r.message}(errorUtil=exports.errorUtil||(exports.errorUtil={}));
+export var errorUtil;!function(r){r.errToObj=r=>"string"==typeof r?{message:r}:r||{},r.toString=r=>"string"==typeof r?r:r?.message}(errorUtil||(errorUtil={}));

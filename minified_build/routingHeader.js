@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.fromParams=fromParams;const querystring=require("querystring");function fromParams(r){return querystring.stringify(r)}

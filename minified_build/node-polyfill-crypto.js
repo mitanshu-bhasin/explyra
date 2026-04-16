@@ -1,0 +1,1 @@
+"use strict";if(!global.crypto){let e;Object.defineProperty(global,"crypto",{enumerable:!1,configurable:!0,get:()=>(e||(e=require("node:crypto").webcrypto),e),set(r){e=r}})}

@@ -1,0 +1,1 @@
+var toInteger=require("./toInteger"),toLength=require("./toLength");function baseFill(e,t,r,o){var n=e.length;for((r=toInteger(r))<0&&(r=-r>n?0:n+r),(o=void 0===o||o>n?n:toInteger(o))<0&&(o+=n),o=r>o?0:toLength(o);r<o;)e[r++]=t;return e}module.exports=baseFill;

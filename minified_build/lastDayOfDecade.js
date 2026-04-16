@@ -1,0 +1,1 @@
+"use strict";exports.lastDayOfDecade=void 0;var _index=require("../lastDayOfDecade.js"),_index2=require("./_lib/convertToFP.js");const lastDayOfDecade=exports.lastDayOfDecade=(0,_index2.convertToFP)(_index.lastDayOfDecade,1);

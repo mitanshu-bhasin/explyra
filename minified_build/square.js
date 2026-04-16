@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _math=require("../math.js"),_default={draw(e,t){const r=(0,_math.sqrt)(t),a=-r/2;e.rect(a,a,r,r)}};exports.default=_default;

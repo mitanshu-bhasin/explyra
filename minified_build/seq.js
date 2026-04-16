@@ -1,1 +1,1 @@
-"use strict";var Type=require("../type");module.exports=new Type("tag:yaml.org,2002:seq",{kind:"sequence",construct:function(e){return null!==e?e:[]}});
+var convert=require("./convert");module.exports=convert(require("../seq"));

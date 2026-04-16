@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"SuffixPathnameNormalizer",{enumerable:!0,get:function(){return SuffixPathnameNormalizer}});class SuffixPathnameNormalizer{constructor(e){this.suffix=e}match(e){return!!e.endsWith(this.suffix)}normalize(e,t){return t||this.match(e)?e.substring(0,e.length-this.suffix.length):e}}

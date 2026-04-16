@@ -3,4 +3,4 @@
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
  */
-var chai=require("../../chai"),transferFlags=require("./transferFlags");module.exports=function(r,a,i,e){var n=r.__methods[a],t=n.chainingBehavior;n.chainingBehavior=function(){var r=e(t).call(this);if(void 0!==r)return r;var a=new chai.Assertion;return transferFlags(this,a),a};var s=n.method;n.method=function(){var r=i(s).apply(this,arguments);if(void 0!==r)return r;var a=new chai.Assertion;return transferFlags(this,a),a}};
+import{Assertion}from"../assertion.js";import{transferFlags}from"./transferFlags.js";export function overwriteChainableMethod(t,e,r,i){let n=t.__methods[e],s=n.chainingBehavior;n.chainingBehavior=function(){let t=i(s).call(this);if(void 0!==t)return t;let e=new Assertion;return transferFlags(this,e),e};let o=n.method;n.method=function(){let t=r(o).apply(this,arguments);if(void 0!==t)return t;let e=new Assertion;return transferFlags(this,e),e}}

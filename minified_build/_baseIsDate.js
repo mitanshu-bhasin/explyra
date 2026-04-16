@@ -1,0 +1,1 @@
+var baseGetTag=require("./_baseGetTag"),isObjectLike=require("./isObjectLike"),dateTag="[object Date]";function baseIsDate(e){return isObjectLike(e)&&baseGetTag(e)==dateTag}module.exports=baseIsDate;

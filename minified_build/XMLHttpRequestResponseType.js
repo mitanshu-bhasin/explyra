@@ -1,0 +1,1 @@
+"use strict";const enumerationValues=new Set(["","arraybuffer","blob","document","json","text"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:n="The provided value"}={})=>{const o=`${t}`;if(!enumerationValues.has(o))throw new e.TypeError(`${n} '${o}' is not a valid enumeration value for XMLHttpRequestResponseType`);return o};

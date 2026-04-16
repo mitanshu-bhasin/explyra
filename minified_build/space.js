@@ -1,1 +1,7 @@
-var test=require("tape"),stringify=require("../");test("space parameter",function(n){n.plan(1);n.equal(stringify({one:1,two:2},{space:"  "}),'{\n  "one": 1,\n  "two": 2\n}')}),test("space parameter (with tabs)",function(n){n.plan(1);n.equal(stringify({one:1,two:2},{space:"\t"}),'{\n\t"one": 1,\n\t"two": 2\n}')}),test("space parameter (with a number)",function(n){n.plan(1);n.equal(stringify({one:1,two:2},{space:3}),'{\n   "one": 1,\n   "two": 2\n}')}),test("space parameter (nested objects)",function(n){n.plan(1);n.equal(stringify({one:1,two:{b:4,a:[2,3]}},{space:"  "}),'{\n  "one": 1,\n  "two": {\n    "a": [\n      2,\n      3\n    ],\n    "b": 4\n  }\n}')}),test("space parameter (same as native)",function(n){n.plan(1);var e={one:1,two:{a:[2,3],b:4}};n.equal(stringify(e,{space:"  "}),JSON.stringify(e,null,"  "))});
+/**
+ * @license lucide-react v0.462.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+import createLucideIcon from"../createLucideIcon.js";const Space=createLucideIcon("Space",[["path",{d:"M22 17v1c0 .5-.5 1-1 1H3c-.5 0-1-.5-1-1v-1",key:"lt2kga"}]]);export{Space as default};

@@ -1,0 +1,1 @@
+"use strict";function _default(e,t){return function(r,u){for(var n=r.length,s=[],o=0,a=e[0],f=0;n>0&&a>0&&(f+a+1>u&&(a=Math.max(1,u-f)),s.push(r.substring(n-=a,n+a)),!((f+=a+1)>u));)a=e[o=(o+1)%e.length];return s.reverse().join(t)}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

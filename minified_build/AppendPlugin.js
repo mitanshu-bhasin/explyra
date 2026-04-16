@@ -1,0 +1,1 @@
+"use strict";module.exports=class{constructor(t,e,s){this.source=t,this.appending=e,this.target=s}apply(t){const e=t.ensureHook(this.target);t.getHook(this.source).tapAsync("AppendPlugin",(s,a,i)=>{const p={...s,path:s.path+this.appending,relativePath:s.relativePath&&s.relativePath+this.appending};t.doResolve(e,p,this.appending,a,i)})}};

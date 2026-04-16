@@ -1,0 +1,1 @@
+export default function collectElements(l,e){var n=null,u=[];for(n=l?l[e]:null;n&&9!==n.nodeType;)u.push(n),n=n[e]||null;return u}

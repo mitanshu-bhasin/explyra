@@ -1,0 +1,1 @@
+"use strict";exports.formatISOWithOptions=void 0;var _index=require("../formatISO.js"),_index2=require("./_lib/convertToFP.js");const formatISOWithOptions=exports.formatISOWithOptions=(0,_index2.convertToFP)(_index.formatISO,2);

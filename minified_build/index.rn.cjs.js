@@ -1,4 +1,4 @@
-"use strict";var firebase=require("@firebase/app-compat");function _interopDefaultLegacy(e){return e&&"object"==typeof e&&"default"in e?e:{default:e}}require("@firebase/auth-compat"),require("@firebase/database-compat"),require("@firebase/firestore-compat");var firebase__default=_interopDefaultLegacy(firebase),name$1="firebase",version$1="12.11.0";
+"use strict";var firebase=require("@firebase/app-compat");function _interopDefaultLegacy(e){return e&&"object"==typeof e&&"default"in e?e:{default:e}}require("@firebase/auth-compat"),require("@firebase/database-compat"),require("@firebase/firestore-compat");var firebase__default=_interopDefaultLegacy(firebase),name$1="firebase",version$1="12.10.0";
 /**
  * @license
  * Copyright 2020 Google LLC
@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-firebase__default.default.registerVersion(name$1,version$1,"app-compat");var name="firebase",version="12.11.0";
+ */firebase__default.default.registerVersion(name$1,version$1,"app-compat");var name="firebase",version="12.10.0";
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -31,5 +30,4 @@ firebase__default.default.registerVersion(name$1,version$1,"app-compat");var nam
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-firebase__default.default.registerVersion(name,version,"compat-rn"),module.exports=firebase__default.default;
+ */firebase__default.default.registerVersion(name,version,"compat-rn"),module.exports=firebase__default.default;

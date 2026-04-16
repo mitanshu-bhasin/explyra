@@ -1,1 +1,1 @@
-"use strict";export default function bind(t,n){return function(){return t.apply(n,arguments)}}
+var convert=require("./convert"),func=convert("bind",require("../bind"));func.placeholder=require("./placeholder"),module.exports=func;

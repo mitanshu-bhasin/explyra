@@ -1,0 +1,1 @@
+"use strict";function sum(e,t){let o=0;if(void 0===t)for(let t of e)(t=+t)&&(o+=t);else{let r=-1;for(let f of e)(f=+t(f,++r,e))&&(o+=f)}return o}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=sum;

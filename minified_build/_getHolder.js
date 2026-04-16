@@ -1,0 +1,1 @@
+function getHolder(e){return e.placeholder}module.exports=getHolder;

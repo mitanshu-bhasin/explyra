@@ -1,0 +1,1 @@
+"use strict";var isValid=module.exports.isValid=require("./borderColor").isValid;module.exports.definition={set:function(e){isValid(e)&&this._setProperty("border-bottom-color",e)},get:function(){return this.getPropertyValue("border-bottom-color")},enumerable:!0,configurable:!0};

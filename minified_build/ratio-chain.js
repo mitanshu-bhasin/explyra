@@ -1,0 +1,1 @@
+function calculateRatios(t,a,c){const l=Fraction(a).div(t[c]);return t.map(t=>l.mul(t))}const r=[2,3,4],a_k=40,k=0,result=calculateRatios(r,40,0);console.log(result);

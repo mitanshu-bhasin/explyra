@@ -1,0 +1,1 @@
+"use strict";const CharacterDataImpl=require("./CharacterData-impl").implementation,idlUtils=require("../generated/utils"),NODE_TYPE=require("../node-type");class CommentImpl extends CharacterDataImpl{constructor(e,t,r){super(e,t,{data:t[0],ownerDocument:idlUtils.implForWrapper(e._document),...r}),this.nodeType=NODE_TYPE.COMMENT_NODE}}module.exports={implementation:CommentImpl};

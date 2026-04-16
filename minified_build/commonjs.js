@@ -1,0 +1,1 @@
+import commonjsPlugin from"next/dist/compiled/babel/plugin-transform-modules-commonjs";export default function CommonJSModulePlugin(...o){const e=commonjsPlugin(...o);return{visitor:{Program:{exit(o,r){let m=!1;o.traverse({MemberExpression(o){"module"===o.node.object.name&&"exports"===o.node.property.name&&(m=!0)}}),m&&e.visitor.Program.exit.call(this,o,r)}}}}}

@@ -1,9 +1,1 @@
-import{html}from"../html/index.js";var defaultPlugin=()=>({afterResponseHook:e=>200===e.status&&e}),REDIRECT_STATUS_CODES=new Set([301,302,303,307,308]),generateRedirectHtml=e=>html`<!DOCTYPE html>
-<title>Redirecting to: ${e}</title>
-<meta http-equiv="refresh" content="0;url=${e}" />
-<meta name="robots" content="noindex" />
-<link rel="canonical" href="${e}" />
-<body>
-<a href="${e}">Redirecting to <code>${e}</code></a>
-</body>
-`.toString().replace(/\n/g,""),redirectPlugin=()=>({afterResponseHook:e=>{if(REDIRECT_STATUS_CODES.has(e.status)){const t=e.headers.get("Location");if(!t)return!1;const n=generateRedirectHtml(t);return new Response(n,{status:200,headers:{"Content-Type":"text/html; charset=utf-8"}})}return e}});export{defaultPlugin,redirectPlugin};
+const req=require("./req.js");async function load(t,e,n){try{return null==e||0===Object.keys(e).length?await req(t,n):(await req(t,n))(e)}catch(t){throw new Error(`Loading PostCSS Plugin failed: ${t.message}\n\n(@${n})`)}}async function plugins(t,e){let n=[];return Array.isArray(t.plugins)?n=t.plugins.filter(Boolean):(n=Object.entries(t.plugins).filter(([,t])=>!1!==t).map(([t,n])=>load(t,n,e)),n=await Promise.all(n)),n.length&&n.length>0&&n.forEach((t,n)=>{if(t.default&&(t=t.default),!0===t.postcss?t=t():t.postcss&&(t=t.postcss),!("object"==typeof t&&Array.isArray(t.plugins)||"object"==typeof t&&t.postcssPlugin||"function"==typeof t))throw new TypeError(`Invalid PostCSS Plugin found at: plugins[${n}]\n\n(@${e})`)}),n}module.exports=plugins;

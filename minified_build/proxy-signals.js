@@ -1,0 +1,1 @@
+import{allSignals}from"./all-signals.js";export const proxySignals=o=>{const s=new Map;for(const t of allSignals){const n=()=>{try{o.kill(t)}catch(o){}};try{process.on(t,n),s.set(t,n)}catch(o){}}const t=()=>{for(const[o,t]of s)process.removeListener(o,t)};return o.on("exit",t),t};

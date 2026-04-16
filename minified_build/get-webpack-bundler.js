@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"default",{enumerable:!0,get:function(){return getWebpackBundler}});const _webpack=require("next/dist/compiled/webpack/webpack"),_getrspack=require("./get-rspack");function getWebpackBundler(){return process.env.NEXT_RSPACK?(0,_getrspack.getRspackCore)():_webpack.webpack}

@@ -3,7 +3,4 @@
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
  */
-/*!
- * Module dependencies
- */
-var inspect=require("./inspect"),config=require("../config");module.exports=function(e){var n=inspect(e),t=Object.prototype.toString.call(e);if(config.truncateThreshold&&n.length>=config.truncateThreshold){if("[object Function]"===t)return e.name&&""!==e.name?"[Function: "+e.name+"]":"[Function]";if("[object Array]"===t)return"[ Array("+e.length+") ]";if("[object Object]"===t){var r=Object.keys(e);return"{ Object ("+(r.length>2?r.splice(0,2).join(", ")+", ...":r.join(", "))+") }"}return n}return n};
+import{inspect}from"./inspect.js";import{config}from"../config.js";export function objDisplay(t){let e=inspect(t),n=Object.prototype.toString.call(t);if(config.truncateThreshold&&e.length>=config.truncateThreshold){if("[object Function]"===n)return t.name&&""!==t.name?"[Function: "+t.name+"]":"[Function]";if("[object Array]"===n)return"[ Array("+t.length+") ]";if("[object Object]"===n){let e=Object.keys(t);return"{ Object ("+(e.length>2?e.splice(0,2).join(", ")+", ...":e.join(", "))+") }"}return e}return e}

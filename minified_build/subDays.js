@@ -1,0 +1,1 @@
+"use strict";exports.subDays=void 0;var _index=require("../subDays.js"),_index2=require("./_lib/convertToFP.js");const subDays=exports.subDays=(0,_index2.convertToFP)(_index.subDays,2);

@@ -1,1 +1,1 @@
-import{inspectList}from"./helpers";export default function inspectArguments(t,e){return 0===t.length?"Arguments[]":(e.truncate-=13,`Arguments[ ${inspectList(t,e)} ]`)}
+import{inspectList}from"./helpers.js";export default function inspectArguments(t,e){return 0===t.length?"Arguments[]":(e.truncate-=13,`Arguments[ ${inspectList(t,e)} ]`)}

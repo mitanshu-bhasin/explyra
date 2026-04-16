@@ -1,0 +1,1 @@
+"use strict";var padding=require("./padding.js"),parsers=require("../parsers.js");module.exports.definition={set:parsers.subImplicitSetter("padding","top",padding.isValid,padding.parser),get:function(){return this.getPropertyValue("padding-top")},enumerable:!0,configurable:!0};

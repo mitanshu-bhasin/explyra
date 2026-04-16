@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2015_symbol=void 0;const base_config_1=require("./base-config");exports.es2015_symbol={libs:[],variables:[["SymbolConstructor",base_config_1.TYPE]]};

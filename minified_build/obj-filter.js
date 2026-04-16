@@ -1,0 +1,1 @@
+import{objectKeys}from"../typings/common-types.js";export function objFilter(o={},t=()=>!0){const e={};return objectKeys(o).forEach(r=>{t(r,o[r])&&(e[r]=o[r])}),e}

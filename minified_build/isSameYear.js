@@ -1,0 +1,1 @@
+"use strict";exports.isSameYear=void 0;var _index=require("../isSameYear.js"),_index2=require("./_lib/convertToFP.js");const isSameYear=exports.isSameYear=(0,_index2.convertToFP)(_index.isSameYear,2);

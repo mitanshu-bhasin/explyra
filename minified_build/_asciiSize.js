@@ -1,0 +1,1 @@
+var baseProperty=require("./_baseProperty"),asciiSize=baseProperty("length");module.exports=asciiSize;

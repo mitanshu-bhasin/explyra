@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isBlockScoped;var _index=require("./generated/index.js"),_isLet=require("./isLet.js");function isBlockScoped(e){return(0,_index.isFunctionDeclaration)(e)||(0,_index.isClassDeclaration)(e)||(0,_isLet.default)(e)}

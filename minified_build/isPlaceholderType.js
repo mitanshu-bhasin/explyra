@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isPlaceholderType;var _index=require("../definitions/index.js");function isPlaceholderType(e,i){if(e===i)return!0;const r=_index.PLACEHOLDERS_ALIAS[e];return!(null==r||!r.includes(i))}

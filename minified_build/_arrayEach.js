@@ -1,0 +1,1 @@
+function arrayEach(r,a){for(var n=-1,e=null==r?0:r.length;++n<e&&!1!==a(r[n],n,r););return r}module.exports=arrayEach;

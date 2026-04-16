@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _math=require("../math.js");const tan30=(0,_math.sqrt)(1/3),tan30_2=2*tan30;var _default={draw(t,e){const a=(0,_math.sqrt)(e/tan30_2),o=a*tan30;t.moveTo(0,-a),t.lineTo(o,0),t.lineTo(0,a),t.lineTo(-o,0),t.closePath()}};exports.default=_default;

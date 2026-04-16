@@ -1,0 +1,1 @@
+let utils=require("./utils");class OldValue{constructor(e,t,s,i){this.unprefixed=e,this.prefixed=t,this.string=s||t,this.regexp=i||utils.regexp(t)}check(e){return!!e.includes(this.string)&&!!e.match(this.regexp)}}module.exports=OldValue;

@@ -1,0 +1,1 @@
+export default function negateValue(e){if("0"==(e=`${e}`))return"0";if(/^[+-]?(\d+|\d*\.\d+)(e[+-]?\d+)?(%|\w+)?$/.test(e))return e.replace(/^[+-]?/,e=>"-"===e?"":"-");let t=["var","calc","min","max","clamp"];for(const r of t)if(e.includes(`${r}(`))return`calc(${e} * -1)`}

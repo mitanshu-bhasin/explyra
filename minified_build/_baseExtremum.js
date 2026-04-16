@@ -1,0 +1,1 @@
+var isSymbol=require("./isSymbol");function baseExtremum(r,e,m){for(var o=-1,i=r.length;++o<i;){var l=r[o],u=e(l);if(null!=u&&(void 0===a?u==u&&!isSymbol(u):m(u,a)))var a=u,s=l}return s}module.exports=baseExtremum;

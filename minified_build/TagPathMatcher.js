@@ -1,0 +1,1 @@
+import{TagPath}from"./TagPath.js";export default class TagPathMatcher{constructor(t,a){this.stack=t,this.node=a}match(t){return new TagPath(t).match(this.stack,this.node)}}

@@ -1,0 +1,1 @@
+"use strict";const TextImpl=require("./Text-impl").implementation,NODE_TYPE=require("../node-type");class CDATASectionImpl extends TextImpl{constructor(e,t,i){super(e,t,i),this.nodeType=NODE_TYPE.CDATA_SECTION_NODE}}module.exports={implementation:CDATASectionImpl};

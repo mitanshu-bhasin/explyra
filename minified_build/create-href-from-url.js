@@ -1,0 +1,1 @@
+export function createHrefFromUrl(r,e=!0){return r.pathname+r.search+(e?r.hash:"")}

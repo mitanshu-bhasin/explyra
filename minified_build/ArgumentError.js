@@ -1,0 +1,1 @@
+function ArgumentError(r){Error.call(this,r),Error.captureStackTrace(this,this.constructor),this.name="ArgumentError",this.message=r}ArgumentError.prototype=Object.create(Error.prototype),ArgumentError.prototype.constructor=ArgumentError,module.exports=ArgumentError;

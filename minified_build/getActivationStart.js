@@ -1,0 +1,1 @@
+import{getNavigationEntry}from"./getNavigationEntry.js";export const getActivationStart=()=>{const t=getNavigationEntry();return t&&t.activationStart||0};

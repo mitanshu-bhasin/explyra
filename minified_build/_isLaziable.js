@@ -1,0 +1,1 @@
+var LazyWrapper=require("./_LazyWrapper"),getData=require("./_getData"),getFuncName=require("./_getFuncName"),lodash=require("./wrapperLodash");function isLaziable(e){var r=getFuncName(e),a=lodash[r];if("function"!=typeof a||!(r in LazyWrapper.prototype))return!1;if(e===a)return!0;var t=getData(a);return!!t&&e===t[0]}module.exports=isLaziable;

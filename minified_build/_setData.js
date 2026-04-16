@@ -1,0 +1,1 @@
+var baseSetData=require("./_baseSetData"),shortOut=require("./_shortOut"),setData=shortOut(baseSetData);module.exports=setData;

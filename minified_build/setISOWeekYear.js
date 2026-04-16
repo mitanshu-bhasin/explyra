@@ -1,0 +1,1 @@
+"use strict";exports.setISOWeekYear=void 0;var _index=require("../setISOWeekYear.js"),_index2=require("./_lib/convertToFP.js");const setISOWeekYear=exports.setISOWeekYear=(0,_index2.convertToFP)(_index.setISOWeekYear,2);

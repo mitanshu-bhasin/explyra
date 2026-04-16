@@ -1,0 +1,1 @@
+export default function nextErrorBrowserBinaryLoader(){const{resourcePath:e,rootContext:r}=this,o=e.slice(r.length+1);throw Object.defineProperty(new Error(`Node.js binary module ./${o} is not supported in the browser. Please only use the module on server side`),"__NEXT_ERROR_CODE",{value:"E79",enumerable:!1,configurable:!0})}

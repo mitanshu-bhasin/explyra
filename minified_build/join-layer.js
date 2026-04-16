@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t,e){return!t.length&&e.length?e:t.length&&!e.length?t:t.length||e.length?t.concat(e):[]};

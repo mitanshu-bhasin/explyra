@@ -1,0 +1,1 @@
+"use strict";function normalizedAssetPrefix(e){const r=e?.replace(/^\/+|\/+$/g,"")||!1;if(!r)return"";if(URL.canParse(r)){const e=new URL(r).toString();return e.endsWith("/")?e.slice(0,-1):e}return`/${r}`}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"normalizedAssetPrefix",{enumerable:!0,get:function(){return normalizedAssetPrefix}});

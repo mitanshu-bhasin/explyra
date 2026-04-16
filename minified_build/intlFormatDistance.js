@@ -1,0 +1,1 @@
+"use strict";exports.intlFormatDistance=void 0;var _index=require("../intlFormatDistance.js"),_index2=require("./_lib/convertToFP.js");const intlFormatDistance=exports.intlFormatDistance=(0,_index2.convertToFP)(_index.intlFormatDistance,2);

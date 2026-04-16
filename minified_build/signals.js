@@ -1,0 +1,1 @@
+export const signals=[];signals.push("SIGHUP","SIGINT","SIGTERM"),"win32"!==process.platform&&signals.push("SIGALRM","SIGABRT","SIGVTALRM","SIGXCPU","SIGXFSZ","SIGUSR2","SIGTRAP","SIGSYS","SIGQUIT","SIGIOT"),"linux"===process.platform&&signals.push("SIGIO","SIGPOLL","SIGPWR","SIGSTKFLT");

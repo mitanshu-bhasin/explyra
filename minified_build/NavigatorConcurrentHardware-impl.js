@@ -1,0 +1,1 @@
+"use strict";const os=require("os");exports.implementation=class{get hardwareConcurrency(){return os.cpus().length}};

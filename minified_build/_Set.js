@@ -1,0 +1,1 @@
+var getNative=require("./_getNative"),root=require("./_root"),Set=getNative(root,"Set");module.exports=Set;

@@ -1,0 +1,1 @@
+"use strict";module.exports=function(e,n){let i,s=!1;return e.log&&(i=n?i=>{s||(e.log(n),s=!0),e.log(`  ${i}`)}:e.log),{log:i,yield:e.yield,fileDependencies:e.fileDependencies,contextDependencies:e.contextDependencies,missingDependencies:e.missingDependencies,stack:e.stack}};

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.styleSingleton=void 0;var hook_1=require("./hook"),styleSingleton=function(){var e=(0,hook_1.styleHookSingleton)();return function(t){var o=t.styles,n=t.dynamic;return e(o,n),null}};exports.styleSingleton=styleSingleton;

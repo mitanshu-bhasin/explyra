@@ -1,0 +1,1 @@
+"use strict";exports.addMilliseconds=void 0;var _index=require("../addMilliseconds.js"),_index2=require("./_lib/convertToFP.js");const addMilliseconds=exports.addMilliseconds=(0,_index2.convertToFP)(_index.addMilliseconds,2);

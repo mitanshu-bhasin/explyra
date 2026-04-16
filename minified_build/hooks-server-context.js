@@ -1,0 +1,1 @@
+const DYNAMIC_ERROR_CODE="DYNAMIC_SERVER_USAGE";export class DynamicServerError extends Error{constructor(r){super(`Dynamic server usage: ${r}`),this.description=r,this.digest=DYNAMIC_ERROR_CODE}}export function isDynamicServerError(r){return"object"==typeof r&&null!==r&&"digest"in r&&"string"==typeof r.digest&&r.digest===DYNAMIC_ERROR_CODE}

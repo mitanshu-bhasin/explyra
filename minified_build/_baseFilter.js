@@ -1,0 +1,1 @@
+var baseEach=require("./_baseEach");function baseFilter(e,a){var r=[];return baseEach(e,function(e,s,t){a(e,s,t)&&r.push(e)}),r}module.exports=baseFilter;

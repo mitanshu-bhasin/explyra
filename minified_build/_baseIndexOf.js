@@ -1,0 +1,1 @@
+var baseFindIndex=require("./_baseFindIndex"),baseIsNaN=require("./_baseIsNaN"),strictIndexOf=require("./_strictIndexOf");function baseIndexOf(e,s,n){return s==s?strictIndexOf(e,s,n):baseFindIndex(e,baseIsNaN,n)}module.exports=baseIndexOf;

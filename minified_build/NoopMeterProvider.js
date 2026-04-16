@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NOOP_METER_PROVIDER=exports.NoopMeterProvider=void 0;const NoopMeter_1=require("./NoopMeter");class NoopMeterProvider{getMeter(e,r,o){return NoopMeter_1.NOOP_METER}}exports.NoopMeterProvider=NoopMeterProvider,exports.NOOP_METER_PROVIDER=new NoopMeterProvider;

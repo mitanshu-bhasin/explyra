@@ -1,0 +1,1 @@
+export default function isDocument(e){return"nodeType"in e&&e.nodeType===document.DOCUMENT_NODE}

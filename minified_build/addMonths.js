@@ -1,0 +1,1 @@
+"use strict";exports.addMonths=void 0;var _index=require("../addMonths.js"),_index2=require("./_lib/convertToFP.js");const addMonths=exports.addMonths=(0,_index2.convertToFP)(_index.addMonths,2);

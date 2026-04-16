@@ -1,0 +1,1 @@
+"use strict";function getProp(e){for(var r=arguments.length,t=new Array(r>1?r-1:0),o=1;o<r;o++)t[o-1]=arguments[o];for(;t.length>0;){var s=t.shift();if(!e[s])return;e=e[s]}return e}exports.__esModule=!0,exports.default=getProp,module.exports=exports.default;

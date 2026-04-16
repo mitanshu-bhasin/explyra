@@ -1,0 +1,1 @@
+"use strict";exports.implementation=class{get language(){return"en-US"}};

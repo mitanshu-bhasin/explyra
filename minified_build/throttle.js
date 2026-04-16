@@ -1,1 +1,1 @@
-function throttle(t,e){let l,n,o=0,u=1e3/e;const r=(e,u=Date.now())=>{o=u,l=null,n&&(clearTimeout(n),n=null),t(...e)};return[(...t)=>{const e=Date.now(),a=e-o;a>=u?r(t,e):(l=t,n||(n=setTimeout(()=>{n=null,r(l)},u-a)))},()=>l&&r(l)]}export default throttle;
+var convert=require("./convert"),func=convert("throttle",require("../throttle"));func.placeholder=require("./placeholder"),module.exports=func;

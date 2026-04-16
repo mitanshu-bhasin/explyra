@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"escapeStringRegexp",{enumerable:!0,get:function(){return escapeStringRegexp}});const reHasRegExp=/[|\\{}()[\]^$+*?.-]/,reReplaceRegExp=/[|\\{}()[\]^$+*?.-]/g;function escapeStringRegexp(e){return reHasRegExp.test(e)?e.replace(reReplaceRegExp,"\\$&"):e}

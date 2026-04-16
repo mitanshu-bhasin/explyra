@@ -1,0 +1,1 @@
+"use strict";exports.formatISO9075=void 0;var _index=require("../formatISO9075.js"),_index2=require("./_lib/convertToFP.js");const formatISO9075=exports.formatISO9075=(0,_index2.convertToFP)(_index.formatISO9075,1);

@@ -1,0 +1,1 @@
+export default e=>Math.floor(e.getTime()/1e3);

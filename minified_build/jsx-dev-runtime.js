@@ -1,1 +1,1 @@
-import*as intrinsicElementTags from"./intrinsic-element/components.js";var jsxDEV=(e,n,t)=>("string"==typeof e&&intrinsicElementTags[e]&&(e=intrinsicElementTags[e]),{tag:e,type:e,props:n,key:t,ref:n.ref}),Fragment=e=>jsxDEV("",e,void 0);export{Fragment,jsxDEV};
+"use strict";"production"===process.env.NODE_ENV?module.exports=require("./cjs/react-jsx-dev-runtime.production.min.js"):module.exports=require("./cjs/react-jsx-dev-runtime.development.js");

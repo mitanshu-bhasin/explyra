@@ -1,0 +1,1 @@
+"use strict";function _default(e,t){if((a=e.length)>0)for(var f,r,l,o,u,a,d=0,n=e[t[0]].length;d<n;++d)for(o=u=0,f=0;f<a;++f)(l=(r=e[t[f]][d])[1]-r[0])>0?(r[0]=o,r[1]=o+=l):l<0?(r[1]=u,r[0]=u+=l):(r[0]=0,r[1]=l)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

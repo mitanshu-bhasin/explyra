@@ -1,0 +1,10 @@
+/**
+ * @license React
+ * scheduler-unstable_post_task.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+"use strict";"production"!==process.env.NODE_ENV&&function(){var t=window.performance,e=window.setTimeout,n=global.scheduler,r=t.now.bind(t),o=r,a=0,l=3;function s(t,o,u,c){a=r()+5;try{l=t;var b=c(!1);if("function"==typeof b){var f=b,p=new TaskController,_={priority:o,signal:p.signal};u._controller=p,n.postTask(s.bind(null,t,o,u,f),_).catch(i)}}catch(t){e(function(){throw t})}finally{l=3}}function i(t){}exports.unstable_IdlePriority=5,exports.unstable_ImmediatePriority=1,exports.unstable_LowPriority=4,exports.unstable_NormalPriority=3,exports.unstable_Profiling=null,exports.unstable_UserBlockingPriority=2,exports.unstable_cancelCallback=function(t){t._controller.abort()},exports.unstable_continueExecution=function(){},exports.unstable_forceFrameRate=function(){},exports.unstable_getCurrentPriorityLevel=function(){return l},exports.unstable_getFirstCallbackNode=function(){return null},exports.unstable_next=function(t){var e;switch(l){case 1:case 2:case 3:e=3;break;default:e=l}var n=l;l=e;try{return t()}finally{l=n}},exports.unstable_now=o,exports.unstable_pauseExecution=function(){},exports.unstable_requestPaint=function(){},exports.unstable_runWithPriority=function(t,e){var n=l;l=t;try{return e()}finally{l=n}},exports.unstable_scheduleCallback=function(t,e,r){var o;switch(t){case 1:case 2:o="user-blocking";break;case 4:case 3:default:o="user-visible";break;case 5:o="background"}var a=new TaskController,l={priority:o,delay:"object"==typeof r&&null!==r?r.delay:0,signal:a.signal},u={_controller:a};return n.postTask(s.bind(null,t,o,u,e),l).catch(i),u},exports.unstable_shouldYield=function(){return r()>=a},exports.unstable_wrapCallback=function(t){var e=l;return function(){var n=l;l=e;try{return t()}finally{l=n}}}}();

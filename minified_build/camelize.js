@@ -1,0 +1,1 @@
+var rHyphen=/-(.)/g;export default function camelize(e){return e.replace(rHyphen,function(e,r){return r.toUpperCase()})}

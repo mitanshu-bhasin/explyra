@@ -1,0 +1,1 @@
+"use strict";exports.addHours=void 0;var _index=require("../addHours.js"),_index2=require("./_lib/convertToFP.js");const addHours=exports.addHours=(0,_index2.convertToFP)(_index.addHours,2);

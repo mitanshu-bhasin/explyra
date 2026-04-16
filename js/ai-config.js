@@ -8,7 +8,8 @@ const AI_CONFIG = {
         ? 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
         : '/api/ai/gemini',
     model: 'gemini-2.5-flash',
-    apiKey: isLocal ? (localApiKey || envApiKey || 'AIzaSyCA36DOoQGv51JCrEkIbVxXtaw6WkN_4GY') : 'HANDLED_BY_PROXY'
+    // In production, the key is handled by the Cloudflare Worker Proxy (env.GA)
+    apiKey: isLocal ? (localApiKey || envApiKey || '') : 'HANDLED_BY_PROXY'
 };
 
 window.AI_CONFIG = AI_CONFIG;

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.sinIn=sinIn,exports.sinInOut=sinInOut,exports.sinOut=sinOut;var pi=Math.PI,halfPi=pi/2;function sinIn(n){return 1===+n?1:1-Math.cos(n*halfPi)}function sinOut(n){return Math.sin(n*halfPi)}function sinInOut(n){return(1-Math.cos(pi*n))/2}

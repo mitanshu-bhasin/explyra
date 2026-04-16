@@ -1,0 +1,1 @@
+export default function triggerEvent(t,e,n,i){if(void 0===n&&(n=!1),void 0===i&&(i=!0),t){var v=document.createEvent("HTMLEvents");v.initEvent(e,n,i),t.dispatchEvent(v)}}

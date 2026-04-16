@@ -1,0 +1,1 @@
+"use strict";exports.getDecade=void 0;var _index=require("../getDecade.js"),_index2=require("./_lib/convertToFP.js");const getDecade=exports.getDecade=(0,_index2.convertToFP)(_index.getDecade,1);

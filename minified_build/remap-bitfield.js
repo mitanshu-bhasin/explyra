@@ -1,0 +1,1 @@
+export function remapBitfield(e,t){let n=0n,r=0n;for(let[f,o]of t)e&f&&(n|=f,r|=o);return e&~n|r}

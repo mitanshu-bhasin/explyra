@@ -1,0 +1,1 @@
+"use strict";var parseColor=require("../parsers").parseColor;module.exports.definition={set:function(e){this._setProperty("-webkit-text-fill-color",parseColor(e))},get:function(){return this.getPropertyValue("-webkit-text-fill-color")},enumerable:!0,configurable:!0};

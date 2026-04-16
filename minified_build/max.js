@@ -1,1 +1,1 @@
-"use strict";module.exports=Math.max;
+export default"ffffffff-ffff-ffff-ffff-ffffffffffff";

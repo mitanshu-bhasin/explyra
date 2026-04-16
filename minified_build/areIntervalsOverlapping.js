@@ -1,0 +1,1 @@
+"use strict";exports.areIntervalsOverlapping=void 0;var _index=require("../areIntervalsOverlapping.js"),_index2=require("./_lib/convertToFP.js");const areIntervalsOverlapping=exports.areIntervalsOverlapping=(0,_index2.convertToFP)(_index.areIntervalsOverlapping,2);

@@ -1,0 +1,1 @@
+"use strict";function assignRef(e,s){return"function"==typeof e?e(s):e&&(e.current=s),e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.assignRef=void 0,exports.assignRef=assignRef;

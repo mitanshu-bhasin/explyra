@@ -1,0 +1,1 @@
+"use strict";module.exports.definition={set:function(t){this._setProperty("float",t)},get:function(){return this.getPropertyValue("float")},enumerable:!0,configurable:!0};

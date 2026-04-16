@@ -1,0 +1,1 @@
+"use strict";function createCallbackRef(e){var r=null;return{get current(){return r},set current(t){var a=r;a!==t&&(r=t,e(t,a))}}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.createCallbackRef=void 0,exports.createCallbackRef=createCallbackRef;

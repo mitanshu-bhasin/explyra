@@ -3,141 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Archive | Explyra Tech Intelligence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1a1a1a; background: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        
-        .main-header { border-bottom: 5px solid #1a1a1a; padding: 30px 0; background: #fff; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; text-align: center; }
-        .branding h1 { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900; letter-spacing: -2px; line-height: 1; }
-        .branding .tagline { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 5px; color: #888; margin-top: 8px; }
-        
-        .nav-bar { border-top: 1px solid #eee; border-bottom: 1px solid #1a1a1a; margin-top: 20px; }
-        .nav-bar ul { display: flex; justify-content: center; list-style: none; gap: 40px; padding: 15px 0; }
-        .nav-bar a { text-decoration: none; color: #1a1a1a; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
-        .nav-bar a:hover { color: #a00; }
-
-        .archive-header { margin: 60px 0 30px; border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; }
-        .archive-header h2 { font-family: 'Playfair Display', serif; font-size: 3rem; }
-
-        .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; margin-bottom: 80px; }
-        .article-card { border-bottom: 1px solid #eee; padding-bottom: 30px; transition: transform 0.3s ease; }
-        .article-card:hover { transform: translateY(-5px); }
-        .article-card img { width: 100%; height: 200px; border-radius: 8px; object-fit: cover; }
-        .article-card .meta { font-size: 0.7rem; font-weight: 800; color: #a00; text-transform: uppercase; margin: 15px 0 5px; }
-        .article-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; line-height: 1.25; margin-bottom: 10px; }
-        .article-card h3 a { color: inherit; text-decoration: none; }
-        .article-card p { font-size: 0.95rem; color: #555; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        .main-footer { background: #f9f9f9; padding: 80px 0 40px; border-top: 1px solid #eee; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 80px; margin-bottom: 60px; }
-        .footer-grid h4 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
-        .footer-grid a { text-decoration: none; color: #555; display: block; margin-bottom: 10px; font-size: 0.9rem; }
-        .footer-bottom { border-top: 1px solid #ddd; padding-top: 20px; text-align: center; color: #999; font-size: 0.8rem; }
-        
-        @media (max-width: 768px) {
-            .branding h1 { font-size: 2.5rem; }
-            .archive-header h2 { font-size: 2rem; }
-            .nav-bar ul { gap: 20px; font-size: 0.7rem; }
-        }
-    </style>
+    <title>Intelligence Archive | Explyra Tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header class="main-header">
-        <div class="container header-top">
-            <div>INTELLIGENCE ARCHIVE</div>
-            <div class="branding">
-                <a href="/articles/index.html" style="text-decoration:none; color:inherit;"><h1>EXPLYRA TECH</h1></a>
-                <p class="tagline">Insight. Innovation. Implementation.</p>
+<body class="dark-mode">
+    <div class="bg-glow"></div>
+    
+    <header class="glass-nav">
+        <div class="container nav-inner">
+            <a href="/articles/index.html" class="logo">EXPLYRA <span>TECH</span></a>
+            <div class="current-date-display">ARCHIVE ACCESS ENABLED</div>
+            <nav>
+                <ul>
+                    <li><a href="/articles/index.html">FEED</a></li>
+                    <li><a href="/articles/archive.html" class="active">ARCHIVE</a></li>
+                    <li><a href="/articles/sitemap.xml">SITEMAP</a></li>
+                </ul>
+            </nav>
+            <div class="status-indicator">
+                <span class="pulse"></span> HISTORICAL DATA
             </div>
-            <div>FULL REPORTS</div>
         </div>
-        <nav class="nav-bar">
-            <ul class="container">
-                <li><a href="/articles/index.html">LATEST</a></li>
-                <li><a href="#">AI & ML</a></li>
-                <li><a href="#">CLOUDS</a></li>
-                <li><a href="/articles/sitemap.xml">SITEMAP</a></li>
-            </ul>
-        </nav>
     </header>
 
     <main class="container">
-        <div class="archive-header">
-            <h2>Complete Intelligence Catalog</h2>
-            <p>Chronological access to all technical whitepapers and industry analysis reports.</p>
-        </div>
-
-        <div id="archive-grid" class="archive-grid">
-            <!-- All articles injected here by generator -->
-        </div>
+        <section class="feed-section" style="margin-top: 4rem;">
+            <div class="section-heading">
+                <h2>Intelligence Catalog</h2>
+                <div class="divider"></div>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 3rem; max-width: 600px;">Complete chronological library of Explyra tech briefings, market analysis, and architectural deep-dives.</p>
+            
+            <div id="archive-grid" class="articles-grid">
+                <!-- Dynamic injection via main.js -->
+                <div class="skeleton-shimmer" style="height: 350px; border-radius: 20px;"></div>
+                <div class="skeleton-shimmer" style="height: 350px; border-radius: 20px;"></div>
+                <div class="skeleton-shimmer" style="height: 350px; border-radius: 20px;"></div>
+            </div>
+        </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container footer-grid">
-            <div>
-                <h4>EXPLYRA TECH</h4>
-                <p style="color:#666;">The global authority in technical journalism. Delivering deep-dive whitepapers on the future of technology.</p>
+    <footer class="glass-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">EXPLYRA</div>
+                <p>Advanced technical journalism powered by distributed AI nodes and Gemini 2.5 Flash.</p>
             </div>
-            <div>
-                <h4>SECTIONS</h4>
-                <a href="index.html">Latest Intelligence</a>
-                <a href="archive.html">Full Archive</a>
-                <a href="sitemap.xml">XML Sitemap</a>
-            </div>
-            <div>
-                <h4>LEGAL</h4>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="sitemap.xml">XML Sitemap</a>
+            <div class="footer-links">
+                <div class="link-col">
+                    <h4>Network</h4>
+                    <a href="index.html">Live Feed</a>
+                    <a href="archive.html">Documentation</a>
+                    <a href="sitemap.xml">Directory</a>
+                </div>
+                <div class="link-col">
+                    <h4>Protocols</h4>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="ethics.html">Ethics</a>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2026 Explyra Tech. Intelligence of the Future.
+        <div class="footer-legal">
+            &copy; 2026 Explyra Media Group. All cryptographic hashes verified.
         </div>
     </footer>
 
-
-
-    <!-- DYNAMIC DATE INJECTION -->
-    <script>
-        const updateDynamicDate = () => {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString("en-US", {
-                weekday: "long", month: "long", day: "numeric", year: "numeric"
-            }).toUpperCase();
-            
-            // 1. Check for header-date (articles)
-            const headerDates = document.querySelectorAll('.header-date');
-            headerDates.forEach(el => { el.innerText = dateStr; });
-
-            // 2. Check for byline-detail (articles)
-            const bylineDates = document.querySelectorAll('.byline-detail');
-            bylineDates.forEach(el => {
-                const content = el.innerText;
-                if (content.includes(' · ')) {
-                    const parts = content.split(' · ');
-                    el.innerText = dateStr + ' · ' + parts[1];
-                } else {
-                    el.innerText = dateStr;
-                }
-            });
-
-            // 3. Check for index/archive style date (first div in header-top)
-            const topHeaders = document.querySelectorAll('.header-top');
-            topHeaders.forEach(topHeader => {
-                const firstDiv = topHeader.querySelector('div:first-child');
-                if (firstDiv && !firstDiv.classList.contains('branding')) {
-                    firstDiv.innerText = dateStr;
-                }
-            });
-        };
-        updateDynamicDate();
-    </script>
     <script src="main.js"></script>
 </body>
 </html>

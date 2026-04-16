@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"flushTelemetry",{enumerable:!0,get:function(){return flushTelemetry}});const _shared=require("../trace/shared");async function flushTelemetry(){let e=_shared.traceGlobals.get("telemetry");e&&await e.flush()}

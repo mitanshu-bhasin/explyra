@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"workUnitAsyncStorageInstance",{enumerable:!0,get:function(){return workUnitAsyncStorageInstance}});const _asynclocalstorage=require("./async-local-storage"),workUnitAsyncStorageInstance=(0,_asynclocalstorage.createAsyncLocalStorage)();

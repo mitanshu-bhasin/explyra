@@ -1,0 +1,1 @@
+import{parsePath}from"../shared/lib/router/utils/parse-path";export function removeLocale(e,t){if(process.env.__NEXT_I18N_SUPPORT){const{pathname:r}=parsePath(e),a=r.toLowerCase(),o=t?.toLowerCase();return t&&(a.startsWith(`/${o}/`)||a===`/${o}`)?`${r.length===t.length+1?"/":""}${e.slice(t.length+1)}`:e}return e}

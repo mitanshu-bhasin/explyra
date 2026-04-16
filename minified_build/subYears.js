@@ -1,0 +1,1 @@
+"use strict";exports.subYears=void 0;var _index=require("../subYears.js"),_index2=require("./_lib/convertToFP.js");const subYears=exports.subYears=(0,_index2.convertToFP)(_index.subYears,2);

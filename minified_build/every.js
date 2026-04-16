@@ -1,0 +1,1 @@
+"use strict";function every(e,t){if("function"!=typeof t)throw new TypeError("test is not a function");let r=-1;for(const o of e)if(!t(o,++r,e))return!1;return!0}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=every;

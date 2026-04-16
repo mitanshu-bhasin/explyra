@@ -1,0 +1,1 @@
+"use strict";exports.endOfYear=void 0;var _index=require("../endOfYear.js"),_index2=require("./_lib/convertToFP.js");const endOfYear=exports.endOfYear=(0,_index2.convertToFP)(_index.endOfYear,1);

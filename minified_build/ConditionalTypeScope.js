@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ConditionalTypeScope=void 0;const ScopeBase_1=require("./ScopeBase"),ScopeType_1=require("./ScopeType");class ConditionalTypeScope extends ScopeBase_1.ScopeBase{constructor(e,o,p){super(e,ScopeType_1.ScopeType.conditionalType,o,p,!1)}}exports.ConditionalTypeScope=ConditionalTypeScope;

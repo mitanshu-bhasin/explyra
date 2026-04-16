@@ -1,0 +1,1 @@
+var baseIsNative=require("./_baseIsNative"),getValue=require("./_getValue");function getNative(e,a){var t=getValue(e,a);return baseIsNative(t)?t:void 0}module.exports=getNative;

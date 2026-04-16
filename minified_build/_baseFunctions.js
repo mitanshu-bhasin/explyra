@@ -1,0 +1,1 @@
+var arrayFilter=require("./_arrayFilter"),isFunction=require("./isFunction");function baseFunctions(r,n){return arrayFilter(n,function(n){return isFunction(r[n])})}module.exports=baseFunctions;

@@ -1,1 +1,1 @@
-import{jsxDEV,Fragment}from"./jsx-dev-runtime.js";import{jsxDEV as jsxDEV2}from"./jsx-dev-runtime.js";export{Fragment,jsxDEV as jsx,jsxDEV2 as jsxs};
+"use strict";"production"===process.env.NODE_ENV?module.exports=require("./cjs/react-jsx-runtime.production.min.js"):module.exports=require("./cjs/react-jsx-runtime.development.js");

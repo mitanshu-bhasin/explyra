@@ -1,0 +1,1 @@
+"use strict";let segmenter;function isASCII(e){return/^[\u0020-\u007f]*$/u.test(e)}function getStringLength(e){return isASCII(e)?e.length:(segmenter??=new Intl.Segmenter,[...segmenter.segment(e)].length)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getStringLength=getStringLength;

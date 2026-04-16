@@ -1,0 +1,1 @@
+"use strict";exports.endOfHour=void 0;var _index=require("../endOfHour.js"),_index2=require("./_lib/convertToFP.js");const endOfHour=exports.endOfHour=(0,_index2.convertToFP)(_index.endOfHour,1);

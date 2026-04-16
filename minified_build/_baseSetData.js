@@ -1,0 +1,1 @@
+var identity=require("./identity"),metaMap=require("./_metaMap"),baseSetData=metaMap?function(e,t){return metaMap.set(e,t),e}:identity;module.exports=baseSetData;

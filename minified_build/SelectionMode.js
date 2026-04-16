@@ -1,0 +1,1 @@
+"use strict";const enumerationValues=new Set(["select","start","end","preserve"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:n="The provided value"}={})=>{const r=`${t}`;if(!enumerationValues.has(r))throw new e.TypeError(`${n} '${r}' is not a valid enumeration value for SelectionMode`);return r};

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=difference;var _index=require("../../../lib-vendor/internmap/src/index.js");function difference(e,...r){e=new _index.InternSet(e);for(const n of r)for(const r of n)e.delete(r);return e}

@@ -1,0 +1,1 @@
+const diagnostics=require("./");try{var key=require.resolve("debug");require.cache[key]={exports:diagnostics,filename:key,loaded:!0,id:key}}catch(e){}module.exports=diagnostics;

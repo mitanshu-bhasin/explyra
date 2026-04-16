@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NOOP_LOGGER_PROVIDER=exports.NoopLoggerProvider=void 0;const NoopLogger_1=require("./NoopLogger");class NoopLoggerProvider{getLogger(o,e,r){return new NoopLogger_1.NoopLogger}}exports.NoopLoggerProvider=NoopLoggerProvider,exports.NOOP_LOGGER_PROVIDER=new NoopLoggerProvider;

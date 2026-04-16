@@ -1,0 +1,1 @@
+"use strict";function isModule(e){return"module"===e.node.sourceType}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isModule;

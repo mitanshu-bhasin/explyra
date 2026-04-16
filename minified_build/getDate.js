@@ -1,0 +1,1 @@
+"use strict";exports.getDate=void 0;var _index=require("../getDate.js"),_index2=require("./_lib/convertToFP.js");const getDate=exports.getDate=(0,_index2.convertToFP)(_index.getDate,1);

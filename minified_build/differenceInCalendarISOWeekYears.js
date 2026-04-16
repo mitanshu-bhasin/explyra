@@ -1,0 +1,1 @@
+"use strict";exports.differenceInCalendarISOWeekYears=void 0;var _index=require("../differenceInCalendarISOWeekYears.js"),_index2=require("./_lib/convertToFP.js");const differenceInCalendarISOWeekYears=exports.differenceInCalendarISOWeekYears=(0,_index2.convertToFP)(_index.differenceInCalendarISOWeekYears,2);

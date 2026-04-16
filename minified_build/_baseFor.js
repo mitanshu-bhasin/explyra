@@ -1,0 +1,1 @@
+var createBaseFor=require("./_createBaseFor"),baseFor=createBaseFor();module.exports=baseFor;

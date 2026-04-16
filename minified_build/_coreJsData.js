@@ -1,0 +1,1 @@
+var root=require("./_root"),coreJsData=root["__core-js_shared__"];module.exports=coreJsData;

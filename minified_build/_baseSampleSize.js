@@ -1,0 +1,1 @@
+var baseClamp=require("./_baseClamp"),shuffleSelf=require("./_shuffleSelf"),values=require("./values");function baseSampleSize(e,l){var a=values(e);return shuffleSelf(a,baseClamp(l,0,a.length))}module.exports=baseSampleSize;

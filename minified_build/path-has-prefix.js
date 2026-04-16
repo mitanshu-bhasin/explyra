@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"pathHasPrefix",{enumerable:!0,get:function(){return pathHasPrefix}});const _parsepath=require("./parse-path");function pathHasPrefix(e,t){if("string"!=typeof e)return!1;const{pathname:r}=(0,_parsepath.parsePath)(e);return r===t||r.startsWith(t+"/")}

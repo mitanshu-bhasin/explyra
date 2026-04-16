@@ -1,0 +1,1 @@
+"use strict";function removeTrailingSlash(e){return e.replace(/\/$/,"")||"/"}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"removeTrailingSlash",{enumerable:!0,get:function(){return removeTrailingSlash}});

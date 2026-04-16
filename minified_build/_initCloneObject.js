@@ -1,0 +1,1 @@
+var baseCreate=require("./_baseCreate"),getPrototype=require("./_getPrototype"),isPrototype=require("./_isPrototype");function initCloneObject(e){return"function"!=typeof e.constructor||isPrototype(e)?{}:baseCreate(getPrototype(e))}module.exports=initCloneObject;
