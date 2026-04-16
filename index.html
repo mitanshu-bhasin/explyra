@@ -148,7 +148,7 @@
 <!-- JSON-LD Structured Data -->
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
 
 <!-- Preload Fonts & Base Styles -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -3721,6 +3721,89 @@
         gap: 1.5rem;
     }
 
+    /* Foot Address */
+    .foot-address {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 1.2rem;
+        padding: 1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.5);
+        line-height: 1.7;
+        max-width: 350px;
+    }
+    .foot-address i {
+        color: var(--blue2);
+        font-size: 1rem;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+
+    /* Foot Contact Info */
+    .foot-contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 0.6rem;
+    }
+    .foot-contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.45) !important;
+        text-decoration: none;
+        transition: color 0.2s;
+        padding: 2px 0;
+    }
+    .foot-contact-link:hover {
+        color: var(--blue2) !important;
+    }
+    .foot-contact-link i {
+        color: var(--blue2);
+        font-size: 0.75rem;
+        width: 16px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    /* MSME / Udyam Badge */
+    .udyam-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--bdr);
+        border-radius: 100px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink2);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .udyam-badge:hover {
+        background: var(--blue-g);
+        border-color: var(--blue);
+        color: var(--blue);
+        transform: translateY(-2px);
+        box-shadow: var(--s2);
+    }
+    .udyam-badge img {
+        width: 22px;
+        height: auto;
+        object-fit: contain;
+        border-radius: 2px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
     .foot-copy {
         font-size: .8rem;
         color: rgba(255, 255, 255, .4);
@@ -4064,9 +4147,9 @@
 ═══════════════════════════════════════════ */
     .reveal {
         opacity: 0;
-        transform: translateY(34px) scale(.965);
-        filter: blur(10px);
-        transition: opacity .95s ease, transform .95s cubic-bezier(.2, .72, .2, 1), filter .95s ease;
+        transform: translateY(24px) scale(.98);
+        filter: blur(4px);
+        transition: opacity .6s ease, transform .6s cubic-bezier(.2, .72, .2, 1), filter .6s ease;
         transition-delay: var(--reveal-delay, 0ms)
     }
 
@@ -4884,7 +4967,7 @@
       },
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Beri Wala Bagh Milap Market",
+        "streetAddress": "J-36, Beri Wala Bagh, Milap Market, Hari Nagar",
         "addressLocality": "New Delhi",
         "addressRegion": "Delhi",
         "postalCode": "110064",
@@ -6662,6 +6745,20 @@
                     <a href="gdpr.html" class="comp-badge"><i class="fas fa-user-lock"></i> GDPR Compliant</a>
                     <a href="ssl.html" class="comp-badge"><i class="fas fa-lock"></i> SSL Secured</a>
                 </div>
+                <div class="foot-address">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>J-36, Beri Wala Bagh, Milap Market,<br>Hari Nagar, 110064, Delhi, India</span>
+                </div>
+                <div class="foot-contact-info">
+                    <a href="tel:+918076108584" class="foot-contact-link">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>+91 80761 08584</span>
+                    </a>
+                    <a href="tel:+18087363329" class="foot-contact-link">
+                        <i class="fas fa-fax"></i>
+                        <span>Fax: +1 (808) 736-3329</span>
+                    </a>
+                </div>
             </div>
 
             <div class="foot-col">
@@ -6785,6 +6882,10 @@
                     <a href="https://explyra.me" class="mii-badge">
                         <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="India">
                         <span>Proudly Made in India</span>
+                    </a>
+                    <a href="EXPLYRA MSME.pdf" target="_blank" rel="noopener noreferrer" class="udyam-badge" title="Click to view Udyam Registration Certificate">
+                        <img src="msme_logo.png" alt="MSME Logo">
+                        <span>Udyam Registered</span>
                     </a>
                 </div>
         </div>
