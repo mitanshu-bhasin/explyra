@@ -71,13 +71,8 @@ window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
     fs.writeFileSync(outputPath, outputContent);
-
-    if (fs.existsSync(path.dirname(mobileOutputPath))) {
-        fs.writeFileSync(mobileOutputPath, outputContent);
-        console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
-    } else {
-        console.log('✓ Successfully synced .env to js/env.js (mobile_exp/js/env.js skipped, folder does not exist)');
-    }
+    fs.writeFileSync(mobileOutputPath, outputContent);
+    console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
 }
 
 sync();

@@ -1198,7 +1198,7 @@
                         id="sidebar-company-name">Explyra</span>
                 </div>
                 <button class="md:hidden text-gray-500 hover:text-black dark:hover:text-white transition-colors"
-                    onclick="toggleMobileSidebar()" aria-label="Close mobile sidebar">
+                    onclick="toggleMobileSidebar()">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -1283,13 +1283,13 @@
             <!-- Top Header -->
             <header class="glass-header h-16 flex items-center justify-between px-6 shrink-0">
                 <div class="flex items-center gap-4 flex-1">
-                    <button class="md:hidden text-gray-500" onclick="toggleMobileSidebar()" aria-label="Open mobile sidebar">
+                    <button class="md:hidden text-gray-500" onclick="toggleMobileSidebar()">
                         <i class="fa-solid fa-bars-staggered"></i>
                     </button>
 
                     <!-- Theme Toggle -->
                     <button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors" 
-                            onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle theme">
+                            onclick="toggleTheme()" title="Toggle Theme">
                         <i class="fa-solid fa-moon dark:hidden text-slate-600"></i>
                         <i class="fa-solid fa-sun hidden dark:block text-slate-300"></i>
                     </button>
@@ -1322,7 +1322,7 @@
                     </div>
 
                     <div class="flex items-center gap-1 sm:gap-2">
-                        <button onclick="openNotifList()" aria-label="Notifications"
+                        <button onclick="openNotifList()"
                             class="w-9 h-9 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#111] transition-colors relative">
                             <i class="fa-solid fa-bell text-sm text-gray-500 dark:text-gray-400"></i>
                             <span id="header-notif-dot"
@@ -1333,7 +1333,7 @@
 
                         <div class="h-6 w-[1px] bg-[#eaeaea] dark:border-[#333] mx-1"></div>
 
-                        <button onclick="openProfileModal()" aria-label="Profile menu"
+                        <button onclick="openProfileModal()"
                             class="w-9 h-9 rounded-full overflow-hidden border border-[#eaeaea] dark:border-[#333] hover:ring-2 hover:ring-black dark:hover:ring-white transition-all">
                             <div id="header-profile-avatar"
                                 class="w-full h-full bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center text-xs font-bold" data-avatar-display>
