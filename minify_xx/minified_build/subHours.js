@@ -1,0 +1,1 @@
+"use strict";exports.subHours=void 0;var _index=require("../subHours.js"),_index2=require("./_lib/convertToFP.js");const subHours=exports.subHours=(0,_index2.convertToFP)(_index.subHours,2);

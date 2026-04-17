@@ -1,0 +1,1 @@
+import"./app-webpack";import{appBootstrap}from"./app-bootstrap";const instrumentationHooks=require("../lib/require-instrumentation-client");appBootstrap(t=>{const{hydrate:e}=require("./app-index");require("next/dist/client/components/app-router"),require("next/dist/client/components/layout-router"),e(instrumentationHooks,t)});

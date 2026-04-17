@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.isDomainSpecifiedByUser=isDomainSpecifiedByUser;var _DataUtils=require("./DataUtils");function isDomainSpecifiedByUser(i,e,r){if("number"===r&&!0===e&&Array.isArray(i)){var s=null==i?void 0:i[0],t=null==i?void 0:i[1];if(s&&t&&(0,_DataUtils.isNumber)(s)&&(0,_DataUtils.isNumber)(t))return!0}return!1}

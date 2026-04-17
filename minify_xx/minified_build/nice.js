@@ -1,0 +1,1 @@
+"use strict";function nice(e,t){var r,c=0,i=(e=e.slice()).length-1,l=e[c],n=e[i];return n<l&&(r=c,c=i,i=r,r=l,l=n,n=r),e[c]=t.floor(l),e[i]=t.ceil(n),e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=nice;

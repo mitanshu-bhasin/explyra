@@ -1,0 +1,1 @@
+"use strict";function _default(e,t){var r=new Date;return e=+e,t=+t,function(u){return r.setTime(e*(1-u)+t*u),r}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

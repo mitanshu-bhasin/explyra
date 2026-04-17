@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.getNextCallNumber=void 0;let nextCallNumber=0;function getNextCallNumber(){return nextCallNumber++}exports.getNextCallNumber=getNextCallNumber;

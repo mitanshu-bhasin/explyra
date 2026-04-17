@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;var _exponent=_interopRequireDefault(require("./exponent.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function _default(e,t){return Math.max(0,3*Math.max(-8,Math.min(8,Math.floor((0,_exponent.default)(t)/3)))-(0,_exponent.default)(Math.abs(e)))}

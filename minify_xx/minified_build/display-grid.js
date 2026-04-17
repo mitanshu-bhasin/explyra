@@ -1,0 +1,1 @@
+let Value=require("../value");class DisplayGrid extends Value{constructor(e,i){super(e,i),"display-grid"===e&&(this.name="grid")}check(e){return"display"===e.prop&&e.value===this.name}}DisplayGrid.names=["display-grid","inline-grid"],module.exports=DisplayGrid;

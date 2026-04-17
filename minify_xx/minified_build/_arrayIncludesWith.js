@@ -1,0 +1,1 @@
+function arrayIncludesWith(r,n,e){for(var t=-1,u=null==r?0:r.length;++t<u;)if(e(n,r[t]))return!0;return!1}module.exports=arrayIncludesWith;

@@ -1,0 +1,16 @@
+"use strict";
+/*!
+ * Copyright 2021 Google LLC. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */Object.defineProperty(exports,"__esModule",{value:!0}),exports.DocumentReader=void 0;const document_1=require("./document"),util_1=require("./util"),logger_1=require("./logger"),timestamp_1=require("./timestamp");class DocumentReader{constructor(e,t,s,i){this.firestore=e,this.allDocuments=t,this.fieldMask=s,this.transactionOrReadTime=i,this.outstandingDocuments=new Set,this.retrievedDocuments=new Map;for(const e of this.allDocuments)this.outstandingDocuments.add(e.formattedName)}async get(e){const{result:t}=await this._get(e);return t}async _get(e){await this.fetchDocuments(e);const t=[];for(const e of this.allDocuments){const s=this.retrievedDocuments.get(e.formattedName);if(void 0===s)throw new Error(`Did not receive document for "${e.path}".`);{const i=new document_1.DocumentSnapshotBuilder(e);i.fieldsProto=s._fieldsProto,i.readTime=s.readTime,i.createTime=s.createTime,i.updateTime=s.updateTime,t.push(i.build())}}return{result:t,transaction:this.retrievedTransactionId}}async fetchDocuments(e){var t;if(!this.outstandingDocuments.size)return;const s={database:this.firestore.formattedName,documents:Array.from(this.outstandingDocuments)};if(this.transactionOrReadTime instanceof Uint8Array?s.transaction=this.transactionOrReadTime:this.transactionOrReadTime instanceof timestamp_1.Timestamp?s.readTime=this.transactionOrReadTime.toProto().timestampValue:this.transactionOrReadTime&&(s.newTransaction=this.transactionOrReadTime),this.fieldMask){const e=this.fieldMask.map(e=>e.formattedName);s.mask={fieldPaths:e}}let i=0;try{const o=await this.firestore.requestStream("batchGetDocuments",!1,s,e);o.resume();for await(const s of o){let o;if((null===(t=s.transaction)||void 0===t?void 0:t.length)&&(this.retrievedTransactionId=s.transaction),s.found?((0,logger_1.logger)("DocumentReader.fetchDocuments",e,"Received document: %s",s.found.name),o=this.firestore.snapshot_(s.found,s.readTime)):s.missing&&((0,logger_1.logger)("DocumentReader.fetchDocuments",e,"Document missing: %s",s.missing),o=this.firestore.snapshot_(s.missing,s.readTime)),o){const e=o.ref.formattedName;this.outstandingDocuments.delete(e),this.retrievedDocuments.set(e,o),++i}}}catch(t){const o=!s.transaction&&!s.newTransaction&&i>0&&void 0!==t.code&&!(0,util_1.isPermanentRpcError)(t,"batchGetDocuments");if((0,logger_1.logger)("DocumentReader.fetchDocuments",e,"BatchGetDocuments failed with error: %s. Retrying: %s",t,o),o)return this.fetchDocuments(e);throw t}finally{(0,logger_1.logger)("DocumentReader.fetchDocuments",e,"Received %d results",i)}}}exports.DocumentReader=DocumentReader;

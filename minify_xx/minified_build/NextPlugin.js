@@ -1,0 +1,1 @@
+"use strict";module.exports=class{constructor(t,s){this.source=t,this.target=s}apply(t){const s=t.ensureHook(this.target);t.getHook(this.source).tapAsync("NextPlugin",(e,o,r)=>{t.doResolve(s,e,null,o,r)})}};

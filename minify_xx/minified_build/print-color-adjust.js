@@ -1,0 +1,1 @@
+let Declaration=require("../declaration");class PrintColorAdjust extends Declaration{normalize(){return"print-color-adjust"}prefixed(r,o){return"-moz-"===o?"color-adjust":o+"print-color-adjust"}}PrintColorAdjust.names=["print-color-adjust","color-adjust"],module.exports=PrintColorAdjust;

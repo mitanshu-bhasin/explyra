@@ -1,0 +1,1 @@
+function arrayReduce(r,e,u,a){var n=-1,l=null==r?0:r.length;for(a&&l&&(u=r[++n]);++n<l;)u=e(u,r[n],n,r);return u}module.exports=arrayReduce;

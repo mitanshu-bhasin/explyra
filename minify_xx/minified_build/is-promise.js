@@ -1,0 +1,1 @@
+export function isPromise(n){return!!n&&!!n.then&&"function"==typeof n.then}

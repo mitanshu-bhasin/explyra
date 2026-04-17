@@ -1,0 +1,1 @@
+let bfcacheRestoreTime=-1;export const getBFCacheRestoreTime=()=>bfcacheRestoreTime;export const onBFCacheRestore=e=>{addEventListener("pageshow",t=>{t.persisted&&(bfcacheRestoreTime=t.timeStamp,e(t))},!0)};

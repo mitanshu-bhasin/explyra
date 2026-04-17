@@ -1,0 +1,1 @@
+"use strict";exports.isThisSecond=isThisSecond;var _index=require("./constructNow.js"),_index2=require("./isSameSecond.js");function isThisSecond(e){return(0,_index2.isSameSecond)(e,(0,_index.constructNow)(e))}

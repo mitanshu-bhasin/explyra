@@ -1,0 +1,1 @@
+export function memoryLocalStorageAdapter(e={}){return{getItem:t=>e[t]||null,setItem:(t,r)=>{e[t]=r},removeItem:t=>{delete e[t]}}}

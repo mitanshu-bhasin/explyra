@@ -1,0 +1,1 @@
+"use strict";exports.isValid=void 0;var _index=require("../isValid.js"),_index2=require("./_lib/convertToFP.js");const isValid=exports.isValid=(0,_index2.convertToFP)(_index.isValid,1);

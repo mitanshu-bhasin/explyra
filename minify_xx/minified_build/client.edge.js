@@ -1,0 +1,1 @@
+"use strict";"production"===process.env.NODE_ENV?module.exports=require("./cjs/react-server-dom-webpack-client.edge.production.js"):module.exports=require("./cjs/react-server-dom-webpack-client.edge.development.js");

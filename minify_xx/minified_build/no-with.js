@@ -1,0 +1,1 @@
+"use strict";module.exports={meta:{type:"suggestion",docs:{description:"Disallow `with` statements",recommended:!0,url:"https://eslint.org/docs/latest/rules/no-with"},schema:[],messages:{unexpectedWith:"Unexpected use of 'with' statement."}},create:e=>({WithStatement(t){e.report({node:t,messageId:"unexpectedWith"})}})};

@@ -1,0 +1,1 @@
+export default function whichModule(e){if("undefined"==typeof require)return null;for(let r,u=0,t=Object.keys(require.cache);u<t.length;u++)if(r=require.cache[t[u]],r.exports===e)return r;return null}

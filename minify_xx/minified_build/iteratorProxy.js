@@ -1,0 +1,1 @@
+"use strict";function iteratorProxy(){var e=this,t=0,r={"@@iterator":function(){return r},next:function(){if(t<e.length){var r=e[t];return t+=1,{done:!1,value:r}}return{done:!0}}};return r}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _default=exports.default=iteratorProxy;

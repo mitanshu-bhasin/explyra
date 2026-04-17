@@ -1,0 +1,1 @@
+"use strict";var SpanStatusCode;Object.defineProperty(exports,"__esModule",{value:!0}),exports.SpanStatusCode=void 0,function(t){t[t.UNSET=0]="UNSET",t[t.OK=1]="OK",t[t.ERROR=2]="ERROR"}(SpanStatusCode=exports.SpanStatusCode||(exports.SpanStatusCode={}));

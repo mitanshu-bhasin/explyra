@@ -1,0 +1,1 @@
+"use strict";const ForwardTokenCursor=require("./forward-token-cursor");module.exports=class extends ForwardTokenCursor{constructor(r,e,s,t,n,o,d){super(r,e,s,t,n),this.index=Math.max(0,this.index-o),this.indexEnd=Math.min(r.length-1,this.indexEnd+d)}};

@@ -1,0 +1,1 @@
+"use strict";"production"===process.env.NODE_ENV?module.exports=require("./cjs/react.react-server.production.js"):module.exports=require("./cjs/react.react-server.development.js");

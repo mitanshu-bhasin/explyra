@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t){return t>=127995&&t<=127999};

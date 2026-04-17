@@ -1,0 +1,1 @@
+"use strict";exports.isSameISOWeekYear=void 0;var _index=require("../isSameISOWeekYear.js"),_index2=require("./_lib/convertToFP.js");const isSameISOWeekYear=exports.isSameISOWeekYear=(0,_index2.convertToFP)(_index.isSameISOWeekYear,2);

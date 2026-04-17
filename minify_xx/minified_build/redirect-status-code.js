@@ -1,0 +1,1 @@
+export var RedirectStatusCode=function(e){return e[e.SeeOther=303]="SeeOther",e[e.TemporaryRedirect=307]="TemporaryRedirect",e[e.PermanentRedirect=308]="PermanentRedirect",e}({});

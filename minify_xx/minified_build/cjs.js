@@ -1,0 +1,1 @@
+import{y18n as _y18n}from"./index.js";import nodePlatformShim from"./platform-shims/node.js";const y18n=o=>_y18n(o,nodePlatformShim);export default y18n;

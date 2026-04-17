@@ -1,0 +1,1 @@
+"use strict";exports.endOfMinute=void 0;var _index=require("../endOfMinute.js"),_index2=require("./_lib/convertToFP.js");const endOfMinute=exports.endOfMinute=(0,_index2.convertToFP)(_index.endOfMinute,1);

@@ -1,0 +1,1 @@
+"use strict";var _a;Object.defineProperty(exports,"__esModule",{value:!0}),exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER=void 0,exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER="true"===(null!==(_a=process.env.GRPC_NODE_USE_ALTERNATIVE_RESOLVER)&&void 0!==_a?_a:"false");

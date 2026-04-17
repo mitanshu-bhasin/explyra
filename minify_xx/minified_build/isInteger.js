@@ -1,0 +1,1 @@
+"use strict";var $abs=require("./abs"),$floor=require("./floor"),$isNaN=require("./isNaN"),$isFinite=require("./isFinite");module.exports=function(r){if("number"!=typeof r||$isNaN(r)||!$isFinite(r))return!1;var i=$abs(r);return $floor(i)===i};

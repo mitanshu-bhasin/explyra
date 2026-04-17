@@ -1,0 +1,1 @@
+export function ucs2length(t){let e,r=0,n=t.length,o=0;for(;o<n;)r++,e=t.charCodeAt(o++),e>=55296&&e<=56319&&o<n&&(e=t.charCodeAt(o),56320==(64512&e)&&o++);return r}

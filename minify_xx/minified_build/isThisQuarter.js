@@ -1,0 +1,1 @@
+"use strict";exports.isThisQuarter=isThisQuarter;var _index=require("./constructNow.js"),_index2=require("./isSameQuarter.js");function isThisQuarter(r){return(0,_index2.isSameQuarter)(r,(0,_index.constructNow)(r))}

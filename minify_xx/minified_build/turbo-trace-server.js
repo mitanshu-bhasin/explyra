@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"startTurboTraceServerCli",{enumerable:!0,get:function(){return startTurboTraceServerCli}});const _swc=require("../../build/swc");async function startTurboTraceServerCli(e,r){(await(0,_swc.loadBindings)()).turbo.startTurbopackTraceServer(e,r)}

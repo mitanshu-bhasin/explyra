@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2020_promise=void 0;const base_config_1=require("./base-config");exports.es2020_promise={libs:[],variables:[["PromiseFulfilledResult",base_config_1.TYPE],["PromiseRejectedResult",base_config_1.TYPE],["PromiseSettledResult",base_config_1.TYPE],["PromiseConstructor",base_config_1.TYPE]]};

@@ -1,0 +1,1 @@
+var isArrayLikeObject=require("./isArrayLikeObject");function castArrayLikeObject(r){return isArrayLikeObject(r)?r:[]}module.exports=castArrayLikeObject;

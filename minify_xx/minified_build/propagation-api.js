@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.propagation=void 0;const propagation_1=require("./api/propagation");exports.propagation=propagation_1.PropagationAPI.getInstance();

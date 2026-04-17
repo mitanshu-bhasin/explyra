@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports._google_protobuf_FileOptions_OptimizeMode=void 0,exports._google_protobuf_FileOptions_OptimizeMode={SPEED:"SPEED",CODE_SIZE:"CODE_SIZE",LITE_RUNTIME:"LITE_RUNTIME"};

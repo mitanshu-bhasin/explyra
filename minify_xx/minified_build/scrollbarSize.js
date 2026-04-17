@@ -1,0 +1,1 @@
+import canUseDOM from"./canUseDOM";var size;export default function scrollbarSize(e){if((!size&&0!==size||e)&&canUseDOM){var t=document.createElement("div");t.style.position="absolute",t.style.top="-9999px",t.style.width="50px",t.style.height="50px",t.style.overflow="scroll",document.body.appendChild(t),size=t.offsetWidth-t.clientWidth,document.body.removeChild(t)}return size}

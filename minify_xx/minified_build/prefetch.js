@@ -1,0 +1,1 @@
+import{createPrefetchURL}from"../app-router-utils";import{createCacheKey}from"./cache-key";import{schedulePrefetchTask}from"./scheduler";import{PrefetchPriority}from"./types";export function prefetch(e,r,t,c,f){const o=createPrefetchURL(e);if(null===o)return;const h=createCacheKey(o.href,r);schedulePrefetchTask(h,t,c,PrefetchPriority.Default,f)}

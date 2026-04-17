@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"LocaleRouteNormalizer",{enumerable:!0,get:function(){return LocaleRouteNormalizer}});class LocaleRouteNormalizer{constructor(e){this.provider=e}normalize(e){return this.provider.analyze(e).pathname}}

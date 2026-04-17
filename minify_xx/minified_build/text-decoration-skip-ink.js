@@ -1,0 +1,1 @@
+let Declaration=require("../declaration");class TextDecorationSkipInk extends Declaration{set(e,t){return"text-decoration-skip-ink"===e.prop&&"auto"===e.value?(e.prop=t+"text-decoration-skip",e.value="ink",e):super.set(e,t)}}TextDecorationSkipInk.names=["text-decoration-skip-ink","text-decoration-skip"],module.exports=TextDecorationSkipInk;

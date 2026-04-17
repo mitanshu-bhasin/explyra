@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=subset;var _superset=_interopRequireDefault(require("./superset.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function subset(e,t){return(0,_superset.default)(t,e)}

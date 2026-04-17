@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports._google_protobuf_ExtensionRangeOptions_VerificationState=void 0,exports._google_protobuf_ExtensionRangeOptions_VerificationState={DECLARATION:"DECLARATION",UNVERIFIED:"UNVERIFIED"};

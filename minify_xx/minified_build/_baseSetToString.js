@@ -1,0 +1,1 @@
+var constant=require("./constant"),defineProperty=require("./_defineProperty"),identity=require("./identity"),baseSetToString=defineProperty?function(e,t){return defineProperty(e,"toString",{configurable:!0,enumerable:!1,value:constant(t),writable:!0})}:identity;module.exports=baseSetToString;

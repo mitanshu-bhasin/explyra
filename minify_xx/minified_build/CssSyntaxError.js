@@ -1,0 +1,1 @@
+export default class CssSyntaxError extends Error{constructor(s){super(s);const{reason:e,line:t,column:n}=s;this.name="CssSyntaxError",this.message=`${this.name}\n\n`,void 0!==t&&(this.message+=`(${t}:${n}) `),this.message+=e;const r=s.showSourceCode();r&&(this.message+=`\n\n${r}\n`),this.stack=!1}}

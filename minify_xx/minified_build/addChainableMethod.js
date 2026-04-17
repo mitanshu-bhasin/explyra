@@ -1,0 +1,6 @@
+/*!
+ * Chai - addChainingMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+import{Assertion}from"../assertion.js";import{addLengthGuard}from"./addLengthGuard.js";import{flag}from"./flag.js";import{proxify}from"./proxify.js";import{transferFlags}from"./transferFlags.js";let canSetPrototype="function"==typeof Object.setPrototypeOf,testFn=function(){},excludeNames=Object.getOwnPropertyNames(testFn).filter(function(t){let e=Object.getOwnPropertyDescriptor(testFn,t);return"object"!=typeof e||!e.configurable}),call=Function.prototype.call,apply=Function.prototype.apply;export function addChainableMethod(t,e,r,o){"function"!=typeof o&&(o=function(){});let n={method:r,chainingBehavior:o};t.__methods||(t.__methods={}),t.__methods[e]=n,Object.defineProperty(t,e,{get:function(){n.chainingBehavior.call(this);let r=function(){flag(this,"lockSsfi")||flag(this,"ssfi",r);let t=n.method.apply(this,arguments);if(void 0!==t)return t;let e=new Assertion;return transferFlags(this,e),e};if(addLengthGuard(r,e,!0),canSetPrototype){let t=Object.create(this);t.call=call,t.apply=apply,Object.setPrototypeOf(r,t)}else Object.getOwnPropertyNames(t).forEach(function(e){if(-1!==excludeNames.indexOf(e))return;let o=Object.getOwnPropertyDescriptor(t,e);Object.defineProperty(r,e,o)});return transferFlags(this,r),proxify(r)},configurable:!0})}

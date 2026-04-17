@@ -1,0 +1,1 @@
+function infiniteQueryOptions(i){return i}export{infiniteQueryOptions};

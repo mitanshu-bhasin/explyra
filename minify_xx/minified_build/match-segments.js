@@ -1,0 +1,1 @@
+export const matchSegment=(t,e)=>"string"==typeof t?"string"==typeof e&&t===e:"string"!=typeof e&&t[0]===e[0]&&t[1]===e[1];

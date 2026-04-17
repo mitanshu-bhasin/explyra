@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=ensureBlock;var _toBlock=require("./toBlock.js");function ensureBlock(e,o="body"){const t=(0,_toBlock.default)(e[o],e);return e[o]=t,t}

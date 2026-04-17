@@ -1,0 +1,1 @@
+function countHolders(o,r){for(var e=o.length,n=0;e--;)o[e]===r&&++n;return n}module.exports=countHolders;

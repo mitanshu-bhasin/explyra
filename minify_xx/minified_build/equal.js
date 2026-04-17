@@ -1,1 +1,7 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ValueEqual=void 0;const is_1=require("./is");var ValueEqual;(ValueEqual=exports.ValueEqual||(exports.ValueEqual={})).Equal=function e(t,r){if(is_1.Is.Object(t))return function(t,r){if(!is_1.Is.Object(r))return!1;const s=[...globalThis.Object.keys(t),...globalThis.Object.getOwnPropertySymbols(t)],n=[...globalThis.Object.keys(r),...globalThis.Object.getOwnPropertySymbols(r)];return s.length===n.length&&s.every(s=>e(t[s],r[s]))}(t,r);if(is_1.Is.Date(t))return function(e,t){return is_1.Is.Date(t)&&e.getTime()===t.getTime()}(t,r);if(is_1.Is.TypedArray(t))return function(t,r){return!(!is_1.Is.TypedArray(r)||t.length!==r.length||globalThis.Object.getPrototypeOf(t).constructor.name!==globalThis.Object.getPrototypeOf(r).constructor.name)&&t.every((t,s)=>e(t,r[s]))}(t,r);if(is_1.Is.Array(t))return function(t,r){return!(!is_1.Is.Array(r)||t.length!==r.length)&&t.every((t,s)=>e(t,r[s]))}(t,r);if(is_1.Is.Value(t))return function(e,t){return e===t}(t,r);throw new Error("ValueEquals: Unable to compare value")};
+/**
+ * @license lucide-react v0.462.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+import createLucideIcon from"../createLucideIcon.js";const Equal=createLucideIcon("Equal",[["line",{x1:"5",x2:"19",y1:"9",y2:"9",key:"1nwqeh"}],["line",{x1:"5",x2:"19",y1:"15",y2:"15",key:"g8yjpy"}]]);export{Equal as default};

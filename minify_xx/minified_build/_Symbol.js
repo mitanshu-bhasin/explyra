@@ -1,0 +1,1 @@
+var root=require("./_root"),Symbol=root.Symbol;module.exports=Symbol;

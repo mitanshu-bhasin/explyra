@@ -1,0 +1,1 @@
+const Fraction=require("fraction.js");function root(o,t,n,r){let c=Fraction(100*(Math.floor(Math.pow(o/t,n/r))||1),100);const i=Fraction(o,t).pow(n);for(let o=0;o<30;o++){const o=i.mul(c.pow(1-r)).sub(c).div(r).add(c);if(c.n===o.n&&c.d===o.d)return o;c=o}return null}root(18,2,1,2);

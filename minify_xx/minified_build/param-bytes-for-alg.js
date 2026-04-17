@@ -1,0 +1,1 @@
+"use strict";function getParamSize(r){return(r/8|0)+(r%8==0?0:1)}var paramBytesForAlg={ES256:getParamSize(256),ES384:getParamSize(384),ES512:getParamSize(521)};function getParamBytesForAlg(r){var e=paramBytesForAlg[r];if(e)return e;throw new Error('Unknown algorithm "'+r+'"')}module.exports=getParamBytesForAlg;

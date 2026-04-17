@@ -1,0 +1,1 @@
+function arrayAggregator(r,a,g,e){for(var o=-1,t=null==r?0:r.length;++o<t;){var n=r[o];a(e,n,g(n),r)}return e}module.exports=arrayAggregator;

@@ -1,0 +1,1 @@
+"use strict";function addTimeoutArg(e,t,d,r){return(a,n)=>{const o=new Date,u=d.options||{};u.deadline=new Date(o.getTime()+t);const i=d.metadataBuilder?d.metadataBuilder(r,d.headers||{}):null;return e(a,i,u,n)}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.addTimeoutArg=addTimeoutArg;

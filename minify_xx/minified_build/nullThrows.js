@@ -1,0 +1,1 @@
+"use strict";function nullThrows(e,o){if(null==e)throw new Error(`Non-null Assertion Failed: ${o}`);return e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.NullThrowsReasons=void 0,exports.nullThrows=nullThrows,exports.NullThrowsReasons={MissingParent:"Expected node to have a parent.",MissingToken:(e,o)=>`Expected to find a ${e} for the ${o}.`};

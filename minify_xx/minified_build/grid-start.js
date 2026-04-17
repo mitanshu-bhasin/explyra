@@ -1,0 +1,1 @@
+let Declaration=require("../declaration");class GridStart extends Declaration{check(r){let e=r.value;return!e.includes("/")&&!e.includes("span")}normalize(r){return r.replace("-start","")}prefixed(r,e){let t=super.prefixed(r,e);return"-ms-"===e&&(t=t.replace("-start","")),t}}GridStart.names=["grid-row-start","grid-column-start"],module.exports=GridStart;

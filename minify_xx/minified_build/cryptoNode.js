@@ -1,0 +1,1 @@
+import*as nc from"node:crypto";export const crypto=nc&&"object"==typeof nc&&"webcrypto"in nc?nc.webcrypto:nc&&"object"==typeof nc&&"randomBytes"in nc?nc:void 0;

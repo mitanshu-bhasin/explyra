@@ -1,0 +1,1 @@
+var test=require("tape"),resolve=require("../");test("nonstring",function(e){e.plan(1),resolve(555,function(n,r,t){e.ok(n)})});

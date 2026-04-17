@@ -1,0 +1,1 @@
+import rng from"./rng.js";import stringify from"./stringify.js";function v4(r,n,t){const i=(r=r||{}).random||(r.rng||rng)();if(i[6]=15&i[6]|64,i[8]=63&i[8]|128,n){t=t||0;for(let r=0;r<16;++r)n[t+r]=i[r];return n}return stringify(i)}export default v4;

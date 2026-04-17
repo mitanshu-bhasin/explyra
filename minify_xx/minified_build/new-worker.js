@@ -1,0 +1,1 @@
+export default{fetch:async(e,l,o)=>new Response("Hello World!")};

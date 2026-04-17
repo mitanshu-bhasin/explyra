@@ -1,0 +1,1 @@
+var test=require("tape"),inspect=require("../"),obj={a:1,b:[3,4,void 0,null],c:void 0,d:null};test("undef and null",function(n){n.plan(1),n.equal(inspect(obj),"{ a: 1, b: [ 3, 4, undefined, null ], c: undefined, d: null }")});

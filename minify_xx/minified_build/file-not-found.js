@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t){const{pattern:e,globDisabled:n}=t;return`\nNo files matching the pattern "${e}"${n?" (with disabling globs)":""} were found.\nPlease check for typing mistakes in the pattern.\n`.trimStart()};

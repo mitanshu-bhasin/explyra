@@ -1,0 +1,1 @@
+let Declaration=require("../declaration");class UserSelect extends Declaration{insert(e,t,r){return"all"===e.value&&"-ms-"===t?void 0:"contain"!==e.value||"-moz-"!==t&&"-webkit-"!==t?super.insert(e,t,r):void 0}set(e,t){return"-ms-"===t&&"contain"===e.value&&(e.value="element"),super.set(e,t)}}UserSelect.names=["user-select"],module.exports=UserSelect;

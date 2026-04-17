@@ -1,0 +1,1 @@
+export const createRenderSearchParamsFromClient="development"===process.env.NODE_ENV?require("./search-params.browser.dev").createRenderSearchParamsFromClient:require("./search-params.browser.prod").createRenderSearchParamsFromClient;

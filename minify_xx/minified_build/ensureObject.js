@@ -1,0 +1,1 @@
+"use strict";function ensureObject(e){for(var t=arguments.length,r=new Array(t>1?t-1:0),s=1;s<t;s++)r[s-1]=arguments[s];for(;r.length>0;){var o=r.shift();e[o]||(e[o]={}),e=e[o]}}exports.__esModule=!0,exports.default=ensureObject,module.exports=exports.default;

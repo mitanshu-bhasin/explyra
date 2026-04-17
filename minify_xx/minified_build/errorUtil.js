@@ -1,0 +1,1 @@
+export var errorUtil;!function(r){r.errToObj=r=>"string"==typeof r?{message:r}:r||{},r.toString=r=>"string"==typeof r?r:r?.message}(errorUtil||(errorUtil={}));

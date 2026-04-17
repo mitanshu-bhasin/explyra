@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var _types=require("../parser/tokenizer/types");function getIdentifierNames(e,t){const r=[];for(const s of t)s.type===_types.TokenType.name&&r.push(e.slice(s.start,s.end));return r}exports.default=getIdentifierNames;

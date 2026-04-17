@@ -1,0 +1,1 @@
+"use strict";exports.isFriday=void 0;var _index=require("../isFriday.js"),_index2=require("./_lib/convertToFP.js");const isFriday=exports.isFriday=(0,_index2.convertToFP)(_index.isFriday,1);

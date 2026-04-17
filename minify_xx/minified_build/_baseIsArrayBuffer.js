@@ -1,0 +1,1 @@
+var baseGetTag=require("./_baseGetTag"),isObjectLike=require("./isObjectLike"),arrayBufferTag="[object ArrayBuffer]";function baseIsArrayBuffer(e){return isObjectLike(e)&&baseGetTag(e)==arrayBufferTag}module.exports=baseIsArrayBuffer;

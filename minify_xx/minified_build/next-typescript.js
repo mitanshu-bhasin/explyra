@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"createTSPlugin",{enumerable:!0,get:function(){return _typescript.createTSPlugin}});const _typescript=require("./typescript");

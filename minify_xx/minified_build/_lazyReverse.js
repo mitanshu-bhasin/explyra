@@ -1,0 +1,1 @@
+var LazyWrapper=require("./_LazyWrapper");function lazyReverse(){if(this.__filtered__){var e=new LazyWrapper(this);e.__dir__=-1,e.__filtered__=!0}else(e=this.clone()).__dir__*=-1;return e}module.exports=lazyReverse;

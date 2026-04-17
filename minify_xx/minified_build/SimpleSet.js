@@ -1,0 +1,1 @@
+var SimpleSet=function(){function t(){this.v=[]}var e=t.prototype;return e.clear=function(){this.v.length=0},e.has=function(t){return-1!==this.v.indexOf(t)},e.add=function(t){this.has(t)||this.v.push(t)},e.delete=function(t){var e=this.v.indexOf(t);return-1!==e&&(this.v.splice(e,1),!0)},t}();export{SimpleSet as default};

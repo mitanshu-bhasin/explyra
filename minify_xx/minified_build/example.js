@@ -1,0 +1,1 @@
+var log=require("./"),net=require("net");function createServer(){var e=net.createServer();setInterval(function(){},1e3),e.listen(0)}createServer(),createServer(),setTimeout(function(){log()},100);

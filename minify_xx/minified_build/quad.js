@@ -1,0 +1,1 @@
+"use strict";function quadIn(u){return u*u}function quadOut(u){return u*(2-u)}function quadInOut(u){return((u*=2)<=1?u*u:--u*(2-u)+1)/2}Object.defineProperty(exports,"__esModule",{value:!0}),exports.quadIn=quadIn,exports.quadInOut=quadInOut,exports.quadOut=quadOut;

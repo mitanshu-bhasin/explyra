@@ -1,0 +1,1 @@
+"use strict";exports.isThisMonth=isThisMonth;var _index=require("./constructNow.js"),_index2=require("./isSameMonth.js");function isThisMonth(i){return(0,_index2.isSameMonth)(i,(0,_index.constructNow)(i))}

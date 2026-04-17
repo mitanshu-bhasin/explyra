@@ -1,0 +1,1 @@
+var Ajv=require("ajv"),ajv=new Ajv({allErrors:!0}),schema={properties:{foo:{type:"string"},bar:{type:"number",maximum:3}}},validate=ajv.compile(schema);function test(e){validate(e)?console.log("Valid!"):console.log("Invalid: "+ajv.errorsText(validate.errors))}test({foo:"abc",bar:2}),test({foo:2,bar:4});

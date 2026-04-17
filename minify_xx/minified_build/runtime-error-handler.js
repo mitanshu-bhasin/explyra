@@ -1,0 +1,1 @@
+export const RuntimeErrorHandler={hadRuntimeError:!1};

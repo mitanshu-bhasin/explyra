@@ -1,0 +1,1 @@
+var adapter=require("./");module.exports=adapter(function(){return localStorage.getItem("debug")||localStorage.getItem("diagnostics")});

@@ -1,0 +1,1 @@
+function getWorkerState(){return globalThis.__vitest_worker__}function getCurrentEnvironment(){const t=getWorkerState();return null==t?void 0:t.environment.name}export{getCurrentEnvironment as a,getWorkerState as g};

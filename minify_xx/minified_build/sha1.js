@@ -1,0 +1,1 @@
+import{SHA1 as SHA1n,sha1 as sha1n}from"./legacy.js";export const SHA1=SHA1n;export const sha1=sha1n;

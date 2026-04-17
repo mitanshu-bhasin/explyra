@@ -1,0 +1,1 @@
+var overArg=require("./_overArg"),nativeKeys=overArg(Object.keys,Object);module.exports=nativeKeys;

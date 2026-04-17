@@ -1,0 +1,1 @@
+export function removeAlphaVariables(e,l){e.walkDecls(e=>{if(l.includes(e.prop))e.remove();else for(let a of l)e.value.includes(`/ var(${a})`)?e.value=e.value.replace(`/ var(${a})`,""):e.value.includes(`/ var(${a}, 1)`)&&(e.value=e.value.replace(`/ var(${a}, 1)`,""))})}

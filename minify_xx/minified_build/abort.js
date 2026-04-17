@@ -1,0 +1,1 @@
+function abort(o){Object.keys(o.jobs).forEach(clean.bind(o)),o.jobs={}}function clean(o){"function"==typeof this.jobs[o]&&this.jobs[o]()}module.exports=abort;

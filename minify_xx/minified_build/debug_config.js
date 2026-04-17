@@ -1,0 +1,1 @@
+import fs from"fs";const content=fs.readFileSync("fb.config","utf-8"),match=content.match(/const firebaseConfig = ({[\s\S]+?});/);console.log("Match found:",!!match),match?console.log("JSON content:",match[1]):console.log("REGULAR EXPRESSION FAILED");

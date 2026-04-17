@@ -1,0 +1,1 @@
+let Value=require("../value");class ImageSet extends Value{replace(e,a){let l=super.replace(e,a);return"-webkit-"===a&&(l=l.replace(/("[^"]+"|'[^']+')(\s+\d+\w)/gi,"url($1)$2")),l}}ImageSet.names=["image-set"],module.exports=ImageSet;

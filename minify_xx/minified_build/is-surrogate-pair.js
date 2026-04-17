@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t,e){return t>=55296&&t<56320&&e>=56320&&e<57344};

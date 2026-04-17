@@ -1,0 +1,1 @@
+var baseClamp=require("./_baseClamp"),copyArray=require("./_copyArray"),shuffleSelf=require("./_shuffleSelf");function arraySampleSize(e,r){return shuffleSelf(copyArray(e),baseClamp(r,0,e.length))}module.exports=arraySampleSize;

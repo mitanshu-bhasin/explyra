@@ -1,0 +1,1 @@
+var inspect=require("../"),test=require("tape");test("circular",function(r){r.plan(2);var a={a:1,b:[3,4]};a.c=a,r.equal(inspect(a),"{ a: 1, b: [ 3, 4 ], c: [Circular] }");var e={};e.a=[e],e.b={},e.b.inner=e.b,e.b.obj=e,r.equal(inspect(e),"{ a: [ [Circular] ], b: { inner: [Circular], obj: [Circular] } }")});

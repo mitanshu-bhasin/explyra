@@ -1,0 +1,1 @@
+import collectElements from"./collectElements";export default function parents(e){return collectElements(e,"parentElement")}

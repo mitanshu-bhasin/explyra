@@ -1,0 +1,1 @@
+"use strict";exports.isLeapYear=void 0;var _index=require("../isLeapYear.js"),_index2=require("./_lib/convertToFP.js");const isLeapYear=exports.isLeapYear=(0,_index2.convertToFP)(_index.isLeapYear,1);

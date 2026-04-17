@@ -1,0 +1,1 @@
+"use strict";const AbortSignal=require("../generated/AbortSignal");class AbortControllerImpl{constructor(t){this.signal=AbortSignal.createImpl(t,[])}abort(t){this.signal._signalAbort(t)}}module.exports={implementation:AbortControllerImpl};

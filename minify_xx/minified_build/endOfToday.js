@@ -1,0 +1,1 @@
+"use strict";exports.endOfToday=endOfToday;var _index=require("./endOfDay.js");function endOfToday(){return(0,_index.endOfDay)(Date.now())}

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.isStartOfExpressionStatement=isStartOfExpressionStatement;const utils_1=require("@typescript-eslint/utils");function isStartOfExpressionStatement(t){const e=t.range[0];let r=t;for(;(r=r.parent)&&r.range[0]===e;)if(r.type===utils_1.AST_NODE_TYPES.ExpressionStatement)return!0;return!1}

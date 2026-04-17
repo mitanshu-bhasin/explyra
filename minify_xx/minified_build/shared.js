@@ -1,0 +1,1 @@
+"use strict";function stringifyValueForError(r,e){return r?JSON.stringify(r,null,4).replace(/\n/gu,`\n${" ".repeat(e)}`):`${r}`}module.exports={stringifyValueForError:stringifyValueForError};

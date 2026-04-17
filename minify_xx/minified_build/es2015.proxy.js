@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2015_proxy=void 0;const base_config_1=require("./base-config");exports.es2015_proxy={libs:[],variables:[["ProxyHandler",base_config_1.TYPE],["ProxyConstructor",base_config_1.TYPE]]};

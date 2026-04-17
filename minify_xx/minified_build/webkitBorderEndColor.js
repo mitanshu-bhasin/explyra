@@ -1,0 +1,1 @@
+"use strict";var parseColor=require("../parsers").parseColor;module.exports.definition={set:function(e){this._setProperty("-webkit-border-end-color",parseColor(e))},get:function(){return this.getPropertyValue("-webkit-border-end-color")},enumerable:!0,configurable:!0};

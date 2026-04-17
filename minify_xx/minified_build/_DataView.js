@@ -1,0 +1,1 @@
+var getNative=require("./_getNative"),root=require("./_root"),DataView=getNative(root,"DataView");module.exports=DataView;

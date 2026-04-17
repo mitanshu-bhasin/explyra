@@ -1,0 +1,1 @@
+import*as React from"react";var IsRestoringContext=React.createContext(!1),useIsRestoring=()=>React.useContext(IsRestoringContext),IsRestoringProvider=IsRestoringContext.Provider;export{IsRestoringProvider,useIsRestoring};

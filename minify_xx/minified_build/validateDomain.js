@@ -1,0 +1,1 @@
+const validateDomain=(a,i)=>{if(!i)return!1;const n=`${i}.mitanshu.tech`;return a===n||!!a.endsWith(`.${n}`)};window.validateDomain=validateDomain;

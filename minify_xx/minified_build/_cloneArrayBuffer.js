@@ -1,0 +1,1 @@
+var Uint8Array=require("./_Uint8Array");function cloneArrayBuffer(r){var e=new r.constructor(r.byteLength);return new Uint8Array(e).set(new Uint8Array(r)),e}module.exports=cloneArrayBuffer;

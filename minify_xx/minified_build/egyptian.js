@@ -1,0 +1,1 @@
+const Fraction=require("fraction.js");function egyptian(n,e){var r=[];do{var i=Math.ceil(e/n),o=new Fraction(n,e).sub(1,i);r.push(i),n=Number(o.n),e=Number(o.d)}while(0n!==n);return r}console.log("1 / "+egyptian(521,1050).join(" + 1 / "));

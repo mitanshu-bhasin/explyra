@@ -1,0 +1,1 @@
+"use strict";function createPromiseWithResolvers(){let e,r;const t=new Promise((t,s)=>{e=t,r=s});return{resolve:e,reject:r,promise:t}}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"createPromiseWithResolvers",{enumerable:!0,get:function(){return createPromiseWithResolvers}});

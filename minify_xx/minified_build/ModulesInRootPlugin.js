@@ -1,0 +1,1 @@
+"use strict";module.exports=class{constructor(t,s,o){this.source=t,this.path=s,this.target=o}apply(t){const s=t.ensureHook(this.target);t.getHook(this.source).tapAsync("ModulesInRootPlugin",(o,e,r)=>{const u={...o,path:this.path,request:`./${o.request}`,module:!1};t.doResolve(s,u,`looking for modules in ${this.path}`,e,r)})}};

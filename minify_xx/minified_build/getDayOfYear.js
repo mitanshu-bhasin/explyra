@@ -1,0 +1,1 @@
+"use strict";exports.getDayOfYear=void 0;var _index=require("../getDayOfYear.js"),_index2=require("./_lib/convertToFP.js");const getDayOfYear=exports.getDayOfYear=(0,_index2.convertToFP)(_index.getDayOfYear,1);

@@ -1,0 +1,1 @@
+function mutationOptions(t){return t}export{mutationOptions};

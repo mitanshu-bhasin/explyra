@@ -1,0 +1,1 @@
+"use strict";exports.formatWithOptions=void 0;var _index=require("../format.js"),_index2=require("./_lib/convertToFP.js");const formatWithOptions=exports.formatWithOptions=(0,_index2.convertToFP)(_index.format,3);

@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK_CHUNK_LISTS||(globalThis.TURBOPACK_CHUNK_LISTS=[])).push({script:"object"==typeof document?document.currentScript:void 0,chunks:["static/chunks/retired_app_expert_[id]_page_tsx_235806fa._.js","static/chunks/f2586_lucide-react_dist_esm_icons_126a3f54._.js"],source:"dynamic"});

@@ -1,0 +1,1 @@
+"use strict";exports.getOverlappingDaysInIntervals=void 0;var _index=require("../getOverlappingDaysInIntervals.js"),_index2=require("./_lib/convertToFP.js");const getOverlappingDaysInIntervals=exports.getOverlappingDaysInIntervals=(0,_index2.convertToFP)(_index.getOverlappingDaysInIntervals,2);

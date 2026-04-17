@@ -1,0 +1,1 @@
+var baseIsMatch=require("./_baseIsMatch"),getMatchData=require("./_getMatchData"),matchesStrictComparable=require("./_matchesStrictComparable");function baseMatches(a){var t=getMatchData(a);return 1==t.length&&t[0][2]?matchesStrictComparable(t[0][0],t[0][1]):function(e){return e===a||baseIsMatch(e,a,t)}}module.exports=baseMatches;

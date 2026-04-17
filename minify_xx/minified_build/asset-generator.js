@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.AssetGenerator=void 0;class AssetGenerator{constructor(e){this.options=e}}exports.AssetGenerator=AssetGenerator;

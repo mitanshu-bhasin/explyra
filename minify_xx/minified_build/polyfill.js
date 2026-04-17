@@ -1,0 +1,1 @@
+"use strict";var implementation=require("./implementation");module.exports=function(){if(String.prototype.matchAll)try{"".matchAll(RegExp.prototype)}catch(t){return String.prototype.matchAll}return implementation};

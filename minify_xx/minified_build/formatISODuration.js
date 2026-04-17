@@ -1,0 +1,1 @@
+"use strict";exports.formatISODuration=void 0;var _index=require("../formatISODuration.js"),_index2=require("./_lib/convertToFP.js");const formatISODuration=exports.formatISODuration=(0,_index2.convertToFP)(_index.formatISODuration,1);

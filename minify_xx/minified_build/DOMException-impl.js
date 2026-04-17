@@ -1,0 +1,1 @@
+"use strict";const legacyErrorCodes=require("./legacy-error-codes.json"),idlUtils=require("./utils.js");exports.implementation=class{constructor(r,[e,t]){this.name=t,this.message=e}get code(){return legacyErrorCodes[this.name]||0}},exports.init=r=>{if(Error.captureStackTrace){const e=idlUtils.wrapperForImpl(r);Error.captureStackTrace(e,e.constructor)}};

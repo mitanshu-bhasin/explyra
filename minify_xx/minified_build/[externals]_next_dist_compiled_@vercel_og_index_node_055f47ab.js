@@ -1,0 +1,1 @@
+module.exports=[21425,e=>e.a(async(t,a)=>{try{let t=await e.y("next/dist/compiled/@vercel/og/index.node.js");e.n(t),a()}catch(e){a(e)}},!0)];

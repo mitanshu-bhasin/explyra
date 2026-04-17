@@ -1,0 +1,1 @@
+let Declaration=require("../declaration"),flexSpec=require("./flex-spec");class Flex extends Declaration{normalize(){return"flex"}prefixed(e,l){let r;return[r,l]=flexSpec(l),2009===r?l+"box-flex":2012===r?l+"flex-positive":super.prefixed(e,l)}}Flex.names=["flex-grow","flex-positive"],module.exports=Flex;

@@ -1,0 +1,1 @@
+import classPrivateFieldGet2 from"./classPrivateFieldGet2.js";function _classExtractFieldDescriptor(t,e){return classPrivateFieldGet2(e,t)}export{_classExtractFieldDescriptor as default};

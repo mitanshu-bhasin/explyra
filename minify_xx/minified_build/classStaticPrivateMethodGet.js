@@ -1,0 +1,1 @@
+import assertClassBrand from"./assertClassBrand.js";function _classStaticPrivateMethodGet(s,t,a){return assertClassBrand(t,s),a}export{_classStaticPrivateMethodGet as default};

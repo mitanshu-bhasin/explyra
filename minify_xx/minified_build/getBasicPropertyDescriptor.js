@@ -1,0 +1,1 @@
+"use strict";module.exports=function(e){return{set:function(t){this._setProperty(e,t)},get:function(){return this.getPropertyValue(e)},enumerable:!0,configurable:!0}};

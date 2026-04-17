@@ -1,0 +1,1 @@
+var colorspace=require("@so-ric/colorspace");module.exports=function(r,o){var c=o.namespace;if(!1===o.colors)return r[0]=c+": "+r[0],r;var e=colorspace(c);return r[0]="%c"+c+":%c "+r[0],r.splice(1,0,"color:"+e,"color:inherit"),r};

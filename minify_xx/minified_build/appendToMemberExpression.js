@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=appendToMemberExpression;var _index=require("../builders/generated/index.js");function appendToMemberExpression(e,r,o=!1){return e.object=(0,_index.memberExpression)(e.object,e.property,e.computed),e.property=r,e.computed=!!o,e}

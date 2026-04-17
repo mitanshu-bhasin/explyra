@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2023_intl=void 0;const base_config_1=require("./base-config");exports.es2023_intl={libs:[],variables:[["Intl",base_config_1.TYPE_VALUE]]};

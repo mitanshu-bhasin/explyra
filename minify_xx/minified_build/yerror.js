@@ -1,0 +1,1 @@
+export class YError extends Error{constructor(r){super(r||"yargs error"),this.name="YError",Error.captureStackTrace&&Error.captureStackTrace(this,YError)}}

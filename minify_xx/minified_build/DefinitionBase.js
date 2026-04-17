@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.DefinitionBase=void 0;const ID_1=require("../ID"),generator=(0,ID_1.createIdGenerator)();class DefinitionBase{$id=generator();type;name;node;parent;constructor(e,t,i,n){this.type=e,this.name=t,this.node=i,this.parent=n}}exports.DefinitionBase=DefinitionBase;

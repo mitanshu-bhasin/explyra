@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"UsageError",{enumerable:!0,get:function(){return UsageError}});class UsageError extends Error{constructor(r,e){super(`${r}\n\nLearn more: ${e}`),this.name="UsageError",this.stack=void 0}}

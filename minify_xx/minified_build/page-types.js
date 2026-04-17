@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"PAGE_TYPES",{enumerable:!0,get:function(){return PAGE_TYPES}});var PAGE_TYPES=function(e){return e.PAGES="pages",e.ROOT="root",e.APP="app",e}({});

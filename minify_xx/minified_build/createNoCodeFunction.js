@@ -1,0 +1,1 @@
+"use strict";var fib=require("./fib"),max=1e8,start=Date.now();function createNoCodeFunction(){fib(100)}for(var i=0;i<max;i++)createNoCodeFunction();var time=Date.now()-start;console.log("Total time",time),console.log("Total iterations",max),console.log("Iteration/s",max/time*1e3);

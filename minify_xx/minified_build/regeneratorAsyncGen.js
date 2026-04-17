@@ -1,0 +1,1 @@
+import regenerator from"./regenerator.js";import regeneratorAsyncIterator from"./regeneratorAsyncIterator.js";function _regeneratorAsyncGen(r,e,t,n,o){return new regeneratorAsyncIterator(regenerator().w(r,e,t,n),o||Promise)}export{_regeneratorAsyncGen as default};

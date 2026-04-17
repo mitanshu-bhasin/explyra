@@ -1,0 +1,1 @@
+module.exports=function n(o,r,e){var t,s,a,d;for(t=0,s=o.length;t<s;t+=1)a=o[t],e||(d=r(a,t,o)),!1!==d&&"function"===a.type&&Array.isArray(a.nodes)&&n(a.nodes,r,e),e&&r(a,t,o)};

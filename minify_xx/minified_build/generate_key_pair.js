@@ -1,0 +1,1 @@
+import{generateKeyPair as generate}from"../runtime/generate.js";export async function generateKeyPair(e,r){return generate(e,r)}

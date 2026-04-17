@@ -1,0 +1,1 @@
+"use strict";module.exports=function(e){const{pluginName:t}=e;return`\nESLint couldn't find the plugin "${t}". because there is whitespace in the name. Please check your configuration and remove all whitespace from the plugin name.\n\nIf you still can't figure out the problem, please stop by https://eslint.org/chat/help to chat with the team.\n`.trimStart()};

@@ -1,0 +1,1 @@
+"use strict";exports.isThisWeek=isThisWeek;var _index=require("./constructNow.js"),_index2=require("./isSameWeek.js");function isThisWeek(e,i){return(0,_index2.isSameWeek)(e,(0,_index.constructNow)(e),i)}

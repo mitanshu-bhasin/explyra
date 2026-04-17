@@ -1,0 +1,1 @@
+function stripCfConnectingIPHeader(e,n){const t=new Request(e,n);return t.headers.delete("CF-Connecting-IP"),t}globalThis.fetch=new Proxy(globalThis.fetch,{apply:(e,n,t)=>Reflect.apply(e,n,[stripCfConnectingIPHeader.apply(null,t)])});

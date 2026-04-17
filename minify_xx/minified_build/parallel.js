@@ -1,0 +1,1 @@
+var iterate=require("./lib/iterate.js"),initState=require("./lib/state.js"),terminator=require("./lib/terminator.js");function parallel(e,t,r){for(var i=initState(e);i.index<(i.keyedList||e).length;)iterate(e,t,i,function(e,t){e?r(e,t):0!==Object.keys(i.jobs).length||r(null,i.results)}),i.index++;return terminator.bind(i,r)}module.exports=parallel;

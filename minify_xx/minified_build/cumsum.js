@@ -1,0 +1,1 @@
+"use strict";function cumsum(e,r){var t=0,u=0;return Float64Array.from(e,void 0===r?e=>t+=+e||0:o=>t+=+r(o,u++,e)||0)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=cumsum;

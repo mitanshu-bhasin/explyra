@@ -1,0 +1,10 @@
+/**
+ * @license React
+ * use-sync-external-store-shim.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+"use strict";"production"!==process.env.NODE_ENV&&function(){function e(e){var t=e.getSnapshot;e=e.value;try{var r=t();return!n(e,r)}catch(e){return!0}}"undefined"!=typeof __REACT_DEVTOOLS_GLOBAL_HOOK__&&"function"==typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart&&__REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());var t=require("react"),n="function"==typeof Object.is?Object.is:function(e,t){return e===t&&(0!==e||1/e==1/t)||e!=e&&t!=t},r=t.useState,o=t.useEffect,u=t.useLayoutEffect,a=t.useDebugValue,i=!1,s=!1,_="undefined"==typeof window||void 0===window.document||void 0===window.document.createElement?function(e,t){return t()}:function(_,c){i||void 0===t.startTransition||(i=!0,console.error("You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."));var O=c();if(!s){var l=c();n(O,l)||(console.error("The result of getSnapshot should be cached to avoid an infinite loop"),s=!0)}var f=(l=r({inst:{value:O,getSnapshot:c}}))[0].inst,d=l[1];return u(function(){f.value=O,f.getSnapshot=c,e(f)&&d({inst:f})},[_,O,c]),o(function(){return e(f)&&d({inst:f}),_(function(){e(f)&&d({inst:f})})},[_]),a(O),O};exports.useSyncExternalStore=void 0!==t.useSyncExternalStore?t.useSyncExternalStore:_,"undefined"!=typeof __REACT_DEVTOOLS_GLOBAL_HOOK__&&"function"==typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop&&__REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error())}();

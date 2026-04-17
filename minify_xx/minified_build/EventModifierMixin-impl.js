@@ -1,0 +1,1 @@
+"use strict";class EventModifierMixinImpl{getModifierState(e){return"Control"===e?Boolean(this.ctrlKey):["Alt","Meta","Shift"].includes(e)?Boolean(this[`${e.toLowerCase()}Key`]):Boolean(this[`modifier${e}`])}}exports.implementation=EventModifierMixinImpl;

@@ -1,0 +1,1 @@
+import collectSiblings from"./collectSiblings";export default function siblings(l){return collectSiblings(l&&l.parentElement?l.parentElement.firstElementChild:null,l)}

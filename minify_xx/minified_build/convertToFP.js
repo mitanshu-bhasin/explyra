@@ -1,0 +1,1 @@
+"use strict";function convertToFP(e,o,t=[]){return t.length>=o?e(...t.slice(0,o).reverse()):(...r)=>convertToFP(e,o,t.concat(r))}exports.convertToFP=convertToFP;

@@ -1,0 +1,1 @@
+"use strict";exports.formatRFC7231=void 0;var _index=require("../formatRFC7231.js"),_index2=require("./_lib/convertToFP.js");const formatRFC7231=exports.formatRFC7231=(0,_index2.convertToFP)(_index.formatRFC7231,1);

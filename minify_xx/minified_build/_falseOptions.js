@@ -1,0 +1,1 @@
+module.exports={cap:!1,curry:!1,fixed:!1,immutable:!1,rearg:!1};

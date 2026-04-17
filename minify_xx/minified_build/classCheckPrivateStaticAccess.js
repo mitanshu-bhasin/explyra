@@ -1,0 +1,1 @@
+import assertClassBrand from"./assertClassBrand.js";function _classCheckPrivateStaticAccess(s,a,t){return assertClassBrand(a,s,t)}export{_classCheckPrivateStaticAccess as default};

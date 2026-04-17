@@ -1,0 +1,1 @@
+var isCoreModule=require("is-core-module");module.exports=function(e){return isCoreModule(e)};

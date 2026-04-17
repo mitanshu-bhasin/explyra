@@ -1,0 +1,1 @@
+module.exports=function(e){var n=["red","yellow","green","blue","magenta"];return function(r,t,u){return" "===r?r:e[n[t++%n.length]](r)}};

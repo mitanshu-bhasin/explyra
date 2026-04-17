@@ -1,0 +1,1 @@
+var async=require("./async.js"),abort=require("./abort.js");function iterate(e,r,t,n){var s=t.keyedList?t.keyedList[t.index]:t.index;t.jobs[s]=runJob(r,s,e[s],function(e,r){s in t.jobs&&(delete t.jobs[s],e?abort(t):t.results[s]=r,n(e,t.results))})}function runJob(e,r,t,n){return 2==e.length?e(t,async(n)):e(t,r,async(n))}module.exports=iterate;

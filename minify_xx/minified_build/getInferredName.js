@@ -1,0 +1,1 @@
+"use strict";var getInferredName;try{getInferredName=Function("s","return { [s]() {} }[s].name;")}catch(e){}var inferred=function(){};module.exports=getInferredName&&"inferred"===inferred.name?getInferredName:null;

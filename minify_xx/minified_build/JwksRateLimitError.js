@@ -1,0 +1,1 @@
+function JwksRateLimitError(r){Error.call(this,r),Error.captureStackTrace(this,this.constructor),this.name="JwksRateLimitError",this.message=r}JwksRateLimitError.prototype=Object.create(Error.prototype),JwksRateLimitError.prototype.constructor=JwksRateLimitError,module.exports=JwksRateLimitError;

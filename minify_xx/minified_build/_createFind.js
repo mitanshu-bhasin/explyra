@@ -1,0 +1,1 @@
+var baseIteratee=require("./_baseIteratee"),isArrayLike=require("./isArrayLike"),keys=require("./keys");function createFind(e){return function(r,i,t){var a=Object(r);if(!isArrayLike(r)){var n=baseIteratee(i,3);r=keys(r),i=function(e){return n(a[e],e,a)}}var s=e(r,i,t);return s>-1?a[n?r[s]:s]:void 0}}module.exports=createFind;

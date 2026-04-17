@@ -1,0 +1,1 @@
+"use strict";const hueToRgb=(o,t,u)=>(u<0&&(u+=6),u>=6&&(u-=6),u<1?(t-o)*u+o:u<3?t:u<4?(t-o)*(4-u)+o:o);exports.hslToRgb=(o,t,u)=>{const h=u<=.5?u*(t+1):u+t-u*t,e=2*u-h,r=hueToRgb(e,h,o+2),n=hueToRgb(e,h,o),s=hueToRgb(e,h,o-2);return[Math.round(255*r),Math.round(255*n),Math.round(255*s)]};

@@ -1,0 +1,1 @@
+import{relative}from"path";import{SimpleWebpackError}from"./simpleWebpackError";import{getAppLoader}from"../../../entries";export function getNextAppLoaderError(r,e,t){try{if(!e.loaders[0].loader.includes(getAppLoader()))return!1;const o=relative(t.context,e.buildInfo.route.absolutePagePath);return new SimpleWebpackError(o,r.message)}catch{return!1}}

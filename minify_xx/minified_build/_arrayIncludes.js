@@ -1,0 +1,1 @@
+var baseIndexOf=require("./_baseIndexOf");function arrayIncludes(e,n){return!(null==e||!e.length)&&baseIndexOf(e,n,0)>-1}module.exports=arrayIncludes;

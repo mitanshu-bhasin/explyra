@@ -1,0 +1,1 @@
+"use strict";const enumerationValues=new Set(["start","center","end","nearest"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:n="The provided value"}={})=>{const r=`${t}`;if(!enumerationValues.has(r))throw new e.TypeError(`${n} '${r}' is not a valid enumeration value for ScrollLogicalPosition`);return r};

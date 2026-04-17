@@ -1,0 +1,1 @@
+"use strict";exports.setMonth=void 0;var _index=require("../setMonth.js"),_index2=require("./_lib/convertToFP.js");const setMonth=exports.setMonth=(0,_index2.convertToFP)(_index.setMonth,2);

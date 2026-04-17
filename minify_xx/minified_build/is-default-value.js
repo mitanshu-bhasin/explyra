@@ -1,0 +1,1 @@
+"use strict";const{parseArgs:parseArgs}=require(".."),options={file:{short:"f",type:"string",default:"FOO"}},{values:values,tokens:tokens}=parseArgs({options:options,tokens:!0}),isFileDefault=!tokens.some(e=>"option"===e.kind&&"file"===e.name);console.log(values),console.log(`Is the file option [${values.file}] the default value? ${isFileDefault}`);

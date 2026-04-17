@@ -1,0 +1,1 @@
+var createCtor=require("./_createCtor"),root=require("./_root"),WRAP_BIND_FLAG=1;function createBind(r,t,e){var o=t&WRAP_BIND_FLAG,i=createCtor(r);return function t(){return(this&&this!==root&&this instanceof t?i:r).apply(o?e:this,arguments)}}module.exports=createBind;

@@ -1,0 +1,1 @@
+var utf8Encoder=new TextEncoder,utf8Decoder=new TextDecoder;export{utf8Decoder,utf8Encoder};

@@ -1,0 +1,1 @@
+"use strict";function*flatten(e){for(const t of e)yield*t}function merge(e){return Array.from(flatten(e))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=merge;

@@ -1,0 +1,1 @@
+"use strict";var experimentalWarnings=new Set;function emitExperimentalWarning(e){if(!experimentalWarnings.has(e)){var n=e+" is an experimental feature. This feature could change at any time";experimentalWarnings.add(e),process.emitWarning(n,"ExperimentalWarning")}}function noop(){}module.exports.emitExperimentalWarning=process.emitWarning?emitExperimentalWarning:noop;

@@ -1,0 +1,1 @@
+"use strict";const{mixin:mixin}=require("../../utils"),SVGListBase=require("./SVGListBase");class SVGStringListImpl{constructor(t,i,s){this._globalObject=t,this._initList(s)}}mixin(SVGStringListImpl.prototype,SVGListBase.prototype),exports.implementation=SVGStringListImpl;

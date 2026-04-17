@@ -1,0 +1,1 @@
+import globParent from"glob-parent";export function parseGlob(r){let t=r,s=globParent(r);return"."!==s&&(t=r.substr(s.length),"/"===t.charAt(0)&&(t=t.substr(1))),"./"===t.substr(0,2)?t=t.substr(2):"/"===t.charAt(0)&&(t=t.substr(1)),{base:s,glob:t}}

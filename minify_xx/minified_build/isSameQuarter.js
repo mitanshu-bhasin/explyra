@@ -1,0 +1,1 @@
+"use strict";exports.isSameQuarter=void 0;var _index=require("../isSameQuarter.js"),_index2=require("./_lib/convertToFP.js");const isSameQuarter=exports.isSameQuarter=(0,_index2.convertToFP)(_index.isSameQuarter,2);

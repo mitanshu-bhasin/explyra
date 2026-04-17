@@ -1,0 +1,1 @@
+var coreJsData=require("./_coreJsData"),isFunction=require("./isFunction"),stubFalse=require("./stubFalse"),isMaskable=coreJsData?isFunction:stubFalse;module.exports=isMaskable;

@@ -1,0 +1,1 @@
+module.exports=function(){var r=Error.prepareStackTrace;Error.prepareStackTrace=function(r,e){return e};var e=(new Error).stack;return Error.prepareStackTrace=r,e[2].getFileName()};

@@ -1,0 +1,1 @@
+var getTag=require("./_getTag"),isObjectLike=require("./isObjectLike"),setTag="[object Set]";function baseIsSet(e){return isObjectLike(e)&&getTag(e)==setTag}module.exports=baseIsSet;

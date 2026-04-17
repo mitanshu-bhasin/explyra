@@ -1,0 +1,1 @@
+"use strict";exports.monthsToQuarters=void 0;var _index=require("../monthsToQuarters.js"),_index2=require("./_lib/convertToFP.js");const monthsToQuarters=exports.monthsToQuarters=(0,_index2.convertToFP)(_index.monthsToQuarters,1);

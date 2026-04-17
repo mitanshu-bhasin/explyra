@@ -1,0 +1,1 @@
+import parser from"postcss-selector-parser";import escapeCommas from"./escapeCommas";export default function escapeClassName(e){let a=parser.className();return a.value=e,escapeCommas(a?.raws?.value??a.value)}

@@ -1,0 +1,1 @@
+"use strict";const UIEventImpl=require("./UIEvent-impl").implementation,TouchEventInit=require("../generated/TouchEventInit");class TouchEventImpl extends UIEventImpl{}TouchEventImpl.defaultInit=TouchEventInit.convert(void 0,void 0),module.exports={implementation:TouchEventImpl};

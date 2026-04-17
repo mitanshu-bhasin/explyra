@@ -1,0 +1,1 @@
+"use strict";function denormalizeAppPagePath(e){return"/index"===e?"/":e}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"denormalizeAppPagePath",{enumerable:!0,get:function(){return denormalizeAppPagePath}});

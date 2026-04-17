@@ -1,0 +1,1 @@
+import{r as rpc}from"./chunk-mocker.js";class ModuleMockerServerInterceptor{async register(e){await rpc("vitest:interceptor:register",e.toJSON())}async delete(e){await rpc("vitest:interceptor:delete",e)}invalidate(){rpc("vitest:interceptor:invalidate")}}export{ModuleMockerServerInterceptor as M};

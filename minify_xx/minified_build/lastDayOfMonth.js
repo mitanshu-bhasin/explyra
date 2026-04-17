@@ -1,0 +1,1 @@
+"use strict";exports.lastDayOfMonth=void 0;var _index=require("../lastDayOfMonth.js"),_index2=require("./_lib/convertToFP.js");const lastDayOfMonth=exports.lastDayOfMonth=(0,_index2.convertToFP)(_index.lastDayOfMonth,1);

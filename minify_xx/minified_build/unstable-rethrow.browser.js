@@ -1,0 +1,1 @@
+import{isBailoutToCSRError}from"../../shared/lib/lazy-dynamic/bailout-to-csr";import{isNextRouterError}from"./is-next-router-error";export function unstable_rethrow(r){if(isNextRouterError(r)||isBailoutToCSRError(r))throw r;r instanceof Error&&"cause"in r&&unstable_rethrow(r.cause)}

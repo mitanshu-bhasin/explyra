@@ -1,0 +1,1 @@
+var copyArray=require("./_copyArray"),isIndex=require("./_isIndex"),nativeMin=Math.min;function reorder(r,e){for(var n=r.length,i=nativeMin(e.length,n),o=copyArray(r);i--;){var a=e[i];r[i]=isIndex(a,n)?o[a]:void 0}return r}module.exports=reorder;

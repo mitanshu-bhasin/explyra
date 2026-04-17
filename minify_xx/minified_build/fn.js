@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.tryFn=void 0;const tryFn=async(t,...r)=>{try{return await t(...r)}catch{}return null};exports.tryFn=tryFn;

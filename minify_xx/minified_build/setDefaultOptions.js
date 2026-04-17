@@ -1,0 +1,1 @@
+"use strict";exports.setDefaultOptions=setDefaultOptions;var _index=require("./_lib/defaultOptions.js");function setDefaultOptions(t){const e={},o=(0,_index.getDefaultOptions)();for(const t in o)Object.prototype.hasOwnProperty.call(o,t)&&(e[t]=o[t]);for(const o in t)Object.prototype.hasOwnProperty.call(t,o)&&(void 0===t[o]?delete e[o]:e[o]=t[o]);(0,_index.setDefaultOptions)(e)}

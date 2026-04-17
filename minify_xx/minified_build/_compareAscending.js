@@ -1,0 +1,1 @@
+var isSymbol=require("./isSymbol");function compareAscending(i,r){if(i!==r){var e=void 0!==i,n=null===i,o=i==i,l=isSymbol(i),u=void 0!==r,m=null===r,s=r==r,c=isSymbol(r);if(!m&&!c&&!l&&i>r||l&&u&&s&&!m&&!c||n&&u&&s||!e&&s||!o)return 1;if(!n&&!l&&!c&&i<r||c&&e&&o&&!n&&!l||m&&e&&o||!u&&o||!s)return-1}return 0}module.exports=compareAscending;

@@ -1,0 +1,1 @@
+var nativeMax=Math.max;function composeArgsRight(r,t,a,e){for(var o=-1,n=r.length,g=-1,h=a.length,i=-1,s=t.length,v=nativeMax(n-h,0),f=Array(v+s),l=!e;++o<v;)f[o]=r[o];for(var m=o;++i<s;)f[m+i]=t[i];for(;++g<h;)(l||o<n)&&(f[m+a[g]]=r[o++]);return f}module.exports=composeArgsRight;

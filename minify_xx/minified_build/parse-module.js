@@ -1,0 +1,1 @@
+import{LRUCache}from"../../server/lib/lru-cache";import{withPromiseCache}from"../../lib/with-promise-cache";import{createHash}from"crypto";import{parse}from"../swc";export const parseModule=withPromiseCache(new LRUCache(500),async(e,r)=>parse(r,{isModule:"unknown",filename:e}).catch(()=>null),(e,r)=>createHash("sha1").update(r).digest("hex"));

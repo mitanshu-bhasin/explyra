@@ -1,0 +1,1 @@
+var arrayMap=require("./_arrayMap");function baseToPairs(r,a){return arrayMap(a,function(a){return[a,r[a]]})}module.exports=baseToPairs;

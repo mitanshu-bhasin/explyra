@@ -1,0 +1,1 @@
+"use strict";function minIndex(e,o){let t,n=-1,l=-1;if(void 0===o)for(const o of e)++l,null!=o&&(t>o||void 0===t&&o>=o)&&(t=o,n=l);else for(let i of e)null!=(i=o(i,++l,e))&&(t>i||void 0===t&&i>=i)&&(t=i,n=l);return n}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=minIndex;

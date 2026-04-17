@@ -1,0 +1,1 @@
+"use strict";const readCache=require("read-cache"),dataURL=require("./data-url");module.exports=a=>dataURL.isValid(a)?dataURL.contents(a):readCache(a,"utf-8");

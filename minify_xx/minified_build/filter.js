@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.BaseFilter=void 0;class BaseFilter{async sendMetadata(e){return e}receiveMetadata(e){return e}async sendMessage(e){return e}async receiveMessage(e){return e}receiveTrailers(e){return e}}exports.BaseFilter=BaseFilter;

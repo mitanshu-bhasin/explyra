@@ -1,0 +1,1 @@
+import{_globalThis}from"../platform";export const GLOBAL_LOGS_API_KEY=Symbol.for("io.opentelemetry.js.api.logs");export const _global=_globalThis;export function makeGetter(o,t,e){return r=>r===o?t:e}export const API_BACKWARDS_COMPATIBILITY_VERSION=1;

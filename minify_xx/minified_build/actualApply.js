@@ -1,0 +1,1 @@
+"use strict";var bind=require("function-bind"),$apply=require("./functionApply"),$call=require("./functionCall"),$reflectApply=require("./reflectApply");module.exports=$reflectApply||bind.call($call,$apply);

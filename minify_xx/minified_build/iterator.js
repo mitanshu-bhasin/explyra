@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t){t.prototype[Symbol.iterator]=function*(){for(let t=this.head;t;t=t.next)yield t.value}};

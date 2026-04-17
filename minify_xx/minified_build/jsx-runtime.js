@@ -1,0 +1,1 @@
+"use strict";"production"===process.env.NODE_ENV?module.exports=require("./cjs/react-jsx-runtime.production.min.js"):module.exports=require("./cjs/react-jsx-runtime.development.js");

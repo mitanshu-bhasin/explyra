@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=union;var _index=require("../../../lib-vendor/internmap/src/index.js");function union(...e){const n=new _index.InternSet;for(const r of e)for(const e of r)n.add(e);return n}

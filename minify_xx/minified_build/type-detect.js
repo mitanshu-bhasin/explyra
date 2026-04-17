@@ -1,0 +1,1 @@
+export function type(t){if(void 0===t)return"undefined";if(null===t)return"null";const n=t[Symbol.toStringTag];return"string"==typeof n?n:Object.prototype.toString.call(t).slice(8,-1)}

@@ -1,0 +1,1 @@
+"use strict";exports.isYesterday=isYesterday;var _index=require("./constructNow.js"),_index2=require("./isSameDay.js"),_index3=require("./subDays.js");function isYesterday(e){return(0,_index2.isSameDay)(e,(0,_index3.subDays)((0,_index.constructNow)(e),1))}

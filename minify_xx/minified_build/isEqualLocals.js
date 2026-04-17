@@ -1,0 +1,1 @@
+function isEqualLocals(r,u,e){if(!r&&u||r&&!u)return!1;let t;for(t in r)if((!e||"default"!==t)&&r[t]!==u[t])return!1;for(t in u)if(!(e&&"default"===t||r[t]))return!1;return!0}module.exports=isEqualLocals;

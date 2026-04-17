@@ -1,0 +1,1 @@
+"use strict";function getFixOrSuggest({fixOrSuggest:e,suggestion:t}){switch(e){case"fix":return{fix:t.fix};case"none":return;case"suggest":return{suggest:[t]}}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getFixOrSuggest=getFixOrSuggest;

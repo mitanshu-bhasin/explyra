@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t,e){return Object.keys(e).forEach(function(c){t[c]=t[c]||e[c]}),t};

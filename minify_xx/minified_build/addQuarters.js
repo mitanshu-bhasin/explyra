@@ -1,0 +1,1 @@
+"use strict";exports.addQuarters=void 0;var _index=require("../addQuarters.js"),_index2=require("./_lib/convertToFP.js");const addQuarters=exports.addQuarters=(0,_index2.convertToFP)(_index.addQuarters,2);

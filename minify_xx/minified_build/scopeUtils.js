@@ -1,0 +1,1 @@
+"use strict";function isReferenceToGlobalFunction(e,n,o){const t=o.getScope(n).references.find(n=>n.identifier.name===e);return!t?.resolved?.defs.length}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isReferenceToGlobalFunction=isReferenceToGlobalFunction;

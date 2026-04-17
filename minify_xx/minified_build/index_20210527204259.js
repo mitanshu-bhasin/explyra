@@ -1,0 +1,1 @@
+if(!globalThis.DOMException){const{MessageChannel:e}=require("worker_threads"),r=(new e).port1,o=new ArrayBuffer;try{r.postMessage(o,[o,o])}catch(e){globalThis.DOMException=e.constructor}}module.exports;

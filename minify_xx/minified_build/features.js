@@ -1,0 +1,1 @@
+export default{jsx:!1,globalReturn:!1,impliedStrict:!1};

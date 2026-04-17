@@ -1,0 +1,1 @@
+import crypto from"crypto";function md5(r){return Array.isArray(r)?r=Buffer.from(r):"string"==typeof r&&(r=Buffer.from(r,"utf8")),crypto.createHash("md5").update(r).digest()}export default md5;

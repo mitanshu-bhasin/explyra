@@ -1,0 +1,1 @@
+import{generateSecret as generate}from"../runtime/generate.js";export async function generateSecret(e,r){return generate(e,r)}

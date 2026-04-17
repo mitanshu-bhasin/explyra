@@ -1,0 +1,12 @@
+"use strict";
+/**
+ * Character classes and associated utilities for the 4th edition of XML 1.0.
+ *
+ * These are deprecated in the 5th edition but some of the standards related to
+ * XML 1.0 (e.g. XML Schema 1.0) refer to these. So they are still generally
+ * useful.
+ *
+ * @author Louis-Dominique Dubeau
+ * @license MIT
+ * @copyright Louis-Dominique Dubeau
+ */Object.defineProperty(exports,"__esModule",{value:!0}),exports.CHAR="\t\n\r -퟿-�𐀀-􏿿",exports.S=" \t\r\n",exports.BASE_CHAR="A-Za-zÀ-ÖØ-öø-ÿĀ-ıĴ-ľŁ-ňŊ-žƀ-ǃǍ-ǰǴ-ǵǺ-ȗɐ-ʨʻ-ˁΆΈ-ΊΌΎ-ΡΣ-ώϐ-ϖϚϜϞϠϢ-ϳЁ-ЌЎ-яё-ќў-ҁҐ-ӄӇ-ӈӋ-ӌӐ-ӫӮ-ӵӸ-ӹԱ-Ֆՙա-ֆא-תװ-ײء-غف-يٱ-ڷں-ھۀ-ێې-ۓەۥ-ۦअ-हऽक़-ॡঅ-ঌএ-ঐও-নপ-রলশ-হড়-ঢ়য়-ৡৰ-ৱਅ-ਊਏ-ਐਓ-ਨਪ-ਰਲ-ਲ਼ਵ-ਸ਼ਸ-ਹਖ਼-ੜਫ਼ੲ-ੴઅ-ઋઍએ-ઑઓ-નપ-રલ-ળવ-હઽૠଅ-ଌଏ-ଐଓ-ନପ-ରଲ-ଳଶ-ହଽଡ଼-ଢ଼ୟ-ୡஅ-ஊஎ-ஐஒ-கங-சஜஞ-டண-தந-பம-வஷ-ஹఅ-ఌఎ-ఐఒ-నప-ళవ-హౠ-ౡಅ-ಌಎ-ಐಒ-ನಪ-ಳವ-ಹೞೠ-ೡഅ-ഌഎ-ഐഒ-നപ-ഹൠ-ൡก-ฮะา-ำเ-ๅກ-ຂຄງ-ຈຊຍດ-ທນ-ຟມ-ຣລວສ-ຫອ-ຮະາ-ຳຽເ-ໄཀ-ཇཉ-ཀྵႠ-Ⴥა-ჶᄀᄂ-ᄃᄅ-ᄇᄉᄋ-ᄌᄎ-ᄒᄼᄾᅀᅌᅎᅐᅔ-ᅕᅙᅟ-ᅡᅣᅥᅧᅩᅭ-ᅮᅲ-ᅳᅵᆞᆨᆫᆮ-ᆯᆷ-ᆸᆺᆼ-ᇂᇫᇰᇹḀ-ẛẠ-ỹἀ-ἕἘ-Ἕἠ-ὅὈ-Ὅὐ-ὗὙὛὝὟ-ώᾀ-ᾴᾶ-ᾼιῂ-ῄῆ-ῌῐ-ΐῖ-Ίῠ-Ῥῲ-ῴῶ-ῼΩK-Å℮ↀ-ↂぁ-ゔァ-ヺㄅ-ㄬ가-힣",exports.IDEOGRAPHIC="一-龥〇〡-〩",exports.COMBINING_CHAR="̀-͠ͅ-҃͡-֑҆-֣֡-ֹֻ-ֽֿׁ-ׂًׄ-ْٰۖ-ۜ۝-۟۠-ۤۧ-۪ۨ-ۭँ-ः़ा-ौ्॑-॔ॢ-ॣঁ-ঃ়ািী-ৄে-ৈো-্ৗৢ-ৣਂ਼ਾਿੀ-ੂੇ-ੈੋ-੍ੰ-ੱઁ-ઃ઼ા-ૅે-ૉો-્ଁ-ଃ଼ା-ୃେ-ୈୋ-୍ୖ-ୗஂ-ஃா-ூெ-ைொ-்ௗఁ-ఃా-ౄె-ైొ-్ౕ-ౖಂ-ಃಾ-ೄೆ-ೈೊ-್ೕ-ೖം-ഃാ-ൃെ-ൈൊ-്ൗัิ-ฺ็-๎ັິ-ູົ-ຼ່-ໍ༘-༹༙༵༷༾༿ཱ-྄྆-ྋྐ-ྕྗྙ-ྭྱ-ྷྐྵ⃐-〪⃜⃡-゙゚〯",exports.DIGIT="0-9٠-٩۰-۹०-९০-৯੦-੯૦-૯୦-୯௧-௯౦-౯೦-೯൦-൯๐-๙໐-໙༠-༩",exports.EXTENDER="·ːˑ·ـๆໆ々〱-〵ゝ-ゞー-ヾ",exports.LETTER=exports.BASE_CHAR+exports.IDEOGRAPHIC,exports.NAME_CHAR="-"+exports.LETTER+exports.DIGIT+"._:"+exports.COMBINING_CHAR+exports.EXTENDER,exports.CHAR_RE=new RegExp("^["+exports.CHAR+"]$","u"),exports.S_RE=new RegExp("^["+exports.S+"]+$","u"),exports.BASE_CHAR_RE=new RegExp("^["+exports.BASE_CHAR+"]$","u"),exports.IDEOGRAPHIC_RE=new RegExp("^["+exports.IDEOGRAPHIC+"]$","u"),exports.COMBINING_CHAR_RE=new RegExp("^["+exports.COMBINING_CHAR+"]$","u"),exports.DIGIT_RE=new RegExp("^["+exports.DIGIT+"]$","u"),exports.EXTENDER_RE=new RegExp("^["+exports.EXTENDER+"]$","u"),exports.LETTER_RE=new RegExp("^["+exports.LETTER+"]$","u"),exports.NAME_CHAR_RE=new RegExp("^["+exports.NAME_CHAR+"]$","u"),exports.NAME_RE=new RegExp("^["+exports.LETTER+"_:]["+exports.NAME_CHAR+"]*$","u"),exports.NMTOKEN_RE=new RegExp("^["+exports.NAME_CHAR+"]+$","u");

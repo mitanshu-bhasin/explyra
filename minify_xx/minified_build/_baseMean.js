@@ -1,0 +1,1 @@
+var baseSum=require("./_baseSum"),NAN=NaN;function baseMean(e,a){var u=null==e?0:e.length;return u?baseSum(e,a)/u:NAN}module.exports=baseMean;

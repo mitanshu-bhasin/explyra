@@ -1,0 +1,1 @@
+"use strict";function map(e,r){if("function"!=typeof e[Symbol.iterator])throw new TypeError("values is not iterable");if("function"!=typeof r)throw new TypeError("mapper is not a function");return Array.from(e,(t,o)=>r(t,o,e))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=map;

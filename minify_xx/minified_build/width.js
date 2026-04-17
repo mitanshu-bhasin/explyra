@@ -1,0 +1,1 @@
+import getWindow from"./isWindow";import offset from"./offset";export default function getWidth(t,i){var o=getWindow(t);return o?o.innerWidth:i?t.clientWidth:offset(t).width}

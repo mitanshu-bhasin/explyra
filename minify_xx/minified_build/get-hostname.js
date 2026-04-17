@@ -1,0 +1,1 @@
+"use strict";function getHostname(e,t){let r;if(t?.host&&!Array.isArray(t.host))r=t.host.toString().split(":",1)[0];else{if(!e.hostname)return;r=e.hostname}return r.toLowerCase()}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"getHostname",{enumerable:!0,get:function(){return getHostname}});

@@ -1,0 +1,1 @@
+export default function buildMediaQuery(a){return(a=Array.isArray(a)?a:[a]).map(a=>{let n=a.values.map(a=>void 0!==a.raw?a.raw:[a.min&&`(min-width: ${a.min})`,a.max&&`(max-width: ${a.max})`].filter(Boolean).join(" and "));return a.not?`not all and ${n}`:n}).join(", ")}

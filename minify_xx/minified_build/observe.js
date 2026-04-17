@@ -1,0 +1,1 @@
+export const observe=(e,r,s)=>{try{if(PerformanceObserver.supportedEntryTypes.includes(e)){const t=new PerformanceObserver(e=>{Promise.resolve().then(()=>{r(e.getEntries())})});return t.observe(Object.assign({type:e,buffered:!0},s||{})),t}}catch(e){}};

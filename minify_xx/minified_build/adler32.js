@@ -1,0 +1,1 @@
+function adler32(e,r,a,d){for(var l=65535&e,o=e>>>16&65535,t=0;0!==a;){a-=t=a>2e3?2e3:a;do{o=o+(l=l+r[d++]|0)|0}while(--t);l%=65521,o%=65521}return l|o<<16}export default adler32;

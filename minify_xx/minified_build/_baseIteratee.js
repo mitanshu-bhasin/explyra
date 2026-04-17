@@ -1,0 +1,1 @@
+var baseMatches=require("./_baseMatches"),baseMatchesProperty=require("./_baseMatchesProperty"),identity=require("./identity"),isArray=require("./isArray"),property=require("./property");function baseIteratee(e){return"function"==typeof e?e:null==e?identity:"object"==typeof e?isArray(e)?baseMatchesProperty(e[0],e[1]):baseMatches(e):property(e)}module.exports=baseIteratee;

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isNode;var _index=require("../definitions/index.js");function isNode(e){return!(!e||!_index.VISITOR_KEYS[e.type])}

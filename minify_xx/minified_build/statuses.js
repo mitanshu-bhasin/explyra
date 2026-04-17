@@ -1,0 +1,1 @@
+module.exports={1:"ls",2:"rec",3:"pr",4:"cr",5:"wd",6:"other",7:"unoff"};

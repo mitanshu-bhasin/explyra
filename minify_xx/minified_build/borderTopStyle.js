@@ -1,0 +1,1 @@
+"use strict";var isValid=require("./borderStyle").isValid;module.exports.isValid=isValid,module.exports.definition={set:function(e){isValid(e)&&("none"===e.toLowerCase()&&(e="",this.removeProperty("border-top-width")),this._setProperty("border-top-style",e))},get:function(){return this.getPropertyValue("border-top-style")},enumerable:!0,configurable:!0};

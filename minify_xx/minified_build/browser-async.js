@@ -1,0 +1,1 @@
+import{provideWasm}from"./esm/browser/wasm.js";import*as wasm from"./dist/wasm/web/blake3_js.js";import*as blake3 from"./esm/browser/index.js";let cached;export default function load(e){return cached||(cached=wasm.default(e).then(()=>(provideWasm(wasm),blake3))),cached}

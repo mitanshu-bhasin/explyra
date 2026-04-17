@@ -1,0 +1,1 @@
+import classApplyDescriptorSet from"./classApplyDescriptorSet.js";import classPrivateFieldGet2 from"./classPrivateFieldGet2.js";function _classPrivateFieldSet(e,s,t){var r=classPrivateFieldGet2(s,e);return classApplyDescriptorSet(e,r,t),t}export{_classPrivateFieldSet as default};

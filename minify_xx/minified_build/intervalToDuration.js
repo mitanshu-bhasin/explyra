@@ -1,0 +1,1 @@
+"use strict";exports.intervalToDuration=void 0;var _index=require("../intervalToDuration.js"),_index2=require("./_lib/convertToFP.js");const intervalToDuration=exports.intervalToDuration=(0,_index2.convertToFP)(_index.intervalToDuration,1);

@@ -1,0 +1,1 @@
+"use strict";var parseNumber=require("../parsers").parseNumber;module.exports.definition={set:function(e){this._setProperty("opacity",parseNumber(e))},get:function(){return this.getPropertyValue("opacity")},enumerable:!0,configurable:!0};

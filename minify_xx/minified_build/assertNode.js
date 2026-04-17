@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=assertNode;var _isNode=require("../validators/isNode.js");function assertNode(e){if(!(0,_isNode.default)(e)){var o;const t=null!=(o=null==e?void 0:e.type)?o:JSON.stringify(e);throw new TypeError(`Not a valid node of type "${t}"`)}}

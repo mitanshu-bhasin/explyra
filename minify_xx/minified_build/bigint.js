@@ -1,0 +1,1 @@
+import{truncate,truncator}from"./helpers.js";export default function inspectBigInt(t,r){let n=truncate(t.toString(),r.truncate-1);return n!==truncator&&(n+="n"),r.stylize(n,"bigint")}

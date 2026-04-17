@@ -1,0 +1,1 @@
+"use strict";class BarPropImpl{}BarPropImpl.prototype.visible=!0,exports.implementation=BarPropImpl;

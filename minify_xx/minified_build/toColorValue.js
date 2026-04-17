@@ -1,0 +1,1 @@
+export default function toColorValue(o){return"function"==typeof o?o({}):o}

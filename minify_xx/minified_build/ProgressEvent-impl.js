@@ -1,0 +1,1 @@
+"use strict";const EventImpl=require("./Event-impl").implementation,ProgressEventInit=require("../generated/ProgressEventInit");class ProgressEventImpl extends EventImpl{}ProgressEventImpl.defaultInit=ProgressEventInit.convert(void 0,void 0),module.exports={implementation:ProgressEventImpl};

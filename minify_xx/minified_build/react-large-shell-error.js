@@ -1,0 +1,1 @@
+"use strict";function isReactLargeShellError(e){return"object"==typeof e&&null!==e&&"message"in e&&"string"==typeof e.message&&e.message.startsWith("This rendered a large document (>")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isReactLargeShellError",{enumerable:!0,get:function(){return isReactLargeShellError}});

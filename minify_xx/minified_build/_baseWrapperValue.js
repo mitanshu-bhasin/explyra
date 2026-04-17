@@ -1,0 +1,1 @@
+var LazyWrapper=require("./_LazyWrapper"),arrayPush=require("./_arrayPush"),arrayReduce=require("./_arrayReduce");function baseWrapperValue(r,a){var e=r;return e instanceof LazyWrapper&&(e=e.value()),arrayReduce(a,function(r,a){return a.func.apply(a.thisArg,arrayPush([r],a.args))},e)}module.exports=baseWrapperValue;

@@ -1,0 +1,1 @@
+const Fraction=require("fraction.js");function closestTapeMeasure(e){return Fraction(e).roundTo("1/16")}console.log(closestTapeMeasure("1/3"));

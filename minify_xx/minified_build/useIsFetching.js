@@ -1,0 +1,1 @@
+import*as React from"react";import{notifyManager}from"@tanstack/query-core";import{useQueryClient}from"./QueryClientProvider.js";function useIsFetching(e,t){const r=useQueryClient(t),n=r.getQueryCache();return React.useSyncExternalStore(React.useCallback(e=>n.subscribe(notifyManager.batchCalls(e)),[n]),()=>r.isFetching(e),()=>r.isFetching(e))}export{useIsFetching};

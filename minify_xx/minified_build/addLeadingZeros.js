@@ -1,0 +1,1 @@
+"use strict";function addLeadingZeros(a,d){return(a<0?"-":"")+Math.abs(a).toString().padStart(d,"0")}exports.addLeadingZeros=addLeadingZeros;

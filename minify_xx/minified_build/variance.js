@@ -1,0 +1,1 @@
+"use strict";function variance(e,t){let l,r=0,o=0,f=0;if(void 0===t)for(let t of e)null!=t&&(t=+t)>=t&&(l=t-o,o+=l/++r,f+=l*(t-o));else{let i=-1;for(let n of e)null!=(n=t(n,++i,e))&&(n=+n)>=n&&(l=n-o,o+=l/++r,f+=l*(n-o))}if(r>1)return f/(r-1)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=variance;

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isAppPageRouteDefinition",{enumerable:!0,get:function(){return isAppPageRouteDefinition}});const _routekind=require("../route-kind");function isAppPageRouteDefinition(e){return e.kind===_routekind.RouteKind.APP_PAGE}

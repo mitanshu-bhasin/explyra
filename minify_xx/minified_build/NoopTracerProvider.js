@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NoopTracerProvider=void 0;const NoopTracer_1=require("./NoopTracer");class NoopTracerProvider{getTracer(r,e,o){return new NoopTracer_1.NoopTracer}}exports.NoopTracerProvider=NoopTracerProvider;

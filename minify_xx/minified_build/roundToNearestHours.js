@@ -1,0 +1,1 @@
+"use strict";exports.roundToNearestHours=void 0;var _index=require("../roundToNearestHours.js"),_index2=require("./_lib/convertToFP.js");const roundToNearestHours=exports.roundToNearestHours=(0,_index2.convertToFP)(_index.roundToNearestHours,1);

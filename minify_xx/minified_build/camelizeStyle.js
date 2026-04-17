@@ -1,0 +1,1 @@
+import camelize from"./camelize";var msPattern=/^-ms-/;export default function camelizeStyleName(e){return camelize(e.replace(msPattern,"ms-"))}

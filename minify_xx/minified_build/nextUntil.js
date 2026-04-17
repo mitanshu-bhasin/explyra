@@ -1,0 +1,1 @@
+import collectSiblings from"./collectSiblings";export default function nextUntil(l,t){return collectSiblings(l,l,t)}

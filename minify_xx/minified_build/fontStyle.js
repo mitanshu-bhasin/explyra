@@ -1,0 +1,1 @@
+"use strict";var valid_styles=["normal","italic","oblique","inherit"];module.exports.isValid=function(e){return-1!==valid_styles.indexOf(e.toLowerCase())},module.exports.definition={set:function(e){this._setProperty("font-style",e)},get:function(){return this.getPropertyValue("font-style")},enumerable:!0,configurable:!0};

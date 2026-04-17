@@ -1,0 +1,1 @@
+"use strict";const idlUtils=require("../generated/utils.js");exports.implementation=class extends Array{constructor(){super(0)}item(t){return this[t]||null}get[idlUtils.supportedPropertyIndices](){return this.keys()}};

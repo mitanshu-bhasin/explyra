@@ -1,0 +1,1 @@
+"use strict";function pairs(r,e=pair){const t=[];let o,p=!1;for(const s of r)p&&t.push(e(o,s)),o=s,p=!0;return t}function pair(r,e){return[r,e]}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=pairs,exports.pair=pair;

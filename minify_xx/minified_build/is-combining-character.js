@@ -1,0 +1,1 @@
+"use strict";module.exports=function(t){return/^[\p{Mc}\p{Me}\p{Mn}]$/u.test(String.fromCodePoint(t))};

@@ -1,0 +1,1 @@
+function _objectWithoutPropertiesLoose(e,o){if(null==e)return{};var t={};for(var r in e)if({}.hasOwnProperty.call(e,r)){if(-1!==o.indexOf(r))continue;t[r]=e[r]}return t}export{_objectWithoutPropertiesLoose as default};

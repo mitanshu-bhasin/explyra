@@ -1,0 +1,11 @@
+"use strict";
+/**
+ * Character classes for XML.
+ *
+ * @deprecated since 1.3.0. Import from the ``xml`` and ``xmlns`` hierarchies
+ * instead.
+ *
+ * @author Louis-Dominique Dubeau
+ * @license MIT
+ * @copyright Louis-Dominique Dubeau
+ */Object.defineProperty(exports,"__esModule",{value:!0});var XML_1_0,XMLNS_1_0,ed4=require("./xml/1.0/ed4"),ed5=require("./xml/1.0/ed5"),nsed3=require("./xmlns/1.0/ed3");console.warn("DEPRECATION WARNING: the xmlchar *module* is deprecated: please replace e.g. require('xmlchars') with require('xmlchars/xml/...')"),function(e){!function(e){!function(e){e.CHAR=ed5.CHAR,e.S=ed5.S,e.NAME_START_CHAR=ed5.NAME_START_CHAR,e.NAME_CHAR=ed5.NAME_CHAR}(e.fragments||(e.fragments={})),function(e){e.CHAR=ed5.CHAR_RE,e.S=ed5.S_RE,e.NAME_START_CHAR=ed5.NAME_START_CHAR_RE,e.NAME_CHAR=ed5.NAME_CHAR_RE,e.NAME=ed5.NAME_RE,e.NMTOKEN=ed5.NMTOKEN_RE}(e.regexes||(e.regexes={})),function(e){e.S=ed5.S_LIST}(e.lists||(e.lists={})),e.isChar=ed5.isChar,e.isS=ed5.isS,e.isNameStartChar=ed5.isNameStartChar,e.isNameChar=ed5.isNameChar}(e.ED5||(e.ED5={})),function(e){!function(e){e.CHAR=ed4.CHAR,e.S=ed4.S,e.BASE_CHAR=ed4.BASE_CHAR,e.IDEOGRAPHIC=ed4.IDEOGRAPHIC,e.COMBINING_CHAR=ed4.COMBINING_CHAR,e.DIGIT=ed4.DIGIT,e.EXTENDER=ed4.EXTENDER,e.LETTER=ed4.LETTER,e.NAME_CHAR=ed4.NAME_CHAR}(e.fragments||(e.fragments={})),function(e){e.CHAR=ed4.CHAR_RE,e.S=ed4.S_RE,e.BASE_CHAR=ed4.BASE_CHAR_RE,e.IDEOGRAPHIC=ed4.IDEOGRAPHIC_RE,e.COMBINING_CHAR=ed4.COMBINING_CHAR_RE,e.DIGIT=ed4.DIGIT_RE,e.EXTENDER=ed4.EXTENDER_RE,e.LETTER=ed4.LETTER_RE,e.NAME_CHAR=ed4.NAME_CHAR_RE,e.NAME=ed4.NAME_RE,e.NMTOKEN=ed4.NMTOKEN_RE}(e.regexes||(e.regexes={}))}(e.ED4||(e.ED4={}))}(XML_1_0=exports.XML_1_0||(exports.XML_1_0={})),function(e){!function(e){!function(e){e.NC_NAME_START_CHAR=nsed3.NC_NAME_START_CHAR,e.NC_NAME_CHAR=nsed3.NC_NAME_CHAR}(e.fragments||(e.fragments={})),function(e){e.NC_NAME_START_CHAR=nsed3.NC_NAME_START_CHAR_RE,e.NC_NAME_CHAR=nsed3.NC_NAME_CHAR_RE,e.NC_NAME=nsed3.NC_NAME_RE}(e.regexes||(e.regexes={})),e.isNCNameStartChar=nsed3.isNCNameStartChar,e.isNCNameChar=nsed3.isNCNameChar}(e.ED3||(e.ED3={}))}(XMLNS_1_0=exports.XMLNS_1_0||(exports.XMLNS_1_0={}));

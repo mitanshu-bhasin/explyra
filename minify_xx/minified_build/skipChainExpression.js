@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.skipChainExpression=skipChainExpression;const utils_1=require("@typescript-eslint/utils");function skipChainExpression(s){return s.type===utils_1.AST_NODE_TYPES.ChainExpression?s.expression:s}

@@ -1,0 +1,6 @@
+import{config}from"../config.js";import{flag}from"./flag.js";import{getProperties}from"./getProperties.js";import{isProxyEnabled}from"./isProxyEnabled.js";
+/*!
+ * Chai - proxify utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */const builtins=["__flags","__methods","_obj","assert"];export function proxify(e,t){return isProxyEnabled()?new Proxy(e,{get:function e(r,o){if("string"==typeof o&&-1===config.proxyExcludedKeys.indexOf(o)&&!Reflect.has(r,o)){if(t)throw Error("Invalid Chai property: "+t+"."+o+'. See docs for proper usage of "'+t+'".');let e=null,n=4;throw getProperties(r).forEach(function(t){if(!Object.prototype.hasOwnProperty(t)&&-1===builtins.indexOf(t)){let r=stringDistanceCapped(o,t,n);r<n&&(e=t,n=r)}}),null!==e?Error("Invalid Chai property: "+o+'. Did you mean "'+e+'"?'):Error("Invalid Chai property: "+o)}return-1!==builtins.indexOf(o)||flag(r,"lockSsfi")||flag(r,"ssfi",e),Reflect.get(r,o)}}):e}function stringDistanceCapped(e,t,r){if(Math.abs(e.length-t.length)>=r)return r;let o=[];for(let r=0;r<=e.length;r++)o[r]=Array(t.length+1).fill(0),o[r][0]=r;for(let e=0;e<t.length;e++)o[0][e]=e;for(let n=1;n<=e.length;n++){let i=e.charCodeAt(n-1);for(let e=1;e<=t.length;e++)Math.abs(n-e)>=r?o[n][e]=r:o[n][e]=Math.min(o[n-1][e]+1,o[n][e-1]+1,o[n-1][e-1]+(i===t.charCodeAt(e-1)?0:1))}return o[e.length][t.length]}

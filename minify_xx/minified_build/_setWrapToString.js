@@ -1,0 +1,1 @@
+var getWrapDetails=require("./_getWrapDetails"),insertWrapDetails=require("./_insertWrapDetails"),setToString=require("./_setToString"),updateWrapDetails=require("./_updateWrapDetails");function setWrapToString(e,r,t){var a=r+"";return setToString(e,insertWrapDetails(a,updateWrapDetails(getWrapDetails(a),t)))}module.exports=setWrapToString;

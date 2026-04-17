@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ifOverflowMatches=void 0;var ifOverflowMatches=exports.ifOverflowMatches=function(e,r){var o=e.alwaysShow,t=e.ifOverflow;return o&&(t="extendDomain"),t===r};

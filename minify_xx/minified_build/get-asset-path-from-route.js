@@ -1,0 +1,1 @@
+"use strict";function getAssetPathFromRoute(e,t=""){return("/"===e?"/index":/^\/index(\/|$)/.test(e)?`/index${e}`:e)+t}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"default",{enumerable:!0,get:function(){return getAssetPathFromRoute}});

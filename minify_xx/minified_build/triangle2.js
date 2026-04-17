@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _math=require("../math.js");const sqrt3=(0,_math.sqrt)(3);var _default={draw(t,e){const r=.6824*(0,_math.sqrt)(e),s=r/2,a=r*sqrt3/2;t.moveTo(0,-r),t.lineTo(a,s),t.lineTo(-a,s),t.closePath()}};exports.default=_default;

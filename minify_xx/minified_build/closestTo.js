@@ -1,0 +1,1 @@
+"use strict";exports.closestTo=void 0;var _index=require("../closestTo.js"),_index2=require("./_lib/convertToFP.js");const closestTo=exports.closestTo=(0,_index2.convertToFP)(_index.closestTo,2);

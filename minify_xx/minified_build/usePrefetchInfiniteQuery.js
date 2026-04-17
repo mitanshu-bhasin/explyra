@@ -1,0 +1,1 @@
+import{useQueryClient}from"./QueryClientProvider.js";function usePrefetchInfiniteQuery(e,r){const t=useQueryClient(r);t.getQueryState(e.queryKey)||t.prefetchInfiniteQuery(e)}export{usePrefetchInfiniteQuery};

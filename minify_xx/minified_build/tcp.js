@@ -1,0 +1,1 @@
+import net from"net";export function tcpProxy(t){const o=net.Socket.prototype.connect;return net.Socket.prototype.connect=function(...n){if("object"==typeof n[0]&&null!==n[0]){const o=n[0];"port"in o&&void 0!==o.port&&"host"in o&&void 0!==o.host&&t.push({addr:o.host,port:o.port.toString()})}return o.apply(this,n)},()=>{net.Socket.prototype.connect=o}}

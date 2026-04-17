@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ErrorWithCode=void 0;class ErrorWithCode extends Error{code;constructor(r,e){super(r),this.code=e}}exports.ErrorWithCode=ErrorWithCode;

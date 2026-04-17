@@ -1,0 +1,1 @@
+var baseRandom=require("./_baseRandom");function shuffleSelf(e,a){var r=-1,f=e.length,n=f-1;for(a=void 0===a?f:a;++r<a;){var o=baseRandom(r,n),l=e[o];e[o]=e[r],e[r]=l}return e.length=a,e}module.exports=shuffleSelf;

@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports._google_protobuf_MethodOptions_IdempotencyLevel=void 0,exports._google_protobuf_MethodOptions_IdempotencyLevel={IDEMPOTENCY_UNKNOWN:"IDEMPOTENCY_UNKNOWN",NO_SIDE_EFFECTS:"NO_SIDE_EFFECTS",IDEMPOTENT:"IDEMPOTENT"};

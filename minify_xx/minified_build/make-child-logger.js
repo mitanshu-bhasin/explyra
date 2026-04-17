@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.makeChildLogger=makeChildLogger;const index_1=require("../index");function makeChildLogger(e,i,r,_){return e.child({[index_1.LOGGING_TRACE_KEY]:i,[index_1.LOGGING_SPAN_KEY]:r,[index_1.LOGGING_SAMPLED_KEY]:_})}

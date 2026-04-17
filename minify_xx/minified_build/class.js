@@ -1,0 +1,1 @@
+import inspectObject from"./object.js";const toStringTag=!("undefined"==typeof Symbol||!Symbol.toStringTag)&&Symbol.toStringTag;export default function inspectClass(t,n){let o="";return toStringTag&&toStringTag in t&&(o=t[toStringTag]),o=o||t.constructor.name,o&&"_class"!==o||(o="<Anonymous Class>"),n.truncate-=o.length,`${o}${inspectObject(t,n)}`}

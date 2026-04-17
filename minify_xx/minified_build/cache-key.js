@@ -1,0 +1,1 @@
+export function createCacheKey(e,a){const n=new URL(e);return{pathname:n.pathname,search:n.search,nextUrl:a}}

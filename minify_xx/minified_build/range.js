@@ -1,0 +1,1 @@
+"use strict";function range(e,r,t){e=+e,r=+r,t=(n=arguments.length)<2?(r=e,e=0,1):n<3?1:+t;for(var a=-1,n=0|Math.max(0,Math.ceil((r-e)/t)),o=new Array(n);++a<n;)o[a]=e+a*t;return o}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=range;

@@ -1,0 +1,1 @@
+"use strict";import isAbsoluteURL from"../helpers/isAbsoluteURL.js";import combineURLs from"../helpers/combineURLs.js";export default function buildFullPath(e,s,t){let o=!isAbsoluteURL(s);return e&&(o||0==t)?combineURLs(e,s):s}

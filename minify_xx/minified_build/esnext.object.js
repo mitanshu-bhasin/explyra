@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.esnext_object=void 0;const base_config_1=require("./base-config");exports.esnext_object={libs:[],variables:[["ObjectConstructor",base_config_1.TYPE]]};

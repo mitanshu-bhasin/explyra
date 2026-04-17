@@ -1,0 +1,1 @@
+var baseRest=require("./_baseRest"),castRest=baseRest;module.exports=castRest;

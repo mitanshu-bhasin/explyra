@@ -1,0 +1,1 @@
+"use strict";export default function isCancel(t){return!(!t||!t.__CANCEL__)}

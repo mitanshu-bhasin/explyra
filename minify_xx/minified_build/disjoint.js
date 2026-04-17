@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=disjoint;var _index=require("../../../lib-vendor/internmap/src/index.js");function disjoint(e,t){const r=t[Symbol.iterator](),n=new _index.InternSet;for(const t of e){if(n.has(t))return!1;let e,i;for(;({value:e,done:i}=r.next())&&!i;){if(Object.is(t,e))return!1;n.add(e)}}return!0}

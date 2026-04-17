@@ -1,0 +1,1 @@
+import assertClassBrand from"./assertClassBrand.js";function _classPrivateFieldSet2(s,a,e){return s.set(assertClassBrand(s,a),e),e}export{_classPrivateFieldSet2 as default};

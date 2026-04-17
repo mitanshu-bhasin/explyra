@@ -1,0 +1,1 @@
+function removeEventListener(e,n,t,o){var r=o&&"boolean"!=typeof o?o.capture:o;e.removeEventListener(n,t,r),t.__once&&e.removeEventListener(n,t.__once,r)}export default removeEventListener;

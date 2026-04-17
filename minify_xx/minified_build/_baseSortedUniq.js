@@ -1,0 +1,1 @@
+var eq=require("./eq");function baseSortedUniq(e,r){for(var a=-1,n=e.length,o=0,q=[];++a<n;){var t=e[a],i=r?r(t):t;if(!a||!eq(i,u)){var u=i;q[o++]=0===t?0:t}}return q}module.exports=baseSortedUniq;

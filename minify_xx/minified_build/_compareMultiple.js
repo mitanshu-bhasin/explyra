@@ -1,0 +1,1 @@
+var compareAscending=require("./_compareAscending");function compareMultiple(e,r,i){for(var n=-1,c=e.criteria,a=r.criteria,t=c.length,o=i.length;++n<t;){var p=compareAscending(c[n],a[n]);if(p)return n>=o?p:p*("desc"==i[n]?-1:1)}return e.index-r.index}module.exports=compareMultiple;

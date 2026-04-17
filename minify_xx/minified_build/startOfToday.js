@@ -1,0 +1,1 @@
+"use strict";exports.startOfToday=startOfToday;var _index=require("./startOfDay.js");function startOfToday(){return(0,_index.startOfDay)(Date.now())}

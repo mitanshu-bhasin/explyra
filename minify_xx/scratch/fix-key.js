@@ -1,0 +1,1 @@
+const fs=require("fs"),path=require("path"),keyPath=path.join(process.cwd(),"articles","explyras-service-account.json"),raw=fs.readFileSync(keyPath,"utf8"),data=JSON.parse(raw);data.private_key&&(data.private_key=data.private_key.replace(/\\\\n/g,"\n")),fs.writeFileSync(keyPath,JSON.stringify(data,null,2)),console.log("Fixed service account JSON.");

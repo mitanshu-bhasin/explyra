@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"NextInstanceErrorState",{enumerable:!0,get:function(){return NextInstanceErrorState}});const NextInstanceErrorState={nextConfig:[]};

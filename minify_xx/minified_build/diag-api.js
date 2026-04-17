@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.diag=void 0;const diag_1=require("./api/diag");exports.diag=diag_1.DiagAPI.instance();

@@ -1,0 +1,1 @@
+"use strict";module.exports=PassThrough;var Transform=require("./_stream_transform");function PassThrough(r){if(!(this instanceof PassThrough))return new PassThrough(r);Transform.call(this,r)}require("inherits")(PassThrough,Transform),PassThrough.prototype._transform=function(r,s,o){o(null,r)};

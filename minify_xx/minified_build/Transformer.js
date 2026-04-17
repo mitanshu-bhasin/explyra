@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});class Transformer{getPrefixCode(){return""}getHoistedCode(){return""}getSuffixCode(){return""}}exports.default=Transformer;

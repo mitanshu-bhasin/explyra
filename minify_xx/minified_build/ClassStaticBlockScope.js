@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ClassStaticBlockScope=void 0;const ScopeBase_1=require("./ScopeBase"),ScopeType_1=require("./ScopeType");class ClassStaticBlockScope extends ScopeBase_1.ScopeBase{constructor(e,c,o){super(e,ScopeType_1.ScopeType.classStaticBlock,c,o,!1)}}exports.ClassStaticBlockScope=ClassStaticBlockScope;

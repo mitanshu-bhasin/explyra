@@ -1,0 +1,1 @@
+import addEventListener from"./addEventListener";import removeEventListener from"./removeEventListener";function listen(e,t,n,r){return addEventListener(e,t,n,r),function(){removeEventListener(e,t,n,r)}}export default listen;

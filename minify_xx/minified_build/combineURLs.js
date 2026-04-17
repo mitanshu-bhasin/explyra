@@ -1,0 +1,1 @@
+"use strict";export default function combineURLs(e,r){return r?e.replace(/\/?\/$/,"")+"/"+r.replace(/^\/+/,""):e}

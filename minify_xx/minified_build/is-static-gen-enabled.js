@@ -1,0 +1,1 @@
+"use strict";function isStaticGenEnabled(e){return"force-static"===e.dynamic||"error"===e.dynamic||!1===e.revalidate||void 0!==e.revalidate&&e.revalidate>0||"function"==typeof e.generateStaticParams}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isStaticGenEnabled",{enumerable:!0,get:function(){return isStaticGenEnabled}});
