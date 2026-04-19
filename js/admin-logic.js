@@ -142,7 +142,8 @@ let currentUser = null;
 window.getWorkspaceShareUrl = function(companyId, page = 'admin.html') {
     if (!window.ExplyraTenant?.isCompanyId(companyId)) return null;
     const safePage = String(page || 'admin.html').replace(/^\/+/, '') || 'admin.html';
-    return `https://comp.explyra.me/${companyId}/${safePage}`;
+    // Always use explyra.me — not the comp subdomain
+    return `https://explyra.me/${companyId}/${safePage}`;
 };
 
 // Workspace URL helper with copy feedback animation
@@ -3574,10 +3575,17 @@ async function renderApprovals() {
     document.getElementById('page-title').textContent = "Pending Approvals";
     const content = document.getElementById('content-area');
 
+    // Guard: companyId must be present before querying Firestore
+    const cid = userData?.companyId || window.companyId || null;
+    if (!cid) {
+        if (content) content.innerHTML = '<div class="p-8 text-center text-slate-500"><i class="fa-solid fa-building text-2xl mb-3"></i><p>Company not loaded yet. Please wait...</p></div>';
+        return;
+    }
+
     // Fetch Projects for Filter
     let projectOptions = '<option value="">All Projects</option>';
     try {
-        const pSnap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", userData.companyId))));
+        const pSnap = await safeFirebaseFetch(getDocs(query(collection(db, "projects"), where("companyId", "==", cid))));
         const projectCodes = [];
         pSnap.forEach(d => { if (d.data().code) projectCodes.push(d.data().code); });
         projectCodes.sort((a, b) => a.localeCompare(b));

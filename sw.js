@@ -139,11 +139,19 @@ async function staleWhileRevalidate(request, cacheName) {
             if (response && response.ok) {
                 cache.put(request, response.clone());
             }
-            return response || cached || Response.error();
+            return response || cached;
         })
-        .catch(() => cached || Response.error());
+        .catch(() => cached);
 
-    return cached || networkPromise || Response.error();
+    // Return cached immediately if available; otherwise wait for network
+    if (cached) {
+        // Kick off revalidation in background
+        networkPromise.catch(() => {});
+        return cached;
+    }
+    // No cache — wait for network, fallback to error response
+    const networkResult = await networkPromise;
+    return networkResult || Response.error();
 }
 
 function fetchWithTimeout(request, timeoutMs) {

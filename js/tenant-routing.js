@@ -14,7 +14,8 @@
 
     function shouldEnforceTenantRouting(hostname) {
         const host = String(hostname || window.location.hostname || '').toLowerCase();
-        return host === 'comp.explyra.me' || host === 'explyra.me' || host.endsWith('.explyra.me');
+        // Only enforce on explyra.me — do NOT include comp.explyra.me to avoid cross-subdomain redirects
+        return host === 'explyra.me' || host.endsWith('.explyra.me');
     }
 
     function getCompanyIdFromPath(pathname) {
@@ -73,22 +74,8 @@
 
     function buildTenantUrl(targetPath, companyId) {
         const tenantPath = buildTenantPath(targetPath, companyId);
-        const host = (window.location.hostname || '').toLowerCase();
-        const isLocalDev = host === 'localhost' || host.startsWith('127.') || host === '0.0.0.0' || host === '[::1]' || host.endsWith('.local');
-
-        if (isLocalDev) {
-            return `${window.location.origin}${tenantPath}`;
-        }
-
-        if (host === 'comp.explyra.me') {
-            return tenantPath;
-        }
-
-        if (!host.endsWith('explyra.me')) {
-            return `${window.location.origin}${tenantPath}`;
-        }
-
-        return `https://comp.explyra.me${tenantPath}`;
+        // Always stay on the current origin — never redirect to comp.explyra.me
+        return `${window.location.origin}${tenantPath}`;
     }
 
     function toTenantAwareHref(href, options) {
@@ -141,7 +128,7 @@
             const parsed = new URL(raw, window.location.origin);
             const host = (parsed.hostname || '').toLowerCase();
             const currentHost = (window.location.hostname || '').toLowerCase();
-            const isLocalTenantHost = host === currentHost || host === 'comp.explyra.me';
+            const isLocalTenantHost = host === currentHost; // Stay same-origin, never cross to comp subdomain
             if (!isLocalTenantHost) return raw;
 
             const rebuiltPath = buildTenantPath(parsed.pathname || '/', companyId);
