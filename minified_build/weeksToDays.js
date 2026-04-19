@@ -1,1 +1,0 @@
-"use strict";exports.weeksToDays=void 0;var _index=require("../weeksToDays.js"),_index2=require("./_lib/convertToFP.js");const weeksToDays=exports.weeksToDays=(0,_index2.convertToFP)(_index.weeksToDays,1);

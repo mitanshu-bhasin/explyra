@@ -1,1 +1,0 @@
-"use strict";const PageTransitionEvent=require("../generated/PageTransitionEvent.js"),{fireAnEvent:fireAnEvent}=require("./events");exports.fireAPageTransitionEvent=(e,n,t)=>{fireAnEvent(e,n,PageTransitionEvent,{persisted:t,cancelable:!0,bubbles:!0},!0)};

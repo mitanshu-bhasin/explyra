@@ -1,1 +1,0 @@
-let pluginState={};export function resumePluginState(t){Object.assign(pluginState,t)}export function getProxiedPluginState(t){return new Proxy(pluginState,{get:(e,n)=>void 0===e[n]?e[n]=t[n]:e[n],set:(t,e,n)=>(t[e]=n,!0)})}export function getPluginState(){return pluginState}export const NextBuildContext={};

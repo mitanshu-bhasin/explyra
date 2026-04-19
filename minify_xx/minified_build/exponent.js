@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;var _formatDecimal=require("./formatDecimal.js");function _default(e){return(e=(0,_formatDecimal.formatDecimalParts)(Math.abs(e)))?e[1]:NaN}

@@ -1,1 +1,0 @@
-"use strict";var hasSymbols=require("has-symbols")(),regexpMatchAll=require("./regexp-matchall");module.exports=function(){return hasSymbols&&"symbol"==typeof Symbol.matchAll&&"function"==typeof RegExp.prototype[Symbol.matchAll]?RegExp.prototype[Symbol.matchAll]:regexpMatchAll};

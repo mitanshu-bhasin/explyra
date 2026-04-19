@@ -1,1 +1,0 @@
-const safeCallbackQueue=e=>{window.requestAnimationFrame&&window.self===window.top?window.requestAnimationFrame(e):window.setTimeout(e)};export function displayContent(){return new Promise(e=>{safeCallbackQueue(function(){for(var n=document.querySelectorAll("[data-next-hide-fouc]"),o=n.length;o--;)n[o].parentNode.removeChild(n[o]);e()})})}

@@ -1,1 +1,0 @@
-"use strict";function deepFreeze(e){return e&&(Object.freeze(e),Object.getOwnPropertyNames(e).forEach(function(r){!e.hasOwnProperty(r)||null===e[r]||"object"!=typeof e[r]&&"function"!=typeof e[r]||e[r].constructor===Buffer||Object.isFrozen(e[r])||deepFreeze(e[r])})),e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.deepFreeze=void 0,exports.deepFreeze=deepFreeze;

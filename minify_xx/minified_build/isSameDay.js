@@ -1,1 +1,0 @@
-"use strict";exports.isSameDay=void 0;var _index=require("../isSameDay.js"),_index2=require("./_lib/convertToFP.js");const isSameDay=exports.isSameDay=(0,_index2.convertToFP)(_index.isSameDay,2);

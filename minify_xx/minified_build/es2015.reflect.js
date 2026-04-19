@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2015_reflect=void 0;const base_config_1=require("./base-config");exports.es2015_reflect={libs:[],variables:[["Reflect",base_config_1.TYPE_VALUE]]};

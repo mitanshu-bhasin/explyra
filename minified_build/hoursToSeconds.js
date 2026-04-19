@@ -1,1 +1,0 @@
-"use strict";exports.hoursToSeconds=void 0;var _index=require("../hoursToSeconds.js"),_index2=require("./_lib/convertToFP.js");const hoursToSeconds=exports.hoursToSeconds=(0,_index2.convertToFP)(_index.hoursToSeconds,1);

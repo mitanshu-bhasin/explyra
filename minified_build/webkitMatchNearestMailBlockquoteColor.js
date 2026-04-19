@@ -1,1 +1,0 @@
-"use strict";var parseColor=require("../parsers").parseColor;module.exports.definition={set:function(e){this._setProperty("-webkit-match-nearest-mail-blockquote-color",parseColor(e))},get:function(){return this.getPropertyValue("-webkit-match-nearest-mail-blockquote-color")},enumerable:!0,configurable:!0};

@@ -1,1 +1,0 @@
-"use strict";exports.differenceInISOWeekYears=void 0;var _index=require("../differenceInISOWeekYears.js"),_index2=require("./_lib/convertToFP.js");const differenceInISOWeekYears=exports.differenceInISOWeekYears=(0,_index2.convertToFP)(_index.differenceInISOWeekYears,2);

@@ -1,1 +1,0 @@
-export const runOnce=e=>{let n=!1;return()=>{n||(e(),n=!0)}};

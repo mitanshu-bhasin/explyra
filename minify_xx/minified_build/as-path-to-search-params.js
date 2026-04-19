@@ -1,1 +1,0 @@
-"use strict";function asPathToSearchParams(e){return new URL(e,"http://n").searchParams}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"asPathToSearchParams",{enumerable:!0,get:function(){return asPathToSearchParams}});

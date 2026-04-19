@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.KnownRegex=void 0,exports.KnownRegex={UNKNOWN:"UNKNOWN",HTTP_HEADER_NAME:"HTTP_HEADER_NAME",HTTP_HEADER_VALUE:"HTTP_HEADER_VALUE"};

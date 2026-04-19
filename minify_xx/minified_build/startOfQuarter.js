@@ -1,1 +1,0 @@
-"use strict";exports.startOfQuarter=void 0;var _index=require("../startOfQuarter.js"),_index2=require("./_lib/convertToFP.js");const startOfQuarter=exports.startOfQuarter=(0,_index2.convertToFP)(_index.startOfQuarter,1);

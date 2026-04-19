@@ -1,1 +1,0 @@
-"use strict";function isSymbolFromDefaultLibrary(r,e){if(!e)return!1;const t=e.getDeclarations()??[];for(const e of t){const t=e.getSourceFile();if(r.isSourceFileDefaultLibrary(t))return!0}return!1}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isSymbolFromDefaultLibrary=isSymbolFromDefaultLibrary;

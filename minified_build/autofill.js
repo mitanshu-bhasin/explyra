@@ -1,1 +1,0 @@
-let Selector=require("../selector"),utils=require("../utils");class Autofill extends Selector{constructor(e,t,i){super(e,t,i),this.prefixes&&(this.prefixes=utils.uniq(this.prefixes.map(()=>"-webkit-")))}prefixed(e){return"-webkit-"===e?":-webkit-autofill":`:${e}autofill`}}Autofill.names=[":autofill"],module.exports=Autofill;

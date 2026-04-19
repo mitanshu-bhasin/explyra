@@ -1,1 +1,0 @@
-"use strict";function isAPIRoute(e){return"/api"===e||Boolean(null==e?void 0:e.startsWith("/api/"))}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isAPIRoute",{enumerable:!0,get:function(){return isAPIRoute}});

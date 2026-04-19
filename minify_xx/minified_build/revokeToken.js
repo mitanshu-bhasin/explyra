@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.revokeToken=revokeToken;const GOOGLE_REVOKE_TOKEN_URL="https://oauth2.googleapis.com/revoke?token=",DEFAULT_RETRY_VALUE=!0;async function revokeToken(e,o){const t=GOOGLE_REVOKE_TOKEN_URL+e;return await o.request({url:t,retry:DEFAULT_RETRY_VALUE})}

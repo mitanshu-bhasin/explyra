@@ -1,1 +1,0 @@
-import{QueryObserver}from"@tanstack/query-core";import{useBaseQuery}from"./useBaseQuery.js";function useQuery(e,r){return useBaseQuery(e,QueryObserver,r)}export{useQuery};

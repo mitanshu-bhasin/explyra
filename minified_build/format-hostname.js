@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"formatHostname",{enumerable:!0,get:function(){return formatHostname}});const _isipv6=require("./is-ipv6");function formatHostname(e){return(0,_isipv6.isIPv6)(e)?`[${e}]`:e}

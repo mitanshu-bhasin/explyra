@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"normalizePath",{enumerable:!0,get:function(){return normalizePath}});const _path=_interop_require_default(require("path"));function _interop_require_default(e){return e&&e.__esModule?e:{default:e}}function normalizePath(e){return"\\"===_path.default.sep?e.replace(/\\/g,"/"):e}

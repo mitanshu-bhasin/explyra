@@ -1,1 +1,0 @@
-let Value=require("../value");class FilterValue extends Value{constructor(e,l){super(e,l),"filter-function"===e&&(this.name="filter")}}FilterValue.names=["filter","filter-function"],module.exports=FilterValue;

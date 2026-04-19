@@ -1,1 +1,0 @@
-import{createHmac}from"crypto";import{concat,uint64be}from"../lib/buffer_utils.js";export default function cbcTag(t,c,e,r,a,o){const i=concat(t,c,e,uint64be(t.length<<3)),n=createHmac(`sha${r}`,a);return n.update(i),n.digest().slice(0,o>>3)}

@@ -1,1 +1,0 @@
-"use strict";exports.compareAsc=void 0;var _index=require("../compareAsc.js"),_index2=require("./_lib/convertToFP.js");const compareAsc=exports.compareAsc=(0,_index2.convertToFP)(_index.compareAsc,2);

@@ -1,1 +1,0 @@
-const CachedParams=new WeakMap;function makeUntrackedParams(e){const a=CachedParams.get(e);if(a)return a;const r=Promise.resolve(e);return CachedParams.set(e,r),r}export function createRenderParamsFromClient(e){return makeUntrackedParams(e)}

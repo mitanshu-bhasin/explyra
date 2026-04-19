@@ -1,1 +1,0 @@
-"use strict";function startOfYesterday(){const t=new Date,e=t.getFullYear(),r=t.getMonth(),s=t.getDate(),a=new Date(0);return a.setFullYear(e,r,s-1),a.setHours(0,0,0,0),a}exports.startOfYesterday=startOfYesterday;

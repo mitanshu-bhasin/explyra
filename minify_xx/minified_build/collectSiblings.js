@@ -1,1 +1,0 @@
-import matches from"./matches";export default function collectSiblings(e,t,i){void 0===t&&(t=null),void 0===i&&(i=null);for(var l=[];e;e=e.nextElementSibling)if(e!==t){if(i&&matches(e,i))break;l.push(e)}return l}

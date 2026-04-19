@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.metrics=void 0;const metrics_1=require("./api/metrics");exports.metrics=metrics_1.MetricsAPI.getInstance();

@@ -1,1 +1,0 @@
-import{hasBasePath}from"./has-base-path";const basePath=process.env.__NEXT_ROUTER_BASEPATH||"";export function removeBasePath(a){return process.env.__NEXT_MANUAL_CLIENT_BASE_PATH&&!hasBasePath(a)||0===basePath.length||(a=a.slice(basePath.length)).startsWith("/")||(a=`/${a}`),a}

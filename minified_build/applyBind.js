@@ -1,1 +1,0 @@
-"use strict";var bind=require("function-bind"),$apply=require("./functionApply"),actualApply=require("./actualApply");module.exports=function(){return actualApply(bind,$apply,arguments)};

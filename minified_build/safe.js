@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.readdir=exports.stat=void 0;const fs=require("fs-extra");async function stat(t){try{return await fs.stat(t)}catch(t){}}async function readdir(t){try{return await fs.readdir(t)}catch(t){return[]}}exports.stat=stat,exports.readdir=readdir;

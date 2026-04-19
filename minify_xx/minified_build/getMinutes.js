@@ -1,1 +1,0 @@
-"use strict";exports.getMinutes=void 0;var _index=require("../getMinutes.js"),_index2=require("./_lib/convertToFP.js");const getMinutes=exports.getMinutes=(0,_index2.convertToFP)(_index.getMinutes,1);

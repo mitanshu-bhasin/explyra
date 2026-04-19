@@ -1,1 +1,0 @@
-"use strict";export default function parseProtocol(t){const e=/^([-+\w]{1,25})(:?\/\/|:)/.exec(t);return e&&e[1]||""}

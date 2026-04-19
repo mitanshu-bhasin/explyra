@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.decorators_legacy=void 0;const base_config_1=require("./base-config");exports.decorators_legacy={libs:[],variables:[["ClassDecorator",base_config_1.TYPE],["PropertyDecorator",base_config_1.TYPE],["MethodDecorator",base_config_1.TYPE],["ParameterDecorator",base_config_1.TYPE]]};

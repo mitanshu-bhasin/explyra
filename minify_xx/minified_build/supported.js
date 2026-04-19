@@ -1,1 +1,0 @@
-module.exports={y:1,n:2,a:4,p:8,u:16,x:32,d:64};

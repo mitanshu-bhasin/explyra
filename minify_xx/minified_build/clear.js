@@ -1,1 +1,0 @@
-export default function clear(r){if(r){for(;r.firstChild;)r.removeChild(r.firstChild);return r}return null}

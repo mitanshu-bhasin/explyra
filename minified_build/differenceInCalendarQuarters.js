@@ -1,1 +1,0 @@
-"use strict";exports.differenceInCalendarQuarters=void 0;var _index=require("../differenceInCalendarQuarters.js"),_index2=require("./_lib/convertToFP.js");const differenceInCalendarQuarters=exports.differenceInCalendarQuarters=(0,_index2.convertToFP)(_index.differenceInCalendarQuarters,2);

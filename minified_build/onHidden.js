@@ -1,1 +1,0 @@
-export const onHidden=i=>{document.addEventListener("visibilitychange",()=>{"hidden"===document.visibilityState&&i()})};

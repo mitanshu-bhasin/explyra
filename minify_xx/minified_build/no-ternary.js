@@ -1,1 +1,0 @@
-"use strict";module.exports={meta:{type:"suggestion",docs:{description:"Disallow ternary operators",recommended:!1,frozen:!0,url:"https://eslint.org/docs/latest/rules/no-ternary"},schema:[],messages:{noTernaryOperator:"Ternary operator used."}},create:e=>({ConditionalExpression(r){e.report({node:r,messageId:"noTernaryOperator"})}})};

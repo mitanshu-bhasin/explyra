@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _math=require("../math.js"),_default={draw(e,t){const o=.87559*(0,_math.sqrt)(t-(0,_math.min)(t/7,2));e.moveTo(-o,0),e.lineTo(o,0),e.moveTo(0,o),e.lineTo(0,-o)}};exports.default=_default;

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.OutputAsset=void 0;class OutputAsset{constructor(t,e,s,u,p){this.template=t,this.asset=e,this.project=s,this.destFilenames=u,this.outputInfoMap=p}getDestFilename(t){return this.destFilenames[t]}getOutputInfo(t){return this.outputInfoMap[t]}}exports.OutputAsset=OutputAsset;

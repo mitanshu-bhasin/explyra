@@ -1,1 +1,0 @@
-var arraySample=require("./_arraySample"),values=require("./values");function baseSample(a){return arraySample(values(a))}module.exports=baseSample;

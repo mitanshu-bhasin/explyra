@@ -1,1 +1,0 @@
-function SigningKeyNotFoundError(r){Error.call(this,r),Error.captureStackTrace(this,this.constructor),this.name="SigningKeyNotFoundError",this.message=r}SigningKeyNotFoundError.prototype=Object.create(Error.prototype),SigningKeyNotFoundError.prototype.constructor=SigningKeyNotFoundError,module.exports=SigningKeyNotFoundError;

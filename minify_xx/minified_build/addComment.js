@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=addComment;var _addComments=require("./addComments.js");function addComment(e,t,d,m){return(0,_addComments.default)(e,t,[{type:m?"CommentLine":"CommentBlock",value:d}])}

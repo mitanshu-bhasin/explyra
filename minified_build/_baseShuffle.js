@@ -1,1 +1,0 @@
-var shuffleSelf=require("./_shuffleSelf"),values=require("./values");function baseShuffle(e){return shuffleSelf(values(e))}module.exports=baseShuffle;

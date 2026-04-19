@@ -1,1 +1,0 @@
-var adapter=require("./");module.exports=adapter(function(){return/(debug|diagnostics)=([^&]+)/i.exec(window.location.hash)[2]});

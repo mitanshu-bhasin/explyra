@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports._grpc_channelz_v1_ChannelTraceEvent_Severity=void 0,exports._grpc_channelz_v1_ChannelTraceEvent_Severity={CT_UNKNOWN:"CT_UNKNOWN",CT_INFO:"CT_INFO",CT_WARNING:"CT_WARNING",CT_ERROR:"CT_ERROR"};

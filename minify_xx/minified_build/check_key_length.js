@@ -1,1 +1,0 @@
-export default(t,r)=>{if(t.startsWith("RS")||t.startsWith("PS")){const{modulusLength:e}=r.algorithm;if("number"!=typeof e||e<2048)throw new TypeError(`${t} requires key modulusLength to be 2048 bits or larger`)}};

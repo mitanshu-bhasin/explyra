@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0,exports.shuffler=shuffler;var _default=shuffler(Math.random);function shuffler(e){return function(t,r=0,f=t.length){let u=f-(r=+r);for(;u;){const f=e()*u--|0,l=t[u+r];t[u+r]=t[f+r],t[f+r]=l}return t}}exports.default=_default;

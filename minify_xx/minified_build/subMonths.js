@@ -1,1 +1,0 @@
-"use strict";exports.subMonths=void 0;var _index=require("../subMonths.js"),_index2=require("./_lib/convertToFP.js");const subMonths=exports.subMonths=(0,_index2.convertToFP)(_index.subMonths,2);

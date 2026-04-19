@@ -1,1 +1,0 @@
-"use strict";function getDeclaration(t,e){const n=t.getSymbolAtLocation(e);if(!n)return null;const o=n.getDeclarations();return o?.[0]??null}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getDeclaration=getDeclaration;

@@ -1,1 +1,0 @@
-"use strict";exports.lightFormat=void 0;var _index=require("../lightFormat.js"),_index2=require("./_lib/convertToFP.js");const lightFormat=exports.lightFormat=(0,_index2.convertToFP)(_index.lightFormat,2);

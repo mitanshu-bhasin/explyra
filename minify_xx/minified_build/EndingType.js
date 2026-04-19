@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["transparent","native"]);exports.enumerationValues=enumerationValues,exports.convert=(e,n,{context:t="The provided value"}={})=>{const r=`${n}`;if(!enumerationValues.has(r))throw new e.TypeError(`${t} '${r}' is not a valid enumeration value for EndingType`);return r};

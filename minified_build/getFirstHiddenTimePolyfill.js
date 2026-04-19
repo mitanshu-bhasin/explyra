@@ -1,1 +1,0 @@
-let firstHiddenTime="hidden"===document.visibilityState?0:1/0;const onVisibilityChange=i=>{"hidden"===document.visibilityState&&(firstHiddenTime=i.timeStamp,removeEventListener("visibilitychange",onVisibilityChange,!0))};addEventListener("visibilitychange",onVisibilityChange,!0);export const getFirstHiddenTime=()=>firstHiddenTime;

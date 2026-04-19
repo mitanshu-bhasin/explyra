@@ -1,1 +1,0 @@
-import{SHA224 as SHA224n,sha224 as sha224n,SHA256 as SHA256n,sha256 as sha256n}from"./sha2.js";export const SHA256=SHA256n;export const sha256=sha256n;export const SHA224=SHA224n;export const sha224=sha224n;

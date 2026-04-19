@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.SourceCode=void 0;const eslint_1=require("eslint");class SourceCode extends eslint_1.SourceCode{}exports.SourceCode=SourceCode;

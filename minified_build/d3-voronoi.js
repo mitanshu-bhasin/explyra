@@ -1,1 +1,0 @@
-module.exports=require("../lib-vendor/d3-voronoi/src/index.js");

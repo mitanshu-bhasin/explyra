@@ -1,1 +1,0 @@
-"use strict";module.exports={meta:{type:"suggestion",docs:{description:"Disallow octal literals",recommended:!0,url:"https://eslint.org/docs/latest/rules/no-octal"},schema:[],messages:{noOctal:"Octal literals should not be used."}},create:e=>({Literal(t){"number"==typeof t.value&&/^0\d/u.test(t.raw)&&e.report({node:t,messageId:"noOctal"})}})};

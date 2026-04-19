@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.trace=void 0;const trace_1=require("./api/trace");exports.trace=trace_1.TraceAPI.getInstance();

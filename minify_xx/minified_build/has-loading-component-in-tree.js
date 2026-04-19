@@ -1,1 +1,0 @@
-"use strict";function hasLoadingComponentInTree(e){const[,n,{loading:o}]=e;return!!o||Object.values(n).some(e=>hasLoadingComponentInTree(e))}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"hasLoadingComponentInTree",{enumerable:!0,get:function(){return hasLoadingComponentInTree}});

@@ -1,1 +1,0 @@
-var WeakMap=require("./_WeakMap"),metaMap=WeakMap&&new WeakMap;module.exports=metaMap;

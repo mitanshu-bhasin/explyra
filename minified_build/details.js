@@ -1,1 +1,0 @@
-"use strict";const{firstChildWithLocalName:firstChildWithLocalName}=require("./traversal"),{HTML_NS:HTML_NS}=require("./namespaces");exports.isSummaryForParentDetails=e=>{const a=e.parentNode;return null!==a&&"details"===a._localName&&a._namespaceURI===HTML_NS&&firstChildWithLocalName(a,"summary")===e};

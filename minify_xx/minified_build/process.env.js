@@ -1,1 +1,0 @@
-var adapter=require("./");module.exports=adapter(function(){return process.env.DEBUG||process.env.DIAGNOSTICS});

@@ -1,1 +1,0 @@
-import resolveConfigObjects from"../util/resolveConfig";import getAllConfigs from"../util/getAllConfigs";export default function resolveConfig(...e){let[,...o]=getAllConfigs(e[0]);return resolveConfigObjects([...e,...o])}

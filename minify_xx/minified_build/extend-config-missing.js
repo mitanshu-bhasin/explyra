@@ -1,1 +1,0 @@
-"use strict";module.exports=function(e){const{configName:t,importerName:n}=e;return`\nESLint couldn't find the config "${t}" to extend from. Please check that the name of the config is correct.\n\nThe config "${t}" was referenced from the config file in "${n}".\n\nIf you still have problems, please stop by https://eslint.org/chat/help to chat with the team.\n`.trimStart()};

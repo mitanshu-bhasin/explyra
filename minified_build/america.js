@@ -1,1 +1,0 @@
-module.exports=function(e){return function(r,t,n){if(" "===r)return r;switch(t%3){case 0:return e.red(r);case 1:return e.white(r);case 2:return e.blue(r)}}};

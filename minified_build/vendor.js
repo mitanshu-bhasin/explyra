@@ -1,1 +1,0 @@
-module.exports={prefix(e){let r=e.match(/^(-\w+-)/);return r?r[0]:""},unprefixed:e=>e.replace(/^-\w+-/,"")};

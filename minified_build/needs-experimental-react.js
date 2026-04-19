@@ -1,1 +1,0 @@
-"use strict";function needsExperimentalReact(e){const{taint:t,transitionIndicator:n}=e.experimental||{};return Boolean(t||n)}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"needsExperimentalReact",{enumerable:!0,get:function(){return needsExperimentalReact}});

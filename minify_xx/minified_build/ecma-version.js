@@ -1,1 +1,0 @@
-"use strict";const LATEST_ECMA_VERSION=2026;module.exports={LATEST_ECMA_VERSION:2026};

@@ -1,1 +1,0 @@
-"use strict";function isThenable(e){return null!==e&&"object"==typeof e&&"then"in e&&"function"==typeof e.then}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isThenable",{enumerable:!0,get:function(){return isThenable}});

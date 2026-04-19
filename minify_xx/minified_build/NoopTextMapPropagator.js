@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NoopTextMapPropagator=void 0;class NoopTextMapPropagator{inject(o,e){}extract(o,e){return o}fields(){return[]}}exports.NoopTextMapPropagator=NoopTextMapPropagator;

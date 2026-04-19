@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2017_date=void 0;const base_config_1=require("./base-config");exports.es2017_date={libs:[],variables:[["DateConstructor",base_config_1.TYPE]]};

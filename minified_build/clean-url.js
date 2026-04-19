@@ -1,1 +1,0 @@
-"use strict";function cleanURL(e){const t=new URL(e);return t.host="localhost:3000",t.search="",t.protocol="http",t}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"cleanURL",{enumerable:!0,get:function(){return cleanURL}});

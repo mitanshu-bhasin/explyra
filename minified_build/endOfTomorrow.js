@@ -1,1 +1,0 @@
-"use strict";function endOfTomorrow(){const e=new Date,t=e.getFullYear(),o=e.getMonth(),r=e.getDate(),n=new Date(0);return n.setFullYear(t,o,r+1),n.setHours(23,59,59,999),n}exports.endOfTomorrow=endOfTomorrow;

@@ -1,1 +1,0 @@
-var getNative=require("./_getNative"),root=require("./_root"),Map=getNative(root,"Map");module.exports=Map;

@@ -1,1 +1,0 @@
-"use strict";exports.constructFrom=void 0;var _index=require("../constructFrom.js"),_index2=require("./_lib/convertToFP.js");const constructFrom=exports.constructFrom=(0,_index2.convertToFP)(_index.constructFrom,2);

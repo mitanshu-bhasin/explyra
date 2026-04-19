@@ -1,1 +1,0 @@
-"use strict";var $isNaN=require("./isNaN");module.exports=function(e){return("number"==typeof e||"bigint"==typeof e)&&!$isNaN(e)&&e!==1/0&&e!==-1/0};

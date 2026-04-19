@@ -1,1 +1,0 @@
-"use strict";function specifierNameMatches(e,s){"string"==typeof s&&(s=[s]);const i=e.aliasSymbol??e.getSymbol(),t=i?[i.escapedName,e.intrinsicName]:[e.intrinsicName];return!!s.some(e=>t.includes(e))}Object.defineProperty(exports,"__esModule",{value:!0}),exports.specifierNameMatches=specifierNameMatches;

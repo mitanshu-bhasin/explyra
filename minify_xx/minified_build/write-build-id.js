@@ -1,1 +1,0 @@
-import{promises}from"fs";import{join}from"path";import{BUILD_ID_FILE}from"../shared/lib/constants";export async function writeBuildId(i,o){const t=join(i,BUILD_ID_FILE);await promises.writeFile(t,o,"utf8")}

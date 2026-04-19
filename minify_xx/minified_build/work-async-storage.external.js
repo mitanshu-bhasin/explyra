@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"workAsyncStorage",{enumerable:!0,get:function(){return _workasyncstorageinstance.workAsyncStorageInstance}});const _workasyncstorageinstance=require("./work-async-storage-instance");

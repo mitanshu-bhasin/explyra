@@ -1,1 +1,0 @@
-"use strict";function stripComments(e){for(var t="",r=e.indexOf("/*"),s=0;r>=0;){t+=e.slice(s,r);var i=e.indexOf("*/",r+2);if(i<0)return t;s=i+2,r=e.indexOf("/*",s)}return t+e.slice(s)}exports.__esModule=!0,exports.default=stripComments,module.exports=exports.default;

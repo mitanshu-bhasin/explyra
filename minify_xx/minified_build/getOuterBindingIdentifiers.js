@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _getBindingIdentifiers=require("./getBindingIdentifiers.js"),_default=exports.default=getOuterBindingIdentifiers;function getOuterBindingIdentifiers(e,i){return(0,_getBindingIdentifiers.default)(e,i,!0)}

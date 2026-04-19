@@ -1,1 +1,0 @@
-var parallel=require("../parallel.js");function ReadableParallel(l,a,e){if(!(this instanceof ReadableParallel))return new ReadableParallel(l,a,e);ReadableParallel.super_.call(this,{objectMode:!0}),this._start(parallel,l,a,e)}module.exports=ReadableParallel;

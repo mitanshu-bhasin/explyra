@@ -1,1 +1,0 @@
-export var RenderingMode=function(T){return T.STATIC="STATIC",T.PARTIALLY_STATIC="PARTIALLY_STATIC",T}({});

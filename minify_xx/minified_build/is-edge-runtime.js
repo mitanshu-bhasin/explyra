@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isEdgeRuntime",{enumerable:!0,get:function(){return isEdgeRuntime}});const _constants=require("./constants");function isEdgeRuntime(e){return e===_constants.SERVER_RUNTIME.experimentalEdge||e===_constants.SERVER_RUNTIME.edge}

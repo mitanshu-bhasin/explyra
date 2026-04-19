@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;var _timer=require("./timer.js");function _default(t,r,e){var a=new _timer.Timer,s=r;return null==r?(a.restart(t,r,e),a):(a._restart=a.restart,a.restart=function(t,r,e){r=+r,e=null==e?(0,_timer.now)():+e,a._restart(function u(n){n+=s,a._restart(u,s+=r,e),t(n)},r,e)},a.restart(t,r,e),a)}

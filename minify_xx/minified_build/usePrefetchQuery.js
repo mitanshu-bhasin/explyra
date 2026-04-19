@@ -1,1 +1,0 @@
-import{useQueryClient}from"./QueryClientProvider.js";function usePrefetchQuery(e,r){const t=useQueryClient(r);t.getQueryState(e.queryKey)||t.prefetchQuery(e)}export{usePrefetchQuery};

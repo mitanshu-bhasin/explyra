@@ -1,1 +1,0 @@
-"use strict";var margin=require("./margin.js"),parsers=require("../parsers.js");module.exports.definition={set:parsers.subImplicitSetter("margin","left",margin.isValid,margin.parser),get:function(){return this.getPropertyValue("margin-left")},enumerable:!0,configurable:!0};

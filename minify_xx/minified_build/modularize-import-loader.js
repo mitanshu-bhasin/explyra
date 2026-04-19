@@ -1,1 +1,0 @@
-import path from"path";export default function transformSource(){const{name:t,from:a,as:n,join:r}=this.getOptions(),{resourcePath:e}=this,o=r?path.join(path.dirname(e),r):e;return`\nexport {\n  ${"default"===a?"default":t} as ${"default"===n?"default":t}\n} from ${JSON.stringify(o)}\n`}

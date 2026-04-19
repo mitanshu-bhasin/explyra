@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK_CHUNK_LISTS||(globalThis.TURBOPACK_CHUNK_LISTS=[])).push({script:"object"==typeof document?document.currentScript:void 0,chunks:["static/chunks/f2586_next_dist_ff18c021._.js"],source:"dynamic"});

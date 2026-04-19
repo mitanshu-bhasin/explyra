@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.extractTemplate=void 0;const tslib_1=require("tslib"),utils_fs_1=require("@ionic/utils-fs"),tar_1=tslib_1.__importDefault(require("tar"));async function extractTemplate(t,e){await(0,utils_fs_1.mkdirp)(e),await tar_1.default.extract({file:t,cwd:e})}exports.extractTemplate=extractTemplate;

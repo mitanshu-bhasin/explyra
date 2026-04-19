@@ -1,1 +1,0 @@
-"use strict";module.exports=class{constructor(){this.openedRequests=[]}add(e){this.openedRequests.push(e)}remove(e){const s=this.openedRequests.indexOf(e);-1!==s&&this.openedRequests.splice(s,1)}close(){for(const e of this.openedRequests)e.abort();this.openedRequests=[]}size(){return this.openedRequests.length}};

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"default",{enumerable:!0,get:function(){return _default1}});const _default=require("./default"),_default1=(0,_default.createDefaultCacheHandler)(52428800);

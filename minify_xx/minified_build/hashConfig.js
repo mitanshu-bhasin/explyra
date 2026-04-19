@@ -1,1 +1,0 @@
-import hash from"object-hash";export default function hashConfig(h){return hash(h,{ignoreUnknown:!0})}

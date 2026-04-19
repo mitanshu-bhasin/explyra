@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=thresholdSturges;var _count=_interopRequireDefault(require("../count.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function thresholdSturges(e){return Math.ceil(Math.log((0,_count.default)(e))/Math.LN2)+1}

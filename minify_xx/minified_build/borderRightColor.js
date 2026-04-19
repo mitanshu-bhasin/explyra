@@ -1,1 +1,0 @@
-"use strict";var isValid=module.exports.isValid=require("./borderColor").isValid;module.exports.definition={set:function(r){isValid(r)&&this._setProperty("border-right-color",r)},get:function(){return this.getPropertyValue("border-right-color")},enumerable:!0,configurable:!0};

@@ -1,1 +1,0 @@
-var isPlainObject=require("./isPlainObject");function customOmitClone(i){return isPlainObject(i)?void 0:i}module.exports=customOmitClone;

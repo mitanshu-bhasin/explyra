@@ -1,1 +1,0 @@
-import{Minimatch}from"minimatch";export const hasMagic=(r,i={})=>{Array.isArray(r)||(r=[r]);for(const a of r)if(new Minimatch(a,i).hasMagic())return!0;return!1};

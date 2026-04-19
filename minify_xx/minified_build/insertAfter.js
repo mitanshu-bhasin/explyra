@@ -1,1 +1,0 @@
-export default function insertAfter(e,n){return e&&n&&n.parentNode?(n.nextSibling?n.parentNode.insertBefore(e,n.nextSibling):n.parentNode.appendChild(e),e):null}

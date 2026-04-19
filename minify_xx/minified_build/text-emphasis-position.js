@@ -1,1 +1,0 @@
-let Declaration=require("../declaration");class TextEmphasisPosition extends Declaration{set(e,s){return"-webkit-"===s&&(e.value=e.value.replace(/\s*(right|left)\s*/i,"")),super.set(e,s)}}TextEmphasisPosition.names=["text-emphasis-position"],module.exports=TextEmphasisPosition;

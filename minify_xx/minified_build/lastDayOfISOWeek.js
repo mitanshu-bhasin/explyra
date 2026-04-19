@@ -1,1 +1,0 @@
-"use strict";exports.lastDayOfISOWeek=void 0;var _index=require("../lastDayOfISOWeek.js"),_index2=require("./_lib/convertToFP.js");const lastDayOfISOWeek=exports.lastDayOfISOWeek=(0,_index2.convertToFP)(_index.lastDayOfISOWeek,1);

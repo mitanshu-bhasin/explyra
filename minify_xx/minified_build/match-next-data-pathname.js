@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"matchNextDataPathname",{enumerable:!0,get:function(){return matchNextDataPathname}});const _pathmatch=require("../../shared/lib/router/utils/path-match"),matcher=(0,_pathmatch.getPathMatch)("/_next/data/:path*");function matchNextDataPathname(t){return"string"==typeof t&&matcher(t)}

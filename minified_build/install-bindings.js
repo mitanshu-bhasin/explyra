@@ -1,1 +1,0 @@
-export async function installBindings(n=!1){const{loadBindings:i}=require("./index");await i(n)}

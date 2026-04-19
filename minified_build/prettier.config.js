@@ -1,1 +1,0 @@
-module.exports={tabWidth:2,useTabs:!1,endOfLine:"lf",semi:!1,singleQuote:!0,printWidth:100,trailingComma:"es5",bracketSpacing:!0,overrides:[{files:"*.js",options:{parser:"flow"}}]};

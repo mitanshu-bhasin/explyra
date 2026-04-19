@@ -1,1 +1,0 @@
-const CachedSearchParams=new WeakMap;function makeUntrackedSearchParams(e){const a=CachedSearchParams.get(e);if(a)return a;const r=Promise.resolve(e);return CachedSearchParams.set(e,r),r}export function createRenderSearchParamsFromClient(e){return makeUntrackedSearchParams(e)}

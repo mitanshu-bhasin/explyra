@@ -1,1 +1,0 @@
-"use strict";const UIEventImpl=require("./UIEvent-impl").implementation,FocusEventInit=require("../generated/FocusEventInit");class FocusEventImpl extends UIEventImpl{}FocusEventImpl.defaultInit=FocusEventInit.convert(void 0,void 0),exports.implementation=FocusEventImpl;

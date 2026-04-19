@@ -1,1 +1,0 @@
-export default function reportHmrLatency(e,t,n,i,d=!0){const o=i-n;console.log(`[Fast Refresh] done in ${o}ms`),d&&(e(JSON.stringify({event:"client-hmr-latency",id:window.__nextDevClientId,startTime:n,endTime:i,page:window.location.pathname,updatedModules:t,isPageHidden:"hidden"===document.visibilityState})),self.__NEXT_HMR_LATENCY_CB&&self.__NEXT_HMR_LATENCY_CB(o))}

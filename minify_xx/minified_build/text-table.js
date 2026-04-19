@@ -1,1 +1,0 @@
-"use strict";module.exports=function(n,r){const t=r.align,o=r.stringLength,e=n.reduce((n,r)=>(r.forEach((r,t)=>{const e=o(r);(!n[t]||e>n[t])&&(n[t]=e)}),n),[]);return n.map(n=>n.map((n,r)=>{const i=e[r]-o(n)||0,a=Array(Math.max(i+1,1)).join(" ");return"r"===t[r]?a+n:n+a}).join("  ").trimEnd()).join("\n")};

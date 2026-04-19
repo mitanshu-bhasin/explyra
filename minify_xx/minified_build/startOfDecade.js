@@ -1,1 +1,0 @@
-"use strict";exports.startOfDecade=void 0;var _index=require("../startOfDecade.js"),_index2=require("./_lib/convertToFP.js");const startOfDecade=exports.startOfDecade=(0,_index2.convertToFP)(_index.startOfDecade,1);

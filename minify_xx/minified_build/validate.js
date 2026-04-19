@@ -1,1 +1,0 @@
-import REGEX from"./regex.js";function validate(t){return"string"==typeof t&&REGEX.test(t)}export default validate;

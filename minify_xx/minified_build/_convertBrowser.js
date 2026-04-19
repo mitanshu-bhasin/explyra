@@ -1,1 +1,0 @@
-var baseConvert=require("./_baseConvert");function browserConvert(e,r){return baseConvert(e,e,r)}"function"==typeof _&&"function"==typeof _.runInContext&&(_=browserConvert(_.runInContext())),module.exports=browserConvert;

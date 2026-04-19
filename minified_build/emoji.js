@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.emoji=void 0;const emoji=(e,o)=>"win32"===process.platform?o:e;exports.emoji=emoji;

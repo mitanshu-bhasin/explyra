@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NoopContextManager=void 0;const context_1=require("./context");class NoopContextManager{active(){return context_1.ROOT_CONTEXT}with(e,t,o,...r){return t.call(o,...r)}bind(e,t){return t}enable(){return this}disable(){return this}}exports.NoopContextManager=NoopContextManager;

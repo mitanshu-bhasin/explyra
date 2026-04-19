@@ -1,1 +1,0 @@
-"use strict";exports.nextDay=void 0;var _index=require("../nextDay.js"),_index2=require("./_lib/convertToFP.js");const nextDay=exports.nextDay=(0,_index2.convertToFP)(_index.nextDay,2);

@@ -1,1 +1,0 @@
-"use strict";"production"===process.env.NODE_ENV?module.exports=require("./cjs/react-dom-test-utils.production.min.js"):module.exports=require("./cjs/react-dom-test-utils.development.js");

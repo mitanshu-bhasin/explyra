@@ -1,1 +1,0 @@
-"use strict";const Cursor=require("./cursor");module.exports=class extends Cursor{constructor(r){super(),this.cursor=r}moveNext(){const r=this.cursor.moveNext();return this.current=this.cursor.current,r}};

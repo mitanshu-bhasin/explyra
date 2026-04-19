@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports._google_protobuf_GeneratedCodeInfo_Annotation_Semantic=void 0,exports._google_protobuf_GeneratedCodeInfo_Annotation_Semantic={NONE:"NONE",SET:"SET",ALIAS:"ALIAS"};

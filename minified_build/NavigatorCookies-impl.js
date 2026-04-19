@@ -1,1 +1,0 @@
-"use strict";exports.implementation=class{get cookieEnabled(){return!0}};

@@ -1,1 +1,0 @@
-var copyArray=require("./_copyArray"),shuffleSelf=require("./_shuffleSelf");function arrayShuffle(r){return shuffleSelf(copyArray(r))}module.exports=arrayShuffle;

@@ -1,1 +1,0 @@
-"use strict";exports.getQuarter=void 0;var _index=require("../getQuarter.js"),_index2=require("./_lib/convertToFP.js");const getQuarter=exports.getQuarter=(0,_index2.convertToFP)(_index.getQuarter,1);

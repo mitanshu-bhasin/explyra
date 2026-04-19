@@ -1,1 +1,0 @@
-"use strict";var $Object=require("./"),RequireObjectCoercible=require("./RequireObjectCoercible");module.exports=function(e){return RequireObjectCoercible(e),$Object(e)};

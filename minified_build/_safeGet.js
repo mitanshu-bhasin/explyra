@@ -1,1 +1,0 @@
-function safeGet(t,o){if(("constructor"!==o||"function"!=typeof t[o])&&"__proto__"!=o)return t[o]}module.exports=safeGet;

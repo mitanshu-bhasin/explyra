@@ -1,1 +1,0 @@
-const{callbackify:callbackify}=require("util"),callbackSupport=l=>{const c=l.getSigningKey.bind(l);return(l,a)=>a?callbackify(c)(l,a):c(l)};module.exports.default=callbackSupport;

@@ -1,1 +1,0 @@
-export function filterVitePlugins(i){if(!i)return[];const r=Array.isArray(i)?i:[i],e=[];for(const i of r)if(i)if(Array.isArray(i))e.push(...filterVitePlugins(i));else if("apply"in i){const r=i.apply;if("function"==typeof r)try{r({},{command:"build",mode:"production"})&&e.push(i)}catch{e.push(i)}else{if("serve"===r)continue;e.push(i)}}else e.push(i);return e}

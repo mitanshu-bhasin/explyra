@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"dynamicAccessAsyncStorageInstance",{enumerable:!0,get:function(){return dynamicAccessAsyncStorageInstance}});const _asynclocalstorage=require("./async-local-storage"),dynamicAccessAsyncStorageInstance=(0,_asynclocalstorage.createAsyncLocalStorage)();

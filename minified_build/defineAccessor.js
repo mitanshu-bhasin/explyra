@@ -1,1 +1,0 @@
-function _defineAccessor(e,r,n,c){var f={configurable:!0,enumerable:!0};return f[e]=c,Object.defineProperty(r,n,f)}export{_defineAccessor as default};

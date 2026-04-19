@@ -1,1 +1,0 @@
-function queryOptions(n){return n}export{queryOptions};

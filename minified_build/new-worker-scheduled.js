@@ -1,1 +1,0 @@
-export default{async scheduled(l,e,o){console.log("Hello World!")}};

@@ -1,1 +1,0 @@
-"use strict";exports.endOfWeek=void 0;var _index=require("../endOfWeek.js"),_index2=require("./_lib/convertToFP.js");const endOfWeek=exports.endOfWeek=(0,_index2.convertToFP)(_index.endOfWeek,1);

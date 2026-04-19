@@ -1,1 +1,0 @@
-export function cloneDeep(e){return Array.isArray(e)?e.map(e=>cloneDeep(e)):"object"==typeof e&&null!==e?Object.fromEntries(Object.entries(e).map(([e,r])=>[e,cloneDeep(r)])):e}

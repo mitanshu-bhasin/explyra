@@ -1,1 +1,0 @@
-export function toPath(r){if(Array.isArray(r))return r;if(r.split("[").length-1!=r.split("]").length-1)throw new Error(`Path is invalid. Has unbalanced brackets: ${r}`);return r.split(/\.(?![^\[]*\])|[\[\]]/g).filter(Boolean)}

@@ -1,1 +1,0 @@
-export default function setBlocking(e){"undefined"!=typeof process&&[process.stdout,process.stderr].forEach(o=>{const n=o;n._handle&&n.isTTY&&"function"==typeof n._handle.setBlocking&&n._handle.setBlocking(e)})}

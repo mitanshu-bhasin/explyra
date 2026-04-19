@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.mergeRefs=void 0;var assignRef_1=require("./assignRef"),createRef_1=require("./createRef");function mergeRefs(e){return(0,createRef_1.createCallbackRef)(function(r){return e.forEach(function(e){return(0,assignRef_1.assignRef)(e,r)})})}exports.mergeRefs=mergeRefs;

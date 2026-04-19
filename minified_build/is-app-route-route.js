@@ -1,1 +1,0 @@
-"use strict";function isAppRouteRoute(e){return e.endsWith("/route")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isAppRouteRoute",{enumerable:!0,get:function(){return isAppRouteRoute}});

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.useTransformRef=void 0;var assignRef_1=require("./assignRef"),useRef_1=require("./useRef");function useTransformRef(e,s){return(0,useRef_1.useCallbackRef)(null,function(r){return(0,assignRef_1.assignRef)(e,s(r))})}exports.useTransformRef=useTransformRef;

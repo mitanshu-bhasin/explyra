@@ -1,1 +1,0 @@
-"use strict";exports.implementation=class{get appCodeName(){return"Mozilla"}get appName(){return"Netscape"}get appVersion(){return"4.0"}get platform(){return""}get product(){return"Gecko"}get productSub(){return"20030107"}get vendor(){return"Apple Computer, Inc."}get vendorSub(){return""}};

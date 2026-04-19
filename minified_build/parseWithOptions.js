@@ -1,1 +1,0 @@
-"use strict";exports.parseWithOptions=void 0;var _index=require("../parse.js"),_index2=require("./_lib/convertToFP.js");const parseWithOptions=exports.parseWithOptions=(0,_index2.convertToFP)(_index.parse,4);

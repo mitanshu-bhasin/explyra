@@ -1,1 +1,0 @@
-let Declaration=require("../declaration");class GridColumnAlign extends Declaration{check(e){return!e.value.includes("flex-")&&"baseline"!==e.value}normalize(){return"justify-self"}prefixed(e,l){return l+"grid-column-align"}}GridColumnAlign.names=["grid-column-align"],module.exports=GridColumnAlign;

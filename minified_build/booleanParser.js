@@ -1,1 +1,0 @@
-export default class boolParser{constructor(t,s){this.trueList=t||["true"],this.falseList=s||["false"]}parse(t){if("string"==typeof t){const s=t.toLowerCase();if(-1!==this.trueList.indexOf(s))return!0;if(-1!==this.falseList.indexOf(s))return!1}return t}}

@@ -1,1 +1,0 @@
-"use strict";function _default(e){e:for(var t,r=e.length,a=1,s=-1;a<r;++a)switch(e[a]){case".":s=t=a;break;case"0":0===s&&(s=a),t=a;break;default:if(!+e[a])break e;s>0&&(s=0)}return s>0?e.slice(0,s)+e.slice(t+1):e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

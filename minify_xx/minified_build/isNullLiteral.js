@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.isNullLiteral=isNullLiteral;const utils_1=require("@typescript-eslint/utils");function isNullLiteral(e){return e.type===utils_1.AST_NODE_TYPES.Literal&&null==e.value}

@@ -1,1 +1,0 @@
-export const getSearch=e=>{if(e.search)return e.search;const r=e.href.length-1,h=e.hash||("#"===e.href[r]?"#":"");return"?"===e.href[r-h.length]?"?":""};

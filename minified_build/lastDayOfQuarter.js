@@ -1,1 +1,0 @@
-"use strict";exports.lastDayOfQuarter=void 0;var _index=require("../lastDayOfQuarter.js"),_index2=require("./_lib/convertToFP.js");const lastDayOfQuarter=exports.lastDayOfQuarter=(0,_index2.convertToFP)(_index.lastDayOfQuarter,1);

@@ -1,1 +1,0 @@
-"use strict";var ValueType;Object.defineProperty(exports,"__esModule",{value:!0}),exports.ValueType=void 0,function(e){e[e.INT=0]="INT",e[e.DOUBLE=1]="DOUBLE"}(ValueType=exports.ValueType||(exports.ValueType={}));

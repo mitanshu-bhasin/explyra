@@ -1,1 +1,0 @@
-for(var Fraction=require("fraction.js"),tab=[],d=1;d<=360;d++){var pi=Fraction(2,360).mul(d),tau=Fraction(1,360).mul(d);pi.d<=6n&&5n!=pi.d&&tab.push([d,pi.toFraction()+"pi",tau.toFraction()+"tau"])}console.table(tab);

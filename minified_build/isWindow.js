@@ -1,1 +1,0 @@
-import isDocument from"./isDocument";export default function isWindow(i){return"window"in i&&i.window===i?i:isDocument(i)&&i.defaultView||!1}

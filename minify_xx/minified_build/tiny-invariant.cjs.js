@@ -1,1 +1,0 @@
-"use strict";var isProduction="production"===process.env.NODE_ENV,prefix="Invariant failed";function invariant(r,i){if(!r){if(isProduction)throw new Error(prefix);var n="function"==typeof i?i():i,o=n?"".concat(prefix,": ").concat(n):prefix;throw new Error(o)}}module.exports=invariant;

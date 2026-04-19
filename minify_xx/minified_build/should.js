@@ -1,6 +1,0 @@
-/*!
- * chai
- * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-import{Assertion}from"../assertion.js";import{AssertionError}from"assertion-error";function loadShould(){Object.defineProperty(Object.prototype,"should",{set:function(o){Object.defineProperty(this,"should",{value:o,enumerable:!0,configurable:!0,writable:!0})},get:function o(){return this instanceof String||this instanceof Number||this instanceof Boolean||"function"==typeof Symbol&&this instanceof Symbol||"function"==typeof BigInt&&this instanceof BigInt?new Assertion(this.valueOf(),null,o):new Assertion(this,null,o)},configurable:!0});let o={fail:function(t,n,e,i){throw arguments.length<2&&(e=t,t=void 0),new AssertionError(e=e||"should.fail()",{actual:t,expected:n,operator:i},o.fail)},equal:function(o,t,n){new Assertion(o,n).to.equal(t)},Throw:function(o,t,n,e){new Assertion(o,e).to.Throw(t,n)},exist:function(o,t){new Assertion(o,t).to.exist},not:{}};return o.not.equal=function(o,t,n){new Assertion(o,n).to.not.equal(t)},o.not.Throw=function(o,t,n,e){new Assertion(o,e).to.not.Throw(t,n)},o.not.exist=function(o,t){new Assertion(o,t).to.not.exist},o.throw=o.Throw,o.not.throw=o.not.Throw,o}export const should=loadShould;export const Should=loadShould;

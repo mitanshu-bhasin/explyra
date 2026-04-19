@@ -1,1 +1,0 @@
-export const reportGlobalError="function"==typeof reportError?reportError:r=>{globalThis.console.error(r)};

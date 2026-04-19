@@ -1,1 +1,0 @@
-function safeRequestAnimationFrame(e){"undefined"!=typeof requestAnimationFrame&&requestAnimationFrame(e)}export default function setRafTimeout(e,t=0){let n=-1;const a=i=>{n<0&&(n=i),i-n>t?(e(i),n=-1):safeRequestAnimationFrame(a)};requestAnimationFrame(a)}

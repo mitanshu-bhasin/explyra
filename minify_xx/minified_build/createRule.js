@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.createRule=void 0;const utils_1=require("@typescript-eslint/utils");exports.createRule=utils_1.ESLintUtils.RuleCreator(e=>`https://typescript-eslint.io/rules/${e}`);

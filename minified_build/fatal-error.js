@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"FatalError",{enumerable:!0,get:function(){return FatalError}});class FatalError extends Error{}

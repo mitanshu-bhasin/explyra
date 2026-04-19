@@ -1,1 +1,0 @@
-import isWindow from"./isWindow";export default function getscrollAccessor(o){var r="pageXOffset"===o?"scrollLeft":"scrollTop";return function(i,s){var t=isWindow(i);if(void 0===s)return t?t[o]:i[r];t?t.scrollTo(t[o],s):i[r]=s}}

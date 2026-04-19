@@ -1,1 +1,0 @@
-import{normalizeScreens}from"../util/normalizeScreens";import buildMediaQuery from"../util/buildMediaQuery";export default function({tailwindConfig:{theme:e}}){return function(r){r.walkAtRules("screen",r=>{let i=r.params,n=normalizeScreens(e.screens).find(({name:e})=>e===i);if(!n)throw r.error(`No \`${i}\` screen found.`);r.name="media",r.params=buildMediaQuery(n)})}}

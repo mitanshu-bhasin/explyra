@@ -1,1 +1,0 @@
-let Declaration=require("../declaration");class Animation extends Declaration{check(e){return!e.value.split(/\s+/).some(e=>{let a=e.toLowerCase();return"reverse"===a||"alternate-reverse"===a})}}Animation.names=["animation","animation-direction"],module.exports=Animation;

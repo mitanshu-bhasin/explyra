@@ -1,1 +1,0 @@
-"use strict";import utils from"../utils.js";import defaults from"../defaults/index.js";import AxiosHeaders from"../core/AxiosHeaders.js";export default function transformData(t,s){const r=this||defaults,e=s||r,o=AxiosHeaders.from(e.headers);let a=e.data;return utils.forEach(t,function(t){a=t.call(r,a,o.normalize(),s?s.status:void 0)}),o.normalize(),a}

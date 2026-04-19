@@ -1,1 +1,0 @@
-export function isNavigatingToNewRootLayout(r,t){const e=r[0],i=t[0];if(Array.isArray(e)&&Array.isArray(i)){if(e[0]!==i[0]||e[2]!==i[2])return!0}else if(e!==i)return!0;if(r[4])return!t[4];if(t[4])return!0;const a=Object.values(r[1])[0],o=Object.values(t[1])[0];return!a||!o||isNavigatingToNewRootLayout(a,o)}

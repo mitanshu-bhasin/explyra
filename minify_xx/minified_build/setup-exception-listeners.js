@@ -1,1 +1,0 @@
-"use strict";process.on("uncaughtException",e=>{console.error("uncaughtException",e),process.exit(1)}),process.on("unhandledRejection",e=>{console.error("unhandledRejection",e),process.exit(1)});

@@ -1,1 +1,0 @@
-"use strict";const{stringify:stringify}=require("jsonfile/utils"),{outputFileSync:outputFileSync}=require("../output-file");function outputJsonSync(t,u,i){const n=stringify(u,i);outputFileSync(t,n,i)}module.exports=outputJsonSync;

@@ -1,1 +1,0 @@
-"use strict";module.exports=function(){return"\nThe '--print-config' CLI option requires a path to a source code file rather than a directory.\nSee also: https://eslint.org/docs/latest/use/command-line-interface#--print-config\n".trimStart()};

@@ -1,1 +1,0 @@
-"use strict";function computeBundleId(t,e){const o=[];let n=!1;for(const u of e){const e=at(t,u);void 0===e?o.push(null):(n=!0,o.push(e))}if(n)return JSON.stringify(o)}function at(t,e){const o=e.split(".");let n=t;for(const t of o)n=null==n?void 0:n[t];return n}Object.defineProperty(exports,"__esModule",{value:!0}),exports.computeBundleId=computeBundleId;

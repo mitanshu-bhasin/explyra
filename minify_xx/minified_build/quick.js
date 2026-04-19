@@ -1,1 +1,0 @@
-import{HonoBase}from"../hono-base.js";import{LinearRouter}from"../router/linear-router/index.js";import{SmartRouter}from"../router/smart-router/index.js";import{TrieRouter}from"../router/trie-router/index.js";var Hono=class extends HonoBase{constructor(r={}){super(r),this.router=new SmartRouter({routers:[new LinearRouter,new TrieRouter]})}};export{Hono};

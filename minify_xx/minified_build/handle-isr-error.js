@@ -1,1 +1,0 @@
-const workAsyncStorage="undefined"==typeof window?require("../../server/app-render/work-async-storage.external").workAsyncStorage:void 0;export function HandleISRError({error:r}){if(workAsyncStorage){const e=workAsyncStorage.getStore();if(e?.isStaticGeneration)throw r&&console.error(r),r}return null}

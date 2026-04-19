@@ -1,1 +1,0 @@
-"use strict";const dataURLRegexp=/^data:text\/css;base64,/i;function isValid(t){return dataURLRegexp.test(t)}function contents(t){return Buffer.from(t.slice(21),"base64").toString()}module.exports={isValid:isValid,contents:contents};

@@ -1,1 +1,0 @@
-import{isPromise}from"./is-promise.js";export function maybeAsyncResult(t,n,i=t=>{throw t}){try{const i=isFunction(t)?t():t;return isPromise(i)?i.then(t=>n(t)):n(i)}catch(t){return i(t)}}function isFunction(t){return"function"==typeof t}

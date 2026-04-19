@@ -1,1 +1,0 @@
-export default function getIgnoreAttributesFn(t){return"function"==typeof t?t:Array.isArray(t)?r=>{for(const e of t){if("string"==typeof e&&r===e)return!0;if(e instanceof RegExp&&e.test(r))return!0}}:()=>!1}

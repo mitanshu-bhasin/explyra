@@ -1,1 +1,0 @@
-"use strict";exports.subQuarters=void 0;var _index=require("../subQuarters.js"),_index2=require("./_lib/convertToFP.js");const subQuarters=exports.subQuarters=(0,_index2.convertToFP)(_index.subQuarters,2);

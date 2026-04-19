@@ -1,1 +1,0 @@
-import{KeyObject}from"crypto";import*as util from"util";export default util.types.isKeyObject?t=>util.types.isKeyObject(t):t=>null!=t&&t instanceof KeyObject;

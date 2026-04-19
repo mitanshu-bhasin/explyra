@@ -1,1 +1,0 @@
-import{G1s as G1s_n,G2s as G2s_n}from"./_blake.js";import{SHA256_IV}from"./_md.js";import{BLAKE2s as B2S,blake2s as b2s,compress as compress_n}from"./blake2.js";export const B2S_IV=SHA256_IV;export const G1s=G1s_n;export const G2s=G2s_n;export const compress=compress_n;export const BLAKE2s=B2S;export const blake2s=b2s;

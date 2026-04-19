@@ -1,1 +1,0 @@
-var getNative=require("./_getNative"),root=require("./_root"),WeakMap=getNative(root,"WeakMap");module.exports=WeakMap;

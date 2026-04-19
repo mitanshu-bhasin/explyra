@@ -1,1 +1,0 @@
-"use strict";function x(e){return e[0]}function y(e){return e[1]}Object.defineProperty(exports,"__esModule",{value:!0}),exports.x=x,exports.y=y;

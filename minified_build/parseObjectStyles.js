@@ -1,1 +1,0 @@
-import postcss from"postcss";import postcssNested from"postcss-nested";import postcssJs from"postcss-js";export default function parseObjectStyles(s){return Array.isArray(s)?s.flatMap(s=>postcss([postcssNested({bubble:["screen"]})]).process(s,{parser:postcssJs}).root.nodes):parseObjectStyles([s])}

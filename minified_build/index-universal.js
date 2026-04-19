@@ -1,1 +1,0 @@
-import*as ConfigOps from"./shared/config-ops.js";import ConfigValidator from"./shared/config-validator.js";import*as naming from"./shared/naming.js";import environments from"../conf/environments.js";const Legacy={environments:environments,ConfigOps:ConfigOps,ConfigValidator:ConfigValidator,naming:naming};export{Legacy};

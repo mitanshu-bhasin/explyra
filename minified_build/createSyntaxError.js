@@ -1,1 +1,0 @@
-"use strict";function createSyntaxError(r,e){const t=new SyntaxError(e);return t.loc={line:r.loc.start.line,column:r.loc.start.column},t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.createSyntaxError=createSyntaxError;

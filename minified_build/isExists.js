@@ -1,1 +1,0 @@
-"use strict";exports.isExists=void 0;var _index=require("../isExists.js"),_index2=require("./_lib/convertToFP.js");const isExists=exports.isExists=(0,_index2.convertToFP)(_index.isExists,3);

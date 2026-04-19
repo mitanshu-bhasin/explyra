@@ -1,1 +1,0 @@
-"use strict";exports.getDefaultOptions=getDefaultOptions;var _index=require("./_lib/defaultOptions.js");function getDefaultOptions(){return Object.assign({},(0,_index.getDefaultOptions)())}

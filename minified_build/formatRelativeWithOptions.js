@@ -1,1 +1,0 @@
-"use strict";exports.formatRelativeWithOptions=void 0;var _index=require("../formatRelative.js"),_index2=require("./_lib/convertToFP.js");const formatRelativeWithOptions=exports.formatRelativeWithOptions=(0,_index2.convertToFP)(_index.formatRelative,3);

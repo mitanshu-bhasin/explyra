@@ -1,1 +1,0 @@
-var strip_cf_connecting_ip_worker_default={fetch(e){let t=new Headers(e.headers);return t.delete("CF-Connecting-IP"),fetch(e,{headers:t})}};export{strip_cf_connecting_ip_worker_default as default};

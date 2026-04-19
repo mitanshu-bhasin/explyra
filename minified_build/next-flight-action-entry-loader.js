@@ -1,1 +1,0 @@
-function nextFlightActionEntryLoader(){const{actions:t}=this.getOptions();return`\n${JSON.parse(t).map(([t,n])=>n.map(({id:n,exportedName:e})=>[n,t,e])).flat().map(([t,n,e])=>`export { ${e} as "${t}" } from ${JSON.stringify(n)}`).join("\n")}\n`}export default nextFlightActionEntryLoader;

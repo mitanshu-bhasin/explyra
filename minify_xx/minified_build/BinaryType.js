@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["blob","arraybuffer"]);exports.enumerationValues=enumerationValues,exports.convert=(e,r,{context:n="The provided value"}={})=>{const t=`${r}`;if(!enumerationValues.has(t))throw new e.TypeError(`${n} '${t}' is not a valid enumeration value for BinaryType`);return t};

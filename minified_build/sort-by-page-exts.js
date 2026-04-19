@@ -1,1 +1,0 @@
-import{extname}from"path/posix";export function sortByPageExts(t){return(n,e)=>{const r=extname(n),s=extname(e);if(n.substring(0,n.length-r.length)!==e.substring(0,e.length-s.length))return 0;const i=t.indexOf(r.substring(1));return t.indexOf(s.substring(1))-i}}

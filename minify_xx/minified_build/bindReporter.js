@@ -1,1 +1,0 @@
-const getRating=(e,t)=>e>t[1]?"poor":e>t[0]?"needs-improvement":"good";export const bindReporter=(e,t,o,n)=>{let a,r;return g=>{t.value>=0&&(g||n)&&(r=t.value-(a||0),(r||void 0===a)&&(a=t.value,t.delta=r,t.rating=getRating(t.value,o),e(t)))}};

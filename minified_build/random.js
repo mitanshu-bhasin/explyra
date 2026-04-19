@@ -1,1 +1,0 @@
-module.exports=function(e){var r=["underline","inverse","grey","yellow","red","green","blue","white","cyan","magenta","brightYellow","brightRed","brightGreen","brightBlue","brightWhite","brightCyan","brightMagenta"];return function(t,n,i){return" "===t?t:e[r[Math.round(Math.random()*(r.length-2))]](t)}};

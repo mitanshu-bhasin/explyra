@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.TypeScope=void 0;const ScopeBase_1=require("./ScopeBase"),ScopeType_1=require("./ScopeType");class TypeScope extends ScopeBase_1.ScopeBase{constructor(e,p,o){super(e,ScopeType_1.ScopeType.type,p,o,!1)}}exports.TypeScope=TypeScope;

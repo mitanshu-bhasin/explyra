@@ -1,1 +1,0 @@
-import{JOSENotSupported}from"../util/errors.js";export default function subtleRsaEs(t){switch(t){case"RSA-OAEP":case"RSA-OAEP-256":case"RSA-OAEP-384":case"RSA-OAEP-512":return"RSA-OAEP";default:throw new JOSENotSupported(`alg ${t} is not supported either by JOSE or your javascript runtime`)}}

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;class Hub{getCode(){}getScope(){}addHelper(){throw new Error("Helpers are not supported by the default hub.")}buildError(e,r,t=TypeError){return new t(r)}}exports.default=Hub;

@@ -1,1 +1,0 @@
-import{truncate}from"./helpers.js";export default function inspectRegExp(t,e){const r=t.toString().split("/")[2],n=e.truncate-(2+r.length),c=t.source;return e.stylize(`/${truncate(c,n)}/${r}`,"regexp")}

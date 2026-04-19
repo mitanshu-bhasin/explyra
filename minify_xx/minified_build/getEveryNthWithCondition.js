@@ -1,1 +1,0 @@
-"use strict";function getEveryNthWithCondition(t,e,r){if(e<1)return[];if(1===e&&void 0===r)return t;for(var i=[],n=0;n<t.length;n+=e){if(void 0!==r&&!0!==r(t[n]))return;i.push(t[n])}return i}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getEveryNthWithCondition=getEveryNthWithCondition;

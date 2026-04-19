@@ -1,1 +1,0 @@
-var eq=require("./eq"),isArrayLike=require("./isArrayLike"),isIndex=require("./_isIndex"),isObject=require("./isObject");function isIterateeCall(e,r,i){if(!isObject(i))return!1;var t=typeof r;return!!("number"==t?isArrayLike(i)&&isIndex(r,i.length):"string"==t&&r in i)&&eq(i[r],e)}module.exports=isIterateeCall;

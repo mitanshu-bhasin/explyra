@@ -1,1 +1,0 @@
-let Selector=require("../selector");class PlaceholderShown extends Selector{prefixed(e){return"-moz-"===e?":-moz-placeholder":"-ms-"===e?":-ms-input-placeholder":`:${e}placeholder-shown`}}PlaceholderShown.names=[":placeholder-shown"],module.exports=PlaceholderShown;

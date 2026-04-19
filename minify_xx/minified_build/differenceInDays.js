@@ -1,1 +1,0 @@
-"use strict";exports.differenceInDays=void 0;var _index=require("../differenceInDays.js"),_index2=require("./_lib/convertToFP.js");const differenceInDays=exports.differenceInDays=(0,_index2.convertToFP)(_index.differenceInDays,2);

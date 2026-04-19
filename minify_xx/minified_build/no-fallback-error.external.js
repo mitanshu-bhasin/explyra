@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"NoFallbackError",{enumerable:!0,get:function(){return NoFallbackError}});class NoFallbackError extends Error{constructor(){super(),this.message="Internal: NoFallbackError"}}

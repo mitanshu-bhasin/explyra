@@ -1,1 +1,0 @@
-import{RIPEMD160 as RIPEMD160n,ripemd160 as ripemd160n}from"./legacy.js";export const RIPEMD160=RIPEMD160n;export const ripemd160=ripemd160n;

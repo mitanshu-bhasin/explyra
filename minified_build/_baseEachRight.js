@@ -1,1 +1,0 @@
-var baseForOwnRight=require("./_baseForOwnRight"),createBaseEach=require("./_createBaseEach"),baseEachRight=createBaseEach(baseForOwnRight,!0);module.exports=baseEachRight;

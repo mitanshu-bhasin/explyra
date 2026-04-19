@@ -1,1 +1,0 @@
-import matches from"./matches";export default function closest(e,t,o){e.closest&&!o&&e.closest(t);var n=e;do{if(matches(n,t))return n;n=n.parentElement}while(n&&n!==o&&n.nodeType===document.ELEMENT_NODE);return null}

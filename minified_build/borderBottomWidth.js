@@ -1,1 +1,0 @@
-"use strict";var isValid=module.exports.isValid=require("./borderWidth").isValid;module.exports.definition={set:function(e){isValid(e)&&this._setProperty("border-bottom-width",e)},get:function(){return this.getPropertyValue("border-bottom-width")},enumerable:!0,configurable:!0};

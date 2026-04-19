@@ -1,1 +1,0 @@
-"use strict";module.exports=function(t,e,r){if(0===t.length)return r();let n=0;const o=()=>{let f;return e(t[n++],(e,i)=>{if(e||void 0!==i||n>=t.length)return r(e,i,n);if(!1===f)for(;o(););f=!0},n),f||(f=!1),f};for(;o(););};

@@ -1,1 +1,0 @@
-"use strict";exports.isSameSecond=void 0;var _index=require("../isSameSecond.js"),_index2=require("./_lib/convertToFP.js");const isSameSecond=exports.isSameSecond=(0,_index2.convertToFP)(_index.isSameSecond,2);

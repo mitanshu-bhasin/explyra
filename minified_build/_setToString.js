@@ -1,1 +1,0 @@
-var baseSetToString=require("./_baseSetToString"),shortOut=require("./_shortOut"),setToString=shortOut(baseSetToString);module.exports=setToString;

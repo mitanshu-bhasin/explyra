@@ -1,1 +1,0 @@
-"use strict";function parserSeemsToBeTSESLint(e){return!!e&&/(?:typescript-eslint|\.\.)[\w/\\]*parser/.test(e)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.parserSeemsToBeTSESLint=parserSeemsToBeTSESLint;

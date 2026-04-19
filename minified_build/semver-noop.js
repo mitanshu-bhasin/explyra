@@ -1,1 +1,0 @@
-"use strict";function satisfies(){return!0}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"satisfies",{enumerable:!0,get:function(){return satisfies}});

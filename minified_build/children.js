@@ -1,1 +1,0 @@
-var toArray=r=>Array.isArray(r)?r:[r],Children={map:(r,o)=>toArray(r).map(o),forEach:(r,o)=>{toArray(r).forEach(o)},count:r=>toArray(r).length,only:r=>{const o=toArray(r);if(1!==o.length)throw new Error("Children.only() expects only one child");return o[0]},toArray:toArray};export{Children,toArray};

@@ -1,1 +1,0 @@
-export const crypto="object"==typeof globalThis&&"crypto"in globalThis?globalThis.crypto:void 0;

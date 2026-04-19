@@ -1,1 +1,0 @@
-"use strict";function rangeToLoc(e,o){return{end:e.getLocFromIndex(o[1]),start:e.getLocFromIndex(o[0])}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.rangeToLoc=rangeToLoc;

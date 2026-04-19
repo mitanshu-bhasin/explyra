@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2023_collection=void 0;const base_config_1=require("./base-config");exports.es2023_collection={libs:[],variables:[["WeakKeyTypes",base_config_1.TYPE]]};

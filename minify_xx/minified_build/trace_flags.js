@@ -1,1 +1,0 @@
-"use strict";var TraceFlags;Object.defineProperty(exports,"__esModule",{value:!0}),exports.TraceFlags=void 0,function(e){e[e.NONE=0]="NONE",e[e.SAMPLED=1]="SAMPLED"}(TraceFlags=exports.TraceFlags||(exports.TraceFlags={}));

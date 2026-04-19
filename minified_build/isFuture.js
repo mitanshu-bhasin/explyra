@@ -1,1 +1,0 @@
-"use strict";exports.isFuture=isFuture;var _index=require("./toDate.js");function isFuture(e){return+(0,_index.toDate)(e)>Date.now()}

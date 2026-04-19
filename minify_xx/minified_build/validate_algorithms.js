@@ -1,1 +1,0 @@
-const validateAlgorithms=(r,t)=>{if(void 0!==t&&(!Array.isArray(t)||t.some(r=>"string"!=typeof r)))throw new TypeError(`"${r}" option must be an array of strings`);if(t)return new Set(t)};export default validateAlgorithms;

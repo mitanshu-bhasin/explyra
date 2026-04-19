@@ -1,1 +1,0 @@
-import{jsx as _jsx}from"react/jsx-runtime";import{HTTPAccessErrorFallback}from"../http-access-fallback/error-fallback";export default function NotFound(){return _jsx(HTTPAccessErrorFallback,{status:404,message:"This page could not be found."})}

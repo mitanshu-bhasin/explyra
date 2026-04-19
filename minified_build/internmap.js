@@ -1,1 +1,0 @@
-module.exports=require("../lib-vendor/internmap/src/index.js");

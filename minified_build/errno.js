@@ -1,1 +1,0 @@
-"use strict";function isEnoentCodeError(e){return"ENOENT"===e.code}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isEnoentCodeError=void 0,exports.isEnoentCodeError=isEnoentCodeError;

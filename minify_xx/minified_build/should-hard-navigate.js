@@ -1,1 +1,0 @@
-import{getNextFlightSegmentPath}from"../../flight-data-helpers";import{matchSegment}from"../match-segments";export function shouldHardNavigate(t,e){const[a,r]=e,[g,h]=t;return matchSegment(g,a)?!(t.length<=2)&&shouldHardNavigate(getNextFlightSegmentPath(t),r[h]):!!Array.isArray(g)}

@@ -1,1 +1,0 @@
-let objectify=require("./objectifier");module.exports=function(o){return console&&console.warn&&o.warnings().forEach(o=>{let e=o.plugin||"PostCSS";console.warn(e+": "+o.text)}),objectify(o.root)};

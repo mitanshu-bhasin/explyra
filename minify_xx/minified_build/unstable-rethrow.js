@@ -1,1 +1,0 @@
-export const unstable_rethrow="undefined"==typeof window?require("./unstable-rethrow.server").unstable_rethrow:require("./unstable-rethrow.browser").unstable_rethrow;

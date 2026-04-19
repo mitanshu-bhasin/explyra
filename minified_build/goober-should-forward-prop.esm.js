@@ -1,1 +1,0 @@
-function e(e){return function(o){for(let r in o)e(r)||delete o[r]}}export{e as shouldForwardProp};

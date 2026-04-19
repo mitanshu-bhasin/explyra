@@ -1,1 +1,0 @@
-"use strict";const EventImpl=require("./Event-impl").implementation,HashChangeEventInit=require("../generated/HashChangeEventInit");class HashChangeEventImpl extends EventImpl{}HashChangeEventImpl.defaultInit=HashChangeEventInit.convert(void 0,void 0),module.exports={implementation:HashChangeEventImpl};

@@ -1,1 +1,0 @@
-"use strict";const cssom=require("cssom"),cssstyle=require("cssstyle");exports.addToCore=e=>{e.StyleSheet=cssom.StyleSheet,e.MediaList=cssom.MediaList,e.CSSStyleSheet=cssom.CSSStyleSheet,e.CSSRule=cssom.CSSRule,e.CSSStyleRule=cssom.CSSStyleRule,e.CSSMediaRule=cssom.CSSMediaRule,e.CSSImportRule=cssom.CSSImportRule,e.CSSStyleDeclaration=cssstyle.CSSStyleDeclaration};

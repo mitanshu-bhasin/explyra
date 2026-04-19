@@ -1,1 +1,0 @@
-"use strict";const BlobImpl=require("./Blob-impl").implementation;exports.implementation=class extends BlobImpl{constructor(t,[e,i,s],o){super(t,[e,s],o),this.name=i,this.lastModified="lastModified"in s?s.lastModified:Date.now()}};

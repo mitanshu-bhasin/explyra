@@ -1,1 +1,0 @@
-import{inspectList}from"./helpers.js";function arrayFromSet(t){const e=[];return t.forEach(t=>{e.push(t)}),e}export default function inspectSet(t,e){return 0===t.size?"Set{}":(e.truncate-=7,`Set{ ${inspectList(arrayFromSet(t),e)} }`)}

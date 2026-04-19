@@ -1,1 +1,0 @@
-import parser from"postcss-selector-parser";import{movePseudos}from"./pseudoElements";export function applyImportantSelector(e,o){let s=parser().astSync(e);return s.each(e=>{e.nodes.some(e=>"combinator"===e.type)&&(e.nodes=[parser.pseudo({value:":is",nodes:[e.clone()]})]),movePseudos(e)}),`${o} ${s.toString()}`}

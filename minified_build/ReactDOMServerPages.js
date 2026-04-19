@@ -1,1 +1,0 @@
-"use strict";let ReactDOMServer;try{ReactDOMServer=require("react-dom/server.edge")}catch(e){if("MODULE_NOT_FOUND"!==e.code&&"ERR_PACKAGE_PATH_NOT_EXPORTED"!==e.code)throw e;ReactDOMServer=require("react-dom/server.browser")}module.exports=ReactDOMServer;

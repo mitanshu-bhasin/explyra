@@ -1,1 +1,0 @@
-const bogusWebCrypto=[{hash:"SHA-256",name:"HMAC"},!0,["sign"]];export default bogusWebCrypto;

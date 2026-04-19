@@ -1,1 +1,0 @@
-"use strict";function getOxfordCommaList(e){return e.map((e,t,{length:r})=>(t>0?t===r-1?r>2?", and ":" and ":", ":"")+e).join("")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"getOxfordCommaList",{enumerable:!0,get:function(){return getOxfordCommaList}});

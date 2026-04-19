@@ -1,1 +1,0 @@
-"use strict";function _default(e){return function(t){return t.replace(/[0-9]/g,function(t){return e[+t]})}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

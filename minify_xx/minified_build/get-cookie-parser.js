@@ -1,1 +1,0 @@
-"use strict";function getCookieParser(e){return function(){const{cookie:r}=e;if(!r)return{};const{parse:t}=require("next/dist/compiled/cookie");return t(Array.isArray(r)?r.join("; "):r)}}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"getCookieParser",{enumerable:!0,get:function(){return getCookieParser}});

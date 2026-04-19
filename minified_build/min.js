@@ -1,1 +1,0 @@
-"use strict";function min(e,o){let t;if(void 0===o)for(const o of e)null!=o&&(t>o||void 0===t&&o>=o)&&(t=o);else{let l=-1;for(let i of e)null!=(i=o(i,++l,e))&&(t>i||void 0===t&&i>=i)&&(t=i)}return t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=min;

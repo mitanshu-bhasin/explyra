@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});const _patcherrorinspect=require("../patch-error-inspect");(0,_patcherrorinspect.patchErrorInspectNodeJS)(globalThis.Error);

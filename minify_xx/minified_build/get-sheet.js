@@ -1,1 +1,0 @@
-let GOOBER_ID="_goober",ssr={data:""};export let getSheet=e=>{if("object"==typeof window){let t=(e?e.querySelector("#"+GOOBER_ID):window[GOOBER_ID])||Object.assign(document.createElement("style"),{innerHTML:" ",id:GOOBER_ID});return t.nonce=window.__nonce__,t.parentNode||(e||document.head).appendChild(t),t.firstChild}return e||ssr};

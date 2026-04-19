@@ -1,1 +1,0 @@
-function iteratorToArray(r){for(var o,e=[];!(o=r.next()).done;)e.push(o.value);return e}module.exports=iteratorToArray;

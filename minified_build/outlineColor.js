@@ -1,1 +1,0 @@
-"use strict";var parseColor=require("../parsers").parseColor;module.exports.definition={set:function(e){this._setProperty("outline-color",parseColor(e))},get:function(){return this.getPropertyValue("outline-color")},enumerable:!0,configurable:!0};

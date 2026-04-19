@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"HardDeprecatedConfigError",{enumerable:!0,get:function(){return HardDeprecatedConfigError}});class HardDeprecatedConfigError extends Error{constructor(e){super(e),this.stack=void 0}}

@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"DetachedPromise",{enumerable:!0,get:function(){return DetachedPromise}});class DetachedPromise{constructor(){let e,t;this.promise=new Promise((r,s)=>{e=r,t=s}),this.resolve=e,this.reject=t}}

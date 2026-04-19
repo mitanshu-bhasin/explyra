@@ -1,1 +1,0 @@
-const MAX_PATTERN_LENGTH=65536;export const assertValidPattern=t=>{if("string"!=typeof t)throw new TypeError("invalid pattern");if(t.length>65536)throw new TypeError("pattern is too long")};

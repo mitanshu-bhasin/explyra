@@ -1,1 +1,0 @@
-let globalBuildId="";export function setAppBuildId(l){globalBuildId=l}export function getAppBuildId(){return globalBuildId}

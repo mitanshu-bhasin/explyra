@@ -1,1 +1,0 @@
-"use strict";const emptyArray=Object.freeze([]);class SourceCodeVisitor{#t=new Map;add(t,e){this.#t.has(t)?this.#t.get(t).push(e):this.#t.set(t,[e])}get(t){return this.#t.has(t)?this.#t.get(t):emptyArray}forEachName(t){this.#t.forEach((e,s)=>{t(s)})}callSync(t,...e){this.#t.has(t)&&this.#t.get(t).forEach(t=>t(...e))}}module.exports={SourceCodeVisitor:SourceCodeVisitor};

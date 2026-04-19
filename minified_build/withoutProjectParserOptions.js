@@ -1,1 +1,0 @@
-"use strict";function withoutProjectParserOptions(e){const{EXPERIMENTAL_useProjectService:t,project:r,projectService:o,...s}=e;return s}Object.defineProperty(exports,"__esModule",{value:!0}),exports.withoutProjectParserOptions=withoutProjectParserOptions;

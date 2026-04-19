@@ -1,1 +1,0 @@
-"use strict";exports.endOfSecond=void 0;var _index=require("../endOfSecond.js"),_index2=require("./_lib/convertToFP.js");const endOfSecond=exports.endOfSecond=(0,_index2.convertToFP)(_index.endOfSecond,1);

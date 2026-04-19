@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"removePathPrefix",{enumerable:!0,get:function(){return removePathPrefix}});const _pathhasprefix=require("./path-has-prefix");function removePathPrefix(e,r){if(!(0,_pathhasprefix.pathHasPrefix)(e,r))return e;const t=e.slice(r.length);return t.startsWith("/")?t:`/${t}`}

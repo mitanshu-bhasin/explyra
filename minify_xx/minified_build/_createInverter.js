@@ -1,1 +1,0 @@
-var baseInverter=require("./_baseInverter");function createInverter(e,r){return function(t,n){return baseInverter(t,e,r(n),{})}}module.exports=createInverter;

@@ -1,1 +1,0 @@
-"use strict";const Module=require("node:module"),createRequire=Module.createRequire;function resolve(e,r){return createRequire(r).resolve(e)}exports.resolve=resolve;

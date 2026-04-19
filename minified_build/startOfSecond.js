@@ -1,1 +1,0 @@
-"use strict";exports.startOfSecond=void 0;var _index=require("../startOfSecond.js"),_index2=require("./_lib/convertToFP.js");const startOfSecond=exports.startOfSecond=(0,_index2.convertToFP)(_index.startOfSecond,1);

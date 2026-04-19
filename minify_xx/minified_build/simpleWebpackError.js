@@ -1,1 +1,0 @@
-export class SimpleWebpackError extends Error{constructor(r,e){super(e),this.file=r}}

@@ -1,1 +1,0 @@
-"use strict";exports.subMinutes=void 0;var _index=require("../subMinutes.js"),_index2=require("./_lib/convertToFP.js");const subMinutes=exports.subMinutes=(0,_index2.convertToFP)(_index.subMinutes,2);

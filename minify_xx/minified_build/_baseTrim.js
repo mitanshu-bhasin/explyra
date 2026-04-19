@@ -1,1 +1,0 @@
-var trimmedEndIndex=require("./_trimmedEndIndex"),reTrimStart=/^\s+/;function baseTrim(e){return e?e.slice(0,trimmedEndIndex(e)+1).replace(reTrimStart,""):e}module.exports=baseTrim;

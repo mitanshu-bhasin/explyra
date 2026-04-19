@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"IconMark",{enumerable:!0,get:function(){return IconMark}});const _jsxruntime=require("react/jsx-runtime"),IconMark=()=>"undefined"!=typeof window?null:(0,_jsxruntime.jsx)("meta",{name:"«nxt-icon»"});

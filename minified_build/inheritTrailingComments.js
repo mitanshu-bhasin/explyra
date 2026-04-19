@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=inheritTrailingComments;var _inherit=require("../utils/inherit.js");function inheritTrailingComments(e,i){(0,_inherit.default)("trailingComments",e,i)}

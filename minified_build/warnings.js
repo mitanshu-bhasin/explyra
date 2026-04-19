@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.warn=warn;const featureDetection_1=require("./featureDetection"),emittedWarnings=new Set;function warn(e,t,n){emittedWarnings.has(e)||(emittedWarnings.add(e),(0,featureDetection_1.isNodeJS)()?void 0!==n?process.emitWarning(t,{type:n}):process.emitWarning(t):console.warn(t))}

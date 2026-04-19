@@ -1,1 +1,0 @@
-export default function bigSign(n){return(n>0n)-(n<0n)}

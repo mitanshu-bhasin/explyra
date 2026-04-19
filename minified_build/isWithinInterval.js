@@ -1,1 +1,0 @@
-"use strict";exports.isWithinInterval=void 0;var _index=require("../isWithinInterval.js"),_index2=require("./_lib/convertToFP.js");const isWithinInterval=exports.isWithinInterval=(0,_index2.convertToFP)(_index.isWithinInterval,2);

@@ -1,1 +1,0 @@
-import css from"./css";import ownerDocument from"./ownerDocument";var isHTMLElement=function(e){return!!e&&"offsetParent"in e};export default function offsetParent(e){for(var t=ownerDocument(e),n=e&&e.offsetParent;isHTMLElement(n)&&"HTML"!==n.nodeName&&"static"===css(n,"position");)n=n.offsetParent;return n||t.documentElement}

@@ -1,1 +1,0 @@
-function FormatStackTrace(r,t){var a=[];try{a.push(r.toString())}catch(r){try{a.push("<error: "+r+">")}catch(r){a.push("<error>")}}for(var c=0;c<t.length;c++){var o,e=t[c];try{o=e.toString()}catch(r){try{o="<error: "+r+">"}catch(r){o="<error>"}}a.push("    at "+o)}return a.join("\n")}module.exports=FormatStackTrace;

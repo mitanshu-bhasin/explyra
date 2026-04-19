@@ -1,1 +1,0 @@
-"use strict";function createMetadataContext(e){return{trailingSlash:e.trailingSlash,isStaticMetadataRouteFile:!1}}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"createMetadataContext",{enumerable:!0,get:function(){return createMetadataContext}});

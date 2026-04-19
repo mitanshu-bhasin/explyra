@@ -1,1 +1,0 @@
-"use strict";function ensureLeadingSlash(e){return e.startsWith("/")?e:`/${e}`}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"ensureLeadingSlash",{enumerable:!0,get:function(){return ensureLeadingSlash}});

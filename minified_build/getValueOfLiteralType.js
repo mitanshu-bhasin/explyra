@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.getValueOfLiteralType=void 0;const valueIsPseudoBigInt=e=>"object"==typeof e,pseudoBigIntToBigInt=e=>BigInt((e.negative?"-":"")+e.base10Value),getValueOfLiteralType=e=>valueIsPseudoBigInt(e.value)?pseudoBigIntToBigInt(e.value):e.value;exports.getValueOfLiteralType=getValueOfLiteralType;

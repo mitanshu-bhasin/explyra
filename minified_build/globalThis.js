@@ -1,1 +1,0 @@
-export const _globalThis="object"==typeof globalThis?globalThis:global;

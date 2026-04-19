@@ -1,1 +1,0 @@
-"use strict";const UIEventImpl=require("./UIEvent-impl").implementation,InputEventInit=require("../generated/InputEventInit");class InputEventImpl extends UIEventImpl{}InputEventImpl.defaultInit=InputEventInit.convert(void 0,void 0),module.exports={implementation:InputEventImpl};

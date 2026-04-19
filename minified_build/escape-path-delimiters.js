@@ -1,1 +1,0 @@
-"use strict";function escapePathDelimiters(e,t){return e.replace(new RegExp(`([/#?]${t?"|%(2f|23|3f|5c)":""})`,"gi"),e=>encodeURIComponent(e))}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"default",{enumerable:!0,get:function(){return escapePathDelimiters}});

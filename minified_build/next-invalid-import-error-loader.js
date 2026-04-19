@@ -1,1 +1,0 @@
-const nextInvalidImportErrorLoader=function(){const{message:e}=this.getOptions(),r=Object.defineProperty(new Error(e),"__NEXT_ERROR_CODE",{value:"E394",enumerable:!1,configurable:!0});throw process.env.NEXT_RSPACK&&(r.stack=void 0),r};export default nextInvalidImportErrorLoader;

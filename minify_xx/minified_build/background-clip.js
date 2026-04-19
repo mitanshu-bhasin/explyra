@@ -1,1 +1,0 @@
-let Declaration=require("../declaration"),utils=require("../utils");class BackgroundClip extends Declaration{constructor(e,r,i){super(e,r,i),this.prefixes&&(this.prefixes=utils.uniq(this.prefixes.map(e=>"-ms-"===e?"-webkit-":e)))}check(e){return"text"===e.value.toLowerCase()}}BackgroundClip.names=["background-clip"],module.exports=BackgroundClip;

@@ -1,1 +1,0 @@
-"use strict";exports.isBefore=void 0;var _index=require("../isBefore.js"),_index2=require("./_lib/convertToFP.js");const isBefore=exports.isBefore=(0,_index2.convertToFP)(_index.isBefore,2);

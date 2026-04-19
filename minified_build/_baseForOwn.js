@@ -1,1 +1,0 @@
-var baseFor=require("./_baseFor"),keys=require("./keys");function baseForOwn(e,r){return e&&baseFor(e,r,keys)}module.exports=baseForOwn;

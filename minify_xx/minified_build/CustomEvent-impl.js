@@ -1,1 +1,0 @@
-"use strict";const EventImpl=require("./Event-impl").implementation,CustomEventInit=require("../generated/CustomEventInit");class CustomEventImpl extends EventImpl{initCustomEvent(t,e,n,i){this._dispatchFlag||(this.initEvent(t,e,n),this.detail=i)}}CustomEventImpl.defaultInit=CustomEventInit.convert(void 0,void 0),module.exports={implementation:CustomEventImpl};

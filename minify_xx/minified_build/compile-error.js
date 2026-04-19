@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"CompileError",{enumerable:!0,get:function(){return CompileError}});class CompileError extends Error{}

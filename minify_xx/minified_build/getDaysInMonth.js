@@ -1,1 +1,0 @@
-"use strict";exports.getDaysInMonth=void 0;var _index=require("../getDaysInMonth.js"),_index2=require("./_lib/convertToFP.js");const getDaysInMonth=exports.getDaysInMonth=(0,_index2.convertToFP)(_index.getDaysInMonth,1);

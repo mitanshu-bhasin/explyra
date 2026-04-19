@@ -1,1 +1,0 @@
-"use strict";var hasSymbols=require("has-symbols/shams");module.exports=function(){return hasSymbols()&&!!Symbol.toStringTag};

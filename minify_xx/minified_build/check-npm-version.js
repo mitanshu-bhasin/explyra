@@ -1,1 +1,0 @@
-let{execSync:execSync}=require("child_process"),pico=require("picocolors");try{parseInt(execSync("npm -v"))<=6&&(process.stderr.write(pico.red("Update npm or call "+pico.yellow("npx browserslist@latest --update-db")+"\n")),process.exit(1))}catch(e){}

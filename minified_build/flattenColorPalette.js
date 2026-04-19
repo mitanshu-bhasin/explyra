@@ -1,1 +1,0 @@
-const flattenColorPalette=t=>Object.assign({},...Object.entries(t??{}).flatMap(([t,e])=>"object"==typeof e?Object.entries(flattenColorPalette(e)).map(([e,a])=>({[t+("DEFAULT"===e?"":`-${e}`)]:a})):[{[`${t}`]:e}]));export default flattenColorPalette;

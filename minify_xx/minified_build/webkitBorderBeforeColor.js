@@ -1,1 +1,0 @@
-"use strict";var parseColor=require("../parsers").parseColor;module.exports.definition={set:function(e){this._setProperty("-webkit-border-before-color",parseColor(e))},get:function(){return this.getPropertyValue("-webkit-border-before-color")},enumerable:!0,configurable:!0};

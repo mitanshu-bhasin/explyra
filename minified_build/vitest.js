@@ -1,1 +1,0 @@
-"use strict";var vitest=require("vitest"),matchers=require("./matchers-98b869c1.js");require("redent"),require("@adobe/css-tools"),require("dom-accessibility-api"),require("aria-query"),require("picocolors"),require("css.escape"),vitest.expect.extend(matchers.extensions);

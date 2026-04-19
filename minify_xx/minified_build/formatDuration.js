@@ -1,1 +1,0 @@
-"use strict";exports.formatDuration=void 0;var _index=require("../formatDuration.js"),_index2=require("./_lib/convertToFP.js");const formatDuration=exports.formatDuration=(0,_index2.convertToFP)(_index.formatDuration,1);

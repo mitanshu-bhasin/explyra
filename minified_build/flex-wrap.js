@@ -1,1 +1,0 @@
-let Declaration=require("../declaration"),flexSpec=require("./flex-spec");class FlexWrap extends Declaration{set(e,r){if(2009!==flexSpec(r)[0])return super.set(e,r)}}FlexWrap.names=["flex-wrap"],module.exports=FlexWrap;

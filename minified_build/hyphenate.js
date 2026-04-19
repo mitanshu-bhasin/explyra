@@ -1,1 +1,0 @@
-var rUpper=/([A-Z])/g;export default function hyphenate(e){return e.replace(rUpper,"-$1").toLowerCase()}

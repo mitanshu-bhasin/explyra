@@ -1,1 +1,0 @@
-import{BLAKE2b as B2B,blake2b as b2b}from"./blake2.js";export const BLAKE2b=B2B;export const blake2b=b2b;

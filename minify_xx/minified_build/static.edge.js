@@ -1,1 +1,0 @@
-"use strict";var s;s="production"===process.env.NODE_ENV?require("./cjs/react-dom-server.edge.production.js"):require("./cjs/react-dom-server.edge.development.js"),exports.version=s.version,exports.prerender=s.prerender,exports.resumeAndPrerender=s.resumeAndPrerender;

@@ -1,1 +1,0 @@
-"use strict";function normalizePathSep(e){return e.replace(/\\/g,"/")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"normalizePathSep",{enumerable:!0,get:function(){return normalizePathSep}});

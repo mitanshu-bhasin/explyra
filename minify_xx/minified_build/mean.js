@@ -1,1 +1,0 @@
-"use strict";function mean(e,t){let l=0,o=0;if(void 0===t)for(let t of e)null!=t&&(t=+t)>=t&&(++l,o+=t);else{let f=-1;for(let r of e)null!=(r=t(r,++f,e))&&(r=+r)>=r&&(++l,o+=r)}if(l)return o/l}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=mean;

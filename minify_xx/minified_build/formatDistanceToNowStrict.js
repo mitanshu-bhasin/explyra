@@ -1,1 +1,0 @@
-"use strict";exports.formatDistanceToNowStrict=formatDistanceToNowStrict;var _index=require("./formatDistanceStrict.js"),_index2=require("./constructNow.js");function formatDistanceToNowStrict(t,r){return(0,_index.formatDistanceStrict)(t,(0,_index2.constructNow)(t),r)}

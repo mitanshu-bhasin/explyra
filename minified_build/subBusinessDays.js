@@ -1,1 +1,0 @@
-"use strict";exports.subBusinessDays=void 0;var _index=require("../subBusinessDays.js"),_index2=require("./_lib/convertToFP.js");const subBusinessDays=exports.subBusinessDays=(0,_index2.convertToFP)(_index.subBusinessDays,2);

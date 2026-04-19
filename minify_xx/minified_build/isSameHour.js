@@ -1,1 +1,0 @@
-"use strict";exports.isSameHour=void 0;var _index=require("../isSameHour.js"),_index2=require("./_lib/convertToFP.js");const isSameHour=exports.isSameHour=(0,_index2.convertToFP)(_index.isSameHour,2);

@@ -1,1 +1,0 @@
-!function(){function e(){return"true"===localStorage.getItem("explyra-cookie-consent")&&"true"===localStorage.getItem("explyra-analytics-enabled")}e(),window.addEventListener("explyra-cookie-updated",function(e){const t=e&&e.detail?e.detail:{};!0===t.consent&&t.analyticsEnabled}),window.addEventListener("storage",function(){e()})}();

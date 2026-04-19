@@ -1,1 +1,0 @@
-var baseGet=require("./_baseGet");function basePropertyDeep(e){return function(r){return baseGet(r,e)}}module.exports=basePropertyDeep;

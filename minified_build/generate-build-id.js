@@ -1,1 +1,0 @@
-export async function generateBuildId(e,t){let r=await e();if(null===r)for(;!r||/ad/i.test(r);)r=t();if("string"!=typeof r)throw Object.defineProperty(new Error("generateBuildId did not return a string. https://nextjs.org/docs/messages/generatebuildid-not-a-string"),"__NEXT_ERROR_CODE",{value:"E455",enumerable:!1,configurable:!0});return r.trim()}

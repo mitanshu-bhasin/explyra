@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["open","closed"]);exports.enumerationValues=enumerationValues,exports.convert=(e,o,{context:n="The provided value"}={})=>{const t=`${o}`;if(!enumerationValues.has(t))throw new e.TypeError(`${n} '${t}' is not a valid enumeration value for ShadowRootMode`);return t};

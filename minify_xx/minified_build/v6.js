@@ -1,1 +1,0 @@
-import{unsafeStringify}from"./stringify.js";import v1 from"./v1.js";import v1ToV6 from"./v1ToV6.js";export default function v6(r={},t,f=0){let i=v1({...r,_v6:!0},new Uint8Array(16));if(i=v1ToV6(i),t){for(let r=0;r<16;r++)t[f+r]=i[r];return t}return unsafeStringify(i)}

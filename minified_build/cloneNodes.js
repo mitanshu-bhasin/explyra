@@ -1,1 +1,0 @@
-export default function cloneNodes(e,r=void 0,t=void 0){return e.map(e=>{let i=e.clone();return void 0!==t&&(i.raws.tailwind={...i.raws.tailwind,...t}),void 0!==r&&traverse(i,e=>{if(!0===e.raws.tailwind?.preserveSource&&e.source)return!1;e.source=r}),i})}function traverse(e,r){!1!==r(e)&&e.each?.(e=>traverse(e,r))}

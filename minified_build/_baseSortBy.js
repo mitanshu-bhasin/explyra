@@ -1,1 +1,0 @@
-function baseSortBy(r,e){var o=r.length;for(r.sort(e);o--;)r[o]=r[o].value;return r}module.exports=baseSortBy;

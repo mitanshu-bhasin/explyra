@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"isPagesAPIRouteMatch",{enumerable:!0,get:function(){return isPagesAPIRouteMatch}});const _routekind=require("../route-kind");function isPagesAPIRouteMatch(e){return e.definition.kind===_routekind.RouteKind.PAGES_API}

@@ -1,1 +1,0 @@
-"use strict";exports.isTomorrow=isTomorrow;var _index=require("./addDays.js"),_index2=require("./constructNow.js"),_index3=require("./isSameDay.js");function isTomorrow(r){return(0,_index3.isSameDay)(r,(0,_index.addDays)((0,_index2.constructNow)(r),1))}

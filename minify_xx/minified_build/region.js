@@ -1,1 +1,0 @@
-"use strict";const browsers=require("./browsers").browsers;function unpackRegion(e){return Object.keys(e).reduce((r,s)=>{let t=e[s];return r[browsers[s]]=Object.keys(t).reduce((e,r)=>{let s=t[r];return"_"===r?s.split(" ").forEach(r=>e[r]=null):e[r]=s,e},{}),r},{})}module.exports=unpackRegion,module.exports.default=unpackRegion;

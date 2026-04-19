@@ -1,1 +1,0 @@
-"use strict";"production"===process.env.NODE_ENV?module.exports=require("../cjs/use-sync-external-store-shim.native.production.js"):module.exports=require("../cjs/use-sync-external-store-shim.native.development.js");

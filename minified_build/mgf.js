@@ -1,1 +1,0 @@
-var forge=require("./forge");require("./mgf1"),module.exports=forge.mgf=forge.mgf||{},forge.mgf.mgf1=forge.mgf1;

@@ -1,2 +1,0 @@
-/*! blob-to-buffer. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
-if(!globalThis.DOMException){var{MessageChannel:MessageChannel}=require("worker_threads"),port=(new MessageChannel).port1,ab=new ArrayBuffer;try{port.postMessage(ab,[ab,ab])}catch(e){"DOMException"===e.constructor.name&&(globalThis.DOMException=e.constructor)}}module.exports=globalThis.DOMException;

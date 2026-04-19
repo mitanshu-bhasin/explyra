@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NOOP_LOGGER=exports.NoopLogger=void 0;class NoopLogger{emit(o){}}exports.NoopLogger=NoopLogger,exports.NOOP_LOGGER=new NoopLogger;

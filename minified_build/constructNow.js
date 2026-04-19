@@ -1,1 +1,0 @@
-"use strict";exports.constructNow=constructNow;var _index=require("./constructFrom.js");function constructNow(t){return(0,_index.constructFrom)(t,Date.now())}

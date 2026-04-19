@@ -1,1 +1,0 @@
-import postcss from"postcss";import cloneNodes from"./cloneNodes";export default function responsive(o){return postcss.atRule({name:"responsive"}).append(cloneNodes(Array.isArray(o)?o:[o]))}

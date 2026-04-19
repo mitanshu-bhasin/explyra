@@ -1,1 +1,0 @@
-"use strict";exports.setDate=void 0;var _index=require("../setDate.js"),_index2=require("./_lib/convertToFP.js");const setDate=exports.setDate=(0,_index2.convertToFP)(_index.setDate,2);

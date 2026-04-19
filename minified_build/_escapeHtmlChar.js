@@ -1,1 +1,0 @@
-var basePropertyOf=require("./_basePropertyOf"),htmlEscapes={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"},escapeHtmlChar=basePropertyOf(htmlEscapes);module.exports=escapeHtmlChar;

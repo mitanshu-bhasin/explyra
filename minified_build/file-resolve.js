@@ -1,1 +1,0 @@
-export function cssFileResolve(t,e,s){return!(t.startsWith("/")||!s&&/^[a-z][a-z0-9+.-]*:/i.test(t))}

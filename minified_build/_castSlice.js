@@ -1,1 +1,0 @@
-var baseSlice=require("./_baseSlice");function castSlice(e,c,i){var a=e.length;return i=void 0===i?a:i,!c&&i>=a?e:baseSlice(e,c,i)}module.exports=castSlice;

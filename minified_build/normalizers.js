@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"Normalizers",{enumerable:!0,get:function(){return Normalizers}});class Normalizers{constructor(e=[]){this.normalizers=e}push(e){this.normalizers.push(e)}normalize(e){return this.normalizers.reduce((e,r)=>r.normalize(e),e)}}

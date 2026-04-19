@@ -1,1 +1,0 @@
-"use strict";function mitt(){const e=Object.create(null);return{on(t,n){(e[t]||(e[t]=[])).push(n)},off(t,n){e[t]&&e[t].splice(e[t].indexOf(n)>>>0,1)},emit(t,...n){(e[t]||[]).slice().map(e=>{e(...n)})}}}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"default",{enumerable:!0,get:function(){return mitt}});

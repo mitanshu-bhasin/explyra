@@ -1,1 +1,0 @@
-"use strict";function reduce(e,t,r){if("function"!=typeof t)throw new TypeError("reducer is not a function");const n=e[Symbol.iterator]();let o,u,f=-1;if(arguments.length<3){if(({done:o,value:r}=n.next()),o)return;++f}for(;({done:o,value:u}=n.next()),!o;)r=t(r,u,++f,e);return r}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=reduce;

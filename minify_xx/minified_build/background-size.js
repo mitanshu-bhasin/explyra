@@ -1,1 +1,0 @@
-let Declaration=require("../declaration");class BackgroundSize extends Declaration{set(e,a){let r=e.value.toLowerCase();return"-webkit-"!==a||r.includes(" ")||"contain"===r||"cover"===r||(e.value=e.value+" "+e.value),super.set(e,a)}}BackgroundSize.names=["background-size"],module.exports=BackgroundSize;

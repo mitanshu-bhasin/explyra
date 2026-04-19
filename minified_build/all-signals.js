@@ -1,1 +1,0 @@
-import constants from"node:constants";export const allSignals=Object.keys(constants).filter(t=>t.startsWith("SIG")&&"SIGPROF"!==t&&"SIGKILL"!==t);

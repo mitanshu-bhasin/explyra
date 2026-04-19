@@ -1,1 +1,0 @@
-var asciiToArray=require("./_asciiToArray"),hasUnicode=require("./_hasUnicode"),unicodeToArray=require("./_unicodeToArray");function stringToArray(r){return hasUnicode(r)?unicodeToArray(r):asciiToArray(r)}module.exports=stringToArray;

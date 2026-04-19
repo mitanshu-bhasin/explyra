@@ -1,1 +1,0 @@
-"use strict";const HTMLElementImpl=require("./HTMLElement-impl").implementation;class HTMLOListElementImpl extends HTMLElementImpl{get start(){const t=parseInt(this.getAttributeNS(null,"start"));return isNaN(t)?1:t}set start(t){this.setAttributeNS(null,"start",t)}}module.exports={implementation:HTMLOListElementImpl};

@@ -1,1 +1,0 @@
-"use strict";exports.implementation=class{javaEnabled(){return!1}};

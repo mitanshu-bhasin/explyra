@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=isSpecifierDefault;var _index=require("./generated/index.js");function isSpecifierDefault(e){return(0,_index.isImportDefaultSpecifier)(e)||(0,_index.isIdentifier)(e.imported||e.exported,{name:"default"})}

@@ -1,1 +1,0 @@
-const fs=require("fs"),path=require("path"),files=[path.join("d:","Expense Tracker","ai.jsonl"),path.join("d:","Expense Tracker","valid.jsonl")];files.forEach(e=>{fs.existsSync(e)});

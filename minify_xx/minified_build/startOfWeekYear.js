@@ -1,1 +1,0 @@
-"use strict";exports.startOfWeekYear=void 0;var _index=require("../startOfWeekYear.js"),_index2=require("./_lib/convertToFP.js");const startOfWeekYear=exports.startOfWeekYear=(0,_index2.convertToFP)(_index.startOfWeekYear,1);

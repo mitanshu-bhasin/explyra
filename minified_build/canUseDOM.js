@@ -1,1 +1,0 @@
-export default!("undefined"==typeof window||!window.document||!window.document.createElement);

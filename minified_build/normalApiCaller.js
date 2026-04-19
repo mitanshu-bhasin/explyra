@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.NormalApiCaller=void 0;const call_1=require("../call");class NormalApiCaller{init(l){return l?new call_1.OngoingCall(l):new call_1.OngoingCallPromise}wrap(l){return l}call(l,r,e,a){a.call(l,r)}fail(l,r){l.callback(r)}result(l){return l.promise}}exports.NormalApiCaller=NormalApiCaller;

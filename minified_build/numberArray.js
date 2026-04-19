@@ -1,1 +1,0 @@
-"use strict";function _default(e,r){r||(r=[]);var t,u=e?Math.min(r.length,e.length):0,n=r.slice();return function(i){for(t=0;t<u;++t)n[t]=e[t]*(1-i)+r[t]*i;return n}}function isNumberArray(e){return ArrayBuffer.isView(e)&&!(e instanceof DataView)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default,exports.isNumberArray=isNumberArray;

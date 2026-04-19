@@ -1,1 +1,0 @@
-"use strict";module.exports={versions:{},nextTick(e){const s=Array.prototype.slice.call(arguments,1);Promise.resolve().then(()=>{e.apply(null,s)})}};

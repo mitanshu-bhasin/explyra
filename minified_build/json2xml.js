@@ -1,1 +1,0 @@
-import XMLBuilder from"fast-xml-builder";export default XMLBuilder;export*from"fast-xml-builder";

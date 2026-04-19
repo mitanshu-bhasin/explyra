@@ -1,1 +1,0 @@
-"use strict";const EventImpl=require("./Event-impl").implementation,CloseEventInit=require("../generated/CloseEventInit");class CloseEventImpl extends EventImpl{}CloseEventImpl.defaultInit=CloseEventInit.convert(void 0,void 0),exports.implementation=CloseEventImpl;

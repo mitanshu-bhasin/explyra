@@ -1,1 +1,0 @@
-"use strict";exports.previousSunday=void 0;var _index=require("../previousSunday.js"),_index2=require("./_lib/convertToFP.js");const previousSunday=exports.previousSunday=(0,_index2.convertToFP)(_index.previousSunday,1);

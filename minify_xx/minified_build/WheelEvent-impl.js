@@ -1,1 +1,0 @@
-"use strict";const MouseEventImpl=require("./MouseEvent-impl").implementation,WheelEventInit=require("../generated/WheelEventInit");class WheelEventImpl extends MouseEventImpl{}WheelEventImpl.defaultInit=WheelEventInit.convert(void 0,void 0),module.exports={implementation:WheelEventImpl};

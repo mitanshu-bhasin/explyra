@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.ESLintScopeVariable=void 0;const VariableBase_1=require("./VariableBase");class ESLintScopeVariable extends VariableBase_1.VariableBase{writeable;eslintExplicitGlobal;eslintImplicitGlobalSetting;eslintExplicitGlobalComments}exports.ESLintScopeVariable=ESLintScopeVariable;

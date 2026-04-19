@@ -1,1 +1,0 @@
-"use strict";function number(e){return+e}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=number;

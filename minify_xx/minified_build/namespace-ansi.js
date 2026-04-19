@@ -1,1 +1,0 @@
-var colorspace=require("@so-ric/colorspace"),kuler=require("kuler");module.exports=function(r,e){var o=e.namespace,c=!1!==e.colors?kuler(o+":",colorspace(o)):o+":";return r[0]=c+" "+r[0],r};

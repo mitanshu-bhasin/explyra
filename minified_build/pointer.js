@@ -1,1 +1,0 @@
-export function encodePointer(e){return encodeURI(escapePointer(e))}export function escapePointer(e){return e.replace(/~/g,"~0").replace(/\//g,"~1")}

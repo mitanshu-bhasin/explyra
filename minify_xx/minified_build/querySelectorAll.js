@@ -1,1 +1,0 @@
-var toArray=Function.prototype.bind.call(Function.prototype.call,[].slice);export default function qsa(t,r){return toArray(t.querySelectorAll(r))}

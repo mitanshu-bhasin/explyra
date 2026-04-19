@@ -1,1 +1,0 @@
-"use strict";export default function isAbsoluteURL(t){return"string"==typeof t&&/^([a-z][a-z\d+\-.]*:)?\/\//i.test(t)}

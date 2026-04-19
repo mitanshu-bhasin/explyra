@@ -1,1 +1,0 @@
-"use strict";exports.getUnixTime=void 0;var _index=require("../getUnixTime.js"),_index2=require("./_lib/convertToFP.js");const getUnixTime=exports.getUnixTime=(0,_index2.convertToFP)(_index.getUnixTime,1);

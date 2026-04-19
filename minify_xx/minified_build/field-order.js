@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.FieldOrder=void 0;class FieldOrder{constructor(e,r="ASCENDING"){this.field=e,this.direction=r}toProto(){return{field:{fieldPath:this.field.formattedName},direction:this.direction}}}exports.FieldOrder=FieldOrder;

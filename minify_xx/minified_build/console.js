@@ -1,1 +1,0 @@
-module.exports=function(o,c){try{Function.prototype.apply.call(console.log,console,c)}catch(o){}};

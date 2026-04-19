@@ -1,1 +1,0 @@
-"use strict";var SamplingDecision;Object.defineProperty(exports,"__esModule",{value:!0}),exports.SamplingDecision=void 0,function(i){i[i.NOT_RECORD=0]="NOT_RECORD",i[i.RECORD=1]="RECORD",i[i.RECORD_AND_SAMPLED=2]="RECORD_AND_SAMPLED"}(SamplingDecision=exports.SamplingDecision||(exports.SamplingDecision={}));

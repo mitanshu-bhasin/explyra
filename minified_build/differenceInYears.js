@@ -1,1 +1,0 @@
-"use strict";exports.differenceInYears=void 0;var _index=require("../differenceInYears.js"),_index2=require("./_lib/convertToFP.js");const differenceInYears=exports.differenceInYears=(0,_index2.convertToFP)(_index.differenceInYears,2);

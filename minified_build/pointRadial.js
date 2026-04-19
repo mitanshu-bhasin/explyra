@@ -1,1 +1,0 @@
-"use strict";function _default(e,t){return[(t=+t)*Math.cos(e-=Math.PI/2),t*Math.sin(e)]}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;

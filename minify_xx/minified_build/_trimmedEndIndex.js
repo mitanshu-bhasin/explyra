@@ -1,1 +1,0 @@
-var reWhitespace=/\s/;function trimmedEndIndex(e){for(var r=e.length;r--&&reWhitespace.test(e.charAt(r)););return r}module.exports=trimmedEndIndex;

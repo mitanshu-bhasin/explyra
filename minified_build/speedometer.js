@@ -1,1 +1,0 @@
-"use strict";function speedometer(e,t){e=e||10;const r=new Array(e),n=new Array(e);let o,u=0,s=0;return t=void 0!==t?t:1e3,function(c){const d=Date.now(),i=n[s];o||(o=d),r[u]=c,n[u]=d;let a=s,f=0;for(;a!==u;)f+=r[a++],a%=e;if(u=(u+1)%e,u===s&&(s=(s+1)%e),d-o<t)return;const l=i&&d-i;return l?Math.round(1e3*f/l):void 0}}export default speedometer;

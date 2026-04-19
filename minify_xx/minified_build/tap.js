@@ -1,1 +1,0 @@
-export function tap(t,n){return n(t),t}

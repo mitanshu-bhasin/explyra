@@ -1,1 +1,0 @@
-var getTag=require("./_getTag"),isObjectLike=require("./isObjectLike"),mapTag="[object Map]";function baseIsMap(e){return isObjectLike(e)&&getTag(e)==mapTag}module.exports=baseIsMap;

@@ -1,1 +1,0 @@
-"use strict";exports.differenceInWeeksWithOptions=void 0;var _index=require("../differenceInWeeks.js"),_index2=require("./_lib/convertToFP.js");const differenceInWeeksWithOptions=exports.differenceInWeeksWithOptions=(0,_index2.convertToFP)(_index.differenceInWeeks,3);

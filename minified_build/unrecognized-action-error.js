@@ -1,1 +1,0 @@
-export class UnrecognizedActionError extends Error{constructor(...r){super(...r),this.name="UnrecognizedActionError"}}export function unstable_isUnrecognizedActionError(r){return!!(r&&"object"==typeof r&&r instanceof UnrecognizedActionError)}

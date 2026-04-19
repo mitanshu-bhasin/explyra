@@ -1,1 +1,0 @@
-import{PAGE_SEGMENT_KEY}from"../../../shared/lib/segment";export function createRouterCacheKey(r,E=!1){return Array.isArray(r)?`${r[0]}|${r[1]}|${r[2]}`:E&&r.startsWith(PAGE_SEGMENT_KEY)?PAGE_SEGMENT_KEY:r}

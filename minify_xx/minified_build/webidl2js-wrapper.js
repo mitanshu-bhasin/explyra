@@ -1,1 +1,0 @@
-"use strict";const URL=require("./lib/URL"),URLSearchParams=require("./lib/URLSearchParams");exports.URL=URL,exports.URLSearchParams=URLSearchParams;

@@ -1,1 +1,0 @@
-export default(n,t)=>`-----BEGIN ${t}-----\n${(n.match(/.{1,64}/g)||[]).join("\n")}\n-----END ${t}-----`;

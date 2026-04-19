@@ -1,1 +1,0 @@
-import ownerDocument from"./ownerDocument";export default function ownerWindow(o){var e=ownerDocument(o);return e&&e.defaultView||window}

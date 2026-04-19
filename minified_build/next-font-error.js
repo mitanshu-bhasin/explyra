@@ -1,1 +1,0 @@
-"use strict";function nextFontError(r){const t=new Error(r);throw t.name="NextFontError",t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.nextFontError=nextFontError;

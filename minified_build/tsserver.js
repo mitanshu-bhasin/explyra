@@ -1,1 +1,0 @@
-try{const{enableCompileCache:e}=require("node:module");e&&e()}catch{}module.exports=require("./_tsserver.js");

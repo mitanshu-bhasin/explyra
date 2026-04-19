@@ -1,1 +1,0 @@
-export const createRenderParamsFromClient="development"===process.env.NODE_ENV?require("./params.browser.dev").createRenderParamsFromClient:require("./params.browser.prod").createRenderParamsFromClient;

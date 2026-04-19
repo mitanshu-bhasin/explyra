@@ -1,1 +1,0 @@
-export function assertNotStrictEqual(t,e,r,s){r.assert.notStrictEqual(t,e,s)}export function assertSingleKey(t,e){e.assert.strictEqual(typeof t,"string")}export function objectKeys(t){return Object.keys(t)}

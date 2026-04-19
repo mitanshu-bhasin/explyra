@@ -1,1 +1,0 @@
-import{FetchBaseError}from"./base.js";export class FetchError extends FetchBaseError{constructor(r,e,s){super(r,e),s&&(this.code=this.errno=s.code,this.erroredSysCall=s.syscall)}}

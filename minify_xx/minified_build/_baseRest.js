@@ -1,1 +1,0 @@
-var identity=require("./identity"),overRest=require("./_overRest"),setToString=require("./_setToString");function baseRest(e,t){return setToString(overRest(e,t,identity),e+"")}module.exports=baseRest;

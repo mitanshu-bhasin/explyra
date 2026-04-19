@@ -1,1 +1,0 @@
-import contains from"./contains";import qsa from"./querySelectorAll";export default function filterEvents(t,r){return function(n){var e=n.currentTarget,o=n.target;qsa(e,t).some(function(t){return contains(t,o)})&&r.call(this,n)}}

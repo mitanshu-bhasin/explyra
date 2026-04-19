@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var noneRole={abstract:!1,accessibleNameRequired:!1,baseConcepts:[],childrenPresentational:!1,nameFrom:[],prohibitedProps:[],props:{},relatedConcepts:[],requireContextRole:[],requiredContextRole:[],requiredOwnedElements:[],requiredProps:{},superClass:[]},_default=exports.default=noneRole;

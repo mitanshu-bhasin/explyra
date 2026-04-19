@@ -1,1 +1,0 @@
-"use strict";const ResourceLoader=require("./resource-loader.js");module.exports=class extends ResourceLoader{fetch(){return null}};

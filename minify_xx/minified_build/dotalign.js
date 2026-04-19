@@ -1,1 +1,0 @@
-var test=require("tape"),table=require("../");test("dot align",function(e){e.plan(1);var a=table([["beep","1024"],["boop","334.212"],["foo","1006"],["bar","45.6"],["baz","123."]],{align:["l","."]});e.equal(a,["beep  1024","boop   334.212","foo   1006","bar     45.6","baz    123."].join("\n"))});

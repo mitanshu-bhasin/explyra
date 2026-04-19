@@ -1,1 +1,0 @@
-import{createClientModuleProxy}from"react-server-dom-webpack/server";export const createProxy=createClientModuleProxy;

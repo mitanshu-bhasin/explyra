@@ -1,1 +1,0 @@
-"use strict";exports.fromUnixTime=void 0;var _index=require("../fromUnixTime.js"),_index2=require("./_lib/convertToFP.js");const fromUnixTime=exports.fromUnixTime=(0,_index2.convertToFP)(_index.fromUnixTime,1);

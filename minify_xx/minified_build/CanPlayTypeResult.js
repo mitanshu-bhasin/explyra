@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["","maybe","probably"]);exports.enumerationValues=enumerationValues,exports.convert=(e,n,{context:t="The provided value"}={})=>{const a=`${n}`;if(!enumerationValues.has(a))throw new e.TypeError(`${t} '${a}' is not a valid enumeration value for CanPlayTypeResult`);return a};

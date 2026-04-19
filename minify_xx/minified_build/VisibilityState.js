@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["hidden","visible","prerender"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:n="The provided value"}={})=>{const r=`${t}`;if(!enumerationValues.has(r))throw new e.TypeError(`${n} '${r}' is not a valid enumeration value for VisibilityState`);return r};

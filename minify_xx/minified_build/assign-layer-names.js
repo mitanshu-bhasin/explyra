@@ -1,1 +1,0 @@
-"use strict";module.exports=function(o,e,n,r){o.forEach((t,a)=>{if(""===t.trim()){if(!r.nameLayer)throw e.error('When using anonymous layers in @import you must also set the "nameLayer" plugin option');o[a]=r.nameLayer(n.anonymousLayerCounter++,n.rootFilename).toString()}})};

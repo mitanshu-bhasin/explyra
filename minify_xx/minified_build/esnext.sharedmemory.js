@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.esnext_sharedmemory=void 0;const base_config_1=require("./base-config");exports.esnext_sharedmemory={libs:[],variables:[["Atomics",base_config_1.TYPE]]};

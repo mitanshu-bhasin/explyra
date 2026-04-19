@@ -1,1 +1,0 @@
-import{jsx as _jsx}from"react/jsx-runtime";import{HTTPAccessErrorFallback}from"../http-access-fallback/error-fallback";export default function Forbidden(){return _jsx(HTTPAccessErrorFallback,{status:403,message:"This page could not be accessed."})}

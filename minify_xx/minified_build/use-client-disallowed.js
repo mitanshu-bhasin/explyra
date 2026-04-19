@@ -1,1 +1,0 @@
-const error=new Proxy({},{get(e){throw Object.defineProperty(new Error("Using Client Components is not allowed in this environment."),"__NEXT_ERROR_CODE",{value:"E44",enumerable:!1,configurable:!0})}});export default new Proxy({},{get:(e,r)=>"__esModule"===r||error});

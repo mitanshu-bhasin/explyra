@@ -1,1 +1,0 @@
-import{getArticles}from"./services/firebaseService.js";async function run(){const e=await getArticles(10);console.log("Articles found:",e.length),e.length>0&&console.log("First article title:",e[0].title)}run();

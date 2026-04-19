@@ -1,1 +1,0 @@
-"use strict";function getRoundingMethod(t){return n=>{const e=(t?Math[t]:Math.trunc)(n);return 0===e?0:e}}exports.getRoundingMethod=getRoundingMethod;

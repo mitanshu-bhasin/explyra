@@ -1,1 +1,0 @@
-"use strict";const utf8Encoder=new TextEncoder,utf8Decoder=new TextDecoder("utf-8",{ignoreBOM:!0});function utf8Encode(e){return utf8Encoder.encode(e)}function utf8DecodeWithoutBOM(e){return utf8Decoder.decode(e)}module.exports={utf8Encode:utf8Encode,utf8DecodeWithoutBOM:utf8DecodeWithoutBOM};

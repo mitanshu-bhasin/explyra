@@ -1,1 +1,0 @@
-"use strict";exports.differenceInSecondsWithOptions=void 0;var _index=require("../differenceInSeconds.js"),_index2=require("./_lib/convertToFP.js");const differenceInSecondsWithOptions=exports.differenceInSecondsWithOptions=(0,_index2.convertToFP)(_index.differenceInSeconds,3);

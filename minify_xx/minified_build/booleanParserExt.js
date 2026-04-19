@@ -1,1 +1,0 @@
-export default function boolParserExt(e){if(isArray(e))for(let r=0;r<e.length;r++)e[r]=parse(e[r]);else e=parse(e);return e}function parse(e){if("string"==typeof e){const r=e.toLowerCase();if("true"===r||"yes"===r||"1"===r)return!0;if("false"===r||"no"===r||"0"===r)return!1}return e}

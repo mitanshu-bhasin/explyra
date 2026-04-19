@@ -1,1 +1,0 @@
-"use strict";function dset(e,t,o){t.split&&(t=t.split("."));for(var r,n,p=0,s=t.length,f=e;p<s&&"__proto__"!==(n=t[p++])&&"constructor"!==n&&"prototype"!==n;)f=f[n]=p===s?o:typeof(r=f[n])==typeof t?r:0*t[p]!=0||~(""+t[p]).indexOf(".")?{}:[]}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"dset",{enumerable:!0,get:function(){return dset}});

@@ -1,1 +1,0 @@
-export let toHash=t=>{let e=0,o=11;for(;e<t.length;)o=101*o+t.charCodeAt(e++)>>>0;return"go"+o};

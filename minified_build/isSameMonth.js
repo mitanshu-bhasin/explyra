@@ -1,1 +1,0 @@
-"use strict";exports.isSameMonth=void 0;var _index=require("../isSameMonth.js"),_index2=require("./_lib/convertToFP.js");const isSameMonth=exports.isSameMonth=(0,_index2.convertToFP)(_index.isSameMonth,2);

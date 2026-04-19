@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["subtitles","captions","descriptions","chapters","metadata"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:n="The provided value"}={})=>{const a=`${t}`;if(!enumerationValues.has(a))throw new e.TypeError(`${n} '${a}' is not a valid enumeration value for TextTrackKind`);return a};

@@ -1,1 +1,0 @@
-const Fraction=require("fraction.js");function approximate(r,a){var o=Math.floor(r),i=1,n=o+1,t=1;if(r!==o)for(;i<=a&&t<=a;){var e=(o+n)/(i+t);if(r===e){i+t<=a?(i+=t,o+=n,t=a+1):i>t?t=a+1:i=a+1;break}r<e?(n+=o,t+=i):(o+=n,i+=t)}return i>a&&(i=t,o=n),new Fraction(o,i)}

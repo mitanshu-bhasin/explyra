@@ -1,1 +1,0 @@
-import parser from"postcss-selector-parser";export default function(t,r,e=!1){if(""===t)return r;let s="string"==typeof r?parser().astSync(r):r;return s.walkClasses(r=>{let s=r.value,a=e&&s.startsWith("-");r.value=a?`-${t}${s.slice(1)}`:`${t}${s}`}),"string"==typeof r?s.toString():s}

@@ -1,1 +1,0 @@
-import webcrypto,{isCryptoKey}from"./webcrypto.js";import isKeyObject from"./is_key_object.js";export default e=>isKeyObject(e)||isCryptoKey(e);const types=["KeyObject"];(globalThis.CryptoKey||(null==webcrypto?void 0:webcrypto.CryptoKey))&&types.push("CryptoKey");export{types};

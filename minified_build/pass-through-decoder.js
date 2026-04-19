@@ -1,1 +1,0 @@
-import{blobToArrayBuffer}from"./decode-strings.js";export default class PassThroughDecoder{constructor(){this.chunks=[]}update(s){this.chunks.push(s),this.chunks.push("\n")}finalize(){return blobToArrayBuffer(new Blob(this.chunks,{type:"application/octet-stream"}))}}

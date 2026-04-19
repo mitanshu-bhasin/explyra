@@ -1,1 +1,0 @@
-"use strict";module.exports=class{constructor(t,e){this.source=t,this.target=e}apply(t){const e=t.ensureHook(this.target);t.getHook(this.source).tapAsync("JoinRequestPlugin",(s,o,r)=>{const a=s.path,i=s.request,u={...s,path:t.join(a,i),relativePath:s.relativePath&&t.join(s.relativePath,i),request:void 0};t.doResolve(e,u,null,o,r)})}};

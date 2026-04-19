@@ -1,1 +1,0 @@
-"use strict";exports.startOfDay=void 0;var _index=require("../startOfDay.js"),_index2=require("./_lib/convertToFP.js");const startOfDay=exports.startOfDay=(0,_index2.convertToFP)(_index.startOfDay,1);

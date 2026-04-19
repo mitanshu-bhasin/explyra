@@ -1,1 +1,0 @@
-"use strict";module.exports=function(e,r){var t=(r=r||process.argv||[]).indexOf("--"),s=/^-{1,2}/.test(e)?"":"--",n=r.indexOf(s+e);return-1!==n&&(-1===t||n<t)};

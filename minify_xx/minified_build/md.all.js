@@ -1,1 +1,0 @@
-module.exports=require("./md"),require("./md5"),require("./sha1"),require("./sha256"),require("./sha512");

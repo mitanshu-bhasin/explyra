@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["text/html","text/xml","application/xml","application/xhtml+xml","image/svg+xml"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:n="The provided value"}={})=>{const a=`${t}`;if(!enumerationValues.has(a))throw new e.TypeError(`${n} '${a}' is not a valid enumeration value for SupportedType`);return a};

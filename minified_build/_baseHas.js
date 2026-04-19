@@ -1,1 +1,0 @@
-var objectProto=Object.prototype,hasOwnProperty=objectProto.hasOwnProperty;function baseHas(o,r){return null!=o&&hasOwnProperty.call(o,r)}module.exports=baseHas;

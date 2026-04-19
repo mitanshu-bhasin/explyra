@@ -1,1 +1,0 @@
-const redirectStatus=new Set([301,302,303,307,308]);export const isRedirect=t=>redirectStatus.has(t);

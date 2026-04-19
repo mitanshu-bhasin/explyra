@@ -1,1 +1,0 @@
-const{unstable_dev:unstable_dev}=require("wrangler");describe("Worker",()=>{let e;beforeAll(async()=>{e=await unstable_dev("src/index.js",{experimental:{disableExperimentalWarning:!0}})}),afterAll(async()=>{await e.stop()}),it("should return Hello World",async()=>{const t=await e.fetch();if(t){const e=await t.text();expect(e).toMatchInlineSnapshot('"Hello World!"')}})});

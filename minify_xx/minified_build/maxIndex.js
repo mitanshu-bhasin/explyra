@@ -1,1 +1,0 @@
-"use strict";function maxIndex(e,o){let t,l=-1,n=-1;if(void 0===o)for(const o of e)++n,null!=o&&(t<o||void 0===t&&o>=o)&&(t=o,l=n);else for(let r of e)null!=(r=o(r,++n,e))&&(t<r||void 0===t&&r>=r)&&(t=r,l=n);return l}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=maxIndex;

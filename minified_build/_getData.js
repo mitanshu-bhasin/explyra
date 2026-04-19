@@ -1,1 +1,0 @@
-var metaMap=require("./_metaMap"),noop=require("./noop"),getData=metaMap?function(e){return metaMap.get(e)}:noop;module.exports=getData;

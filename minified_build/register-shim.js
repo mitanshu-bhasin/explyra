@@ -1,1 +1,0 @@
-"use strict";function loadImplementation(){if(void 0===window.Promise)throw new Error("any-promise browser requires a polyfill or explicit registration e.g: require('any-promise/register/bluebird')");return{Promise:window.Promise,implementation:"window.Promise"}}module.exports=require("./loader")(window,loadImplementation);

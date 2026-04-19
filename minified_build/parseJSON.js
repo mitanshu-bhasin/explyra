@@ -1,1 +1,0 @@
-"use strict";exports.parseJSON=void 0;var _index=require("../parseJSON.js"),_index2=require("./_lib/convertToFP.js");const parseJSON=exports.parseJSON=(0,_index2.convertToFP)(_index.parseJSON,1);

@@ -1,1 +1,0 @@
-"use strict";function some(e,t){if("function"!=typeof t)throw new TypeError("test is not a function");let o=-1;for(const r of e)if(t(r,++o,e))return!0;return!1}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=some;

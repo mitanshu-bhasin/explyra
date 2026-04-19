@@ -1,1 +1,0 @@
-"use strict";exports.isThisYear=isThisYear;var _index=require("./constructNow.js"),_index2=require("./isSameYear.js");function isThisYear(e){return(0,_index2.isSameYear)(e,(0,_index.constructNow)(e))}

@@ -1,1 +1,0 @@
-"use strict";let printed={};module.exports=function(e){printed[e]||(printed[e]=!0,"undefined"!=typeof console&&console.warn&&console.warn(e))};

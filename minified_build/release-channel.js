@@ -1,1 +1,0 @@
-let version=process.argv[2]||process.env.npm_package_version||require("../package.json").version,match=/\d+\.\d+\.\d+-(.*)\.\d+/g.exec(version);match?console.log(match[1]):console.log("latest");

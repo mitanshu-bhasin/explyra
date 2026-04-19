@@ -1,1 +1,0 @@
-"use strict";function permute(e,r){return Array.from(r,r=>e[r])}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=permute;

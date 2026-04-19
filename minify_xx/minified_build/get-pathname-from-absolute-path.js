@@ -1,1 +1,0 @@
-"use strict";function getPathnameFromAbsolutePath(e){let t="/app/";e.includes(t)||(t="\\app\\");const[,...n]=e.split(t);return(t[0]+n.join(t)).split(".").slice(0,-1).join(".")}Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"getPathnameFromAbsolutePath",{enumerable:!0,get:function(){return getPathnameFromAbsolutePath}});

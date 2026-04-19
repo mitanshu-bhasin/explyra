@@ -1,1 +1,0 @@
-"use strict";function promisify(e){return function(r,t){return new Promise((i,o)=>{e.call(this,r,t,(e,r)=>{e?o(e):i(r)})})}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=promisify;

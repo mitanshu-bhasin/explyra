@@ -1,1 +1,0 @@
-"use strict";const singulars={pronoun:"it",is:"is",was:"was",this:"this"},plurals={pronoun:"they",is:"are",was:"were",this:"these"};module.exports=class{constructor(s,r){this.singular=s,this.plural=r}pluralize(s){const r=1===s;return{...r?singulars:plurals,count:s,noun:r?this.singular:this.plural}}};

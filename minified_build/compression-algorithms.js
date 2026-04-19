@@ -1,1 +1,0 @@
-"use strict";var CompressionAlgorithms;Object.defineProperty(exports,"__esModule",{value:!0}),exports.CompressionAlgorithms=void 0,function(e){e[e.identity=0]="identity",e[e.deflate=1]="deflate",e[e.gzip=2]="gzip"}(CompressionAlgorithms||(exports.CompressionAlgorithms=CompressionAlgorithms={}));

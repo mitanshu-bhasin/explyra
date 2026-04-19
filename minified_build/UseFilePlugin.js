@@ -1,1 +1,0 @@
-"use strict";module.exports=class{constructor(t,e,s){this.source=t,this.filename=e,this.target=s}apply(t){const e=t.ensureHook(this.target);t.getHook(this.source).tapAsync("UseFilePlugin",(s,i,a)=>{const o=t.join(s.path,this.filename),h={...s,path:o,relativePath:s.relativePath&&t.join(s.relativePath,this.filename)};t.doResolve(e,h,`using path: ${o}`,i,a)})}};

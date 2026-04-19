@@ -1,1 +1,0 @@
-self._ENTRIES||={};const modProm=import("MODULE");modProm.catch(()=>{}),self._ENTRIES.VAR_ENTRY_NAME=new Proxy(modProm,{get(e,t){if("then"===t)return(t,n)=>e.then(t,n);let n=(...n)=>e.then(e=>(0,e[t])(...n));return n.then=(n,o)=>e.then(e=>e[t]).then(n,o),n}});

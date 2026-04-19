@@ -1,1 +1,0 @@
-"use strict";exports.isToday=isToday;var _index=require("./constructNow.js"),_index2=require("./isSameDay.js");function isToday(e){return(0,_index2.isSameDay)(e,(0,_index.constructNow)(e))}

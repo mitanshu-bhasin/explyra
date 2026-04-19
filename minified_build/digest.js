@@ -1,1 +1,0 @@
-import{createHash}from"crypto";const digest=(t,e)=>createHash(t).update(e).digest();export default digest;

@@ -1,1 +1,0 @@
-export const getNavigationEntry=()=>{const e=self.performance&&performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];if(e&&e.responseStart>0&&e.responseStart<performance.now())return e};

@@ -1,1 +1,0 @@
-var get=require("./get");function baseAt(e,r){for(var t=-1,a=r.length,n=Array(a),o=null==e;++t<a;)n[t]=o?void 0:get(e,r[t]);return n}module.exports=baseAt;

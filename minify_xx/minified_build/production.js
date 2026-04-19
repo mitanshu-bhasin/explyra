@@ -1,1 +1,0 @@
-var create=require("../diagnostics"),diagnostics=create(function e(r,o){return(o=o||{}).namespace=r,o.prod=!0,o.dev=!1,o.force||e.force?e.yep(o):e.nope(o)});module.exports=diagnostics;

@@ -1,1 +1,0 @@
-const fs=require("fs"),path=require("path");function del(r){if(!fs.existsSync(r))return!1;try{return fs.statSync(r).isDirectory()?(fs.readdirSync(r).forEach(e=>{const s=path.join(r,e);fs.statSync(s).isFile()&&fs.unlinkSync(s)}),fs.rmdirSync(r)):fs.unlinkSync(r),!0}catch(e){console.error(`Error while deleting ${r}: ${e.message}`)}}module.exports={del:del};

@@ -1,1 +1,0 @@
-const{asyncIterator:asyncIterator}=Symbol,readBlob=async function*(a){a.stream?yield*a.stream():a.arrayBuffer?yield await a.arrayBuffer():a[asyncIterator]?yield*a[asyncIterator]():yield a};export default readBlob;

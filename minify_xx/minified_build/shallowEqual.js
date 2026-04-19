@@ -1,1 +1,0 @@
-"use strict";function shallowEqual(r,l){for(var a in r)if({}.hasOwnProperty.call(r,a)&&(!{}.hasOwnProperty.call(l,a)||r[a]!==l[a]))return!1;for(var e in l)if({}.hasOwnProperty.call(l,e)&&!{}.hasOwnProperty.call(r,e))return!1;return!0}Object.defineProperty(exports,"__esModule",{value:!0}),exports.shallowEqual=shallowEqual;

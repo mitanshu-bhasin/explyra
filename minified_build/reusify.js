@@ -1,1 +1,0 @@
-"use strict";function reusify(e){var n=new e,t=n;return{get:function(){var r=n;return r.next?n=r.next:(n=new e,t=n),r.next=null,r},release:function(e){t.next=e,t=e}}}module.exports=reusify;

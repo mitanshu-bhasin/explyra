@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=_default;var _none=_interopRequireDefault(require("./none.js"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function _default(e){return(0,_none.default)(e).reverse()}

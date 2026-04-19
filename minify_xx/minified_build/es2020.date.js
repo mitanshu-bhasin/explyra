@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.es2020_date=void 0;const base_config_1=require("./base-config"),es2020_intl_1=require("./es2020.intl");exports.es2020_date={libs:[es2020_intl_1.es2020_intl],variables:[["Date",base_config_1.TYPE]]};

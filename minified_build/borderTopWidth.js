@@ -1,1 +1,0 @@
-"use strict";var isValid=require("./borderWidth").isValid;module.exports.isValid=isValid,module.exports.definition={set:function(e){isValid(e)&&this._setProperty("border-top-width",e)},get:function(){return this.getPropertyValue("border-top-width")},enumerable:!0,configurable:!0};

@@ -1,1 +1,0 @@
-"use strict";function buildFormatLongFn(t){return(n={})=>{const r=n.width?String(n.width):t.defaultWidth;return t.formats[r]||t.formats[t.defaultWidth]}}exports.buildFormatLongFn=buildFormatLongFn;

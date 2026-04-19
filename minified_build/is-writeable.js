@@ -1,1 +1,0 @@
-import fs from"fs";export async function isWriteable(s){try{return await fs.promises.access(s,(fs.constants||fs).W_OK),!0}catch(s){return!1}}

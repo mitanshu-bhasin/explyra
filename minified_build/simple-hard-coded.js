@@ -1,1 +1,0 @@
-"use strict";const{parseArgs:parseArgs}=require(".."),args=["-f","--bar","b"],options={foo:{type:"boolean",short:"f"},bar:{type:"string"}},{values:values,positionals:positionals}=parseArgs({args:args,options:options});console.log(values,positionals);

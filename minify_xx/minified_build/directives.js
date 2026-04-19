@@ -1,1 +1,0 @@
-"use strict";const directivesPattern=/^(eslint(?:-env|-enable|-disable(?:(?:-next)?-line)?)?|exported|globals?)(?:\s|$)/u;module.exports={directivesPattern:directivesPattern};

@@ -1,1 +1,0 @@
-"use strict";function getErrorMessage(e){return e instanceof Error?e.message:String(e)}function getErrorCode(e){return"object"==typeof e&&null!==e&&"code"in e&&"number"==typeof e.code?e.code:null}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getErrorCode=exports.getErrorMessage=void 0,exports.getErrorMessage=getErrorMessage,exports.getErrorCode=getErrorCode;

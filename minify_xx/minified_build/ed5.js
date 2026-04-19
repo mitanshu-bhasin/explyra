@@ -1,8 +1,0 @@
-"use strict";
-/**
- * Character classes and associated utilities for the 5th edition of XML 1.0.
- *
- * @author Louis-Dominique Dubeau
- * @license MIT
- * @copyright Louis-Dominique Dubeau
- */Object.defineProperty(exports,"__esModule",{value:!0}),exports.CHAR="\t\n\r -퟿-�𐀀-􏿿",exports.S=" \t\r\n",exports.NAME_START_CHAR=":A-Z_a-zÀ-ÖØ-öø-˿Ͱ-ͽͿ-῿‌‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�𐀀-󯿿",exports.NAME_CHAR="-"+exports.NAME_START_CHAR+".0-9·̀-ͯ‿-⁀",exports.CHAR_RE=new RegExp("^["+exports.CHAR+"]$","u"),exports.S_RE=new RegExp("^["+exports.S+"]+$","u"),exports.NAME_START_CHAR_RE=new RegExp("^["+exports.NAME_START_CHAR+"]$","u"),exports.NAME_CHAR_RE=new RegExp("^["+exports.NAME_CHAR+"]$","u"),exports.NAME_RE=new RegExp("^["+exports.NAME_START_CHAR+"]["+exports.NAME_CHAR+"]*$","u"),exports.NMTOKEN_RE=new RegExp("^["+exports.NAME_CHAR+"]+$","u");var TAB=9,NL=10,CR=13,SPACE=32;function isChar(e){return e>=SPACE&&e<=55295||e===NL||e===CR||e===TAB||e>=57344&&e<=65533||e>=65536&&e<=1114111}function isS(e){return e===SPACE||e===NL||e===CR||e===TAB}function isNameStartChar(e){return e>=65&&e<=90||e>=97&&e<=122||58===e||95===e||8204===e||8205===e||e>=192&&e<=214||e>=216&&e<=246||e>=248&&e<=767||e>=880&&e<=893||e>=895&&e<=8191||e>=8304&&e<=8591||e>=11264&&e<=12271||e>=12289&&e<=55295||e>=63744&&e<=64975||e>=65008&&e<=65533||e>=65536&&e<=983039}function isNameChar(e){return isNameStartChar(e)||e>=48&&e<=57||45===e||46===e||183===e||e>=768&&e<=879||e>=8255&&e<=8256}exports.S_LIST=[SPACE,NL,CR,TAB],exports.isChar=isChar,exports.isS=isS,exports.isNameStartChar=isNameStartChar,exports.isNameChar=isNameChar;

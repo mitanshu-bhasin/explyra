@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.createTraceState=void 0;const tracestate_impl_1=require("./tracestate-impl");function createTraceState(e){return new tracestate_impl_1.TraceStateImpl(e)}exports.createTraceState=createTraceState;

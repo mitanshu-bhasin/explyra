@@ -1,1 +1,0 @@
-var copyObject=require("./_copyObject"),keys=require("./keys");function baseAssign(e,s){return e&&copyObject(s,keys(s),e)}module.exports=baseAssign;

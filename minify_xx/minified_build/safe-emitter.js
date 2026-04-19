@@ -1,1 +1,0 @@
-"use strict";module.exports=()=>{const e=Object.create(null);return Object.freeze({on(t,c){t in e?e[t].push(c):e[t]=[c]},emit(t,...c){t in e&&e[t].forEach(e=>e(...c))},eventNames:()=>Object.keys(e)})};

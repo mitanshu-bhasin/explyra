@@ -1,1 +1,0 @@
-"use strict";exports.isPast=isPast;var _index=require("./toDate.js");function isPast(t){return+(0,_index.toDate)(t)<Date.now()}

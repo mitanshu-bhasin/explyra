@@ -1,1 +1,0 @@
-module.exports=require("../lib-vendor/d3-timer/src/index.js");

@@ -1,1 +1,0 @@
-function _initializerDefineProperty(e,i,r,a){r&&Object.defineProperty(e,i,{enumerable:r.enumerable,configurable:r.configurable,writable:r.writable,value:r.initializer?r.initializer.call(a):void 0})}export{_initializerDefineProperty as default};

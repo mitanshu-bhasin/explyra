@@ -1,1 +1,0 @@
-import getPrototypeOf from"./getPrototypeOf.js";function _superPropBase(r,t){for(;!{}.hasOwnProperty.call(r,t)&&null!==(r=getPrototypeOf(r)););return r}export{_superPropBase as default};

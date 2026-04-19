@@ -1,1 +1,0 @@
-import _typeof from"./typeof.js";import toPrimitive from"./toPrimitive.js";function toPropertyKey(t){var o=toPrimitive(t,"string");return"symbol"==_typeof(o)?o:o+""}export{toPropertyKey as default};

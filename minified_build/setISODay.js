@@ -1,1 +1,0 @@
-"use strict";exports.setISODay=void 0;var _index=require("../setISODay.js"),_index2=require("./_lib/convertToFP.js");const setISODay=exports.setISODay=(0,_index2.convertToFP)(_index.setISODay,2);

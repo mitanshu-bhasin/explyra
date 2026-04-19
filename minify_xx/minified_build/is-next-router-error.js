@@ -1,1 +1,0 @@
-import{isHTTPAccessFallbackError}from"./http-access-fallback/http-access-fallback";import{isRedirectError}from"./redirect-error";export function isNextRouterError(r){return isRedirectError(r)||isHTTPAccessFallbackError(r)}

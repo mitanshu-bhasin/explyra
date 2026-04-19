@@ -1,1 +1,0 @@
-"use strict";function getConstrainedTypeAtLocation(e,t){const o=e.getTypeAtLocation(t);return e.program.getTypeChecker().getBaseConstraintOfType(o)??o}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getConstrainedTypeAtLocation=getConstrainedTypeAtLocation;

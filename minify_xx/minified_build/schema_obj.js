@@ -1,1 +1,0 @@
-"use strict";var util=require("./util");function SchemaObject(t){util.copy(t,this)}module.exports=SchemaObject;

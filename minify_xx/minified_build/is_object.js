@@ -1,1 +1,0 @@
-function isObjectLike(t){return"object"==typeof t&&null!==t}export default function isObject(t){if(!isObjectLike(t)||"[object Object]"!==Object.prototype.toString.call(t))return!1;if(null===Object.getPrototypeOf(t))return!0;let e=t;for(;null!==Object.getPrototypeOf(e);)e=Object.getPrototypeOf(e);return Object.getPrototypeOf(t)===e}

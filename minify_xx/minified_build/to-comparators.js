@@ -1,1 +1,0 @@
-"use strict";const Range=require("../classes/range"),toComparators=(e,a)=>new Range(e,a).set.map(e=>e.map(e=>e.value).join(" ").trim().split(" "));module.exports=toComparators;

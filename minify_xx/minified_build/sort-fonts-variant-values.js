@@ -1,1 +1,0 @@
-"use strict";function sortFontsVariantValues(t,s){if(t.includes(",")&&s.includes(",")){const[e,r]=t.split(",",2),[n,a]=s.split(",",2);return e===n?parseInt(r)-parseInt(a):parseInt(e)-parseInt(n)}return parseInt(t)-parseInt(s)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.sortFontsVariantValues=sortFontsVariantValues;

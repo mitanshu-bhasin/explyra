@@ -1,1 +1,0 @@
-import{BaseHashReader}from"../base/hash-reader.js";import{defaultHashLength}from"../base/hash-fn.js";export class NodeHashReader extends BaseHashReader{toString(e="hex"){return this.toBuffer().toString(e)}toBuffer(){return this.position=BigInt(0),this.read(defaultHashLength)}alloc(e){return Buffer.alloc(e)}}

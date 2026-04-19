@@ -1,1 +1,0 @@
-import getWindow from"./isWindow";import offset from"./offset";export default function height(t,e){var i=getWindow(t);return i?i.innerHeight:e?t.clientHeight:offset(t).height}

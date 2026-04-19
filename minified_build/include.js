@@ -1,1 +1,0 @@
-var why=require("./");require("siginfo")(why,!0);

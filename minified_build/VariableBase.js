@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.VariableBase=void 0;const ID_1=require("../ID"),generator=(0,ID_1.createIdGenerator)();class VariableBase{$id=generator();defs=[];eslintUsed=!1;identifiers=[];name;references=[];scope;constructor(e,r){this.name=e,this.scope=r}}exports.VariableBase=VariableBase;

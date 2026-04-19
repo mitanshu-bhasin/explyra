@@ -1,1 +1,0 @@
-"use strict";exports.startOfWeekWithOptions=void 0;var _index=require("../startOfWeek.js"),_index2=require("./_lib/convertToFP.js");const startOfWeekWithOptions=exports.startOfWeekWithOptions=(0,_index2.convertToFP)(_index.startOfWeek,2);

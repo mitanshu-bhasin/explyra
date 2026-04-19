@@ -1,1 +1,0 @@
-import Router from"../router";import{sendMessage}from"./hot-reloader/pages/websocket";export default async()=>{process.env.TURBOPACK||Router.ready(()=>{setInterval(()=>{const e=self.__NEXT_DATA__.notFoundSrcPage,r="/404"!==Router.pathname&&"/_error"!==Router.pathname||!e?Router.pathname:e;sendMessage(JSON.stringify({event:"ping",page:r}))},2500)})};

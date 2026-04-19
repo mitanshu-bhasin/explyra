@@ -1,1 +1,0 @@
-const postfixRE=/[?#].*$/;function cleanUrl(c){return c.replace(postfixRE,"")}export{cleanUrl as c};

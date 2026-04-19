@@ -1,1 +1,0 @@
-"use strict";const enumerationValues=new Set(["auto","instant","smooth"]);exports.enumerationValues=enumerationValues,exports.convert=(e,t,{context:o="The provided value"}={})=>{const n=`${t}`;if(!enumerationValues.has(n))throw new e.TypeError(`${o} '${n}' is not a valid enumeration value for ScrollBehavior`);return n};

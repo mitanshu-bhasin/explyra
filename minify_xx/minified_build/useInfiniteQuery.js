@@ -1,1 +1,0 @@
-import{InfiniteQueryObserver}from"@tanstack/query-core";import{useBaseQuery}from"./useBaseQuery.js";function useInfiniteQuery(e,r){return useBaseQuery(e,InfiniteQueryObserver,r)}export{useInfiniteQuery};

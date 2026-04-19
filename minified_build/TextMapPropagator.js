@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.defaultTextMapSetter=exports.defaultTextMapGetter=void 0,exports.defaultTextMapGetter={get(e,t){if(null!=e)return e[t]},keys:e=>null==e?[]:Object.keys(e)},exports.defaultTextMapSetter={set(e,t,r){null!=e&&(e[t]=r)}};

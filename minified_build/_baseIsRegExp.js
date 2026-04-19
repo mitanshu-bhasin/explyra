@@ -1,1 +1,0 @@
-var baseGetTag=require("./_baseGetTag"),isObjectLike=require("./isObjectLike"),regexpTag="[object RegExp]";function baseIsRegExp(e){return isObjectLike(e)&&baseGetTag(e)==regexpTag}module.exports=baseIsRegExp;

@@ -1,1 +1,0 @@
-module.exports=function(e){let t;return"-webkit- 2009"===e||"-moz-"===e?t=2009:"-ms-"===e?t=2012:"-webkit-"===e&&(t="final"),"-webkit- 2009"===e&&(e="-webkit-"),[t,e]};

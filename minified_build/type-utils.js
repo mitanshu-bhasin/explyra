@@ -1,1 +1,0 @@
-export function union(n){return[...new Set(n)].join(" | ")}export function unionValues(n){return union(n.map(forValue))}export function forKeys(n){return union(Object.keys(n).map(n=>`'${n}'`))}export function forValue(n){return Array.isArray(n)?`(${unionValues(n)})[]`:"object"==typeof n?`Record<${forKeys(n)}, ${unionValues(Object.values(n))}>`:"string"==typeof n?"string":"any"}

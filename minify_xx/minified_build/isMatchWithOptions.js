@@ -1,1 +1,0 @@
-"use strict";exports.isMatchWithOptions=void 0;var _index=require("../isMatch.js"),_index2=require("./_lib/convertToFP.js");const isMatchWithOptions=exports.isMatchWithOptions=(0,_index2.convertToFP)(_index.isMatch,3);

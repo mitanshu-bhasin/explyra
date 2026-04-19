@@ -1,1 +1,0 @@
-"use strict";function cubicIn(u){return u*u*u}function cubicOut(u){return--u*u*u+1}function cubicInOut(u){return((u*=2)<=1?u*u*u:(u-=2)*u*u+2)/2}Object.defineProperty(exports,"__esModule",{value:!0}),exports.cubicIn=cubicIn,exports.cubicInOut=cubicInOut,exports.cubicOut=cubicOut;

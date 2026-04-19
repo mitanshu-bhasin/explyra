@@ -1,1 +1,0 @@
-let Declaration=require("../declaration"),utils=require("../utils");class BackdropFilter extends Declaration{constructor(e,r,i){super(e,r,i),this.prefixes&&(this.prefixes=utils.uniq(this.prefixes.map(e=>"-ms-"===e?"-webkit-":e)))}}BackdropFilter.names=["backdrop-filter"],module.exports=BackdropFilter;

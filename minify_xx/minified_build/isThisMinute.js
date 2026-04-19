@@ -1,1 +1,0 @@
-"use strict";exports.isThisMinute=isThisMinute;var _index=require("./constructNow.js"),_index2=require("./isSameMinute.js");function isThisMinute(i){return(0,_index2.isSameMinute)(i,(0,_index.constructNow)(i))}
