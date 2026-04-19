@@ -504,9 +504,6 @@ window.toggleMode = (mode, options = {}) => {
     const iconNew = btnNew ? btnNew.querySelector('i') : null;
     const textNew = btnNew ? btnNew.querySelector('span') : null;
 
-    const secClaims = document.getElementById('section-claims');
-    const secTasks = document.getElementById('section-tasks');
-
     // Clear list immediately to prevent showing old data
     const list = document.getElementById('expenses-list');
     if (list) list.innerHTML = '';
@@ -523,9 +520,8 @@ window.toggleMode = (mode, options = {}) => {
         const btnF = document.getElementById('btn-view-financials');
         if (btnF) btnF.classList.remove('hidden');
 
-        // Force Claims view
-        if (secClaims) secClaims.classList.remove('hidden');
-        if (secTasks) secTasks.classList.add('hidden');
+        // Force Claims view using toggleEmpView so display:flex is set correctly
+        if (typeof window.toggleEmpView === 'function') window.toggleEmpView('claims');
 
         // Hide company-specific action buttons (using new personal stats buttons instead)
         if (btnNew) btnNew.parentElement.classList.add('hidden');
@@ -549,9 +545,8 @@ window.toggleMode = (mode, options = {}) => {
         const btnF = document.getElementById('btn-view-financials');
         if (btnF) btnF.classList.add('hidden');
 
-        // Restore default views
-        if (secClaims) secClaims.classList.remove('hidden');
-        if (secTasks) secTasks.classList.add('hidden');
+        // Restore default views using toggleEmpView so display:flex is set correctly
+        if (typeof window.toggleEmpView === 'function') window.toggleEmpView('claims');
 
         // Show company action buttons
         if (btnNew) btnNew.parentElement.classList.remove('hidden');

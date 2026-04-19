@@ -926,6 +926,7 @@ onAuthStateChanged(auth, async (user) => {
                 window.companyId = urlCompanyId || userData.companyId || null;
                 localStorage.setItem('explyra_admin_data_cache', JSON.stringify(userData));
 
+                /* 
                 // --- MAINTENANCE MODE CHECK ---
                 try {
                     const settingsRef = doc(db, "settings", "global");
@@ -947,6 +948,7 @@ onAuthStateChanged(auth, async (user) => {
                     console.error("Maintenance check failed:", e);
                 }
                 // ------------------------------
+                */
 
                 const allowedRoles = ['ADMIN', 'MANAGER', 'SENIOR_MANAGER', 'TREASURY', 'AUDIT', 'HR', 'FINANCE_MANAGER', 'ACCOUNTS'];
                 
@@ -1801,20 +1803,18 @@ window.handleAccountActivation = async (e) => {
 };
 
 function showLogin() {
-    const authSc = document.getElementById('auth-screen');
-    const dashSc = document.getElementById('dashboard-screen');
-    if (authSc) authSc.classList.remove('hidden');
-    if (dashSc) dashSc.classList.add('hidden');
-    // Reset to step 1 - Using IDs consistent with admin.html bridge
-    const step1 = document.getElementById('step-identifier');
-    const step2 = document.getElementById('step-password');
-    if (step1) step1.classList.remove('hidden');
-    if (step2) step2.classList.add('hidden');
+    window.location.href = 'login.html';
 }
 
 function showDashboard() {
+    const loadOverlay = document.getElementById('explyra-global-loader');
     const authSc = document.getElementById('auth-screen');
     const dashSc = document.getElementById('dashboard-screen');
+    
+    if (loadOverlay) {
+        loadOverlay.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => loadOverlay.classList.add('hidden'), 500);
+    }
     if (authSc) authSc.classList.add('hidden');
     if (dashSc) dashSc.classList.remove('hidden');
     window.__adminAuthHeartbeat = Date.now();

@@ -1,10 +1,130 @@
 rules_version = '2';
 
-// REDEPLOYED BY AGENT TO ENSURE PERMISSIVE RULES ARE ACTIVE
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ─── HELPER FUNCTIONS ──────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isMasterAdmin() {
+      return isSignedIn() &&
+        (request.auth.token.email in ['explyra@gmail.com', 'epxlyras@gmail.com'] ||
+         exists(/databases/$(database)/documents/explyra_admins/$(request.auth.uid)) ||
+         (request.auth.token.email != null &&
+          exists(/databases/$(database)/documents/explyra_admins/admin_list) &&
+          get(/databases/$(database)/documents/explyra_admins/admin_list).data.emails.hasAny([request.auth.token.email.toLowerCase()])));
+    }
+
+    // Helper: get the calling user's Explyra user document based on uid
+    function callerUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Helper: check if a users doc with this docId matches the caller
+    function isOwnUserDoc(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // ─── EXPLYRA ADMIN REGISTRY ────────────────────────────────────────────
+    match /explyra_admins/{docId} {
+      allow read, write: if isMasterAdmin();
+    }
+
+    // ─── USER PROFILES ─────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Own UID-keyed doc: allow read/write
+      allow read, write: if isSignedIn() && (request.auth.uid == userId || isMasterAdmin());
+
+      // Nested collections under a user doc
+      match /{document=**} {
+        allow read, write: if isSignedIn() && (request.auth.uid == userId || isMasterAdmin());
+      }
+    }
+
+    // ─── EXPENSE MANAGEMENT ────────────────────────────────────────────────
+    // Expenses are keyed by userId (docId from users collection)
+    // Employees can read/create their own; managers/admins can read company-wide
+    match /expenses/{expenseId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.userId is string
+        && request.resource.data.companyId is string;
+      allow update: if isSignedIn() && (
+        // Employee can update their own pending/draft expenses
+        resource.data.userId == request.auth.uid ||
+        // Any authenticated user can approve (manager/admin role enforced app-side)
+        isSignedIn() ||
+        isMasterAdmin()
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.userId == request.auth.uid || isMasterAdmin()
+      );
+    }
+
+    // ─── COMPANIES ─────────────────────────────────────────────────────────
+    match /companies/{companyId} {
+      allow read: if isSignedIn();
+      allow write: if isMasterAdmin();
+
+      match /{document=**} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn(); // Fine-grained at app level
+      }
+    }
+
+    // ─── ACCOUNT DELEGATIONS ───────────────────────────────────────────────
+    match /account_delegations/{delegationId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ─── NOTIFICATIONS ─────────────────────────────────────────────────────
+    match /notifications/{notifId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isMasterAdmin());
+    }
+
+    // ─── CHATS ─────────────────────────────────────────────────────────────
+    match /chats/{chatId} {
+      allow read, write: if isSignedIn();
+      match /{document=**} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    match /global_chat/{msgId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ─── SETTINGS / CONFIG ─────────────────────────────────────────────────
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isMasterAdmin();
+    }
+
+    // ─── PUBLIC COLLECTIONS ────────────────────────────────────────────────
+    match /contactSubmissions/{submissionId} {
+      allow create: if true;
+      allow read, update, delete: if isMasterAdmin();
+    }
+
+    match /business_submissions/{submissionId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isMasterAdmin();
+    }
+
+    match /retired_experts/{expertId}   { allow read: if true; }
+    match /retired_reviews/{reviewId}   { allow read: if true; }
+    match /retired_posts/{postId}       { allow read: if true; }
+
+    // ─── CATCH-ALL: Authenticated users can access remaining collections ───
+    // This keeps the app functional. Tighten per-collection above as needed.
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn();
     }
   }
 }

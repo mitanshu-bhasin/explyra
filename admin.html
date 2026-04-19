@@ -43,6 +43,7 @@
 
 
 
+    <link rel="stylesheet" href="css/ai-assistant.css">
     <title>Admin — Free Explyra Suite Tool | Fast & Secure</title>
     <!-- Environment Config -->
     <script src="js/env.js"></script>
@@ -2085,208 +2086,9 @@
     </div>
 
     <!-- Auth Screen Wrapper -->
-    <div id="auth-screen"
-        class="w-full min-h-screen flex flex-col items-center justify-start pt-16 p-6 bg-white dark:bg-black transition-colors duration-500 relative overflow-y-auto no-scrollbar">
-        <!-- Premium Background Blobs -->
-        <div class="fixed inset-0 z-0 pointer-events-none">
-            <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-[120px]"></div>
-            <div class="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-[120px]">
-            </div>
-        </div>
-
-        <div class="ms-auth-card">
-            <div class="ms-logo">
-                <img src="/assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
-            </div>
-
-            <div id="auth-steps" class="relative overflow-hidden min-h-[360px]">
-                <!-- Step 1: Identifier -->
-                <div id="step-identifier" class="step-content active text-left">
-                    <h1 class="ms-title">Sign in</h1>
-                    <p class="ms-subtitle">to continue to Admin Portal</p>
-
-                    <form id="identifier-form" onsubmit="handleIdentifierNext(event)">
-                        <input type="text" id="login-identifier" class="ms-input-line dark:text-white"
-                            placeholder="Email or Phone" required autofocus>
-                        <div class="ms-footer-text">
-                            No account? <a href="javascript:void(0)" onclick="showStep('step-activation-verify')"
-                                class="ms-link font-bold">Activate now!</a>
-                        </div>
-                        <div class="mt-2">
-                            <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Can't access your
-                                account?</a>
-                        </div>
-
-                        <div class="mt-8 space-y-2">
-                            <button type="button" onclick="handleGoogleLogin()" class="ms-social-btn">
-                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                                    class="w-4 h-4"> Continue with Google
-                            </button>
-                            <button type="button" onclick="handleMicrosoftLogin()" class="ms-social-btn">
-                                <i class="fa-brands fa-microsoft text-[#00A4EF]"></i> Continue with Microsoft
-                            </button>
-                            <button type="button" onclick="window.location.href='emp.html'"
-                                class="ms-social-btn ms-btn-emp">
-                                <i class="fa-solid fa-user-tie text-slate-500"></i> Login as Employee
-                            </button>
-                        </div>
-
-                        <div class="flex justify-end mt-8">
-                            <button type="submit" id="identifier-btn" class="ms-btn-next">Next</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Step 2: Password -->
-                <div id="step-password" class="step-content text-left">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span id="display-resolved-email" class="text-sm text-slate-600">...</span>
-                    </div>
-                    <h1 class="ms-title">Enter password</h1>
-
-                    <form id="login-form" onsubmit="handleFinalLogin(event)">
-                        <div class="relative w-full">
-                            <input type="password" id="login-password" class="ms-input-line dark:text-white pr-10"
-                                placeholder="Password" required>
-                            <button type="button" onclick="toggleLoginPassword()"
-                                class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-slate-500 hover:text-black dark:hover:text-white">
-                                <i id="login-eye-icon" class="fa-regular fa-eye text-sm"></i>
-                            </button>
-                        </div>
-                        <div class="ms-footer-text">
-                            <a href="#" onclick="forgotPassword()" class="ms-link">Forgot password?</a>
-                        </div>
-                        <div class="flex justify-end mt-12">
-                            <button type="submit" id="login-btn" class="ms-btn-next">Sign in</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Step: Loading Transition -->
-                <div id="step-loading"
-                    class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
-                    <div
-                        class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4">
-                    </div>
-                    <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Please wait...</p>
-                </div>
-
-                <!-- Step 3: Activation Verification (New) -->
-                <div id="step-activation-verify" class="step-content text-left">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span class="text-sm text-slate-600">Account Activation</span>
-                    </div>
-                    <h1 class="ms-title">Who are you?</h1>
-                    <p class="ms-subtitle">Enter the email provided to you by your administrator to start activation.
-                    </p>
-
-                    <form onsubmit="handleAccountActivationVerify(event)">
-                        <input type="email" id="activation-email-input" class="ms-input-line dark:text-white"
-                            placeholder="Admin Provided Email" required autofocus>
-                        <div class="flex justify-end mt-12">
-                            <button type="submit" id="activation-verify-btn" class="ms-btn-next">Next</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Step: Forgot Password Identifier -->
-                <div id="step-forgot-password" class="step-content text-left">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span class="text-sm text-slate-600">Recover your account</span>
-                    </div>
-                    <h1 class="ms-title">Who are you?</h1>
-                    <p class="ms-subtitle">To recover your account, begin by typing your email or phone number.</p>
-                    <form onsubmit="handleForgotPasswordNext(event)">
-                        <input type="text" id="forgot-identifier" class="ms-input-line dark:text-white"
-                            placeholder="Email or Phone" required autofocus>
-                        <div class="flex justify-end mt-12">
-                            <button type="submit" class="ms-btn-next">Next</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Step 3: Activation -->
-                <div id="step-activation" class="step-content text-left">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span class="text-sm text-slate-600">Account Activation</span>
-                    </div>
-                    <h1 class="ms-title">Activate account</h1>
-
-                    <form id="signup-form" onsubmit="handleAccountActivation(event)">
-                        <input type="email" id="signup-email" class="ms-input-line bg-slate-50/50 opacity-70" readonly>
-                        <input type="password" id="signup-password" class="ms-input-line mt-4 dark:text-white"
-                            placeholder="Create Password" required oninput="updateStrength(this.value)">
-                        <div class="strength-meter mb-6">
-                            <div class="strength-bar" id="bar-1"></div>
-                            <div class="strength-bar" id="bar-2"></div>
-                            <div class="strength-bar" id="bar-3"></div>
-                        </div>
-                        <input type="password" id="confirm-password" class="ms-input-line dark:text-white"
-                            placeholder="Confirm Password" required>
-                        <div class="flex justify-end mt-12">
-                            <button type="submit" id="signup-btn" class="ms-btn-next">Activate</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Step 4: Confirm Identity -->
-                <div id="step-confirm-identity" class="step-content">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span class="text-sm text-slate-600">Account Recovery</span>
-                    </div>
-
-                    <div class="text-center mb-8">
-                        <div id="confirm-avatar-container"
-                            class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
-                            <i id="confirm-avatar-placeholder" class="fa-solid fa-user text-2xl text-slate-400"></i>
-                            <img id="confirm-avatar-img" src="" class="hidden w-full h-full object-cover">
-                        </div>
-                        <h2 id="confirm-user-name" class="text-lg font-bold">...</h2>
-                        <p id="confirm-user-email" class="text-xs text-slate-500">...</p>
-                    </div>
-
-                    <h1 class="ms-title mb-4">Is this you?</h1>
-                    <p class="ms-subtitle text-slate-600 dark:text-slate-400">We found the account associated with the
-                        identifier you provided. Send reset link to <span id="confirm-send-email"
-                            class="font-semibold text-slate-800 dark:text-slate-100">...</span>?</p>
-
-                    <div class="flex justify-end mt-12 gap-3">
-                        <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()"
-                            class="ms-btn-next">Yes, send reset link</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ms-business-footer">
-            Want to use for your business? <a href="company.html" class="ms-link font-bold">Create Company</a>
-        </div>
-        <div
-            class="mt-auto shrink-0 text-center text-slate-400 text-xs pb-12 flex flex-col items-center gap-6 relative z-20">
-            <!-- Qualys SSL Labs A+ Certification Badge -->
-            <div
-                class="flex items-center gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group cursor-default shadow-sm transform hover:-translate-y-px">
-                <img src="images%20(1).png" alt="Qualys SSL Labs A+"
-                    class="h-4 w-auto opacity-50 group-hover:opacity-100 transition-opacity">
-                <div class="flex flex-col text-left border-l border-slate-200 dark:border-slate-800 pl-3">
-                    <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200">Qualys SSL Labs A+</span>
-                </div>
-            </div>
-
-            <!-- Footer Component -->
-            <div id="component-footer" class="w-full"></div>
-        </div>
-    </div>
-
-    <!-- Background Blobs (light mode only) -->
-    <div class="dark:hidden absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-green-100/50 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-[10%] left-[10%] w-[40%] h-[40%] bg-indigo-100/50 rounded-full blur-3xl"></div>
+    <div id="explyra-global-loader" class="fixed inset-0 z-[9999] bg-white dark:bg-black flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="w-16 h-16 border-4 border-slate-200 dark:border-slate-800 border-t-[#0067b8] rounded-full animate-spin mb-4"></div>
+        <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Verifying session...</p>
     </div>
 
     <!-- Dashboard Screen -->
@@ -4282,6 +4084,7 @@
             }
         }, 15000);
     </script>
+    <script src="js/ai-assistant.js?v=2.0"></script>
 </body>
 
 </html>

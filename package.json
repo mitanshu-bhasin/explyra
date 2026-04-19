@@ -28,6 +28,7 @@
         "express": "^4.22.1",
         "firebase": "^12.10.0",
         "genkit": "^1.31.0",
+        "puppeteer": "^24.41.0",
         "serve": "^14.2.0"
     },
     "devDependencies": {

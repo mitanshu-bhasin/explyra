@@ -241,9 +241,9 @@ const attachModalFocusTrap = (modal) => {
 
 window.getEmpNavState = () => ({
     empMainView: document.getElementById('main-view-messages')?.classList.contains('hidden') ? 'dashboard' : 'messages',
-    empTab: document.getElementById('section-financials') && !document.getElementById('section-financials').classList.contains('hidden')
+    empTab: document.getElementById('section-financials') && !document.getElementById('section-financials').classList.contains('emp-tab-hidden')
         ? 'financials'
-        : (!document.getElementById('section-tasks')?.classList.contains('hidden') ? 'tasks' : 'claims'),
+        : (!document.getElementById('section-tasks')?.classList.contains('emp-tab-hidden') ? 'tasks' : 'claims'),
     empMode: window.currentMode || 'company',
     empModal: currentEmpModalId || null
 });
@@ -359,9 +359,12 @@ window.toggleEmpView = (view, options = {}) => {
         }
     });
 
-    // Hide all sections
+    // Hide all sections — use emp-tab-hidden (no !important) not Tailwind hidden
     [secClaims, secTasks, secFinancials, secScheduler].forEach(sec => {
-        if (sec) sec.classList.add('hidden');
+        if (sec) {
+            sec.classList.add('emp-tab-hidden');
+            sec.classList.remove('hidden'); // clear legacy class if present
+        }
     });
 
     if (view === 'claims') {
@@ -369,27 +372,27 @@ window.toggleEmpView = (view, options = {}) => {
             btnClaims.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
             btnClaims.classList.remove('text-gray-500', 'dark:text-gray-400');
         }
-        if (secClaims) secClaims.classList.remove('hidden');
+        if (secClaims) secClaims.classList.remove('emp-tab-hidden');
     } else if (view === 'tasks') {
         if (btnTasks) {
             btnTasks.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
             btnTasks.classList.remove('text-gray-500', 'dark:text-gray-400');
         }
-        if (secTasks) secTasks.classList.remove('hidden');
+        if (secTasks) secTasks.classList.remove('emp-tab-hidden');
         if (!window.empTasksLoaded && window.fetchEmpTasks) window.fetchEmpTasks();
     } else if (view === 'financials') {
         if (btnFinancials) {
             btnFinancials.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
             btnFinancials.classList.remove('text-gray-500', 'dark:text-gray-400');
         }
-        if (secFinancials) secFinancials.classList.remove('hidden');
+        if (secFinancials) secFinancials.classList.remove('emp-tab-hidden');
         if (window.fetchFinancialAccounts) window.fetchFinancialAccounts();
     } else if (view === 'scheduler') {
         if (btnScheduler) {
             btnScheduler.classList.add('bg-gray-100', 'dark:bg-[#111]', 'text-black', 'dark:text-white');
             btnScheduler.classList.remove('text-gray-500', 'dark:text-gray-400');
         }
-        if (secScheduler) secScheduler.classList.remove('hidden');
+        if (secScheduler) secScheduler.classList.remove('emp-tab-hidden');
         window.renderEmpScheduler();
     }
 

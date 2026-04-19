@@ -213,7 +213,6 @@
         --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
         --r: 8px;
         --t: .2s ease;
-        --banner-h: 40px;
     }
 
     [data-theme="dark"] {
@@ -579,7 +578,7 @@
 
     .scroll-progress {
         position: fixed;
-        top: var(--banner-h);
+        top: 0;
         left: 0;
         width: 100%;
         height: 3px;
@@ -601,10 +600,10 @@
 ═══════════════════════════════════════════ */
     nav {
         position: fixed;
-        top: 40px !important;
+        top: 0;
         left: 0;
         right: 0;
-        z-index: 20002;
+        z-index: 2000;
         height: 64px;
         display: flex;
         align-items: center;
@@ -649,21 +648,6 @@
         font-weight: 800;
         letter-spacing: -0.02em;
         color: var(--ink)
-    }
-
-    .beta-badge {
-        font-size: 0.55rem;
-        padding: 1px 5px;
-        background: var(--blue);
-        color: #fff;
-        border-radius: 4px;
-        vertical-align: middle;
-        margin-left: 2px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        position: relative;
-        top: -4px;
     }
 
     .nav-links {
@@ -1413,92 +1397,6 @@
         50% {
             opacity: .5;
             transform: scale(1.4)
-        }
-    }
-
-    /* Waitlist */
-    .waitlist-container {
-        margin-top: 2.5rem;
-        width: 100%;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-        animation: fadeUp 1s ease 0.4s both;
-    }
-
-    .waitlist-form {
-        display: flex;
-        background: var(--bg2);
-        padding: 6px;
-        border-radius: 100px;
-        border: 1px solid var(--bdr2);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .waitlist-form:focus-within {
-        border-color: var(--blue);
-        box-shadow: 0 10px 40px color-mix(in srgb, var(--blue) 20%, transparent);
-        transform: translateY(-2px);
-    }
-
-    .waitlist-input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        padding: 0 1.5rem;
-        font-size: 0.9rem;
-        color: var(--ink);
-        font-family: inherit;
-        outline: none;
-    }
-
-    .waitlist-input::placeholder {
-        color: var(--ink3);
-    }
-
-    .btn-waitlist {
-        background: var(--blue);
-        color: #fff;
-        border: none;
-        padding: 0.8rem 1.8rem;
-        border-radius: 100px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s;
-        white-space: nowrap;
-    }
-
-    .btn-waitlist:hover {
-        filter: brightness(1.1);
-        box-shadow: 0 5px 15px color-mix(in srgb, var(--blue) 40%, transparent);
-    }
-
-    .waitlist-note {
-        margin-top: 1rem;
-        font-size: 0.72rem;
-        color: var(--ink3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-    }
-
-    @media (max-width: 768px) {
-        .waitlist-form {
-            flex-direction: column;
-            border-radius: 20px;
-            padding: 10px;
-            gap: 10px;
-        }
-        .waitlist-input {
-            padding: 12px 15px;
-            text-align: center;
-        }
-        .btn-waitlist {
-            width: 100%;
-            padding: 12px;
         }
     }
 
@@ -5048,62 +4946,6 @@
         max-width: 90%;
         width: 500px;
     }
-    .testing-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 40px;
-        background: linear-gradient(90deg, #1546C0, #6D28D9, #1546C0);
-        background-size: 200% auto;
-        animation: bannerGradient 8s linear infinite;
-        color: #fff;
-        z-index: 20001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        padding: 0 5vw;
-        gap: 12px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    @keyframes bannerGradient {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 200% 50%; }
-    }
-
-    .testing-banner i {
-        font-size: 1rem;
-        color: #FFD700;
-        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
-    }
-
-    .testing-banner span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .testing-banner .banner-cta {
-        margin-left: auto;
-        font-size: 0.65rem;
-        background: rgba(255,255,255,0.2);
-        padding: 4px 10px;
-        border-radius: 6px;
-        border: 1px solid rgba(255,255,255,0.3);
-        backdrop-filter: blur(5px);
-        font-weight: 900;
-    }
-
-    @media (max-width: 600px) {
-        .testing-banner .banner-cta { display: none; }
-        .testing-banner { font-size: 0.65rem; }
-    }
 </style>
 
 <script type="application/ld+json">
@@ -5477,13 +5319,6 @@
 
 <body>
 
-    <!-- PREMIUM BETA BANNER -->
-    <div class="testing-banner">
-        <i class="fa-solid fa-crown"></i>
-        <span><b>LION'S DEN PUBLIC BETA</b> — Unlocking predator-grade tools for the digital elite.</span>
-        <div class="banner-cta" onclick="window.location.href='#join'">JOIN THE PRIDE — V2.4.0</div>
-    </div>
-
     <div class="scroll-progress" aria-hidden="true">
         <div class="scroll-progress-bar" id="scrollProgressBar"></div>
     </div>
@@ -5495,7 +5330,7 @@
                 <div class="nav-logo-icon">
                     <img src="nobg.png" alt="Explyra">
                 </div>
-                <span class="nav-logo-text">Explyra <span class="beta-badge">BETA</span></span>
+                <span class="nav-logo-text">Explyra</span>
             </a>
             <ul class="nav-links">
                 <li class="nav-item-dropdown">
@@ -5816,7 +5651,7 @@
                     <div class="theme-pill-toggle"></div>
                 </div>
                 <a href="contact.html#contact" class="btn-try">Book Demo</a>
-                <button class="menu-btn" id="menuBtn" aria-label="Open mobile menu" aria-expanded="false" aria-controls="mobileMenu">
+                <button class="menu-btn" id="menuBtn" aria-label="Open mobile menu">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
                         <line x1="4" y1="8" x2="20" y2="8"></line>
@@ -5829,22 +5664,37 @@
         <!-- MOBILE MENU -->
         <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile Navigation">
             <div class="mobile-menu-header">
-                <div class="nav-logo" style="gap:0.7rem;">
-                    <span class="logo-icon">E</span>
-                    <span class="logo-text">Explyra&trade; <span class="beta-badge">BETA</span></span>
+                <div class="nav-logo" style="gap:0.6rem">
+                    <div class="nav-logo-icon" style="width:24px; height:24px;">
+                        <img src="nobg.png" alt="Explyra">
+                    </div>
+                    <span class="nav-logo-text">Explyra</span>
                 </div>
-                <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close mobile menu">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+                <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close mobile menu">&times;</button>
             </div>
             <ul class="mobile-nav-links">
                 <li class="mobile-has-submenu">
                     <div class="mobile-submenu-trigger">
                         <a href="#">Products</a>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-submenu">
+                        <a href="#expense">💼 Expense</a>
+                        <a href="dns/index.html">🌐 DNS Manager</a>
+                        <a href="crm/index.html">📈 CRM</a>
+                        <a href="health-manager/index.html">🏃 Health</a>
+                        <a href="explyra-learning/index.html">📚 Learning</a>
+                        <a href="Ino software/ino.html">📄 Invoice Software</a>
+                        <a href="#developers">⚡ Developers</a>
+                        <a href="Utilites/index.html">🔗 Utility</a>
+                        <a href="attendance/index.html">✅ Attendance</a>
+                        <a href="https://book.explyra.me">📅 Booking</a>
+                        <a href="manufacturing/index.html">🏭 Explyra ERP</a>
+                    </div>
+                </li>
+                <li class="mobile-has-submenu">
+                    <div class="mobile-submenu-trigger">
+                        <a href="solutions/index.html">Solutions</a>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
                     <div class="mobile-submenu">
@@ -5914,47 +5764,45 @@
             </div>
             <div class="hero-grid"></div>
             <div class="hero-inner">
-                <div class="hero-badge"><span class="badge-pulse"></span>Exclusive Beta Access Open</div>
+                <div class="hero-badge"><span class="badge-pulse"></span>Introducing the Explyra ERP Suite</div>
                 <h1><em>One platform.</em><br><span class="grad">Everything</span><br>your team needs.</h1>
-                <p class="hero-desc">Explyra is roaring into the future. Our AI-powered ecosystem is currently in the <strong>Lion's Den</strong>—an exclusive public beta phase where we are perfecting every pixel for the digital elite. Join 1200+ pioneers on the waitlist to experience the next evolution of SaaS.</p>
-                
-                <div class="waitlist-container">
-                    <form class="waitlist-form" onsubmit="event.preventDefault(); alert('Welcome to the Lion\'s Den! You are now on the waitlist. Stay tuned!');">
-                        <input type="email" class="waitlist-input" placeholder="Enter your work email..." required>
-                        <button type="submit" class="btn-waitlist">Get Early Access</button>
-                    </form>
-                    <div class="waitlist-note">
-                        <i class="fa-solid fa-shield-halved"></i> No spam. Only major updates and early invites.
-                    </div>
+                <p class="hero-desc">Explyra is not just an app — it's a complete digital suite. Expense intelligence,
+                    health tracking, AI-powered learning, developer tools, and seamless P2P collaboration. All under one
+                    roof, built by one visionary.</p>
+                <div class="hero-actions">
+                    <a href="contact.html#contact" class="btn-hero">Book Demo <span>→</span></a>
+                    <a href="pricing.html" class="btn-hero-ghost">View Pricing</a>
                 </div>
-
                 <div class="suite-pills">
                     <div class="suite-pill sp-blue">💼 Explyra Expense</div>
                     <div class="suite-pill sp-blue">📈 Explyra CRM</div>
                     <div class="suite-pill sp-teal">🏃 Explyra Health</div>
                     <div class="suite-pill sp-amber">📚 Explyra Learning</div>
                     <div class="suite-pill sp-purp">⚡ Explyra Developers</div>
+
                     <div class="suite-pill sp-slate">🛡️ Help Desk</div>
                     <div class="suite-pill sp-blue">📅 Booking</div>
+                    <div class="suite-pill sp-teal">✅ Attendance</div>
+                    <div class="suite-pill sp-slate">🏭 Explyra ERP</div>
                     <div class="suite-pill sp-rose">✉️ Explyra MailBox</div>
                 </div>
 
                 <div class="hero-stats reveal">
                     <div class="h-stat">
-                        <div class="h-stat-num" data-count="1200" data-suffix="+">1200+</div>
-                        <div class="h-stat-lbl">On Waitlist</div>
+                        <div class="h-stat-num" data-count="500" data-suffix="+">500+</div>
+                        <div class="h-stat-lbl">Early Users</div>
                     </div>
                     <div class="h-stat">
-                        <div class="h-stat-num" data-count="12">12+</div>
+                        <div class="h-stat-num" data-count="9">9</div>
                         <div class="h-stat-lbl">Core Products</div>
                     </div>
                     <div class="h-stat">
-                        <div class="h-stat-num" data-count="24">24/7</div>
-                        <div class="h-stat-lbl">Active Evolution</div>
+                        <div class="h-stat-num" data-count="1">1</div>
+                        <div class="h-stat-lbl">Visionary Builder</div>
                     </div>
                     <div class="h-stat">
-                        <div class="h-stat-num">AI</div>
-                        <div class="h-stat-lbl">Core Intelligence</div>
+                        <div class="h-stat-num">24/7</div>
+                        <div class="h-stat-lbl">AI Support</div>
                     </div>
                 </div>
             </div>
@@ -7158,36 +7006,23 @@
             });
         });
 
-        /* MOBILE MENU LOGIC */
+        /* MOBILE MENU */
         const menuBtn = document.getElementById('menuBtn');
         const closeMenuBtn = document.getElementById('closeMenuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
 
         function toggleMenu() {
-            const isOpen = mobileMenu.classList.toggle('open');
-            document.body.style.overflow = isOpen ? 'hidden' : '';
-            menuBtn.setAttribute('aria-expanded', isOpen);
-            
-            // Focus trap or focus management can be added here
-            if (isOpen) {
-                closeMenuBtn.focus();
-            } else {
-                menuBtn.focus();
-            }
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
         }
 
         if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
-        
-        // Close menu on link click (if not a submenu trigger)
         mobileNavLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const isSubmenuTrigger = link.closest('.mobile-submenu-trigger') || link.parentElement.classList.contains('mobile-submenu-trigger');
-                if (!isSubmenuTrigger && !link.hasAttribute('data-no-close')) {
-                    toggleMenu();
-                }
-            });
+            if (!link.closest('.mobile-has-submenu')) {
+                link.addEventListener('click', toggleMenu);
+            }
         });
 
         /* MOBILE SUBMENU TOGGLE */

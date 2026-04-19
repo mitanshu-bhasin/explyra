@@ -35,7 +35,6 @@ if (tenantCompanyFromPath) {
     });
 }
 
-window.companyId = null;
 window.currentUser = null;
 window.userData = null;
 
@@ -511,9 +510,20 @@ const setAuthButtonsLoading = (isLoading, activeLabel = 'Processing...') => {
     }
 };
 
+const hideGlobalLoader = () => {
+    const loader = document.getElementById('explyra-global-loader');
+    if (!loader) return;
+    loader.style.transition = 'opacity 0.35s ease';
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
+    setTimeout(() => { loader.style.display = 'none'; }, 360);
+};
+
 const setPortalVisibility = (showDashboard) => {
     const authSc = document.getElementById('auth-screen');
     const dashSc = document.getElementById('dashboard-screen');
+    // Always hide the global loader — regardless of which screen we show
+    hideGlobalLoader();
     if (!authSc || !dashSc) return;
 
     authSc.style.display = showDashboard ? 'none' : 'flex';
@@ -821,6 +831,8 @@ onAuthStateChanged(auth, async (user) => {
 
 function showEmployeeDashboard() {
     window.__empAuthHeartbeat = Date.now();
+    if (typeof window.__clearLoaderTimer === 'function') window.__clearLoaderTimer();
+    hideGlobalLoader();          // ← remove the "Verifying session..." overlay
     setPortalVisibility(true);
     ensureDashboardShellVisible();
     scheduleDashboardShellRecovery();

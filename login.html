@@ -13,14 +13,19 @@
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'G-TFBZ5GZ22C');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In to Explyra — Access Your Developer Dashboard & Tools</title>
+    <title>Sign In to Explyra — Access Your Developer Dashboard &amp; Tools</title>
+    <meta name="description" content="Log in to your Explyra account to manage your developer utilities, track business expenses, and access your personalized team workspace.">
+    <link rel="canonical" href="https://explyra.me/login" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/global-theme.css">
+
+    <style>
+        * { box-sizing: border-box; }
         body {
             background: #fff;
             color: #1b1b1b;
@@ -33,7 +38,7 @@
             margin: 0;
             overflow-y: auto;
         }
-        .dark body { background: #000; color: #fff; }
+        body.dark { background: #000; color: #fff; }
 
         .ms-auth-card {
             background: #fff;
@@ -46,14 +51,14 @@
             margin-top: 10vh;
             margin-bottom: 24px;
         }
-        .dark .ms-auth-card { background: #111; border: 1px solid #333; }
+        body.dark .ms-auth-card { background: #111; border: 1px solid #333; }
 
         .ms-logo { height: 32px; margin-bottom: 24px; overflow: hidden; display: flex; align-items: center; }
         .ms-logo img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
-        
+
         .ms-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
         .ms-subtitle { font-size: 15px; margin-bottom: 24px; }
-        
+
         .ms-input-line {
             width: 100%;
             border: none;
@@ -68,10 +73,11 @@
             color: inherit;
         }
         .ms-input-line:focus { border-bottom-color: #0067b8; }
-        
+        body.dark .ms-input-line { color: #fff; }
+
         .ms-link { color: #0067b8; text-decoration: none; font-size: 13px; cursor: pointer; display: inline-block; }
         .ms-link:hover { text-decoration: underline; }
-        
+
         .ms-btn-next {
             background: #0067b8;
             color: #fff;
@@ -84,6 +90,7 @@
             transition: opacity 0.2s;
         }
         .ms-btn-next:hover { opacity: 0.9; }
+        .ms-btn-next:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .ms-social-btn {
             display: flex;
@@ -100,58 +107,68 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .dark .ms-social-btn { background: #1a1a1a; border-color: #333; color: #fff; }
+        body.dark .ms-social-btn { background: #1a1a1a; border-color: #333; color: #fff; }
         .ms-social-btn:hover { background: #f5f5f5; }
+        body.dark .ms-social-btn:hover { background: #222; }
 
         .ms-footer-text { font-size: 13px; margin-top: 24px; }
         .ms-business-footer { margin-top: auto; padding: 24px 0; text-align: center; font-size: 12px; color: #666; }
-        .dark .ms-business-footer { color: #999; }
+        body.dark .ms-business-footer { color: #999; }
+
         /* Step Transitions */
-        .step-container { position: relative; width: 100%; min-height: 380px; }
-        .step-content { 
-            position: absolute; 
+        .step-container { position: relative; width: 100%; min-height: 380px; overflow: hidden; }
+        .step-content {
+            position: absolute;
             inset: 0;
             width: 100%;
-            height: auto;
-            opacity: 0; 
-            pointer-events: none; 
-            transform: translateX(50px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white; /* Prevent bleed */
-            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(40px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            background: white;
         }
-        .dark .step-content { background: #111; }
-        
-        .step-content.active { 
+        body.dark .step-content { background: #111; }
+
+        .step-content.active {
             position: relative;
-            opacity: 1; 
-            pointer-events: auto; 
+            opacity: 1;
+            pointer-events: auto;
             transform: translateX(0);
-            z-index: 2;
         }
-        
         .step-content.fade-out {
             opacity: 0;
-            transform: translateX(-50px);
+            transform: translateX(-40px);
             pointer-events: none;
         }
 
-        .absolute { position: absolute; }
-        .relative { position: relative; }
-        .inset-0 { top: 0; left: 0; right: 0; bottom: 0; }
-        .w-full { width: 100%; }
-        .h-full { height: 100%; }
-        .opacity-0 { opacity: 0; }
-        .opacity-100 { opacity: 1; }
-        .pointer-events-none { pointer-events: none; }
-        .hidden { display: none; }
-        
         #toast-container { position: fixed; top: 24px; right: 24px; z-index: 1000; }
-        
-        .theme-toggle { position: fixed; top: 24px; right: 24px; background: none; border: none; cursor: pointer; color: #666; font-size: 20px; z-index: 100; }
-        .dark .theme-toggle { color: #aaa; }
-        
-        /* Utility */
+        .toast {
+            background: #333;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { background: #1a7f37; }
+        .toast.error { background: #c0392b; }
+        .toast.warning { background: #d68910; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 20px;
+            z-index: 100;
+        }
+        body.dark .theme-toggle { color: #aaa; }
+
         .mt-2 { margin-top: 0.5rem; }
         .mt-8 { margin-top: 2rem; }
         .mt-12 { margin-top: 3rem; }
@@ -160,126 +177,124 @@
         .justify-end { justify-content: flex-end; }
         .items-center { align-items: center; }
         .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
         .grid { display: grid; }
-        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-        .w-4 { width: 1rem; }
-        .h-4 { height: 1rem; }
-        .w-auto { width: auto; }
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .w-4 { width: 1rem; } .h-4 { height: 1rem; }
         .text-sm { font-size: 14px; }
         .text-xs { font-size: 12px; }
         .font-bold { font-weight: 700; }
-        .text-slate-500 { color: #64748b; }
-        .text-slate-600 { color: #475569; }
-        .z-20 { z-index: 20; }
-        .z-30 { z-index: 30; }
+        .font-medium { font-weight: 500; }
         .text-center { text-align: center; }
-
-    </style>
-
-    
-
-        <meta name="description" content="Log in to your Explyra account to manage your developer utilities, track business expenses, and access your personalized team workspace.">
-
-    
-    
-    
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "alternateName": "Explyra Suite",
-      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
-      "url": "https://explyra.me/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://explyra.me/assets/images/explyra_logo.png",
-        "width": 512,
-        "height": 512
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Okhla Phase III",
-        "addressLocality": "New Delhi",
-        "addressRegion": "Delhi",
-        "postalCode": "110020",
-        "addressCountry": "IN"
-      },
-      "sameAs": [
-        "https://x.com/explyras",
-        "https://www.facebook.com/profile.php?id=61584891033070",
-        "https://www.instagram.com/explyras",
-        "https://www.youtube.com/@explyras",
-        "https://www.linkedin.com/company/explyra/",
-        "https://www.threads.com/@explyras",
-        "https://github.com/Explyra",
-        "https://ipecconsulting.org/"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+91-8076108584",
-          "contactType": "customer service",
-          "email": "explyra@gmail.com",
-          "availableLanguage": [
-            "en",
-            "hi"
-          ],
-          "contactOption": "TollFree",
-          "areaServed": "IN"
+        .cursor-pointer { cursor: pointer; }
+        .hidden { display: none !important; }
+        .relative { position: relative; }
+        .border { border: 1px solid #d1d5db; }
+        .rounded { border-radius: 4px; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .w-full { width: 100%; }
+        .w-16 { width: 4rem; } .h-16 { height: 4rem; }
+        .rounded-full { border-radius: 9999px; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .overflow-hidden { overflow: hidden; }
+        .object-cover { object-fit: cover; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .text-lg { font-size: 18px; }
+        .text-2xl { font-size: 24px; }
+        .pr-10 { padding-right: 2.5rem; }
+        .spinner {
+            display: inline-block;
+            width: 40px; height: 40px;
+            border: 4px solid #0067b8;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
         }
-      ],
-      "founder": {
-        "@type": "Person",
-        "name": "Mitanshu Bhasin",
-        "url": "https://explyra.me/mitanshu.html"
-      },
-      "foundingDate": "2024",
-      "foundingLocation": "New Delhi, India"
-    }
-  ]
-}
-    </script>
-    <link rel="canonical" href="https://explyra.me/login" />
-    <link rel="stylesheet" href="assets/css/global-theme.css">
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #step-loading { position: absolute; inset: 0; background: rgba(255,255,255,0.92); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; display: none; border-radius: inherit; }
+        body.dark #step-loading { background: rgba(17,17,17,0.92); }
+        #step-loading.active { display: flex; }
+
+        /* Skeleton shimmer — shown while session is being verified */
+        @keyframes shimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+        .skeleton-bar {
+            height: 14px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #e8eaed 25%, #f4f5f7 50%, #e8eaed 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.4s infinite linear;
+            margin-bottom: 16px;
+        }
+        body.dark .skeleton-bar {
+            background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+            background-size: 800px 100%;
+        }
+        #auth-skeleton {
+            position: absolute;
+            inset: 0;
+            padding: 44px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+        }
+        body.dark #auth-skeleton { background: #111; }
+    </style>
 </head>
 
 <body>
-
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-        <i class="fa-solid fa-moon dark:hidden"></i>
-        <i class="fa-solid fa-sun hidden dark:block"></i>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
     </button>
 
     <div class="ms-auth-card">
         <div class="ms-logo">
             <img src="assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
         </div>
-        
-        <div id="auth-steps" class="step-container relative overflow-hidden min-h-[360px]">
+
+        <!-- Skeleton shimmer — covers form while auth session is being verified -->
+        <div id="auth-skeleton">
+            <div class="skeleton-bar" style="width:60%;height:10px;margin-bottom:24px;opacity:.5;"></div>
+            <div class="skeleton-bar" style="width:100%;height:28px;margin-bottom:12px;"></div>
+            <div class="skeleton-bar" style="width:75%;height:14px;margin-bottom:32px;opacity:.7;"></div>
+            <div class="skeleton-bar" style="width:100%;height:20px;"></div>
+            <div class="skeleton-bar" style="width:100%;height:40px; margin-top:10px;"></div>
+            <div class="skeleton-bar" style="width:100%;height:40px;"></div>
+            <div class="skeleton-bar" style="width:40%;height:36px;margin-top:32px;align-self:flex-end;"></div>
+        </div>
+
+        <!-- Loading overlay — sits on top of entire card, independent of steps -->
+        <div id="step-loading">
+            <div class="spinner"></div>
+            <p style="font-size:14px;color:#475569;">Looking up your account…</p>
+        </div>
+
+        <div id="auth-steps" class="step-container">
             <!-- Step 1: Identifier -->
-            <div id="step-identifier" class="step-content active text-left">
+            <div id="step-identifier" class="step-content active">
                 <h1 class="ms-title">Sign in</h1>
                 <p class="ms-subtitle">to continue to Explyra Suite</p>
-                
+
                 <form id="identifierForm" onsubmit="handleIdentifierNext(event)">
-                    <input type="text" id="login-identifier" class="ms-input-line dark:text-white" placeholder="Email, phone, or Skype" required autofocus>
+                    <input type="text" id="login-identifier" class="ms-input-line" placeholder="Email, phone, or Skype" required autofocus autocomplete="username">
                     <div class="ms-footer-text">
-                        No account? <a href="#" onclick="window.location.href='signup.html'" class="ms-link">Create one!</a>
+                        No account? <a href="signup.html" class="ms-link">Create one!</a>
                     </div>
                     <div class="mt-2">
                         <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Can't access your account?</a>
                     </div>
 
-                    <div class="mt-8 grid grid-cols-1 gap-2">
+                    <div class="mt-8 grid grid-cols-1" style="gap: 8px;">
                         <button type="button" onclick="handleGoogleLogin()" class="ms-social-btn">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4"> Continue with Google
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" alt="Google"> Continue with Google
                         </button>
                         <button type="button" onclick="handleMicrosoftLogin()" class="ms-social-btn">
-                            <i class="fa-brands fa-microsoft text-[#00A4EF]"></i> Continue with Microsoft
+                            <i class="fa-brands fa-microsoft" style="color:#00A4EF;"></i> Continue with Microsoft
                         </button>
                     </div>
 
@@ -289,22 +304,17 @@
                 </form>
             </div>
 
-            <!-- Step: Loading Transition -->
-            <div id="step-loading" class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
-                <div class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Please wait...</p>
-            </div>
 
-            <!-- Step: Forgot Password Identifier -->
-            <div id="step-forgot-password" class="step-content text-left">
-                <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                    <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                    <span class="text-sm text-slate-600">Recover your account</span>
+            <!-- Step: Forgot Password -->
+            <div id="step-forgot-password" class="step-content">
+                <div class="mb-6 flex items-center gap-2 cursor-pointer" onclick="showStep('step-identifier')">
+                    <i class="fa-solid fa-arrow-left text-xs" style="color:#64748b;"></i>
+                    <span class="text-sm" style="color:#475569;">Recover your account</span>
                 </div>
                 <h1 class="ms-title">Who are you?</h1>
                 <p class="ms-subtitle">To recover your account, begin by typing your email or phone number.</p>
                 <form onsubmit="handleForgotPasswordNext(event)">
-                    <input type="text" id="forgot-identifier" class="ms-input-line dark:text-white" placeholder="Email or Phone" required autofocus>
+                    <input type="text" id="forgot-identifier" class="ms-input-line" placeholder="Email or Phone" required autocomplete="username">
                     <div class="flex justify-end mt-12">
                         <button type="submit" class="ms-btn-next">Next</button>
                     </div>
@@ -312,52 +322,52 @@
             </div>
 
             <!-- Step 2: Password -->
-                <div id="step-password" class="step-content text-left">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span id="display-resolved-email" class="text-sm text-slate-600">...</span>
+            <div id="step-password" class="step-content">
+                <div class="mb-6 flex items-center gap-2 cursor-pointer" onclick="showStep('step-identifier')">
+                    <i class="fa-solid fa-arrow-left text-xs" style="color:#64748b;"></i>
+                    <span id="display-resolved-email" class="text-sm" style="color:#475569;">...</span>
+                </div>
+                <h1 class="ms-title">Enter password</h1>
+
+                <form id="loginForm" onsubmit="handleFinalLogin(event)">
+                    <div class="relative w-full">
+                        <input type="password" id="password" class="ms-input-line pr-10" placeholder="Password" required autocomplete="current-password">
+                        <button type="button" onclick="togglePasswordVisibility('password', this)"
+                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#666;padding:4px;">
+                            <i class="fa-solid fa-eye text-sm"></i>
+                        </button>
                     </div>
-                    <h1 class="ms-title">Enter password</h1>
-                    
-                    <form id="loginForm" onsubmit="handleFinalLogin(event)">
-                        <div class="relative w-full">
-                            <input type="password" id="password" class="ms-input-line dark:text-white pr-10" placeholder="Password" required>
-                            <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
-                                <i class="fa-solid fa-eye text-sm"></i>
-                            </button>
-                        </div>
-                        <div class="ms-footer-text">
-                            <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Forgot password?</a>
-                        </div>
-                        <div class="flex justify-end mt-12">
-                            <button type="submit" id="submitBtn" class="ms-btn-next">Sign in</button>
-                        </div>
-                    </form>
+                    <div class="ms-footer-text">
+                        <a href="javascript:void(0)" onclick="forgotPassword()" class="ms-link">Forgot password?</a>
+                    </div>
+                    <div class="flex justify-end mt-12">
+                        <button type="submit" id="submitBtn" class="ms-btn-next">Sign in</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Confirm Identity (Password Reset) -->
+            <div id="step-confirm-identity" class="step-content">
+                <div class="mb-6 flex items-center gap-2 cursor-pointer" onclick="showStep('step-identifier')">
+                    <i class="fa-solid fa-arrow-left text-xs" style="color:#64748b;"></i>
+                    <span class="text-sm" style="color:#475569;">Account Recovery</span>
                 </div>
 
-                <!-- Step 3: Confirm Identity -->
-                <div id="step-confirm-identity" class="step-content">
-                    <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                        <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                        <span class="text-sm text-slate-600">Account Recovery</span>
+                <div class="text-center mb-8">
+                    <div id="confirm-avatar-container" style="width:64px;height:64px;border-radius:50%;background:#f1f5f9;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid #e2e8f0;">
+                        <i id="confirm-avatar-placeholder" class="fa-solid fa-user text-2xl" style="color:#94a3b8;"></i>
+                        <img id="confirm-avatar-img" src="" class="hidden w-full h-full object-cover" alt="">
                     </div>
-                    
-                    <div class="text-center mb-8">
-                        <div id="confirm-avatar-container" class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
-                            <i id="confirm-avatar-placeholder" class="fa-solid fa-user text-2xl text-slate-400"></i>
-                            <img id="confirm-avatar-img" src="" class="hidden w-full h-full object-cover">
-                        </div>
-                        <h2 id="confirm-user-name" class="text-lg font-bold">...</h2>
-                        <p id="confirm-user-email" class="text-xs text-slate-500">...</p>
-                    </div>
+                    <h2 id="confirm-user-name" class="text-lg font-bold">...</h2>
+                    <p id="confirm-user-email" class="text-xs" style="color:#64748b;">...</p>
+                </div>
 
-                    <h1 class="ms-title mb-4">Is this you?</h1>
-                    <p class="ms-subtitle text-slate-600 dark:text-slate-400">We found the account associated with the identifier you provided. Would you like us to send a password reset link to <span id="confirm-send-email" class="font-semibold text-slate-800 dark:text-slate-100">...</span>?</p>
-                    
-                    <div class="flex justify-end mt-12 gap-3">
-                        <button type="button" onclick="backToIdentifier()" class="px-6 py-2 border border-slate-300 dark:border-slate-700 rounded text-slate-600 dark:text-slate-400 text-sm font-semibold">No, not me</button>
-                        <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()" class="ms-btn-next">Yes, Send Link</button>
-                    </div>
+                <h1 class="ms-title" style="font-size:20px;">Is this you?</h1>
+                <p class="ms-subtitle" style="color:#475569;">We'll send a password reset link to <span id="confirm-send-email" class="font-bold" style="color:#1b1b1b;">...</span></p>
+
+                <div class="flex justify-end mt-12 gap-3">
+                    <button type="button" onclick="showStep('step-identifier')" style="padding:8px 24px;border:1px solid #d1d5db;border-radius:4px;background:none;cursor:pointer;font-size:13px;color:#475569;">No, not me</button>
+                    <button type="button" id="confirm-identity-btn" onclick="sendResetToConfirmedUser()" class="ms-btn-next" style="float:none;">Yes, Send Link</button>
                 </div>
             </div>
         </div>
@@ -369,161 +379,350 @@
 
     <div id="toast-container"></div>
 
+    <!-- env.js must load before module script -->
     <script src="js/env.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/tenant-routing.js"></script>
-    <script src="js/admin-logic.js" type="module"></script>    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        // Global Navigation
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            sendPasswordResetEmail,
+            GoogleAuthProvider,
+            OAuthProvider,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // ──────────────── Firebase Init ────────────────
+        const firebaseConfig = window.EXPLYRA_CONFIG?.firebase || {
+            apiKey: "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
+            authDomain: "explyras.firebaseapp.com",
+            databaseURL: "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "explyras",
+            storageBucket: "explyras.firebasestorage.app",
+            messagingSenderId: "411853553644",
+            appId: "1:411853553644:web:eca79eab846b6a5149cac9"
+        };
+        const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ──────────────── Session Check ────────────────
+        // Show skeleton shimmer while auth resolves; hide it once done
+        const skeleton = document.getElementById('auth-skeleton');
+        const hideSkeleton = () => {
+            if (!skeleton) return;
+            skeleton.style.opacity = '0';
+            skeleton.style.transition = 'opacity 0.3s';
+            setTimeout(() => skeleton.remove(), 320);
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                hideSkeleton(); // not logged in — show login form
+                return;
+            }
+            // User is already logged in — redirect silently
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const userData = userDoc.exists() ? userDoc.data() : null;
+                const adminRole = userData?.role === 'owner' || userData?.role === 'admin' ||
+                    userData?.role === 'ADMIN' || userData?.role === 'OWNER';
+                window.location.replace(adminRole ? 'admin.html' : 'emp.html');
+            } catch (e) {
+                window.location.replace('emp.html');
+            }
+        });
+
+        // ──────────────── Utilities ────────────────
+        window.showToast = (msg, type = 'info') => {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.textContent = msg;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 3500);
+        };
+
+        window.toggleTheme = () => {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        };
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.warn("Unhandled Rejection Detected:", event.reason);
+            if (typeof window.recoverLoginState === 'function') {
+                window.recoverLoginState();
+            }
+        });
+
+        // ──────────────── Step Navigation ────────────────
         window.showStep = (stepId) => {
-            const currentStep = document.querySelector('.step-content.active');
+            // step-loading is a card-level overlay — never treat it as a step
+            if (stepId === 'step-loading') return;
+            const currentStep = document.querySelector('#auth-steps .step-content.active');
             const nextStep = document.getElementById(stepId);
-            
+            if (!nextStep || nextStep === currentStep) return;
+
             if (currentStep) {
                 currentStep.classList.remove('active');
                 currentStep.classList.add('fade-out');
-                setTimeout(() => currentStep.classList.remove('fade-out'), 500);
+                setTimeout(() => currentStep.classList.remove('fade-out'), 400);
             }
-            if (nextStep) nextStep.classList.add('active');
+            nextStep.classList.add('active');
         };
+
+        // Loading overlay is independent of step-content — it sits above the whole card
+        const showLoading = () => document.getElementById('step-loading').classList.add('active');
+        const hideLoading = () => document.getElementById('step-loading').classList.remove('active');
 
         window.backToIdentifier = () => showStep('step-identifier');
 
+        window.recoverLoginState = () => {
+            hideLoading();
+            // Ensure at least one step is active (never leave the card blank)
+            const activeStep = document.querySelector('#auth-steps .step-content.active');
+            if (!activeStep) {
+                // Nothing visible — force-show identifier step
+                document.querySelectorAll('#auth-steps .step-content').forEach(s => s.classList.remove('active', 'fade-out'));
+                const identifierStep = document.getElementById('step-identifier');
+                if (identifierStep) identifierStep.classList.add('active');
+            }
+
+            // Re-enable all buttons so user isn't stuck
+            const identifierBtn = document.getElementById('identifierBtn');
+            if (identifierBtn) { identifierBtn.disabled = false; identifierBtn.textContent = 'Next'; }
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign in'; }
+            const forgotBtn = document.querySelector('#step-forgot-password button[type="submit"]');
+            if (forgotBtn) { forgotBtn.disabled = false; forgotBtn.textContent = 'Next'; }
+        };
+
+        // ──────────────── Resolve Identifier → Email ────────────────
+        async function resolveIdentifier(identifier) {
+            const input = identifier.toLowerCase().trim();
+            
+            // Fast path: If it looks like an email, accept it directly without querying Firestore
+            if (input.includes('@')) return input;
+
+            const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
+            if (devEmails.includes(input)) return input;
+
+            // Optional timeout wrapper for Firestore query to avoid hanging indefinitely 
+            const fetchWithTimeout = (q) => {
+                return Promise.race([
+                    getDocs(q),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+                ]);
+            };
+
+            // Try primary email
+            try {
+                const q = query(collection(db, "users"), where("email", "==", input), limit(1));
+                const snap = await fetchWithTimeout(q);
+                if (!snap.empty) return snap.docs[0].data().email;
+            } catch (e) {
+                console.error("Firestore lookup failed:", e);
+            }
+
+            // Try phone
+            const digits = input.replace(/\D/g, '');
+            if (digits.length >= 10 && digits.length <= 13) {
+                const formats = digits.length === 10
+                    ? ['+91' + digits, digits]
+                    : ['+' + digits, digits];
+                for (const fmt of [...new Set(formats)]) {
+                    try {
+                        const q = query(collection(db, "users"), where("phone", "==", fmt), limit(1));
+                        const s = await fetchWithTimeout(q);
+                        if (!s.empty) return s.docs[0].data().email;
+                    } catch (e) {
+                         console.error("Firestore phone lookup failed:", e);
+                    }
+                }
+            }
+
+            // Try alt email
+            try {
+                const q = query(collection(db, "users"), where("altEmail", "==", input), limit(1));
+                const snap = await fetchWithTimeout(q);
+                if (!snap.empty) return snap.docs[0].data().email;
+            } catch (e) {
+                 console.error("Firestore alt lookup failed:", e);
+            }
+
+            throw new Error('Account not found. Try your email address or contact admin.');
+        }
+
+        // ──────────────── Step 1: Identifier Next ────────────────
         window.handleIdentifierNext = async (e) => {
             if (e) e.preventDefault();
             const identifier = document.getElementById('login-identifier').value.trim();
-            if (!identifier) return showToast('Please enter an email or phone', 'error');
-            
-            const loadingStep = document.getElementById('step-loading');
-            loadingStep.classList.add('active');
-            
+            if (!identifier) return showToast('Please enter your email or phone', 'error');
+
+            const btn = document.getElementById('identifierBtn');
+            btn.disabled = true;
+            btn.textContent = '...';
+            showLoading();
+
             try {
-                // Wait for admin-logic to load resolveEmailToPrimary
-                if (!window.resolveEmailToPrimary) {
-                    await import('./js/admin-logic.js');
-                }
-                
-                const resolvedEmail = await window.resolveEmailToPrimary(identifier);
-                await new Promise(r => setTimeout(r, 800)); 
-                loadingStep.classList.remove('active');
+                const resolvedEmail = await resolveIdentifier(identifier);
+                await new Promise(r => setTimeout(r, 600));
+                hideLoading();
 
                 document.getElementById('display-resolved-email').textContent = resolvedEmail;
                 showStep('step-password');
-                setTimeout(() => document.getElementById('password').focus(), 500);
+                setTimeout(() => document.getElementById('password')?.focus(), 400);
             } catch (err) {
+                hideLoading();
                 showToast(err.message, 'error');
-                loadingStep.classList.remove('active');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Next';
             }
         };
 
+        // ──────────────── Step 2: Final Login ────────────────
         window.handleFinalLogin = async (e) => {
             e.preventDefault();
-            const email = document.getElementById('display-resolved-email').textContent;
+            const email = document.getElementById('display-resolved-email').textContent.trim();
             const password = document.getElementById('password').value;
             const btn = document.getElementById('submitBtn');
 
             if (!email || !password) return showToast('Please fill all fields', 'error');
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing in...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
 
             try {
-                // Firebase already initialized at top module scope
-                const auth = getAuth();
-                const db = getFirestore();
-
                 const userCred = await signInWithEmailAndPassword(auth, email, password);
                 const userDoc = await getDoc(doc(db, "users", userCred.user.uid));
+                const userData = userDoc.exists() ? userDoc.data() : null;
 
-                const devEmails = ['explyras@gmail.com', 'explyra@gmail.com'];
-                if (userDoc.exists() || devEmails.includes(email.toLowerCase())) {
-                    const userData = userDoc.exists() ? userDoc.data() : { role: 'admin' };
-                    showToast('Login successful!', 'success');
-                    setTimeout(() => {
-                        const dest = (userData.role === 'owner' || userData.role === 'admin') ? 'admin' : 'emp';
-                        window.location.href = `${dest}.html`;
-                    }, 800);
-                } else {
-                    window.location.href = 'company.html';
-                }
+                // Store minimal session hint
+                const adminRole = userData?.role === 'owner' || userData?.role === 'admin' ||
+                    userData?.role === 'ADMIN' || userData?.role === 'OWNER';
+
+                showToast('Welcome back! Redirecting...', 'success');
+                // onAuthStateChanged will fire and redirect
             } catch (error) {
-                showToast(error.message, 'error');
-            } finally {
+                const msg = {
+                    'auth/invalid-credential': 'Incorrect password. Please try again.',
+                    'auth/wrong-password': 'Incorrect password. Please try again.',
+                    'auth/user-not-found': 'Account not found.',
+                    'auth/too-many-requests': 'Too many attempts. Wait a moment and try again.',
+                    'auth/network-request-failed': 'Network error. Check your connection.',
+                }[error.code] || error.message;
+                showToast(msg, 'error');
                 btn.disabled = false;
-                btn.innerHTML = 'Sign in';
+                btn.textContent = 'Sign in';
             }
         };
 
+        // ──────────────── Google Login ────────────────
+        window.handleGoogleLogin = async () => {
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+                // onAuthStateChanged handles redirect
+            } catch (err) {
+                if (err.code !== 'auth/popup-closed-by-user') {
+                    showToast('Google sign-in failed: ' + err.message, 'error');
+                }
+            }
+        };
+
+        // ──────────────── Microsoft Login ────────────────
+        window.handleMicrosoftLogin = async () => {
+            try {
+                const provider = new OAuthProvider('microsoft.com');
+                await signInWithPopup(auth, provider);
+            } catch (err) {
+                if (err.code !== 'auth/popup-closed-by-user') {
+                    showToast('Microsoft sign-in failed: ' + err.message, 'error');
+                }
+            }
+        };
+
+        // ──────────────── Forgot Password ────────────────
         window.forgotPassword = () => {
             const currentId = document.getElementById('login-identifier').value.trim();
             if (currentId) document.getElementById('forgot-identifier').value = currentId;
             showStep('step-forgot-password');
-            setTimeout(() => document.getElementById('forgot-identifier').focus(), 500);
+            setTimeout(() => document.getElementById('forgot-identifier')?.focus(), 400);
         };
 
         window.handleForgotPasswordNext = async (e) => {
             e.preventDefault();
             const identifier = document.getElementById('forgot-identifier').value.trim();
-            if(!identifier) return showToast('Please enter email or phone', 'warning');
-            
-            const loadingStep = document.getElementById('step-loading');
-            loadingStep.classList.add('active');
+            if (!identifier) return showToast('Please enter email or phone', 'warning');
+
+            const btn = e.target.querySelector('button[type=submit]');
+            if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+            showLoading();
 
             try {
-                if (!window.resolveUserIdentity) {
-                    const { resolveUserIdentity } = await import('./js/admin-logic.js');
-                    window.resolveUserIdentity = resolveUserIdentity;
-                }
+                const resolvedEmail = await resolveIdentifier(identifier);
+                // Try to find user details
+                let name = 'Explyra User';
+                let photoUrl = '';
+                try {
+                    const q = query(collection(db, "users"), where("email", "==", resolvedEmail), limit(1));
+                    const snap = await getDocs(q);
+                    if (!snap.empty) {
+                        const d = snap.docs[0].data();
+                        name = d.name || d.displayName || name;
+                        photoUrl = d.photoUrl || d.photoURL || '';
+                    }
+                } catch (e) {}
 
-                const user = await window.resolveUserIdentity(identifier);
-                await new Promise(r => setTimeout(r, 800));
-                loadingStep.classList.remove('active');
+                await new Promise(r => setTimeout(r, 600));
+                hideLoading();
 
-                if (!user) {
-                    showToast("Account not found.", "error");
-                    return;
-                }
+                document.getElementById('confirm-user-name').textContent = name;
+                document.getElementById('confirm-user-email').textContent = resolvedEmail;
+                document.getElementById('confirm-send-email').textContent = resolvedEmail;
 
-                document.getElementById('confirm-user-name').textContent = user.name || 'Explyra User';
-                document.getElementById('confirm-user-email').textContent = user.email;
-                document.getElementById('confirm-send-email').textContent = user.email;
-
-                if (user.photoUrl) {
+                if (photoUrl) {
                     const img = document.getElementById('confirm-avatar-img');
-                    img.src = user.photoUrl;
+                    img.src = photoUrl;
                     img.classList.remove('hidden');
                     document.getElementById('confirm-avatar-placeholder').classList.add('hidden');
                 }
+
                 showStep('step-confirm-identity');
             } catch (err) {
+                hideLoading();
                 showToast(err.message, 'error');
-                loadingStep.classList.remove('active');
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = 'Next'; }
             }
         };
 
         window.sendResetToConfirmedUser = async () => {
             const email = document.getElementById('confirm-user-email').textContent;
             const btn = document.getElementById('confirm-identity-btn');
-            const originalText = btn.innerHTML;
-
+            const original = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
-
             try {
-                await sendPasswordResetEmail(getAuth(), email);
-                showToast('Reset email sent!', 'success');
-                setTimeout(() => backToIdentifier(), 2000);
+                await sendPasswordResetEmail(auth, email);
+                showToast('Reset email sent! Check your inbox.', 'success');
+                setTimeout(() => showStep('step-identifier'), 2500);
             } catch (err) {
                 showToast(err.message, 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = originalText;
+                btn.innerHTML = original;
             }
         };
 
+        // ──────────────── Utilities ────────────────
         window.togglePasswordVisibility = (id, btn) => {
             const input = document.getElementById(id);
             const icon = btn.querySelector('i');

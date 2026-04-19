@@ -36,39 +36,41 @@ window.scanReceiptAI = async (input) => {
         // 2. Call backend proxy to keep GEMINI_KEY secure
         const prompt = "Analyze this receipt image. Extract all line items and return them as a JSON array where each object has: 'date' (YYYY-MM-DD), 'desc' (item description), 'category' (Travel, Food, Lodging, Supplies, Other), and 'amount' (numeric). Return ONLY the raw JSON array. If you cannot find a date, use today's date: " + new Date().toISOString().split('T')[0];
         
-        // Use proxy in production, direct call in local dev (if proxy returns 405/404)
+        // Use the shared Gemini proxy route (/api/ai/gemini) which is handled by _worker.js (env.GA)
+        const geminiPayload = {
+            model: window.AI_CONFIG?.model || 'gemini-1.5-flash',
+            contents: [{
+                parts: [
+                    { text: prompt },
+                    { inlineData: { mimeType: 'image/jpeg', data: base64Data } }
+                ]
+            }],
+            generationConfig: { responseMimeType: "application/json" }
+        };
+
         let response;
         try {
-            response = await fetch('/api/scan-receipt', {
+            response = await fetch('/api/ai/gemini', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ base64Data, prompt })
+                body: JSON.stringify(geminiPayload)
             });
         } catch (e) {
-            console.warn("Backend proxy failed, trying direct call...", e);
+            console.warn("Worker proxy failed, trying direct Gemini call (local dev only)...", e);
         }
 
+        // Local dev fallback: direct Gemini API call if proxy unavailable
         if (!response || !response.ok) {
-            // Local dev fallback if proxy is missing (e.g., Live Server)
             const LOCAL_HOSTS = ['localhost', '127.0.0.1'];
             if (LOCAL_HOSTS.includes(window.location.hostname)) {
-                console.info("Using Direct Gemini API Fallback for Local Dev...");
-                const DEV_KEY = (window.EXPLYRA_CONFIG?.ai?.geminiKey || "REDACTED");
-                const MODEL = 'gemini-flash-latest';
+                console.info("Direct Gemini Fallback (local dev)...");
+                const DEV_KEY = window.AI_CONFIG?.apiKey || '';
+                const MODEL = window.AI_CONFIG?.model || 'gemini-1.5-flash';
                 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${DEV_KEY}`;
-                
                 response = await fetch(ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: prompt },
-                                { inlineData: { mimeType: 'image/jpeg', data: base64Data } }
-                            ]
-                        }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
+                    body: JSON.stringify(geminiPayload)
                 });
             }
         }
