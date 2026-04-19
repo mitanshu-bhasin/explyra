@@ -1,59 +1,35 @@
-import fs from 'fs';
-import path from 'path';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 /**
- * Gracefully parses the fb.config file to extract firebase configuration.
- * Also checks for additional API keys like GEMINI_API_KEY and NEWS_API_KEY.
+ * Unified config for the Explyra Articles backend.
+ * Reads from articles/.env — no fragile file parsing needed.
  */
-function parseFbConfig() {
-    try {
-        const configPath = path.resolve('fb.config');
-        if (!fs.existsSync(configPath)) {
-            console.error('CRITICAL: fb.config file not found!');
-            return null;
-        }
+const config = {
+    firebase: {
+        apiKey:            "AIzaSyDadazHFf525KrsOoQWUP5yJ7q7uxyf3lw",
+        authDomain:        "explyras.firebaseapp.com",
+        databaseURL:       "https://explyras-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId:         "explyras",
+        storageBucket:     "explyras.firebasestorage.app",
+        messagingSenderId: "411853553644",
+        appId:             "1:411853553644:web:eca79eab846b6a5149cac9",
+        measurementId:     "G-TFBZ5GZ22C"
+    },
+    // Gemini API key — from .env GEMINI_API_KEY
+    geminiKey:  process.env.GEMINI_API_KEY || "AIzaSyDefIPTvfbaZtW4yD47mzWotFwdDHrut2E",
+    // NewsAPI key — from .env NEWS_API_KEY
+    newsKey:    process.env.NEWS_API_KEY,
+    // Server
+    port:       process.env.PORT || 3000,
+};
 
-        const content = fs.readFileSync(configPath, 'utf-8');
-        
-        // Extract the object defined in const firebaseConfig = { ... };
-        const match = content.match(/const firebaseConfig = {([\s\S]+?)};/);
-        if (!match) {
-            console.error('Error: Could not parse firebaseConfig from fb.config');
-            return null;
-        }
-
-        // Safer way to parse: turn it into valid JSON
-        let jsonStr = match[0]
-            .replace('const firebaseConfig = ', '')
-            .replace(/;/g, '')
-            .replace(/^\s*(\w+):/gm, '"$1":') // Only match keys at start of line
-            .replace(/'/g, '"')
-            .replace(/,(\s*})/g, '$1'); // remove trailing commas
-
-        const firebaseConfig = JSON.parse(jsonStr);
-        
-        // Other constants if any
-        const geminiMatch = content.match(/const GEMINI_API_KEY = "(.*)";/);
-        const newsMatch = content.match(/const NEWS_API_KEY = "(.*)";/);
-
-        return {
-            firebase: firebaseConfig,
-            geminiKey: geminiMatch ? geminiMatch[1] : (process.env.GEMINI_API_KEY || "AIzaSyBuaiiY1Ef7EyTB1Qtd1GS2xNT-Rkhhqp4"),
-            newsKey: newsMatch ? newsMatch[1] : process.env.NEWS_API_KEY
-        };
-    } catch (error) {
-        console.error('Error parsing fb.config:', error.message);
-        return null;
-    }
-}
-
-const config = parseFbConfig();
-
-if (!config) {
+if (!config.geminiKey) {
+    console.error('[Config] CRITICAL: GEMINI_API_KEY is missing!');
     process.exit(1);
+}
+if (!config.newsKey) {
+    console.warn('[Config] WARNING: NEWS_API_KEY is missing — news fetching will fail.');
 }
 
 export default config;

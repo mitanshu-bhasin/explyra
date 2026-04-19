@@ -614,6 +614,73 @@
         .settings-row:last-child { border-bottom: none; }
 
         .settings-row:hover { background: var(--bg-secondary); }
+
+        /* ═══ Auth Loading Overlay ═══ */
+        #crm-auth-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            transition: opacity 0.4s ease;
+        }
+        #crm-auth-loader.hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .crm-loader-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--text-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .crm-loader-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            animation: crmSpin 0.7s linear infinite;
+        }
+        @keyframes crmSpin { to { transform: rotate(360deg); } }
+
+        /* ═══ Skeleton Pulse ═══ */
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .skeleton { background: var(--border-color); border-radius: 6px; animation: pulse 1.5s ease-in-out infinite; }
+
+        /* ═══ CRM Premium Buttons ═══ */
+        .btn-crm-primary {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+            background: var(--text-primary); color: var(--bg-primary);
+            padding: 0.55rem 1.1rem; border-radius: 8px;
+            font-weight: 600; font-size: 0.8rem; border: none;
+            cursor: pointer; transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+        .btn-crm-primary:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-crm-primary:active { transform: scale(0.97); }
+
+        .btn-crm-secondary {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+            background: transparent; color: var(--text-secondary);
+            padding: 0.55rem 1.1rem; border-radius: 8px;
+            font-weight: 500; font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-crm-secondary:hover { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--text-secondary); }
+        .btn-crm-secondary:active { transform: scale(0.97); }
+
+        /* ═══ Main app hidden by default until auth resolves ═══ */
+        #crm-main-app { opacity: 0; transition: opacity 0.4s ease; }
+        #crm-main-app.auth-ready { opacity: 1; }
     </style>
 
         <link rel="stylesheet" href="crm-ai-support.css">
@@ -747,10 +814,22 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
 
+    <!-- ══ CRM Auth Loader — shown while Firebase verifies session ══ -->
+    <div id="crm-auth-loader">
+        <div class="crm-loader-logo">
+            <i class="fa-solid fa-bolt text-white" style="color: #fff; font-size: 1.2rem;"></i>
+        </div>
+        <div style="text-align:center;">
+            <p class="font-bold text-sm" style="color:var(--text-primary); letter-spacing:0.05em;">EXPLYRA™ CRM</p>
+            <p class="text-xs mt-1" style="color:var(--text-secondary);">Verifying your access…</p>
+        </div>
+        <div class="crm-loader-spinner"></div>
+    </div>
+
     <!-- Mobile Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleCrmSidebar()"></div>
 
-    <div class="flex-1 flex h-screen w-full">
+    <div id="crm-main-app" class="flex-1 flex h-screen w-full">
 
         <!-- ===================== SIDEBAR ===================== -->
         <aside id="crm-sidebar" class="crm-sidebar">

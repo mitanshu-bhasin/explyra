@@ -11,12 +11,31 @@ function crmRedirect(target, companyId) {
     window.location.href = `../${target}`;
 }
 
+/** Hide loading overlay and reveal app */
+function hideCrmLoader() {
+    const loader = document.getElementById('crm-auth-loader');
+    const app = document.getElementById('crm-main-app');
+    if (loader) {
+        loader.classList.add('hiding');
+        setTimeout(() => { loader.style.display = 'none'; }, 450);
+    }
+    if (app) app.classList.add('auth-ready');
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Failsafe: hide loader after 12 seconds no matter what
+    const loaderFailsafe = setTimeout(hideCrmLoader, 12000);
+
     // Wait for auth state
     firebase.auth().onAuthStateChanged((user) => {
+        clearTimeout(loaderFailsafe);
         if (user) {
-            initializeCrm(user);
+            initializeCrm(user).catch(err => {
+                console.error('CRM init failed:', err);
+                hideCrmLoader();
+            });
         } else {
+            hideCrmLoader();
             // Redirect to login if not authenticated
             crmRedirect('admin.html');
         }
@@ -114,8 +133,12 @@ async function initializeCrm(user) {
             });
         }
 
+        // ── Reveal the app once everything is ready ──
+        hideCrmLoader();
+
     } catch (error) {
         console.error("CRM Initialization error:", error);
+        hideCrmLoader();
         alert("Failed to initialize CRM: " + error.message);
     }
 }

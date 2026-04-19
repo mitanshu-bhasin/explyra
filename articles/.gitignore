@@ -1,1 +1,5 @@
 /node_modules
+/.env
+/public/generated/
+*.log
+explyras-service-account.json

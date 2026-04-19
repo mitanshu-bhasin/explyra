@@ -1,11 +1,14 @@
 /**
- * Explyra CRM AI Assistant (v1.0)
- * Specialized for lead analysis, pipeline management, and data-driven insights.
+ * Explyra CRM AI Assistant (v2.0)
+ * Powered by Gemini 2.5 Flash — specialized for lead analysis, pipeline management, and data-driven insights.
  */
 (function() {
-    const GROQ_API_KEY = window.EXPLYRA_CONFIG?.ai?.apiKey || 'REDACTED_GROQ_API_KEY_2';
-    const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-    const MODEL = 'llama-3.3-70b-versatile';
+    // Gemini API key: read from env config (injected by build) → fallback to backup keys
+    const GEMINI_KEY = window.EXPLYRA_CONFIG?.ai?.geminiKey
+        || window.EXPLYRA_CONFIG?.ai?.gaKey
+        || 'AIzaSyDefIPTvfbaZtW4yD47mzWotFwdDHrut2E'; // FIREBASE_OR_GEMINI_KEY_3 from .env
+    const GEMINI_MODEL = 'gemini-2.5-flash';
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`;
 
     // Unique history key for CRM
     const appKey = 'explyra_crm_ai_history';
@@ -163,7 +166,7 @@
         
         try {
             const context = getCrmContext(text);
-            const response = await callGroqAPI(text, context);
+            const response = await callGeminiAPI(text, context);
             typingEl.remove();
             
             // Handle possible commands in response
@@ -249,49 +252,57 @@
         return JSON.stringify(ctx);
     }
 
-    async function callGroqAPI(userMessage, context) {
-        const systemPrompt = `You are Explyra CRM Intelligence. 
-You analyze CRM data for the logged-in user: ${window.userData?.name}.
-Company ID: ${window.companyId}.
+    async function callGeminiAPI(userMessage, context) {
+        const systemPrompt = `You are Explyra CRM Intelligence, an expert business AI assistant.
+You analyze CRM data for the logged-in user: ${window.userData?.name || 'Manager'}.
+Company ID: ${window.companyId || 'N/A'}.
 
-DATA CONTEXT:
+LIVE CRM DATA:
 ${context}
 
 INSTRUCTIONS:
 1. Provide deep analysis of leads, pipeline, or contacts.
-2. Be professional and data-driven.
-3. Keep responses concise unless a detailed report is asked.
-4. COMMAND CAPABILITY:
-   - Create a new lead: [COMMAND:CREATE_LEAD:{"name":"...", "email":"...", "company":"...", "status":"NEW"}]
-   - Create a new deal: [COMMAND:CREATE_DEAL:{"name":"...", "contact":"...", "amount":..., "stage":"Discovery"}]
-   - Create a new contact: [COMMAND:CREATE_CONTACT:{"name":"...", "email":"...", "company":"..."}]
-   - Update lead/deal: [COMMAND:UPDATE_LEAD:{"id":"...", "status":"..."}] or [COMMAND:UPDATE_DEAL:{"id":"...", "stage":"..."}]
-   Only include commands when explicitly requested or strongly implied.
+2. Be professional, concise, and data-driven.
+3. Keep responses brief unless a detailed report is requested.
+4. COMMAND CAPABILITY (only use when explicitly asked):
+   - Create lead: [COMMAND:CREATE_LEAD:{"name":"...","email":"...","company":"...","status":"NEW"}]
+   - Create deal: [COMMAND:CREATE_DEAL:{"name":"...","contact":"...","amount":0,"stage":"Discovery"}]
+   - Create contact: [COMMAND:CREATE_CONTACT:{"name":"...","email":"...","company":"..."}]
+   - Update lead: [COMMAND:UPDATE_LEAD:{"id":"...","status":"..."}]
+   - Update deal: [COMMAND:UPDATE_DEAL:{"id":"...","stage":"..."}]
 5. Use **bold** for metrics and key names.`;
 
-        const messages = [
-            { role: 'system', content: systemPrompt },
-            ...chatHistory.slice(-8),
-            { role: 'user', content: userMessage }
-        ];
+        // Build conversation for Gemini (parts format)
+        const historyParts = chatHistory.slice(-8).map(msg => ({
+            role: msg.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: msg.content }]
+        }));
 
-        const response = await fetch(API_URL, {
+        const payload = {
+            contents: [
+                { role: 'user', parts: [{ text: systemPrompt }] },
+                { role: 'model', parts: [{ text: 'Understood. I am ready to assist with CRM analysis.' }] },
+                ...historyParts,
+                { role: 'user', parts: [{ text: userMessage }] }
+            ],
+            generationConfig: {
+                temperature: 0.65,
+                maxOutputTokens: 1024
+            }
+        };
+
+        const response = await fetch(GEMINI_API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${GROQ_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: MODEL,
-                messages: messages,
-                temperature: 0.6,
-                max_tokens: 1024
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error('Groq API Error');
+        if (!response.ok) {
+            const errBody = await response.text();
+            throw new Error(`Gemini API Error ${response.status}: ${errBody.slice(0, 200)}`);
+        }
         const data = await response.json();
-        return data.choices[0].message.content;
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
     }
 
     function handleCommands(text) {
