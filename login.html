@@ -332,7 +332,7 @@
                 <form id="loginForm" onsubmit="handleFinalLogin(event)">
                     <div class="relative w-full">
                         <input type="password" id="password" class="ms-input-line pr-10" placeholder="Password" required autocomplete="current-password">
-                        <button type="button" onclick="togglePasswordVisibility('password', this)"
+                        <button type="button" aria-label="Toggle password visibility" onclick="togglePasswordVisibility('password', this)"
                             style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#666;padding:4px;">
                             <i class="fa-solid fa-eye text-sm"></i>
                         </button>
