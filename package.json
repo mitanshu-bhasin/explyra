@@ -29,7 +29,8 @@
         "firebase": "^12.10.0",
         "genkit": "^1.31.0",
         "puppeteer": "^24.41.0",
-        "serve": "^14.2.0"
+        "serve": "^14.2.0",
+        "winston": "^3.19.0"
     },
     "devDependencies": {
         "@capacitor/assets": "^3.0.5",
