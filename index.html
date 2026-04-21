@@ -331,10 +331,17 @@
         border: 4px solid var(--bg3);
     }
 
-    .video-thumbnail:hover {
+    .video-thumbnail:hover,
+    .video-thumbnail:focus-visible {
         transform: scale(1.03);
         box-shadow: var(--s4);
         border-color: var(--blue-b);
+        outline: none;
+    }
+
+    .video-thumbnail:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 4px;
     }
 
     .video-thumbnail img {
@@ -345,7 +352,8 @@
         transition: opacity 0.4s;
     }
 
-    .video-thumbnail:hover img {
+    .video-thumbnail:hover img,
+    .video-thumbnail:focus-visible img {
         opacity: 1;
     }
 
@@ -374,7 +382,8 @@
         padding-left: 5px;
     }
 
-    .video-thumbnail:hover .play-btn-circle {
+    .video-thumbnail:hover .play-btn-circle,
+    .video-thumbnail:focus-visible .play-btn-circle {
         transform: scale(1.15);
         background: var(--blue);
         color: #fff;
@@ -5884,13 +5893,13 @@
                 <a href="contact.html#contact" class="btn-hero"
                     style="width:100%; justify-content:center; text-decoration:none;">Book Demo</a>
                 <div class="mobile-socials">
-                    <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer"><i
+                    <a href="https://github.com/mitanshu-bhasin" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i
                             class="fab fa-github"></i></a>
-                    <a href="https://x.com/explyra" target="_blank" rel="noopener noreferrer"><i
+                    <a href="https://x.com/explyra" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i
                             class="fab fa-twitter"></i></a>
-                    <a href="https://instagram.com/explyra" target="_blank" rel="noopener noreferrer"><i
+                    <a href="https://instagram.com/explyra" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i
                             class="fab fa-instagram"></i></a>
-                    <a href="mailto:explyra@gmail.com"><i class="fas fa-envelope"></i></a>
+                    <a href="mailto:explyra@gmail.com" aria-label="Email Us"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
@@ -6141,7 +6150,7 @@
                             <div class="dash-dot" style="background:#FFBE2E"></div>
                             <div class="dash-dot" style="background:#28C840"></div>
                             <span class="dash-title">Expense Dashboard — March 2026</span>
-                            <button class="add-expense-btn" id="addExpense" title="Quick Add Expense"
+                            <button class="add-expense-btn" id="addExpense" title="Quick Add Expense" aria-label="Quick Add Expense"
                                 style="margin-left:auto; color:var(--ink3); font-size:1.1rem; transition:all 0.3s;">
                                 <i class="fas fa-plus-circle"></i>
                             </button>
@@ -6802,7 +6811,7 @@
                     <h2 class="founder-name" style="font-size: 1.4rem; margin-bottom: 0.5rem;">Explyra Suite
                         <em>Trailer</em>
                     </h2>
-                    <div class="video-thumbnail" id="videoTrigger">
+                    <div class="video-thumbnail" id="videoTrigger" role="button" tabindex="0" aria-label="Play Explyra Suite Trailer">
                         <img src="https://img.youtube.com/vi/7Ti-C171jyw/maxresdefault.jpg" alt="Explyra Suite Trailer"
                             loading="lazy" decoding="async" fetchpriority="low">
                         <div class="play-overlay">
@@ -7269,10 +7278,17 @@
         const vOverlay = document.getElementById('videoOverlay');
 
         if (vTrigger) {
-            vTrigger.addEventListener('click', () => {
+            const openVideo = () => {
                 vModal.classList.add('active');
                 vIframe.src = "https://www.youtube-nocookie.com/embed/7Ti-C171jyw?si=u6VmlzFJlZCGs3uP&autoplay=1";
                 document.body.style.overflow = 'hidden';
+            };
+            vTrigger.addEventListener('click', openVideo);
+            vTrigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openVideo();
+                }
             });
         }
 
