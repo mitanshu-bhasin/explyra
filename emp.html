@@ -1721,7 +1721,7 @@
                         <p class="text-[10px] text-slate-400">Comments & Status Updates</p>
                     </div>
                 </div>
-                <button onclick="closeTaskDetail()" class="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center">
+                <button aria-label="Close task details" onclick="closeTaskDetail()" class="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -3310,7 +3310,7 @@
                             </div>
                             <span style="font-size:11px;font-weight:700;color:#111">Recent Activity</span>
                         </div>
-                        <button onclick="this.closest('.vercel-card').querySelector('.feed-body').classList.toggle('hidden')" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:11px;font-weight:600"><i class="fa-solid fa-chevron-down"></i></button>
+                        <button aria-label="Toggle Recent Activity" onclick="this.closest('.vercel-card').querySelector('.feed-body').classList.toggle('hidden')" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:11px;font-weight:600"><i class="fa-solid fa-chevron-down"></i></button>
                     </div>
                     <div class="feed-body" style="padding:10px 18px">
                         <div id="emp-activity-list"></div>

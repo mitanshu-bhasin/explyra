@@ -2084,7 +2084,7 @@
                 </div>
                 <button class="tool-btn success" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> <span
                         data-translate="share">Share</span></button>
-                <button class="tool-btn danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></button>
+                <button aria-label="Log out" class="tool-btn danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
 
@@ -3954,8 +3954,8 @@
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
                                 <div style="font-size:0.75rem; color:#666; max-width:60%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${inv.items ? inv.items.join(', ') : 'Items...'}</div>
                                 <div style="display:flex; gap:8px;">
-                                    <button class="list-action-btn edit" onclick="loadInvoiceForEdit('${inv.id}', '${inv.no}')"><i class="fas fa-edit"></i></button>
-                                    <button class="list-action-btn del" onclick="deleteInvoice('${inv.id}')"><i class="fas fa-trash"></i></button>
+                                    <button aria-label="Edit invoice" class="list-action-btn edit" onclick="loadInvoiceForEdit('${inv.id}', '${inv.no}')"><i class="fas fa-edit"></i></button>
+                                    <button aria-label="Delete invoice" class="list-action-btn del" onclick="deleteInvoice('${inv.id}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
                         `;
@@ -3996,7 +3996,7 @@
                 div.innerHTML = `
                     <span><strong>${item.name}</strong> (₹${item.rate})</span>
                     <div style="display:flex; gap:10px;">
-                        <button class="list-action-btn del" onclick="deleteInventoryItem('${item.id}')"><i class="fas fa-trash"></i></button>
+                        <button aria-label="Delete item" class="list-action-btn del" onclick="deleteInventoryItem('${item.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 list.appendChild(div);
