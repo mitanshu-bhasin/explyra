@@ -333,6 +333,7 @@
                     <div class="relative w-full">
                         <input type="password" id="password" class="ms-input-line pr-10" placeholder="Password" required autocomplete="current-password">
                         <button type="button" onclick="togglePasswordVisibility('password', this)"
+                            aria-label="Show password"
                             style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#666;padding:4px;">
                             <i class="fa-solid fa-eye text-sm"></i>
                         </button>
@@ -729,9 +730,11 @@
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.setAttribute('aria-label', 'Hide password');
             } else {
                 input.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.setAttribute('aria-label', 'Show password');
             }
         };
     </script>
