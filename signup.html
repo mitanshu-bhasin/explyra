@@ -224,7 +224,7 @@
 </head>
 
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon dark:hidden"></i>
         <i class="fa-solid fa-sun hidden dark:block"></i>
     </button>
@@ -291,7 +291,7 @@
                 <form id="signupForm" onsubmit="handleFinalSignup(event)">
                     <div class="relative w-full">
                         <input type="password" id="password" class="ms-input-line dark:text-white pr-10" placeholder="Create Password" required>
-                        <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
+                        <button type="button" aria-label="Show password" onclick="togglePasswordVisibility('password', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
                             <i class="fa-solid fa-eye text-sm"></i>
                         </button>
                     </div>
@@ -310,7 +310,7 @@
 
                     <div class="relative w-full">
                         <input type="password" id="confirmPassword" class="ms-input-line dark:text-white pr-10" placeholder="Confirm Password" required>
-                        <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
+                        <button type="button" aria-label="Show password" onclick="togglePasswordVisibility('confirmPassword', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
                             <i class="fa-solid fa-eye text-sm"></i>
                         </button>
                     </div>
@@ -363,9 +363,11 @@
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.setAttribute('aria-label', 'Hide password');
             } else {
                 input.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.setAttribute('aria-label', 'Show password');
             }
         };
 
