@@ -1,0 +1,3 @@
+## 2024-05-19 - Dynamic ARIA Labels on Stateful Icon Buttons
+**Learning:** Adding static `aria-label`s to icon-only buttons (like password visibility toggles) is helpful, but stateful buttons need dynamic `aria-label`s. If an icon changes to indicate a different action (e.g., from "eye" to "eye-slash"), the screen reader context must also update to reflect the new state (e.g., from "Show password" to "Hide password").
+**Action:** Always ensure JavaScript toggles that update the visual icon of a stateful button also update the corresponding `aria-label` to provide accurate context to assistive technologies.
