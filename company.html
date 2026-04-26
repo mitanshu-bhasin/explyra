@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta property="og:site_name" content="Explyra" />
@@ -18,175 +18,341 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Workspace — Explyra Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Set up your company workspace on Explyra Suite. Create your team, manage expenses, and scale operations.">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png">
+    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6724b2">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/explyra-tokens.css">
+    <link rel="stylesheet" href="css/explyra-base.css">
+
+    <!-- Tenant Routing -->
     <script src="js/tenant-routing.js"></script>
-    <link rel="stylesheet" href="assets/css/global-theme.css">
+
+    <!-- Theme Init (flash prevention) -->
+    <script>
+        (function () {
+            const saved = localStorage.getItem('explyra-theme');
+            const preferred = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', preferred);
+        })();
+    </script>
 
     <style>
-        * { box-sizing: border-box; }
-
+        /* ═══════════════════════════════════════════
+           CREATE WORKSPACE — Page Styles
+        ═══════════════════════════════════════════ */
         body {
-            background: #fff;
-            color: #1b1b1b;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             padding: 24px;
-            margin: 0;
-            overflow-y: auto;
-        }
-        body.dark { background: #000; color: #fff; }
-
-        .ms-auth-card {
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            padding: 44px;
-            width: 100%;
-            max-width: 520px;
-            position: relative;
-            z-index: 10;
-            margin-top: 5vh;
-            margin-bottom: 24px;
-        }
-        body.dark .ms-auth-card { background: #111; border: 1px solid #333; }
-
-        /* Logo — fixed height, image constrained */
-        .ms-logo {
-            height: 32px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-        }
-        .ms-logo img {
-            height: 100%;
-            width: auto;
-            max-width: 200px;
-            object-fit: contain;
         }
 
-        .ms-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
-        .ms-subtitle { font-size: 15px; margin-bottom: 24px; color: #475569; }
-        body.dark .ms-subtitle { color: #94a3b8; }
-
-        .ms-input-line {
-            width: 100%;
-            border: none;
-            border-bottom: 1px solid #666;
-            padding: 10px 0;
-            outline: none;
-            font-size: 15px;
-            margin-bottom: 20px;
-            background: transparent;
-            border-radius: 0;
-            transition: border-bottom-color 0.2s;
-            color: inherit;
+        /* ─── Decorative Background ─── */
+        .hero-pattern {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(var(--blue) 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: -1;
         }
-        .ms-input-line:focus { border-bottom-color: #0067b8; }
-        body.dark .ms-input-line { color: #fff; }
 
-        select.ms-input-line { cursor: pointer; }
+        [data-theme="dark"] .hero-pattern { opacity: 0.025; }
 
-        .ms-btn-next {
-            background: #0067b8;
-            color: #fff;
-            padding: 8px 36px;
-            font-size: 15px;
-            min-width: 108px;
-            border: none;
-            cursor: pointer;
-            float: right;
-            transition: opacity 0.2s;
+        .blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: var(--blue-g);
+            filter: blur(120px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: blobFloat 20s infinite alternate;
         }
-        .ms-btn-next:hover { opacity: 0.9; }
-        .ms-btn-next:disabled { opacity: 0.6; cursor: not-allowed; }
+        .blob-1 { top: -15%; left: -10%; }
+        .blob-2 { bottom: -15%; right: -10%; background: linear-gradient(135deg, var(--blue-g), var(--teal-g)); }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0 24px;
+        @keyframes blobFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 30px) scale(1.08); }
         }
-        @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
-        .full { grid-column: 1 / -1; }
 
-        .ms-footer-text { font-size: 13px; margin-top: 24px; }
-        .ms-business-footer { margin-top: auto; padding: 24px 0; text-align: center; font-size: 12px; color: #666; }
-        body.dark .ms-business-footer { color: #999; }
-
-        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; }
-        .toast {
-            padding: 12px 20px;
-            background: #333;
-            color: #fff;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease;
-        }
-        .toast.error { background: #c0392b; }
-        .toast.success { background: #107c10; }
-        @keyframes slideUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
-
+        /* ─── Theme Toggle ─── */
         .theme-toggle {
             position: fixed;
             top: 24px;
             right: 24px;
-            background: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+            background: var(--bg2);
+            cursor: pointer;
+            transition: all var(--t);
+            border: 1px solid var(--bdr);
+            box-shadow: var(--s1);
+            z-index: 100;
+            font-size: 16px;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: var(--s2);
+            background: var(--bg3);
+        }
+
+        /* ─── Workspace Card ─── */
+        .workspace-card {
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg2);
+            border: 1px solid var(--bdr);
+            border-radius: 24px;
+            padding: 48px 44px;
+            box-shadow: var(--s3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Logo ─── */
+        .brand-strip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+        }
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        /* ─── Header ─── */
+        .ws-header { margin-bottom: 32px; }
+        .ws-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        .ws-desc {
+            font-size: 0.95rem;
+            color: var(--ink3);
+            line-height: 1.5;
+        }
+
+        /* ─── Form ─── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 20px;
+        }
+        .full { grid-column: 1 / -1; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--ink4);
+            margin-bottom: 8px;
+            letter-spacing: 0.06em;
+        }
+
+        .input-wrap { position: relative; }
+        .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink4);
+            font-size: 0.9rem;
+            transition: color var(--t);
+            pointer-events: none;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 13px 14px 13px 40px;
+            background: var(--bg);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: var(--ink);
+            transition: all var(--t);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        select.input-field {
+            cursor: pointer;
+            padding-right: 36px;
+        }
+        .input-field::placeholder { color: var(--ink4); }
+
+        .input-field:focus {
+            background: var(--bg2);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px var(--blue-g);
+        }
+        .input-field:focus ~ i,
+        .input-field:focus + i { color: var(--blue); }
+
+        /* ─── Submit Button ─── */
+        .btn-create {
+            width: 100%;
+            padding: 15px;
+            background: var(--blue);
+            color: white;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all var(--t);
+            box-shadow: 0 8px 24px var(--blue-b);
             border: none;
             cursor: pointer;
-            color: #666;
-            font-size: 20px;
-            z-index: 100;
+            margin-top: 8px;
         }
-        body.dark .theme-toggle { color: #aaa; }
+        .btn-create:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 12px 32px var(--blue-b);
+        }
+        .btn-create:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-        /* Skeleton shimmer */
+        .form-hint {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--ink4);
+            margin-top: 28px;
+        }
+
+        /* ─── Skeleton Shimmer ─── */
         @keyframes shimmer {
             0% { background-position: -500px 0; }
             100% { background-position: 500px 0; }
         }
         .skeleton-bar {
-            border-radius: 6px;
-            background: linear-gradient(90deg, #e8eaed 25%, #f4f5f7 50%, #e8eaed 75%);
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
             background-size: 1000px 100%;
             animation: shimmer 1.4s infinite linear;
             margin-bottom: 18px;
         }
-        body.dark .skeleton-bar {
-            background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
-            background-size: 1000px 100%;
-        }
         #auth-skeleton {
             position: absolute;
             inset: 0;
-            padding: 44px;
+            padding: 48px 44px;
             z-index: 15;
             display: flex;
             flex-direction: column;
-            background: #fff;
+            background: var(--bg2);
+            border-radius: 24px;
         }
-        body.dark #auth-skeleton { background: #111; }
 
-        .flex { display: flex; }
-        .justify-end { justify-content: flex-end; }
-        .mt-4 { margin-top: 1rem; }
-        .text-center { text-align: center; }
-        .text-xs { font-size: 12px; }
-        .opacity-60 { opacity: 0.6; }
-        .clearfix::after { content: ''; display: table; clear: both; }
+        /* ─── Toast ─── */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: 14px 22px;
+            background: var(--bg4);
+            color: var(--ink);
+            border-radius: 14px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            box-shadow: var(--s3);
+            border: 1px solid var(--bdr);
+            animation: toastSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(12px);
+        }
+        .toast.error { background: var(--rose-g); color: var(--rose); border-color: var(--rose-b); }
+        .toast.success { background: var(--teal-g); color: var(--teal); border-color: var(--teal-b); }
+
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ─── Footer ─── */
+        .ws-footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--ink4);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 560px) {
+            .workspace-card {
+                padding: 32px 24px;
+                border-radius: 20px;
+            }
+            .form-grid { grid-template-columns: 1fr; }
+            .ws-title { font-size: 1.45rem; }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Decorative -->
+    <div class="hero-pattern"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Theme Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon"></i>
     </button>
 
-    <div class="ms-auth-card">
+    <!-- Main Card -->
+    <div class="workspace-card">
         <!-- Skeleton shimmer — shown while Firebase verifies access -->
         <div id="auth-skeleton">
             <div class="skeleton-bar" style="width:120px;height:10px;margin-bottom:28px;opacity:.5;"></div>
@@ -194,68 +360,102 @@
             <div class="skeleton-bar" style="width:55%;height:14px;margin-bottom:32px;opacity:.7;"></div>
             <div class="skeleton-bar" style="width:100%;height:18px;"></div>
             <div class="skeleton-bar" style="width:100%;height:18px;"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                 <div class="skeleton-bar" style="height:18px;margin-bottom:0;"></div>
                 <div class="skeleton-bar" style="height:18px;margin-bottom:0;"></div>
                 <div class="skeleton-bar" style="height:18px;margin-bottom:0;"></div>
                 <div class="skeleton-bar" style="height:18px;margin-bottom:0;"></div>
             </div>
-            <div class="skeleton-bar" style="width:35%;height:36px;margin-top:40px;align-self:flex-end;"></div>
+            <div class="skeleton-bar" style="width:100%;height:48px;margin-top:40px;border-radius:14px;"></div>
         </div>
 
-        <div class="ms-logo">
-            <img src="assets/images/explyra_logo.png" alt="Explyra">
+        <!-- Brand -->
+        <div class="brand-strip">
+            <div class="brand-icon">
+                <img src="assets/images/explyra_logo.png" alt="Explyra">
+            </div>
+            <span class="brand-name">Explyra</span>
         </div>
-        <h1 class="ms-title">Create your workspace</h1>
-        <p class="ms-subtitle">Set up your company profile to start using Explyra Suite.</p>
 
+        <!-- Header -->
+        <div class="ws-header">
+            <h1 class="ws-title">Create your workspace</h1>
+            <p class="ws-desc">Set up your company profile to start using Explyra Suite.</p>
+        </div>
+
+        <!-- Form -->
         <form id="companyForm">
             <div class="form-grid">
-                <div class="full">
-                    <input type="text" id="cmpName" class="ms-input-line" required placeholder="Company Name *" autocomplete="organization">
+                <div class="full form-group">
+                    <label class="form-label" for="cmpName">Company Name</label>
+                    <div class="input-wrap">
+                        <input type="text" id="cmpName" class="input-field" required placeholder="Your company name" autocomplete="organization">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
                 </div>
-                <div class="full">
-                    <input type="text" id="cmpDomain" class="ms-input-line" placeholder="Company Domain (optional)" autocomplete="url">
+                <div class="full form-group">
+                    <label class="form-label" for="cmpDomain">Company Domain</label>
+                    <div class="input-wrap">
+                        <input type="text" id="cmpDomain" class="input-field" placeholder="yourcompany.com (optional)" autocomplete="url">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
                 </div>
-                <div>
-                    <select id="cmpIndustry" class="ms-input-line" required>
-                        <option value="" disabled selected>Industry *</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Education">Education</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Logistics">Logistics</option>
-                        <option value="Other">Other</option>
-                    </select>
+                <div class="form-group">
+                    <label class="form-label" for="cmpIndustry">Industry</label>
+                    <div class="input-wrap">
+                        <select id="cmpIndustry" class="input-field" required>
+                            <option value="" disabled selected>Select industry</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
                 </div>
-                <div>
-                    <select id="cmpSize" class="ms-input-line" required>
-                        <option value="" disabled selected>Company Size *</option>
-                        <option value="1-10">1 – 10</option>
-                        <option value="11-50">11 – 50</option>
-                        <option value="51-200">51 – 200</option>
-                        <option value="201-500">201 – 500</option>
-                        <option value="500+">500+</option>
-                    </select>
+                <div class="form-group">
+                    <label class="form-label" for="cmpSize">Company Size</label>
+                    <div class="input-wrap">
+                        <select id="cmpSize" class="input-field" required>
+                            <option value="" disabled selected>Select size</option>
+                            <option value="1-10">1 – 10</option>
+                            <option value="11-50">11 – 50</option>
+                            <option value="51-200">51 – 200</option>
+                            <option value="201-500">201 – 500</option>
+                            <option value="500+">500+</option>
+                        </select>
+                        <i class="fa-solid fa-users"></i>
+                    </div>
                 </div>
-                <div>
-                    <input type="text" id="cmpCountry" class="ms-input-line" required placeholder="Country *">
+                <div class="form-group">
+                    <label class="form-label" for="cmpCountry">Country</label>
+                    <div class="input-wrap">
+                        <input type="text" id="cmpCountry" class="input-field" required placeholder="India">
+                        <i class="fa-solid fa-earth-americas"></i>
+                    </div>
                 </div>
-                <div>
-                    <input type="url" id="cmpLogo" class="ms-input-line" placeholder="Logo URL (optional)">
+                <div class="form-group">
+                    <label class="form-label" for="cmpLogo">Logo URL</label>
+                    <div class="input-wrap">
+                        <input type="url" id="cmpLogo" class="input-field" placeholder="https://… (optional)">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="clearfix mt-4">
-                <button type="submit" class="ms-btn-next" id="submitBtn">Create Workspace</button>
-            </div>
-            <p class="ms-footer-text text-center text-xs opacity-60" style="margin-top:48px;">You can update these settings anytime from your admin panel.</p>
+            <button type="submit" class="btn-create" id="submitBtn">
+                <i class="fa-solid fa-rocket"></i>
+                Create Workspace
+            </button>
+            <p class="form-hint">You can update these settings anytime from your admin panel.</p>
         </form>
     </div>
 
-    <div class="ms-business-footer">
+    <div class="ws-footer">
         © 2026 Explyra Suite. All rights reserved.
     </div>
 
@@ -263,15 +463,24 @@
 
     <script src="js/env.js"></script>
     <script>
-        // Theme — uses body.dark (consistent with login.html)
-        const savedTheme = localStorage.getItem('theme') || localStorage.getItem('explyra-theme') || 'light';
-        if (savedTheme === 'dark') document.body.classList.add('dark');
-
+        // ── Theme — uses data-theme attribute (unified) ──
         window.toggleTheme = () => {
-            document.body.classList.toggle('dark');
-            const isDark = document.body.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('explyra-theme', next);
+            // Update toggle icon
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = next === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
         };
+
+        // Set initial icon
+        (function() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        })();
     </script>
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -312,21 +521,18 @@
         // ── Auth guard ──
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                // Not logged in — go to signup
                 window.location.replace('signup.html');
                 return;
             }
             try {
                 const userSnap = await getDoc(doc(db, "users", user.uid));
                 if (userSnap.exists() && userSnap.data().companyId) {
-                    // Already has a company — send to dashboard
                     window.location.replace('admin.html');
                     return;
                 }
             } catch (err) {
                 window.showToast('Could not verify account: ' + err.message, 'error');
             }
-            // User authenticated, no company yet — show the form
             hideSkeleton();
         });
 
@@ -369,7 +575,7 @@
             } catch (error) {
                 window.showToast(error.message, 'error');
                 btn.disabled = false;
-                btn.innerHTML = 'Create Workspace';
+                btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Create Workspace';
             }
         });
     </script>

@@ -1,10 +1,14 @@
 /**
- * Explyra Build Script v2.0
+ * Explyra Build Script v3.0
  * ─────────────────────────────────────────────────────────────────
  *  1. Syncs js/env.js from .env (injects Gemini key etc.)
- *  2. Copies source → www/ (excluding dev-only dirs)
+ *  2. Copies source → www/ (excluding dev-only dirs + sub-project node_modules)
  *  3. Applies mobile-specific patches to www/ files
  *  4. Reports a file+size summary
+ *
+ *  FIX (v3): Recursively prunes node_modules inside sub-project folders
+ *            (shop/, will/, retired/, skill/, email-app/, etc.) that were
+ *            previously getting copied and bloating the build.
  * ─────────────────────────────────────────────────────────────────
  */
 
@@ -79,23 +83,54 @@ function syncEnvJs(env) {
 // ─────────────────────────────────────────────
 //  2.  Copy source → www/
 // ─────────────────────────────────────────────
-const IGNORE = new Set([
+
+// Top-level dirs to skip entirely (never copy)
+const IGNORE_ROOT = new Set([
     'node_modules', '.git', 'android', 'www', 'functions',
     '.github', '.gemini', '.firebase', '.vscode', '.idea', '.venv',
+    '.wrangler', '.sixth',
     'dist', 'build', 'out', '__pycache__',
-    'articles', // articles is a separate server app
-    '.env', 'build.js', 'capacitor.config.ts'
+    'articles',           // separate server app
+    'minify_xx',          // old minification artifacts
+    'mobile_exp',         // mobile experiments
+    'msix', 'msix-storeclean',  // MSIX packaging artifacts
 ]);
 
-function copyDir(src, dest) {
+// Directory names to prune at ANY depth (node_modules inside sub-projects)
+const PRUNE_ALWAYS = new Set([
+    'node_modules', '.git', '.wrangler', '.next', '.firebase',
+    '__pycache__', '.venv', 'dist', 'build', '.cache',
+]);
+
+// Root-level files to skip
+const IGNORE_ROOT_FILES = new Set([
+    '.env', 'build.js', 'capacitor.config.ts',
+    'package-lock.json', 'Expense Tracker.code-workspace',
+]);
+
+function copyDir(src, dest, depth = 0) {
     if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+
     for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-        if (IGNORE.has(entry.name)) continue;
-        const s = path.join(src, entry.name);
-        const d = path.join(dest, entry.name);
+        const name = entry.name;
+        const s = path.join(src, name);
+        const d = path.join(dest, name);
+
         if (entry.isDirectory()) {
-            copyDir(s, d);
+            // At root level, skip entire folders in IGNORE_ROOT
+            if (depth === 0 && IGNORE_ROOT.has(name)) continue;
+            // At ANY depth, prune dangerous/heavy dirs
+            if (PRUNE_ALWAYS.has(name)) continue;
+            // Skip hidden dirs (starting with .)
+            if (name.startsWith('.')) continue;
+
+            copyDir(s, d, depth + 1);
         } else {
+            // At root level, skip certain files
+            if (depth === 0 && IGNORE_ROOT_FILES.has(name)) continue;
+            if (depth === 0 && name.startsWith('.')) continue;
+            if (depth === 0 && name.endsWith('.log')) continue;
+
             fs.copyFileSync(s, d);
         }
     }
@@ -107,8 +142,8 @@ function buildWww() {
             fs.rmSync(WWW, { recursive: true, force: true });
         }
         fs.mkdirSync(WWW, { recursive: true });
-        copyDir(ROOT, WWW);
-        console.log('  ✓ Source copied to www/');
+        copyDir(ROOT, WWW, 0);
+        console.log('  ✓ Source copied to www/ (node_modules pruned at all depths)');
     } catch (err) {
         if (err.code === 'ENOSPC') {
             console.warn('  ⚠ ENOSPC: Not enough disk space to build www/. Skipping copy.');
@@ -155,6 +190,10 @@ function applyMobilePatches() {
 //  4.  Summary
 // ─────────────────────────────────────────────
 function printSummary() {
+    if (!fs.existsSync(WWW)) {
+        console.log('\n  ⚠ www/ does not exist — skipping summary');
+        return;
+    }
     let total = 0, count = 0;
     function walk(dir) {
         for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -164,14 +203,16 @@ function printSummary() {
         }
     }
     walk(WWW);
+    const mb = (total / (1024 * 1024)).toFixed(2);
     const kb = (total / 1024).toFixed(1);
-    console.log(`\n  📦 www/ — ${count} files, ${kb} KB total`);
+    const sizeStr = total > 1024 * 1024 ? `${mb} MB` : `${kb} KB`;
+    console.log(`\n  📦 www/ — ${count} files, ${sizeStr} total`);
 }
 
 // ─────────────────────────────────────────────
 //  Run
 // ─────────────────────────────────────────────
-console.log('\n🔨 Explyra Build v2.0\n');
+console.log('\n🔨 Explyra Build v3.0\n');
 
 const env = parseEnv(ENVF);
 syncEnvJs(env);
