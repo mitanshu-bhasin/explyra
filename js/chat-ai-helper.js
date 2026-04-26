@@ -88,7 +88,8 @@ export async function handleAIChatRequest(db, userData, companyId, currentChatCo
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: "Please analyze the situation and give your advice or reply." }
                 ],
-                temperature: 0.7
+                temperature: 0.7,
+                max_tokens: 4096
             })
         });
 

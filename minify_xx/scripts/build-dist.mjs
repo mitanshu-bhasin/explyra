@@ -19,7 +19,19 @@ const SKIP_DIRS = new Set([
   "www",
   ".firebase",
   ".wrangler",
+  ".sixth",
+  ".venv",
+  ".gemini",
+  ".github",
+  ".vscode",
+  ".idea",
   "android",
+  "articles",
+  "minify_xx",
+  "mobile_exp",
+  "msix",
+  "msix-storeclean",
+  "__pycache__",
 ]);
 
 const SKIP_ROOT_FILES = new Set([
@@ -28,7 +40,11 @@ const SKIP_ROOT_FILES = new Set([
   "Expense Tracker.code-workspace",
 ]);
 
-const PRUNE_DIR_NAMES = new Set(["node_modules", ".git", ".wrangler", ".next"]);
+const PRUNE_DIR_NAMES = new Set([
+  "node_modules", ".git", ".wrangler", ".next",
+  ".firebase", ".cache", ".venv", "__pycache__",
+  "dist", "build",
+]);
 
 function shouldSkipRootFile(name) {
   if (name.startsWith(".")) return true;
@@ -44,6 +60,7 @@ function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     if (SKIP_WHILE_COPYING.has(entry.name)) continue;
+    if (entry.name.startsWith('.')) continue; // Skip hidden dirs/files in sub-projects
     const from = path.join(src, entry.name);
     const to = path.join(dest, entry.name);
     if (entry.isDirectory()) {

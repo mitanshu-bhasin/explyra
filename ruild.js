@@ -58,7 +58,7 @@ async function processDir(currentPath, baseOutputDir = outputDir, baseInputDir =
     const items = fs.readdirSync(currentPath);
 
     for (const item of items) {
-        if (currentPath === inputDir && blockedNames.has(item)) continue;
+        if (blockedNames.has(item)) continue;
 
         const fullPath = path.join(currentPath, item);
         const relPath = path.relative(baseInputDir, fullPath);

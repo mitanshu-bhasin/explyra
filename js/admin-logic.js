@@ -1272,8 +1272,13 @@ onAuthStateChanged(auth, async (user) => {
             }
         } catch (error) {
             console.error("Auth Error:", error);
-            showToast('Login Error: ' + error.message, 'error');
-            await signOut(auth);
+            if (typeof window.showToast === 'function') {
+                showToast('Dashboard Initialization Error: ' + error.message, 'error');
+            } else {
+                alert('Dashboard Initialization Error: ' + error.message);
+            }
+            // Do not automatically sign out to prevent redirect loops.
+            // Let the user stay on the page and see the error.
         }
     } else {
         showLogin();
