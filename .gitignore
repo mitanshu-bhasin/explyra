@@ -58,4 +58,3 @@ __pycache__/
 .vercel
 .env*.local
 mobile_exp/
-mobile_exp
