@@ -11,8 +11,8 @@
     "lint": "eslint src/**/*.js"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0",
-    "vitest": "^0.34.0",
+    "wrangler": "^4.85.0",
+    "vitest": "^4.1.5",
     "eslint": "^8.45.0"
   },
   "dependencies": {}
