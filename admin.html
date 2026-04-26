@@ -2175,10 +2175,130 @@
         </div>
     </div>
 
-    <!-- Auth Screen Wrapper -->
-    <div id="explyra-global-loader" class="fixed inset-0 z-[9999] bg-white dark:bg-black flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="w-16 h-16 border-4 border-slate-200 dark:border-slate-800 border-t-[#0067b8] rounded-full animate-spin mb-4"></div>
-        <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Verifying session...</p>
+    <!-- Auth Screen Wrapper — Premium Animated Loader -->
+    <div id="explyra-global-loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500 overflow-hidden" style="background:linear-gradient(135deg,#f8f7ff 0%,#ede9f9 50%,#f0eef8 100%);">
+        <!-- Dark mode background override -->
+        <style>
+            .dark #explyra-global-loader{background:linear-gradient(135deg,#0a0a14 0%,#110e1d 50%,#0d0b16 100%)!important}
+            /* Floating particles */
+            .loader-particle{position:absolute;border-radius:50%;opacity:0;animation:loaderFloat 4s ease-in-out infinite}
+            @keyframes loaderFloat{0%{opacity:0;transform:translateY(40px) scale(.5)}30%{opacity:.6}70%{opacity:.4}100%{opacity:0;transform:translateY(-60px) scale(1.2)}}
+            /* Logo pulse ring */
+            .loader-logo-ring{animation:loaderRingPulse 2s ease-in-out infinite}
+            @keyframes loaderRingPulse{0%,100%{box-shadow:0 0 0 0 rgba(103,36,178,.3),0 0 20px rgba(103,36,178,.15)}50%{box-shadow:0 0 0 18px rgba(103,36,178,0),0 0 40px rgba(103,36,178,.1)}}
+            /* Progress bar shimmer */
+            .loader-progress-shimmer{position:relative;overflow:hidden}
+            .loader-progress-shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:progressShimmer 1.5s ease-in-out infinite}
+            @keyframes progressShimmer{0%{left:-100%}100%{left:200%}}
+            /* Status text fade */
+            .loader-status-text{animation:statusFade .5s ease-in-out}
+            @keyframes statusFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+            /* Skeleton preview cards */
+            .loader-skeleton{background:linear-gradient(90deg,#e8e4f0 25%,#ddd6ec 50%,#e8e4f0 75%);background-size:200% 100%;animation:skeletonMove 1.8s ease-in-out infinite}
+            .dark .loader-skeleton{background:linear-gradient(90deg,#1a1625 25%,#231d33 50%,#1a1625 75%);background-size:200% 100%}
+            @keyframes skeletonMove{0%{background-position:200% 0}100%{background-position:-200% 0}}
+            /* Breathing dot */
+            .loader-dot{animation:dotBreathe 1.4s ease-in-out infinite}
+            .loader-dot:nth-child(2){animation-delay:.2s}
+            .loader-dot:nth-child(3){animation-delay:.4s}
+            @keyframes dotBreathe{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+        </style>
+
+        <!-- Floating particles background -->
+        <div class="absolute inset-0 pointer-events-none" id="loader-particles"></div>
+
+        <!-- Main content -->
+        <div class="relative z-10 flex flex-col items-center max-w-sm w-full px-6">
+            <!-- Logo with pulse ring -->
+            <div class="relative mb-8">
+                <div class="w-20 h-20 rounded-2xl bg-white dark:bg-slate-900 flex items-center justify-center shadow-xl border border-purple-100 dark:border-purple-900/40 loader-logo-ring">
+                    <img src="assets/images/explyra_logo.png" alt="Explyra" class="w-12 h-12 object-contain" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 items-center justify-center text-white font-black text-xl hidden">E</div>
+                </div>
+                <!-- Spinning arc -->
+                <svg class="absolute -inset-3 w-[calc(100%+24px)] h-[calc(100%+24px)] animate-spin" style="animation-duration:3s" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="url(#loaderGrad)" stroke-width="2.5" stroke-dasharray="72 216" stroke-linecap="round"/>
+                    <defs><linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6724b2"/><stop offset="100%" stop-color="#a855f7" stop-opacity="0.2"/></linearGradient></defs>
+                </svg>
+            </div>
+
+            <!-- Brand text -->
+            <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-1">Explyra</h2>
+
+            <!-- Animated status message -->
+            <div class="h-6 flex items-center justify-center mb-6">
+                <p id="loader-status-msg" class="text-sm text-slate-500 dark:text-slate-400 font-medium loader-status-text flex items-center gap-1.5">
+                    Connecting to server
+                    <span class="flex gap-0.5 ml-1"><span class="w-1 h-1 rounded-full bg-purple-500 loader-dot"></span><span class="w-1 h-1 rounded-full bg-purple-500 loader-dot"></span><span class="w-1 h-1 rounded-full bg-purple-500 loader-dot"></span></span>
+                </p>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-full h-1.5 bg-slate-200/70 dark:bg-slate-800 rounded-full overflow-hidden mb-8">
+                <div id="loader-progress-bar" class="h-full rounded-full bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-500 loader-progress-shimmer transition-all duration-700 ease-out" style="width:5%"></div>
+            </div>
+
+            <!-- Skeleton preview hint -->
+            <div class="w-full space-y-3 opacity-60">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg loader-skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="h-2.5 rounded-full loader-skeleton w-3/4"></div>
+                        <div class="h-2 rounded-full loader-skeleton w-1/2"></div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg loader-skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="h-2.5 rounded-full loader-skeleton w-2/3"></div>
+                        <div class="h-2 rounded-full loader-skeleton w-2/5"></div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg loader-skeleton shrink-0"></div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="h-2.5 rounded-full loader-skeleton w-4/5"></div>
+                        <div class="h-2 rounded-full loader-skeleton w-1/3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loader animation script -->
+        <script>
+        (function(){
+            // Floating particles
+            const pc=document.getElementById('loader-particles');
+            if(pc){for(let i=0;i<8;i++){const p=document.createElement('div');p.className='loader-particle';const s=Math.random()*6+3;p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${Math.random()>.5?'rgba(103,36,178,.25)':'rgba(168,85,247,.2)'};animation-delay:${Math.random()*4}s;animation-duration:${3+Math.random()*3}s`;pc.appendChild(p)}}
+
+            // Rotating status messages + progress
+            const msgs=[
+                {t:'Connecting to server',p:12},
+                {t:'Verifying credentials',p:30},
+                {t:'Authenticating session',p:50},
+                {t:'Loading workspace data',p:70},
+                {t:'Preparing your dashboard',p:85},
+                {t:'Almost ready',p:95}
+            ];
+            const el=document.getElementById('loader-status-msg');
+            const bar=document.getElementById('loader-progress-bar');
+            let idx=0;
+            function nextMsg(){
+                if(!el||!bar)return;
+                idx=(idx+1)%msgs.length;
+                if(idx===0)idx=1;// don't loop back to first
+                const dots='<span class="flex gap-0.5 ml-1"><span class="w-1 h-1 rounded-full bg-purple-500 loader-dot"></span><span class="w-1 h-1 rounded-full bg-purple-500 loader-dot"></span><span class="w-1 h-1 rounded-full bg-purple-500 loader-dot"></span></span>';
+                el.innerHTML=msgs[idx].t+dots;
+                el.classList.remove('loader-status-text');
+                void el.offsetWidth;
+                el.classList.add('loader-status-text');
+                bar.style.width=msgs[idx].p+'%';
+            }
+            setInterval(nextMsg,2200);
+            // Initial progress bump
+            setTimeout(()=>{if(bar)bar.style.width='12%'},400);
+        })();
+        </script>
     </div>
 
     <!-- Dashboard Screen -->

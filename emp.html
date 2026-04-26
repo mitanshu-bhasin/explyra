@@ -1007,9 +1007,65 @@
     class="h-screen flex flex-col overflow-hidden relative selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2"></div>
 
-    <div id="explyra-global-loader" class="fixed inset-0 z-[9999] bg-white dark:bg-black flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="w-16 h-16 border-4 border-slate-200 dark:border-slate-800 border-t-[#0067b8] rounded-full animate-spin mb-4"></div>
-        <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Loading...</p>
+    <div id="explyra-global-loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500 overflow-hidden" style="background:linear-gradient(135deg,#f7fdf9 0%,#e9f9f0 50%,#f0faf5 100%);">
+        <style>
+            .dark #explyra-global-loader{background:linear-gradient(135deg,#0a100d 0%,#0e1a12 50%,#0b120e 100%)!important}
+            .egl-particle{position:absolute;border-radius:50%;opacity:0;animation:eglFloat 4s ease-in-out infinite}
+            @keyframes eglFloat{0%{opacity:0;transform:translateY(40px) scale(.5)}30%{opacity:.6}70%{opacity:.4}100%{opacity:0;transform:translateY(-60px) scale(1.2)}}
+            .egl-ring{animation:eglPulse 2s ease-in-out infinite}
+            @keyframes eglPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.3),0 0 20px rgba(16,185,129,.15)}50%{box-shadow:0 0 0 18px rgba(16,185,129,0),0 0 40px rgba(16,185,129,.1)}}
+            .egl-shimmer{position:relative;overflow:hidden}
+            .egl-shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:eglShim 1.5s ease-in-out infinite}
+            @keyframes eglShim{0%{left:-100%}100%{left:200%}}
+            .egl-fade{animation:eglFade .5s ease-in-out}
+            @keyframes eglFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+            .egl-skel{background:linear-gradient(90deg,#e0f2e9 25%,#cce8d8 50%,#e0f2e9 75%);background-size:200% 100%;animation:eglSkel 1.8s ease-in-out infinite}
+            .dark .egl-skel{background:linear-gradient(90deg,#122018 25%,#1a2e22 50%,#122018 75%);background-size:200% 100%}
+            @keyframes eglSkel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+            .egl-dot{animation:eglDot 1.4s ease-in-out infinite}
+            .egl-dot:nth-child(2){animation-delay:.2s}
+            .egl-dot:nth-child(3){animation-delay:.4s}
+            @keyframes eglDot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+        </style>
+        <div class="absolute inset-0 pointer-events-none" id="egl-particles"></div>
+        <div class="relative z-10 flex flex-col items-center max-w-sm w-full px-6">
+            <div class="relative mb-8">
+                <div class="w-20 h-20 rounded-2xl bg-white dark:bg-slate-900 flex items-center justify-center shadow-xl border border-emerald-100 dark:border-emerald-900/40 egl-ring">
+                    <img src="assets/images/explyra_logo.png" alt="Explyra" class="w-12 h-12 object-contain" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-green-500 items-center justify-center text-white font-black text-xl hidden">E</div>
+                </div>
+                <svg class="absolute -inset-3 w-[calc(100%+24px)] h-[calc(100%+24px)] animate-spin" style="animation-duration:3s" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="url(#eglGrad)" stroke-width="2.5" stroke-dasharray="72 216" stroke-linecap="round"/>
+                    <defs><linearGradient id="eglGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#34d399" stop-opacity="0.2"/></linearGradient></defs>
+                </svg>
+            </div>
+            <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-1">Explyra</h2>
+            <div class="h-6 flex items-center justify-center mb-6">
+                <p id="egl-status" class="text-sm text-slate-500 dark:text-slate-400 font-medium egl-fade flex items-center gap-1.5">
+                    Connecting to server
+                    <span class="flex gap-0.5 ml-1"><span class="w-1 h-1 rounded-full bg-emerald-500 egl-dot"></span><span class="w-1 h-1 rounded-full bg-emerald-500 egl-dot"></span><span class="w-1 h-1 rounded-full bg-emerald-500 egl-dot"></span></span>
+                </p>
+            </div>
+            <div class="w-full h-1.5 bg-slate-200/70 dark:bg-slate-800 rounded-full overflow-hidden mb-8">
+                <div id="egl-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-600 via-green-400 to-emerald-500 egl-shimmer transition-all duration-700 ease-out" style="width:5%"></div>
+            </div>
+            <div class="w-full space-y-3 opacity-60">
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg egl-skel shrink-0"></div><div class="flex-1 space-y-1.5"><div class="h-2.5 rounded-full egl-skel w-3/4"></div><div class="h-2 rounded-full egl-skel w-1/2"></div></div></div>
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg egl-skel shrink-0"></div><div class="flex-1 space-y-1.5"><div class="h-2.5 rounded-full egl-skel w-2/3"></div><div class="h-2 rounded-full egl-skel w-2/5"></div></div></div>
+                <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg egl-skel shrink-0"></div><div class="flex-1 space-y-1.5"><div class="h-2.5 rounded-full egl-skel w-4/5"></div><div class="h-2 rounded-full egl-skel w-1/3"></div></div></div>
+            </div>
+        </div>
+        <script>
+        (function(){
+            var pc=document.getElementById('egl-particles');
+            if(pc){for(var i=0;i<8;i++){var p=document.createElement('div');p.className='egl-particle';var s=Math.random()*6+3;p.style.cssText='width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;background:'+(Math.random()>.5?'rgba(16,185,129,.25)':'rgba(52,211,153,.2)')+';animation-delay:'+Math.random()*4+'s;animation-duration:'+(3+Math.random()*3)+'s';pc.appendChild(p)}}
+            var msgs=[{t:'Connecting to server',p:12},{t:'Verifying credentials',p:30},{t:'Authenticating session',p:50},{t:'Loading workspace data',p:70},{t:'Preparing your dashboard',p:85},{t:'Almost ready',p:95}];
+            var el=document.getElementById('egl-status'),bar=document.getElementById('egl-bar'),idx=0;
+            function next(){if(!el||!bar)return;idx=(idx+1)%msgs.length;if(idx===0)idx=1;var dots='<span class="flex gap-0.5 ml-1"><span class="w-1 h-1 rounded-full bg-emerald-500 egl-dot"></span><span class="w-1 h-1 rounded-full bg-emerald-500 egl-dot"></span><span class="w-1 h-1 rounded-full bg-emerald-500 egl-dot"></span></span>';el.innerHTML=msgs[idx].t+dots;el.classList.remove('egl-fade');void el.offsetWidth;el.classList.add('egl-fade');bar.style.width=msgs[idx].p+'%'}
+            setInterval(next,2200);
+            setTimeout(function(){if(bar)bar.style.width='12%'},400);
+        })();
+        </script>
     </div>
     <script>
         // Failsafe: if emp-auth.js never hides this loader (e.g. import fails), remove it after 8s
