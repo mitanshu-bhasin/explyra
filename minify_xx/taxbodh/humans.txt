@@ -1,0 +1,11 @@
+/* TEAM */
+Manager: Mitanshu Bhasin
+Contact: mitanshubhasin@explyra.me
+Site: https://taxbodh.com
+Twitter: @taxbodh
+
+/* SITE */
+Last update: 2026/04/05
+Standards: HTML5, CSS3, JSON-LD
+Components: TailwindCSS, Lucide Icons
+Software: VS Code
