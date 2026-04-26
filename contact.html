@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta property="og:site_name" content="Explyra" />
@@ -18,17 +18,17 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Contact Explyra — Technical Sales & Enterprise Inquiries</title>
+    <title>Contact Explyra — Technical Sales &amp; Enterprise Inquiries</title>
     <meta name="description" content="Contact the Explyra team for business partnerships, enterprise licensing, or technical inquiries. We're here to help you scale your workflow.">
     <link rel="canonical" href="https://explyra.me/contact" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Contact Explyra — Technical Sales & Enterprise Inquiries" />
+    <meta property="og:title" content="Contact Explyra — Technical Sales &amp; Enterprise Inquiries" />
     <meta property="og:description"
         content="Contact the Explyra team for business partnerships, enterprise licensing, or technical inquiries.">
     <meta property="og:url" content="https://explyra.me/contact" />
     <meta property="og:image" content="https://explyra.me/assets/images/explyra_logo.png" />
-    <meta name="twitter:title" content="Contact Explyra — Technical Sales & Enterprise Inquiries" />
+    <meta name="twitter:title" content="Contact Explyra — Technical Sales &amp; Enterprise Inquiries" />
     <meta name="twitter:description"
         content="Contact the Explyra team for business partnerships, enterprise licensing, or technical inquiries.">
     <meta name="twitter:url" content="https://explyra.me/contact" />
@@ -36,140 +36,30 @@
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
+    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#6724b2">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/explyra-tokens.css">
+    <link rel="stylesheet" href="css/explyra-base.css">
+
+    <!-- Theme Init (flash prevention) -->
+    <script>
+        (function() {
+            const saved = localStorage.getItem('explyra-theme');
+            const preferred = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', preferred);
+        })();
+    </script>
+
     <style>
-        /* ═══════════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════════ */
-        :root {
-            --bg: #F8F7F4;
-            --bg2: #FFFFFF;
-            --bg3: #F1EFE9;
-            --bg4: #E9E6E0;
-            --surf: #FFFFFF;
-            --bdr: #E4E1DB;
-            --bdr2: #CCC8C0;
-            --ink: #0D1117;
-            --ink2: #2A3141;
-            --ink3: #586070;
-            --ink4: #939BAC;
-            --blue: #1546C0;
-            --blue2: #5B8AF5;
-            --blue-g: rgba(21, 70, 192, .08);
-            --blue-b: rgba(21, 70, 192, .2);
-            --teal: #047857;
-            --teal2: #34D399;
-            --teal-g: rgba(4, 120, 87, .08);
-            --teal-b: rgba(4, 120, 87, .2);
-            --amber: #B45309;
-            --amb2: #FBBF24;
-            --amb-g: rgba(180, 83, 9, .08);
-            --amb-b: rgba(180, 83, 9, .2);
-            --purp: #6D28D9;
-            --purp2: #A78BFA;
-            --purp-g: rgba(109, 40, 217, .08);
-            --purp-b: rgba(109, 40, 217, .2);
-            --rose: #BE185D;
-            --rose2: #F472B6;
-            --rose-g: rgba(190, 24, 93, .08);
-            --rose-b: rgba(190, 24, 93, .2);
-            --slate: #334155;
-            --slt2: #94A3B8;
-            --slt-g: rgba(51, 65, 85, .08);
-            --slt-b: rgba(51, 65, 85, .2);
-            --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
-            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
-            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
-            --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
-            --r: 8px;
-            --t: .2s ease;
-            --bg3-rgb: 241, 239, 233;
-        }
-
-        [data-theme="dark"] {
-            --bg: #080B14;
-            --bg2: #0E1220;
-            --bg3: #141928;
-            --bg4: #1B2235;
-            --surf: #141928;
-            --bdr: rgba(255, 255, 255, .07);
-            --bdr2: rgba(255, 255, 255, .14);
-            --ink: #EEF0F8;
-            --ink2: #C4CCDC;
-            --ink3: #8290A8;
-            --ink4: #4E5A70;
-            --blue: #5B8AF5;
-            --blue2: #93B4FF;
-            --blue-g: rgba(91, 138, 245, .12);
-            --blue-b: rgba(91, 138, 245, .25);
-            --teal: #34D399;
-            --teal2: #6EE7B7;
-            --teal-g: rgba(52, 211, 153, .10);
-            --teal-b: rgba(52, 211, 153, .22);
-            --amber: #FBBF24;
-            --amb2: #FDE68A;
-            --amb-g: rgba(251, 191, 36, .10);
-            --amb-b: rgba(251, 191, 36, .22);
-            --purp: #A78BFA;
-            --purp2: #C4B5FD;
-            --purp-g: rgba(167, 139, 250, .10);
-            --purp-b: rgba(167, 139, 250, .22);
-            --rose: #F472B6;
-            --rose2: #FBCFE8;
-            --rose-g: rgba(244, 114, 182, .10);
-            --rose-b: rgba(244, 114, 182, .22);
-            --slate: #94A3B8;
-            --slt2: #CBD5E1;
-            --slt-g: rgba(148, 163, 184, .10);
-            --slt-b: rgba(148, 163, 184, .22);
-            --s1: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 8px rgba(0, 0, 0, .25);
-            --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
-            --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
-            --s4: 0 24px 72px rgba(0, 0, 0, .6), 0 4px 16px rgba(0, 0, 0, .35);
-        }
-
-        /* ═══════════════════════════════════════════
-   RESET & BASE
-═══════════════════════════════════════════ */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
-
-        html {
-            scroll-behavior: smooth
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--ink);
-            font-family: 'Outfit', sans-serif;
-            font-weight: 400;
-            line-height: 1.65;
-            overflow-x: hidden;
-            transition: background .4s, color .4s
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: inherit
-        }
 
         /* ═══════════════════════════════════════════
    NAV
@@ -966,7 +856,7 @@
             width: 100%;
             padding: .75rem 1rem;
             font-size: .9rem;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
             border: 1.5px solid var(--bdr2);
             border-radius: var(--r);
             background: var(--bg);
@@ -1001,7 +891,7 @@
             color: #fff;
             font-size: .95rem;
             font-weight: 600;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
             border: none;
             cursor: pointer;
             transition: all .25s;
@@ -1418,7 +1308,7 @@
             flex-direction: row !important;
             align-items: center;
             gap: 1.5rem;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
             opacity: 0.9;
             flex-shrink: 0 !important;
             white-space: nowrap !important;

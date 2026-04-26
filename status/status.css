@@ -12,7 +12,7 @@
     --ink3: #6B7280;
     --ink4: #9CA3AF;
     
-    --blue: #1546C0;
+    --blue: #6724b2;
     --teal: #059669;
     --amber: #D97706;
     --rose: #DC2626;
@@ -45,7 +45,7 @@
 body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.5;
     padding-bottom: 5rem;
 }
@@ -85,7 +85,7 @@ header {
 }
 
 header h1 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;

@@ -1,27 +1,12 @@
-/* Explyra Global Theme Foundations */
+/* ═══════════════════════════════════════════════════════
+   EXPLYRA GLOBAL THEME — Import Bridge
+   
+   This file exists for backward compatibility.
+   The canonical design tokens are now in /css/explyra-tokens.css
+   
+   All new pages should import directly:
+     <link rel="stylesheet" href="/css/explyra-tokens.css">
+     <link rel="stylesheet" href="/css/explyra-base.css">
+   ═══════════════════════════════════════════════════════ */
 
-:root {
-    /* Core brand colors */
-    --blue: #00d2ff;
-    --blue2: #2563eb;
-    --teal: #34d399;
-    --amber: #fbbf24;
-    --primary: #4f46e5;
-    
-    /* Layout constants */
-    --header-h: 70px;
-    --sidebar-w: 280px;
-}
-
-/* Common utility classes for partner portal */
-.glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="dark"] .glass {
-    background: rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.05);
-}
+@import url('/css/explyra-tokens.css');

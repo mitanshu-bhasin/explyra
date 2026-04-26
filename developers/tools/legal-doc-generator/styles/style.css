@@ -10,11 +10,11 @@
     --ink2: #2A3141;
     --ink3: #586070;
     --ink4: #939BAC;
-    --blue: #1546C0;
-    --blue-g: rgba(21, 70, 192, 0.1);
+    --blue: #6724b2;
+    --blue-g: rgba(103, 36, 178, 0.1);
     --purp: #6D28D9;
     --brand: #1546C0;
-    --r: 12px;
+    --r: 6px;
     --t: .25s ease;
 }
 
@@ -30,7 +30,7 @@
     --ink2: #C4CCDC;
     --ink3: #8290A8;
     --ink4: #4E5A70;
-    --blue: #5B8AF5;
+    --blue: #936bdd;
     --purp: #A78BFA;
     --brand: #5B8AF5;
 }
@@ -44,7 +44,7 @@
 body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     transition: background .4s, color .4s;
     line-height: 1.6;
 }

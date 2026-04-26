@@ -2,8 +2,8 @@
 
 /* Inherit design tokens from root if available, otherwise define local fallbacks */
 :root {
-    --blue: #1546C0;
-    --blue-g: rgba(21, 70, 192, .08);
+    --blue: #6724b2;
+    --blue-g: rgba(103, 36, 178, .08);
     --blue-b: rgba(21, 70, 192, .2);
     --ink: #0D1117;
     --ink2: #2A3141;
@@ -15,7 +15,7 @@
     --bdr: #E4E1DB;
     --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
     --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
-    --r: 12px;
+    --r: 6px;
     --t: .3s ease;
 }
 
@@ -33,7 +33,7 @@
 body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;

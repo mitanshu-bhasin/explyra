@@ -39,98 +39,31 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
     <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#1546C0" />
+    <meta name="theme-color" content="#6724b2" />
 
-    <!-- Preload Fonts & Base Styles -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
-        media="print" onload="this.media='all'" />
-    <noscript>
-        <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" />
-    </noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/explyra-tokens.css">
+    <link rel="stylesheet" href="css/explyra-base.css">
+
+    <!-- Theme Init (flash prevention) -->
+    <script>
+        (function() {
+            const saved = localStorage.getItem('explyra-theme');
+            const preferred = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', preferred);
+        })();
+    </script>
 
     <style>
         /* ═══════════════════════════════════════════
-           DESIGN TOKENS (Synced with index.html)
+           VERIFY PAGE — Specific Styles
         ═══════════════════════════════════════════ */
-        :root {
-            /* Light */
-            --bg: #F8F7F4;
-            --bg2: #FFFFFF;
-            --bg3: #F1EFE9;
-            --bg4: #E9E6E0;
-            --surf: #FFFFFF;
-            --bdr: #E4E1DB;
-            --bdr2: #CCC8C0;
-            --ink: #0D1117;
-            --ink2: #2A3141;
-            --ink3: #586070;
-            --ink4: #939BAC;
-            /* Accents */
-            --blue: #1546C0;
-            --blue2: #5B8AF5;
-            --blue-g: rgba(21, 70, 192, .08);
-            --blue-b: rgba(21, 70, 192, .2);
-            --teal: #047857;
-            --teal2: #34D399;
-            --teal-g: rgba(4, 120, 87, .08);
-            --teal-b: rgba(4, 120, 87, .2);
-            --rose: #BE185D;
-            --rose-g: rgba(190, 24, 93, .08);
-            --rose-b: rgba(190, 24, 93, .2);
-            /* Shadows */
-            --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
-            --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
-            --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
-            --s4: 0 24px 72px rgba(0, 0, 0, .12), 0 4px 16px rgba(0, 0, 0, .06);
-            --r: 12px;
-            --t: .2s ease;
-        }
-
-        [data-theme="dark"] {
-            --bg: #080B14;
-            --bg2: #0E1220;
-            --bg3: #141928;
-            --bg4: #1B2235;
-            --surf: #141928;
-            --bdr: rgba(255, 255, 255, .07);
-            --bdr2: rgba(255, 255, 255, .14);
-            --ink: #EEF0F8;
-            --ink2: #C4CCDC;
-            --ink3: #8290A8;
-            --ink4: #4E5A70;
-            --blue: #5B8AF5;
-            --blue2: #93B4FF;
-            --blue-g: rgba(91, 138, 245, .12);
-            --blue-b: rgba(91, 138, 245, .25);
-            --teal: #34D399;
-            --teal-g: rgba(52, 211, 153, .10);
-            --rose: #F472B6;
-            --rose-g: rgba(244, 114, 182, .10);
-            --s1: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 8px rgba(0, 0, 0, .25);
-            --s2: 0 4px 16px rgba(0, 0, 0, .45), 0 1px 4px rgba(0, 0, 0, .25);
-            --s3: 0 12px 40px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .3);
-            --s4: 0 24px 72px rgba(0, 0, 0, .6), 0 4px 16px rgba(0, 0, 0, .35);
-        }
-
-        /* ═══════════════════════════════════════════
-           BASE STYLES
-        ═══════════════════════════════════════════ */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
-        
         body {
-            background: var(--bg);
-            color: var(--ink);
-            font-family: 'Outfit', sans-serif;
-            font-weight: 400;
-            line-height: 1.65;
-            overflow-x: hidden;
-            transition: background .4s, color .4s;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -164,9 +97,7 @@
             100% { transform: translate(100px, 50px) scale(1.1); }
         }
 
-        /* ═══════════════════════════════════════════
-           NAVBAR
-        ═══════════════════════════════════════════ */
+        /* ─── Navbar ─── */
         nav {
             position: fixed;
             top: 0;
@@ -188,7 +119,7 @@
         .nav-logo { display: flex; align-items: center; gap: 12px; }
         .nav-logo-icon { width: 36px; height: 36px; }
         .nav-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
-        .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--ink); }
+        .nav-logo-text { font-size: 1.35rem; font-weight: 700; color: var(--ink); }
 
         .nav-actions { display: flex; align-items: center; gap: 1rem; }
 
@@ -227,9 +158,7 @@
             background: var(--bdr);
         }
 
-        /* ═══════════════════════════════════════════
-           CARDS & FORMS
-        ═══════════════════════════════════════════ */
+        /* ─── Cards & Forms ─── */
         main {
             flex: 1;
             display: flex;
@@ -248,12 +177,7 @@
             padding: 40px;
             box-shadow: var(--s3);
             backdrop-filter: blur(10px);
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
         .auth-header { text-align: center; margin-bottom: 32px; }
@@ -271,15 +195,15 @@
             border: 1px solid var(--blue-b);
         }
 
-        .auth-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+        .auth-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
         .auth-desc { font-size: 0.95rem; color: var(--ink3); }
 
         .form-group { margin-bottom: 20px; }
         .form-label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--ink4); margin-bottom: 8px; letter-spacing: 0.05em; }
-        
+
         .input-wrap { position: relative; }
         .input-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--ink4); transition: color var(--t); }
-        
+
         .input-field {
             width: 100%;
             padding: 14px 16px 14px 44px;
@@ -321,7 +245,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            background: #0d38a0;
+            filter: brightness(1.1);
             box-shadow: 0 12px 24px var(--blue-b);
         }
 
@@ -338,8 +262,6 @@
         .view-footer { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--bdr); display: flex; justify-content: space-between; }
         .view-footer a { font-size: 0.85rem; font-weight: 600; color: var(--ink3); transition: color var(--t); text-decoration: none; }
         .view-footer a:hover { color: var(--blue); }
-
-        .hidden { display: none !important; }
 
         /* Success State */
         .success-circle {

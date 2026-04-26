@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
     --bg-color: #131314; /* Pure Gemini Dark */
@@ -13,7 +13,7 @@
     --grad-explyra: linear-gradient(135deg, #7c9aff 0%, #ff89a3 100%);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
 
 /* Sidebar */

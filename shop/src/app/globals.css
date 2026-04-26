@@ -11,7 +11,7 @@
   --color-brand-bdr: #E4E1DB;
   
   --font-playfair: "Playfair Display", serif;
-  --font-outfit: "Outfit", sans-serif;
+  --font-outfit: "Inter", sans-serif;
 }
 
 @layer base {
@@ -24,7 +24,7 @@
     --ink: #0D1117;
     --ink2: #2A3141;
     --ink3: #586070;
-    --blue: #1546C0;
+    --blue: #6724b2;
     --teal: #047857;
   }
 

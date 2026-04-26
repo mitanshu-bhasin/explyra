@@ -2,7 +2,7 @@
 
 /* ===== Enterprise Base Typography & Spacing ===== */
 body {
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     line-height: 1.6;
     letter-spacing: 0.015em;
     -webkit-font-smoothing: antialiased;

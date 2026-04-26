@@ -13,8 +13,8 @@
     --text-dim: #8290A8;
     
     /* Advanced Gradients */
-    --blue: #1546C0;
-    --blue2: #5B8AF5;
+    --blue: #6724b2;
+    --blue2: #844bc6;
     --purp: #6D28D9;
     --purp2: #A78BFA;
     --rose: #BE185D;
@@ -48,7 +48,7 @@
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
     transition: background 0.4s, color 0.4s;

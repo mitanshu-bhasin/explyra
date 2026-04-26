@@ -17,9 +17,9 @@
     --ink4: #939BAC;
 
     /* Accents */
-    --blue: #1546C0;
-    --blue2: #5B8AF5;
-    --blue-g: rgba(21, 70, 192, .08);
+    --blue: #6724b2;
+    --blue2: #844bc6;
+    --blue-g: rgba(103, 36, 178, .08);
     --blue-b: rgba(21, 70, 192, .2);
     --purp: #6D28D9;
     --purp2: #A78BFA;
@@ -30,7 +30,7 @@
     --s1: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 8px rgba(0, 0, 0, .04);
     --s2: 0 4px 16px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
     --s3: 0 12px 40px rgba(0, 0, 0, .10), 0 2px 8px rgba(0, 0, 0, .05);
-    --r: 12px;
+    --r: 6px;
     --t: .25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -46,8 +46,8 @@
     --ink2: #C4CCDC;
     --ink3: #8290A8;
     --ink4: #4E5A70;
-    --blue: #5B8AF5;
-    --blue-g: rgba(91, 138, 245, .12);
+    --blue: #936bdd;
+    --blue-g: rgba(147, 107, 221, .12);
 }
 
 /* Base Reset */
@@ -60,7 +60,7 @@
 body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.6;
     transition: background .4s, color .4s;
     min-height: 100vh;
@@ -167,7 +167,7 @@ select {
     border: 1.5px solid var(--bdr2);
     background: var(--bg2);
     color: var(--ink);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     transition: border-color var(--t), box-shadow var(--t);
     outline: none;

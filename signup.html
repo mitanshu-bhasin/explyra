@@ -1,301 +1,210 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
-    <meta property="og:site_name" content="Explyra" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:site" content="@explyras" />
-    <meta name="twitter:creator" content="@explyras" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFBZ5GZ22C"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-TFBZ5GZ22C');
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Explyra — Create Your Professional Developer Account</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Primary Meta -->
+    <title>Join Explyra — Create Your Professional Account</title>
+    <meta name="description" content="Start your journey with Explyra today. Get access to a complete suite of developer tools, expense trackers, and team management utilities.">
+    <link rel="canonical" href="https://explyra.me/signup" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="Mitanshu Bhasin" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://explyra.me/signup" />
+    <meta property="og:site_name" content="Explyra" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Join Explyra — Create Your Professional Account" />
+    <meta property="og:description" content="Start your journey with Explyra. Complete suite of developer tools, expense trackers, and team management." />
+    <meta property="og:image" content="https://explyra.me/assets/images/explyra_screenshot_1.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@explyras" />
+    <meta name="twitter:creator" content="@explyras" />
+    <meta name="twitter:title" content="Join Explyra — Create Your Professional Account" />
+    <meta name="twitter:description" content="Start your journey with Explyra. Complete suite of developer tools, expense trackers, and team management." />
+    <meta name="twitter:image" content="https://explyra.me/assets/images/explyra_screenshot_1.png" />
+
+    <!-- Icons & PWA -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/explyra_logo.png" />
+    <link rel="apple-touch-icon" href="assets/images/explyra_logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#6724b2">
+    <meta name="application-name" content="Explyra">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        body {
-            background: #fff;
-            color: #1b1b1b;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px;
-            margin: 0;
-            overflow-y: auto;
-        }
-        .dark body { background: #000; color: #fff; }
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/explyra-tokens.css">
+    <link rel="stylesheet" href="css/explyra-base.css">
+    <link rel="stylesheet" href="css/explyra-auth.css">
 
-        .ms-auth-card {
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            padding: 44px;
-            width: 100%;
-            max-width: 440px;
-            position: relative;
-            z-index: 10;
-            margin-top: 5vh;
-            margin-bottom: 24px;
-        }
-        .dark .ms-auth-card { background: #111; border: 1px solid #333; }
-
-        .ms-logo { height: 32px; margin-bottom: 24px; overflow: hidden; display: flex; align-items: center; }
-        .ms-logo img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
-        
-        .ms-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
-        .ms-subtitle { font-size: 15px; margin-bottom: 24px; }
-        
-        .ms-input-line {
-            width: 100%;
-            border: none;
-            border-bottom: 1px solid #666;
-            padding: 10px 0;
-            outline: none;
-            font-size: 15px;
-            margin-bottom: 20px;
-            background: transparent;
-            border-radius: 0;
-            transition: border-bottom-color 0.2s;
-            color: inherit;
-        }
-        .ms-input-line:focus { border-bottom-color: #0067b8; }
-        
-        .ms-link { color: #0067b8; text-decoration: none; font-size: 13px; cursor: pointer; display: inline-block; }
-        .ms-link:hover { text-decoration: underline; }
-        
-        .ms-btn-next {
-            background: #0067b8;
-            color: #fff;
-            padding: 8px 36px;
-            font-size: 15px;
-            min-width: 108px;
-            border: none;
-            cursor: pointer;
-            float: right;
-            transition: opacity 0.2s;
-        }
-        .ms-btn-next:hover { opacity: 0.9; }
-
-        .ms-footer-text { font-size: 13px; margin-top: 24px; text-align: left; }
-        .ms-business-footer { margin-top: auto; padding: 24px 0; text-align: center; font-size: 12px; color: #666; }
-        .dark .ms-business-footer { color: #999; }
-
-        /* Password Strength Meter */
-        .strength-meter { display: flex; gap: 4px; margin-top: -10px; margin-bottom: 20px; height: 3px; }
-        .strength-bar { flex: 1; height: 100%; background: #eee; border-radius: 2px; }
-        .dark .strength-bar { background: #333; }
-        .strength-meter.weak #bar-1 { background: #d83b01; }
-        .strength-meter.moderate #bar-1, .strength-meter.moderate #bar-2 { background: #ffb900; }
-        .strength-meter.strong .strength-bar { background: #107c10; }
-
-        .password-rules { font-size: 11px; color: #666; margin-bottom: 20px; }
-        .rule-item { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-        .rule-item.met { color: #107c10; font-weight: 600; }
-                /* Step Transitions */
-        .step-container { position: relative; width: 100%; min-height: 480px; }
-        .step-content { 
-            position: absolute; 
-            inset: 0;
-            width: 100%;
-            opacity: 0; 
-            pointer-events: none; 
-            transform: translateX(50px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white; /* Prevent bleed */
-            z-index: 1;
-        }
-        .dark .step-content { background: #111; }
-        
-        .step-content.active { 
-            position: relative;
-            opacity: 1; 
-            pointer-events: auto; 
-            transform: translateX(0);
-            z-index: 2;
-        }
-        
-        .step-content.fade-out {
-            opacity: 0;
-            transform: translateX(-50px);
-            pointer-events: none;
-        }
-
-        .absolute { position: absolute; }
-        .relative { position: relative; }
-        .inset-0 { top: 0; left: 0; right: 0; bottom: 0; }
-        .w-full { width: 100%; }
-        .h-full { height: 100%; }
-        .opacity-0 { opacity: 0; }
-        .opacity-100 { opacity: 1; }
-        .pointer-events-none { pointer-events: none; }
-        .hidden { display: none; }
-        
-        #toast-container { position: fixed; top: 24px; right: 24px; z-index: 1000; }
-        .toast { padding: 12px 24px; background: #333; color: #fff; border-radius: 4px; margin-top: 10px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
-        .toast.error { background: #d83b01; }
-        .toast.success { background: #107c10; }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .theme-toggle { position: fixed; top: 24px; right: 24px; background: none; border: none; cursor: pointer; color: #666; font-size: 20px; z-index: 100; }
-        .dark .theme-toggle { color: #aaa; }
-    </style>
-    </style>
-
-    
-
-        <meta name="description" content="Start your journey with Explyra today. Get access to a complete suite of developer tools, expense trackers, and team management utilities for free.">
-
-    
-    
-    
+    <!-- Structured Data -->
     <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
     {
-      "@type": "Organization",
-      "@id": "https://explyra.me/#organization",
-      "name": "Explyra",
-      "alternateName": "Explyra Suite",
-      "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
-      "url": "https://explyra.me/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://explyra.me/assets/images/explyra_logo.png",
-        "width": 512,
-        "height": 512
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Okhla Phase III",
-        "addressLocality": "New Delhi",
-        "addressRegion": "Delhi",
-        "postalCode": "110020",
-        "addressCountry": "IN"
-      },
-      "sameAs": [
-        "https://x.com/explyras",
-        "https://www.facebook.com/profile.php?id=61584891033070",
-        "https://www.instagram.com/explyras",
-        "https://www.youtube.com/@explyras",
-        "https://www.linkedin.com/company/explyra/",
-        "https://www.threads.com/@explyras",
-        "https://github.com/Explyra",
-        "https://ipecconsulting.org/"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+91-8076108584",
-          "contactType": "customer service",
-          "email": "explyra@gmail.com",
-          "availableLanguage": [
-            "en",
-            "hi"
-          ],
-          "contactOption": "TollFree",
-          "areaServed": "IN"
-        }
-      ],
-      "founder": {
-        "@type": "Person",
-        "name": "Mitanshu Bhasin",
-        "url": "https://explyra.me/mitanshu.html"
-      },
-      "foundingDate": "2024",
-      "foundingLocation": "New Delhi, India"
+        "@context": "https://schema.org",
+        "@graph": [{
+            "@type": "Organization",
+            "@id": "https://explyra.me/#organization",
+            "name": "Explyra",
+            "alternateName": "Explyra Suite",
+            "description": "Explyra is a leading unified SaaS ecosystem providing productivity, developer, and business solutions on the edge.",
+            "url": "https://explyra.me/",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://explyra.me/assets/images/explyra_logo.png",
+                "width": 512,
+                "height": 512
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Okhla Phase III",
+                "addressLocality": "New Delhi",
+                "addressRegion": "Delhi",
+                "postalCode": "110020",
+                "addressCountry": "IN"
+            },
+            "sameAs": [
+                "https://x.com/explyras",
+                "https://www.facebook.com/profile.php?id=61584891033070",
+                "https://www.instagram.com/explyras",
+                "https://www.youtube.com/@explyras",
+                "https://www.linkedin.com/company/explyra/",
+                "https://github.com/Explyra"
+            ],
+            "contactPoint": [{
+                "@type": "ContactPoint",
+                "telephone": "+91-8076108584",
+                "contactType": "customer service",
+                "email": "explyra@gmail.com",
+                "availableLanguage": ["en", "hi"],
+                "contactOption": "TollFree",
+                "areaServed": "IN"
+            }],
+            "founder": {
+                "@type": "Person",
+                "name": "Mitanshu Bhasin",
+                "url": "https://explyra.me/mitanshu.html"
+            },
+            "foundingDate": "2024",
+            "foundingLocation": "New Delhi, India"
+        }]
     }
-  ]
-}
     </script>
-    <link rel="canonical" href="https://explyra.me/signup" />
-    <link rel="stylesheet" href="assets/css/global-theme.css">
+
+    <!-- Analytics -->
+    <script src="js/ai-config.js"></script>
+    <script>
+        (function () {
+            const gaId = window.EXPLYRA_CONFIG?.analyticsId || 'G-TFBZ5GZ22C';
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+            document.head.appendChild(script);
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', gaId);
+            window.gtag = gtag;
+        })();
+    </script>
+
+    <!-- Theme Init (flash prevention) -->
+    <script>
+        (function() {
+            const saved = localStorage.getItem('explyra-theme');
+            const preferred = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', preferred);
+        })();
+    </script>
 </head>
 
-<body>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-        <i class="fa-solid fa-moon dark:hidden"></i>
-        <i class="fa-solid fa-sun hidden dark:block"></i>
+<body class="auth-page">
+    <a href="#signup-steps" class="skip-link">Skip to signup form</a>
+
+    <!-- Theme Toggle -->
+    <button class="auth-theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
     </button>
 
-    <script src="js/utils.js"></script>
-
-    <div class="ms-auth-card">
-        <div class="ms-logo">
-            <img src="assets/images/explyra_logo.png" alt="Explyra" class="h-full w-auto">
+    <div class="auth-card">
+        <!-- Logo -->
+        <div class="auth-logo">
+            <img src="assets/images/explyra_logo.png" alt="Explyra" width="28" height="28">
+            <span class="auth-logo-text">Explyra</span>
         </div>
-        
-        <div id="signup-steps" class="step-container relative overflow-hidden min-h-[480px]">
+
+        <div id="signup-steps" class="step-container" style="min-height:420px;">
             <!-- Step 1: Identifier -->
-            <div id="step-identifier" class="step-content active text-left">
-                <h1 class="ms-title">Create account</h1>
-                <p class="ms-subtitle">Enter your work email to get started.</p>
-                
+            <div id="step-identifier" class="step-content active">
+                <h1 class="auth-title">Create account</h1>
+                <p class="auth-subtitle">Enter your work email to get started.</p>
+
                 <form id="identifierForm" onsubmit="handleIdentifierNext(event)">
-                    <input type="email" id="email" class="ms-input-line dark:text-white" placeholder="Work Email" required autofocus>
-                    
-                    <div class="ms-footer-text">
-                        Already have an account? <a href="login.html" class="ms-link font-bold">Sign In</a>
+                    <input type="email" id="email" class="auth-input" placeholder="Work Email" required autofocus autocomplete="email">
+
+                    <div style="font-size:0.82rem;margin-top:16px;">
+                        Already have an account? <a href="login.html" class="auth-link" style="font-weight:700;">Sign In</a>
                     </div>
 
-                    <div class="flex justify-end mt-12">
-                        <button type="submit" id="identifierBtn" class="ms-btn-next">Next</button>
+                    <div style="display:flex;justify-content:flex-end;margin-top:36px;">
+                        <button type="submit" id="identifierBtn" class="auth-btn-primary">Next</button>
                     </div>
                 </form>
             </div>
 
             <!-- Step 2: Profile -->
-            <div id="step-profile" class="step-content text-left">
-                <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToIdentifier()">
-                    <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                    <span id="display-email-profile" class="text-sm text-slate-600">...</span>
+            <div id="step-profile" class="step-content">
+                <div class="auth-back" onclick="backToIdentifier()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span id="display-email-profile">...</span>
                 </div>
-                <h1 class="ms-title">Who are you?</h1>
-                <p class="ms-subtitle">Tell us your full name so we can personalize your workspace.</p>
-                
+                <h1 class="auth-title">Who are you?</h1>
+                <p class="auth-subtitle">Tell us your full name so we can personalize your workspace.</p>
+
                 <form id="profileForm" onsubmit="handleProfileNext(event)">
-                    <input type="text" id="name" class="ms-input-line dark:text-white" placeholder="Full Name" required autofocus>
-                    
-                    <div class="flex justify-end mt-12">
-                        <button type="submit" id="profileBtn" class="ms-btn-next">Next</button>
+                    <input type="text" id="name" class="auth-input" placeholder="Full Name" required autofocus autocomplete="name">
+
+                    <div style="display:flex;justify-content:flex-end;margin-top:36px;">
+                        <button type="submit" id="profileBtn" class="auth-btn-primary">Next</button>
                     </div>
                 </form>
             </div>
 
             <!-- Step: Loading Transition -->
-            <div id="step-loading" class="step-content flex flex-col items-center justify-center text-center bg-white dark:bg-black z-30">
-                <div class="w-12 h-12 border-4 border-[#0067b8] border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p id="loading-text" class="text-sm font-medium text-slate-600 dark:text-slate-400">Checking...</p>
+            <div id="step-loading" class="step-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+                <div class="auth-spinner"></div>
+                <p id="loading-text" class="auth-loading-text">Checking...</p>
             </div>
 
             <!-- Step 3: Security -->
-            <div id="step-security" class="step-content text-left">
-                <div class="mb-6 flex items-center gap-2 cursor-pointer group" onclick="backToProfile()">
-                    <i class="fa-solid fa-arrow-left text-xs text-slate-500"></i>
-                    <span id="display-email" class="text-sm text-slate-600">...</span>
+            <div id="step-security" class="step-content">
+                <div class="auth-back" onclick="backToProfile()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span id="display-email">...</span>
                 </div>
-                <h1 class="ms-title">Create a password</h1>
-                <p class="ms-subtitle">Enter the password you'd like to use with your account.</p>
-                
+                <h1 class="auth-title">Create a password</h1>
+                <p class="auth-subtitle">Enter the password you'd like to use with your account.</p>
+
                 <form id="signupForm" onsubmit="handleFinalSignup(event)">
-                    <div class="relative w-full">
-                        <input type="password" id="password" class="ms-input-line dark:text-white pr-10" placeholder="Create Password" required>
-                        <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
-                            <i class="fa-solid fa-eye text-sm"></i>
+                    <div style="position:relative;width:100%;">
+                        <input type="password" id="password" class="auth-input" style="padding-right:2.5rem;" placeholder="Create Password" required>
+                        <button type="button" onclick="togglePasswordVisibility('password', this)"
+                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
                         </button>
                     </div>
-                    
+
                     <div class="strength-meter" id="strengthMeter">
                         <div class="strength-bar" id="bar-1"></div>
                         <div class="strength-bar" id="bar-2"></div>
@@ -303,27 +212,28 @@
                     </div>
 
                     <div class="password-rules">
-                        <div class="rule-item" id="rule-length"><i class="fa-solid fa-circle-check opacity-20"></i> 8+ characters</div>
-                        <div class="rule-item" id="rule-case"><i class="fa-solid fa-circle-check opacity-20"></i> Upper & lowercase</div>
-                        <div class="rule-item" id="rule-number"><i class="fa-solid fa-circle-check opacity-20"></i> At least one number</div>
+                        <div class="rule-item" id="rule-length"><i class="fa-solid fa-circle-check"></i> 8+ characters</div>
+                        <div class="rule-item" id="rule-case"><i class="fa-solid fa-circle-check"></i> Upper & lowercase</div>
+                        <div class="rule-item" id="rule-number"><i class="fa-solid fa-circle-check"></i> At least one number</div>
                     </div>
 
-                    <div class="relative w-full">
-                        <input type="password" id="confirmPassword" class="ms-input-line dark:text-white pr-10" placeholder="Confirm Password" required>
-                        <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)" class="absolute right-0 top-50pct minus-translate-y-50pct mt-[-10px] bg-none border-none cursor-pointer text-[#666] hover:text-[#1b1b1b] dark:hover:text-white">
-                            <i class="fa-solid fa-eye text-sm"></i>
+                    <div style="position:relative;width:100%;">
+                        <input type="password" id="confirmPassword" class="auth-input" style="padding-right:2.5rem;" placeholder="Confirm Password" required>
+                        <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)"
+                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
                         </button>
                     </div>
 
-                    <div class="flex justify-end mt-12">
-                        <button type="submit" id="submitBtn" class="ms-btn-next">Create account</button>
+                    <div style="display:flex;justify-content:flex-end;margin-top:28px;">
+                        <button type="submit" id="submitBtn" class="auth-btn-primary">Create account</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="ms-business-footer">
+    <div class="auth-footer">
         © 2026 Explyra Suite. All rights reserved.
     </div>
 
@@ -357,6 +267,22 @@
             setTimeout(() => toast.remove(), 3000);
         };
 
+        window.toggleTheme = () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('explyra-theme', next);
+            const icon = document.querySelector('.auth-theme-toggle i');
+            if (icon) icon.className = next === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        };
+
+        // Update icon to match initial theme
+        const initIcon = document.querySelector('.auth-theme-toggle i');
+        if (initIcon && document.documentElement.getAttribute('data-theme') === 'light') {
+            initIcon.className = 'fa-solid fa-sun';
+        }
+
         window.togglePasswordVisibility = (id, btn) => {
             const input = document.getElementById(id);
             const icon = btn.querySelector('i');
@@ -369,31 +295,24 @@
             }
         };
 
-        // Password Validation Logic
+        // Password Validation
         const passInput = document.getElementById('password');
-        const confirmInput = document.getElementById('confirmPassword');
         const meter = document.getElementById('strengthMeter');
-        
+
         function updateStrength() {
             const val = passInput.value;
-            let score = 0;
-            
             const hasUpper = /[A-Z]/.test(val);
             const hasLower = /[a-z]/.test(val);
             const hasNumber = /[0-9]/.test(val);
             const isLong = val.length >= 8;
 
             document.getElementById('rule-length').classList.toggle('met', isLong);
-            document.getElementById('rule-length').querySelector('i').classList.toggle('hidden', !isLong);
-            
             document.getElementById('rule-case').classList.toggle('met', hasUpper && hasLower);
-            document.getElementById('rule-case').querySelector('i').classList.toggle('hidden', !(hasUpper && hasLower));
-            
             document.getElementById('rule-number').classList.toggle('met', hasNumber);
-            document.getElementById('rule-number').querySelector('i').classList.toggle('hidden', !hasNumber);
 
+            let score = 0;
             if (isLong) score++;
-            if (hasUpper && hasLower && hasNumber) score += 2; // Moderate or Strong based on others
+            if (hasUpper && hasLower && hasNumber) score += 2;
 
             meter.className = 'strength-meter';
             if (val.length > 0) {
@@ -406,13 +325,11 @@
         }
 
         passInput.addEventListener('input', updateStrength);
-        
+
         // Navigation
         window.showStep = (stepId) => {
-            const steps = document.querySelectorAll('.step-content');
             const currentStep = document.querySelector('.step-content.active');
             const nextStep = document.getElementById(stepId);
-            
             if (currentStep) {
                 currentStep.classList.remove('active');
                 currentStep.classList.add('fade-out');
@@ -424,7 +341,7 @@
         window.handleIdentifierNext = async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
-            if(!email) return showToast('Please enter your email', 'error');
+            if (!email) return showToast('Please enter your email', 'error');
 
             const loadingStep = document.getElementById('step-loading');
             loadingStep.classList.add('active');
@@ -464,11 +381,10 @@
 
             if (!password || !confirmPass) return showToast('Please fill all fields', 'error');
 
-            // Final Validation
             const hasUpper = /[A-Z]/.test(password);
             const hasLower = /[a-z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
-            
+
             if (password.length < 8) return showToast('Password must be at least 8 characters', 'error');
             if (!hasUpper || !hasLower || !hasNumber) return showToast('Password must include upper, lower letters and a number', 'error');
             if (password !== confirmPass) return showToast('Passwords do not match', 'error');
@@ -500,7 +416,7 @@
                 console.error("Signup error:", error);
                 showToast(error.message, 'error');
                 btn.disabled = false;
-                btn.innerHTML = 'Create account <i class="fa-solid fa-arrow-right"></i>';
+                btn.textContent = 'Create account';
             }
         };
     </script>

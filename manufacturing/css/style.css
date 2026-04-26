@@ -24,7 +24,7 @@
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     display: flex;
     min-height: 100vh;
     overflow-x: hidden;

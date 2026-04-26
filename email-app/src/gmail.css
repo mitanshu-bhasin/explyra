@@ -59,7 +59,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-primary);
     background-image: var(--bg-image);
     background-size: cover;
