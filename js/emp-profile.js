@@ -35,8 +35,12 @@ const formatDateInput = (value) => {
 
 const randomPass = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    const array = new Uint32Array(12);
+    (window.crypto || window.msCrypto).getRandomValues(array);
     let out = '';
-    for (let i = 0; i < 12; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    for (let i = 0; i < 12; i++) {
+        out += chars[array[i] % chars.length];
+    }
     return out;
 };
 
@@ -183,7 +187,9 @@ window.generateProfileDelegateAccess = async () => {
 
     try {
         const workerAuth = getEmpDelegateAuth();
-        const email = `delegate.${Date.now()}.${Math.floor(Math.random() * 9999)}@explyra-delegate.com`;
+        const randomSuffix = new Uint16Array(1);
+        (window.crypto || window.msCrypto).getRandomValues(randomSuffix);
+        const email = `delegate.${Date.now()}.${randomSuffix[0]}@explyra-delegate.com`;
         const password = randomPass();
         const credential = await createUserWithEmailAndPassword(workerAuth, email, password);
 
