@@ -1709,7 +1709,7 @@
                     <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Create Task</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Assign tasks and CC observers.</p>
                 </div>
-                <button type="button" onclick="closeEmpTaskModal()"
+                <button type="button" onclick="closeEmpTaskModal()" aria-label="Close"
                     class="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -1780,7 +1780,7 @@
                         <p class="text-[10px] text-slate-400">Comments & Status Updates</p>
                     </div>
                 </div>
-                <button onclick="closeTaskDetail()" class="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center">
+                <button onclick="closeTaskDetail()" aria-label="Close" class="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -1834,7 +1834,7 @@
                     <button onclick="openTaskDashboard()" class="text-indigo-200 hover:text-white text-xs flex items-center gap-1 transition">
                         <i class="fa-solid fa-arrows-rotate"></i> Refresh
                     </button>
-                    <button onclick="closeTaskDashboard()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white transition flex items-center justify-center">
+                    <button onclick="closeTaskDashboard()" aria-label="Close" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white transition flex items-center justify-center">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
