@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm i -g pnpm && pnpm install --frozen-lockfile && pnpm run build
+      - run: npm i -g pnpm && pnpm install --no-frozen-lockfile && pnpm run build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
