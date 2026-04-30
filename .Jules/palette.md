@@ -1,0 +1,3 @@
+## 2025-02-18 - Added Accessibility to Icon-Only Buttons
+**Learning:** Found multiple icon-only buttons (`fa-solid`) in both Employee and Admin navigation bars (`components/emp-navbar.html`, `components/admin-navbar.html`) missing `aria-label` and `focus-visible` styling. This is a common pattern in the repository.
+**Action:** Added `aria-label` attributes and `focus-visible` states using existing Tailwind utility classes (e.g., `focus-visible:ring-2 focus-visible:ring-green-500 focus:outline-none`) to improve screen reader accessibility and keyboard navigation. I should check other components for similar icon-only buttons.
