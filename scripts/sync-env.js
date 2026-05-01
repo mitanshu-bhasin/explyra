@@ -71,7 +71,14 @@ window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
     fs.writeFileSync(outputPath, outputContent);
-    fs.writeFileSync(mobileOutputPath, outputContent);
+    try {
+        if (!fs.existsSync(path.dirname(mobileOutputPath))) {
+            fs.mkdirSync(path.dirname(mobileOutputPath), { recursive: true });
+        }
+        fs.writeFileSync(mobileOutputPath, outputContent);
+    } catch (e) {
+        console.warn('Warning: Could not write to mobile_exp/js/env.js. This is fine if mobile_exp is ignored.');
+    }
     console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
 }
 
