@@ -41,7 +41,7 @@
             <label for="login-password">Password</label>
             <div class="input-wrapper">
               <input class="input" type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
-              <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">👁</button>
+              <button type="button" class="password-toggle" aria-label="Show password" title="Show password" onclick="togglePassword('login-password', this)">👁</button>
             </div>
           </div>
           <div id="login-error" class="error-text" style="display:none"></div>
@@ -85,6 +85,8 @@
       const isPassword = input.type === 'password';
       input.type = isPassword ? 'text' : 'password';
       btn.textContent = isPassword ? '🔒' : '👁';
+      btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      btn.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
     }
 
     async function handleLogin(e) {
