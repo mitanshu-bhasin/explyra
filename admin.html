@@ -1308,7 +1308,7 @@
             id="user-modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold" id="user-modal-title">Add User</h3>
-                <button onclick="closeUserModal()" class="text-slate-400 hover:text-black transition"><i
+                <button onclick="closeUserModal()" aria-label="Close user modal" class="text-slate-400 hover:text-black transition"><i
                         class="fa-solid fa-times"></i></button>
             </div>
             <form id="user-form" class="space-y-4">
@@ -1423,7 +1423,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100" id="project-modal-title">Add Project
                 </h3>
-                <button onclick="closeProjectModal()" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
+                <button onclick="closeProjectModal()" aria-label="Close project modal" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
                         class="fa-solid fa-times"></i></button>
             </div>
             <form id="project-form" class="space-y-4">
@@ -4047,7 +4047,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100" id="budget-modal-title">Add Budget
                 </h3>
-                <button onclick="closeBudgetModal()" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
+                <button onclick="closeBudgetModal()" aria-label="Close budget modal" class="text-slate-400 hover:text-slate-600 dark:text-slate-300"><i
                         class="fa-solid fa-times"></i></button>
             </div>
             <form id="budget-form" class="space-y-4">
@@ -4179,7 +4179,7 @@
                                             <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">${budget.type}</p>
                                             <p class="text-lg font-bold text-slate-800 dark:text-white">${budget.name}</p>
                                         </div>
-                                        <button class="text-slate-400 hover:text-slate-600 dark:text-slate-300" onclick="openBudgetModal(${budget.id})"><i class="fa-solid fa-pen"></i></button>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:text-slate-300" onclick="openBudgetModal(${budget.id})" aria-label="Edit budget"><i class="fa-solid fa-pen"></i></button>
                                     </div>
                                     <div class="mt-4">
                                         <div class="flex justify-between items-center text-sm">
