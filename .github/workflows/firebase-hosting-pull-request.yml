@@ -9,6 +9,8 @@ permissions:
   pull-requests: write
 jobs:
   build_and_preview:
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
