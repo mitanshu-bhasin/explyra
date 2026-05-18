@@ -202,7 +202,7 @@
                 <form id="signupForm" onsubmit="handleFinalSignup(event)">
                     <div style="position:relative;width:100%;">
                         <input type="password" id="password" class="auth-input" style="padding-right:2.5rem;" placeholder="Create Password" required>
-                        <button type="button" onclick="togglePasswordVisibility('password', this)"
+                        <button type="button" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility" title="Toggle password visibility"
                             style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
                             <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
                         </button>
@@ -222,7 +222,7 @@
 
                     <div style="position:relative;width:100%;">
                         <input type="password" id="confirmPassword" class="auth-input" style="padding-right:2.5rem;" placeholder="Confirm Password" required>
-                        <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)"
+                        <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility" title="Toggle password visibility"
                             style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
                             <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
                         </button>
