@@ -1,0 +1,3 @@
+## 2024-05-23 - Dynamic ARIA Labels for Password Toggles
+**Learning:** Icon-only toggle buttons (like password visibility) require more than just a static `aria-label`. When the state changes (e.g., from 'Show' to 'Hide'), the `aria-label` and `title` must be dynamically updated via JavaScript to accurately reflect the new action to screen readers and sighted users. Additionally, the inner icon (e.g., `<i class="fa-eye">`) needs `aria-hidden="true"` to prevent redundant/confusing announcements.
+**Action:** When implementing or fixing stateful toggle buttons, ensure the JavaScript handler updates the `aria-label` attribute and `title` attribute to match the current state, and always hide the presentational inner icon from screen readers.
