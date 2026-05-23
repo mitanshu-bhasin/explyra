@@ -7,6 +7,7 @@ const path = require('path');
 const envPath = path.join(__dirname, '..', '.env');
 const outputPath = path.join(__dirname, '..', 'js', 'env.js');
 const mobileOutputPath = path.join(__dirname, '..', 'mobile_exp', 'js', 'env.js');
+const companySimOutputPath = path.join(__dirname, '..', 'company-sim', 'js', 'env.js');
 
 function sync() {
     let env = { ...process.env };
@@ -75,7 +76,12 @@ window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
         fs.mkdirSync(path.dirname(mobileOutputPath), { recursive: true });
     }
     fs.writeFileSync(mobileOutputPath, outputContent);
-    console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
+
+    if (!fs.existsSync(path.dirname(companySimOutputPath))) {
+        fs.mkdirSync(path.dirname(companySimOutputPath), { recursive: true });
+    }
+    fs.writeFileSync(companySimOutputPath, outputContent);
+    console.log('✓ Successfully synced .env to js/env.js, mobile_exp/js/env.js, and company-sim/js/env.js (Secure mode active)');
 }
 
 sync();
