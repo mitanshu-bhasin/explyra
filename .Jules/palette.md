@@ -1,0 +1,3 @@
+## 2026-05-26 - Add ARIA Labels to Theme Toggle and Password Visibility Icons
+**Learning:** Added dynamic state properties `aria-label` and `title` to theme toggle and password visibility toggle buttons that updates dynamically depending on the selected state ("Hide password" vs "Show password" and "Toggle dark mode" vs "Toggle light mode"). Added `aria-hidden="true"` to decorative `<i/>` tag elements containing FontAwesome icons.
+**Action:** Always add ARIA labels with appropriate states to interactive buttons and mark icon tags with `aria-hidden="true"`.
