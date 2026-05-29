@@ -70,9 +70,21 @@ function sync() {
 window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
+    const mobileJsDir = path.join(__dirname, '..', 'mobile_exp', 'js');
+    if (!fs.existsSync(mobileJsDir)) {
+        fs.mkdirSync(mobileJsDir, { recursive: true });
+    }
+
+    const companySimJsDir = path.join(__dirname, '..', 'company-sim', 'js');
+    const companySimOutputPath = path.join(companySimJsDir, 'env.js');
+    if (!fs.existsSync(companySimJsDir)) {
+        fs.mkdirSync(companySimJsDir, { recursive: true });
+    }
+
     fs.writeFileSync(outputPath, outputContent);
     fs.writeFileSync(mobileOutputPath, outputContent);
-    console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
+    fs.writeFileSync(companySimOutputPath, outputContent);
+    console.log('✓ Successfully synced .env to js/env.js, mobile_exp/js/env.js, and company-sim/js/env.js (Secure mode active)');
 }
 
 sync();
