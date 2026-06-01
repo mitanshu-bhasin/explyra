@@ -71,6 +71,11 @@ window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
     fs.writeFileSync(outputPath, outputContent);
+
+    // Create directories if they don't exist
+    if (!fs.existsSync(path.dirname(mobileOutputPath))) {
+        fs.mkdirSync(path.dirname(mobileOutputPath), { recursive: true });
+    }
     fs.writeFileSync(mobileOutputPath, outputContent);
     console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
 }
