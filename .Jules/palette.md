@@ -1,3 +1,0 @@
-## 2026-06-01 - Dynamic Accessibility for Stateful Icon-Only Buttons
-**Learning:** For stateful icon-only toggle buttons (like password visibility), static `aria-label` attributes are insufficient. Screen readers will misreport the button's action if the label isn't updated alongside the visual state change (e.g., from 'Show' to 'Hide'). Additionally, the inner icon element (e.g., `<i>`) must have `aria-hidden="true"` to prevent redundant or confusing announcements.
-**Action:** When creating or updating interactive elements with toggling visual states, ensure the JavaScript handler dynamically updates the `aria-label` and `title` attributes to accurately reflect the *next* action or current state. Always add `aria-hidden="true"` to inner decorative elements.
