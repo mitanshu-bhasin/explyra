@@ -29,11 +29,13 @@
         "firebase": "^12.10.0",
         "genkit": "^1.31.0",
         "puppeteer": "^24.41.0",
-        "serve": "^14.2.0"
+        "serve": "^14.2.0",
+        "winston": "^3.12.0"
     },
     "devDependencies": {
         "@capacitor/assets": "^3.0.5",
         "@capacitor/cli": "^6.1.2",
+        "firebase-tools": "^15.19.0",
         "html-minifier-terser": "^7.2.0",
         "minify": "^11.0.0",
         "postal-mime": "^2.7.3",
