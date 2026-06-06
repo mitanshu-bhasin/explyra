@@ -70,6 +70,11 @@ function sync() {
 window.EXPLYRA_CONFIG = ${JSON.stringify(config, null, 4)};
 `;
 
+    const mobileOutputDir = path.dirname(mobileOutputPath);
+    if (!fs.existsSync(mobileOutputDir)) {
+        fs.mkdirSync(mobileOutputDir, { recursive: true });
+    }
+
     fs.writeFileSync(outputPath, outputContent);
     fs.writeFileSync(mobileOutputPath, outputContent);
     console.log('✓ Successfully synced .env to js/env.js and mobile_exp/js/env.js (Secure mode active)');
