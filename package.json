@@ -25,7 +25,7 @@
         "@genkit-ai/googleai": "^1.28.0",
         "@google-cloud/language": "^7.2.1",
         "dotenv": "^16.6.1",
-        "express": "^4.22.1",
+        "express": "^4.22.2",
         "firebase": "^12.10.0",
         "genkit": "^1.31.0",
         "puppeteer": "^24.41.0",
@@ -37,6 +37,6 @@
         "html-minifier-terser": "^7.2.0",
         "minify": "^11.0.0",
         "postal-mime": "^2.7.3",
-        "wrangler": "^4.72.0"
+        "wrangler": "^4.98.0"
     }
 }
