@@ -1,0 +1,3 @@
+## 2024-05-15 - Missing ARIA Labels on Show/Hide Password Icons
+**Learning:** Found multiple instances where the "eye" icon buttons to toggle password visibility in `login.html` and `signup.html` lacked `aria-label` or `title` attributes. They are icon-only buttons (`fa-eye`), meaning screen reader users wouldn't know their purpose. Furthermore, we must dynamically update these attributes via JS when the state changes between "Show Password" and "Hide Password", so the accessibility tree correctly reports the next action.
+**Action:** Add `aria-label` and `title` to the HTML elements and update the `window.togglePasswordVisibility` JS function to toggle these attributes.
