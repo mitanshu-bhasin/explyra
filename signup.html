@@ -203,8 +203,10 @@
                     <div style="position:relative;width:100%;">
                         <input type="password" id="password" class="auth-input" style="padding-right:2.5rem;" placeholder="Create Password" required>
                         <button type="button" onclick="togglePasswordVisibility('password', this)"
-                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
-                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
+                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;"
+                            aria-label="Show password"
+                            title="Show password">
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -223,8 +225,10 @@
                     <div style="position:relative;width:100%;">
                         <input type="password" id="confirmPassword" class="auth-input" style="padding-right:2.5rem;" placeholder="Confirm Password" required>
                         <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)"
-                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
-                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
+                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;"
+                            aria-label="Show password"
+                            title="Show password">
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -292,9 +296,13 @@
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.setAttribute('aria-label', 'Hide password');
+                btn.title = 'Hide password';
             } else {
                 input.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.setAttribute('aria-label', 'Show password');
+                btn.title = 'Show password';
             }
         };
 
