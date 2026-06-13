@@ -1,0 +1,3 @@
+## 2026-06-13 - Dynamic ARIA Labels for Stateful Icon Buttons
+**Learning:** When using stateful icon-only buttons (like password visibility toggles), setting a static `aria-label` or `title` is insufficient. Screen readers will announce the initial state even after it has changed, creating confusion. The inner icon (e.g., FontAwesome `<i>`) must also include `aria-hidden="true"` to prevent redundant announcements of the icon class.
+**Action:** When implementing or updating toggle buttons (e.g., Show/Hide password, Play/Pause), ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes to accurately reflect the current state and action. Always hide purely visual icon elements from screen readers using `aria-hidden="true"`.
