@@ -19,4 +19,12 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(process.cwd(), "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      external: [
+        '../assets/css/global-theme.css',
+        '../js/security.js'
+      ]
+    }
+  }
 }));

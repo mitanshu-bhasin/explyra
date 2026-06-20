@@ -32,6 +32,7 @@ const SKIP_DIRS = new Set([
   "msix",
   "msix-storeclean",
   "__pycache__",
+  "will",
 ]);
 
 const SKIP_ROOT_FILES = new Set([
