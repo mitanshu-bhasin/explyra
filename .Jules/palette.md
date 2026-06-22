@@ -1,3 +1,0 @@
-## 2026-06-22 - Dynamic ARIA Labels on Toggle Buttons
-**Learning:** For stateful icon-only toggle buttons (like password visibility), static `aria-label` attributes are insufficient. Screen readers need to know the *current* action the button performs, not just a generic description.
-**Action:** When creating or updating toggle buttons, ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes to accurately reflect the current action/state (e.g., 'Show' vs. 'Hide'). Also, ensure the inner `<i>` tags have `aria-hidden="true"` to avoid redundant announcements.
