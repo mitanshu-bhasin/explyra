@@ -29,7 +29,7 @@
     try {
       const app = firebase.initializeApp(config, "testApp_" + Date.now());
       const db = firebase.firestore(app);
-      
+
       log("Attempting to write to cs_companies...");
       db.collection('cs_companies').add({
         test: true,

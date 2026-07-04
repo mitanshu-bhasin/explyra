@@ -149,7 +149,7 @@
     <main class="main-content">
       <div class="settings-container">
         <h1 class="section-title">⚙️ Settings</h1>
-        
+
         <div class="settings-group">
           <h3>Profile Integration</h3>
           <div class="settings-field">
@@ -170,7 +170,7 @@
             </div>
             <button class="btn-connect" onclick="connectYouTube()">Connect</button>
           </div>
-          
+
           <div id="yt-settings" style="display:none; margin-top:15px;">
             <div class="settings-field">
               <span class="settings-label">Channel ID / Username</span>
@@ -207,7 +207,7 @@
     async function loadSettings() {
       const user = csAuth.currentUser;
       if (!user) return;
-      
+
       const doc = await csDb.collection('cs_users').doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
@@ -226,7 +226,7 @@
       isConnected = !isConnected;
       const ytSettings = document.getElementById('yt-settings');
       const btn = document.querySelector('.btn-connect');
-      
+
       if (isConnected) {
         ytSettings.style.display = 'block';
         btn.textContent = 'Disconnect';
@@ -257,7 +257,7 @@
       }
 
       Utils.showLoading('Saving settings...');
-      
+
       const ytData = {
         channelId: document.getElementById('youtube-channel-id').value,
         mode: document.getElementById('yt-mode').value,
@@ -270,7 +270,7 @@
           youtube: ytData,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
-        
+
         Utils.hideLoading();
         Utils.toast('Settings saved successfully!', 'success');
       } catch (err) {

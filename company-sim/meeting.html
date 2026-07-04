@@ -247,8 +247,8 @@
       isProcessing = true;
       document.getElementById('send-btn').disabled = true;
 
-      // If no specific agent, we might want everyone (old behavior), 
-      // but new behavior is founder-controlled. 
+      // If no specific agent, we might want everyone (old behavior),
+      // but new behavior is founder-controlled.
       // If targetAgentId is null, we pick the first agent as a fallback or return.
       const agentIds = targetAgentId ? [targetAgentId] : [Array.from(selectedMeetingAgents)[0]];
 
@@ -265,10 +265,10 @@
 
           // Get relevant company memories
           const relevantMems = await MemoryService.getRelevant(companyData.id, userMessage, 3);
-          
+
           // Get Agent-Specific Personal Chat Memory
           const personalMems = await MemoryService.getAgentPersonalHistory(companyData.id, agentId);
-          const personalContext = personalMems.length > 0 
+          const personalContext = personalMems.length > 0
             ? `\n[PERSONAL CHAT MEMORY WITH FOUNDER]\n${personalMems.map(m => `- ${m.content}`).join('\n')}`
             : '';
 
@@ -293,9 +293,9 @@
               if (!yt.apiKey) {
                 simulatedData = `\n[SIMULATED DATA FOR CHANNEL: ${yt.channelId}]\n- Recent Viewer Retention: 65% (Above average)\n- Top Traffic Source: YouTube Search (40%)\n- Current Subscriber Growth: +12% this month\n- Most Active Time: 6 PM - 9 PM\n- High Engagement on "Tutorial" style videos.`;
               }
-              
+
               youtubeInsights = `\n\n[USER YOUTUBE SETTINGS]\nChannel ID: ${yt.channelId}\nMode: ${yt.mode}\n${yt.apiKey ? '(API Access Verified)' : '(Simulation Mode)'}${simulatedData}\n(As the Marketing Agent, you must weave in specific, data-driven advice based on this channel's potential performance.)`;
-              
+
               if (yt.apiKey && yt.channelId) {
                 try {
                    const ytResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${yt.apiKey}&channelId=${yt.channelId}&part=snippet,id&order=date&maxResults=3`);
@@ -350,7 +350,7 @@
       if (isProcessing) return;
       const lastMsg = transcript.length > 0 ? transcript[transcript.length - 1].text : "No recent message.";
       const topic = document.getElementById('active-meeting-topic').textContent;
-      
+
       console.log('Team discussion triggered...');
       document.getElementById('discuss-btn').disabled = true;
 
@@ -359,7 +359,7 @@
         // Delay between agents
         await new Promise(r => setTimeout(r, 1000));
       }
-      
+
       document.getElementById('discuss-btn').disabled = false;
     }
 
@@ -375,10 +375,10 @@
 
       // Small delay before reaction
       await new Promise(r => setTimeout(r, 2000));
-      
+
       const role = roleMap[randomAgentId];
       console.log(`${role.name} is reacting to ${lastSpeakerId}...`);
-      
+
       await generateAgentResponse(`The ${roleMap[lastSpeakerId]?.name || lastSpeakerId} just said: "${lastMessage.substring(0, 100)}...". Please react to this or add your unique perspective from your role.`, randomAgentId);
     }
 

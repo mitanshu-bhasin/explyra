@@ -216,14 +216,14 @@
       selectedAgent = role;
       document.querySelectorAll('.agent-item').forEach(el => el.classList.remove('active'));
       event.currentTarget.classList.add('active');
-      
+
       document.getElementById('current-agent-name').textContent = role.name;
       document.getElementById('current-agent-emoji').textContent = role.emoji;
       document.getElementById('current-agent-status').textContent = 'Online & Active';
-      
+
       document.getElementById('chat-messages').innerHTML = '';
       chatHistory = [];
-      
+
       renderMessage('agent', `Hello Founder, I am your ${role.name}. How can I assist you in private today? Any insights I gain here will be remembered for our future meetings.`);
     }
 
@@ -253,14 +253,14 @@
 
       // Fetch memories for this agent
       const memories = await MemoryService.recall(currentCompany.id, selectedAgent.id, text);
-      
+
       const response = await GeminiService.agentRespond(selectedAgent, text, currentCompany, memories);
       loadingDiv.remove();
 
       if (response.success) {
         renderMessage('agent', response.text);
         chatHistory.push({ role: 'agent', content: response.text });
-        
+
         // Save new memory
         await MemoryService.save(currentCompany.id, {
           content: `Personal chat snippet: "${text.substring(0, 50)}..." -> "${response.text.substring(0, 50)}..."`,

@@ -31,7 +31,7 @@
     try {
       const app = firebase.initializeApp(config, "companySimApp");
       const db = firebase.firestore(app);
-      
+
       log("Attempting to write to cs_companies using NAMED APP...");
       db.collection('cs_companies').add({
         test: true,
