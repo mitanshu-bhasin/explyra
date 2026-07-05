@@ -45,7 +45,7 @@
             <label for="signup-password">Password</label>
             <div class="input-wrapper">
               <input class="input" type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6" autocomplete="new-password">
-              <button type="button" class="password-toggle" onclick="togglePassword('signup-password', this)">👁</button>
+              <button type="button" class="password-toggle" aria-label="Show password" title="Show password" onclick="togglePassword('signup-password', this)">👁</button>
             </div>
           </div>
           <div id="signup-error" class="error-text" style="display:none"></div>
@@ -89,6 +89,8 @@
       const isPassword = input.type === 'password';
       input.type = isPassword ? 'text' : 'password';
       btn.textContent = isPassword ? '🔒' : '👁';
+      btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      btn.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
     }
 
     async function handleSignup(e) {
