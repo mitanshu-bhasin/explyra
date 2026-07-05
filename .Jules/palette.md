@@ -1,0 +1,3 @@
+## 2024-07-05 - Dynamic ARIA Labels for Password Toggles
+**Learning:** Found that static `aria-label` attributes on password visibility toggles become inaccurate when the state changes (from "Show" to "Hide"). This is a common pattern in auth forms.
+**Action:** When adding ARIA labels to stateful icon-only toggles, always update the associated JavaScript handler to dynamically swap both the `aria-label` and `title` attributes (e.g., between "Show password" and "Hide password") to accurately reflect the current state to screen readers and tooltip users. Additionally, when nesting FontAwesome icons inside these buttons, explicitly add `aria-hidden="true"` to the `<i>` element.
