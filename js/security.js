@@ -82,8 +82,8 @@
             if (x + menuWidth > windowWidth) x = windowWidth - menuWidth - 10;
             if (y + menuHeight > windowHeight) y = windowHeight - menuHeight - 10;
             
-            contextMenu.style.left = `${x}px`;
-            contextMenu.style.top = `${y}px`;
+            contextMenu.style.left = x + "px";
+            contextMenu.style.top = y + "px";
             
             // Add a subtle pop animation
             contextMenu.animate([
