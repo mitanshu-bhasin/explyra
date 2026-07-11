@@ -1,0 +1,3 @@
+## 2026-07-11 - Dynamic ARIA labels for Password Toggles
+**Learning:** For stateful icon-only toggle buttons (like password visibility), it is crucial to ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes to accurately reflect the current action/state (e.g., 'Show' vs. 'Hide'). Furthermore, relying on dynamic icon classes (e.g., 'fa-eye') for Playwright locators is brittle, as they change upon interaction and cause timeouts; use stable attributes or relative locators instead.
+**Action:** When adding accessibility to stateful icons, always update the ARIA labels in tandem with the visual state changes in JavaScript, and avoid using dynamic classes as locators in UI tests.
