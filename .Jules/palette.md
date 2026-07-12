@@ -1,0 +1,3 @@
+## 2024-07-12 - Stateful Icon-Only Toggle Buttons
+**Learning:** When using stateful icon-only buttons (like password visibility toggles), screen readers won't automatically announce the state change if only the visual icon changes. It is necessary to dynamically update the `aria-label` and `title` attributes in Javascript when the state changes, while keeping the inner `<i>` tag hidden with `aria-hidden="true"` to prevent screen readers from reading the icon classes.
+**Action:** Ensure that any future interactive icon-only buttons with multiple states dynamically update their ARIA labels via JS to reflect their current action/state accurately.
