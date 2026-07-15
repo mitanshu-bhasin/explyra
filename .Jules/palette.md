@@ -1,0 +1,3 @@
+## 2025-07-15 - Dynamic ARIA labels for stateful icon-only toggles
+**Learning:** Icon-only toggle buttons (like password visibility and theme switchers) require dynamic JavaScript updates to their `aria-label` and `title` attributes. Static labels like "Toggle password" are less helpful to screen reader users than explicit state descriptions like "Show password" vs "Hide password".
+**Action:** When adding or modifying stateful toggle buttons, ensure the accompanying JavaScript handlers dynamically update the descriptive attributes to reflect the new state immediately after the interaction.
