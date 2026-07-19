@@ -1,0 +1,3 @@
+## 2024-07-19 - Stateful ARIA Attributes for Password Toggles
+**Learning:** For stateful icon-only toggle buttons (like password visibility), ensuring the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes accurately reflects the current action/state (e.g., "Show" vs. "Hide"). Using `aria-hidden="true"` on the interior icon elements prevents screen readers from redundantly announcing the visual class name.
+**Action:** Applied this accessibility improvement to the `login.html` and `signup.html` files, updating both static HTML and the dynamic JavaScript `togglePasswordVisibility` function.
