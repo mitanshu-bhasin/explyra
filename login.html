@@ -83,8 +83,8 @@
     <a href="#auth-steps" class="skip-link">Skip to login form</a>
 
     <!-- Theme Toggle -->
-    <button class="auth-theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
-        <i class="fa-solid fa-moon"></i>
+    <button class="auth-theme-toggle" onclick="toggleTheme()" title="Switch to light mode" aria-label="Switch to light mode">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
     </button>
 
     <div class="auth-card">
@@ -174,8 +174,9 @@
                     <div style="position:relative;width:100%;">
                         <input type="password" id="password" class="auth-input" style="padding-right:2.5rem;" placeholder="Password" required autocomplete="current-password">
                         <button type="button" onclick="togglePasswordVisibility('password', this)"
-                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
-                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
+                            style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;"
+                            aria-label="Show password" title="Show password">
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div style="margin-top:4px;">
@@ -292,14 +293,27 @@
             const next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             localStorage.setItem('explyra-theme', next);
-            const icon = document.querySelector('.auth-theme-toggle i');
-            if (icon) icon.className = next === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+            const toggleBtn = document.querySelector('.auth-theme-toggle');
+            const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
+            if (icon) {
+                icon.className = next === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+            }
+            if (toggleBtn) {
+                const titleText = next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+                toggleBtn.setAttribute('title', titleText);
+                toggleBtn.setAttribute('aria-label', titleText);
+            }
         };
 
         // Update icon to match initial theme
-        const initIcon = document.querySelector('.auth-theme-toggle i');
+        const initBtn = document.querySelector('.auth-theme-toggle');
+        const initIcon = initBtn ? initBtn.querySelector('i') : null;
         if (initIcon && document.documentElement.getAttribute('data-theme') === 'light') {
             initIcon.className = 'fa-solid fa-sun';
+            if (initBtn) {
+                initBtn.setAttribute('title', 'Switch to dark mode');
+                initBtn.setAttribute('aria-label', 'Switch to dark mode');
+            }
         }
 
         window.addEventListener('unhandledrejection', (event) => {
@@ -559,9 +573,13 @@
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.setAttribute('aria-label', 'Hide password');
+                btn.setAttribute('title', 'Hide password');
             } else {
                 input.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.setAttribute('aria-label', 'Show password');
+                btn.setAttribute('title', 'Show password');
             }
         };
     </script>

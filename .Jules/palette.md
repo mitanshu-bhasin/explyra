@@ -1,0 +1,3 @@
+## 2024-07-22 - Stateful Icon Button Accessibility in Auth Forms
+**Learning:** Icon-only buttons with state (like password visibility and theme toggles) need their `aria-label` and `title` attributes dynamically updated in JavaScript to match their visual state changes (e.g., changing from "Show password" to "Hide password"). Otherwise, screen reader users receive stale/incorrect context. Also, the inner `<i>` tags for FontAwesome icons must have `aria-hidden="true"` to prevent screen readers from reading raw class names.
+**Action:** When implementing stateful icon buttons, always add `aria-hidden="true"` to the icon tag and include logic in the JS handler to update the parent button's `aria-label` and `title` attributes alongside the icon class change.
