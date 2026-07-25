@@ -1,0 +1,3 @@
+## 2024-07-25 - Stateful Icon-Only Toggles Require Dynamic ARIA Attributes
+**Learning:** For icon-only interactive elements like password visibility toggles, the `aria-label` and `title` properties must dynamically update to match the current state (e.g., from "Show password" to "Hide password") so screen readers can accurately announce the current functionality. Additionally, inner `<i>` tags (like FontAwesome icons) must have `aria-hidden="true"` to prevent them from being redundantly parsed by assistive technologies.
+**Action:** When creating or fixing stateful icon-only toggle buttons, ensure the JavaScript handler that swaps the icon classes also swaps the `aria-label` and `title` attributes on the parent `<button>`.
