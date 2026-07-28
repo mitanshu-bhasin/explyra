@@ -1,0 +1,3 @@
+## 2024-07-28 - Stateful Icon-Only Button ARIA Labels
+**Learning:** Icon-only toggle buttons (like password visibility toggles using eye icons) present an accessibility challenge because the visible state changes, but standard screen readers won't re-announce the purpose unless the ARIA attributes are updated. Relying solely on `aria-label="Show password"` creates confusion when the user has already revealed the text and is attempting to hide it.
+**Action:** Always add a dynamic Javascript update step for both `aria-label` and `title` alongside class/icon updates when handling stateful icon buttons. Furthermore, inner decorative icons (like `<i>`) must include `aria-hidden="true"` to prevent screen reader redundancy with the parent button's ARIA label.
