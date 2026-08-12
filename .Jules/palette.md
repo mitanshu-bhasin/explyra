@@ -1,0 +1,1 @@
+## 2026-08-12 - Added missing ARIA labels to search icon buttons\n**Learning:** Found several search/theme icon-only buttons in search.html lacking aria-labels, making them inaccessible to screen readers. Must always check icon buttons for aria attributes.\n**Action:** Add aria-label and aria-hidden="true" to icon buttons across the codebase.
