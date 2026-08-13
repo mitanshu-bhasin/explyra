@@ -1,0 +1,5 @@
+{
+  "currency": 30,
+  "date": 12,
+  "firebase": 57
+}
