@@ -1,0 +1,3 @@
+## 2025-08-14 - Dynamic ARIA labels for Stateful Icon-Only Buttons
+**Learning:** Stateful icon-only buttons (like password visibility toggles) present a unique accessibility challenge. Even if an initial `aria-label` is provided, it becomes inaccurate once the user interacts with it (e.g., changing from "Show password" to "Hide password"). Screen readers rely on these dynamic attributes.
+**Action:** When implementing or modifying stateful icon-only toggle buttons, always ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes (using `setAttribute`) to accurately reflect the *current* state or action, not just the initial one. Also ensure the inner icon has `aria-hidden="true"`.
