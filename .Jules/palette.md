@@ -1,0 +1,3 @@
+## 2026-08-16 - Statefully updating aria-label attributes for dynamic icon-only toggles
+**Learning:** When using stateful icon-only toggles (like password visibility), updating only the icon class (e.g. `fa-eye` to `fa-eye-slash`) leaves screen reader users with inaccurate information about the button's action. The `aria-label` and `title` must be updated dynamically with JavaScript to reflect the current state/action.
+**Action:** When implementing toggles that change visuals, always include JavaScript logic to update `aria-label` and `title` to explicitly state the new action (e.g., 'Show password' -> 'Hide password').
