@@ -136,8 +136,8 @@
     <a href="#signup-steps" class="skip-link">Skip to signup form</a>
 
     <!-- Theme Toggle -->
-    <button class="auth-theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
-        <i class="fa-solid fa-moon"></i>
+    <button class="auth-theme-toggle" onclick="toggleTheme()" title="Enable light mode" aria-label="Enable light mode">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
     </button>
 
     <div class="auth-card">
@@ -203,8 +203,9 @@
                     <div style="position:relative;width:100%;">
                         <input type="password" id="password" class="auth-input" style="padding-right:2.5rem;" placeholder="Create Password" required>
                         <button type="button" onclick="togglePasswordVisibility('password', this)"
+                            title="Show password" aria-label="Show password"
                             style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
-                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -223,8 +224,9 @@
                     <div style="position:relative;width:100%;">
                         <input type="password" id="confirmPassword" class="auth-input" style="padding-right:2.5rem;" placeholder="Confirm Password" required>
                         <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)"
+                            title="Show password" aria-label="Show password"
                             style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px;">
-                            <i class="fa-solid fa-eye" style="font-size:0.85rem;"></i>
+                            <i class="fa-solid fa-eye" style="font-size:0.85rem;" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -276,14 +278,27 @@
             const next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             localStorage.setItem('explyra-theme', next);
+
+            const btn = document.querySelector('.auth-theme-toggle');
             const icon = document.querySelector('.auth-theme-toggle i');
+
+            if (btn) {
+                const titleText = next === 'dark' ? 'Enable light mode' : 'Enable dark mode';
+                btn.title = titleText;
+                btn.setAttribute('aria-label', titleText);
+            }
             if (icon) icon.className = next === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
         };
 
         // Update icon to match initial theme
+        const initBtn = document.querySelector('.auth-theme-toggle');
         const initIcon = document.querySelector('.auth-theme-toggle i');
         if (initIcon && document.documentElement.getAttribute('data-theme') === 'light') {
             initIcon.className = 'fa-solid fa-sun';
+            if (initBtn) {
+                initBtn.title = 'Enable dark mode';
+                initBtn.setAttribute('aria-label', 'Enable dark mode');
+            }
         }
 
         window.togglePasswordVisibility = (id, btn) => {
@@ -292,9 +307,13 @@
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.title = "Hide password";
+                btn.setAttribute("aria-label", "Hide password");
             } else {
                 input.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.title = "Show password";
+                btn.setAttribute("aria-label", "Show password");
             }
         };
 
