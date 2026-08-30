@@ -1,3 +1,0 @@
-## 2024-05-18 - Stateful Icon Buttons Require Dynamic ARIA Updates
-**Learning:** When adding `aria-label` to stateful icon-only buttons (like a password visibility toggle), a static attribute is insufficient. The label must dynamically update to reflect the current action (e.g., "Show password" vs. "Hide password") to avoid confusing screen reader users. Also, adding a `title` attribute mirrors this state change visually as a native tooltip.
-**Action:** When auditing icon-only buttons, always check if they are toggles or stateful. If they are, ensure the associated JavaScript handler dynamically updates both `aria-label` and `title` alongside any icon class changes.
