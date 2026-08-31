@@ -612,7 +612,7 @@ function appendMessage(role, text) {
         div.innerHTML = `
             <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs flex-shrink-0 mt-1">AI</div>
             <div class="chat-ai p-3 text-sm max-w-[85%] prose">${marked.parse(text)}
-                <button onclick="speakText('${text.replace(/'/g, "\\'")}')" class="ml-2 text-slate-400 hover:text-purple-600 text-xs"><i class="fa-solid fa-volume-high"></i></button>
+                <button aria-label="Listen to text" onclick="speakText('${text.replace(/'/g, "\\'")}')" class="ml-2 text-slate-400 hover:text-purple-600 text-xs"><i class="fa-solid fa-volume-high"></i></button>
             </div>
         `;
     } else {
@@ -1175,7 +1175,7 @@ function renderDailyLog() {
                     <p class="font-bold text-sm text-slate-800">${ex.name}</p>
                     <p class="text-[10px] text-slate-500 font-medium">${ex.duration} min • ${ex.burned} kcal burned</p>
                 </div>
-                <button onclick="deleteExerciseLog(${ex.logId})" class="text-orange-400 hover:text-red-500 p-2 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                <button aria-label="Delete exercise" onclick="deleteExerciseLog(${ex.logId})" class="text-orange-400 hover:text-red-500 p-2 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
             `;
             exDiv.appendChild(itemDiv);
         });
@@ -1202,7 +1202,7 @@ function renderDailyLog() {
                         <p class="font-bold text-sm text-slate-800">${food.name}</p>
                         <p class="text-[10px] text-slate-500 font-medium">${food.loggedQty} • ${food.calories} kcal</p>
                     </div>
-                    <button onclick="deleteFoodLog(${food.logId})" class="text-slate-400 hover:text-red-500 p-2 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                    <button aria-label="Delete food" onclick="deleteFoodLog(${food.logId})" class="text-slate-400 hover:text-red-500 p-2 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 groupDiv.appendChild(itemDiv);
             });
@@ -1393,7 +1393,7 @@ function renderMedicineSettingsList() {
         div.innerHTML = `
             <input type="text" value="${med.name}" placeholder="Medicine Name" class="med-name flex-1 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100">
             <input type="time" value="${med.time}" class="med-time w-28 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm outline-none">
-            <button onclick="removeMedicineRow(${index})" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash-can"></i></button>
+            <button aria-label="Remove medicine" onclick="removeMedicineRow(${index})" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash-can"></i></button>
         `;
         list.appendChild(div);
     });
