@@ -1,0 +1,3 @@
+## 2025-02-18 - Dynamic Accessible Names for Stateful Icon Buttons
+**Learning:** Icon-only stateful toggle buttons (like password visibility) often suffer from accessibility issues because their `aria-label` and `title` attributes become stale after interaction. Screen readers would announce 'Show password' even when the password was already visible.
+**Action:** When creating or modifying stateful icon buttons, always ensure the JavaScript handler dynamically updates both the `aria-label` (for screen readers) and `title` (for visual tooltips) attributes to accurately reflect the next action (e.g., toggling between 'Show password' and 'Hide password'). Also add `aria-hidden="true"` to the decorative child icon tags.
