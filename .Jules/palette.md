@@ -1,0 +1,3 @@
+## 2024-05-18 - Missing ARIA Labels on Password Visibility Toggles
+**Learning:** While the auth theme toggle buttons correctly use `aria-label`, the password visibility toggles in `login.html` and `signup.html` lacked both `aria-label`s and `title` tooltips. As icon-only buttons, they were inaccessible to screen readers and lacked native hover hints for sighted users.
+**Action:** Added `aria-label` and `title` to all password visibility toggle buttons across auth forms. Hid the purely visual inner icons from assistive technologies using `aria-hidden="true"`. Updated the JavaScript handlers (`togglePasswordVisibility`) to dynamically swap these attributes to accurately reflect the active state ('Show password' vs 'Hide password').
