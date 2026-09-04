@@ -1,0 +1,3 @@
+## 2024-05-24 - Accessible Back Buttons in Auth Flow
+**Learning:** Icon-heavy navigation elements like the `.auth-back` button (often styled as generic spans or anchors) frequently lack essential keyboard navigation properties and screen reader context in this application's custom multi-step auth forms.
+**Action:** Always ensure custom interactive elements like `.auth-back` receive `role="button"`, `tabindex="0"`, a robust `onkeydown` handler supporting both Space and Enter keys, `aria-label` for screen reader clarity, and `aria-hidden="true"` on purely decorative inner icons (e.g., FontAwesome). Furthermore, ensure they possess a distinct `:focus-visible` state in CSS for visual keyboard users.

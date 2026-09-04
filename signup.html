@@ -168,8 +168,8 @@
 
             <!-- Step 2: Profile -->
             <div id="step-profile" class="step-content">
-                <div class="auth-back" onclick="backToIdentifier()">
-                    <i class="fa-solid fa-arrow-left"></i>
+                <div class="auth-back" role="button" tabindex="0" aria-label="Go back to previous step" onclick="backToIdentifier()" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); backToIdentifier(); }">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                     <span id="display-email-profile">...</span>
                 </div>
                 <h1 class="auth-title">Who are you?</h1>
@@ -192,8 +192,8 @@
 
             <!-- Step 3: Security -->
             <div id="step-security" class="step-content">
-                <div class="auth-back" onclick="backToProfile()">
-                    <i class="fa-solid fa-arrow-left"></i>
+                <div class="auth-back" role="button" tabindex="0" aria-label="Go back to previous step" onclick="backToProfile()" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); backToProfile(); }">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                     <span id="display-email">...</span>
                 </div>
                 <h1 class="auth-title">Create a password</h1>
