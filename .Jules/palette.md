@@ -1,3 +1,0 @@
-## 2024-05-16 - Accessible Stateful Icon Buttons
-**Learning:** Icon-only toggle buttons (like password visibility) require more than just a static `aria-label`. Screen reader users and visual users both need to understand the *current* state and the *action* that will occur when clicked.
-**Action:** Always add `aria-label`, `title`, and `aria-hidden="true"` on the inner icon for initial rendering. Most importantly, ensure the JavaScript handler dynamically updates both `aria-label` and `title` to accurately reflect the next action (e.g., swapping between 'Show password' and 'Hide password') when the state changes.
