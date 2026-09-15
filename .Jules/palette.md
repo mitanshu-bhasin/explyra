@@ -1,0 +1,3 @@
+## 2024-03-24 - Accessibility improvements for toggle password visibility
+**Learning:** Icon-only buttons for toggling password visibility (fa-eye / fa-eye-slash) lack descriptive context for screen readers and missing title tooltips for users hovering over them. Additionally, dynamically updating state needs both dynamic `aria-label` and `title` updates.
+**Action:** Always add initial `aria-label` and `title` to these buttons (e.g. "Show password") and `aria-hidden="true"` to the inner `<i>` tag. Then ensure the Javascript function toggling the visibility dynamically updates these attributes to match the new state (e.g. "Hide password").
