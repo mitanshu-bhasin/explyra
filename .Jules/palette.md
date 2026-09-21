@@ -1,0 +1,3 @@
+## 2024-05-24 - Dynamic ARIA and Title for Stateful Password Toggles
+**Learning:** For stateful icon-only toggle buttons (like password visibility), static `aria-label` and `title` attributes quickly become inaccurate after user interaction. The DOM element's label and tooltip must correctly reflect the *next* action the button performs, not just its initial state.
+**Action:** When adding accessibility to stateful icon-only toggles, always ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes (e.g., 'Show password' vs. 'Hide password') to match the new state.
