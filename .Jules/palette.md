@@ -1,0 +1,3 @@
+## 2024-11-20 - Adding dynamic ARIA states to stateful toggle buttons
+**Learning:** For stateful icon-only toggle buttons like password visibility, simply adding a static `aria-label` is insufficient. The label must dynamically update (e.g., from "Show password" to "Hide password") to accurately reflect the current state to screen reader users. Additionally, adding a `title` attribute mirrors this state change visually as a native tooltip.
+**Action:** Always ensure the associated JavaScript handler dynamically updates both `aria-label` and `title` attributes when toggling the state of interactive elements.
