@@ -1,0 +1,3 @@
+## 2026-03-31 - Stateful Password Toggle Accessibility
+**Learning:** For interactive icon-only buttons whose state changes (e.g., password visibility toggle), a static `aria-label` or `title` is not sufficient, as it doesn't represent the current action. Furthermore, ensuring that inner icons have `aria-hidden="true"` prevents screen readers from redundantly announcing the visual icon.
+**Action:** When implementing toggles, ensure that JavaScript updates both the `aria-label` and `title` properties alongside the visual icon change so that screen readers and visually-sighted users using hover states understand the newly available action.
