@@ -320,11 +320,11 @@
             <div id="invite-list">
                 <div class="invite-row">
                     <input type="email" class="form-input" placeholder="teammate@company.com">
-                    <button class="remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+                    <button class="remove-btn" aria-label="Remove invite" title="Remove invite" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
                 </div>
                 <div class="invite-row">
                     <input type="email" class="form-input" placeholder="teammate@company.com">
-                    <button class="remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+                    <button class="remove-btn" aria-label="Remove invite" title="Remove invite" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
                 </div>
             </div>
             <button class="add-link" onclick="addInviteRow()"><i class="fa-solid fa-plus"></i> Add another</button>
@@ -415,7 +415,7 @@
             const list = document.getElementById('invite-list');
             const row = document.createElement('div');
             row.className = 'invite-row';
-            row.innerHTML = `<input type="email" class="form-input" placeholder="teammate@company.com"><button class="remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
+            row.innerHTML = `<input type="email" class="form-input" placeholder="teammate@company.com"><button class="remove-btn" aria-label="Remove invite" title="Remove invite" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>`;
             list.appendChild(row);
         }
 
