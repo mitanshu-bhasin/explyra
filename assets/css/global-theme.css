@@ -2,11 +2,11 @@
    EXPLYRA GLOBAL THEME — Import Bridge
    
    This file exists for backward compatibility.
-   The canonical design tokens are now in /css/explyra-tokens.css
+   The canonical design tokens are now in ../../css/explyra-tokens.css
    
    All new pages should import directly:
-     <link rel="stylesheet" href="/css/explyra-tokens.css">
+     <link rel="stylesheet" href="../../css/explyra-tokens.css">
      <link rel="stylesheet" href="/css/explyra-base.css">
    ═══════════════════════════════════════════════════════ */
 
-@import url('/css/explyra-tokens.css');
+@import url('../../css/explyra-tokens.css');

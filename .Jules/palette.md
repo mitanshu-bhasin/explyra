@@ -1,0 +1,3 @@
+## 2024-10-10 - Password Visibility Accessibility
+**Learning:** Icon-only toggles (like password visibility) require static `aria-label` and `title` attributes that must be dynamically updated by Javascript to reflect the current state (e.g. Show vs. Hide). Otherwise, users who use screen readers are unable to determine what action the button will perform or what state the button is in. The `<i>` tags rendering the icons also require `aria-hidden="true"`.
+**Action:** Applied dynamically updating `aria-label` and `title` attributes, and static `aria-hidden="true"` to the password visibility toggles in `login.html` and `signup.html`.
