@@ -1,0 +1,3 @@
+## 2024-10-24 - Dynamic Assistive States for Stateful Icons
+**Learning:** When using icon-only buttons for stateful actions (like toggling password visibility with a single eye/eye-slash icon), setting a static `aria-label` or `title` is insufficient and can lead to confusing screen reader announcements or tooltips that contradict the visual state.
+**Action:** Always bind the update of assistive properties (`aria-label` and `title`) directly into the JavaScript logic that toggles the visual icon class, ensuring they accurately reflect the *next* action (e.g., 'Hide' when currently shown, 'Show' when currently hidden).
