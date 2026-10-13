@@ -1,0 +1,3 @@
+## 2025-02-18 - Dynamic ARIA Labels for Stateful Toggles
+**Learning:** For stateful interactive elements like password visibility toggles, static ARIA labels ("Show password") become inaccurate once the state changes (when the password is shown). Screen reader users need dynamic feedback that accurately reflects the current action they will take (e.g., changing from "Show password" to "Hide password").
+**Action:** When implementing or updating toggle buttons (like password visibility or theme toggles), ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes to reflect the next action accurately.
