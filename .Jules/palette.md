@@ -1,0 +1,3 @@
+## 2024-10-19 - Dynamic ARIA attributes on stateful toggles
+**Learning:** For interactive stateful toggle buttons (like a password visibility toggle with a changing icon), static `aria-label` attributes are insufficient. As the icon changes (e.g. from an eye to a slashed eye), the `aria-label` and `title` must be dynamically updated by the associated JavaScript event handler to accurately convey the current state and action to screen reader and keyboard users.
+**Action:** When creating or modifying stateful icon-only toggles, always ensure the JavaScript `onclick` handler explicitly uses `element.setAttribute('aria-label', ...)` and `element.setAttribute('title', ...)` in tandem with the visual icon swap.
