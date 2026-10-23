@@ -1,0 +1,3 @@
+## 2024-10-24 - Dynamic ARIA labels for stateful toggles
+**Learning:** Icon-only password visibility toggles ('eye' icon) must dynamically swap both `aria-label` and `title` attributes (e.g., "Show password" -> "Hide password") along with the icon class to accurately communicate state changes to screen readers and provide correct native tooltips. Static `aria-label` attributes on stateful toggles can mislead users about the current state.
+**Action:** When implementing or updating stateful icon-only toggles (like password visibility or theme switchers), ensure the associated JavaScript handler dynamically updates the `aria-label` and `title` attributes in sync with the visual state change.
