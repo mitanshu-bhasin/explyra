@@ -1,3 +1,3 @@
-## 2024-05-18 - Fix absolute paths in CSS imports breaking Vite builds
-**Learning:** Found an issue where Vite fails to build a subproject (`will/`) when an imported CSS file (`assets/css/global-theme.css`) uses an absolute path (`@import url('/css/explyra-tokens.css')`). Vite attempts to resolve this relative to the subproject root, leading to an `ENOENT` error.
-**Action:** Changed the import in `assets/css/global-theme.css` to use a relative path (`@import url('../../css/explyra-tokens.css')`) to ensure it works correctly across all contexts, including Vite subproject builds.
+## 2024-05-18 - Fix out of sync lockfiles causing CI failures
+**Learning:** Found an issue where `npm ci` failures occurred in CI due to out-of-sync package-lock.json files in subprojects like `will/` that were not resolved correctly previously.
+**Action:** Always sync the lockfile using `npm install --package-lock-only` within the specific subproject experiencing the `npm ci` failure to keep CI pipelines passing.
