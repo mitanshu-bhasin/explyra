@@ -1,0 +1,3 @@
+## 2024-05-14 - Add ARIA Labels to Password Toggles
+**Learning:** Found multiple password input toggle buttons that use icon-only content (`<i class="fa-solid fa-eye">`) and rely on changing the icon class visually to convey state. The buttons lack `aria-label` attributes to explicitly tell screen reader users what the button does or its current state, and lack `title` attributes for sighted users to know what the button does on hover.
+**Action:** Always verify icon-only buttons have dynamic `aria-label` and `title` attributes that update with state changes. Ensure they are accessible to both screen readers and hover states.
